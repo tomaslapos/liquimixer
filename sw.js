@@ -1,5 +1,5 @@
 // LiquiMixer Service Worker
-const CACHE_NAME = 'liquimixer-v3';
+const CACHE_NAME = 'liquimixer-v4';
 const urlsToCache = [
   './',
   './index.html',
