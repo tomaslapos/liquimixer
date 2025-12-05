@@ -521,13 +521,42 @@ function adjustColorBrightness(color, percent) {
 
 let deferredPrompt;
 
+// Detect mobile device
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768);
+}
+
+// Detect iOS device
+function isIOSDevice() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream;
+}
+
+// Check if app is already installed (standalone mode)
+function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true;
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
     // Prevent Chrome 67+ from automatically showing the prompt
     e.preventDefault();
     // Stash the event so it can be triggered later
     deferredPrompt = e;
-    // Show the install prompt
-    showInstallPrompt();
+    // Show the install prompt ONLY on mobile devices
+    if (isMobileDevice()) {
+        showInstallPrompt();
+    }
+});
+
+// Show iOS install prompt on page load (iOS doesn't fire beforeinstallprompt)
+window.addEventListener('load', () => {
+    if (isIOSDevice() && !isStandalone() && !sessionStorage.getItem('iosInstallDismissed')) {
+        // Small delay to not interrupt user immediately
+        setTimeout(() => {
+            showIOSInstallPrompt();
+        }, 2000);
+    }
 });
 
 function showInstallPrompt() {
@@ -544,10 +573,25 @@ function hideInstallPrompt() {
     }
 }
 
+function showIOSInstallPrompt() {
+    const prompt = document.getElementById('iosInstallPrompt');
+    if (prompt) {
+        prompt.classList.remove('hidden');
+    }
+}
+
+function hideIOSInstallPrompt() {
+    const prompt = document.getElementById('iosInstallPrompt');
+    if (prompt) {
+        prompt.classList.add('hidden');
+    }
+}
+
 // Setup install button listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const installBtn = document.getElementById('installBtn');
     const dismissBtn = document.getElementById('dismissBtn');
+    const iosDismissBtn = document.getElementById('iosDismissBtn');
     
     if (installBtn) {
         installBtn.addEventListener('click', async () => {
@@ -569,6 +613,15 @@ document.addEventListener('DOMContentLoaded', () => {
             hideInstallPrompt();
             // Remember dismissal for this session
             sessionStorage.setItem('installDismissed', 'true');
+        });
+    }
+    
+    // iOS dismiss button
+    if (iosDismissBtn) {
+        iosDismissBtn.addEventListener('click', () => {
+            hideIOSInstallPrompt();
+            // Remember dismissal for this session
+            sessionStorage.setItem('iosInstallDismissed', 'true');
         });
     }
     

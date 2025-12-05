@@ -320,13 +320,37 @@
         }
     </script>
     
-    <!-- Install prompt for PWA -->
+    <!-- Install prompt for PWA (Android) -->
     <div id="installPrompt" class="install-prompt hidden">
         <div class="install-content">
             <p>Nainstalovat LiquiMixer na váš telefon?</p>
             <div class="install-buttons">
                 <button id="installBtn" class="neon-button small">Instalovat</button>
                 <button id="dismissBtn" class="neon-button secondary small">Později</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Install prompt for iOS -->
+    <div id="iosInstallPrompt" class="install-prompt ios-prompt hidden">
+        <div class="install-content">
+            <p>Nainstalovat LiquiMixer na váš iPhone?</p>
+            <div class="ios-instructions">
+                <div class="ios-step">
+                    <span class="ios-step-number">1</span>
+                    <span>Klepněte na ikonu <span class="ios-share-icon">⬆</span> (Sdílet)</span>
+                </div>
+                <div class="ios-step">
+                    <span class="ios-step-number">2</span>
+                    <span>Vyberte "Přidat na plochu"</span>
+                </div>
+                <div class="ios-step">
+                    <span class="ios-step-number">3</span>
+                    <span>Potvrďte klepnutím na "Přidat"</span>
+                </div>
+            </div>
+            <div class="install-buttons">
+                <button id="iosDismissBtn" class="neon-button secondary small">Rozumím</button>
             </div>
         </div>
     </div>
