@@ -2,8 +2,31 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LiquiMixer - E-liquid Kalkulátor</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Kalkulátor pro míchání e-liquidů s retro neon designem">
+    <meta name="theme-color" content="#ff00ff">
+    <meta name="background-color" content="#0a0a15">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LiquiMixer">
+    <meta name="application-name" content="LiquiMixer">
+    <meta name="msapplication-TileColor" content="#ff00ff">
+    <meta name="msapplication-navbutton-color" content="#ff00ff">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+    
+    <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -281,6 +304,32 @@
     </div>
 
     <script src="app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('LiquiMixer SW registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('LiquiMixer SW registration failed:', error);
+                    });
+            });
+        }
+    </script>
+    
+    <!-- Install prompt for PWA -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-content">
+            <p>Nainstalovat LiquiMixer na váš telefon?</p>
+            <div class="install-buttons">
+                <button id="installBtn" class="neon-button small">Instalovat</button>
+                <button id="dismissBtn" class="neon-button secondary small">Později</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 

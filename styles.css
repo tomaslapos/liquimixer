@@ -1061,6 +1061,55 @@ body {
     color: var(--neon-yellow);
 }
 
+/* PWA Install Prompt */
+.install-prompt {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    border: 2px solid var(--neon-pink);
+    border-radius: var(--border-radius);
+    padding: 20px 30px;
+    z-index: 1000;
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateX(-50%) translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+.install-content p {
+    font-family: 'Orbitron', monospace;
+    color: var(--neon-cyan);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.install-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.neon-button.small {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+
+/* Hidden class */
+.hidden {
+    display: none !important;
+}
+
 /* Print styles */
 @media print {
     .neon-grid, .disco-ball {

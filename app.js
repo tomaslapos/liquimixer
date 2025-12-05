@@ -455,7 +455,15 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     
     ingredients.forEach(ing => {
         const row = document.createElement('tr');
-        const dropsDisplay = ing.showDrops ? `${ing.drops}` : '-';
+        
+        // Calculate drops display based on volume
+        // Show drops only for nicotine/flavor AND if volume <= 5ml
+        let dropsDisplay = '-';
+        if (ing.showDrops && ing.volume <= 5) {
+            const drops = Math.round(ing.volume * 20);
+            dropsDisplay = String(drops);
+        }
+        
         row.innerHTML = `
             <td class="ingredient-name">${ing.name}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
@@ -506,3 +514,73 @@ function adjustColorBrightness(color, percent) {
     const B = Math.min(255, (num & 0x0000FF) + amt);
     return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
 }
+
+// =========================================
+// PWA Install Prompt
+// =========================================
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67+ from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    // Show the install prompt
+    showInstallPrompt();
+});
+
+function showInstallPrompt() {
+    const prompt = document.getElementById('installPrompt');
+    if (prompt) {
+        prompt.classList.remove('hidden');
+    }
+}
+
+function hideInstallPrompt() {
+    const prompt = document.getElementById('installPrompt');
+    if (prompt) {
+        prompt.classList.add('hidden');
+    }
+}
+
+// Setup install button listeners when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    const installBtn = document.getElementById('installBtn');
+    const dismissBtn = document.getElementById('dismissBtn');
+    
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+                // Clear the deferred prompt
+                deferredPrompt = null;
+                hideInstallPrompt();
+            }
+        });
+    }
+    
+    if (dismissBtn) {
+        dismissBtn.addEventListener('click', () => {
+            hideInstallPrompt();
+            // Remember dismissal for this session
+            sessionStorage.setItem('installDismissed', 'true');
+        });
+    }
+    
+    // Check if already dismissed this session
+    if (sessionStorage.getItem('installDismissed')) {
+        hideInstallPrompt();
+    }
+});
+
+// Handle successful install
+window.addEventListener('appinstalled', () => {
+    console.log('LiquiMixer installed successfully');
+    hideInstallPrompt();
+    deferredPrompt = null;
+});
