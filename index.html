@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiquiMixer - E-liquid Kalkulátor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="neon-grid"></div>
+    <div class="neon-clouds">
+        <!-- Levá strana -->
+        <div class="cloud cloud-left-1"></div>
+        <div class="cloud cloud-left-2"></div>
+        <div class="cloud cloud-left-3"></div>
+        <div class="cloud cloud-left-4"></div>
+        <div class="cloud cloud-left-5"></div>
+        <div class="cloud cloud-left-6"></div>
+        <!-- Pravá strana -->
+        <div class="cloud cloud-right-1"></div>
+        <div class="cloud cloud-right-2"></div>
+        <div class="cloud cloud-right-3"></div>
+        <div class="cloud cloud-right-4"></div>
+        <div class="cloud cloud-right-5"></div>
+        <div class="cloud cloud-right-6"></div>
+    </div>
+    
+    <div class="container">
+        <!-- Úvodní stránka -->
+        <section id="intro" class="page active">
+            <div class="logo-container">
+                <h1 class="neon-title">
+                    <span class="letter l1">L</span>
+                    <span class="letter l2">I</span>
+                    <span class="letter l3">Q</span>
+                    <span class="letter l4">U</span>
+                    <span class="letter l5">I</span>
+                    <span class="letter l6">M</span>
+                    <span class="letter l7">I</span>
+                    <span class="letter l8">X</span>
+                    <span class="letter l9">E</span>
+                    <span class="letter l10">R</span>
+                </h1>
+                <div class="subtitle">E-LIQUID KALKULÁTOR</div>
+            </div>
+            
+            <div class="warning-box">
+                <h2 class="warning-title">Při míchání se soustřeďte na dodržování bezpečnostních zásad</h2>
+                <p class="warning-text">
+                    Při míchání e-liquidu vždy noste ochranné rukavice a pracujte v dobře větraném prostoru, 
+                    zejména pokud používáte nikotinové boostery. Používejte pouze kvalitní složky bez příměsí 
+                    a s potravinářskou certifikací vhodné pro vapování od ověřených dodavatelů. 
+                    Dodržujte přesné poměry ingrediencí. Hotový liquid skladujte mimo dosah dětí a zvířat.
+                </p>
+            </div>
+            
+            <div class="prep-box">
+                <h3 class="prep-title">Před mícháním si připravte:</h3>
+                <div class="prep-grid">
+                    <div class="prep-item">
+                        <span>Propylenglykol (PG)</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Rostlinný glycerin (VG)</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Volitelně příchutě</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Nikotin freebase nebo sůl</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Zdravotnické rukavice</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Prázdná skleněná lahvička</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Kapátko, pipeta nebo stříkačka</span>
+                    </div>
+                    <div class="prep-item">
+                        <span>Měřící pomůcky</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="neon-button" onclick="showPage('form')">
+                <span>ZAČÍT MÍCHÁNÍ</span>
+                <div class="button-glow"></div>
+            </button>
+        </section>
+
+        <!-- Formulář -->
+        <section id="form" class="page">
+            <h2 class="page-title">Konfigurace směsi</h2>
+            
+            <!-- Množství liquidu -->
+            <div class="form-group">
+                <label class="form-label">
+                    Kolik liquidu chci namíchat?
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" id="totalAmount" min="1" max="1000" value="100" class="neon-input">
+                    <span class="input-unit">ml</span>
+                </div>
+            </div>
+
+            <!-- Poměr VG/PG -->
+            <div class="form-group">
+                <label class="form-label">
+                    Poměr VG/PG
+                </label>
+                <div class="ratio-container">
+                    <div class="ratio-labels">
+                        <span class="ratio-label left">Dým (VG)</span>
+                        <span class="ratio-label right">Chuť (PG)</span>
+                    </div>
+                    <div class="slider-container">
+                        <button class="slider-btn" onclick="adjustRatio(-5)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="vgPgRatio" min="0" max="100" value="50" class="ratio-slider">
+                            <div class="slider-track" id="sliderTrack"></div>
+                        </div>
+                        <button class="slider-btn" onclick="adjustRatio(5)">▶</button>
+                    </div>
+                    <div class="ratio-display">
+                        <span id="vgValue">50</span>:<span id="pgValue">50</span>
+                    </div>
+                    <div class="ratio-description" id="ratioDescription">
+                        Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nikotinová báze -->
+            <div class="form-group">
+                <label class="form-label">
+                    Jak silnou mám nikotinovou bázi?
+                    <span class="label-hint">Tyto údaje opiš z obalu nikotinu</span>
+                </label>
+                <div class="nicotine-base-container">
+                    <select id="nicotineType" class="neon-select" onchange="updateNicotineType()">
+                        <option value="none">Bez nikotinu</option>
+                        <option value="freebase">Freebase nikotin</option>
+                        <option value="salt">Nikotinová sůl</option>
+                    </select>
+                    <div id="nicotineStrengthContainer" class="hidden">
+                        <input type="number" id="nicotineBaseStrength" min="3" max="1000" value="20" class="neon-input medium">
+                        <span class="input-unit">mg/ml</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cílová síla nikotinu -->
+            <div class="form-group" id="targetNicotineGroup">
+                <label class="form-label">
+                    Jak silnou chci finální nikotinovou bázi na vapování?
+                </label>
+                <div class="target-nicotine-container">
+                    <div class="slider-container">
+                        <button class="slider-btn" onclick="adjustTargetNicotine(-1)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="targetNicotine" min="0" max="45" value="0" class="nicotine-slider">
+                            <div class="slider-track nicotine-track" id="nicotineTrack"></div>
+                        </div>
+                        <button class="slider-btn" onclick="adjustTargetNicotine(1)">▶</button>
+                    </div>
+                    <div class="nicotine-display">
+                        <span id="targetNicotineValue">0</span> mg/ml
+                    </div>
+                    <div class="nicotine-description" id="nicotineDescription">
+                        Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Příchuť -->
+            <div class="form-group">
+                <label class="form-label">
+                    Příchuť
+                </label>
+                <div class="flavor-container">
+                    <select id="flavorType" class="neon-select" onchange="updateFlavorType()">
+                        <option value="none">Žádná (bez příchutě)</option>
+                        <option value="fruit">Ovoce (jahoda, jablko)</option>
+                        <option value="citrus">Citrónové (citron, limeta)</option>
+                        <option value="berry">Bobulové (borůvka, malina)</option>
+                        <option value="tropical">Tropické (ananas, mango)</option>
+                        <option value="tobacco">Tabákové (klasický, kubánský)</option>
+                        <option value="menthol">Mentol / Mátové</option>
+                        <option value="candy">Sladkosti (cukroví, karamel)</option>
+                        <option value="dessert">Dezerty (koláč, pudink)</option>
+                        <option value="bakery">Zákusky (tyčinka, donut)</option>
+                        <option value="biscuit">Piškotové (vanilka, máslo)</option>
+                        <option value="drink">Nápojové (kola, čaj)</option>
+                        <option value="tobaccosweet">Tabák + sladké (custard tobacco)</option>
+                        <option value="nuts">Oříškové (arašíd, lískový)</option>
+                        <option value="spice">Kořeněné (skořice, perník)</option>
+                    </select>
+                    <div id="flavorStrengthContainer" class="hidden">
+                        <div class="slider-container small">
+                            <button class="slider-btn small" onclick="adjustFlavor(-1)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="flavorStrength" min="0" max="30" value="10" class="flavor-slider">
+                                <div class="slider-track flavor-track" id="flavorTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustFlavor(1)">▶</button>
+                        </div>
+                        <div class="flavor-display">
+                            <span id="flavorValue">10</span>%
+                        </div>
+                        <div class="flavor-description" id="flavorDescription">
+                            Ideální chuť
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="neon-button secondary" onclick="showPage('intro')">
+                    <span>◀ ZPĚT</span>
+                </button>
+                <button class="neon-button" onclick="calculateMix()">
+                    <span>MIXUJ!</span>
+                    <div class="button-glow"></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Výsledky -->
+        <section id="results" class="page">
+            <h2 class="page-title">Tvůj recept</h2>
+            
+            <div class="results-summary">
+                <div class="summary-item">
+                    <span class="summary-label">Celkový objem:</span>
+                    <span class="summary-value" id="resultTotal">100 ml</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Poměr VG/PG:</span>
+                    <span class="summary-value" id="resultRatio">50:50</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Síla nikotinu:</span>
+                    <span class="summary-value" id="resultNicotine">0 mg/ml</span>
+                </div>
+            </div>
+
+            <div class="results-table-container">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Složka</th>
+                            <th>Objem (ml)</th>
+                            <th>Kapky</th>
+                            <th>Procento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="results-notes">
+                <h4>Poznámky k míchání:</h4>
+                <ul>
+                    <li>Nejprve přidejte nikotin (pokud používáte)</li>
+                    <li>Poté přidejte příchutě</li>
+                    <li>Nakonec doplňte PG a VG</li>
+                    <li>Důkladně protřepejte a nechte zrát 1-2 týdny</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <button class="neon-button secondary" onclick="showPage('form')">
+                    <span>◀ UPRAVIT</span>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
