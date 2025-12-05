@@ -91,7 +91,7 @@
                         <span>Volitelně příchutě</span>
                     </div>
                     <div class="prep-item">
-                        <span>Nikotin freebase nebo sůl</span>
+                        <span>Nikotin booster nebo sůl</span>
                     </div>
                     <div class="prep-item">
                         <span>Zdravotnické rukavice</span>
@@ -165,12 +165,13 @@
                 <div class="nicotine-base-container">
                     <select id="nicotineType" class="neon-select" onchange="updateNicotineType()">
                         <option value="none">Bez nikotinu</option>
-                        <option value="freebase">Freebase nikotin</option>
+                        <option value="freebase">Nikotin booster</option>
                         <option value="salt">Nikotinová sůl</option>
                     </select>
                     <div id="nicotineStrengthContainer" class="hidden">
-                        <input type="number" id="nicotineBaseStrength" min="3" max="1000" value="20" class="neon-input medium">
+                        <input type="number" id="nicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
                         <span class="input-unit">mg/ml</span>
+                        <div id="nicotineWarning" class="input-warning hidden"></div>
                     </div>
                 </div>
             </div>
@@ -320,13 +321,37 @@
         }
     </script>
     
-    <!-- Install prompt for PWA -->
+    <!-- Install prompt for PWA (Android) -->
     <div id="installPrompt" class="install-prompt hidden">
         <div class="install-content">
             <p>Nainstalovat LiquiMixer na váš telefon?</p>
             <div class="install-buttons">
                 <button id="installBtn" class="neon-button small">Instalovat</button>
                 <button id="dismissBtn" class="neon-button secondary small">Později</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Install prompt for iOS -->
+    <div id="iosInstallPrompt" class="install-prompt ios-prompt hidden">
+        <div class="install-content">
+            <p>Nainstalovat LiquiMixer na váš iPhone?</p>
+            <div class="ios-instructions">
+                <div class="ios-step">
+                    <span class="ios-step-number">1</span>
+                    <span>Klepněte na ikonu <span class="ios-share-icon">⬆</span> (Sdílet)</span>
+                </div>
+                <div class="ios-step">
+                    <span class="ios-step-number">2</span>
+                    <span>Vyberte "Přidat na plochu"</span>
+                </div>
+                <div class="ios-step">
+                    <span class="ios-step-number">3</span>
+                    <span>Potvrďte klepnutím na "Přidat"</span>
+                </div>
+            </div>
+            <div class="install-buttons">
+                <button id="iosDismissBtn" class="neon-button secondary small">Rozumím</button>
             </div>
         </div>
     </div>

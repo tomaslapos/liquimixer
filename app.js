@@ -130,7 +130,7 @@ function initializeSliders() {
     targetNicotineSlider.addEventListener('input', updateNicotineDisplay);
     flavorStrengthSlider.addEventListener('input', updateFlavorDisplay);
     
-    document.getElementById('nicotineBaseStrength').addEventListener('input', updateMaxTargetNicotine);
+    document.getElementById('nicotineBaseStrength').addEventListener('input', validateNicotineStrength);
 }
 
 function showPage(pageId) {
@@ -176,19 +176,78 @@ function updateRatioDisplay() {
 // Nicotine Functions
 // =========================================
 
+function getNicotineMaxValue() {
+    const type = nicotineTypeSelect.value;
+    if (type === 'freebase') return 200;
+    if (type === 'salt') return 72;
+    return 200;
+}
+
+function getNicotineTypeName() {
+    const type = nicotineTypeSelect.value;
+    if (type === 'freebase') return 'Nikotin booster';
+    if (type === 'salt') return 'Nikotinová sůl';
+    return '';
+}
+
+function showNicotineWarning(message) {
+    const warning = document.getElementById('nicotineWarning');
+    if (warning) {
+        warning.textContent = message;
+        warning.classList.remove('hidden');
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            warning.classList.add('hidden');
+        }, 3000);
+    }
+}
+
+function hideNicotineWarning() {
+    const warning = document.getElementById('nicotineWarning');
+    if (warning) {
+        warning.classList.add('hidden');
+    }
+}
+
+function validateNicotineStrength() {
+    const baseStrengthInput = document.getElementById('nicotineBaseStrength');
+    const maxValue = getNicotineMaxValue();
+    const currentValue = parseInt(baseStrengthInput.value) || 0;
+    
+    if (currentValue > maxValue) {
+        const typeName = getNicotineTypeName();
+        showNicotineWarning(`Maximální hodnota pro ${typeName} je ${maxValue} mg/ml. Hodnota byla upravena.`);
+        baseStrengthInput.value = maxValue;
+    } else {
+        hideNicotineWarning();
+    }
+    
+    updateMaxTargetNicotine();
+}
+
 function updateNicotineType() {
     const type = nicotineTypeSelect.value;
     const strengthContainer = document.getElementById('nicotineStrengthContainer');
     const targetGroup = document.getElementById('targetNicotineGroup');
+    const baseStrengthInput = document.getElementById('nicotineBaseStrength');
     
     if (type === 'none') {
         strengthContainer.classList.add('hidden');
         targetGroup.classList.add('hidden');
         targetNicotineSlider.value = 0;
+        hideNicotineWarning();
         updateNicotineDisplay();
     } else {
         strengthContainer.classList.remove('hidden');
         targetGroup.classList.remove('hidden');
+        
+        // Set max value based on nicotine type
+        const maxValue = getNicotineMaxValue();
+        baseStrengthInput.max = maxValue;
+        
+        // Validate current value
+        validateNicotineStrength();
+        
         updateMaxTargetNicotine();
     }
 }
@@ -333,13 +392,13 @@ function calculateMix() {
     const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
 
     // 4. Nicotine base composition (affects final PG/VG ratio)
-    // Most freebase nicotine is in PG base (100% PG)
+    // Most nicotine booster is in PG base (100% PG)
     // Nicotine salts are often 50/50 or in PG
     let nicotineVgContent = 0;
     let nicotinePgContent = 0;
     
     if (nicotineType === 'freebase') {
-        // Freebase is typically 100% PG
+        // Booster is typically 100% PG
         nicotinePgContent = nicotineVolume;
         nicotineVgContent = 0;
     } else if (nicotineType === 'salt') {
@@ -388,7 +447,7 @@ function calculateMix() {
     const ingredients = [];
 
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Freebase nikotin';
+        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
         const nicotineBase = nicotineType === 'salt' ? '50/50' : 'PG báze';
         ingredients.push({
             name: `${nicotineName} (${baseNicotine} mg/ml, ${nicotineBase})`,
@@ -521,13 +580,42 @@ function adjustColorBrightness(color, percent) {
 
 let deferredPrompt;
 
+// Detect mobile device
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768);
+}
+
+// Detect iOS device
+function isIOSDevice() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream;
+}
+
+// Check if app is already installed (standalone mode)
+function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true;
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
     // Prevent Chrome 67+ from automatically showing the prompt
     e.preventDefault();
     // Stash the event so it can be triggered later
     deferredPrompt = e;
-    // Show the install prompt
-    showInstallPrompt();
+    // Show the install prompt ONLY on mobile devices
+    if (isMobileDevice()) {
+        showInstallPrompt();
+    }
+});
+
+// Show iOS install prompt on page load (iOS doesn't fire beforeinstallprompt)
+window.addEventListener('load', () => {
+    if (isIOSDevice() && !isStandalone() && !sessionStorage.getItem('iosInstallDismissed')) {
+        // Small delay to not interrupt user immediately
+        setTimeout(() => {
+            showIOSInstallPrompt();
+        }, 2000);
+    }
 });
 
 function showInstallPrompt() {
@@ -544,10 +632,25 @@ function hideInstallPrompt() {
     }
 }
 
+function showIOSInstallPrompt() {
+    const prompt = document.getElementById('iosInstallPrompt');
+    if (prompt) {
+        prompt.classList.remove('hidden');
+    }
+}
+
+function hideIOSInstallPrompt() {
+    const prompt = document.getElementById('iosInstallPrompt');
+    if (prompt) {
+        prompt.classList.add('hidden');
+    }
+}
+
 // Setup install button listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const installBtn = document.getElementById('installBtn');
     const dismissBtn = document.getElementById('dismissBtn');
+    const iosDismissBtn = document.getElementById('iosDismissBtn');
     
     if (installBtn) {
         installBtn.addEventListener('click', async () => {
@@ -569,6 +672,15 @@ document.addEventListener('DOMContentLoaded', () => {
             hideInstallPrompt();
             // Remember dismissal for this session
             sessionStorage.setItem('installDismissed', 'true');
+        });
+    }
+    
+    // iOS dismiss button
+    if (iosDismissBtn) {
+        iosDismissBtn.addEventListener('click', () => {
+            hideIOSInstallPrompt();
+            // Remember dismissal for this session
+            sessionStorage.setItem('iosInstallDismissed', 'true');
         });
     }
     
