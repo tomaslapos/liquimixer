@@ -108,10 +108,205 @@
                 </div>
             </div>
             
-            <button class="neon-button" onclick="showPage('form')">
+            <button class="neon-button" onclick="showPage('mode-select')">
                 <span>ZAČÍT MÍCHÁNÍ</span>
                 <div class="button-glow"></div>
             </button>
+        </section>
+
+        <!-- Výběr režimu -->
+        <section id="mode-select" class="page">
+            <h2 class="page-title">Co chcete připravit?</h2>
+            
+            <div class="mode-buttons">
+                <button class="mode-button cyan" onclick="showPage('form')">
+                    <div class="mode-title">eLiquid</div>
+                    <div class="mode-desc">Kompletní e-liquid s příchutí, nikotinem a nosnou látkou</div>
+                </button>
+                
+                <button class="mode-button pink" onclick="showPage('dilute-form')">
+                    <div class="mode-title">Ředění nikotinové báze</div>
+                    <div class="mode-desc">Zředění silné nikotinové báze na požadovanou koncentraci</div>
+                </button>
+            </div>
+            
+            <button class="neon-button secondary" onclick="showPage('intro')">
+                <span>◀ ZPĚT</span>
+            </button>
+        </section>
+
+        <!-- Formulář pro ředění nikotinu -->
+        <section id="dilute-form" class="page">
+            <h2 class="page-title">Ředění nikotinové báze</h2>
+            
+            <!-- Volba množství -->
+            <div class="form-group">
+                <label class="form-label">Množství</label>
+                <div class="amount-choice-container">
+                    <div class="amount-choice">
+                        <input type="radio" id="amountFinal" name="amountType" value="final" checked onchange="updateDiluteAmountType()">
+                        <label for="amountFinal">Kolik báze chci namíchat?</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="diluteFinalAmount" min="1" max="1000" value="100" class="neon-input" oninput="updateDiluteCalculation()">
+                            <span class="input-unit">ml</span>
+                        </div>
+                    </div>
+                    <div class="amount-divider">nebo</div>
+                    <div class="amount-choice">
+                        <input type="radio" id="amountSource" name="amountType" value="source" onchange="updateDiluteAmountType()">
+                        <label for="amountSource">Kolik báze chci rozředit?</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="diluteSourceAmount" min="1" max="1000" value="30" class="neon-input" disabled oninput="updateDiluteCalculation()">
+                            <span class="input-unit">ml</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nikotinová báze - zdroj -->
+            <div class="form-group">
+                <label class="form-label">
+                    Jak silnou mám nikotinovou bázi?
+                    <span class="label-hint">Údaje z obalu nikotinu</span>
+                </label>
+                <div class="dilute-nicotine-container">
+                    <select id="diluteNicotineType" class="neon-select" onchange="updateDiluteNicotineType()">
+                        <option value="freebase">Nikotin booster</option>
+                        <option value="salt">Nikotinová sůl</option>
+                    </select>
+                    <div class="input-wrapper">
+                        <input type="number" id="diluteBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="updateDiluteCalculation()">
+                        <span class="input-unit">mg/ml</span>
+                    </div>
+                </div>
+                <div class="form-group-sub">
+                    <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
+                    <div class="ratio-container compact">
+                        <div class="ratio-labels">
+                            <span class="ratio-label left">Dým (VG)</span>
+                            <span class="ratio-label right">Chuť (PG)</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn small" onclick="adjustDiluteSourceRatio(-5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="diluteSourceRatio" min="0" max="100" value="50" class="ratio-slider" oninput="updateDiluteSourceRatioDisplay()">
+                                <div class="slider-track" id="diluteSourceTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustDiluteSourceRatio(5)">▶</button>
+                        </div>
+                        <div class="ratio-display small">
+                            <span id="diluteSourceVg">50</span>:<span id="diluteSourcePg">50</span>
+                        </div>
+                        <div class="ratio-description" id="diluteSourceDescription">
+                            Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cílová síla a poměr -->
+            <div class="form-group">
+                <label class="form-label">
+                    Jak silnou nikotinovou bázi chci namíchat?
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" id="diluteTargetStrength" min="1" max="200" value="6" class="neon-input medium" oninput="updateDiluteCalculation()">
+                    <span class="input-unit">mg/ml</span>
+                </div>
+                <div id="diluteTargetWarning" class="input-warning hidden"></div>
+                
+                <div class="form-group-sub">
+                    <label class="form-label-small">Poměr VG/PG ve výsledné bázi</label>
+                    <div class="ratio-container compact">
+                        <div class="ratio-labels">
+                            <span class="ratio-label left">Dým (VG)</span>
+                            <span class="ratio-label right">Chuť (PG)</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn small" onclick="adjustDiluteTargetRatio(-5)">◀</button>
+                            <div class="slider-wrapper-with-limits">
+                                <span class="slider-limit left">100</span>
+                                <div class="slider-wrapper ratio-slider-wrapper">
+                                    <div class="slider-disabled-zone left" id="diluteDisabledLeft"></div>
+                                    <div class="slider-disabled-zone right" id="diluteDisabledRight"></div>
+                                    <input type="range" id="diluteTargetRatio" min="0" max="100" value="50" class="ratio-slider" oninput="updateDiluteTargetRatioDisplay()">
+                                    <div class="slider-track" id="diluteTargetTrack"></div>
+                                    <div class="slider-center-mark"></div>
+                                </div>
+                                <span class="slider-limit right">100</span>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustDiluteTargetRatio(5)">▶</button>
+                        </div>
+                        <div class="ratio-display small">
+                            <span id="diluteTargetVg">50</span>:<span id="diluteTargetPg">50</span>
+                        </div>
+                        <div class="ratio-description" id="diluteTargetDescription">
+                            Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
+                        </div>
+                        <div id="diluteRatioWarning" class="input-warning hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="neon-button secondary" onclick="showPage('mode-select')">
+                    <span>◀ ZPĚT</span>
+                </button>
+                <button class="neon-button" onclick="calculateDilution()">
+                    <span>MIXUJ!</span>
+                    <div class="button-glow"></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Výsledky ředění -->
+        <section id="dilute-results" class="page">
+            <h2 class="page-title">Recept na ředění</h2>
+            
+            <div class="results-summary">
+                <div class="summary-item">
+                    <span class="summary-label">Celkový objem:</span>
+                    <span class="summary-value" id="diluteResultTotal">100 ml</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Poměr VG/PG:</span>
+                    <span class="summary-value" id="diluteResultRatio">50:50</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Síla nikotinu:</span>
+                    <span class="summary-value" id="diluteResultNicotine">6 mg/ml</span>
+                </div>
+            </div>
+
+            <div class="results-table-container">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Složka</th>
+                            <th>Objem (ml)</th>
+                            <th>Procento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="diluteResultsBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="results-notes">
+                <h4>Poznámky k ředění:</h4>
+                <ul>
+                    <li>Pracujte v rukavicích - nikotin se vstřebává kůží!</li>
+                    <li>Nejprve nalijte nikotinovou bázi</li>
+                    <li>Poté přidejte VG a PG</li>
+                    <li>Důkladně protřepejte</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <button class="neon-button secondary" onclick="showPage('dilute-form')">
+                    <span>◀ UPRAVIT</span>
+                </button>
+            </div>
         </section>
 
         <!-- Formulář -->
@@ -126,33 +321,6 @@
                 <div class="input-wrapper">
                     <input type="number" id="totalAmount" min="1" max="1000" value="100" class="neon-input">
                     <span class="input-unit">ml</span>
-                </div>
-            </div>
-
-            <!-- Poměr VG/PG -->
-            <div class="form-group">
-                <label class="form-label">
-                    Poměr VG/PG
-                </label>
-                <div class="ratio-container">
-                    <div class="ratio-labels">
-                        <span class="ratio-label left">Dým (VG)</span>
-                        <span class="ratio-label right">Chuť (PG)</span>
-                    </div>
-                    <div class="slider-container">
-                        <button class="slider-btn" onclick="adjustRatio(-5)">◀</button>
-                        <div class="slider-wrapper">
-                            <input type="range" id="vgPgRatio" min="0" max="100" value="50" class="ratio-slider">
-                            <div class="slider-track" id="sliderTrack"></div>
-                        </div>
-                        <button class="slider-btn" onclick="adjustRatio(5)">▶</button>
-                    </div>
-                    <div class="ratio-display">
-                        <span id="vgValue">50</span>:<span id="pgValue">50</span>
-                    </div>
-                    <div class="ratio-description" id="ratioDescription">
-                        Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
-                    </div>
                 </div>
             </div>
 
@@ -173,6 +341,14 @@
                         <span class="input-unit">mg/ml</span>
                         <div id="nicotineWarning" class="input-warning hidden"></div>
                     </div>
+                </div>
+                <div id="nicotineRatioContainer" class="hidden">
+                    <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
+                    <div class="ratio-toggle-buttons">
+                        <button type="button" id="ratio5050" class="ratio-toggle-btn active" data-value="50/50">50/50</button>
+                        <button type="button" id="ratio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
+                    </div>
+                    <input type="hidden" id="nicotineRatio" value="50/50">
                 </div>
             </div>
 
@@ -241,8 +417,47 @@
                 </div>
             </div>
 
+            <!-- Poměr VG/PG ve výsledném liquidu -->
+            <div class="form-group" id="vgPgRatioGroup">
+                <label class="form-label">
+                    Poměr VG/PG ve výsledném liquidu
+                </label>
+                <div class="ratio-container">
+                    <div class="ratio-labels">
+                        <span class="ratio-label left">Dým (VG)</span>
+                        <span class="ratio-label right">Chuť (PG)</span>
+                    </div>
+                    <div class="slider-container">
+                        <button class="slider-btn" onclick="adjustRatio(-5)">◀</button>
+                        <div class="slider-wrapper-with-limits">
+                            <span class="slider-limit left">100</span>
+                            <div class="slider-wrapper ratio-slider-wrapper">
+                                <div class="slider-disabled-zone left" id="sliderDisabledLeft">
+                                    <span class="limit-value" id="limitValueLeft"></span>
+                                </div>
+                                <div class="slider-disabled-zone right" id="sliderDisabledRight">
+                                    <span class="limit-value" id="limitValueRight"></span>
+                                </div>
+                                <input type="range" id="vgPgRatio" min="0" max="100" value="50" class="ratio-slider">
+                                <div class="slider-track" id="sliderTrack"></div>
+                                <div class="slider-center-mark"></div>
+                            </div>
+                            <span class="slider-limit right">100</span>
+                        </div>
+                        <button class="slider-btn" onclick="adjustRatio(5)">▶</button>
+                    </div>
+                    <div class="ratio-display">
+                        <span id="vgValue">50</span>:<span id="pgValue">50</span>
+                    </div>
+                    <div class="ratio-description" id="ratioDescription">
+                        Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
+                    </div>
+                    <div id="ratioLimitWarning" class="input-warning hidden"></div>
+                </div>
+            </div>
+
             <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('intro')">
+                <button class="neon-button secondary" onclick="showPage('mode-select')">
                     <span>◀ ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="calculateMix()">

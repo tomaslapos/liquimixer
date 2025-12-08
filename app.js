@@ -87,7 +87,7 @@ const flavorDatabase = {
 // VG value = dým (vapor), PG value = chuť (flavor)
 const ratioDescriptions = [
     { vgMin: 0, vgMax: 9, color: '#ffffff', text: 'Maximální pára, žádná chuť ani škrábání. Určeno pro zařízení s vysokým výkonem >80 W, jinak se ucpává cívka.' },
-    { vgMin: 10, vgMax: 29, color: '#ffffff', text: 'Maximální pára, minimální chuť bez škrábání. Hustý liquid pro cloudové vapování. Určeno pro zařízení s vysokým výkonem >80 W, jinak se ucpává cívka.' },
+    { vgMin: 10, vgMax: 29, color: '#0044aa', text: 'Maximální pára, minimální chuť bez škrábání. Hustý liquid pro cloudové vapování. Určeno pro zařízení s vysokým výkonem >80 W, jinak se ucpává cívka.' },
     { vgMin: 30, vgMax: 34, color: '#0066dd', text: 'Výrazná pára, zeslabující nebo pokažená chuť. Stále hustý liquid.' },
     { vgMin: 35, vgMax: 40, color: '#00aaff', text: 'Znatelný nárůst páry, chuť zůstává nosná. Vyvážený liquid s důrazem na páru.' },
     { vgMin: 41, vgMax: 55, color: '#00cc66', text: 'Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.' },
@@ -126,11 +126,37 @@ function initializeSliders() {
     flavorTypeSelect = document.getElementById('flavorType');
 
     // Add event listeners
-    vgPgRatioSlider.addEventListener('input', updateRatioDisplay);
+    vgPgRatioSlider.addEventListener('input', clampVgPgValue);
     targetNicotineSlider.addEventListener('input', updateNicotineDisplay);
     flavorStrengthSlider.addEventListener('input', updateFlavorDisplay);
     
     document.getElementById('nicotineBaseStrength').addEventListener('input', validateNicotineStrength);
+    document.getElementById('totalAmount').addEventListener('input', updateVgPgRatioLimits);
+    
+    // Setup nicotine ratio toggle buttons
+    setupNicotineRatioToggle();
+}
+
+function setupNicotineRatioToggle() {
+    const ratio5050Btn = document.getElementById('ratio5050');
+    const ratio7030Btn = document.getElementById('ratio7030');
+    const nicotineRatioInput = document.getElementById('nicotineRatio');
+    
+    if (ratio5050Btn && ratio7030Btn && nicotineRatioInput) {
+        ratio5050Btn.addEventListener('click', () => {
+            ratio5050Btn.classList.add('active');
+            ratio7030Btn.classList.remove('active');
+            nicotineRatioInput.value = '50/50';
+            updateVgPgRatioLimits();
+        });
+        
+        ratio7030Btn.addEventListener('click', () => {
+            ratio7030Btn.classList.add('active');
+            ratio5050Btn.classList.remove('active');
+            nicotineRatioInput.value = '70/30';
+            updateVgPgRatioLimits();
+        });
+    }
 }
 
 function showPage(pageId) {
@@ -139,6 +165,12 @@ function showPage(pageId) {
     });
     document.getElementById(pageId).classList.add('active');
     window.scrollTo(0, 0);
+    
+    // Initialize dilute form sliders when shown
+    if (pageId === 'dilute-form') {
+        updateDiluteSourceRatioDisplay();
+        updateDiluteTargetRatioDisplay();
+    }
 }
 
 // =========================================
@@ -147,8 +179,20 @@ function showPage(pageId) {
 
 function adjustRatio(change) {
     const slider = document.getElementById('vgPgRatio');
-    let newValue = parseInt(slider.value) + change;
-    newValue = Math.max(0, Math.min(100, newValue));
+    let currentValue = parseInt(slider.value);
+    
+    // Round to nearest 5
+    let newValue;
+    if (change > 0) {
+        // Moving right (more VG) - round up to next 5
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        // Moving left (less VG) - round down to previous 5
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    // Clamp to allowed limits
+    newValue = Math.max(vgPgLimits.min, Math.min(vgPgLimits.max, newValue));
     slider.value = newValue;
     updateRatioDisplay();
 }
@@ -170,6 +214,154 @@ function updateRatioDisplay() {
         document.getElementById('sliderTrack').style.background = 
             `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
     }
+}
+
+// Store current VG/PG limits
+let vgPgLimits = { min: 0, max: 100 };
+
+// Calculate and update VG/PG slider limits based on nicotine and flavor settings
+function updateVgPgRatioLimits() {
+    const slider = document.getElementById('vgPgRatio');
+    const warningEl = document.getElementById('ratioLimitWarning');
+    const disabledLeft = document.getElementById('sliderDisabledLeft');
+    const disabledRight = document.getElementById('sliderDisabledRight');
+    
+    // Get current settings
+    const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 100;
+    const nicotineType = nicotineTypeSelect.value;
+    const targetNicotine = parseFloat(targetNicotineSlider.value) || 0;
+    const baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength').value) || 0;
+    const flavorType = flavorTypeSelect.value;
+    const flavorPercent = flavorType !== 'none' ? parseFloat(flavorStrengthSlider.value) : 0;
+    
+    // Calculate nicotine volume
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    // Calculate flavor volume (flavor is typically 100% PG)
+    const flavorVolume = (flavorPercent / 100) * totalAmount;
+    
+    // Get nicotine VG/PG ratio
+    let nicVgPercent = 50;
+    let nicPgPercent = 50;
+    if (nicotineType !== 'none') {
+        const nicotineRatio = document.getElementById('nicotineRatio').value;
+        if (nicotineRatio === '50/50') {
+            nicVgPercent = 50;
+            nicPgPercent = 50;
+        } else if (nicotineRatio === '70/30') {
+            nicVgPercent = 70;
+            nicPgPercent = 30;
+        }
+    }
+    
+    // Calculate VG and PG from nicotine
+    const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
+    const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
+    
+    // Total fixed PG = from nicotine + from flavor
+    const fixedPgVolume = nicotinePgVolume + flavorVolume;
+    const fixedVgVolume = nicotineVgVolume;
+    
+    // Calculate percentage limits
+    // Minimum VG% = (fixed VG / total) * 100
+    // Maximum VG% = 100 - (fixed PG / total) * 100
+    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    
+    // Ensure valid range
+    const effectiveMinVg = Math.max(0, minVgPercent);
+    const effectiveMaxVg = Math.min(100, maxVgPercent);
+    
+    // Store limits for use in other functions
+    vgPgLimits.min = effectiveMinVg;
+    vgPgLimits.max = effectiveMaxVg;
+    
+    // Slider always stays 0-100, we handle limits visually and in code
+    slider.min = 0;
+    slider.max = 100;
+    
+    // Update disabled zones visually
+    // HTML slider: left = min value (0), right = max value (100)
+    // Slider value = VG%, so left side = 0% VG, right side = 100% VG
+    const limitValueLeft = document.getElementById('limitValueLeft');
+    const limitValueRight = document.getElementById('limitValueRight');
+    
+    if (disabledLeft) {
+        // Left disabled zone: values 0 to effectiveMinVg-1
+        const leftWidth = effectiveMinVg;
+        disabledLeft.style.width = leftWidth + '%';
+        
+        // Show limit value above the red line (min VG allowed)
+        if (limitValueLeft) {
+            if (leftWidth > 0) {
+                limitValueLeft.textContent = effectiveMinVg + '%';
+                limitValueLeft.style.display = 'block';
+            } else {
+                limitValueLeft.style.display = 'none';
+            }
+        }
+    }
+    if (disabledRight) {
+        // Right disabled zone: values effectiveMaxVg+1 to 100
+        const rightWidth = 100 - effectiveMaxVg;
+        disabledRight.style.width = rightWidth + '%';
+        
+        // Show limit value above the red line (max VG allowed)
+        if (limitValueRight) {
+            if (rightWidth > 0) {
+                limitValueRight.textContent = effectiveMaxVg + '%';
+                limitValueRight.style.display = 'block';
+            } else {
+                limitValueRight.style.display = 'none';
+            }
+        }
+    }
+    
+    // Adjust current value if outside new limits
+    let currentValue = parseInt(slider.value);
+    
+    if (currentValue < effectiveMinVg) {
+        slider.value = effectiveMinVg;
+    } else if (currentValue > effectiveMaxVg) {
+        slider.value = effectiveMaxVg;
+    }
+    
+    // Show/hide warning
+    if (warningEl) {
+        if (effectiveMinVg > 0 || effectiveMaxVg < 100) {
+            const reasons = [];
+            if (nicotineVolume > 0) {
+                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+            }
+            if (flavorVolume > 0) {
+                reasons.push(`příchuť (${flavorPercent}% v PG)`);
+            }
+            warningEl.textContent = `Poměr omezen na ${effectiveMinVg}–${effectiveMaxVg}% VG kvůli: ${reasons.join(', ')}.`;
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
+    
+    // Update display
+    updateRatioDisplay();
+}
+
+// Clamp slider value to allowed range
+function clampVgPgValue() {
+    const slider = document.getElementById('vgPgRatio');
+    let value = parseInt(slider.value);
+    
+    if (value < vgPgLimits.min) {
+        slider.value = vgPgLimits.min;
+    } else if (value > vgPgLimits.max) {
+        slider.value = vgPgLimits.max;
+    }
+    
+    updateRatioDisplay();
 }
 
 // =========================================
@@ -228,17 +420,20 @@ function validateNicotineStrength() {
 function updateNicotineType() {
     const type = nicotineTypeSelect.value;
     const strengthContainer = document.getElementById('nicotineStrengthContainer');
+    const ratioContainer = document.getElementById('nicotineRatioContainer');
     const targetGroup = document.getElementById('targetNicotineGroup');
     const baseStrengthInput = document.getElementById('nicotineBaseStrength');
     
     if (type === 'none') {
         strengthContainer.classList.add('hidden');
+        ratioContainer.classList.add('hidden');
         targetGroup.classList.add('hidden');
         targetNicotineSlider.value = 0;
         hideNicotineWarning();
         updateNicotineDisplay();
     } else {
         strengthContainer.classList.remove('hidden');
+        ratioContainer.classList.remove('hidden');
         targetGroup.classList.remove('hidden');
         
         // Set max value based on nicotine type
@@ -250,6 +445,9 @@ function updateNicotineType() {
         
         updateMaxTargetNicotine();
     }
+    
+    // Update VG/PG ratio limits
+    updateVgPgRatioLimits();
 }
 
 function updateMaxTargetNicotine() {
@@ -288,6 +486,9 @@ function updateNicotineDisplay() {
         displayEl.style.textShadow = `0 0 20px ${desc.color}`;
         trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
     }
+    
+    // Update VG/PG ratio limits when nicotine changes
+    updateVgPgRatioLimits();
 }
 
 // =========================================
@@ -306,6 +507,9 @@ function updateFlavorType() {
         flavorStrengthSlider.value = flavor.ideal;
         updateFlavorDisplay();
     }
+    
+    // Update VG/PG ratio limits when flavor changes
+    updateVgPgRatioLimits();
 }
 
 function adjustFlavor(change) {
@@ -344,6 +548,9 @@ function updateFlavorDisplay() {
     descEl.style.color = color;
     descEl.style.borderLeftColor = color;
     displayEl.style.color = color;
+    
+    // Update VG/PG ratio limits when flavor strength changes
+    updateVgPgRatioLimits();
 }
 
 function updateAllDisplays() {
@@ -360,15 +567,15 @@ function updateAllDisplays() {
 // =========================================
 
 function calculateMix() {
-    // Get user inputs
+    // Get user inputs - always read fresh from DOM
     const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 100;
-    const vgPercent = parseInt(vgPgRatioSlider.value);
+    const vgPercent = parseInt(document.getElementById('vgPgRatio').value);
     const pgPercent = 100 - vgPercent;
-    const nicotineType = nicotineTypeSelect.value;
-    const targetNicotine = parseFloat(targetNicotineSlider.value) || 0;
+    const nicotineType = document.getElementById('nicotineType').value;
+    const targetNicotine = parseFloat(document.getElementById('targetNicotine').value) || 0;
     const baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength').value) || 0;
-    const flavorType = flavorTypeSelect.value;
-    const flavorPercent = flavorType !== 'none' ? parseFloat(flavorStrengthSlider.value) : 0;
+    const flavorType = document.getElementById('flavorType').value;
+    const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('flavorStrength').value) : 0;
 
     // =========================================
     // CALCULATION FORMULA
@@ -392,19 +599,25 @@ function calculateMix() {
     const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
 
     // 4. Nicotine base composition (affects final PG/VG ratio)
-    // Most nicotine booster is in PG base (100% PG)
-    // Nicotine salts are often 50/50 or in PG
+    // Get VG/PG ratio from user selection
     let nicotineVgContent = 0;
     let nicotinePgContent = 0;
     
-    if (nicotineType === 'freebase') {
-        // Booster is typically 100% PG
-        nicotinePgContent = nicotineVolume;
-        nicotineVgContent = 0;
-    } else if (nicotineType === 'salt') {
-        // Salt nicotine is often 50/50
-        nicotinePgContent = nicotineVolume * 0.5;
-        nicotineVgContent = nicotineVolume * 0.5;
+    if (nicotineType !== 'none' && nicotineVolume > 0) {
+        const nicotineRatio = document.getElementById('nicotineRatio').value;
+        let nicVgPercent = 50;
+        let nicPgPercent = 50;
+        
+        if (nicotineRatio === '50/50') {
+            nicVgPercent = 50;
+            nicPgPercent = 50;
+        } else if (nicotineRatio === '70/30') {
+            nicVgPercent = 70;
+            nicPgPercent = 30;
+        }
+        
+        nicotineVgContent = nicotineVolume * (nicVgPercent / 100);
+        nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
     }
 
     // 5. Flavor is typically in PG base
@@ -448,9 +661,9 @@ function calculateMix() {
 
     if (nicotineVolume > 0) {
         const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
-        const nicotineBase = nicotineType === 'salt' ? '50/50' : 'PG báze';
+        const nicotineRatioValue = document.getElementById('nicotineRatio').value;
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, ${nicotineBase})`,
+            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
@@ -696,3 +909,328 @@ window.addEventListener('appinstalled', () => {
     hideInstallPrompt();
     deferredPrompt = null;
 });
+
+// =========================================
+// Nicotine Dilution Calculator
+// =========================================
+
+let diluteLimits = { min: 0, max: 100 };
+
+function updateDiluteAmountType() {
+    const finalInput = document.getElementById('diluteFinalAmount');
+    const sourceInput = document.getElementById('diluteSourceAmount');
+    const amountType = document.querySelector('input[name="amountType"]:checked').value;
+    
+    if (amountType === 'final') {
+        finalInput.disabled = false;
+        sourceInput.disabled = true;
+    } else {
+        finalInput.disabled = true;
+        sourceInput.disabled = false;
+    }
+    
+    updateDiluteCalculation();
+}
+
+function updateDiluteNicotineType() {
+    const type = document.getElementById('diluteNicotineType').value;
+    const strengthInput = document.getElementById('diluteBaseStrength');
+    
+    if (type === 'freebase') {
+        strengthInput.max = 200;
+        if (parseInt(strengthInput.value) > 200) {
+            strengthInput.value = 200;
+        }
+    } else {
+        strengthInput.max = 72;
+        if (parseInt(strengthInput.value) > 72) {
+            strengthInput.value = 72;
+        }
+    }
+    
+    updateDiluteCalculation();
+}
+
+function adjustDiluteSourceRatio(change) {
+    const slider = document.getElementById('diluteSourceRatio');
+    let newValue = parseInt(slider.value) + change;
+    newValue = Math.max(0, Math.min(100, newValue));
+    slider.value = newValue;
+    updateDiluteSourceRatioDisplay();
+}
+
+function updateDiluteSourceRatioDisplay() {
+    const slider = document.getElementById('diluteSourceRatio');
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    const vgEl = document.getElementById('diluteSourceVg');
+    const pgEl = document.getElementById('diluteSourcePg');
+    
+    vgEl.textContent = vg;
+    pgEl.textContent = pg;
+    
+    // Update color description
+    const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
+    if (desc) {
+        const descEl = document.getElementById('diluteSourceDescription');
+        const trackEl = document.getElementById('diluteSourceTrack');
+        if (descEl) {
+            descEl.textContent = desc.text;
+            descEl.style.color = desc.color;
+            descEl.style.borderLeftColor = desc.color;
+        }
+        if (trackEl) {
+            trackEl.style.background = `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
+        }
+        // Update ratio display color
+        vgEl.style.color = desc.color;
+        pgEl.style.color = desc.color;
+        vgEl.style.textShadow = `0 0 20px ${desc.color}`;
+        pgEl.style.textShadow = `0 0 20px ${desc.color}`;
+    }
+    
+    updateDiluteRatioLimits();
+}
+
+function adjustDiluteTargetRatio(change) {
+    const slider = document.getElementById('diluteTargetRatio');
+    let currentValue = parseInt(slider.value);
+    
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(diluteLimits.min, Math.min(diluteLimits.max, newValue));
+    slider.value = newValue;
+    updateDiluteTargetRatioDisplay();
+}
+
+function updateDiluteTargetRatioDisplay() {
+    const slider = document.getElementById('diluteTargetRatio');
+    let vg = parseInt(slider.value);
+    
+    // Clamp to limits
+    if (vg < diluteLimits.min) vg = diluteLimits.min;
+    if (vg > diluteLimits.max) vg = diluteLimits.max;
+    slider.value = vg;
+    
+    const pg = 100 - vg;
+    
+    const vgEl = document.getElementById('diluteTargetVg');
+    const pgEl = document.getElementById('diluteTargetPg');
+    
+    vgEl.textContent = vg;
+    pgEl.textContent = pg;
+    
+    // Update color description
+    const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
+    if (desc) {
+        const descEl = document.getElementById('diluteTargetDescription');
+        const trackEl = document.getElementById('diluteTargetTrack');
+        if (descEl) {
+            descEl.textContent = desc.text;
+            descEl.style.color = desc.color;
+            descEl.style.borderLeftColor = desc.color;
+        }
+        if (trackEl) {
+            trackEl.style.background = `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
+        }
+        // Update ratio display color
+        vgEl.style.color = desc.color;
+        pgEl.style.color = desc.color;
+        vgEl.style.textShadow = `0 0 20px ${desc.color}`;
+        pgEl.style.textShadow = `0 0 20px ${desc.color}`;
+    }
+}
+
+function updateDiluteRatioLimits() {
+    const baseStrength = parseFloat(document.getElementById('diluteBaseStrength').value) || 0;
+    const targetStrength = parseFloat(document.getElementById('diluteTargetStrength').value) || 0;
+    const sourceVg = parseInt(document.getElementById('diluteSourceRatio').value);
+    const sourcePg = 100 - sourceVg;
+    
+    const disabledLeft = document.getElementById('diluteDisabledLeft');
+    const disabledRight = document.getElementById('diluteDisabledRight');
+    const warningEl = document.getElementById('diluteRatioWarning');
+    
+    // Calculate dilution ratio
+    let dilutionRatio = 0;
+    if (baseStrength > 0 && targetStrength > 0 && targetStrength <= baseStrength) {
+        dilutionRatio = targetStrength / baseStrength; // fraction of nicotine base in final mix
+    }
+    
+    // Calculate VG/PG contribution from nicotine base
+    const nicVgPercent = dilutionRatio * sourceVg;
+    const nicPgPercent = dilutionRatio * sourcePg;
+    
+    // Min VG = VG from nicotine only (no extra VG added)
+    // Max VG = 100 - PG from nicotine (all remaining is VG)
+    const minVg = Math.ceil(nicVgPercent);
+    const maxVg = Math.floor(100 - nicPgPercent);
+    
+    diluteLimits.min = Math.max(0, minVg);
+    diluteLimits.max = Math.min(100, maxVg);
+    
+    // Update disabled zones
+    if (disabledLeft) {
+        disabledLeft.style.width = diluteLimits.min + '%';
+    }
+    if (disabledRight) {
+        disabledRight.style.width = (100 - diluteLimits.max) + '%';
+    }
+    
+    // Show warning if limited
+    if (warningEl) {
+        if (diluteLimits.min > 0 || diluteLimits.max < 100) {
+            warningEl.textContent = `Poměr omezen na ${diluteLimits.min}–${diluteLimits.max}% VG kvůli poměru v nikotinové bázi.`;
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
+    
+    // Clamp current value
+    const slider = document.getElementById('diluteTargetRatio');
+    let currentValue = parseInt(slider.value);
+    if (currentValue < diluteLimits.min) {
+        slider.value = diluteLimits.min;
+    } else if (currentValue > diluteLimits.max) {
+        slider.value = diluteLimits.max;
+    }
+    
+    updateDiluteTargetRatioDisplay();
+}
+
+function updateDiluteCalculation() {
+    // Validate target strength
+    const baseStrength = parseFloat(document.getElementById('diluteBaseStrength').value) || 0;
+    const targetStrength = parseFloat(document.getElementById('diluteTargetStrength').value) || 0;
+    const warningEl = document.getElementById('diluteTargetWarning');
+    
+    if (targetStrength > baseStrength && baseStrength > 0) {
+        if (warningEl) {
+            warningEl.textContent = `Cílová síla nemůže být vyšší než zdrojová (${baseStrength} mg/ml).`;
+            warningEl.classList.remove('hidden');
+        }
+        document.getElementById('diluteTargetStrength').value = baseStrength;
+    } else if (warningEl) {
+        warningEl.classList.add('hidden');
+    }
+    
+    updateDiluteRatioLimits();
+}
+
+function calculateDilution() {
+    // Get inputs
+    const amountType = document.querySelector('input[name="amountType"]:checked').value;
+    const baseStrength = parseFloat(document.getElementById('diluteBaseStrength').value) || 0;
+    const targetStrength = parseFloat(document.getElementById('diluteTargetStrength').value) || 0;
+    const sourceVg = parseInt(document.getElementById('diluteSourceRatio').value);
+    const sourcePg = 100 - sourceVg;
+    const targetVg = parseInt(document.getElementById('diluteTargetRatio').value);
+    const targetPg = 100 - targetVg;
+    const nicotineType = document.getElementById('diluteNicotineType').value;
+    
+    let totalAmount, nicotineVolume;
+    
+    if (amountType === 'final') {
+        // User specified final amount
+        totalAmount = parseFloat(document.getElementById('diluteFinalAmount').value) || 100;
+        // Calculate how much nicotine base needed
+        if (baseStrength > 0 && targetStrength > 0) {
+            nicotineVolume = (targetStrength * totalAmount) / baseStrength;
+        } else {
+            nicotineVolume = 0;
+        }
+    } else {
+        // User specified source nicotine amount
+        nicotineVolume = parseFloat(document.getElementById('diluteSourceAmount').value) || 30;
+        // Calculate final total amount
+        if (baseStrength > 0 && targetStrength > 0) {
+            totalAmount = (nicotineVolume * baseStrength) / targetStrength;
+        } else {
+            totalAmount = nicotineVolume;
+        }
+    }
+    
+    // Calculate VG and PG from nicotine
+    const nicVgVolume = nicotineVolume * (sourceVg / 100);
+    const nicPgVolume = nicotineVolume * (sourcePg / 100);
+    
+    // Calculate target VG and PG volumes
+    const targetVgVolume = (targetVg / 100) * totalAmount;
+    const targetPgVolume = (targetPg / 100) * totalAmount;
+    
+    // Calculate pure VG and PG needed
+    let pureVgNeeded = targetVgVolume - nicVgVolume;
+    let purePgNeeded = targetPgVolume - nicPgVolume;
+    
+    if (pureVgNeeded < 0) pureVgNeeded = 0;
+    if (purePgNeeded < 0) purePgNeeded = 0;
+    
+    // Build results
+    const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+    const ingredients = [];
+    
+    ingredients.push({
+        name: `${nicotineName} (${baseStrength} mg/ml, VG/PG ${sourceVg}/${sourcePg})`,
+        volume: nicotineVolume,
+        percent: (nicotineVolume / totalAmount) * 100
+    });
+    
+    if (purePgNeeded > 0.01) {
+        ingredients.push({
+            name: 'Propylenglykol (PG)',
+            volume: purePgNeeded,
+            percent: (purePgNeeded / totalAmount) * 100
+        });
+    }
+    
+    if (pureVgNeeded > 0.01) {
+        ingredients.push({
+            name: 'Rostlinný glycerin (VG)',
+            volume: pureVgNeeded,
+            percent: (pureVgNeeded / totalAmount) * 100
+        });
+    }
+    
+    // Display results
+    displayDiluteResults(totalAmount, targetVg, targetPg, targetStrength, ingredients);
+    showPage('dilute-results');
+}
+
+function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
+    document.getElementById('diluteResultTotal').textContent = `${total.toFixed(1)} ml`;
+    document.getElementById('diluteResultRatio').textContent = `${vg}:${pg}`;
+    document.getElementById('diluteResultNicotine').textContent = `${nicotine} mg/ml`;
+    
+    const tbody = document.getElementById('diluteResultsBody');
+    tbody.innerHTML = '';
+    
+    let runningTotal = 0;
+    
+    ingredients.forEach(ing => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="ingredient-name">${ing.name}</td>
+            <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
+            <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
+        `;
+        tbody.appendChild(row);
+        runningTotal += ing.volume;
+    });
+    
+    // Add total row
+    const totalRow = document.createElement('tr');
+    totalRow.className = 'total-row';
+    totalRow.innerHTML = `
+        <td class="ingredient-name">CELKEM</td>
+        <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
+        <td class="ingredient-percent">100%</td>
+    `;
+    tbody.appendChild(totalRow);
+}

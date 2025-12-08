@@ -79,3 +79,5 @@ foreach ($size in $sizes) {
 Write-Host "Icons created successfully!"
 
 
+
+
