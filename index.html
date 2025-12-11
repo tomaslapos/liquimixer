@@ -29,6 +29,15 @@
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Clerk Authentication -->
+    <script 
+        async 
+        crossorigin="anonymous" 
+        data-clerk-publishable-key="pk_test_c3Rhci1jaG93LTQ1LmNsZXJrLmFjY291bnRzLmRldiQ"
+        src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+        type="text/javascript">
+    </script>
 </head>
 <body>
     <div class="neon-grid"></div>
@@ -50,6 +59,80 @@
     </div>
     
     <div class="container">
+        <!-- Horní navigace -->
+        <nav class="top-nav">
+            <div class="nav-buttons">
+                <button class="nav-btn menu-btn" onclick="toggleMenu()">
+                    <span class="nav-icon">☰</span>
+                    <span class="nav-text">Menu</span>
+                </button>
+                <button class="nav-btn login-btn" onclick="showLoginModal()">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Přihlášení</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Menu dropdown -->
+        <div id="menuDropdown" class="menu-dropdown hidden">
+            <div class="menu-content">
+                <button class="menu-close" onclick="toggleMenu()">✕</button>
+                <h3 class="menu-title">Menu</h3>
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Cookies</h4>
+                    <p class="menu-text">
+                        Firma WOOs neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, 
+                        analytické cookies ani cookies třetích stran. Vaše soukromí je pro nás prioritou.
+                    </p>
+                </div>
+                <div class="menu-section">
+                    <h4 class="menu-section-title">GDPR a ochrana osobních údajů</h4>
+                    <p class="menu-text">
+                        Osobní údaje jsou ukládány výhradně pro interní použití firmy WOOs za účelem 
+                        přihlášení uživatele do aplikace. Vaše údaje nejsou sdíleny s třetími stranami 
+                        ani používány pro marketingové účely. Máte právo požádat o výmaz svých údajů 
+                        kdykoli kontaktováním firmy WOOs.
+                    </p>
+                </div>
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Kontaktní formulář</h4>
+                    <form class="contact-form" onsubmit="return handleContact(event)">
+                        <div class="form-group-login">
+                            <label class="login-label">Váš e-mail</label>
+                            <input type="email" id="contactEmail" class="login-input" placeholder="vas@email.cz" required>
+                        </div>
+                        <div class="form-group-login">
+                            <label class="login-label">Předmět</label>
+                            <input type="text" id="contactSubject" class="login-input" placeholder="Téma zprávy" required>
+                        </div>
+                        <div class="form-group-login">
+                            <label class="login-label">Zpráva</label>
+                            <textarea id="contactMessage" class="login-input contact-textarea" placeholder="Vaše zpráva..." required></textarea>
+                        </div>
+                        <button type="submit" class="neon-button contact-submit">Odeslat zprávu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login modal -->
+        <div id="loginModal" class="login-modal hidden">
+            <div class="login-content">
+                <button class="menu-close" onclick="hideLoginModal()">✕</button>
+                <h3 class="menu-title">Přihlášení</h3>
+                <div id="clerk-sign-in"></div>
+            </div>
+        </div>
+        
+        <!-- User Profile modal -->
+        <div id="userProfileModal" class="login-modal hidden">
+            <div class="login-content">
+                <button class="menu-close" onclick="hideUserProfileModal()">✕</button>
+                <h3 class="menu-title">Můj účet</h3>
+                <div id="clerk-user-profile"></div>
+            </div>
+        </div>
+
         <!-- Úvodní stránka -->
         <section id="intro" class="page active">
             <div class="logo-container">
@@ -81,29 +164,77 @@
             <div class="prep-box">
                 <h3 class="prep-title">Před mícháním si připravte:</h3>
                 <div class="prep-grid">
-                    <div class="prep-item">
-                        <span>Propylenglykol (PG)</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Propylenglykol (PG)</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Propylenglykol je bezbarvá kapalina bez zápachu, která tvoří základ e-liquidů. Zajišťuje přenos chuti a vytváří charakteristický "throat hit" (pocit v krku). Je hygroskopický, proto jej skladujte v uzavřené nádobě. PG je obecně považován za bezpečný pro inhalaci a používá se i v potravinářství a farmacii.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Rostlinný glycerin (VG)</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Rostlinný glycerin (VG)</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Rostlinný glycerin je hustá, sladká kapalina získávaná z rostlinných olejů. Je zodpovědný za tvorbu hustého dýmu a dodává liquidu jemnou sladkost. Čím vyšší poměr VG, tím hustější pára, ale méně výrazná chuť. VG je vhodný pro přímé vdechování (DL) a výkonné vapovací zařízení.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Volitelně příchutě</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Volitelně příchutě</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Příchutě pro e-liquidy jsou koncentrované aromata speciálně určené pro vapování. Používejte výhradně příchutě určené pro e-liquidy, nikoliv potravinářská aromata! Koncentrace se obvykle pohybuje mezi 5-20% podle typu příchutě. Ovocné příchutě jsou intenzivnější, dezertní a tabákové vyžadují vyšší procento a delší zrání.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Nikotin booster nebo sůl</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Nikotin booster nebo sůl</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p><strong>Nikotin booster:</strong> Tradiční forma nikotinu s výraznějším throat hitem. Vhodný pro běžné vapování.<br><br><strong>Nikotinová sůl:</strong> Jemnější forma nikotinu, která se rychleji vstřebává a má slabší throat hit i při vyšších koncentracích. Vhodná pro pod systémy a MTL zařízení. POZOR: Nikotin je jed! Vždy používejte rukavice a pracujte v dobře větraném prostoru.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Zdravotnické rukavice</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Zdravotnické rukavice</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Nitrylové nebo latexové rukavice jsou nezbytné při práci s nikotinem. Nikotin se snadno vstřebává kůží a může způsobit otravu. Rukavice také chrání před kontaminací směsi a udržují sterilitu. Používejte jednorázové rukavice a po práci je bezpečně zlikvidujte. Při potřísnění pokožky nikotinem důkladně omyjte mýdlem a vodou.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Prázdná skleněná lahvička</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Prázdná skleněná lahvička</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Skleněné lahvičky jsou ideální pro skladování e-liquidů, protože nereagují s obsahem a neovlivňují chuť. Tmavé sklo (amber) chrání před UV zářením a prodlužuje trvanlivost. Pro míchání jsou vhodné lahvičky s kapátkem nebo úzkým hrdlem. Před použitím lahvičky vždy důkladně vyčistěte a osušte.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Kapátko, pipeta nebo stříkačka</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Kapátko, pipeta nebo stříkačka</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Pro přesné dávkování ingrediencí jsou nezbytné měřicí nástroje. <strong>Kapátko:</strong> Vhodné pro menší objemy, méně přesné. <strong>Pipeta:</strong> Přesnější než kapátko, vhodná pro střední objemy. <strong>Stříkačka (bez jehly):</strong> Nejpřesnější varianta, ideální pro nikotin. Používejte samostatné nástroje pro každou ingredienci, aby nedošlo ke kontaminaci.</p>
+                        </div>
                     </div>
-                    <div class="prep-item">
-                        <span>Měřící pomůcky</span>
+                    <div class="prep-item-accordion">
+                        <button class="prep-item-btn" onclick="togglePrepDetail(this)">
+                            <span>Měřící pomůcky</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail">
+                            <p>Pro přesné míchání potřebujete spolehlivé měřící pomůcky. <strong>Odměrné válce:</strong> Pro měření objemu v ml. <strong>Stříkačky s měřením:</strong> Různé velikosti pro různé ingredience (1ml pro nikotin, 5-10ml pro VG/PG). Vždy měřte dvakrát a míchejte jednou!</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -424,6 +555,15 @@
                             <div class="flavor-description" id="flavorDescription">
                                 Ideální chuť
                             </div>
+                            <div class="form-group-sub">
+                                <label class="form-label-small">Poměr VG/PG v příchuti</label>
+                                <div class="ratio-toggle-buttons">
+                                    <button type="button" id="flavorRatio0100" class="ratio-toggle-btn active" data-value="0/100">0/100</button>
+                                    <button type="button" id="flavorRatio8020" class="ratio-toggle-btn" data-value="80/20">80/20</button>
+                                    <button type="button" id="flavorRatio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
+                                </div>
+                                <input type="hidden" id="flavorRatio" value="0/100">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -502,6 +642,15 @@
                     <div class="input-wrapper">
                         <input type="number" id="svFlavorVolume" min="0" max="100" value="12" class="neon-input" oninput="updateSvCalculation()">
                         <span class="input-unit">ml</span>
+                    </div>
+                    <div class="form-group-sub">
+                        <label class="form-label-small">Poměr VG/PG v příchuti</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" id="svFlavorRatio0100" class="ratio-toggle-btn active" data-value="0/100">0/100</button>
+                            <button type="button" id="svFlavorRatio8020" class="ratio-toggle-btn" data-value="80/20">80/20</button>
+                            <button type="button" id="svFlavorRatio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
+                        </div>
+                        <input type="hidden" id="svFlavorRatio" value="0/100">
                     </div>
                 </div>
 
@@ -722,13 +871,13 @@
                                     <div class="slider-container">
                                         <button class="slider-btn small" onclick="adjustProFlavorRatio(-5)">◀</button>
                                         <div class="slider-wrapper">
-                                            <input type="range" id="proFlavorRatioSlider" min="0" max="100" value="50" class="ratio-slider" oninput="updateProFlavorRatioDisplay()">
+                                            <input type="range" id="proFlavorRatioSlider" min="0" max="100" value="0" class="ratio-slider" oninput="updateProFlavorRatioDisplay()">
                                             <div class="slider-track" id="proFlavorTrackRatio"></div>
                                         </div>
                                         <button class="slider-btn small" onclick="adjustProFlavorRatio(5)">▶</button>
                                     </div>
                                     <div class="ratio-display small">
-                                        <span id="proFlavorVgValue">50</span>:<span id="proFlavorPgValue">50</span>
+                                        <span id="proFlavorVgValue">0</span>:<span id="proFlavorPgValue">100</span>
                                     </div>
                                 </div>
                             </div>

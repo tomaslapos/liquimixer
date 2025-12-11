@@ -136,6 +136,10 @@ function initializeSliders() {
     // Setup nicotine ratio toggle buttons
     setupNicotineRatioToggle();
     
+    // Setup flavor ratio toggle buttons
+    setupFlavorRatioToggle();
+    setupSvFlavorRatioToggle();
+
     // Initialize Shake & Vape form listeners
     initShakeVapeListeners();
     
@@ -187,7 +191,7 @@ function setupNicotineRatioToggle() {
     const ratio5050Btn = document.getElementById('ratio5050');
     const ratio7030Btn = document.getElementById('ratio7030');
     const nicotineRatioInput = document.getElementById('nicotineRatio');
-    
+
     if (ratio5050Btn && ratio7030Btn && nicotineRatioInput) {
         ratio5050Btn.addEventListener('click', () => {
             ratio5050Btn.classList.add('active');
@@ -195,7 +199,7 @@ function setupNicotineRatioToggle() {
             nicotineRatioInput.value = '50/50';
             updateVgPgRatioLimits();
         });
-        
+
         ratio7030Btn.addEventListener('click', () => {
             ratio7030Btn.classList.add('active');
             ratio5050Btn.classList.remove('active');
@@ -205,13 +209,341 @@ function setupNicotineRatioToggle() {
     }
 }
 
+function setupFlavorRatioToggle() {
+    const ratio0100Btn = document.getElementById('flavorRatio0100');
+    const ratio8020Btn = document.getElementById('flavorRatio8020');
+    const ratio7030Btn = document.getElementById('flavorRatio7030');
+    const flavorRatioInput = document.getElementById('flavorRatio');
+
+    if (ratio0100Btn && ratio8020Btn && ratio7030Btn && flavorRatioInput) {
+        ratio0100Btn.addEventListener('click', () => {
+            ratio0100Btn.classList.add('active');
+            ratio8020Btn.classList.remove('active');
+            ratio7030Btn.classList.remove('active');
+            flavorRatioInput.value = '0/100';
+            updateVgPgRatioLimits();
+        });
+
+        ratio8020Btn.addEventListener('click', () => {
+            ratio0100Btn.classList.remove('active');
+            ratio8020Btn.classList.add('active');
+            ratio7030Btn.classList.remove('active');
+            flavorRatioInput.value = '80/20';
+            updateVgPgRatioLimits();
+        });
+
+        ratio7030Btn.addEventListener('click', () => {
+            ratio0100Btn.classList.remove('active');
+            ratio8020Btn.classList.remove('active');
+            ratio7030Btn.classList.add('active');
+            flavorRatioInput.value = '70/30';
+            updateVgPgRatioLimits();
+        });
+    }
+}
+
+function setupSvFlavorRatioToggle() {
+    const ratio0100Btn = document.getElementById('svFlavorRatio0100');
+    const ratio8020Btn = document.getElementById('svFlavorRatio8020');
+    const ratio7030Btn = document.getElementById('svFlavorRatio7030');
+    const flavorRatioInput = document.getElementById('svFlavorRatio');
+
+    if (ratio0100Btn && ratio8020Btn && ratio7030Btn && flavorRatioInput) {
+        ratio0100Btn.addEventListener('click', () => {
+            ratio0100Btn.classList.add('active');
+            ratio8020Btn.classList.remove('active');
+            ratio7030Btn.classList.remove('active');
+            flavorRatioInput.value = '0/100';
+            updateSvVgPgLimits();
+        });
+
+        ratio8020Btn.addEventListener('click', () => {
+            ratio0100Btn.classList.remove('active');
+            ratio8020Btn.classList.add('active');
+            ratio7030Btn.classList.remove('active');
+            flavorRatioInput.value = '80/20';
+            updateSvVgPgLimits();
+        });
+
+        ratio7030Btn.addEventListener('click', () => {
+            ratio0100Btn.classList.remove('active');
+            ratio8020Btn.classList.remove('active');
+            ratio7030Btn.classList.add('active');
+            flavorRatioInput.value = '70/30';
+            updateSvVgPgLimits();
+        });
+    }
+}
+
+// Clerk Authentication
+let clerkLoaded = false;
+
+// Initialize Clerk when loaded
+window.addEventListener('load', async function() {
+    try {
+        if (window.Clerk) {
+            await window.Clerk.load();
+            clerkLoaded = true;
+            updateAuthUI();
+            
+            // Listen for auth changes
+            window.Clerk.addListener((event) => {
+                updateAuthUI();
+            });
+        }
+    } catch (error) {
+        console.log('Clerk not configured yet:', error.message);
+    }
+});
+
+// Update UI based on auth state
+function updateAuthUI() {
+    if (!clerkLoaded || !window.Clerk) return;
+    
+    const loginBtn = document.querySelector('.login-btn');
+    if (!loginBtn) return;
+    
+    if (window.Clerk.user) {
+        // User is signed in
+        const userName = window.Clerk.user.firstName || window.Clerk.user.emailAddresses[0]?.emailAddress || 'Uživatel';
+        loginBtn.innerHTML = `<span class="nav-icon">👤</span><span class="nav-text">${userName}</span>`;
+        loginBtn.onclick = showUserProfileModal;
+    } else {
+        // User is signed out
+        loginBtn.innerHTML = '<span class="nav-icon">👤</span><span class="nav-text">Přihlášení</span>';
+        loginBtn.onclick = showLoginModal;
+    }
+}
+
+// Menu and Login functions
+function toggleMenu() {
+    const menuDropdown = document.getElementById('menuDropdown');
+    const loginModal = document.getElementById('loginModal');
+    const userProfileModal = document.getElementById('userProfileModal');
+    
+    // Close modals if open
+    if (loginModal && !loginModal.classList.contains('hidden')) {
+        loginModal.classList.add('hidden');
+    }
+    if (userProfileModal && !userProfileModal.classList.contains('hidden')) {
+        userProfileModal.classList.add('hidden');
+    }
+    
+    // Toggle menu
+    if (menuDropdown) {
+        menuDropdown.classList.toggle('hidden');
+    }
+}
+
+function showLoginModal() {
+    const menuDropdown = document.getElementById('menuDropdown');
+    const loginModal = document.getElementById('loginModal');
+    const userProfileModal = document.getElementById('userProfileModal');
+    
+    // Close other modals
+    if (menuDropdown && !menuDropdown.classList.contains('hidden')) {
+        menuDropdown.classList.add('hidden');
+    }
+    if (userProfileModal && !userProfileModal.classList.contains('hidden')) {
+        userProfileModal.classList.add('hidden');
+    }
+    
+    // Show login modal
+    if (loginModal) {
+        loginModal.classList.remove('hidden');
+        
+        // Mount Clerk SignIn component
+        if (clerkLoaded && window.Clerk) {
+            const signInDiv = document.getElementById('clerk-sign-in');
+            if (signInDiv) {
+                signInDiv.innerHTML = '';
+                window.Clerk.mountSignIn(signInDiv, {
+                    appearance: {
+                        variables: {
+                            colorPrimary: '#ff00ff',
+                            colorBackground: '#0a0a15',
+                            colorText: '#ffffff',
+                            colorTextSecondary: 'rgba(255,255,255,0.7)',
+                            colorInputBackground: 'rgba(0,0,0,0.5)',
+                            colorInputText: '#ffffff',
+                            borderRadius: '8px'
+                        },
+                        elements: {
+                            rootBox: {
+                                width: '100%'
+                            },
+                            card: {
+                                background: 'transparent',
+                                boxShadow: 'none',
+                                border: 'none'
+                            },
+                            headerTitle: {
+                                display: 'none'
+                            },
+                            headerSubtitle: {
+                                display: 'none'
+                            },
+                            formButtonPrimary: {
+                                background: 'transparent',
+                                border: '2px solid #ff00ff',
+                                color: '#ff00ff',
+                                fontFamily: 'Orbitron, sans-serif'
+                            },
+                            formButtonPrimary__hover: {
+                                background: 'rgba(255,0,255,0.2)'
+                            },
+                            footerActionLink: {
+                                color: '#00ffff'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+}
+
+function hideLoginModal() {
+    const loginModal = document.getElementById('loginModal');
+    if (loginModal) {
+        loginModal.classList.add('hidden');
+        // Unmount Clerk component
+        if (clerkLoaded && window.Clerk) {
+            window.Clerk.unmountSignIn(document.getElementById('clerk-sign-in'));
+        }
+    }
+}
+
+function showUserProfileModal() {
+    const menuDropdown = document.getElementById('menuDropdown');
+    const loginModal = document.getElementById('loginModal');
+    const userProfileModal = document.getElementById('userProfileModal');
+    
+    // Close other modals
+    if (menuDropdown && !menuDropdown.classList.contains('hidden')) {
+        menuDropdown.classList.add('hidden');
+    }
+    if (loginModal && !loginModal.classList.contains('hidden')) {
+        loginModal.classList.add('hidden');
+    }
+    
+    // Show user profile modal
+    if (userProfileModal) {
+        userProfileModal.classList.remove('hidden');
+        
+        // Mount Clerk UserButton or UserProfile
+        if (clerkLoaded && window.Clerk) {
+            const profileDiv = document.getElementById('clerk-user-profile');
+            if (profileDiv) {
+                profileDiv.innerHTML = `
+                    <div class="user-info">
+                        <p class="user-email">${window.Clerk.user?.emailAddresses[0]?.emailAddress || ''}</p>
+                        <p class="user-name">${window.Clerk.user?.fullName || ''}</p>
+                    </div>
+                    <button class="neon-button logout-btn" onclick="handleSignOut()">Odhlásit se</button>
+                `;
+            }
+        }
+    }
+}
+
+function hideUserProfileModal() {
+    const userProfileModal = document.getElementById('userProfileModal');
+    if (userProfileModal) {
+        userProfileModal.classList.add('hidden');
+    }
+}
+
+async function handleSignOut() {
+    if (clerkLoaded && window.Clerk) {
+        await window.Clerk.signOut();
+        hideUserProfileModal();
+        updateAuthUI();
+    }
+}
+
+function showRegisterInfo() {
+    // Clerk handles registration in the SignIn component
+    showLoginModal();
+}
+
+function handleContact(event) {
+    event.preventDefault();
+    const email = document.getElementById('contactEmail').value;
+    const subject = document.getElementById('contactSubject').value;
+    const message = document.getElementById('contactMessage').value;
+    
+    // Placeholder for contact form functionality
+    alert('Děkujeme za Vaši zprávu!\n\nVaše zpráva byla odeslána a budeme Vás brzy kontaktovat na adrese: ' + email);
+    
+    // Clear form
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactSubject').value = '';
+    document.getElementById('contactMessage').value = '';
+    
+    return false;
+}
+
+// Close menus when clicking outside
+document.addEventListener('click', function(event) {
+    const menuDropdown = document.getElementById('menuDropdown');
+    const loginModal = document.getElementById('loginModal');
+    const userProfileModal = document.getElementById('userProfileModal');
+    const menuBtn = document.querySelector('.menu-btn');
+    const loginBtn = document.querySelector('.login-btn');
+    
+    // Check if click is outside menu dropdown
+    if (menuDropdown && !menuDropdown.classList.contains('hidden')) {
+        if (!menuDropdown.contains(event.target) && !menuBtn.contains(event.target)) {
+            menuDropdown.classList.add('hidden');
+        }
+    }
+    
+    // Check if click is outside login modal
+    if (loginModal && !loginModal.classList.contains('hidden')) {
+        if (!loginModal.contains(event.target) && !loginBtn.contains(event.target)) {
+            hideLoginModal();
+        }
+    }
+    
+    // Check if click is outside user profile modal
+    if (userProfileModal && !userProfileModal.classList.contains('hidden')) {
+        if (!userProfileModal.contains(event.target) && !loginBtn.contains(event.target)) {
+            hideUserProfileModal();
+        }
+    }
+});
+
+function togglePrepDetail(button) {
+    const accordion = button.parentElement;
+    const detail = accordion.querySelector('.prep-detail');
+    const isActive = button.classList.contains('active');
+    
+    // Close all other accordions
+    document.querySelectorAll('.prep-item-btn.active').forEach(btn => {
+        if (btn !== button) {
+            btn.classList.remove('active');
+            btn.parentElement.querySelector('.prep-detail').classList.remove('open');
+        }
+    });
+    
+    // Toggle current accordion
+    if (isActive) {
+        button.classList.remove('active');
+        detail.classList.remove('open');
+    } else {
+        button.classList.add('active');
+        detail.classList.add('open');
+    }
+}
+
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
     document.getElementById(pageId).classList.add('active');
     window.scrollTo(0, 0);
-    
+
     // Initialize dilute form sliders when shown
     if (pageId === 'dilute-form') {
         updateDiluteSourceRatioDisplay();
@@ -285,10 +617,10 @@ function updateVgPgRatioLimits() {
     if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
         nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
     }
-    
-    // Calculate flavor volume (flavor is typically 100% PG)
+
+    // Calculate flavor volume
     const flavorVolume = (flavorPercent / 100) * totalAmount;
-    
+
     // Get nicotine VG/PG ratio
     let nicVgPercent = 50;
     let nicPgPercent = 50;
@@ -302,14 +634,35 @@ function updateVgPgRatioLimits() {
             nicPgPercent = 30;
         }
     }
-    
+
+    // Get flavor VG/PG ratio
+    let flavorVgPercent = 0;
+    let flavorPgPercent = 100;
+    if (flavorType !== 'none') {
+        const flavorRatio = document.getElementById('flavorRatio').value;
+        if (flavorRatio === '0/100') {
+            flavorVgPercent = 0;
+            flavorPgPercent = 100;
+        } else if (flavorRatio === '80/20') {
+            flavorVgPercent = 80;
+            flavorPgPercent = 20;
+        } else if (flavorRatio === '70/30') {
+            flavorVgPercent = 70;
+            flavorPgPercent = 30;
+        }
+    }
+
     // Calculate VG and PG from nicotine
     const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
-    
-    // Total fixed PG = from nicotine + from flavor
-    const fixedPgVolume = nicotinePgVolume + flavorVolume;
-    const fixedVgVolume = nicotineVgVolume;
+
+    // Calculate VG and PG from flavor
+    const flavorVgVolume = flavorVolume * (flavorVgPercent / 100);
+    const flavorPgVolume = flavorVolume * (flavorPgPercent / 100);
+
+    // Total fixed VG and PG
+    const fixedPgVolume = nicotinePgVolume + flavorPgVolume;
+    const fixedVgVolume = nicotineVgVolume + flavorVgVolume;
     
     // Calculate percentage limits
     // Minimum VG% = (fixed VG / total) * 100
@@ -383,7 +736,7 @@ function updateVgPgRatioLimits() {
                 reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorPercent}% v PG)`);
+                reasons.push(`příchuť (${flavorPercent}%, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
             }
             warningEl.textContent = `Poměr omezen na ${effectiveMinVg}–${effectiveMaxVg}% VG kvůli: ${reasons.join(', ')}.`;
             warningEl.classList.remove('hidden');
@@ -672,8 +1025,29 @@ function calculateMix() {
         nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
     }
 
-    // 5. Flavor is typically in PG base
-    const flavorPgContent = flavorVolume;
+    // 5. Flavor VG/PG content based on selected ratio
+    let flavorVgContent = 0;
+    let flavorPgContent = flavorVolume; // Default to 100% PG
+    
+    if (flavorType !== 'none' && flavorVolume > 0) {
+        const flavorRatio = document.getElementById('flavorRatio').value;
+        let flavorVgPercent = 0;
+        let flavorPgPercent = 100;
+        
+        if (flavorRatio === '0/100') {
+            flavorVgPercent = 0;
+            flavorPgPercent = 100;
+        } else if (flavorRatio === '80/20') {
+            flavorVgPercent = 80;
+            flavorPgPercent = 20;
+        } else if (flavorRatio === '70/30') {
+            flavorVgPercent = 70;
+            flavorPgPercent = 30;
+        }
+        
+        flavorVgContent = flavorVolume * (flavorVgPercent / 100);
+        flavorPgContent = flavorVolume * (flavorPgPercent / 100);
+    }
 
     // 6. Calculate pure PG and VG needed to achieve target ratio
     // Target VG in final mix = (vgPercent / 100) * totalAmount
@@ -682,7 +1056,7 @@ function calculateMix() {
     const targetPgTotal = (pgPercent / 100) * totalAmount;
 
     // Subtract what's already coming from nicotine and flavor
-    let pureVgNeeded = targetVgTotal - nicotineVgContent;
+    let pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
     let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
 
     // Handle negative values (when nicotine/flavor exceeds target ratio)
@@ -725,8 +1099,9 @@ function calculateMix() {
 
     if (flavorVolume > 0) {
         const flavor = flavorDatabase[flavorType];
+        const flavorRatioValue = document.getElementById('flavorRatio').value;
         ingredients.push({
-            name: `${flavor.name} příchuť (PG báze)`,
+            name: `${flavor.name} příchuť (VG/PG ${flavorRatioValue})`,
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -759,7 +1134,7 @@ function calculateMix() {
     const actualTotal = nicotineVolume + flavorVolume + purePgNeeded + pureVgNeeded;
     
     // Calculate actual VG/PG ratio in final mix
-    const actualVg = pureVgNeeded + nicotineVgContent;
+    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
     const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
 
     // Display results
@@ -1477,14 +1852,31 @@ function updateSvVgPgLimits() {
     
     const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
-    
-    // Flavor is typically 100% PG
-    const fixedPgVolume = nicotinePgVolume + flavorVolume;
-    const fixedVgVolume = nicotineVgVolume;
-    
+
+    // Get flavor VG/PG ratio
+    let flavorVgPercent = 0;
+    let flavorPgPercent = 100;
+    const svFlavorRatio = document.getElementById('svFlavorRatio').value;
+    if (svFlavorRatio === '0/100') {
+        flavorVgPercent = 0;
+        flavorPgPercent = 100;
+    } else if (svFlavorRatio === '80/20') {
+        flavorVgPercent = 80;
+        flavorPgPercent = 20;
+    } else if (svFlavorRatio === '70/30') {
+        flavorVgPercent = 70;
+        flavorPgPercent = 30;
+    }
+
+    const flavorVgVolume = flavorVolume * (flavorVgPercent / 100);
+    const flavorPgVolume = flavorVolume * (flavorPgPercent / 100);
+
+    const fixedPgVolume = nicotinePgVolume + flavorPgVolume;
+    const fixedVgVolume = nicotineVgVolume + flavorVgVolume;
+
     const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
     const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
-    
+
     svVgPgLimits.min = Math.max(0, minVgPercent);
     svVgPgLimits.max = Math.min(100, maxVgPercent);
     
@@ -1509,7 +1901,7 @@ function updateSvVgPgLimits() {
                 reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorVolume} ml v PG)`);
+                reasons.push(`příchuť (${flavorVolume} ml, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
             }
             warningEl.textContent = `Poměr omezen na ${svVgPgLimits.min}–${svVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
             warningEl.classList.remove('hidden');
@@ -1554,14 +1946,31 @@ function calculateShakeVape() {
     
     const nicotineVgContent = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
-    const flavorPgContent = flavorVolume; // Flavor is 100% PG
     
+    // Get flavor VG/PG ratio
+    let flavorVgPercent = 0;
+    let flavorPgPercent = 100;
+    const svFlavorRatio = document.getElementById('svFlavorRatio').value;
+    if (svFlavorRatio === '0/100') {
+        flavorVgPercent = 0;
+        flavorPgPercent = 100;
+    } else if (svFlavorRatio === '80/20') {
+        flavorVgPercent = 80;
+        flavorPgPercent = 20;
+    } else if (svFlavorRatio === '70/30') {
+        flavorVgPercent = 70;
+        flavorPgPercent = 30;
+    }
+    
+    const flavorVgContent = flavorVolume * (flavorVgPercent / 100);
+    const flavorPgContent = flavorVolume * (flavorPgPercent / 100);
+
     const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
-    
+
     const targetVgTotal = (vgPercent / 100) * totalAmount;
     const targetPgTotal = (pgPercent / 100) * totalAmount;
-    
-    let pureVgNeeded = targetVgTotal - nicotineVgContent;
+
+    let pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
     let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
     
     if (pureVgNeeded < 0) pureVgNeeded = 0;
@@ -1586,7 +1995,7 @@ function calculateShakeVape() {
     // Flavor first (already in bottle)
     if (flavorVolume > 0) {
         ingredients.push({
-            name: `Příchuť (již v lahvičce, PG báze)`,
+            name: `Příchuť (již v lahvičce, VG/PG ${svFlavorRatio})`,
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -1626,7 +2035,7 @@ function calculateShakeVape() {
         });
     }
     
-    const actualVg = pureVgNeeded + nicotineVgContent;
+    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
     const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
     
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
