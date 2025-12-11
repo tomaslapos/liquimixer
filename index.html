@@ -313,157 +313,470 @@
         <section id="form" class="page">
             <h2 class="page-title">Konfigurace směsi</h2>
             
-            <!-- Množství liquidu -->
-            <div class="form-group">
-                <label class="form-label">
-                    Kolik liquidu chci namíchat?
-                </label>
-                <div class="input-wrapper">
-                    <input type="number" id="totalAmount" min="1" max="1000" value="100" class="neon-input">
-                    <span class="input-unit">ml</span>
-                </div>
+            <!-- Záložky pro výběr typu formuláře -->
+            <div class="form-tabs">
+                <button type="button" class="form-tab active" data-tab="liquid" onclick="switchFormTab('liquid')">Liquid</button>
+                <button type="button" class="form-tab tab-green" data-tab="shakevape" onclick="switchFormTab('shakevape')">Shake & Vape</button>
+                <button type="button" class="form-tab tab-red" data-tab="liquidpro" onclick="switchFormTab('liquidpro')">Liquid PRO</button>
             </div>
 
-            <!-- Nikotinová báze -->
-            <div class="form-group">
-                <label class="form-label">
-                    Jak silnou mám nikotinovou bázi?
-                    <span class="label-hint">Tyto údaje opiš z obalu nikotinu</span>
-                </label>
-                <div class="nicotine-base-container">
-                    <select id="nicotineType" class="neon-select" onchange="updateNicotineType()">
-                        <option value="none">Bez nikotinu</option>
-                        <option value="freebase">Nikotin booster</option>
-                        <option value="salt">Nikotinová sůl</option>
-                    </select>
-                    <div id="nicotineStrengthContainer" class="hidden">
-                        <input type="number" id="nicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
-                        <span class="input-unit">mg/ml</span>
-                        <div id="nicotineWarning" class="input-warning hidden"></div>
+            <!-- ============================================ -->
+            <!-- LIQUID - Standardní formulář -->
+            <!-- ============================================ -->
+            <div id="form-liquid" class="form-content form-cyan active">
+                <!-- Množství liquidu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Kolik liquidu chci namíchat?
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="totalAmount" min="1" max="1000" value="100" class="neon-input">
+                        <span class="input-unit">ml</span>
                     </div>
                 </div>
-                <div id="nicotineRatioContainer" class="hidden">
-                    <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
-                    <div class="ratio-toggle-buttons">
-                        <button type="button" id="ratio5050" class="ratio-toggle-btn active" data-value="50/50">50/50</button>
-                        <button type="button" id="ratio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
-                    </div>
-                    <input type="hidden" id="nicotineRatio" value="50/50">
-                </div>
-            </div>
 
-            <!-- Cílová síla nikotinu -->
-            <div class="form-group" id="targetNicotineGroup">
-                <label class="form-label">
-                    Jak silnou chci finální nikotinovou bázi na vapování?
-                </label>
-                <div class="target-nicotine-container">
-                    <div class="slider-container">
-                        <button class="slider-btn" onclick="adjustTargetNicotine(-1)">◀</button>
-                        <div class="slider-wrapper">
-                            <input type="range" id="targetNicotine" min="0" max="45" value="0" class="nicotine-slider">
-                            <div class="slider-track nicotine-track" id="nicotineTrack"></div>
+                <!-- Nikotinová báze -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Jak silnou mám nikotinovou bázi?
+                        <span class="label-hint">Tyto údaje opiš z obalu nikotinu</span>
+                    </label>
+                    <div class="nicotine-base-container">
+                        <select id="nicotineType" class="neon-select" onchange="updateNicotineType()">
+                            <option value="none">Bez nikotinu</option>
+                            <option value="freebase">Nikotin booster</option>
+                            <option value="salt">Nikotinová sůl</option>
+                        </select>
+                        <div id="nicotineStrengthContainer" class="hidden">
+                            <input type="number" id="nicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
+                            <span class="input-unit">mg/ml</span>
+                            <div id="nicotineWarning" class="input-warning hidden"></div>
                         </div>
-                        <button class="slider-btn" onclick="adjustTargetNicotine(1)">▶</button>
                     </div>
-                    <div class="nicotine-display">
-                        <span id="targetNicotineValue">0</span> mg/ml
-                    </div>
-                    <div class="nicotine-description" id="nicotineDescription">
-                        Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
+                    <div id="nicotineRatioContainer" class="hidden">
+                        <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" id="ratio5050" class="ratio-toggle-btn active" data-value="50/50">50/50</button>
+                            <button type="button" id="ratio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
+                        </div>
+                        <input type="hidden" id="nicotineRatio" value="50/50">
                     </div>
                 </div>
-            </div>
 
-            <!-- Příchuť -->
-            <div class="form-group">
-                <label class="form-label">
-                    Příchuť
-                </label>
-                <div class="flavor-container">
-                    <select id="flavorType" class="neon-select" onchange="updateFlavorType()">
-                        <option value="none">Žádná (bez příchutě)</option>
-                        <option value="fruit">Ovoce (jahoda, jablko)</option>
-                        <option value="citrus">Citrónové (citron, limeta)</option>
-                        <option value="berry">Bobulové (borůvka, malina)</option>
-                        <option value="tropical">Tropické (ananas, mango)</option>
-                        <option value="tobacco">Tabákové (klasický, kubánský)</option>
-                        <option value="menthol">Mentol / Mátové</option>
-                        <option value="candy">Sladkosti (cukroví, karamel)</option>
-                        <option value="dessert">Dezerty (koláč, pudink)</option>
-                        <option value="bakery">Zákusky (tyčinka, donut)</option>
-                        <option value="biscuit">Piškotové (vanilka, máslo)</option>
-                        <option value="drink">Nápojové (kola, čaj)</option>
-                        <option value="tobaccosweet">Tabák + sladké (custard tobacco)</option>
-                        <option value="nuts">Oříškové (arašíd, lískový)</option>
-                        <option value="spice">Kořeněné (skořice, perník)</option>
-                    </select>
-                    <div id="flavorStrengthContainer" class="hidden">
-                        <div class="slider-container small">
-                            <button class="slider-btn small" onclick="adjustFlavor(-1)">◀</button>
+                <!-- Cílová síla nikotinu -->
+                <div class="form-group" id="targetNicotineGroup">
+                    <label class="form-label">
+                        Jak silnou chci finální nikotinovou bázi na vapování?
+                    </label>
+                    <div class="target-nicotine-container">
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustTargetNicotine(-1)">◀</button>
                             <div class="slider-wrapper">
-                                <input type="range" id="flavorStrength" min="0" max="30" value="10" class="flavor-slider">
-                                <div class="slider-track flavor-track" id="flavorTrack"></div>
+                                <input type="range" id="targetNicotine" min="0" max="45" value="0" class="nicotine-slider">
+                                <div class="slider-track nicotine-track" id="nicotineTrack"></div>
                             </div>
-                            <button class="slider-btn small" onclick="adjustFlavor(1)">▶</button>
+                            <button class="slider-btn" onclick="adjustTargetNicotine(1)">▶</button>
                         </div>
-                        <div class="flavor-display">
-                            <span id="flavorValue">10</span>%
+                        <div class="nicotine-display">
+                            <span id="targetNicotineValue">0</span> mg/ml
                         </div>
-                        <div class="flavor-description" id="flavorDescription">
-                            Ideální chuť
+                        <div class="nicotine-description" id="nicotineDescription">
+                            Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Poměr VG/PG ve výsledném liquidu -->
-            <div class="form-group" id="vgPgRatioGroup">
-                <label class="form-label">
-                    Poměr VG/PG ve výsledném liquidu
-                </label>
-                <div class="ratio-container">
-                    <div class="ratio-labels">
-                        <span class="ratio-label left">Dým (VG)</span>
-                        <span class="ratio-label right">Chuť (PG)</span>
-                    </div>
-                    <div class="slider-container">
-                        <button class="slider-btn" onclick="adjustRatio(-5)">◀</button>
-                        <div class="slider-wrapper-with-limits">
-                            <span class="slider-limit left">100</span>
-                            <div class="slider-wrapper ratio-slider-wrapper">
-                                <div class="slider-disabled-zone left" id="sliderDisabledLeft">
-                                    <span class="limit-value" id="limitValueLeft"></span>
+                <!-- Příchuť -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Příchuť
+                    </label>
+                    <div class="flavor-container">
+                        <select id="flavorType" class="neon-select" onchange="updateFlavorType()">
+                            <option value="none">Žádná (bez příchutě)</option>
+                            <option value="fruit">Ovoce (jahoda, jablko)</option>
+                            <option value="citrus">Citrónové (citron, limeta)</option>
+                            <option value="berry">Bobulové (borůvka, malina)</option>
+                            <option value="tropical">Tropické (ananas, mango)</option>
+                            <option value="tobacco">Tabákové (klasický, kubánský)</option>
+                            <option value="menthol">Mentol / Mátové</option>
+                            <option value="candy">Sladkosti (cukroví, karamel)</option>
+                            <option value="dessert">Dezerty (koláč, pudink)</option>
+                            <option value="bakery">Zákusky (tyčinka, donut)</option>
+                            <option value="biscuit">Piškotové (vanilka, máslo)</option>
+                            <option value="drink">Nápojové (kola, čaj)</option>
+                            <option value="tobaccosweet">Tabák + sladké (custard tobacco)</option>
+                            <option value="nuts">Oříškové (arašíd, lískový)</option>
+                            <option value="spice">Kořeněné (skořice, perník)</option>
+                        </select>
+                        <div id="flavorStrengthContainer" class="hidden">
+                            <div class="slider-container small">
+                                <button class="slider-btn small" onclick="adjustFlavor(-1)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="flavorStrength" min="0" max="30" value="10" class="flavor-slider">
+                                    <div class="slider-track flavor-track" id="flavorTrack"></div>
                                 </div>
-                                <div class="slider-disabled-zone right" id="sliderDisabledRight">
-                                    <span class="limit-value" id="limitValueRight"></span>
-                                </div>
-                                <input type="range" id="vgPgRatio" min="0" max="100" value="50" class="ratio-slider">
-                                <div class="slider-track" id="sliderTrack"></div>
-                                <div class="slider-center-mark"></div>
+                                <button class="slider-btn small" onclick="adjustFlavor(1)">▶</button>
                             </div>
-                            <span class="slider-limit right">100</span>
+                            <div class="flavor-display">
+                                <span id="flavorValue">10</span>%
+                            </div>
+                            <div class="flavor-description" id="flavorDescription">
+                                Ideální chuť
+                            </div>
                         </div>
-                        <button class="slider-btn" onclick="adjustRatio(5)">▶</button>
                     </div>
-                    <div class="ratio-display">
-                        <span id="vgValue">50</span>:<span id="pgValue">50</span>
+                </div>
+
+                <!-- Poměr VG/PG ve výsledném liquidu -->
+                <div class="form-group" id="vgPgRatioGroup">
+                    <label class="form-label">
+                        Poměr VG/PG ve výsledném liquidu
+                    </label>
+                    <div class="ratio-container">
+                        <div class="ratio-labels">
+                            <span class="ratio-label left">Dým (VG)</span>
+                            <span class="ratio-label right">Chuť (PG)</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustRatio(-5)">◀</button>
+                            <div class="slider-wrapper-with-limits">
+                                <span class="slider-limit left">100</span>
+                                <div class="slider-wrapper ratio-slider-wrapper">
+                                    <div class="slider-disabled-zone left" id="sliderDisabledLeft">
+                                        <span class="limit-value" id="limitValueLeft"></span>
+                                    </div>
+                                    <div class="slider-disabled-zone right" id="sliderDisabledRight">
+                                        <span class="limit-value" id="limitValueRight"></span>
+                                    </div>
+                                    <input type="range" id="vgPgRatio" min="0" max="100" value="50" class="ratio-slider">
+                                    <div class="slider-track" id="sliderTrack"></div>
+                                    <div class="slider-center-mark"></div>
+                                </div>
+                                <span class="slider-limit right">100</span>
+                            </div>
+                            <button class="slider-btn" onclick="adjustRatio(5)">▶</button>
+                        </div>
+                        <div class="ratio-display">
+                            <span id="vgValue">50</span>:<span id="pgValue">50</span>
+                        </div>
+                        <div class="ratio-description" id="ratioDescription">
+                            Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
+                        </div>
+                        <div id="ratioLimitWarning" class="input-warning hidden"></div>
                     </div>
-                    <div class="ratio-description" id="ratioDescription">
-                        Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
-                    </div>
-                    <div id="ratioLimitWarning" class="input-warning hidden"></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="neon-button secondary" onclick="showPage('mode-select')">
+                        <span>◀ ZPĚT</span>
+                    </button>
+                    <button class="neon-button" onclick="calculateMix()">
+                        <span>MIXUJ!</span>
+                        <div class="button-glow"></div>
+                    </button>
                 </div>
             </div>
 
-            <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('mode-select')">
-                    <span>◀ ZPĚT</span>
-                </button>
-                <button class="neon-button" onclick="calculateMix()">
-                    <span>MIXUJ!</span>
-                    <div class="button-glow"></div>
-                </button>
+            <!-- ============================================ -->
+            <!-- SHAKE & VAPE - Neonově zelený formulář -->
+            <!-- ============================================ -->
+            <div id="form-shakevape" class="form-content form-green">
+                <!-- Celkový objem nádoby -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Celkový objem nádoby Shake & Vape?
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="svTotalAmount" min="1" max="1000" value="60" class="neon-input">
+                        <span class="input-unit">ml</span>
+                    </div>
+                </div>
+
+                <!-- Objem příchutě - druhé pole -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Objem příchutě
+                        <span class="label-hint">Objem příchutě již v lahvičce</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="svFlavorVolume" min="0" max="100" value="12" class="neon-input" oninput="updateSvCalculation()">
+                        <span class="input-unit">ml</span>
+                    </div>
+                </div>
+
+                <!-- Nikotinová báze -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Jak silnou mám nikotinovou bázi?
+                        <span class="label-hint">Tyto údaje opiš z obalu nikotinu</span>
+                    </label>
+                    <div class="nicotine-base-container">
+                        <select id="svNicotineType" class="neon-select" onchange="updateSvNicotineType()">
+                            <option value="none">Bez nikotinu</option>
+                            <option value="freebase">Nikotin booster</option>
+                            <option value="salt">Nikotinová sůl</option>
+                        </select>
+                        <div id="svNicotineStrengthContainer" class="hidden">
+                            <input type="number" id="svNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
+                            <span class="input-unit">mg/ml</span>
+                        </div>
+                    </div>
+                    <div id="svNicotineRatioContainer" class="hidden">
+                        <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" id="svRatio5050" class="ratio-toggle-btn active" data-value="50/50">50/50</button>
+                            <button type="button" id="svRatio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
+                        </div>
+                        <input type="hidden" id="svNicotineRatio" value="50/50">
+                    </div>
+                </div>
+
+                <!-- Cílová síla nikotinu -->
+                <div class="form-group" id="svTargetNicotineGroup">
+                    <label class="form-label">
+                        Jak silnou chci finální nikotinovou bázi na vapování?
+                    </label>
+                    <div class="target-nicotine-container">
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustSvTargetNicotine(-1)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="svTargetNicotine" min="0" max="45" value="0" class="nicotine-slider">
+                                <div class="slider-track nicotine-track" id="svNicotineTrack"></div>
+                            </div>
+                            <button class="slider-btn" onclick="adjustSvTargetNicotine(1)">▶</button>
+                        </div>
+                        <div class="nicotine-display">
+                            <span id="svTargetNicotineValue">0</span> mg/ml
+                        </div>
+                        <div class="nicotine-description" id="svNicotineDescription">
+                            Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Poměr VG/PG ve výsledném liquidu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Poměr VG/PG ve výsledném liquidu
+                    </label>
+                    <div class="ratio-container">
+                        <div class="ratio-labels">
+                            <span class="ratio-label left">Dým (VG)</span>
+                            <span class="ratio-label right">Chuť (PG)</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustSvRatio(-5)">◀</button>
+                            <div class="slider-wrapper-with-limits">
+                                <span class="slider-limit left">100</span>
+                                <div class="slider-wrapper ratio-slider-wrapper">
+                                    <div class="slider-disabled-zone left" id="svSliderDisabledLeft"></div>
+                                    <div class="slider-disabled-zone right" id="svSliderDisabledRight"></div>
+                                    <input type="range" id="svVgPgRatio" min="0" max="100" value="50" class="ratio-slider" oninput="updateSvRatioDisplay()">
+                                    <div class="slider-track" id="svSliderTrack"></div>
+                                    <div class="slider-center-mark"></div>
+                                </div>
+                                <span class="slider-limit right">100</span>
+                            </div>
+                            <button class="slider-btn" onclick="adjustSvRatio(5)">▶</button>
+                        </div>
+                        <div class="ratio-display">
+                            <span id="svVgValue">50</span>:<span id="svPgValue">50</span>
+                        </div>
+                        <div class="ratio-description" id="svRatioDescription">
+                            Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
+                        </div>
+                        <div id="svRatioLimitWarning" class="input-warning hidden"></div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="neon-button secondary" onclick="showPage('mode-select')">
+                        <span>◀ ZPĚT</span>
+                    </button>
+                    <button class="neon-button btn-green" onclick="calculateShakeVape()">
+                        <span>MIXUJ!</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- LIQUID PRO - Neonově červený formulář -->
+            <!-- ============================================ -->
+            <div id="form-liquidpro" class="form-content form-red">
+                <!-- Množství liquidu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Kolik liquidu chci namíchat?
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="proTotalAmount" min="1" max="1000" value="100" class="neon-input">
+                        <span class="input-unit">ml</span>
+                    </div>
+                </div>
+
+                <!-- Nikotinová báze s VG/PG sliderem -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Jak silnou mám nikotinovou bázi?
+                        <span class="label-hint">Tyto údaje opiš z obalu nikotinu</span>
+                    </label>
+                    <div class="nicotine-base-container">
+                        <select id="proNicotineType" class="neon-select" onchange="updateProNicotineType()">
+                            <option value="none">Bez nikotinu</option>
+                            <option value="freebase">Nikotin booster</option>
+                            <option value="salt">Nikotinová sůl</option>
+                        </select>
+                        <div id="proNicotineStrengthContainer" class="hidden">
+                            <input type="number" id="proNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
+                            <span class="input-unit">mg/ml</span>
+                        </div>
+                    </div>
+                    <div id="proNicotineRatioContainer" class="hidden">
+                        <label class="form-label-small">Poměr VG/PG v koncentrátu nikotinu</label>
+                        <div class="ratio-container compact">
+                            <div class="ratio-labels">
+                                <span class="ratio-label left">Dým (VG)</span>
+                                <span class="ratio-label right">Chuť (PG)</span>
+                            </div>
+                            <div class="slider-container">
+                                <button class="slider-btn small" onclick="adjustProNicRatio(-5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="proNicotineRatioSlider" min="0" max="100" value="50" class="ratio-slider" oninput="updateProNicRatioDisplay()">
+                                    <div class="slider-track" id="proNicotineTrackRatio"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustProNicRatio(5)">▶</button>
+                            </div>
+                            <div class="ratio-display small">
+                                <span id="proNicVgValue">50</span>:<span id="proNicPgValue">50</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cílová síla nikotinu -->
+                <div class="form-group" id="proTargetNicotineGroup">
+                    <label class="form-label">
+                        Jak silnou chci finální nikotinovou bázi na vapování?
+                    </label>
+                    <div class="target-nicotine-container">
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustProTargetNicotine(-1)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="proTargetNicotine" min="0" max="45" value="0" class="nicotine-slider">
+                                <div class="slider-track nicotine-track" id="proNicotineTrack"></div>
+                            </div>
+                            <button class="slider-btn" onclick="adjustProTargetNicotine(1)">▶</button>
+                        </div>
+                        <div class="nicotine-display">
+                            <span id="proTargetNicotineValue">0</span> mg/ml
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Příchuť s VG/PG sliderem -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Příchuť
+                    </label>
+                    <div class="flavor-container">
+                        <select id="proFlavorType" class="neon-select" onchange="updateProFlavorType()">
+                            <option value="none">Žádná (bez příchutě)</option>
+                            <option value="fruit">Ovoce (jahoda, jablko)</option>
+                            <option value="citrus">Citrónové (citron, limeta)</option>
+                            <option value="berry">Bobulové (borůvka, malina)</option>
+                            <option value="tropical">Tropické (ananas, mango)</option>
+                            <option value="tobacco">Tabákové (klasický, kubánský)</option>
+                            <option value="menthol">Mentol / Mátové</option>
+                            <option value="candy">Sladkosti (cukroví, karamel)</option>
+                            <option value="dessert">Dezerty (koláč, pudink)</option>
+                            <option value="bakery">Zákusky (tyčinka, donut)</option>
+                            <option value="biscuit">Piškotové (vanilka, máslo)</option>
+                            <option value="drink">Nápojové (kola, čaj)</option>
+                            <option value="tobaccosweet">Tabák + sladké (custard tobacco)</option>
+                            <option value="nuts">Oříškové (arašíd, lískový)</option>
+                            <option value="spice">Kořeněné (skořice, perník)</option>
+                        </select>
+                        <div id="proFlavorStrengthContainer" class="hidden">
+                            <div class="slider-container small">
+                                <button class="slider-btn small" onclick="adjustProFlavor(-1)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="proFlavorStrength" min="0" max="30" value="10" class="flavor-slider">
+                                    <div class="slider-track flavor-track" id="proFlavorTrack"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustProFlavor(1)">▶</button>
+                            </div>
+                            <div class="flavor-display">
+                                <span id="proFlavorValue">10</span>%
+                            </div>
+                            
+                            <!-- VG/PG poměr pro příchuť -->
+                            <div class="form-group-sub">
+                                <label class="form-label-small">Poměr VG/PG v koncentrátu příchutě</label>
+                                <div class="ratio-container compact">
+                                    <div class="ratio-labels">
+                                        <span class="ratio-label left">Dým (VG)</span>
+                                        <span class="ratio-label right">Chuť (PG)</span>
+                                    </div>
+                                    <div class="slider-container">
+                                        <button class="slider-btn small" onclick="adjustProFlavorRatio(-5)">◀</button>
+                                        <div class="slider-wrapper">
+                                            <input type="range" id="proFlavorRatioSlider" min="0" max="100" value="50" class="ratio-slider" oninput="updateProFlavorRatioDisplay()">
+                                            <div class="slider-track" id="proFlavorTrackRatio"></div>
+                                        </div>
+                                        <button class="slider-btn small" onclick="adjustProFlavorRatio(5)">▶</button>
+                                    </div>
+                                    <div class="ratio-display small">
+                                        <span id="proFlavorVgValue">50</span>:<span id="proFlavorPgValue">50</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Poměr VG/PG ve výsledném liquidu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Poměr VG/PG ve výsledném liquidu
+                    </label>
+                    <div class="ratio-container">
+                        <div class="ratio-labels">
+                            <span class="ratio-label left">Dým (VG)</span>
+                            <span class="ratio-label right">Chuť (PG)</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustProRatio(-5)">◀</button>
+                            <div class="slider-wrapper-with-limits">
+                                <span class="slider-limit left">100</span>
+                                <div class="slider-wrapper ratio-slider-wrapper">
+                                    <div class="slider-disabled-zone left" id="proSliderDisabledLeft"></div>
+                                    <div class="slider-disabled-zone right" id="proSliderDisabledRight"></div>
+                                    <input type="range" id="proVgPgRatio" min="0" max="100" value="50" class="ratio-slider" oninput="updateProRatioDisplay()">
+                                    <div class="slider-track" id="proSliderTrack"></div>
+                                    <div class="slider-center-mark"></div>
+                                </div>
+                                <span class="slider-limit right">100</span>
+                            </div>
+                            <button class="slider-btn" onclick="adjustProRatio(5)">▶</button>
+                        </div>
+                        <div class="ratio-display">
+                            <span id="proVgValue">50</span>:<span id="proPgValue">50</span>
+                        </div>
+                        <div id="proRatioLimitWarning" class="input-warning hidden"></div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="neon-button secondary" onclick="showPage('mode-select')">
+                        <span>◀ ZPĚT</span>
+                    </button>
+                    <button class="neon-button btn-red" onclick="calculateProMix()">
+                        <span>MIXUJ!</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
             </div>
         </section>
 

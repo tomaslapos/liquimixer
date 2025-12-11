@@ -635,14 +635,7 @@ body {
 }
 
 /* eLiquid form - cyan borders */
-#form .form-group {
-    border-color: rgba(0, 255, 255, 0.3);
-}
-
-#form .form-group:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-}
+/* Form group base styles are now handled by form-specific classes (.form-cyan, .form-green, .form-red) */
 
 /* Dilute form - pink labels */
 #dilute-form .form-label {
@@ -1521,6 +1514,439 @@ body {
     margin-bottom: 5px;
 }
 
+/* =========================================
+   Form Tabs - Záložky formuláře
+   ========================================= */
+.form-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.form-tab {
+    padding: 12px 25px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    background: var(--bg-input);
+    border: 2px solid var(--neon-cyan);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-tab:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.form-tab.active {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Green tab - Shake & Vape */
+.form-tab.tab-green {
+    color: var(--neon-green);
+    border-color: var(--neon-green);
+}
+
+.form-tab.tab-green:hover {
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.form-tab.tab-green.active {
+    background: var(--neon-green);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+/* Red tab - Liquid PRO */
+.form-tab.tab-red {
+    color: var(--neon-red);
+    border-color: var(--neon-red);
+}
+
+.form-tab.tab-red:hover {
+    background: rgba(255, 0, 68, 0.1);
+    box-shadow: 0 0 15px rgba(255, 0, 68, 0.3);
+}
+
+.form-tab.tab-red.active {
+    background: var(--neon-red);
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 68, 0.5);
+}
+
+/* Form content areas */
+.form-content {
+    display: none;
+}
+
+.form-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* =========================================
+   Cyan Form - Liquid Styles
+   ========================================= */
+.form-cyan .form-group {
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+.form-cyan .form-group:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+.form-cyan .form-label {
+    color: var(--neon-cyan);
+}
+
+.form-cyan .form-label-small {
+    color: rgba(0, 255, 255, 0.7);
+}
+
+.form-cyan .ratio-label.left {
+    color: var(--neon-cyan);
+}
+
+.form-cyan .slider-limit.left {
+    color: var(--neon-cyan);
+}
+
+.form-cyan .slider-limit.right {
+    color: var(--neon-cyan);
+}
+
+/* Cyan ratio labels */
+.form-cyan .ratio-label.right {
+    color: var(--neon-cyan);
+}
+
+/* Cyan inputs - neon pink values */
+.form-cyan .neon-input {
+    color: var(--neon-pink);
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+.form-cyan .neon-input:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+/* Cyan selects - neon pink values */
+.form-cyan .neon-select {
+    color: var(--neon-pink);
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+.form-cyan .neon-select:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+/* Cyan displays - colors are set dynamically by JavaScript */
+
+/* Cyan input units - neon pink */
+.form-cyan .input-unit {
+    color: var(--neon-pink);
+}
+
+/* Cyan ratio display */
+.form-cyan .ratio-display {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Cyan slider buttons */
+.form-cyan .slider-btn {
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+}
+
+.form-cyan .slider-btn:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--neon-cyan);
+}
+
+/* Cyan ratio toggle buttons - neon pink active */
+.form-cyan .ratio-toggle-btn {
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+.form-cyan .ratio-toggle-btn:hover {
+    border-color: var(--neon-pink);
+    color: var(--neon-pink);
+}
+
+.form-cyan .ratio-toggle-btn.active {
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    border-color: var(--neon-pink);
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+}
+
+/* Cyan label hints */
+.form-cyan .label-hint {
+    color: rgba(0, 255, 255, 0.6);
+}
+
+/* =========================================
+   Green Form - Shake & Vape Styles
+   ========================================= */
+.form-green .form-group {
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+.form-green .form-group:hover {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.form-green .form-label {
+    color: var(--neon-green);
+}
+
+.form-green .form-label-small {
+    color: rgba(0, 255, 0, 0.7);
+}
+
+.form-green .ratio-label.left {
+    color: var(--neon-green);
+}
+
+.form-green .slider-limit.left {
+    color: var(--neon-green);
+}
+
+.form-green .slider-limit.right {
+    color: var(--neon-green);
+}
+
+/* Green ratio labels */
+.form-green .ratio-label.right {
+    color: var(--neon-green);
+}
+
+/* Green inputs - neon orange values */
+.form-green .neon-input {
+    color: var(--neon-orange);
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+.form-green .neon-input:focus {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+/* Green selects - neon orange values */
+.form-green .neon-select {
+    color: var(--neon-orange);
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+.form-green .neon-select:focus {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+/* Green displays - colors are set dynamically by JavaScript */
+
+/* Green input units - neon orange */
+.form-green .input-unit {
+    color: var(--neon-orange);
+}
+
+/* Green ratio display */
+.form-green .ratio-display {
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Green slider buttons */
+.form-green .slider-btn {
+    color: var(--neon-green);
+    border-color: var(--neon-green);
+}
+
+.form-green .slider-btn:hover {
+    background: var(--neon-green);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--neon-green);
+}
+
+/* Green ratio toggle buttons - neon orange active */
+.form-green .ratio-toggle-btn {
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+.form-green .ratio-toggle-btn:hover {
+    border-color: var(--neon-orange);
+    color: var(--neon-orange);
+}
+
+.form-green .ratio-toggle-btn.active {
+    background: linear-gradient(135deg, var(--neon-orange), #cc6600);
+    border-color: var(--neon-orange);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px rgba(255, 136, 0, 0.4);
+}
+
+/* Green label hints */
+.form-green .label-hint {
+    color: rgba(0, 255, 0, 0.6);
+}
+
+/* Green button */
+.neon-button.btn-green {
+    color: var(--neon-green);
+    border-color: var(--neon-green);
+}
+
+.neon-button.btn-green:hover {
+    color: var(--bg-dark);
+    background: var(--neon-green);
+    box-shadow: 
+        0 0 20px var(--neon-green),
+        0 0 40px var(--neon-green),
+        0 0 60px var(--neon-green);
+}
+
+/* =========================================
+   Red Form - Liquid PRO Styles
+   ========================================= */
+.form-red .form-group {
+    border-color: rgba(255, 0, 68, 0.3);
+}
+
+.form-red .form-group:hover {
+    border-color: var(--neon-red);
+    box-shadow: 0 0 20px rgba(255, 0, 68, 0.2);
+}
+
+.form-red .form-label {
+    color: var(--neon-red);
+}
+
+.form-red .form-label-small {
+    color: rgba(255, 0, 68, 0.7);
+}
+
+.form-red .ratio-label.left {
+    color: var(--neon-red);
+}
+
+.form-red .slider-limit.left {
+    color: var(--neon-red);
+}
+
+.form-red .slider-limit.right {
+    color: var(--neon-red);
+}
+
+/* Red ratio labels */
+.form-red .ratio-label.right {
+    color: var(--neon-red);
+}
+
+/* Red inputs - neon yellow values */
+.form-red .neon-input {
+    color: var(--neon-yellow);
+    border-color: rgba(255, 0, 68, 0.3);
+}
+
+.form-red .neon-input:focus {
+    border-color: var(--neon-red);
+    box-shadow: 0 0 20px rgba(255, 0, 68, 0.3);
+}
+
+/* Red selects - neon yellow values */
+.form-red .neon-select {
+    color: var(--neon-yellow);
+    border-color: rgba(255, 0, 68, 0.3);
+}
+
+.form-red .neon-select:focus {
+    border-color: var(--neon-red);
+    box-shadow: 0 0 20px rgba(255, 0, 68, 0.3);
+}
+
+/* Red displays - colors are set dynamically by JavaScript */
+
+/* Red input units - neon yellow */
+.form-red .input-unit {
+    color: var(--neon-yellow);
+}
+
+/* Red ratio display */
+.form-red .ratio-display {
+    background: linear-gradient(90deg, var(--neon-red), var(--neon-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Red slider buttons */
+.form-red .slider-btn {
+    color: var(--neon-red);
+    border-color: var(--neon-red);
+}
+
+.form-red .slider-btn:hover {
+    background: var(--neon-red);
+    color: white;
+    box-shadow: 0 0 15px var(--neon-red);
+}
+
+/* Red ratio toggle buttons - neon yellow active */
+.form-red .ratio-toggle-btn {
+    border-color: rgba(255, 0, 68, 0.3);
+}
+
+.form-red .ratio-toggle-btn:hover {
+    border-color: var(--neon-yellow);
+    color: var(--neon-yellow);
+}
+
+.form-red .ratio-toggle-btn.active {
+    background: linear-gradient(135deg, var(--neon-yellow), #cccc00);
+    border-color: var(--neon-yellow);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+}
+
+/* Red label hints */
+.form-red .label-hint {
+    color: rgba(255, 0, 68, 0.6);
+}
+
+/* Red button */
+.neon-button.btn-red {
+    color: var(--neon-red);
+    border-color: var(--neon-red);
+}
+
+.neon-button.btn-red:hover {
+    color: white;
+    background: var(--neon-red);
+    box-shadow: 
+        0 0 20px var(--neon-red),
+        0 0 40px var(--neon-red),
+        0 0 60px var(--neon-red);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .container {
@@ -1547,6 +1973,19 @@ body {
     .slider-btn {
         width: 40px;
         height: 40px;
+    }
+    
+    /* Tabs responsive */
+    .form-tabs {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .form-tab {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        width: 100%;
+        text-align: center;
     }
 }
 

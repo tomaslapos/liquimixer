@@ -14,12 +14,12 @@ const flavorDatabase = {
     fruit: { 
         name: 'Ovoce (jahoda, jablko)', 
         min: 8, max: 12, ideal: 10,
-        note: 'Standardní start: 10%, zrát 3–7 dní'
+        note: 'Optimum: 10%, zrání 3–7 dní'
     },
     citrus: { 
         name: 'Citrónové (citron, limeta)', 
         min: 6, max: 10, ideal: 8,
-        note: 'Silné kyseliny, méně stačí, mentol zesiluje'
+        note: 'Silné kyseliny, méně stačí'
     },
     berry: { 
         name: 'Bobulové (borůvka, malina)', 
@@ -44,17 +44,17 @@ const flavorDatabase = {
     candy: { 
         name: 'Sladkosti (cukroví, karamel)', 
         min: 12, max: 20, ideal: 16,
-        note: 'Sladké tlumí throat hit, vyšší % nutné'
+        note: 'Sladké tlumí škrábání, vyšší % nutné'
     },
     dessert: { 
         name: 'Dezerty (koláč, pudink)', 
         min: 15, max: 22, ideal: 18,
-        note: 'Komplexní: 2–4 týdny steeping, riziko přepíchnutí'
+        note: 'Komplexní: 2–4 týdny zrání, riziko přechucení'
     },
     bakery: { 
         name: 'Zákusky (tyčinka, donut)', 
         min: 18, max: 25, ideal: 20,
-        note: 'Max zóna: testovat 15% nejdříve'
+        note: 'Doporučujeme vyzkoušet na 15%'
     },
     biscuit: { 
         name: 'Piškotové (vanilka, máslo)', 
@@ -69,12 +69,12 @@ const flavorDatabase = {
     tobaccosweet: { 
         name: 'Tabák + sladké (custard tobacco)', 
         min: 15, max: 20, ideal: 17,
-        note: 'Nejsložitější: 3–6 týdnů steeping'
+        note: 'Nejsložitější: 3–6 týdnů zrání'
     },
     nuts: { 
         name: 'Oříškové (arašíd, lískový)', 
         min: 12, max: 18, ideal: 15,
-        note: 'Dobře tlumí nikotin, střední %'
+        note: 'Dobře tlumí nikotin'
     },
     spice: { 
         name: 'Kořeněné (skořice, perník)', 
@@ -135,6 +135,52 @@ function initializeSliders() {
     
     // Setup nicotine ratio toggle buttons
     setupNicotineRatioToggle();
+    
+    // Initialize Shake & Vape form listeners
+    initShakeVapeListeners();
+    
+    // Initialize Liquid PRO form listeners
+    initLiquidProListeners();
+}
+
+function initShakeVapeListeners() {
+    const svTotalAmount = document.getElementById('svTotalAmount');
+    const svFlavorVolume = document.getElementById('svFlavorVolume');
+    const svTargetNicotine = document.getElementById('svTargetNicotine');
+    const svNicotineBaseStrength = document.getElementById('svNicotineBaseStrength');
+    
+    if (svTotalAmount) {
+        svTotalAmount.addEventListener('input', updateSvVgPgLimits);
+    }
+    if (svFlavorVolume) {
+        svFlavorVolume.addEventListener('input', updateSvVgPgLimits);
+    }
+    if (svTargetNicotine) {
+        svTargetNicotine.addEventListener('input', updateSvNicotineDisplay);
+    }
+    if (svNicotineBaseStrength) {
+        svNicotineBaseStrength.addEventListener('input', updateSvVgPgLimits);
+    }
+}
+
+function initLiquidProListeners() {
+    const proTotalAmount = document.getElementById('proTotalAmount');
+    const proTargetNicotine = document.getElementById('proTargetNicotine');
+    const proFlavorStrength = document.getElementById('proFlavorStrength');
+    const proNicotineBaseStrength = document.getElementById('proNicotineBaseStrength');
+    
+    if (proTotalAmount) {
+        proTotalAmount.addEventListener('input', updateProVgPgLimits);
+    }
+    if (proTargetNicotine) {
+        proTargetNicotine.addEventListener('input', updateProNicotineDisplay);
+    }
+    if (proFlavorStrength) {
+        proFlavorStrength.addEventListener('input', updateProFlavorDisplay);
+    }
+    if (proNicotineBaseStrength) {
+        proNicotineBaseStrength.addEventListener('input', updateProVgPgLimits);
+    }
 }
 
 function setupNicotineRatioToggle() {
@@ -471,6 +517,7 @@ function adjustTargetNicotine(change) {
 function updateNicotineDisplay() {
     const value = parseInt(targetNicotineSlider.value);
     const displayEl = document.getElementById('targetNicotineValue');
+    const displayContainer = displayEl.parentElement;
     const descEl = document.getElementById('nicotineDescription');
     const trackEl = document.getElementById('nicotineTrack');
     
@@ -482,8 +529,10 @@ function updateNicotineDisplay() {
         descEl.textContent = desc.text;
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
-        displayEl.style.color = desc.color;
-        displayEl.style.textShadow = `0 0 20px ${desc.color}`;
+        // Set color on container so unit has same color as number
+        displayEl.style.color = 'inherit';
+        displayContainer.style.color = desc.color;
+        displayContainer.style.textShadow = `0 0 20px ${desc.color}`;
         trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
     }
     
@@ -525,6 +574,7 @@ function updateFlavorDisplay() {
     const flavor = flavorDatabase[type];
     const descEl = document.getElementById('flavorDescription');
     const displayEl = document.getElementById('flavorValue');
+    const displayContainer = displayEl.parentElement;
     const trackEl = document.getElementById('flavorTrack');
     
     displayEl.textContent = value;
@@ -547,7 +597,9 @@ function updateFlavorDisplay() {
     descEl.textContent = text;
     descEl.style.color = color;
     descEl.style.borderLeftColor = color;
-    displayEl.style.color = color;
+    // Set color on container so unit has same color as number
+    displayEl.style.color = 'inherit';
+    displayContainer.style.color = color;
     
     // Update VG/PG ratio limits when flavor strength changes
     updateVgPgRatioLimits();
@@ -1233,4 +1285,767 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
         <td class="ingredient-percent">100%</td>
     `;
     tbody.appendChild(totalRow);
+}
+
+// =========================================
+// Form Tab Switching
+// =========================================
+
+let currentFormTab = 'liquid';
+
+function switchFormTab(tabName) {
+    currentFormTab = tabName;
+    
+    // Update tab buttons
+    document.querySelectorAll('.form-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.tab === tabName) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Update form content visibility
+    document.querySelectorAll('.form-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    const targetForm = document.getElementById(`form-${tabName}`);
+    if (targetForm) {
+        targetForm.classList.add('active');
+    }
+    
+    // Initialize displays for the active form
+    if (tabName === 'shakevape') {
+        initShakeVapeForm();
+    } else if (tabName === 'liquidpro') {
+        initLiquidProForm();
+    }
+}
+
+// =========================================
+// Shake & Vape Functions
+// =========================================
+
+let svVgPgLimits = { min: 0, max: 100 };
+
+function initShakeVapeForm() {
+    setupSvNicotineRatioToggle();
+    updateSvRatioDisplay();
+    updateSvNicotineDisplay();
+}
+
+function setupSvNicotineRatioToggle() {
+    const ratio5050Btn = document.getElementById('svRatio5050');
+    const ratio7030Btn = document.getElementById('svRatio7030');
+    const nicotineRatioInput = document.getElementById('svNicotineRatio');
+    
+    if (ratio5050Btn && ratio7030Btn && nicotineRatioInput) {
+        ratio5050Btn.onclick = () => {
+            ratio5050Btn.classList.add('active');
+            ratio7030Btn.classList.remove('active');
+            nicotineRatioInput.value = '50/50';
+            updateSvVgPgLimits();
+        };
+        
+        ratio7030Btn.onclick = () => {
+            ratio7030Btn.classList.add('active');
+            ratio5050Btn.classList.remove('active');
+            nicotineRatioInput.value = '70/30';
+            updateSvVgPgLimits();
+        };
+    }
+}
+
+function updateSvNicotineType() {
+    const type = document.getElementById('svNicotineType').value;
+    const strengthContainer = document.getElementById('svNicotineStrengthContainer');
+    const ratioContainer = document.getElementById('svNicotineRatioContainer');
+    const targetGroup = document.getElementById('svTargetNicotineGroup');
+    
+    if (type === 'none') {
+        strengthContainer.classList.add('hidden');
+        ratioContainer.classList.add('hidden');
+        targetGroup.classList.add('hidden');
+        document.getElementById('svTargetNicotine').value = 0;
+        updateSvNicotineDisplay();
+    } else {
+        strengthContainer.classList.remove('hidden');
+        ratioContainer.classList.remove('hidden');
+        targetGroup.classList.remove('hidden');
+    }
+    
+    updateSvVgPgLimits();
+}
+
+function adjustSvTargetNicotine(change) {
+    const slider = document.getElementById('svTargetNicotine');
+    let newValue = parseInt(slider.value) + change;
+    newValue = Math.max(0, Math.min(parseInt(slider.max), newValue));
+    slider.value = newValue;
+    updateSvNicotineDisplay();
+}
+
+function updateSvNicotineDisplay() {
+    const slider = document.getElementById('svTargetNicotine');
+    const value = parseInt(slider.value);
+    const displayEl = document.getElementById('svTargetNicotineValue');
+    const displayContainer = displayEl.parentElement;
+    const descEl = document.getElementById('svNicotineDescription');
+    const trackEl = document.getElementById('svNicotineTrack');
+    
+    displayEl.textContent = value;
+    
+    const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    if (desc) {
+        descEl.textContent = desc.text;
+        descEl.style.color = desc.color;
+        descEl.style.borderLeftColor = desc.color;
+        // Set color on container so unit has same color as number
+        displayEl.style.color = 'inherit';
+        displayContainer.style.color = desc.color;
+        displayContainer.style.textShadow = `0 0 20px ${desc.color}`;
+        trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
+    }
+    
+    updateSvVgPgLimits();
+}
+
+function adjustSvRatio(change) {
+    const slider = document.getElementById('svVgPgRatio');
+    let currentValue = parseInt(slider.value);
+    
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(svVgPgLimits.min, Math.min(svVgPgLimits.max, newValue));
+    slider.value = newValue;
+    updateSvRatioDisplay();
+}
+
+function updateSvRatioDisplay() {
+    const slider = document.getElementById('svVgPgRatio');
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    document.getElementById('svVgValue').textContent = vg;
+    document.getElementById('svPgValue').textContent = pg;
+    
+    const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
+    if (desc) {
+        const descEl = document.getElementById('svRatioDescription');
+        descEl.textContent = desc.text;
+        descEl.style.color = desc.color;
+        descEl.style.borderLeftColor = desc.color;
+        document.getElementById('svSliderTrack').style.background = 
+            `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
+    }
+}
+
+function updateSvVgPgLimits() {
+    const slider = document.getElementById('svVgPgRatio');
+    const warningEl = document.getElementById('svRatioLimitWarning');
+    const disabledLeft = document.getElementById('svSliderDisabledLeft');
+    const disabledRight = document.getElementById('svSliderDisabledRight');
+    
+    const totalAmount = parseFloat(document.getElementById('svTotalAmount').value) || 60;
+    const nicotineType = document.getElementById('svNicotineType').value;
+    const targetNicotine = parseFloat(document.getElementById('svTargetNicotine').value) || 0;
+    const baseNicotine = parseFloat(document.getElementById('svNicotineBaseStrength').value) || 0;
+    const flavorVolume = parseFloat(document.getElementById('svFlavorVolume').value) || 0;
+    
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    let nicVgPercent = 50;
+    let nicPgPercent = 50;
+    if (nicotineType !== 'none') {
+        const nicotineRatio = document.getElementById('svNicotineRatio').value;
+        if (nicotineRatio === '50/50') {
+            nicVgPercent = 50;
+            nicPgPercent = 50;
+        } else if (nicotineRatio === '70/30') {
+            nicVgPercent = 70;
+            nicPgPercent = 30;
+        }
+    }
+    
+    const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
+    const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
+    
+    // Flavor is typically 100% PG
+    const fixedPgVolume = nicotinePgVolume + flavorVolume;
+    const fixedVgVolume = nicotineVgVolume;
+    
+    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    
+    svVgPgLimits.min = Math.max(0, minVgPercent);
+    svVgPgLimits.max = Math.min(100, maxVgPercent);
+    
+    if (disabledLeft) {
+        disabledLeft.style.width = svVgPgLimits.min + '%';
+    }
+    if (disabledRight) {
+        disabledRight.style.width = (100 - svVgPgLimits.max) + '%';
+    }
+    
+    let currentValue = parseInt(slider.value);
+    if (currentValue < svVgPgLimits.min) {
+        slider.value = svVgPgLimits.min;
+    } else if (currentValue > svVgPgLimits.max) {
+        slider.value = svVgPgLimits.max;
+    }
+    
+    if (warningEl) {
+        if (svVgPgLimits.min > 0 || svVgPgLimits.max < 100) {
+            const reasons = [];
+            if (nicotineVolume > 0) {
+                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+            }
+            if (flavorVolume > 0) {
+                reasons.push(`příchuť (${flavorVolume} ml v PG)`);
+            }
+            warningEl.textContent = `Poměr omezen na ${svVgPgLimits.min}–${svVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
+    
+    updateSvRatioDisplay();
+}
+
+function updateSvCalculation() {
+    updateSvVgPgLimits();
+}
+
+function calculateShakeVape() {
+    const totalAmount = parseFloat(document.getElementById('svTotalAmount').value) || 60;
+    const vgPercent = parseInt(document.getElementById('svVgPgRatio').value);
+    const pgPercent = 100 - vgPercent;
+    const nicotineType = document.getElementById('svNicotineType').value;
+    const targetNicotine = parseFloat(document.getElementById('svTargetNicotine').value) || 0;
+    const baseNicotine = parseFloat(document.getElementById('svNicotineBaseStrength').value) || 0;
+    const flavorVolume = parseFloat(document.getElementById('svFlavorVolume').value) || 0;
+    
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    let nicVgPercent = 50;
+    let nicPgPercent = 50;
+    if (nicotineType !== 'none') {
+        const nicotineRatio = document.getElementById('svNicotineRatio').value;
+        if (nicotineRatio === '50/50') {
+            nicVgPercent = 50;
+            nicPgPercent = 50;
+        } else if (nicotineRatio === '70/30') {
+            nicVgPercent = 70;
+            nicPgPercent = 30;
+        }
+    }
+    
+    const nicotineVgContent = nicotineVolume * (nicVgPercent / 100);
+    const nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
+    const flavorPgContent = flavorVolume; // Flavor is 100% PG
+    
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    
+    const targetVgTotal = (vgPercent / 100) * totalAmount;
+    const targetPgTotal = (pgPercent / 100) * totalAmount;
+    
+    let pureVgNeeded = targetVgTotal - nicotineVgContent;
+    let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
+    
+    if (pureVgNeeded < 0) pureVgNeeded = 0;
+    if (purePgNeeded < 0) purePgNeeded = 0;
+    
+    const totalPureNeeded = pureVgNeeded + purePgNeeded;
+    if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
+        const ratio = remainingVolume / totalPureNeeded;
+        pureVgNeeded *= ratio;
+        purePgNeeded *= ratio;
+    } else if (totalPureNeeded < remainingVolume) {
+        const extra = remainingVolume - totalPureNeeded;
+        if (vgPercent + pgPercent > 0) {
+            pureVgNeeded += extra * (vgPercent / 100);
+            purePgNeeded += extra * (pgPercent / 100);
+        }
+    }
+    
+    const DROPS_PER_ML = 20;
+    const ingredients = [];
+    
+    // Flavor first (already in bottle)
+    if (flavorVolume > 0) {
+        ingredients.push({
+            name: `Příchuť (již v lahvičce, PG báze)`,
+            volume: flavorVolume,
+            percent: (flavorVolume / totalAmount) * 100,
+            drops: Math.round(flavorVolume * DROPS_PER_ML),
+            showDrops: true
+        });
+    }
+    
+    if (nicotineVolume > 0) {
+        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+        const nicotineRatioValue = document.getElementById('svNicotineRatio').value;
+        ingredients.push({
+            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
+            volume: nicotineVolume,
+            percent: (nicotineVolume / totalAmount) * 100,
+            drops: Math.round(nicotineVolume * DROPS_PER_ML),
+            showDrops: true
+        });
+    }
+    
+    if (purePgNeeded > 0.01) {
+        ingredients.push({
+            name: 'Propylenglykol (PG) - nosná látka',
+            volume: purePgNeeded,
+            percent: (purePgNeeded / totalAmount) * 100,
+            drops: null,
+            showDrops: false
+        });
+    }
+    
+    if (pureVgNeeded > 0.01) {
+        ingredients.push({
+            name: 'Rostlinný glycerin (VG) - nosná látka',
+            volume: pureVgNeeded,
+            percent: (pureVgNeeded / totalAmount) * 100,
+            drops: null,
+            showDrops: false
+        });
+    }
+    
+    const actualVg = pureVgNeeded + nicotineVgContent;
+    const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
+    
+    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
+    showPage('results');
+}
+
+// =========================================
+// Liquid PRO Functions
+// =========================================
+
+let proVgPgLimits = { min: 0, max: 100 };
+
+function initLiquidProForm() {
+    updateProVgPgLimits();
+    updateProRatioDisplay();
+    updateProNicotineDisplay();
+    updateProNicRatioDisplay();
+    updateProFlavorRatioDisplay();
+}
+
+function updateProNicotineType() {
+    const type = document.getElementById('proNicotineType').value;
+    const strengthContainer = document.getElementById('proNicotineStrengthContainer');
+    const ratioContainer = document.getElementById('proNicotineRatioContainer');
+    const targetGroup = document.getElementById('proTargetNicotineGroup');
+    
+    if (type === 'none') {
+        strengthContainer.classList.add('hidden');
+        ratioContainer.classList.add('hidden');
+        targetGroup.classList.add('hidden');
+        document.getElementById('proTargetNicotine').value = 0;
+        updateProNicotineDisplay();
+    } else {
+        strengthContainer.classList.remove('hidden');
+        ratioContainer.classList.remove('hidden');
+        targetGroup.classList.remove('hidden');
+    }
+    
+    updateProVgPgLimits();
+}
+
+function adjustProNicRatio(change) {
+    const slider = document.getElementById('proNicotineRatioSlider');
+    let currentValue = parseInt(slider.value);
+    
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(0, Math.min(100, newValue));
+    slider.value = newValue;
+    updateProNicRatioDisplay();
+}
+
+function updateProNicRatioDisplay() {
+    const slider = document.getElementById('proNicotineRatioSlider');
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    document.getElementById('proNicVgValue').textContent = vg;
+    document.getElementById('proNicPgValue').textContent = pg;
+    
+    const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
+    if (desc) {
+        const trackEl = document.getElementById('proNicotineTrackRatio');
+        if (trackEl) {
+            trackEl.style.background = `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
+        }
+    }
+    
+    updateProVgPgLimits();
+}
+
+function adjustProTargetNicotine(change) {
+    const slider = document.getElementById('proTargetNicotine');
+    let newValue = parseInt(slider.value) + change;
+    newValue = Math.max(0, Math.min(parseInt(slider.max), newValue));
+    slider.value = newValue;
+    updateProNicotineDisplay();
+}
+
+function updateProNicotineDisplay() {
+    const slider = document.getElementById('proTargetNicotine');
+    const value = parseInt(slider.value);
+    const displayEl = document.getElementById('proTargetNicotineValue');
+    const displayContainer = displayEl.parentElement;
+    const trackEl = document.getElementById('proNicotineTrack');
+
+    displayEl.textContent = value;
+
+    const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    if (desc) {
+        // Set color on container so unit has same color as number
+        displayEl.style.color = 'inherit';
+        displayContainer.style.color = desc.color;
+        displayContainer.style.textShadow = `0 0 20px ${desc.color}`;
+        trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
+    }
+
+    updateProVgPgLimits();
+}
+
+function updateProFlavorType() {
+    const type = document.getElementById('proFlavorType').value;
+    const strengthContainer = document.getElementById('proFlavorStrengthContainer');
+    
+    if (type === 'none') {
+        strengthContainer.classList.add('hidden');
+    } else {
+        strengthContainer.classList.remove('hidden');
+        const flavor = flavorDatabase[type];
+        document.getElementById('proFlavorStrength').value = flavor.ideal;
+        updateProFlavorDisplay();
+    }
+    
+    updateProVgPgLimits();
+}
+
+function adjustProFlavor(change) {
+    const slider = document.getElementById('proFlavorStrength');
+    let newValue = parseInt(slider.value) + change;
+    newValue = Math.max(0, Math.min(30, newValue));
+    slider.value = newValue;
+    updateProFlavorDisplay();
+}
+
+function updateProFlavorDisplay() {
+    const value = parseInt(document.getElementById('proFlavorStrength').value);
+    const type = document.getElementById('proFlavorType').value;
+    const flavor = flavorDatabase[type];
+    const displayEl = document.getElementById('proFlavorValue');
+    const displayContainer = displayEl.parentElement;
+    const trackEl = document.getElementById('proFlavorTrack');
+
+    displayEl.textContent = value;
+
+    let color;
+    if (value < flavor.min) {
+        color = '#ffaa00';
+        trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
+    } else if (value > flavor.max) {
+        color = '#ff0044';
+        trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
+    } else {
+        color = '#00cc66';
+        trackEl.style.background = `linear-gradient(90deg, #00cc66, #00aaff)`;
+    }
+
+    // Set color on container so unit has same color as number
+    displayEl.style.color = 'inherit';
+    displayContainer.style.color = color;
+
+    updateProVgPgLimits();
+}
+
+function adjustProFlavorRatio(change) {
+    const slider = document.getElementById('proFlavorRatioSlider');
+    let currentValue = parseInt(slider.value);
+    
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(0, Math.min(100, newValue));
+    slider.value = newValue;
+    updateProFlavorRatioDisplay();
+}
+
+function updateProFlavorRatioDisplay() {
+    const slider = document.getElementById('proFlavorRatioSlider');
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    document.getElementById('proFlavorVgValue').textContent = vg;
+    document.getElementById('proFlavorPgValue').textContent = pg;
+    
+    const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
+    if (desc) {
+        const trackEl = document.getElementById('proFlavorTrackRatio');
+        if (trackEl) {
+            trackEl.style.background = `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
+        }
+    }
+    
+    updateProVgPgLimits();
+}
+
+function adjustProRatio(change) {
+    const slider = document.getElementById('proVgPgRatio');
+    let currentValue = parseInt(slider.value);
+    
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(proVgPgLimits.min, Math.min(proVgPgLimits.max, newValue));
+    slider.value = newValue;
+    updateProRatioDisplay();
+}
+
+function updateProRatioDisplay() {
+    const slider = document.getElementById('proVgPgRatio');
+    let vg = parseInt(slider.value);
+    
+    // Clamp to limits
+    if (vg < proVgPgLimits.min) {
+        vg = proVgPgLimits.min;
+        slider.value = vg;
+    } else if (vg > proVgPgLimits.max) {
+        vg = proVgPgLimits.max;
+        slider.value = vg;
+    }
+    
+    const pg = 100 - vg;
+
+    document.getElementById('proVgValue').textContent = vg;
+    document.getElementById('proPgValue').textContent = pg;
+
+    const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
+    if (desc) {
+        document.getElementById('proSliderTrack').style.background =
+            `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
+    }
+}
+
+function updateProVgPgLimits() {
+    const slider = document.getElementById('proVgPgRatio');
+    const warningEl = document.getElementById('proRatioLimitWarning');
+    const disabledLeft = document.getElementById('proSliderDisabledLeft');
+    const disabledRight = document.getElementById('proSliderDisabledRight');
+    
+    const totalAmount = parseFloat(document.getElementById('proTotalAmount').value) || 100;
+    const nicotineType = document.getElementById('proNicotineType').value;
+    const targetNicotine = parseFloat(document.getElementById('proTargetNicotine').value) || 0;
+    const baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength').value) || 0;
+    const flavorType = document.getElementById('proFlavorType').value;
+    const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('proFlavorStrength').value) : 0;
+    
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    const flavorVolume = (flavorPercent / 100) * totalAmount;
+    
+    // Get VG/PG from sliders (using Number() to properly handle 0 as valid value)
+    const nicSliderValue = document.getElementById('proNicotineRatioSlider').value;
+    const nicVgPercent = nicSliderValue !== '' ? Number(nicSliderValue) : 50;
+    const nicPgPercent = 100 - nicVgPercent;
+
+    const flavorSliderValue = flavorType !== 'none' ? document.getElementById('proFlavorRatioSlider').value : '0';
+    const flavorVgPercent = flavorSliderValue !== '' ? Number(flavorSliderValue) : 0;
+    const flavorPgPercent = 100 - flavorVgPercent;
+    
+    const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
+    const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
+    
+    const flavorVgVolume = flavorVolume * (flavorVgPercent / 100);
+    const flavorPgVolume = flavorVolume * (flavorPgPercent / 100);
+    
+    const fixedPgVolume = nicotinePgVolume + flavorPgVolume;
+    const fixedVgVolume = nicotineVgVolume + flavorVgVolume;
+    
+    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    
+    proVgPgLimits.min = Math.max(0, minVgPercent);
+    proVgPgLimits.max = Math.min(100, maxVgPercent);
+    
+    if (disabledLeft) {
+        disabledLeft.style.width = proVgPgLimits.min + '%';
+    }
+    if (disabledRight) {
+        disabledRight.style.width = (100 - proVgPgLimits.max) + '%';
+    }
+    
+    let currentValue = parseInt(slider.value);
+    if (currentValue < proVgPgLimits.min) {
+        slider.value = proVgPgLimits.min;
+    } else if (currentValue > proVgPgLimits.max) {
+        slider.value = proVgPgLimits.max;
+    }
+    
+    if (warningEl) {
+        if (proVgPgLimits.min > 0 || proVgPgLimits.max < 100) {
+            const reasons = [];
+            if (nicotineVolume > 0) {
+                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+            }
+            if (flavorVolume > 0) {
+                reasons.push(`příchuť (${flavorPercent}%, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+            }
+            warningEl.textContent = `Poměr omezen na ${proVgPgLimits.min}–${proVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
+    
+    updateProRatioDisplay();
+}
+
+function calculateProMix() {
+    const totalAmount = parseFloat(document.getElementById('proTotalAmount').value) || 100;
+    const vgPercent = parseInt(document.getElementById('proVgPgRatio').value);
+    const pgPercent = 100 - vgPercent;
+    const nicotineType = document.getElementById('proNicotineType').value;
+    const targetNicotine = parseFloat(document.getElementById('proTargetNicotine').value) || 0;
+    const baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength').value) || 0;
+    const flavorType = document.getElementById('proFlavorType').value;
+    const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('proFlavorStrength').value) : 0;
+    
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    const flavorVolume = (flavorPercent / 100) * totalAmount;
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    
+    // Get VG/PG ratios from sliders (using Number() to properly handle 0 as valid value)
+    const nicSliderValue = document.getElementById('proNicotineRatioSlider').value;
+    const nicVgPercent = nicSliderValue !== '' ? Number(nicSliderValue) : 50;
+    const nicPgPercent = 100 - nicVgPercent;
+
+    const flavorSliderValue = flavorType !== 'none' ? document.getElementById('proFlavorRatioSlider').value : '0';
+    const flavorVgPercent = flavorSliderValue !== '' ? Number(flavorSliderValue) : 0;
+    const flavorPgPercent = 100 - flavorVgPercent;
+    
+    let nicotineVgContent = 0;
+    let nicotinePgContent = 0;
+    
+    if (nicotineType !== 'none' && nicotineVolume > 0) {
+        nicotineVgContent = nicotineVolume * (nicVgPercent / 100);
+        nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
+    }
+    
+    const flavorVgContent = flavorVolume * (flavorVgPercent / 100);
+    const flavorPgContent = flavorVolume * (flavorPgPercent / 100);
+    
+    const targetVgTotal = (vgPercent / 100) * totalAmount;
+    const targetPgTotal = (pgPercent / 100) * totalAmount;
+    
+    let pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
+    let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
+    
+    if (pureVgNeeded < 0) pureVgNeeded = 0;
+    if (purePgNeeded < 0) purePgNeeded = 0;
+    
+    const totalPureNeeded = pureVgNeeded + purePgNeeded;
+    if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
+        const ratio = remainingVolume / totalPureNeeded;
+        pureVgNeeded *= ratio;
+        purePgNeeded *= ratio;
+    } else if (totalPureNeeded < remainingVolume) {
+        const extra = remainingVolume - totalPureNeeded;
+        if (vgPercent + pgPercent > 0) {
+            pureVgNeeded += extra * (vgPercent / 100);
+            purePgNeeded += extra * (pgPercent / 100);
+        }
+    }
+    
+    const DROPS_PER_ML = 20;
+    const ingredients = [];
+    
+    if (nicotineVolume > 0) {
+        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+        ingredients.push({
+            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicVgPercent}/${nicPgPercent})`,
+            volume: nicotineVolume,
+            percent: (nicotineVolume / totalAmount) * 100,
+            drops: Math.round(nicotineVolume * DROPS_PER_ML),
+            showDrops: true
+        });
+    }
+    
+    if (flavorVolume > 0) {
+        const flavor = flavorDatabase[flavorType];
+        ingredients.push({
+            name: `${flavor.name} příchuť (VG/PG ${flavorVgPercent}/${flavorPgPercent})`,
+            volume: flavorVolume,
+            percent: (flavorVolume / totalAmount) * 100,
+            drops: Math.round(flavorVolume * DROPS_PER_ML),
+            showDrops: true
+        });
+    }
+    
+    if (purePgNeeded > 0.01) {
+        ingredients.push({
+            name: 'Propylenglykol (PG) - nosná látka',
+            volume: purePgNeeded,
+            percent: (purePgNeeded / totalAmount) * 100,
+            drops: null,
+            showDrops: false
+        });
+    }
+    
+    if (pureVgNeeded > 0.01) {
+        ingredients.push({
+            name: 'Rostlinný glycerin (VG) - nosná látka',
+            volume: pureVgNeeded,
+            percent: (pureVgNeeded / totalAmount) * 100,
+            drops: null,
+            showDrops: false
+        });
+    }
+    
+    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
+    const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
+    
+    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
+    showPage('results');
 }
