@@ -3669,3 +3669,39 @@ function calculateProMix() {
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
     showPage('results');
 }
+
+// =========================================
+// EXPORT: Funkce pro globalni pristup z onclick
+// =========================================
+window.toggleMenu = toggleMenu;
+window.showLoginModal = showLoginModal;
+window.hideLoginModal = hideLoginModal;
+window.showUserProfileModal = showUserProfileModal;
+window.hideUserProfileModal = hideUserProfileModal;
+window.handleSignOut = handleSignOut;
+window.showPage = showPage;
+window.goBack = goBack;
+window.calculateMixture = calculateMixture;
+window.storeCurrentRecipe = storeCurrentRecipe;
+window.showSaveRecipeModal = showSaveRecipeModal;
+window.hideSaveRecipeModal = hideSaveRecipeModal;
+window.saveRecipe = saveRecipe;
+window.showMyRecipes = showMyRecipes;
+window.viewRecipeDetail = viewRecipeDetail;
+window.deleteRecipe = deleteRecipe;
+window.shareRecipe = shareRecipe;
+window.showFavoriteProducts = showFavoriteProducts;
+window.showAddProductForm = showAddProductForm;
+window.cancelProductForm = cancelProductForm;
+window.saveProduct = saveProduct;
+window.viewProductDetail = viewProductDetail;
+window.editProduct = editProduct;
+window.deleteProduct = deleteProduct;
+window.filterProducts = filterProducts;
+window.filterRecipes = filterRecipes;
+window.resetProductFilters = resetProductFilters;
+window.resetRecipeFilters = resetRecipeFilters;
+window.setSearchRating = setSearchRating;
+window.clearSearchRating = clearSearchRating;
+window.setRecipeSearchRating = setRecipeSearchRating;
+window.clearRecipeSearchRating = clearRecipeSearchRating;
