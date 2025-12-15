@@ -76,7 +76,14 @@ async function initI18n() {
 // Načíst seznam lokalizací
 async function loadLocales() {
     try {
-        const { data, error } = await window.supabase
+        // Použít supabaseClient z database.js
+        const client = window.supabaseClient;
+        if (!client) {
+            console.warn('Supabase client not initialized yet');
+            return;
+        }
+        
+        const { data, error } = await client
             .from('locales')
             .select('*')
             .eq('is_active', true)
@@ -93,7 +100,13 @@ async function loadLocales() {
 // Načíst překlady pro daný jazyk
 async function loadTranslations(locale) {
     try {
-        const { data, error } = await window.supabase
+        const client = window.supabaseClient;
+        if (!client) {
+            console.warn('Supabase client not initialized yet');
+            return;
+        }
+        
+        const { data, error } = await client
             .from('translations')
             .select('key, value')
             .eq('locale', locale);
@@ -108,7 +121,7 @@ async function loadTranslations(locale) {
         
         // Pokud není dostatek překladů, načíst anglické jako fallback
         if (Object.keys(translations).length < 10 && locale !== 'en') {
-            const { data: enData } = await window.supabase
+            const { data: enData } = await client
                 .from('translations')
                 .select('key, value')
                 .eq('locale', 'en');

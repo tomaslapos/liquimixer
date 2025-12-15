@@ -330,16 +330,24 @@ window.addEventListener('load', async function() {
         if (window.Clerk) {
             await window.Clerk.load();
             clerkLoaded = true;
+            
+            // Okamžitá aktualizace UI
             updateAuthUI();
             
             // Save user to database if signed in
             if (window.Clerk.user && window.LiquiMixerDB) {
                 await window.LiquiMixerDB.onSignIn(window.Clerk.user);
+                // Zkontrolovat pending sdílený recept po přihlášení
+                await checkPendingSharedRecipe();
             }
             
-            // Listen for auth changes
+            // Listen for auth changes (OAuth callback, sign in/out)
             window.Clerk.addListener(async (event) => {
+                console.log('Clerk auth event:', event);
+                
+                // Vždy aktualizovat UI při změně autentizace
                 updateAuthUI();
+                
                 // Save user to database on sign in
                 if (window.Clerk.user && window.LiquiMixerDB) {
                     await window.LiquiMixerDB.onSignIn(window.Clerk.user);
@@ -347,8 +355,27 @@ window.addEventListener('load', async function() {
                     await checkPendingSharedRecipe();
                     // Zavřít login modal
                     hideLoginModal();
+                    
+                    // Force UI refresh pro OAuth přihlášení
+                    setTimeout(() => {
+                        updateAuthUI();
+                    }, 100);
                 }
             });
+            
+            // Kontrola OAuth callback v URL
+            if (window.location.hash.includes('__clerk') || 
+                window.location.search.includes('__clerk')) {
+                // Po OAuth přihlášení počkej a aktualizuj UI
+                setTimeout(() => {
+                    updateAuthUI();
+                    // Vyčistit URL od Clerk parametrů
+                    if (window.history.replaceState) {
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, '', cleanUrl);
+                    }
+                }, 500);
+            }
         }
     } catch (error) {
         console.log('Clerk not configured yet:', error.message);
@@ -357,21 +384,38 @@ window.addEventListener('load', async function() {
 
 // Update UI based on auth state
 function updateAuthUI() {
-    if (!clerkLoaded || !window.Clerk) return;
+    console.log('updateAuthUI called, clerkLoaded:', clerkLoaded, 'Clerk.user:', window.Clerk?.user?.id);
+    
+    if (!clerkLoaded || !window.Clerk) {
+        console.log('Clerk not ready yet');
+        return;
+    }
     
     const loginBtn = document.querySelector('.login-btn');
-    if (!loginBtn) return;
+    if (!loginBtn) {
+        console.log('Login button not found in DOM');
+        return;
+    }
     
     if (window.Clerk.user) {
         // User is signed in
+        console.log('User signed in:', window.Clerk.user.id);
         // SECURITY: Escapovat uživatelské jméno proti XSS
-        const userName = escapeHtml(window.Clerk.user.firstName || window.Clerk.user.emailAddresses[0]?.emailAddress || 'Uživatel');
+        const userName = escapeHtml(
+            window.Clerk.user.firstName || 
+            window.Clerk.user.username ||
+            window.Clerk.user.emailAddresses?.[0]?.emailAddress || 
+            'Uživatel'
+        );
         loginBtn.innerHTML = `<span class="nav-icon">👤</span><span class="nav-text">${userName}</span>`;
         loginBtn.onclick = showUserProfileModal;
+        loginBtn.classList.add('logged-in');
     } else {
         // User is signed out
+        console.log('User signed out');
         loginBtn.innerHTML = '<span class="nav-icon">👤</span><span class="nav-text">Přihlášení</span>';
         loginBtn.onclick = showLoginModal;
+        loginBtn.classList.remove('logged-in');
     }
 }
 
@@ -3625,3 +3669,39 @@ function calculateProMix() {
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
     showPage('results');
 }
+
+// =========================================
+// EXPORT: Funkce pro globalni pristup z onclick
+// =========================================
+window.toggleMenu = toggleMenu;
+window.showLoginModal = showLoginModal;
+window.hideLoginModal = hideLoginModal;
+window.showUserProfileModal = showUserProfileModal;
+window.hideUserProfileModal = hideUserProfileModal;
+window.handleSignOut = handleSignOut;
+window.showPage = showPage;
+window.goBack = goBack;
+window.calculateMixture = calculateMixture;
+window.storeCurrentRecipe = storeCurrentRecipe;
+window.showSaveRecipeModal = showSaveRecipeModal;
+window.hideSaveRecipeModal = hideSaveRecipeModal;
+window.saveRecipe = saveRecipe;
+window.showMyRecipes = showMyRecipes;
+window.viewRecipeDetail = viewRecipeDetail;
+window.deleteRecipe = deleteRecipe;
+window.shareRecipe = shareRecipe;
+window.showFavoriteProducts = showFavoriteProducts;
+window.showAddProductForm = showAddProductForm;
+window.cancelProductForm = cancelProductForm;
+window.saveProduct = saveProduct;
+window.viewProductDetail = viewProductDetail;
+window.editProduct = editProduct;
+window.deleteProduct = deleteProduct;
+window.filterProducts = filterProducts;
+window.filterRecipes = filterRecipes;
+window.resetProductFilters = resetProductFilters;
+window.resetRecipeFilters = resetRecipeFilters;
+window.setSearchRating = setSearchRating;
+window.clearSearchRating = clearSearchRating;
+window.setRecipeSearchRating = setRecipeSearchRating;
+window.clearRecipeSearchRating = clearRecipeSearchRating;

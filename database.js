@@ -48,6 +48,8 @@ function initSupabase() {
                 persistSession: false
             }
         });
+        // Expose client globally for other modules (i18n.js)
+        window.supabaseClient = supabase;
         return true;
     }
     console.warn('Supabase SDK not loaded');
@@ -193,18 +195,29 @@ function sanitizeInput(input) {
 // Validace clerk_id formátu
 function isValidClerkId(clerkId) {
     if (!clerkId || typeof clerkId !== 'string') return false;
-    // Clerk ID má specifický formát: user_XXXXXXXXXXXXXXXXXXXX
-    // V produkci povolit pouze skutečné Clerk ID
+    
+    // Clerk ID formáty:
+    // - Standardní: user_XXXXXXXXXXXXXXXXXXXX
+    // - OAuth (Google, Facebook, Apple, TikTok): oauth_google_..., oauth_facebook_..., etc.
+    // - External accounts mohou mít různé formáty
+    
     const isProduction = window.location.hostname === 'www.liquimixer.com' || 
                          window.location.hostname === 'liquimixer.com';
     
+    // Validní Clerk ID vzory
+    const validPatterns = [
+        /^user_[a-zA-Z0-9]{20,}$/,           // Standardní Clerk ID
+        /^oauth_[a-z]+_[a-zA-Z0-9]+$/,       // OAuth provider ID (google, facebook, apple, tiktok)
+        /^[a-zA-Z0-9_-]{10,50}$/             // Obecný vzor pro různé OAuth formáty
+    ];
+    
     if (isProduction) {
-        // Pouze skutečné Clerk ID v produkci
-        return /^user_[a-zA-Z0-9]{20,}$/.test(clerkId);
+        // V produkci povolit standardní i OAuth formáty
+        return validPatterns.some(pattern => pattern.test(clerkId));
     }
     
     // V development povolit i test_user
-    return /^user_[a-zA-Z0-9]{20,}$/.test(clerkId) || 
+    return validPatterns.some(pattern => pattern.test(clerkId)) || 
            /^test_user_[a-zA-Z0-9_]+$/.test(clerkId);
 }
 
