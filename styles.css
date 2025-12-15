@@ -529,8 +529,22 @@ body {
 .top-nav {
     position: fixed;
     top: 15px;
+    left: 15px;
     right: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     z-index: 1000;
+    pointer-events: none;
+}
+
+.nav-left,
+.nav-buttons {
+    pointer-events: auto;
+}
+
+.nav-left {
+    display: flex;
 }
 
 .nav-buttons {
@@ -563,8 +577,57 @@ body {
     font-size: 1.1rem;
 }
 
+/* Home button - neonový domeček */
+.home-btn {
+    padding: 10px 14px;
+    border-color: var(--neon-cyan);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.home-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.home-btn:hover {
+    background: rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.home-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--neon-cyan);
+    filter: drop-shadow(0 0 5px var(--neon-cyan));
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover .home-icon {
+    filter: drop-shadow(0 0 10px var(--neon-cyan)) drop-shadow(0 0 20px var(--neon-cyan));
+}
+
+/* Menu button - neonová cyan */
+.menu-btn .nav-text,
+.menu-btn .nav-icon {
+    color: var(--neon-cyan);
+    font-weight: bold;
+    text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* Login button - neonová pink */
 .login-btn {
     border-color: var(--neon-pink);
+}
+
+.login-btn .nav-text,
+.login-btn .nav-icon {
+    color: var(--neon-pink);
+    font-weight: bold;
+    text-shadow: 0 0 8px var(--neon-pink);
 }
 
 .login-btn:hover {
@@ -2005,6 +2068,7 @@ body {
 @media (max-width: 480px) {
     .top-nav {
         top: 10px;
+        left: 10px;
         right: 10px;
     }
     
@@ -2019,6 +2083,15 @@ body {
     
     .nav-btn .nav-icon {
         font-size: 1.2rem;
+    }
+    
+    .home-btn {
+        padding: 8px 10px;
+    }
+    
+    .home-icon {
+        width: 20px;
+        height: 20px;
     }
     
     .menu-dropdown,

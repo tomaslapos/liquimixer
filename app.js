@@ -1254,7 +1254,6 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         
         <div class="recipe-meta-info">
             <p class="recipe-date">Vytvořeno: ${date}</p>
-            <p class="recipe-id">ID: <code>${escapeHtml(recipe.id)}</code></p>
         </div>
     `;
 }
@@ -1439,6 +1438,40 @@ function shareProduct() {
         });
     } else {
         copyShareLink(shareUrl);
+    }
+}
+
+// Smazat recept
+async function deleteRecipe() {
+    if (!currentViewingRecipe) return;
+    
+    if (!window.Clerk || !window.Clerk.user) {
+        alert('Pro smazání receptu se prosím přihlaste.');
+        return;
+    }
+    
+    const recipeName = currentViewingRecipe.name || 'Tento recept';
+    
+    if (!confirm(`Opravdu chcete smazat recept "${recipeName}"?\n\nTato akce je nevratná.`)) {
+        return;
+    }
+    
+    try {
+        const success = await window.LiquiMixerDB.deleteRecipe(
+            window.Clerk.user.id, 
+            currentViewingRecipe.id
+        );
+        
+        if (success) {
+            alert('Recept byl smazán.');
+            currentViewingRecipe = null;
+            showMyRecipes();
+        } else {
+            alert('Chyba při mazání receptu.');
+        }
+    } catch (error) {
+        console.error('Error deleting recipe:', error);
+        alert('Chyba při mazání receptu.');
     }
 }
 
@@ -1783,7 +1816,6 @@ function displayProductDetail(product) {
     const typeIcon = productTypeIcons[product.product_type] || '🍓';
     
     const safeDescription = escapeHtml(product.description);
-    const safeUrl = escapeHtml(product.product_url);
     
     let imageHtml = '';
     if (product.image_url) {
@@ -1792,13 +1824,17 @@ function displayProductDetail(product) {
     
     let urlHtml = '';
     if (product.product_url) {
-        urlHtml = `
-            <div class="product-detail-url">
-                <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="neon-button secondary">
-                    🔗 Otevřít odkaz na produkt
-                </a>
-            </div>
-        `;
+        // Použít sanitizeUrl pro bezpečnou URL
+        const cleanUrl = sanitizeUrl(product.product_url);
+        if (cleanUrl) {
+            urlHtml = `
+                <div class="product-detail-url">
+                    <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="neon-button secondary">
+                        Otevřít odkaz na produkt
+                    </a>
+                </div>
+            `;
+        }
     }
     
     contentEl.innerHTML = `
@@ -1813,7 +1849,6 @@ function displayProductDetail(product) {
         ${urlHtml}
         <div class="product-meta-info">
             <p class="product-date">Přidáno: ${date}</p>
-            <p class="product-id">ID: <code>${escapeHtml(product.id)}</code></p>
         </div>
     `;
 }
@@ -2122,6 +2157,29 @@ function showPage(pageId) {
         updateDiluteSourceRatioDisplay();
         updateDiluteTargetRatioDisplay();
     }
+    
+    // Zobrazit/skrýt tlačítko Domů
+    updateHomeButtonVisibility(pageId);
+}
+
+// Aktualizovat viditelnost tlačítka Domů
+function updateHomeButtonVisibility(pageId) {
+    const homeBtn = document.getElementById('homeButton');
+    if (!homeBtn) return;
+    
+    // Stránky kde se NEZOBRAZUJE tlačítko Domů (úvodní stránka a formuláře)
+    const hideOnPages = ['intro', 'form', 'dilute-form', 'product-form'];
+    
+    if (hideOnPages.includes(pageId)) {
+        homeBtn.classList.remove('visible');
+    } else {
+        homeBtn.classList.add('visible');
+    }
+}
+
+// Přejít na úvodní stránku
+function goHome() {
+    showPage('intro');
 }
 
 // =========================================
@@ -4060,6 +4118,7 @@ window.showUserProfileModal = showUserProfileModal;
 window.hideUserProfileModal = hideUserProfileModal;
 window.handleSignOut = handleSignOut;
 window.showPage = showPage;
+window.goHome = goHome;
 window.goBack = goBack;
 window.calculateMixture = calculateMixture;
 window.storeCurrentRecipe = storeCurrentRecipe;
