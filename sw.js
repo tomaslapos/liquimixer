@@ -1,5 +1,8 @@
 // LiquiMixer Service Worker
-const CACHE_NAME = 'liquimixer-v31';
+// DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
+const CACHE_NAME = 'liquimixer-v32';
+
+// Soubory pro precaching
 const urlsToCache = [
   '/',
   '/index.html',
@@ -14,15 +17,26 @@ const urlsToCache = [
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap'
 ];
 
+// Soubory které se mají vždy načítat ze sítě (network-first)
+const networkFirstFiles = [
+  '/app.js',
+  '/database.js', 
+  '/subscription.js',
+  '/i18n.js',
+  '/index.html'
+];
+
 // Install event - cache resources
 self.addEventListener('install', (event) => {
+  console.log('LiquiMixer SW: Installing version', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('LiquiMixer: Cache opened');
+        console.log('LiquiMixer SW: Caching files');
         return cache.addAll(urlsToCache);
       })
       .then(() => {
+        // Okamžitě aktivovat nový SW
         self.skipWaiting();
       })
   );
@@ -30,48 +44,86 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean old caches
 self.addEventListener('activate', (event) => {
+  console.log('LiquiMixer SW: Activating version', CACHE_NAME);
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('LiquiMixer: Deleting old cache:', cacheName);
+            console.log('LiquiMixer SW: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
+      // Okamžitě převzít kontrolu nad všemi klienty
       self.clients.claim();
+      // Upozornit klienty na aktualizaci
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
+        });
+      });
     })
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - Network-first pro JS, cache-first pro ostatní
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        if (response) {
+  const url = new URL(event.request.url);
+  
+  // Pro JS a HTML soubory použít network-first strategii
+  const isNetworkFirst = networkFirstFiles.some(file => url.pathname.endsWith(file));
+  
+  if (isNetworkFirst) {
+    // Network-first: zkusit síť, pak cache
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Aktualizovat cache s novou verzí
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
           return response;
-        }
-        return fetch(event.request).then((response) => {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        })
+        .catch(() => {
+          // Offline - použít cache
+          return caches.match(event.request);
+        })
+    );
+  } else {
+    // Cache-first pro statické soubory (CSS, obrázky, fonty)
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          if (response) {
             return response;
           }
-          // Clone and cache the response
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+          return fetch(event.request).then((response) => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+            return response;
           });
-          return response;
-        });
-      })
-      .catch(() => {
-        // Offline fallback
-        return caches.match('/index.html');
-      })
-  );
+        })
+        .catch(() => {
+          return caches.match('/index.html');
+        })
+    );
+  }
+});
+
+// Poslouchání zpráv od klientů
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
 
