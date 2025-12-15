@@ -152,6 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAllDisplays();
     initSearchStarsHover();
     initRecipeSearchStarsHover();
+    
+    // Event listener pro kontaktní formulář (bezpečnější než inline onclick)
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContact);
+    }
 });
 
 function initializeSliders() {
@@ -592,19 +598,133 @@ function showRegisterInfo() {
     showLoginModal();
 }
 
-function handleContact(event) {
+// Rate limiter pro kontaktní formulář (client-side)
+const contactRateLimiter = {
+    lastSubmit: 0,
+    minInterval: 30000, // 30 sekund mezi odesláními
+    
+    canSubmit() {
+        const now = Date.now();
+        if (now - this.lastSubmit < this.minInterval) {
+            return false;
+        }
+        this.lastSubmit = now;
+        return true;
+    }
+};
+
+// Zobrazit stav kontaktního formuláře
+function showContactStatus(message, isError = false) {
+    const statusEl = document.getElementById('contactStatus');
+    if (!statusEl) return;
+    
+    statusEl.textContent = message;
+    statusEl.className = 'contact-status ' + (isError ? 'error' : 'success');
+    statusEl.style.display = 'block';
+    
+    // Automaticky skrýt po 5 sekundách
+    setTimeout(() => {
+        statusEl.style.display = 'none';
+    }, 5000);
+}
+
+// Nastavit loading stav tlačítka
+function setContactLoading(isLoading) {
+    const btn = document.getElementById('contactSubmitBtn');
+    const text = document.getElementById('contactSubmitText');
+    const loader = document.getElementById('contactSubmitLoader');
+    
+    if (btn && text && loader) {
+        btn.disabled = isLoading;
+        text.style.display = isLoading ? 'none' : 'inline';
+        loader.classList.toggle('hidden', !isLoading);
+    }
+}
+
+// Hlavní handler kontaktního formuláře
+async function handleContact(event) {
     event.preventDefault();
-    const email = document.getElementById('contactEmail').value;
-    const subject = document.getElementById('contactSubject').value;
-    const message = document.getElementById('contactMessage').value;
     
-    // Placeholder for contact form functionality
-    alert('Děkujeme za Vaši zprávu!\n\nVaše zpráva byla odeslána a budeme Vás brzy kontaktovat na adrese: ' + email);
+    // Honeypot kontrola (anti-spam)
+    const honeypot = document.getElementById('contactHoneypot');
+    if (honeypot && honeypot.value) {
+        console.warn('Spam detected (honeypot)');
+        showContactStatus('Děkujeme za zprávu!', false); // Fake success pro boty
+        return false;
+    }
     
-    // Clear form
-    document.getElementById('contactEmail').value = '';
-    document.getElementById('contactSubject').value = '';
-    document.getElementById('contactMessage').value = '';
+    // Rate limiting
+    if (!contactRateLimiter.canSubmit()) {
+        showContactStatus('Počkejte prosím 30 sekund před dalším odesláním.', true);
+        return false;
+    }
+    
+    const email = document.getElementById('contactEmail').value.trim();
+    const subject = document.getElementById('contactSubject').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    
+    // Validace
+    if (!email || !subject || !message) {
+        showContactStatus('Vyplňte prosím všechna pole.', true);
+        return false;
+    }
+    
+    // Email validace
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showContactStatus('Zadejte platnou e-mailovou adresu.', true);
+        return false;
+    }
+    
+    // Délka validace
+    if (subject.length < 3 || subject.length > 200) {
+        showContactStatus('Předmět musí mít 3-200 znaků.', true);
+        return false;
+    }
+    
+    if (message.length < 10 || message.length > 5000) {
+        showContactStatus('Zpráva musí mít 10-5000 znaků.', true);
+        return false;
+    }
+    
+    setContactLoading(true);
+    
+    try {
+        // Uložit do databáze
+        const client = window.supabaseClient;
+        if (!client) {
+            throw new Error('Database not available');
+        }
+        
+        const { error } = await client
+            .from('contact_messages')
+            .insert({
+                email: email,
+                subject: subject,
+                message: message,
+                clerk_id: window.Clerk?.user?.id || null,
+                user_agent: navigator.userAgent.substring(0, 500)
+            });
+        
+        if (error) {
+            console.error('Contact form error:', error);
+            throw error;
+        }
+        
+        // Úspěch
+        showContactStatus('Děkujeme! Vaše zpráva byla odeslána.', false);
+        
+        // Vymazat formulář
+        document.getElementById('contactEmail').value = '';
+        document.getElementById('contactSubject').value = '';
+        document.getElementById('contactMessage').value = '';
+        
+    } catch (err) {
+        console.error('Error sending contact message:', err);
+        showContactStatus('Omlouváme se, zprávu se nepodařilo odeslat. Zkuste to prosím později.', true);
+    } finally {
+        setContactLoading(false);
+    }
     
     return false;
 }
