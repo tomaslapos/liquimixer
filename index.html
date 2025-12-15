@@ -1267,10 +1267,45 @@
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
                         console.log('LiquiMixer SW registered:', registration.scope);
+                        
+                        // Kontrola aktualizací
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('LiquiMixer SW: Update found');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nová verze je připravena
+                                    console.log('LiquiMixer SW: New version ready');
+                                    if (confirm('Je dostupná nová verze aplikace. Chcete ji načíst?')) {
+                                        newWorker.postMessage('skipWaiting');
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
                     })
                     .catch((error) => {
                         console.log('LiquiMixer SW registration failed:', error);
                     });
+            });
+            
+            // Poslouchání zpráv od Service Workeru
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'SW_UPDATED') {
+                    console.log('LiquiMixer SW: Updated to', event.data.version);
+                    // Automaticky obnovit stránku při aktualizaci
+                    window.location.reload();
+                }
+            });
+            
+            // Kontrola aktualizací při návratu na stránku
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    navigator.serviceWorker.ready.then((registration) => {
+                        registration.update();
+                    });
+                }
             });
         }
     </script>
