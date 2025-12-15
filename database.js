@@ -48,6 +48,8 @@ function initSupabase() {
                 persistSession: false
             }
         });
+        // Expose client globally for other modules (i18n.js)
+        window.supabaseClient = supabase;
         return true;
     }
     console.warn('Supabase SDK not loaded');
