@@ -137,19 +137,20 @@
         </div>
 
         <!-- Login modal -->
-        <div id="loginModal" class="login-modal hidden">
+        <div id="loginModal" class="login-modal hidden" onclick="handleLoginModalBackdropClick(event)">
             <div class="login-content">
                 <button class="menu-close" onclick="hideLoginModal()">✕</button>
-                <h3 class="menu-title">Přihlášení</h3>
+                <h3 class="menu-title" data-i18n="auth.login_title">Přihlášení</h3>
+                <p class="login-subtitle" data-i18n="auth.login_subtitle">Přihlaste se pro přístup k uloženým receptům a produktům</p>
                 <div id="clerk-sign-in"></div>
             </div>
         </div>
         
         <!-- User Profile modal -->
-        <div id="userProfileModal" class="login-modal hidden">
+        <div id="userProfileModal" class="login-modal hidden" onclick="handleProfileModalBackdropClick(event)">
             <div class="login-content">
                 <button class="menu-close" onclick="hideUserProfileModal()">✕</button>
-                <h3 class="menu-title">Můj účet</h3>
+                <h3 class="menu-title" data-i18n="auth.profile_title">Můj účet</h3>
                 <div id="clerk-user-profile"></div>
             </div>
         </div>
@@ -1031,8 +1032,13 @@
                     </div>
                     <div class="form-group-login">
                         <label class="login-label">Použité produkty</label>
-                        <div class="linked-products-container" id="linkedProductsContainer">
-                            <p class="linked-products-hint">Načítám produkty...</p>
+                        <div class="linked-products-selector" id="linkedProductsSelector">
+                            <div class="selected-products-list" id="selectedProductsList">
+                                <!-- Vybrané produkty budou přidány dynamicky -->
+                            </div>
+                            <button type="button" class="add-product-btn" onclick="addProductRow()">
+                                <span class="add-icon">+</span> Přidat produkt
+                            </button>
                         </div>
                     </div>
                     <button type="submit" class="neon-button">Uložit recept</button>

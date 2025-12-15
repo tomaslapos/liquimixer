@@ -232,6 +232,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 
 -- Přihlášení
 ('cs', 'auth.login', 'Přihlášení', 'auth'),
+('cs', 'auth.login_title', 'Přihlášení', 'auth'),
+('cs', 'auth.login_subtitle', 'Přihlaste se pro přístup k uloženým receptům a produktům', 'auth'),
+('cs', 'auth.profile_title', 'Můj účet', 'auth'),
 ('cs', 'auth.email', 'E-mail', 'auth'),
 ('cs', 'auth.password', 'Heslo', 'auth'),
 ('cs', 'auth.login_button', 'Přihlásit se', 'auth'),
@@ -372,6 +375,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 
 -- Auth
 ('en', 'auth.login', 'Login', 'auth'),
+('en', 'auth.login_title', 'Sign In', 'auth'),
+('en', 'auth.login_subtitle', 'Sign in to access your saved recipes and products', 'auth'),
+('en', 'auth.profile_title', 'My Account', 'auth'),
 ('en', 'auth.email', 'E-mail', 'auth'),
 ('en', 'auth.password', 'Password', 'auth'),
 ('en', 'auth.login_button', 'Sign in', 'auth'),
@@ -512,6 +518,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 
 -- Autoryzacja
 ('pl', 'auth.login', 'Logowanie', 'auth'),
+('pl', 'auth.login_title', 'Logowanie', 'auth'),
+('pl', 'auth.login_subtitle', 'Zaloguj się, aby uzyskać dostęp do zapisanych przepisów i produktów', 'auth'),
+('pl', 'auth.profile_title', 'Moje konto', 'auth'),
 ('pl', 'auth.email', 'E-mail', 'auth'),
 ('pl', 'auth.password', 'Hasło', 'auth'),
 ('pl', 'auth.login_button', 'Zaloguj się', 'auth'),
