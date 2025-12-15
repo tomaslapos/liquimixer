@@ -846,6 +846,1004 @@ body {
     box-shadow: 0 0 10px rgba(255, 0, 255, 0.3) !important;
 }
 
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: rgba(10, 10, 21, 0.98);
+    border: 1px solid var(--neon-pink);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+/* Star Rating */
+.star-rating {
+    display: flex;
+    gap: 8px;
+    font-size: 2rem;
+}
+
+.star-rating .star {
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.star-rating .star:hover,
+.star-rating .star.active {
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.star-rating .star:hover ~ .star {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Recipe Cards */
+.recipes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.recipe-card {
+    background: rgba(128, 0, 128, 0.7);
+    border: 2px solid rgba(128, 0, 128, 0.8);
+    border-radius: var(--border-radius-small);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #000;
+}
+
+.recipe-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Barvy dle hodnocení - recepty */
+.recipe-card.rating-5 {
+    background: rgba(0, 200, 83, 0.85);
+    border-color: rgba(0, 150, 60, 0.9);
+}
+
+.recipe-card.rating-4 {
+    background: rgba(33, 150, 243, 0.85);
+    border-color: rgba(25, 118, 210, 0.9);
+}
+
+.recipe-card.rating-3 {
+    background: rgba(255, 235, 59, 0.85);
+    border-color: rgba(251, 192, 45, 0.9);
+}
+
+.recipe-card.rating-2 {
+    background: rgba(255, 152, 0, 0.85);
+    border-color: rgba(245, 124, 0, 0.9);
+}
+
+.recipe-card.rating-1 {
+    background: rgba(244, 67, 54, 0.85);
+    border-color: rgba(211, 47, 47, 0.9);
+}
+
+.recipe-card.rating-0 {
+    background: rgba(156, 39, 176, 0.85);
+    border-color: rgba(123, 31, 162, 0.9);
+}
+
+/* Černé písmo pro všechny recepty */
+.recipe-card,
+.recipe-card .recipe-card-title,
+.recipe-card .recipe-card-description,
+.recipe-card .recipe-card-meta,
+.recipe-card .recipe-card-rating {
+    color: #000 !important;
+}
+
+.recipe-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.recipe-card-title {
+    font-family: var(--font-primary);
+    font-size: 1.1rem;
+    color: var(--neon-cyan);
+    margin: 0;
+}
+
+.recipe-card-rating {
+    color: #ffd700;
+    font-size: 0.9rem;
+}
+
+.recipe-card-description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.recipe-card-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.recipe-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Recipe Detail */
+.recipe-detail-content {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.recipe-detail-header {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.recipe-detail-rating {
+    color: #ffd700;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.recipe-detail-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+.recipe-detail-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.recipe-info-item {
+    background: rgba(0, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: var(--border-radius-small);
+    text-align: center;
+}
+
+.recipe-info-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.recipe-info-value {
+    font-family: var(--font-primary);
+    font-size: 1.2rem;
+    color: var(--neon-cyan);
+}
+
+.recipe-ingredients-title {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    color: var(--neon-pink);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.recipe-meta-info {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.recipe-date {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.recipe-id {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+}
+
+.recipe-id code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: rgba(0, 255, 255, 0.7);
+    word-break: break-all;
+}
+
+/* No recipes text */
+.no-recipes-text {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 40px 20px;
+    font-size: 1rem;
+}
+
+/* ============================================
+   OBLÍBENÉ PRODUKTY STYLY
+   ============================================ */
+
+.products-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Vyhledávací lišta produktů */
+.products-search-bar {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.search-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.search-field label {
+    font-size: 0.8rem;
+    color: var(--neon-cyan);
+    font-weight: 500;
+}
+
+.search-text {
+    flex: 2;
+    min-width: 180px;
+}
+
+.search-type {
+    flex: 1;
+    min-width: 150px;
+}
+
+.search-rating {
+    flex: 1;
+    min-width: 160px;
+}
+
+.products-search-bar input[type="text"],
+.products-search-bar select {
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius-small);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+}
+
+.products-search-bar input[type="text"]:focus,
+.products-search-bar select:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.products-search-bar select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff00ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 35px;
+}
+
+.products-search-bar select option {
+    background: #1a1a2e;
+    color: var(--text-color);
+}
+
+/* Hvězdičky pro filtrování */
+.search-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius-small);
+}
+
+.search-star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.search-star:hover,
+.search-star.hover {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+    transform: scale(1.1);
+}
+
+.search-star.active {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+}
+
+.clear-rating-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0 5px;
+    margin-left: 5px;
+    transition: all 0.2s ease;
+}
+
+.clear-rating-btn:hover {
+    color: var(--neon-cyan);
+}
+
+.search-results-info {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    min-height: 20px;
+}
+
+.search-results-info.has-results {
+    color: var(--neon-green);
+}
+
+.search-results-info.no-results {
+    color: var(--neon-pink);
+}
+
+/* Responzivní design pro vyhledávání */
+@media (max-width: 600px) {
+    .search-row {
+        flex-direction: column;
+    }
+    
+    .search-text,
+    .search-type,
+    .search-rating {
+        min-width: 100%;
+    }
+}
+
+/* Vyhledávací lišta receptů */
+.recipes-search-bar {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.recipes-search-bar input[type="text"] {
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius-small);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+}
+
+.recipes-search-bar input[type="text"]:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* ============================================
+   SUBSCRIPTION CARD STYLES
+   ============================================ */
+
+.subscription-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--neon-green);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.subscription-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.subscription-icon {
+    font-size: 1.5rem;
+}
+
+.subscription-header h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.subscription-status {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.subscription-details {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius-small);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.subscription-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subscription-row:last-child {
+    border-bottom: none;
+}
+
+.subscription-row span {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.subscription-row strong {
+    color: var(--neon-cyan);
+}
+
+.subscription-warning {
+    background: rgba(255, 0, 100, 0.2);
+    border: 1px solid var(--neon-pink);
+    border-radius: var(--border-radius-small);
+    padding: 12px;
+    margin-bottom: 15px;
+    color: var(--neon-pink);
+    font-size: 0.9rem;
+}
+
+.subscription-renew-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.no-products-text {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 40px 20px;
+    font-size: 1rem;
+}
+
+/* Products List */
+.products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Product Card */
+.product-card {
+    background: rgba(156, 39, 176, 0.85);
+    border: 2px solid rgba(123, 31, 162, 0.9);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #000;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Barvy dle hodnocení - produkty */
+.product-card.rating-5 {
+    background: rgba(0, 200, 83, 0.85);
+    border-color: rgba(0, 150, 60, 0.9);
+}
+
+.product-card.rating-4 {
+    background: rgba(33, 150, 243, 0.85);
+    border-color: rgba(25, 118, 210, 0.9);
+}
+
+.product-card.rating-3 {
+    background: rgba(255, 235, 59, 0.85);
+    border-color: rgba(251, 192, 45, 0.9);
+}
+
+.product-card.rating-2 {
+    background: rgba(255, 152, 0, 0.85);
+    border-color: rgba(245, 124, 0, 0.9);
+}
+
+.product-card.rating-1 {
+    background: rgba(244, 67, 54, 0.85);
+    border-color: rgba(211, 47, 47, 0.9);
+}
+
+.product-card.rating-0 {
+    background: rgba(156, 39, 176, 0.85);
+    border-color: rgba(123, 31, 162, 0.9);
+}
+
+/* Černé písmo pro všechny produkty */
+.product-card,
+.product-card .product-card-title,
+.product-card .product-card-description,
+.product-card .product-card-meta,
+.product-card .product-card-rating,
+.product-card .product-card-type,
+.product-card .product-type-badge {
+    color: #000 !important;
+}
+
+.product-card .product-type-badge {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 0, 0, 0.3);
+}
+
+.product-card-image {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.product-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-card-content {
+    padding: 15px;
+}
+
+.product-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.product-card-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--neon-cyan);
+    margin: 0;
+    flex: 1;
+}
+
+.product-card-rating {
+    color: #ffd700;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.product-card-type {
+    margin-bottom: 8px;
+}
+
+.product-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(255, 0, 255, 0.2);
+    border: 1px solid var(--neon-purple);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--neon-pink);
+}
+
+.product-type-badge.large {
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    margin-bottom: 10px;
+}
+
+.product-card-description {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.product-card-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Product Detail */
+.product-detail-content {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.product-detail-image {
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.product-detail-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.product-detail-header {
+    margin-bottom: 20px;
+}
+
+.product-detail-type {
+    margin-bottom: 15px;
+}
+
+.product-detail-rating {
+    font-size: 1.5rem;
+    color: #ffd700;
+    margin-bottom: 15px;
+}
+
+.product-detail-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.product-detail-url {
+    margin: 20px 0;
+}
+
+.product-detail-url .neon-button {
+    width: 100%;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-meta-info {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.product-date {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.product-id {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+}
+
+.product-id code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: rgba(0, 255, 255, 0.7);
+    word-break: break-all;
+}
+
+/* Product Form */
+.product-form {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+.product-form .form-group {
+    margin-bottom: 20px;
+}
+
+.product-form label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--neon-cyan);
+    margin-bottom: 8px;
+}
+
+.product-form input[type="text"],
+.product-form input[type="url"],
+.product-form textarea,
+.product-form select {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius-small);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+}
+
+.product-form select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff00ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+}
+
+.product-form select option {
+    background: #1a1a2e;
+    color: var(--text-color);
+    padding: 10px;
+}
+
+.product-form input:focus,
+.product-form textarea:focus,
+.product-form select:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.product-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Product Star Rating */
+.product-star-rating {
+    display: flex;
+    gap: 5px;
+}
+
+.product-star-rating .star {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.product-star-rating .star:hover,
+.product-star-rating .star.active {
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Image Upload */
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.image-preview {
+    width: 100%;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px dashed var(--neon-purple);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.image-placeholder {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.image-upload-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.image-upload-buttons .neon-button,
+.image-upload-buttons .upload-btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+.upload-btn {
+    cursor: pointer;
+}
+
+/* Mobile only button */
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: flex;
+    }
+}
+
+/* Form buttons */
+.form-buttons {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Red button for delete */
+.btn-red {
+    background: linear-gradient(135deg, rgba(255, 0, 60, 0.3), rgba(255, 0, 100, 0.2));
+    border-color: #ff003c !important;
+    color: #ff6090 !important;
+}
+
+.btn-red:hover {
+    background: linear-gradient(135deg, rgba(255, 0, 60, 0.5), rgba(255, 0, 100, 0.4));
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.5);
+}
+
+/* User Profile Buttons */
+.user-profile-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.user-profile-buttons .neon-button {
+    width: 100%;
+}
+
+/* Share Modal */
+.share-link-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.share-link-input {
+    flex: 1;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--neon-cyan);
+    border-radius: var(--border-radius-small);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.copy-btn {
+    padding: 12px 20px;
+    background: var(--neon-cyan);
+    border: none;
+    border-radius: var(--border-radius-small);
+    color: #000;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.copy-btn:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Login Prompt for Shared Recipes */
+.login-prompt {
+    text-align: center;
+    padding: 60px 30px;
+    background: rgba(255, 0, 255, 0.05);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    border-radius: var(--border-radius);
+}
+
+.login-prompt-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.login-prompt-title {
+    font-family: var(--font-primary);
+    font-size: 1.3rem;
+    color: var(--neon-pink);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.login-prompt-text {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.login-prompt .neon-button {
+    padding: 15px 40px;
+    font-size: 1rem;
+}
+
 /* Responsive Navigation */
 @media (max-width: 480px) {
     .top-nav {
