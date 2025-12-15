@@ -102,17 +102,17 @@
                 <div class="menu-section">
                     <h4 class="menu-section-title">Cookies</h4>
                     <p class="menu-text">
-                        Firma WOOs neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, 
+                        Stránka Liquimixer neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, 
                         analytické cookies ani cookies třetích stran. Vaše soukromí je pro nás prioritou.
                     </p>
                 </div>
                 <div class="menu-section">
                     <h4 class="menu-section-title">GDPR a ochrana osobních údajů</h4>
                     <p class="menu-text">
-                        Osobní údaje jsou ukládány výhradně pro interní použití firmy WOOs za účelem 
+                        Osobní údaje jsou ukládány výhradně pro interní použití stránky Liquimixer za účelem 
                         přihlášení uživatele do aplikace. Vaše údaje nejsou sdíleny s třetími stranami 
                         ani používány pro marketingové účely. Máte právo požádat o výmaz svých údajů 
-                        kdykoli kontaktováním firmy WOOs.
+                        kdykoli kontaktováním stránky Liquimixer.
                     </p>
                 </div>
                 <div class="menu-section">
@@ -1029,6 +1029,12 @@
                         </div>
                         <input type="hidden" id="recipeRating" value="0">
                     </div>
+                    <div class="form-group-login">
+                        <label class="login-label">Použité produkty</label>
+                        <div class="linked-products-container" id="linkedProductsContainer">
+                            <p class="linked-products-hint">Načítám produkty...</p>
+                        </div>
+                    </div>
                     <button type="submit" class="neon-button">Uložit recept</button>
                 </form>
             </div>
@@ -1080,13 +1086,13 @@
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('my-recipes')">
-                    <span>◀ ZPĚT</span>
+                    <span>ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editSavedRecipe()">
-                    <span>✏️ UPRAVIT</span>
+                    <span>UPRAVIT</span>
                 </button>
                 <button class="neon-button btn-green" onclick="shareRecipe()">
-                    <span>📤 SDÍLET</span>
+                    <span>SDÍLET</span>
                 </button>
             </div>
         </section>
@@ -1170,13 +1176,16 @@
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showFavoriteProducts()">
-                    <span>◀ ZPĚT</span>
+                    <span>ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editProduct()">
-                    <span>✏️ UPRAVIT</span>
+                    <span>UPRAVIT</span>
+                </button>
+                <button class="neon-button btn-green" onclick="shareProduct()">
+                    <span>SDÍLET</span>
                 </button>
                 <button class="neon-button btn-red" onclick="deleteProduct()">
-                    <span>🗑️ SMAZAT</span>
+                    <span>SMAZAT</span>
                 </button>
             </div>
         </section>
