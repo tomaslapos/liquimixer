@@ -1,13 +1,16 @@
 // LiquiMixer Service Worker
-const CACHE_NAME = 'liquimixer-v4';
+const CACHE_NAME = 'liquimixer-v30';
 const urlsToCache = [
-  './',
-  './index.html',
-  './styles.css',
-  './app.js',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
+  '/',
+  '/index.html',
+  '/styles.css',
+  '/app.js',
+  '/database.js',
+  '/subscription.js',
+  '/i18n.js',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap'
 ];
 
@@ -67,7 +70,7 @@ self.addEventListener('fetch', (event) => {
       })
       .catch(() => {
         // Offline fallback
-        return caches.match('./index.html');
+        return caches.match('/index.html');
       })
   );
 });
