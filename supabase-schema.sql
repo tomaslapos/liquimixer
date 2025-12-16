@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name TEXT,
     profile_image TEXT,
     preferences JSONB DEFAULT '{}',
+    preferred_locale TEXT DEFAULT NULL,
     last_login TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -104,5 +105,6 @@ CREATE TRIGGER update_recipes_updated_at
     BEFORE UPDATE ON recipes
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
 
 

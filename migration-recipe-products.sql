@@ -40,3 +40,4 @@ CREATE POLICY "Users can delete own recipe_products" ON recipe_products
 -- Ověření
 SELECT 'Migrace propojení receptů s produkty dokončena!' as status;
 SELECT table_name FROM information_schema.tables WHERE table_name = 'recipe_products';
+

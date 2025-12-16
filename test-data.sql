@@ -125,3 +125,4 @@ SELECT 'Uživatel vytvořen:' as info, email, first_name, last_name FROM users W
 SELECT 'Recepty vytvořeny:' as info, id as recipe_id, name, rating, share_url FROM recipes WHERE clerk_id = 'test_user_tomas';
 
 
+

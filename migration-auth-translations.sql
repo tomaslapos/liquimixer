@@ -34,3 +34,4 @@ ON CONFLICT (locale, key) DO UPDATE SET value = EXCLUDED.value;
 -- Ověření
 SELECT 'Překlady pro přihlášení přidány!' as status;
 SELECT locale, key, value FROM translations WHERE key LIKE 'auth.login%' OR key = 'auth.profile_title' ORDER BY locale, key;
+

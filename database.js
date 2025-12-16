@@ -168,6 +168,74 @@ async function saveUserPreferences(clerkId, preferences) {
     }
 }
 
+// Uložit preferovaný jazyk uživatele
+async function saveUserLocale(clerkId, locale) {
+    if (!supabase || !clerkId || !locale) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace locale formátu (2-5 znaků, např. "cs", "en", "ar-SA")
+    if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(locale)) {
+        console.error('Invalid locale format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .update({ 
+                preferred_locale: locale,
+                updated_at: new Date().toISOString()
+            })
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving user locale:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat preferovaný jazyk uživatele
+async function getUserLocale(clerkId) {
+    if (!supabase || !clerkId) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('preferred_locale')
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching user locale:', error);
+            return null;
+        }
+        
+        return data?.preferred_locale || null;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
 // Generovat unikátní share ID
 function generateShareId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -875,6 +943,11 @@ async function onClerkSignIn(clerkUser) {
     
     // Ulož uživatele do databáze
     await saveUserToDatabase(clerkUser);
+    
+    // Načíst uložený jazyk uživatele a aplikovat ho
+    if (window.i18n?.loadUserLocale) {
+        await window.i18n.loadUserLocale(clerkUser.id);
+    }
 }
 
 // Exportuj funkce pro použití v app.js
@@ -883,6 +956,8 @@ window.LiquiMixerDB = {
     saveUser: saveUserToDatabase,
     getUser: getUserFromDatabase,
     savePreferences: saveUserPreferences,
+    saveUserLocale: saveUserLocale,
+    getUserLocale: getUserLocale,
     saveRecipe: saveUserRecipe,
     updateRecipe: updateUserRecipe,
     getRecipes: getUserRecipes,
@@ -902,5 +977,6 @@ window.LiquiMixerDB = {
     getLinkedProducts: getLinkedProducts,
     onSignIn: onClerkSignIn
 };
+
 
 

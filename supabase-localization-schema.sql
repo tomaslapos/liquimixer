@@ -839,3 +839,4 @@ INSERT INTO pricing (plan_type, name, description, price, vat_rate, currency, du
 ('yearly', 'Yıllık abonelik', 'Tüm LiquiMixer özelliklerine 1 yıl erişim', 12.99, 0, 'USD', 365, 'tr', true);
 
 
+

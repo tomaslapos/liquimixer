@@ -562,10 +562,43 @@ function showUserProfileModal() {
                 const safeEmail = escapeHtml(window.Clerk.user?.emailAddresses[0]?.emailAddress || '');
                 const safeName = escapeHtml(window.Clerk.user?.fullName || '');
                 
+                // Získat dostupné jazyky pro výběr
+                const availableLocales = window.i18n?.getAvailableLocales() || [];
+                const currentLocale = window.i18n?.getLocale() || 'cs';
+                
+                // Vytvořit options pro select
+                let languageOptions = '';
+                if (availableLocales.length > 0) {
+                    availableLocales.forEach(locale => {
+                        const selected = locale.code === currentLocale ? 'selected' : '';
+                        languageOptions += `<option value="${escapeHtml(locale.code)}" ${selected}>${escapeHtml(locale.native_name)}</option>`;
+                    });
+                } else {
+                    // Fallback pokud nejsou načtené lokalizace
+                    languageOptions = `
+                        <option value="cs" ${currentLocale === 'cs' ? 'selected' : ''}>Čeština</option>
+                        <option value="en" ${currentLocale === 'en' ? 'selected' : ''}>English</option>
+                        <option value="de" ${currentLocale === 'de' ? 'selected' : ''}>Deutsch</option>
+                        <option value="sk" ${currentLocale === 'sk' ? 'selected' : ''}>Slovenčina</option>
+                        <option value="pl" ${currentLocale === 'pl' ? 'selected' : ''}>Polski</option>
+                    `;
+                }
+                
                 profileDiv.innerHTML = `
                     <div class="user-info">
                         <p class="user-email">${safeEmail}</p>
                         <p class="user-name">${safeName}</p>
+                    </div>
+                    <div class="user-settings">
+                        <div class="setting-row">
+                            <label class="setting-label" for="userLanguageSelect">
+                                <span class="setting-icon">🌐</span>
+                                <span data-i18n="settings.language">Jazyk</span>
+                            </label>
+                            <select id="userLanguageSelect" class="neon-select language-select" onchange="handleLanguageChange(this.value)">
+                                ${languageOptions}
+                            </select>
+                        </div>
                     </div>
                     <div class="user-profile-buttons">
                         <button class="neon-button" onclick="showMyRecipes()">Mé recepty</button>
@@ -573,9 +606,37 @@ function showUserProfileModal() {
                         <button class="neon-button logout-btn" onclick="handleSignOut()">Odhlásit se</button>
                     </div>
                 `;
+                
+                // Aplikovat překlady na nově přidané elementy
+                if (window.i18n?.applyTranslations) {
+                    window.i18n.applyTranslations();
+                }
             }
         }
     }
+}
+
+// Zpracovat změnu jazyka
+async function handleLanguageChange(locale) {
+    if (!locale) return;
+    
+    // Změnit jazyk v i18n modulu (uloží do localStorage)
+    if (window.i18n?.setLocale) {
+        await window.i18n.setLocale(locale);
+    }
+    
+    // Uložit do databáze pokud je uživatel přihlášen
+    if (window.Clerk?.user?.id && window.LiquiMixerDB?.saveUserLocale) {
+        try {
+            await window.LiquiMixerDB.saveUserLocale(window.Clerk.user.id, locale);
+            console.log('User locale saved to database:', locale);
+        } catch (err) {
+            console.error('Error saving locale to database:', err);
+        }
+    }
+    
+    // Aktualizovat UI
+    showUserProfileModal();
 }
 
 function hideUserProfileModal() {
@@ -4237,6 +4298,7 @@ window.handleProfileModalBackdropClick = handleProfileModalBackdropClick;
 window.showUserProfileModal = showUserProfileModal;
 window.hideUserProfileModal = hideUserProfileModal;
 window.handleSignOut = handleSignOut;
+window.handleLanguageChange = handleLanguageChange;
 window.showPage = showPage;
 window.goHome = goHome;
 window.goBack = goBack;

@@ -705,3 +705,4 @@ ON CONFLICT (locale, key) DO UPDATE SET value = EXCLUDED.value;
 
 SELECT 'Překlady pro filtry a produkty přidány!' as status;
 SELECT locale, COUNT(*) as count FROM translations WHERE category IN ('products', 'product_types', 'search', 'recipes') GROUP BY locale ORDER BY locale;
+

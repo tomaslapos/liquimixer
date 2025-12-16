@@ -92,3 +92,4 @@ SELECT tablename, policyname, cmd, qual
 FROM pg_policies 
 WHERE schemaname = 'public'
 ORDER BY tablename, cmd;
+
