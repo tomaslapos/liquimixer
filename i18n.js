@@ -97,46 +97,126 @@ async function loadLocales() {
     }
 }
 
-// Načíst překlady pro daný jazyk
+// Validace a sanitizace překladů pro bezpečnost
+function validateAndSanitizeTranslations(data) {
+    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+        console.error('Invalid translations format: expected object');
+        return {};
+    }
+    
+    const sanitized = {};
+    const validKeyPattern = /^[a-z][a-z0-9_.]*$/i;
+    
+    for (const [key, value] of Object.entries(data)) {
+        // Validace klíče - pouze povolené znaky
+        if (!validKeyPattern.test(key)) {
+            console.warn(`Invalid translation key skipped: ${key}`);
+            continue;
+        }
+        
+        // Validace hodnoty - pouze string
+        if (typeof value !== 'string') {
+            console.warn(`Invalid translation value for key ${key}: expected string`);
+            continue;
+        }
+        
+        // Sanitizace - odstranění potenciálně nebezpečných znaků
+        // (textContent už escapuje, ale extra vrstva ochrany)
+        const sanitizedValue = value
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/javascript:/gi, '')
+            .replace(/on\w+=/gi, '');
+        
+        // Omezení délky hodnoty
+        if (sanitizedValue.length > 1000) {
+            console.warn(`Translation value too long for key ${key}`);
+            sanitized[key] = sanitizedValue.substring(0, 1000);
+        } else {
+            sanitized[key] = sanitizedValue;
+        }
+    }
+    
+    return sanitized;
+}
+
+// Načíst překlady pro daný jazyk z lokálních JSON souborů
 async function loadTranslations(locale) {
     try {
-        const client = window.supabaseClient;
-        if (!client) {
-            console.warn('Supabase client not initialized yet');
+        // Mapování locale na soubor (pro regionální varianty)
+        const localeFileMap = {
+            'ar-SA': 'ar-SA',
+            'zh-CN': 'zh-CN',
+            'zh-TW': 'zh-TW',
+            'en-GB': 'en',
+            'en-AU': 'en',
+            'en-CA': 'en',
+            'en-NZ': 'en',
+            'de-AT': 'de',
+            'fr-BE': 'fr',
+            'nl-BE': 'nl',
+            'fr-CA': 'fr',
+            'es-MX': 'es',
+            'es-AR': 'es',
+            'pt-BR': 'pt'
+        };
+        
+        // Validace locale - pouze povolené znaky (ochrana proti path traversal)
+        const safeLocalePattern = /^[a-z]{2}(-[A-Z]{2})?$/;
+        const fileLocale = localeFileMap[locale] || locale;
+        
+        if (!safeLocalePattern.test(fileLocale)) {
+            console.error(`Invalid locale format: ${locale}`);
+            translations = {};
             return;
         }
         
-        const { data, error } = await client
-            .from('translations')
-            .select('key, value')
-            .eq('locale', locale);
+        // Načíst z lokálního JSON souboru
+        const response = await fetch(`./locales/${fileLocale}.json`);
         
-        if (error) throw error;
-        
-        // Převést na objekt
-        translations = {};
-        (data || []).forEach(item => {
-            translations[item.key] = item.value;
-        });
-        
-        // Pokud není dostatek překladů, načíst anglické jako fallback
-        if (Object.keys(translations).length < 10 && locale !== 'en') {
-            const { data: enData } = await client
-                .from('translations')
-                .select('key, value')
-                .eq('locale', 'en');
-            
-            (enData || []).forEach(item => {
-                if (!translations[item.key]) {
-                    translations[item.key] = item.value;
-                }
-            });
+        if (response.ok) {
+            const rawData = await response.json();
+            translations = validateAndSanitizeTranslations(rawData);
+            console.log(`Loaded ${Object.keys(translations).length} translations for ${locale} from local file`);
+        } else {
+            // Fallback na angličtinu
+            console.warn(`Locale file not found for ${locale}, falling back to English`);
+            const enResponse = await fetch('./locales/en.json');
+            if (enResponse.ok) {
+                const rawData = await enResponse.json();
+                translations = validateAndSanitizeTranslations(rawData);
+            } else {
+                translations = {};
+            }
         }
         
-        console.log(`Loaded ${Object.keys(translations).length} translations for ${locale}`);
+        // Pokud není dostatek překladů, doplnit z angličtiny
+        if (Object.keys(translations).length < 10 && locale !== 'en') {
+            const enResponse = await fetch('./locales/en.json');
+            if (enResponse.ok) {
+                const rawData = await enResponse.json();
+                const enTranslations = validateAndSanitizeTranslations(rawData);
+                Object.keys(enTranslations).forEach(key => {
+                    if (!translations[key]) {
+                        translations[key] = enTranslations[key];
+                    }
+                });
+            }
+        }
     } catch (err) {
         console.error('Error loading translations:', err);
-        translations = {};
+        // Fallback - zkusit načíst angličtinu
+        try {
+            const enResponse = await fetch('./locales/en.json');
+            if (enResponse.ok) {
+                const rawData = await enResponse.json();
+                translations = validateAndSanitizeTranslations(rawData);
+            } else {
+                translations = {};
+            }
+        } catch {
+            translations = {};
+        }
     }
 }
 

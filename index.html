@@ -83,7 +83,7 @@
         <!-- Horní navigace -->
         <nav class="top-nav">
             <div class="nav-left">
-                <button class="nav-btn home-btn" onclick="goHome()" id="homeButton" title="Domů">
+                <button class="nav-btn home-btn" onclick="goHome()" id="homeButton" data-i18n-title="nav.home" title="Domů">
                     <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -93,11 +93,11 @@
             <div class="nav-buttons">
                 <button class="nav-btn menu-btn" onclick="toggleMenu()">
                     <span class="nav-icon">☰</span>
-                    <span class="nav-text">Menu</span>
+                    <span class="nav-text" data-i18n="nav.menu">Menu</span>
                 </button>
                 <button class="nav-btn login-btn" onclick="showLoginModal()">
                     <span class="nav-icon">👤</span>
-                    <span class="nav-text">Přihlášení</span>
+                    <span class="nav-text" data-i18n="nav.login">Přihlášení</span>
                 </button>
             </div>
         </nav>
@@ -106,17 +106,17 @@
         <div id="menuDropdown" class="menu-dropdown hidden">
             <div class="menu-content">
                 <button class="menu-close" onclick="toggleMenu()">✕</button>
-                <h3 class="menu-title">Menu</h3>
+                <h3 class="menu-title" data-i18n="menu.title">Menu</h3>
                 <div class="menu-section">
-                    <h4 class="menu-section-title">Cookies</h4>
-                    <p class="menu-text">
+                    <h4 class="menu-section-title" data-i18n="menu.cookies_title">Cookies</h4>
+                    <p class="menu-text" data-i18n="menu.cookies_text">
                         Stránka Liquimixer neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, 
                         analytické cookies ani cookies třetích stran. Vaše soukromí je pro nás prioritou.
                     </p>
                 </div>
                 <div class="menu-section">
-                    <h4 class="menu-section-title">GDPR a ochrana osobních údajů</h4>
-                    <p class="menu-text">
+                    <h4 class="menu-section-title" data-i18n="menu.gdpr_title">GDPR a ochrana osobních údajů</h4>
+                    <p class="menu-text" data-i18n="menu.gdpr_text">
                         Osobní údaje jsou ukládány výhradně pro interní použití stránky Liquimixer za účelem 
                         přihlášení uživatele do aplikace. Vaše údaje nejsou sdíleny s třetími stranami 
                         ani používány pro marketingové účely. Máte právo požádat o výmaz svých údajů 
@@ -124,19 +124,19 @@
                     </p>
                 </div>
                 <div class="menu-section">
-                    <h4 class="menu-section-title">Kontaktní formulář</h4>
+                    <h4 class="menu-section-title" data-i18n="menu.contact_title">Kontaktní formulář</h4>
                     <form class="contact-form" id="contactForm">
                         <div class="form-group-login">
-                            <label class="login-label">Váš e-mail</label>
-                            <input type="email" id="contactEmail" class="login-input" placeholder="vas@email.cz" required>
+                            <label class="login-label" data-i18n="menu.contact_email">Váš e-mail</label>
+                            <input type="email" id="contactEmail" class="login-input" data-i18n-placeholder="menu.contact_email_placeholder" placeholder="vas@email.cz" required>
                         </div>
                         <div class="form-group-login">
-                            <label class="login-label">Předmět</label>
-                            <input type="text" id="contactSubject" class="login-input" placeholder="Téma zprávy" required>
+                            <label class="login-label" data-i18n="menu.contact_subject">Předmět</label>
+                            <input type="text" id="contactSubject" class="login-input" data-i18n-placeholder="menu.contact_subject_placeholder" placeholder="Téma zprávy" required>
                         </div>
                         <div class="form-group-login">
-                            <label class="login-label">Zpráva</label>
-                            <textarea id="contactMessage" class="login-input contact-textarea" placeholder="Vaše zpráva..." required></textarea>
+                            <label class="login-label" data-i18n="menu.contact_message">Zpráva</label>
+                            <textarea id="contactMessage" class="login-input contact-textarea" data-i18n-placeholder="menu.contact_message_placeholder" placeholder="Vaše zpráva..." required></textarea>
                         </div>
                         <!-- Honeypot anti-spam (skrytý pro boty) -->
                         <div class="form-group-login" style="display: none;" aria-hidden="true">
@@ -144,7 +144,7 @@
                         </div>
                         <div id="contactStatus" class="contact-status"></div>
                         <button type="submit" class="neon-button contact-submit" id="contactSubmitBtn">
-                            <span id="contactSubmitText">Odeslat zprávu</span>
+                            <span id="contactSubmitText" data-i18n="menu.contact_send">Odeslat zprávu</span>
                             <span id="contactSubmitLoader" class="btn-loader hidden"></span>
                         </button>
                     </form>
@@ -186,12 +186,12 @@
                     <span class="letter l9">E</span>
                     <span class="letter l10">R</span>
                 </h1>
-                <div class="subtitle">E-LIQUID KALKULÁTOR</div>
+                <div class="subtitle" data-i18n="home.subtitle">E-LIQUID KALKULÁTOR</div>
             </div>
             
             <div class="warning-box">
-                <h2 class="warning-title">Při míchání se soustřeďte na dodržování bezpečnostních zásad</h2>
-                <p class="warning-text">
+                <h2 class="warning-title" data-i18n="home.warning_title">Při míchání se soustřeďte na dodržování bezpečnostních zásad</h2>
+                <p class="warning-text" data-i18n="home.warning_text">
                     Při míchání e-liquidu vždy noste ochranné rukavice a pracujte v dobře větraném prostoru, 
                     zejména pokud používáte nikotinové boostery. Používejte pouze kvalitní složky bez příměsí 
                     a s potravinářskou certifikací vhodné pro vapování od ověřených dodavatelů. 
@@ -200,130 +200,130 @@
             </div>
             
             <div class="prep-box">
-                <h3 class="prep-title">Před mícháním si připravte:</h3>
+                <h3 class="prep-title" data-i18n="home.prepare_title">Před mícháním si připravte:</h3>
                 <div class="prep-grid">
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Propylenglykol (PG)</span>
+                            <span data-i18n="prep.pg">Propylenglykol (PG)</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Propylenglykol je bezbarvá kapalina bez zápachu, která tvoří základ e-liquidů. Zajišťuje přenos chuti a vytváří charakteristický "throat hit" (pocit v krku). Je hygroskopický, proto jej skladujte v uzavřené nádobě. PG je obecně považován za bezpečný pro inhalaci a používá se i v potravinářství a farmacii.</p>
+                            <p data-i18n="prep.pg_detail">Propylenglykol je bezbarvá kapalina bez zápachu, která tvoří základ e-liquidů. Zajišťuje přenos chuti a vytváří charakteristický "throat hit" (pocit v krku). Je hygroskopický, proto jej skladujte v uzavřené nádobě. PG je obecně považován za bezpečný pro inhalaci a používá se i v potravinářství a farmacii.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Rostlinný glycerin (VG)</span>
+                            <span data-i18n="prep.vg">Rostlinný glycerin (VG)</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Rostlinný glycerin je hustá, sladká kapalina získávaná z rostlinných olejů. Je zodpovědný za tvorbu hustého dýmu a dodává liquidu jemnou sladkost. Čím vyšší poměr VG, tím hustější pára, ale méně výrazná chuť. VG je vhodný pro přímé vdechování (DL) a výkonné vapovací zařízení.</p>
+                            <p data-i18n="prep.vg_detail">Rostlinný glycerin je hustá, sladká kapalina získávaná z rostlinných olejů. Je zodpovědný za tvorbu hustého dýmu a dodává liquidu jemnou sladkost. Čím vyšší poměr VG, tím hustější pára, ale méně výrazná chuť. VG je vhodný pro přímé vdechování (DL) a výkonné vapovací zařízení.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Volitelně příchutě</span>
+                            <span data-i18n="prep.flavors">Volitelně příchutě</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Příchutě pro e-liquidy jsou koncentrované aromata speciálně určené pro vapování. Používejte výhradně příchutě určené pro e-liquidy, nikoliv potravinářská aromata! Koncentrace se obvykle pohybuje mezi 5-20% podle typu příchutě. Ovocné příchutě jsou intenzivnější, dezertní a tabákové vyžadují vyšší procento a delší zrání.</p>
+                            <p data-i18n="prep.flavors_detail">Příchutě pro e-liquidy jsou koncentrované aromata speciálně určené pro vapování. Používejte výhradně příchutě určené pro e-liquidy, nikoliv potravinářská aromata! Koncentrace se obvykle pohybuje mezi 5-20% podle typu příchutě. Ovocné příchutě jsou intenzivnější, dezertní a tabákové vyžadují vyšší procento a delší zrání.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Nikotin booster nebo sůl</span>
+                            <span data-i18n="prep.nicotine">Nikotin booster nebo sůl</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p><strong>Nikotin booster:</strong> Tradiční forma nikotinu s výraznějším throat hitem. Vhodný pro běžné vapování.<br><br><strong>Nikotinová sůl:</strong> Jemnější forma nikotinu, která se rychleji vstřebává a má slabší throat hit i při vyšších koncentracích. Vhodná pro pod systémy a MTL zařízení. POZOR: Nikotin je jed! Vždy používejte rukavice a pracujte v dobře větraném prostoru.</p>
+                            <p data-i18n="prep.nicotine_detail"><strong>Nikotin booster:</strong> Tradiční forma nikotinu s výraznějším throat hitem. Vhodný pro běžné vapování.<br><br><strong>Nikotinová sůl:</strong> Jemnější forma nikotinu, která se rychleji vstřebává a má slabší throat hit i při vyšších koncentracích. Vhodná pro pod systémy a MTL zařízení. POZOR: Nikotin je jed! Vždy používejte rukavice a pracujte v dobře větraném prostoru.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Zdravotnické rukavice</span>
+                            <span data-i18n="prep.gloves">Zdravotnické rukavice</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Nitrylové nebo latexové rukavice jsou nezbytné při práci s nikotinem. Nikotin se snadno vstřebává kůží a může způsobit otravu. Rukavice také chrání před kontaminací směsi a udržují sterilitu. Používejte jednorázové rukavice a po práci je bezpečně zlikvidujte. Při potřísnění pokožky nikotinem důkladně omyjte mýdlem a vodou.</p>
+                            <p data-i18n="prep.gloves_detail">Nitrylové nebo latexové rukavice jsou nezbytné při práci s nikotinem. Nikotin se snadno vstřebává kůží a může způsobit otravu. Rukavice také chrání před kontaminací směsi a udržují sterilitu. Používejte jednorázové rukavice a po práci je bezpečně zlikvidujte. Při potřísnění pokožky nikotinem důkladně omyjte mýdlem a vodou.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Prázdná skleněná lahvička</span>
+                            <span data-i18n="prep.bottle">Prázdná skleněná lahvička</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Skleněné lahvičky jsou ideální pro skladování e-liquidů, protože nereagují s obsahem a neovlivňují chuť. Tmavé sklo (amber) chrání před UV zářením a prodlužuje trvanlivost. Pro míchání jsou vhodné lahvičky s kapátkem nebo úzkým hrdlem. Před použitím lahvičky vždy důkladně vyčistěte a osušte.</p>
+                            <p data-i18n="prep.bottle_detail">Skleněné lahvičky jsou ideální pro skladování e-liquidů, protože nereagují s obsahem a neovlivňují chuť. Tmavé sklo (amber) chrání před UV zářením a prodlužuje trvanlivost. Pro míchání jsou vhodné lahvičky s kapátkem nebo úzkým hrdlem. Před použitím lahvičky vždy důkladně vyčistěte a osušte.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Kapátko, pipeta nebo stříkačka</span>
+                            <span data-i18n="prep.dropper">Kapátko, pipeta nebo stříkačka</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Pro přesné dávkování ingrediencí jsou nezbytné měřicí nástroje. <strong>Kapátko:</strong> Vhodné pro menší objemy, méně přesné. <strong>Pipeta:</strong> Přesnější než kapátko, vhodná pro střední objemy. <strong>Stříkačka (bez jehly):</strong> Nejpřesnější varianta, ideální pro nikotin. Používejte samostatné nástroje pro každou ingredienci, aby nedošlo ke kontaminaci.</p>
+                            <p data-i18n="prep.dropper_detail">Pro přesné dávkování ingrediencí jsou nezbytné měřicí nástroje. <strong>Kapátko:</strong> Vhodné pro menší objemy, méně přesné. <strong>Pipeta:</strong> Přesnější než kapátko, vhodná pro střední objemy. <strong>Stříkačka (bez jehly):</strong> Nejpřesnější varianta, ideální pro nikotin. Používejte samostatné nástroje pro každou ingredienci, aby nedošlo ke kontaminaci.</p>
                         </div>
                     </div>
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
-                            <span>Měřící pomůcky</span>
+                            <span data-i18n="prep.measuring">Měřící pomůcky</span>
                             <span class="prep-arrow">▼</span>
                         </button>
                         <div class="prep-detail">
-                            <p>Pro přesné míchání potřebujete spolehlivé měřící pomůcky. <strong>Odměrné válce:</strong> Pro měření objemu v ml. <strong>Stříkačky s měřením:</strong> Různé velikosti pro různé ingredience (1ml pro nikotin, 5-10ml pro VG/PG). Vždy měřte dvakrát a míchejte jednou!</p>
+                            <p data-i18n="prep.measuring_detail">Pro přesné míchání potřebujete spolehlivé měřící pomůcky. <strong>Odměrné válce:</strong> Pro měření objemu v ml. <strong>Stříkačky s měřením:</strong> Různé velikosti pro různé ingredience (1ml pro nikotin, 5-10ml pro VG/PG). Vždy měřte dvakrát a míchejte jednou!</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <button class="neon-button" onclick="showPage('mode-select')">
-                <span>ZAČÍT MÍCHÁNÍ</span>
+                <span data-i18n="home.start_button">ZAČÍT MÍCHÁNÍ</span>
                 <div class="button-glow"></div>
             </button>
         </section>
 
         <!-- Výběr režimu -->
         <section id="mode-select" class="page">
-            <h2 class="page-title">Co chcete připravit?</h2>
+            <h2 class="page-title" data-i18n="mode.title">Co chcete připravit?</h2>
             
             <div class="mode-buttons">
                 <button class="mode-button cyan" onclick="showPage('form')">
-                    <div class="mode-title">eLiquid</div>
-                    <div class="mode-desc">Kompletní e-liquid s příchutí, nikotinem a nosnou látkou</div>
+                    <div class="mode-title" data-i18n="mode.eliquid">eLiquid</div>
+                    <div class="mode-desc" data-i18n="mode.eliquid_desc">Kompletní e-liquid s příchutí, nikotinem a nosnou látkou</div>
                 </button>
                 
                 <button class="mode-button pink" onclick="showPage('dilute-form')">
-                    <div class="mode-title">Ředění nikotinové báze</div>
-                    <div class="mode-desc">Zředění silné nikotinové báze na požadovanou koncentraci</div>
+                    <div class="mode-title" data-i18n="mode.dilute">Ředění nikotinové báze</div>
+                    <div class="mode-desc" data-i18n="mode.dilute_desc">Zředění silné nikotinové báze na požadovanou koncentraci</div>
                 </button>
             </div>
             
             <button class="neon-button secondary" onclick="showPage('intro')">
-                <span>◀ ZPĚT</span>
+                <span data-i18n="nav.back">◀ ZPĚT</span>
             </button>
         </section>
 
         <!-- Formulář pro ředění nikotinu -->
         <section id="dilute-form" class="page">
-            <h2 class="page-title">Ředění nikotinové báze</h2>
+            <h2 class="page-title" data-i18n="dilute.title">Ředění nikotinové báze</h2>
             
             <!-- Volba množství -->
             <div class="form-group">
-                <label class="form-label">Množství</label>
+                <label class="form-label" data-i18n="dilute.amount">Množství</label>
                 <div class="amount-choice-container">
                     <div class="amount-choice">
                         <input type="radio" id="amountFinal" name="amountType" value="final" checked onchange="updateDiluteAmountType()">
-                        <label for="amountFinal">Kolik báze chci namíchat?</label>
+                        <label for="amountFinal" data-i18n="dilute.how_much_mix">Kolik báze chci namíchat?</label>
                         <div class="input-wrapper">
                             <input type="number" id="diluteFinalAmount" min="1" max="1000" value="100" class="neon-input" oninput="updateDiluteCalculation()">
                             <span class="input-unit">ml</span>
                         </div>
                     </div>
-                    <div class="amount-divider">nebo</div>
+                    <div class="amount-divider" data-i18n="dilute.or">nebo</div>
                     <div class="amount-choice">
                         <input type="radio" id="amountSource" name="amountType" value="source" onchange="updateDiluteAmountType()">
-                        <label for="amountSource">Kolik báze chci rozředit?</label>
+                        <label for="amountSource" data-i18n="dilute.how_much_dilute">Kolik báze chci rozředit?</label>
                         <div class="input-wrapper">
                             <input type="number" id="diluteSourceAmount" min="1" max="1000" value="30" class="neon-input" disabled oninput="updateDiluteCalculation()">
                             <span class="input-unit">ml</span>
@@ -335,13 +335,13 @@
             <!-- Nikotinová báze - zdroj -->
             <div class="form-group">
                 <label class="form-label">
-                    Jak silnou mám nikotinovou bázi?
-                    <span class="label-hint">Údaje z obalu nikotinu</span>
+                    <span data-i18n="form.nicotine_base">Jak silnou mám nikotinovou bázi?</span>
+                    <span class="label-hint" data-i18n="form.nicotine_base_hint">Údaje z obalu nikotinu</span>
                 </label>
                 <div class="dilute-nicotine-container">
                     <select id="diluteNicotineType" class="neon-select" onchange="updateDiluteNicotineType()">
-                        <option value="freebase">Nikotin booster</option>
-                        <option value="salt">Nikotinová sůl</option>
+                        <option value="freebase" data-i18n="form.nicotine_type_freebase">Nikotin booster</option>
+                        <option value="salt" data-i18n="form.nicotine_type_salt">Nikotinová sůl</option>
                     </select>
                     <div class="input-wrapper">
                         <input type="number" id="diluteBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="updateDiluteCalculation()">
@@ -349,11 +349,11 @@
                     </div>
                 </div>
                 <div class="form-group-sub">
-                    <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
+                    <label class="form-label-small" data-i18n="form.nicotine_ratio">Poměr VG/PG v koncentrátu</label>
                     <div class="ratio-container compact">
                         <div class="ratio-labels">
-                            <span class="ratio-label left">Dým (VG)</span>
-                            <span class="ratio-label right">Chuť (PG)</span>
+                            <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                            <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
                         </div>
                         <div class="slider-container">
                             <button class="slider-btn small" onclick="adjustDiluteSourceRatio(-5)">◀</button>
@@ -366,7 +366,7 @@
                         <div class="ratio-display small">
                             <span id="diluteSourceVg">50</span>:<span id="diluteSourcePg">50</span>
                         </div>
-                        <div class="ratio-description" id="diluteSourceDescription">
+                        <div class="ratio-description" id="diluteSourceDescription" data-i18n="ratio.balanced">
                             Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
                         </div>
                     </div>
@@ -375,7 +375,7 @@
 
             <!-- Cílová síla a poměr -->
             <div class="form-group">
-                <label class="form-label">
+                <label class="form-label" data-i18n="dilute.target_strength">
                     Jak silnou nikotinovou bázi chci namíchat?
                 </label>
                 <div class="input-wrapper">
@@ -385,11 +385,11 @@
                 <div id="diluteTargetWarning" class="input-warning hidden"></div>
                 
                 <div class="form-group-sub">
-                    <label class="form-label-small">Poměr VG/PG ve výsledné bázi</label>
+                    <label class="form-label-small" data-i18n="dilute.target_ratio">Poměr VG/PG ve výsledné bázi</label>
                     <div class="ratio-container compact">
                         <div class="ratio-labels">
-                            <span class="ratio-label left">Dým (VG)</span>
-                            <span class="ratio-label right">Chuť (PG)</span>
+                            <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                            <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
                         </div>
                         <div class="slider-container">
                             <button class="slider-btn small" onclick="adjustDiluteTargetRatio(-5)">◀</button>
@@ -409,7 +409,7 @@
                         <div class="ratio-display small">
                             <span id="diluteTargetVg">50</span>:<span id="diluteTargetPg">50</span>
                         </div>
-                        <div class="ratio-description" id="diluteTargetDescription">
+                        <div class="ratio-description" id="diluteTargetDescription" data-i18n="ratio.balanced">
                             Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
                         </div>
                         <div id="diluteRatioWarning" class="input-warning hidden"></div>
@@ -419,10 +419,10 @@
 
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('mode-select')">
-                    <span>◀ ZPĚT</span>
+                    <span data-i18n="nav.back">◀ ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="calculateDilution()">
-                    <span>MIXUJ!</span>
+                    <span data-i18n="form.mix_button">MIXUJ!</span>
                     <div class="button-glow"></div>
                 </button>
             </div>
@@ -430,19 +430,19 @@
 
         <!-- Výsledky ředění -->
         <section id="dilute-results" class="page">
-            <h2 class="page-title">Recept na ředění</h2>
+            <h2 class="page-title" data-i18n="dilute.recipe_title">Recept na ředění</h2>
             
             <div class="results-summary">
                 <div class="summary-item">
-                    <span class="summary-label">Celkový objem:</span>
+                    <span class="summary-label" data-i18n="results.total_volume">Celkový objem:</span>
                     <span class="summary-value" id="diluteResultTotal">100 ml</span>
                 </div>
                 <div class="summary-item">
-                    <span class="summary-label">Poměr VG/PG:</span>
+                    <span class="summary-label" data-i18n="results.ratio">Poměr VG/PG:</span>
                     <span class="summary-value" id="diluteResultRatio">50:50</span>
                 </div>
                 <div class="summary-item">
-                    <span class="summary-label">Síla nikotinu:</span>
+                    <span class="summary-label" data-i18n="results.nicotine_strength">Síla nikotinu:</span>
                     <span class="summary-value" id="diluteResultNicotine">6 mg/ml</span>
                 </div>
             </div>
@@ -451,9 +451,9 @@
                 <table class="results-table">
                     <thead>
                         <tr>
-                            <th>Složka</th>
-                            <th>Objem (ml)</th>
-                            <th>Procento</th>
+                            <th data-i18n="results.ingredient">Složka</th>
+                            <th data-i18n="results.volume">Objem (ml)</th>
+                            <th data-i18n="results.percent">Procento</th>
                         </tr>
                     </thead>
                     <tbody id="diluteResultsBody">
@@ -462,31 +462,31 @@
             </div>
 
             <div class="results-notes">
-                <h4>Poznámky k ředění:</h4>
+                <h4 data-i18n="dilute.notes_title">Poznámky k ředění:</h4>
                 <ul>
-                    <li>Pracujte v rukavicích - nikotin se vstřebává kůží!</li>
-                    <li>Nejprve nalijte nikotinovou bázi</li>
-                    <li>Poté přidejte VG a PG</li>
-                    <li>Důkladně protřepejte</li>
+                    <li data-i18n="dilute.note1">Pracujte v rukavicích - nikotin se vstřebává kůží!</li>
+                    <li data-i18n="dilute.note2">Nejprve nalijte nikotinovou bázi</li>
+                    <li data-i18n="dilute.note3">Poté přidejte VG a PG</li>
+                    <li data-i18n="dilute.note4">Důkladně protřepejte</li>
                 </ul>
             </div>
 
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('dilute-form')">
-                    <span>◀ UPRAVIT</span>
+                    <span data-i18n="results.edit_button">◀ UPRAVIT</span>
                 </button>
             </div>
         </section>
 
         <!-- Formulář -->
         <section id="form" class="page">
-            <h2 class="page-title">Konfigurace směsi</h2>
+            <h2 class="page-title" data-i18n="form.title">Konfigurace směsi</h2>
             
             <!-- Záložky pro výběr typu formuláře -->
             <div class="form-tabs">
-                <button type="button" class="form-tab active" data-tab="liquid" onclick="switchFormTab('liquid')">Liquid</button>
-                <button type="button" class="form-tab tab-green" data-tab="shakevape" onclick="switchFormTab('shakevape')">Shake & Vape</button>
-                <button type="button" class="form-tab tab-red" data-tab="liquidpro" onclick="switchFormTab('liquidpro')">Liquid PRO</button>
+                <button type="button" class="form-tab active" data-tab="liquid" onclick="switchFormTab('liquid')" data-i18n="form.tab_liquid">Liquid</button>
+                <button type="button" class="form-tab tab-green" data-tab="shakevape" onclick="switchFormTab('shakevape')" data-i18n="form.tab_shakevape">Shake & Vape</button>
+                <button type="button" class="form-tab tab-red" data-tab="liquidpro" onclick="switchFormTab('liquidpro')" data-i18n="form.tab_liquidpro">Liquid PRO</button>
             </div>
 
             <!-- ============================================ -->
@@ -495,7 +495,7 @@
             <div id="form-liquid" class="form-content form-cyan active">
                 <!-- Množství liquidu -->
                 <div class="form-group">
-                    <label class="form-label">
+                    <label class="form-label" data-i18n="form.total_amount">
                         Kolik liquidu chci namíchat?
                     </label>
                     <div class="input-wrapper">
@@ -507,14 +507,14 @@
                 <!-- Nikotinová báze -->
                 <div class="form-group">
                     <label class="form-label">
-                        Jak silnou mám nikotinovou bázi?
-                        <span class="label-hint">Tyto údaje opiš z obalu nikotinu</span>
+                        <span data-i18n="form.nicotine_base">Jak silnou mám nikotinovou bázi?</span>
+                        <span class="label-hint" data-i18n="form.nicotine_base_hint">Tyto údaje opiš z obalu nikotinu</span>
                     </label>
                     <div class="nicotine-base-container">
                         <select id="nicotineType" class="neon-select" onchange="updateNicotineType()">
-                            <option value="none">Bez nikotinu</option>
-                            <option value="freebase">Nikotin booster</option>
-                            <option value="salt">Nikotinová sůl</option>
+                            <option value="none" data-i18n="form.nicotine_type_none">Bez nikotinu</option>
+                            <option value="freebase" data-i18n="form.nicotine_type_freebase">Nikotin booster</option>
+                            <option value="salt" data-i18n="form.nicotine_type_salt">Nikotinová sůl</option>
                         </select>
                         <div id="nicotineStrengthContainer" class="hidden">
                             <input type="number" id="nicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
@@ -523,7 +523,7 @@
                         </div>
                     </div>
                     <div id="nicotineRatioContainer" class="hidden">
-                        <label class="form-label-small">Poměr VG/PG v koncentrátu</label>
+                        <label class="form-label-small" data-i18n="form.nicotine_ratio">Poměr VG/PG v koncentrátu</label>
                         <div class="ratio-toggle-buttons">
                             <button type="button" id="ratio5050" class="ratio-toggle-btn active" data-value="50/50">50/50</button>
                             <button type="button" id="ratio7030" class="ratio-toggle-btn" data-value="70/30">70/30</button>
@@ -534,7 +534,7 @@
 
                 <!-- Cílová síla nikotinu -->
                 <div class="form-group" id="targetNicotineGroup">
-                    <label class="form-label">
+                    <label class="form-label" data-i18n="form.target_nicotine">
                         Jak silnou chci finální nikotinovou bázi na vapování?
                     </label>
                     <div class="target-nicotine-container">
@@ -549,7 +549,7 @@
                         <div class="nicotine-display">
                             <span id="targetNicotineValue">0</span> mg/ml
                         </div>
-                        <div class="nicotine-description" id="nicotineDescription">
+                        <div class="nicotine-description" id="nicotineDescription" data-i18n="nicotine.zero">
                             Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
                         </div>
                     </div>
@@ -557,26 +557,26 @@
 
                 <!-- Příchuť -->
                 <div class="form-group">
-                    <label class="form-label">
+                    <label class="form-label" data-i18n="form.flavor">
                         Příchuť
                     </label>
                     <div class="flavor-container">
                         <select id="flavorType" class="neon-select" onchange="updateFlavorType()">
-                            <option value="none">Žádná (bez příchutě)</option>
-                            <option value="fruit">Ovoce (jahoda, jablko)</option>
-                            <option value="citrus">Citrónové (citron, limeta)</option>
-                            <option value="berry">Bobulové (borůvka, malina)</option>
-                            <option value="tropical">Tropické (ananas, mango)</option>
-                            <option value="tobacco">Tabákové (klasický, kubánský)</option>
-                            <option value="menthol">Mentol / Mátové</option>
-                            <option value="candy">Sladkosti (cukroví, karamel)</option>
-                            <option value="dessert">Dezerty (koláč, pudink)</option>
-                            <option value="bakery">Zákusky (tyčinka, donut)</option>
-                            <option value="biscuit">Piškotové (vanilka, máslo)</option>
-                            <option value="drink">Nápojové (kola, čaj)</option>
-                            <option value="tobaccosweet">Tabák + sladké (custard tobacco)</option>
-                            <option value="nuts">Oříškové (arašíd, lískový)</option>
-                            <option value="spice">Kořeněné (skořice, perník)</option>
+                            <option value="none" data-i18n="flavor.none">Žádná (bez příchutě)</option>
+                            <option value="fruit" data-i18n="flavor.fruit">Ovoce (jahoda, jablko)</option>
+                            <option value="citrus" data-i18n="flavor.citrus">Citrónové (citron, limeta)</option>
+                            <option value="berry" data-i18n="flavor.berry">Bobulové (borůvka, malina)</option>
+                            <option value="tropical" data-i18n="flavor.tropical">Tropické (ananas, mango)</option>
+                            <option value="tobacco" data-i18n="flavor.tobacco">Tabákové (klasický, kubánský)</option>
+                            <option value="menthol" data-i18n="flavor.menthol">Mentol / Mátové</option>
+                            <option value="candy" data-i18n="flavor.candy">Sladkosti (cukroví, karamel)</option>
+                            <option value="dessert" data-i18n="flavor.dessert">Dezerty (koláč, pudink)</option>
+                            <option value="bakery" data-i18n="flavor.bakery">Zákusky (tyčinka, donut)</option>
+                            <option value="biscuit" data-i18n="flavor.biscuit">Piškotové (vanilka, máslo)</option>
+                            <option value="drink" data-i18n="flavor.drink">Nápojové (kola, čaj)</option>
+                            <option value="tobaccosweet" data-i18n="flavor.tobaccosweet">Tabák + sladké (custard tobacco)</option>
+                            <option value="nuts" data-i18n="flavor.nuts">Oříškové (arašíd, lískový)</option>
+                            <option value="spice" data-i18n="flavor.spice">Kořeněné (skořice, perník)</option>
                         </select>
                         <div id="flavorStrengthContainer" class="hidden">
                             <div class="slider-container small">
@@ -590,11 +590,11 @@
                             <div class="flavor-display">
                                 <span id="flavorValue">10</span>%
                             </div>
-                            <div class="flavor-description" id="flavorDescription">
+                            <div class="flavor-description" id="flavorDescription" data-i18n="flavor.ideal">
                                 Ideální chuť
                             </div>
                             <div class="form-group-sub">
-                                <label class="form-label-small">Poměr VG/PG v příchuti</label>
+                                <label class="form-label-small" data-i18n="form.flavor_ratio">Poměr VG/PG v příchuti</label>
                                 <div class="ratio-toggle-buttons">
                                     <button type="button" id="flavorRatio0100" class="ratio-toggle-btn active" data-value="0/100">0/100</button>
                                     <button type="button" id="flavorRatio8020" class="ratio-toggle-btn" data-value="80/20">80/20</button>
@@ -608,13 +608,13 @@
 
                 <!-- Poměr VG/PG ve výsledném liquidu -->
                 <div class="form-group" id="vgPgRatioGroup">
-                    <label class="form-label">
+                    <label class="form-label" data-i18n="form.vgpg_ratio">
                         Poměr VG/PG ve výsledném liquidu
                     </label>
                     <div class="ratio-container">
                         <div class="ratio-labels">
-                            <span class="ratio-label left">Dým (VG)</span>
-                            <span class="ratio-label right">Chuť (PG)</span>
+                            <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                            <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
                         </div>
                         <div class="slider-container">
                             <button class="slider-btn" onclick="adjustRatio(-5)">◀</button>
@@ -638,7 +638,7 @@
                         <div class="ratio-display">
                             <span id="vgValue">50</span>:<span id="pgValue">50</span>
                         </div>
-                        <div class="ratio-description" id="ratioDescription">
+                        <div class="ratio-description" id="ratioDescription" data-i18n="ratio.balanced">
                             Vyvážený poměr páry a chuti, vhodný pro většinu zařízení.
                         </div>
                         <div id="ratioLimitWarning" class="input-warning hidden"></div>
@@ -647,10 +647,10 @@
 
                 <div class="button-group">
                     <button class="neon-button secondary" onclick="showPage('mode-select')">
-                        <span>◀ ZPĚT</span>
+                        <span data-i18n="nav.back">◀ ZPĚT</span>
                     </button>
                     <button class="neon-button" onclick="calculateMix()">
-                        <span>MIXUJ!</span>
+                        <span data-i18n="form.mix_button">MIXUJ!</span>
                         <div class="button-glow"></div>
                     </button>
                 </div>
@@ -969,19 +969,19 @@
 
         <!-- Výsledky -->
         <section id="results" class="page">
-            <h2 class="page-title">Tvůj recept</h2>
+            <h2 class="page-title" data-i18n="results.title">Tvůj recept</h2>
             
             <div class="results-summary">
                 <div class="summary-item">
-                    <span class="summary-label">Celkový objem:</span>
+                    <span class="summary-label" data-i18n="results.total_volume">Celkový objem:</span>
                     <span class="summary-value" id="resultTotal">100 ml</span>
                 </div>
                 <div class="summary-item">
-                    <span class="summary-label">Poměr VG/PG:</span>
+                    <span class="summary-label" data-i18n="results.ratio">Poměr VG/PG:</span>
                     <span class="summary-value" id="resultRatio">50:50</span>
                 </div>
                 <div class="summary-item">
-                    <span class="summary-label">Síla nikotinu:</span>
+                    <span class="summary-label" data-i18n="results.nicotine_strength">Síla nikotinu:</span>
                     <span class="summary-value" id="resultNicotine">0 mg/ml</span>
                 </div>
             </div>
@@ -990,10 +990,10 @@
                 <table class="results-table">
                     <thead>
                         <tr>
-                            <th>Složka</th>
-                            <th>Objem (ml)</th>
-                            <th>Kapky</th>
-                            <th>Procento</th>
+                            <th data-i18n="results.ingredient">Složka</th>
+                            <th data-i18n="results.volume">Objem (ml)</th>
+                            <th data-i18n="results.drops">Kapky</th>
+                            <th data-i18n="results.percent">Procento</th>
                         </tr>
                     </thead>
                     <tbody id="resultsBody">
@@ -1002,21 +1002,21 @@
             </div>
 
             <div class="results-notes">
-                <h4>Poznámky k míchání:</h4>
+                <h4 data-i18n="results.notes_title">Poznámky k míchání:</h4>
                 <ul>
-                    <li>Nejprve přidejte nikotin (pokud používáte)</li>
-                    <li>Poté přidejte příchutě</li>
-                    <li>Nakonec doplňte PG a VG</li>
-                    <li>Důkladně protřepejte a nechte zrát 1-2 týdny</li>
+                    <li data-i18n="results.note1">Nejprve přidejte nikotin (pokud používáte)</li>
+                    <li data-i18n="results.note2">Poté přidejte příchutě</li>
+                    <li data-i18n="results.note3">Nakonec doplňte PG a VG</li>
+                    <li data-i18n="results.note4">Důkladně protřepejte a nechte zrát 1-2 týdny</li>
                 </ul>
             </div>
 
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('form')">
-                    <span>◀ UPRAVIT</span>
+                    <span data-i18n="results.edit_button">◀ UPRAVIT</span>
                 </button>
                 <button class="neon-button" onclick="showSaveRecipeModal()" id="saveRecipeBtn">
-                    <span>ULOŽIT</span>
+                    <span data-i18n="results.save_button">ULOŽIT</span>
                 </button>
             </div>
         </section>
@@ -1025,18 +1025,18 @@
         <div id="saveRecipeModal" class="modal hidden">
             <div class="modal-content">
                 <button class="menu-close" onclick="hideSaveRecipeModal()">✕</button>
-                <h3 class="menu-title">Uložit recept</h3>
+                <h3 class="menu-title" data-i18n="recipes.save_title">Uložit recept</h3>
                 <form class="save-recipe-form" onsubmit="return saveRecipe(event)">
                     <div class="form-group-login">
-                        <label class="login-label">Název receptu *</label>
-                        <input type="text" id="recipeName" class="login-input" placeholder="Můj oblíbený liquid" required>
+                        <label class="login-label" data-i18n="recipes.name">Název receptu *</label>
+                        <input type="text" id="recipeName" class="login-input" data-i18n-placeholder="recipes.name_placeholder" placeholder="Můj oblíbený liquid" required>
                     </div>
                     <div class="form-group-login">
-                        <label class="login-label">Popis</label>
-                        <textarea id="recipeDescription" class="login-input contact-textarea" placeholder="Popis receptu, poznámky k zrání..."></textarea>
+                        <label class="login-label" data-i18n="recipes.description">Popis</label>
+                        <textarea id="recipeDescription" class="login-input contact-textarea" data-i18n-placeholder="recipes.description_placeholder" placeholder="Popis receptu, poznámky k zrání..."></textarea>
                     </div>
                     <div class="form-group-login">
-                        <label class="login-label">Hodnocení</label>
+                        <label class="login-label" data-i18n="recipes.rating">Hodnocení</label>
                         <div class="star-rating" id="starRating">
                             <span class="star" data-rating="1">★</span>
                             <span class="star" data-rating="2">★</span>
@@ -1047,41 +1047,41 @@
                         <input type="hidden" id="recipeRating" value="0">
                     </div>
                     <div class="form-group-login">
-                        <label class="login-label">Použité produkty</label>
+                        <label class="login-label" data-i18n="recipes.used_products">Použité produkty</label>
                         <div class="linked-products-selector" id="linkedProductsSelector">
                             <div class="selected-products-list" id="selectedProductsList">
                                 <!-- Vybrané produkty budou přidány dynamicky -->
                             </div>
                             <button type="button" class="add-product-btn" onclick="addProductRow()">
-                                <span class="add-icon">+</span> Přidat produkt
+                                <span class="add-icon">+</span> <span data-i18n="recipes.add_product">Přidat produkt</span>
                             </button>
                         </div>
                     </div>
-                    <button type="submit" class="neon-button">Uložit recept</button>
+                    <button type="submit" class="neon-button" data-i18n="recipes.save">Uložit recept</button>
                 </form>
             </div>
         </div>
 
         <!-- Mé recepty stránka -->
         <section id="my-recipes" class="page">
-            <h2 class="page-title">Mé recepty</h2>
+            <h2 class="page-title" data-i18n="recipes.my_recipes">Mé recepty</h2>
             
             <!-- Vyhledávací lišta receptů -->
             <div class="recipes-search-bar">
                 <div class="search-row">
                     <div class="search-field search-text">
-                        <label for="recipeSearchText">🔍 Hledat</label>
-                        <input type="text" id="recipeSearchText" placeholder="Název nebo popis..." oninput="filterRecipes()">
+                        <label for="recipeSearchText" data-i18n="search.search">🔍 Hledat</label>
+                        <input type="text" id="recipeSearchText" data-i18n-placeholder="search.name_or_desc" placeholder="Název nebo popis..." oninput="filterRecipes()">
                     </div>
                     <div class="search-field search-rating">
-                        <label>⭐ Hodnocení</label>
+                        <label data-i18n="search.rating">⭐ Hodnocení</label>
                         <div class="search-stars" id="recipeSearchStars">
                             <span class="search-star" data-rating="1" onclick="setRecipeSearchRating(1)">☆</span>
                             <span class="search-star" data-rating="2" onclick="setRecipeSearchRating(2)">☆</span>
                             <span class="search-star" data-rating="3" onclick="setRecipeSearchRating(3)">☆</span>
                             <span class="search-star" data-rating="4" onclick="setRecipeSearchRating(4)">☆</span>
                             <span class="search-star" data-rating="5" onclick="setRecipeSearchRating(5)">☆</span>
-                            <button class="clear-rating-btn" onclick="clearRecipeSearchRating()" title="Zrušit filtr">✕</button>
+                            <button class="clear-rating-btn" onclick="clearRecipeSearchRating()" data-i18n-title="search.clear_filter" title="Zrušit filtr">✕</button>
                         </div>
                     </div>
                 </div>
@@ -1089,18 +1089,18 @@
             </div>
             
             <div id="recipesListContainer">
-                <p class="no-recipes-text">Zatím nemáte žádné uložené recepty.</p>
+                <p class="no-recipes-text" data-i18n="recipes.no_recipes">Zatím nemáte žádné uložené recepty.</p>
             </div>
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('intro')">
-                    <span>◀ ZPĚT</span>
+                    <span data-i18n="nav.back">◀ ZPĚT</span>
                 </button>
             </div>
         </section>
 
         <!-- Detail receptu stránka -->
         <section id="recipe-detail" class="page">
-            <h2 class="page-title" id="recipeDetailTitle">Detail receptu</h2>
+            <h2 class="page-title" id="recipeDetailTitle" data-i18n="recipes.detail_title">Detail receptu</h2>
             
             <div class="recipe-detail-content" id="recipeDetailContent">
                 <!-- Naplní se JavaScriptem -->
@@ -1108,23 +1108,23 @@
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('my-recipes')">
-                    <span>ZPĚT</span>
+                    <span data-i18n="nav.back">ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editSavedRecipe()">
-                    <span>UPRAVIT</span>
+                    <span data-i18n="recipes.edit">UPRAVIT</span>
                 </button>
                 <button class="neon-button btn-green" onclick="shareRecipe()">
-                    <span>SDÍLET</span>
+                    <span data-i18n="recipes.share">SDÍLET</span>
                 </button>
                 <button class="neon-button btn-red" onclick="deleteRecipe()">
-                    <span>SMAZAT</span>
+                    <span data-i18n="recipes.delete">SMAZAT</span>
                 </button>
             </div>
         </section>
 
         <!-- Sdílený recept stránka -->
         <section id="shared-recipe" class="page">
-            <h2 class="page-title" id="sharedRecipeTitle">Sdílený recept</h2>
+            <h2 class="page-title" id="sharedRecipeTitle" data-i18n="recipes.shared_title">Sdílený recept</h2>
             
             <div class="recipe-detail-content" id="sharedRecipeContent">
                 <!-- Naplní se JavaScriptem -->
@@ -1132,18 +1132,18 @@
             
             <div class="button-group">
                 <button class="neon-button" onclick="showPage('intro')">
-                    <span>🏠 DOMŮ</span>
+                    <span data-i18n="nav.home">🏠 DOMŮ</span>
                 </button>
             </div>
         </section>
 
         <!-- Oblíbené produkty - seznam -->
         <section id="favorite-products" class="page">
-            <h2 class="page-title">Oblíbené produkty</h2>
+            <h2 class="page-title" data-i18n="products.favorite_products">Oblíbené produkty</h2>
             
             <div class="products-header">
                 <button class="neon-button btn-green" onclick="showAddProductForm()">
-                    <span>+ PŘIDAT NOVÝ</span>
+                    <span data-i18n="products.add_new">+ PŘIDAT NOVÝ</span>
                 </button>
             </div>
             
@@ -1151,29 +1151,29 @@
             <div class="products-search-bar">
                 <div class="search-row">
                     <div class="search-field search-text">
-                        <label for="productSearchText">🔍 Hledat</label>
-                        <input type="text" id="productSearchText" placeholder="Název nebo popis..." oninput="filterProducts()">
+                        <label for="productSearchText" data-i18n="search.search">🔍 Hledat</label>
+                        <input type="text" id="productSearchText" data-i18n-placeholder="search.name_or_desc" placeholder="Název nebo popis..." oninput="filterProducts()">
                     </div>
                     <div class="search-field search-type">
-                        <label for="productSearchType">📦 Typ</label>
+                        <label for="productSearchType" data-i18n="search.type">📦 Typ</label>
                         <select id="productSearchType" onchange="filterProducts()">
-                            <option value="">Všechny typy</option>
-                            <option value="vg">VG (Glycerin)</option>
-                            <option value="pg">PG (Propylenglykol)</option>
-                            <option value="flavor">Příchuť</option>
-                            <option value="nicotine_booster">Nikotin booster</option>
-                            <option value="nicotine_salt">Nikotinová sůl</option>
+                            <option value="" data-i18n="search.all_types">Všechny typy</option>
+                            <option value="vg" data-i18n="products.type_vg">VG (Glycerin)</option>
+                            <option value="pg" data-i18n="products.type_pg">PG (Propylenglykol)</option>
+                            <option value="flavor" data-i18n="products.type_flavor">Příchuť</option>
+                            <option value="nicotine_booster" data-i18n="products.type_nicotine_booster">Nikotin booster</option>
+                            <option value="nicotine_salt" data-i18n="products.type_nicotine_salt">Nikotinová sůl</option>
                         </select>
                     </div>
                     <div class="search-field search-rating">
-                        <label>⭐ Hodnocení</label>
+                        <label data-i18n="search.rating">⭐ Hodnocení</label>
                         <div class="search-stars" id="searchStars">
                             <span class="search-star" data-rating="1" onclick="setSearchRating(1)">☆</span>
                             <span class="search-star" data-rating="2" onclick="setSearchRating(2)">☆</span>
                             <span class="search-star" data-rating="3" onclick="setSearchRating(3)">☆</span>
                             <span class="search-star" data-rating="4" onclick="setSearchRating(4)">☆</span>
                             <span class="search-star" data-rating="5" onclick="setSearchRating(5)">☆</span>
-                            <button class="clear-rating-btn" onclick="clearSearchRating()" title="Zrušit filtr">✕</button>
+                            <button class="clear-rating-btn" onclick="clearSearchRating()" data-i18n-title="search.clear_filter" title="Zrušit filtr">✕</button>
                         </div>
                     </div>
                 </div>
@@ -1181,19 +1181,19 @@
             </div>
             
             <div id="productsListContainer">
-                <p class="no-products-text">Zatím nemáte žádné oblíbené produkty.</p>
+                <p class="no-products-text" data-i18n="products.no_products">Zatím nemáte žádné oblíbené produkty.</p>
             </div>
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('intro')">
-                    <span>◀ ZPĚT</span>
+                    <span data-i18n="nav.back">◀ ZPĚT</span>
                 </button>
             </div>
         </section>
 
         <!-- Detail produktu stránka -->
         <section id="product-detail" class="page">
-            <h2 class="page-title" id="productDetailTitle">Detail produktu</h2>
+            <h2 class="page-title" id="productDetailTitle" data-i18n="products.detail_title">Detail produktu</h2>
             
             <div class="product-detail-content" id="productDetailContent">
                 <!-- Naplní se JavaScriptem -->
@@ -1201,49 +1201,49 @@
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showFavoriteProducts()">
-                    <span>ZPĚT</span>
+                    <span data-i18n="nav.back">ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editProduct()">
-                    <span>UPRAVIT</span>
+                    <span data-i18n="products.edit">UPRAVIT</span>
                 </button>
                 <button class="neon-button btn-green" onclick="shareProduct()">
-                    <span>SDÍLET</span>
+                    <span data-i18n="products.share">SDÍLET</span>
                 </button>
                 <button class="neon-button btn-red" onclick="deleteProduct()">
-                    <span>SMAZAT</span>
+                    <span data-i18n="products.delete">SMAZAT</span>
                 </button>
             </div>
         </section>
 
         <!-- Formulář pro přidání/úpravu produktu -->
         <section id="product-form" class="page">
-            <h2 class="page-title" id="productFormTitle">Přidat produkt</h2>
+            <h2 class="page-title" id="productFormTitle" data-i18n="products.add_product">Přidat produkt</h2>
             
             <form id="productForm" class="product-form" onsubmit="return saveProduct(event)">
                 <div class="form-group">
-                    <label for="productName">Název *</label>
-                    <input type="text" id="productName" required maxlength="200" placeholder="Název produktu">
+                    <label for="productName" data-i18n="products.name">Název *</label>
+                    <input type="text" id="productName" required maxlength="200" data-i18n-placeholder="products.name_placeholder" placeholder="Název produktu">
                 </div>
                 
                 <div class="form-group">
-                    <label for="productType">Typ produktu *</label>
+                    <label for="productType" data-i18n="products.product_type">Typ produktu *</label>
                     <select id="productType" required class="product-select">
-                        <option value="">-- Vyberte typ --</option>
-                        <option value="vg">VG (Glycerin)</option>
-                        <option value="pg">PG (Propylenglykol)</option>
-                        <option value="flavor">Příchuť</option>
-                        <option value="nicotine_booster">Nikotin booster</option>
-                        <option value="nicotine_salt">Nikotinová sůl</option>
+                        <option value="" data-i18n="products.select_type">-- Vyberte typ --</option>
+                        <option value="vg" data-i18n="products.type_vg">VG (Glycerin)</option>
+                        <option value="pg" data-i18n="products.type_pg">PG (Propylenglykol)</option>
+                        <option value="flavor" data-i18n="products.type_flavor">Příchuť</option>
+                        <option value="nicotine_booster" data-i18n="products.type_nicotine_booster">Nikotin booster</option>
+                        <option value="nicotine_salt" data-i18n="products.type_nicotine_salt">Nikotinová sůl</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="productDescription">Popis</label>
-                    <textarea id="productDescription" maxlength="2000" rows="4" placeholder="Popis produktu..."></textarea>
+                    <label for="productDescription" data-i18n="products.description">Popis</label>
+                    <textarea id="productDescription" maxlength="2000" rows="4" data-i18n-placeholder="products.description_placeholder" placeholder="Popis produktu..."></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>Hodnocení</label>
+                    <label data-i18n="products.rating">Hodnocení</label>
                     <div class="star-rating product-star-rating" id="productStarRating">
                         <span class="star" data-rating="1">☆</span>
                         <span class="star" data-rating="2">☆</span>
@@ -1255,23 +1255,23 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="productUrl">URL odkaz na produkt</label>
+                    <label for="productUrl" data-i18n="products.url">URL odkaz na produkt</label>
                     <input type="url" id="productUrl" placeholder="https://...">
                 </div>
                 
                 <div class="form-group">
-                    <label>Fotografie</label>
+                    <label data-i18n="products.photo">Fotografie</label>
                     <div class="image-upload-container">
                         <div class="image-preview" id="productImagePreview">
                             <span class="image-placeholder">📷</span>
                         </div>
                         <div class="image-upload-buttons">
                             <label class="neon-button secondary upload-btn">
-                                <span>📁 Vybrat z galerie</span>
+                                <span data-i18n="products.select_from_gallery">📁 Vybrat z galerie</span>
                                 <input type="file" id="productImageFile" accept="image/*" onchange="previewProductImage(event)" hidden>
                             </label>
                             <button type="button" class="neon-button secondary mobile-only" onclick="captureProductPhoto()">
-                                <span>📸 Vyfotit</span>
+                                <span data-i18n="products.take_photo">📸 Vyfotit</span>
                             </button>
                         </div>
                         <input type="hidden" id="productImageUrl" value="">
@@ -1282,10 +1282,10 @@
                 
                 <div class="button-group form-buttons">
                     <button type="button" class="neon-button secondary" onclick="cancelProductForm()">
-                        <span>◀ ZPĚT</span>
+                        <span data-i18n="nav.back">◀ ZPĚT</span>
                     </button>
                     <button type="submit" class="neon-button btn-green">
-                        <span>💾 ULOŽIT</span>
+                        <span data-i18n="products.save">💾 ULOŽIT</span>
                     </button>
                 </div>
             </form>
@@ -1347,10 +1347,10 @@
     <!-- Install prompt for PWA (Android) -->
     <div id="installPrompt" class="install-prompt hidden">
         <div class="install-content">
-            <p>Nainstalovat LiquiMixer na váš telefon?</p>
+            <p data-i18n="pwa.install_question">Nainstalovat LiquiMixer na váš telefon?</p>
             <div class="install-buttons">
-                <button id="installBtn" class="neon-button small">Instalovat</button>
-                <button id="dismissBtn" class="neon-button secondary small">Později</button>
+                <button id="installBtn" class="neon-button small" data-i18n="pwa.install">Instalovat</button>
+                <button id="dismissBtn" class="neon-button secondary small" data-i18n="pwa.later">Později</button>
             </div>
         </div>
     </div>
@@ -1358,23 +1358,23 @@
     <!-- Install prompt for iOS -->
     <div id="iosInstallPrompt" class="install-prompt ios-prompt hidden">
         <div class="install-content">
-            <p>Nainstalovat LiquiMixer na váš iPhone?</p>
+            <p data-i18n="pwa.install_iphone">Nainstalovat LiquiMixer na váš iPhone?</p>
             <div class="ios-instructions">
                 <div class="ios-step">
                     <span class="ios-step-number">1</span>
-                    <span>Klepněte na ikonu <span class="ios-share-icon">⬆</span> (Sdílet)</span>
+                    <span data-i18n="pwa.ios_step1">Klepněte na ikonu <span class="ios-share-icon">⬆</span> (Sdílet)</span>
                 </div>
                 <div class="ios-step">
                     <span class="ios-step-number">2</span>
-                    <span>Vyberte "Přidat na plochu"</span>
+                    <span data-i18n="pwa.ios_step2">Vyberte "Přidat na plochu"</span>
                 </div>
                 <div class="ios-step">
                     <span class="ios-step-number">3</span>
-                    <span>Potvrďte klepnutím na "Přidat"</span>
+                    <span data-i18n="pwa.ios_step3">Potvrďte klepnutím na "Přidat"</span>
                 </div>
             </div>
             <div class="install-buttons">
-                <button id="iosDismissBtn" class="neon-button secondary small">Rozumím</button>
+                <button id="iosDismissBtn" class="neon-button secondary small" data-i18n="pwa.understand">Rozumím</button>
             </div>
         </div>
     </div>
