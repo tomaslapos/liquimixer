@@ -82,6 +82,14 @@
     <div class="container">
         <!-- Horní navigace -->
         <nav class="top-nav">
+            <div class="nav-left">
+                <button class="nav-btn home-btn" onclick="goHome()" id="homeButton" title="Domů">
+                    <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </button>
+            </div>
             <div class="nav-buttons">
                 <button class="nav-btn menu-btn" onclick="toggleMenu()">
                     <span class="nav-icon">☰</span>
@@ -102,22 +110,22 @@
                 <div class="menu-section">
                     <h4 class="menu-section-title">Cookies</h4>
                     <p class="menu-text">
-                        Firma WOOs neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, 
+                        Stránka Liquimixer neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, 
                         analytické cookies ani cookies třetích stran. Vaše soukromí je pro nás prioritou.
                     </p>
                 </div>
                 <div class="menu-section">
                     <h4 class="menu-section-title">GDPR a ochrana osobních údajů</h4>
                     <p class="menu-text">
-                        Osobní údaje jsou ukládány výhradně pro interní použití firmy WOOs za účelem 
+                        Osobní údaje jsou ukládány výhradně pro interní použití stránky Liquimixer za účelem 
                         přihlášení uživatele do aplikace. Vaše údaje nejsou sdíleny s třetími stranami 
                         ani používány pro marketingové účely. Máte právo požádat o výmaz svých údajů 
-                        kdykoli kontaktováním firmy WOOs.
+                        kdykoli kontaktováním stránky Liquimixer.
                     </p>
                 </div>
                 <div class="menu-section">
                     <h4 class="menu-section-title">Kontaktní formulář</h4>
-                    <form class="contact-form" onsubmit="return handleContact(event)">
+                    <form class="contact-form" id="contactForm">
                         <div class="form-group-login">
                             <label class="login-label">Váš e-mail</label>
                             <input type="email" id="contactEmail" class="login-input" placeholder="vas@email.cz" required>
@@ -130,26 +138,35 @@
                             <label class="login-label">Zpráva</label>
                             <textarea id="contactMessage" class="login-input contact-textarea" placeholder="Vaše zpráva..." required></textarea>
                         </div>
-                        <button type="submit" class="neon-button contact-submit">Odeslat zprávu</button>
+                        <!-- Honeypot anti-spam (skrytý pro boty) -->
+                        <div class="form-group-login" style="display: none;" aria-hidden="true">
+                            <input type="text" id="contactHoneypot" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                        <div id="contactStatus" class="contact-status"></div>
+                        <button type="submit" class="neon-button contact-submit" id="contactSubmitBtn">
+                            <span id="contactSubmitText">Odeslat zprávu</span>
+                            <span id="contactSubmitLoader" class="btn-loader hidden"></span>
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
 
         <!-- Login modal -->
-        <div id="loginModal" class="login-modal hidden">
+        <div id="loginModal" class="login-modal hidden" onclick="handleLoginModalBackdropClick(event)">
             <div class="login-content">
                 <button class="menu-close" onclick="hideLoginModal()">✕</button>
-                <h3 class="menu-title">Přihlášení</h3>
+                <h3 class="menu-title" data-i18n="auth.login_title">Přihlášení</h3>
+                <p class="login-subtitle" data-i18n="auth.login_subtitle">Přihlaste se pro přístup k uloženým receptům a produktům</p>
                 <div id="clerk-sign-in"></div>
             </div>
         </div>
         
         <!-- User Profile modal -->
-        <div id="userProfileModal" class="login-modal hidden">
+        <div id="userProfileModal" class="login-modal hidden" onclick="handleProfileModalBackdropClick(event)">
             <div class="login-content">
                 <button class="menu-close" onclick="hideUserProfileModal()">✕</button>
-                <h3 class="menu-title">Můj účet</h3>
+                <h3 class="menu-title" data-i18n="auth.profile_title">Můj účet</h3>
                 <div id="clerk-user-profile"></div>
             </div>
         </div>
@@ -1029,6 +1046,17 @@
                         </div>
                         <input type="hidden" id="recipeRating" value="0">
                     </div>
+                    <div class="form-group-login">
+                        <label class="login-label">Použité produkty</label>
+                        <div class="linked-products-selector" id="linkedProductsSelector">
+                            <div class="selected-products-list" id="selectedProductsList">
+                                <!-- Vybrané produkty budou přidány dynamicky -->
+                            </div>
+                            <button type="button" class="add-product-btn" onclick="addProductRow()">
+                                <span class="add-icon">+</span> Přidat produkt
+                            </button>
+                        </div>
+                    </div>
                     <button type="submit" class="neon-button">Uložit recept</button>
                 </form>
             </div>
@@ -1080,13 +1108,16 @@
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showPage('my-recipes')">
-                    <span>◀ ZPĚT</span>
+                    <span>ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editSavedRecipe()">
-                    <span>✏️ UPRAVIT</span>
+                    <span>UPRAVIT</span>
                 </button>
                 <button class="neon-button btn-green" onclick="shareRecipe()">
-                    <span>📤 SDÍLET</span>
+                    <span>SDÍLET</span>
+                </button>
+                <button class="neon-button btn-red" onclick="deleteRecipe()">
+                    <span>SMAZAT</span>
                 </button>
             </div>
         </section>
@@ -1170,13 +1201,16 @@
             
             <div class="button-group">
                 <button class="neon-button secondary" onclick="showFavoriteProducts()">
-                    <span>◀ ZPĚT</span>
+                    <span>ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editProduct()">
-                    <span>✏️ UPRAVIT</span>
+                    <span>UPRAVIT</span>
+                </button>
+                <button class="neon-button btn-green" onclick="shareProduct()">
+                    <span>SDÍLET</span>
                 </button>
                 <button class="neon-button btn-red" onclick="deleteProduct()">
-                    <span>🗑️ SMAZAT</span>
+                    <span>SMAZAT</span>
                 </button>
             </div>
         </section>
