@@ -7,5 +7,9 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev wss://*.supabase.co; frame-src https://*.clerk.accounts.dev https://challenges.cloudflare.com;
 
+/locales/*.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600
+
 
 

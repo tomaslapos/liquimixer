@@ -57,7 +57,7 @@
   "prep.dropper": "Dropper, Pipette or Syringe",
   "prep.dropper_detail": "Measuring tools are essential for precise dosing of ingredients. Dropper: Suitable for smaller volumes, less precise. Pipette: More precise than dropper, suitable for medium volumes. Syringe (without needle): Most precise option, ideal for nicotine. Use separate tools for each ingredient to avoid contamination.",
   "prep.measuring": "Measuring Tools",
-  "prep.measuring_detail": "For precise mixing you need reliable measuring tools. Graduated cylinders: For measuring volume in ml. Measuring syringes: Different sizes for different ingredients (1ml for nicotine, 5-10ml for VG/PG). Always measure twice and mix once!"
+  "prep.measuring_detail": "For precise mixing you need reliable measuring tools. Graduated cylinders: For measuring volume in ml. Measuring syringes: Different sizes for different ingredients (1ml for nicotine, 5-10ml for VG/PG). Always measure twice and mix once!",
   
   "mode.title": "Select Mode",
   "mode.standard": "Standard Calculation",
