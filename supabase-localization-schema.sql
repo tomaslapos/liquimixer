@@ -232,6 +232,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 
 -- Přihlášení
 ('cs', 'auth.login', 'Přihlášení', 'auth'),
+('cs', 'auth.login_title', 'Přihlášení', 'auth'),
+('cs', 'auth.login_subtitle', 'Přihlaste se pro přístup k uloženým receptům a produktům', 'auth'),
+('cs', 'auth.profile_title', 'Můj účet', 'auth'),
 ('cs', 'auth.email', 'E-mail', 'auth'),
 ('cs', 'auth.password', 'Heslo', 'auth'),
 ('cs', 'auth.login_button', 'Přihlásit se', 'auth'),
@@ -243,9 +246,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 -- Menu
 ('cs', 'menu.title', 'Menu', 'menu'),
 ('cs', 'menu.cookies_title', 'Cookies', 'menu'),
-('cs', 'menu.cookies_text', 'Firma WOOs neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, analytické cookies ani cookies třetích stran.', 'menu'),
+('cs', 'menu.cookies_text', 'Stránka Liquimixer neshromažďuje žádné cookies. Tato aplikace nepoužívá sledovací cookies, analytické cookies ani cookies třetích stran.', 'menu'),
 ('cs', 'menu.gdpr_title', 'GDPR a ochrana osobních údajů', 'menu'),
-('cs', 'menu.gdpr_text', 'Osobní údaje jsou ukládány výhradně pro interní použití firmy WOOs za účelem přihlášení uživatele do aplikace.', 'menu'),
+('cs', 'menu.gdpr_text', 'Osobní údaje jsou ukládány výhradně pro interní použití stránky Liquimixer za účelem přihlášení uživatele do aplikace.', 'menu'),
 ('cs', 'menu.contact_title', 'Kontaktní formulář', 'menu'),
 ('cs', 'menu.contact_email', 'Váš e-mail', 'menu'),
 ('cs', 'menu.contact_subject', 'Předmět', 'menu'),
@@ -372,6 +375,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 
 -- Auth
 ('en', 'auth.login', 'Login', 'auth'),
+('en', 'auth.login_title', 'Sign In', 'auth'),
+('en', 'auth.login_subtitle', 'Sign in to access your saved recipes and products', 'auth'),
+('en', 'auth.profile_title', 'My Account', 'auth'),
 ('en', 'auth.email', 'E-mail', 'auth'),
 ('en', 'auth.password', 'Password', 'auth'),
 ('en', 'auth.login_button', 'Sign in', 'auth'),
@@ -383,9 +389,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 -- Menu
 ('en', 'menu.title', 'Menu', 'menu'),
 ('en', 'menu.cookies_title', 'Cookies', 'menu'),
-('en', 'menu.cookies_text', 'WOOs does not collect any cookies. This application does not use tracking cookies, analytics cookies or third-party cookies.', 'menu'),
+('en', 'menu.cookies_text', 'Liquimixer does not collect any cookies. This application does not use tracking cookies, analytics cookies or third-party cookies.', 'menu'),
 ('en', 'menu.gdpr_title', 'GDPR and Privacy', 'menu'),
-('en', 'menu.gdpr_text', 'Personal data is stored exclusively for internal use by WOOs for user login purposes.', 'menu'),
+('en', 'menu.gdpr_text', 'Personal data is stored exclusively for internal use by Liquimixer for user login purposes.', 'menu'),
 ('en', 'menu.contact_title', 'Contact Form', 'menu'),
 ('en', 'menu.contact_email', 'Your e-mail', 'menu'),
 ('en', 'menu.contact_subject', 'Subject', 'menu'),
@@ -512,6 +518,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 
 -- Autoryzacja
 ('pl', 'auth.login', 'Logowanie', 'auth'),
+('pl', 'auth.login_title', 'Logowanie', 'auth'),
+('pl', 'auth.login_subtitle', 'Zaloguj się, aby uzyskać dostęp do zapisanych przepisów i produktów', 'auth'),
+('pl', 'auth.profile_title', 'Moje konto', 'auth'),
 ('pl', 'auth.email', 'E-mail', 'auth'),
 ('pl', 'auth.password', 'Hasło', 'auth'),
 ('pl', 'auth.login_button', 'Zaloguj się', 'auth'),
@@ -523,9 +532,9 @@ INSERT INTO translations (locale, key, value, category) VALUES
 -- Menu
 ('pl', 'menu.title', 'Menu', 'menu'),
 ('pl', 'menu.cookies_title', 'Cookies', 'menu'),
-('pl', 'menu.cookies_text', 'WOOs nie zbiera żadnych cookies. Ta aplikacja nie używa cookies śledzących, analitycznych ani cookies stron trzecich.', 'menu'),
+('pl', 'menu.cookies_text', 'Liquimixer nie zbiera żadnych cookies. Ta aplikacja nie używa cookies śledzących, analitycznych ani cookies stron trzecich.', 'menu'),
 ('pl', 'menu.gdpr_title', 'RODO i prywatność', 'menu'),
-('pl', 'menu.gdpr_text', 'Dane osobowe są przechowywane wyłącznie do użytku wewnętrznego WOOs w celu logowania użytkownika.', 'menu'),
+('pl', 'menu.gdpr_text', 'Dane osobowe są przechowywane wyłącznie do użytku wewnętrznego Liquimixer w celu logowania użytkownika.', 'menu'),
 ('pl', 'menu.contact_title', 'Formularz kontaktowy', 'menu'),
 ('pl', 'menu.contact_email', 'Twój e-mail', 'menu'),
 ('pl', 'menu.contact_subject', 'Temat', 'menu'),
@@ -828,5 +837,6 @@ INSERT INTO pricing (plan_type, name, description, price, vat_rate, currency, du
 ('yearly', '연간 구독', '1년간 모든 LiquiMixer 기능 이용', 12.99, 0, 'USD', 365, 'ko', true),
 ('yearly', 'الاشتراك السنوي', 'الوصول إلى جميع ميزات LiquiMixer لمدة عام واحد', 12.99, 0, 'USD', 365, 'ar-SA', true),
 ('yearly', 'Yıllık abonelik', 'Tüm LiquiMixer özelliklerine 1 yıl erişim', 12.99, 0, 'USD', 365, 'tr', true);
+
 
 

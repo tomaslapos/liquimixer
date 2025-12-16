@@ -18,3 +18,4 @@ ALTER TABLE recipes ALTER COLUMN share_id SET NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_recipes_share_id ON recipes(share_id);
 
 
+

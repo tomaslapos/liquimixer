@@ -168,6 +168,74 @@ async function saveUserPreferences(clerkId, preferences) {
     }
 }
 
+// Uložit preferovaný jazyk uživatele
+async function saveUserLocale(clerkId, locale) {
+    if (!supabase || !clerkId || !locale) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace locale formátu (2-5 znaků, např. "cs", "en", "ar-SA")
+    if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(locale)) {
+        console.error('Invalid locale format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .update({ 
+                preferred_locale: locale,
+                updated_at: new Date().toISOString()
+            })
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving user locale:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat preferovaný jazyk uživatele
+async function getUserLocale(clerkId) {
+    if (!supabase || !clerkId) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('preferred_locale')
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching user locale:', error);
+            return null;
+        }
+        
+        return data?.preferred_locale || null;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
 // Generovat unikátní share ID
 function generateShareId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -504,6 +572,10 @@ async function saveFavoriteProduct(clerkId, product) {
     const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt'];
     const productType = validTypes.includes(product.product_type) ? product.product_type : 'flavor';
     
+    // Generování share_id a share_url pro sdílení
+    const shareId = generateShareId();
+    const shareUrl = `${SHARE_BASE_URL}/?product=${shareId}`;
+    
     const productData = {
         clerk_id: clerkId,
         name: sanitizeInput(product.name) || 'Bez názvu',
@@ -512,6 +584,8 @@ async function saveFavoriteProduct(clerkId, product) {
         rating: Math.min(Math.max(parseInt(product.rating) || 0, 0), 5),
         image_url: product.image_url || '',
         product_url: sanitizeInput(product.product_url) || '',
+        share_id: shareId,
+        share_url: shareUrl,
         created_at: new Date().toISOString()
     };
     
@@ -642,6 +716,35 @@ async function getFavoriteProductById(clerkId, productId) {
     }
 }
 
+// Získat produkt podle share_id (pro sdílení)
+async function getProductByShareId(shareId) {
+    if (!supabase || !shareId) return null;
+    
+    // SECURITY: Validace formátu share_id
+    if (!isValidShareId(shareId)) {
+        console.error('Invalid share_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('favorite_products')
+            .select('*')
+            .eq('share_id', shareId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching shared product:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
 // Smazat oblíbený produkt
 async function deleteFavoriteProduct(clerkId, productId) {
     if (!supabase || !clerkId) return false;
@@ -730,6 +833,102 @@ async function uploadProductImage(clerkId, file) {
 }
 
 // ============================================
+// PROPOJENÍ PRODUKTŮ S RECEPTY
+// ============================================
+
+// Propojit produkty s receptem
+async function linkProductsToRecipe(clerkId, recipeId, productIds) {
+    if (!supabase || !clerkId || !recipeId || !productIds || productIds.length === 0) return false;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return false;
+    }
+    
+    try {
+        // Smazat existující propojení
+        await supabase
+            .from('recipe_products')
+            .delete()
+            .eq('recipe_id', recipeId)
+            .eq('clerk_id', clerkId);
+        
+        // Vytvořit nová propojení
+        const links = productIds
+            .filter(id => isValidUUID(id))
+            .map(productId => ({
+                recipe_id: recipeId,
+                product_id: productId,
+                clerk_id: clerkId
+            }));
+        
+        if (links.length > 0) {
+            const { error } = await supabase
+                .from('recipe_products')
+                .insert(links);
+            
+            if (error) {
+                console.error('Error linking products:', error);
+                return false;
+            }
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// Získat produkty propojené s receptem
+async function getLinkedProducts(clerkId, recipeId) {
+    if (!supabase || !clerkId || !recipeId) return [];
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('recipe_products')
+            .select(`
+                product_id,
+                favorite_products (
+                    id,
+                    name,
+                    product_type,
+                    rating,
+                    image_url
+                )
+            `)
+            .eq('recipe_id', recipeId)
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error fetching linked products:', error);
+            return [];
+        }
+        
+        // Extrahovat produkty z výsledku
+        return (data || [])
+            .map(item => item.favorite_products)
+            .filter(p => p !== null);
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// ============================================
 // INTEGRACE S CLERK
 // ============================================
 
@@ -744,6 +943,11 @@ async function onClerkSignIn(clerkUser) {
     
     // Ulož uživatele do databáze
     await saveUserToDatabase(clerkUser);
+    
+    // Načíst uložený jazyk uživatele a aplikovat ho
+    if (window.i18n?.loadUserLocale) {
+        await window.i18n.loadUserLocale(clerkUser.id);
+    }
 }
 
 // Exportuj funkce pro použití v app.js
@@ -752,6 +956,8 @@ window.LiquiMixerDB = {
     saveUser: saveUserToDatabase,
     getUser: getUserFromDatabase,
     savePreferences: saveUserPreferences,
+    saveUserLocale: saveUserLocale,
+    getUserLocale: getUserLocale,
     saveRecipe: saveUserRecipe,
     updateRecipe: updateUserRecipe,
     getRecipes: getUserRecipes,
@@ -763,9 +969,14 @@ window.LiquiMixerDB = {
     updateProduct: updateFavoriteProduct,
     getProducts: getFavoriteProducts,
     getProductById: getFavoriteProductById,
+    getProductByShareId: getProductByShareId,
     deleteProduct: deleteFavoriteProduct,
     uploadProductImage: uploadProductImage,
+    // Propojení produktů s recepty
+    linkProductsToRecipe: linkProductsToRecipe,
+    getLinkedProducts: getLinkedProducts,
     onSignIn: onClerkSignIn
 };
+
 
 

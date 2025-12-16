@@ -384,3 +384,4 @@ async function createInvoice(supabase: any, subscription: any) {
     console.error('Error creating invoice:', error)
   }
 }
+

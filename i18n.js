@@ -146,7 +146,7 @@ function t(key, fallback = null) {
 }
 
 // Změnit jazyk
-async function setLocale(locale) {
+async function setLocale(locale, saveToDb = true) {
     currentLocale = locale;
     localStorage.setItem('liquimixer_locale', locale);
     
@@ -159,8 +159,35 @@ async function setLocale(locale) {
         window.currentCurrency = localeData.currency;
     }
     
+    // Uložit do databáze pokud je uživatel přihlášen a není zakázáno
+    if (saveToDb && window.Clerk?.user?.id && window.LiquiMixerDB?.saveUserLocale) {
+        try {
+            await window.LiquiMixerDB.saveUserLocale(window.Clerk.user.id, locale);
+        } catch (err) {
+            console.error('Error saving locale to database:', err);
+        }
+    }
+    
     // Event pro ostatní komponenty
     window.dispatchEvent(new CustomEvent('localeChanged', { detail: { locale } }));
+}
+
+// Načíst jazyk uživatele z databáze
+async function loadUserLocale(clerkId) {
+    if (!clerkId || !window.LiquiMixerDB?.getUserLocale) return null;
+    
+    try {
+        const locale = await window.LiquiMixerDB.getUserLocale(clerkId);
+        if (locale) {
+            console.log('Loaded user locale from database:', locale);
+            // Nastavit jazyk bez opětovného ukládání do DB
+            await setLocale(locale, false);
+            return locale;
+        }
+    } catch (err) {
+        console.error('Error loading user locale:', err);
+    }
+    return null;
 }
 
 // Získat aktuální jazyk
@@ -286,7 +313,8 @@ window.i18n = {
     formatDate: formatDate,
     formatCurrency: formatCurrency,
     createLanguageSelector: createLanguageSelector,
-    applyTranslations: applyTranslations
+    applyTranslations: applyTranslations,
+    loadUserLocale: loadUserLocale
 };
 
 // Automatická inicializace po načtení Supabase
@@ -299,5 +327,6 @@ window.addEventListener('load', async () => {
     
     await initI18n();
 });
+
 
 

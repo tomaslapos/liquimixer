@@ -152,6 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAllDisplays();
     initSearchStarsHover();
     initRecipeSearchStarsHover();
+    
+    // Event listener pro kontaktní formulář (bezpečnější než inline onclick)
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContact);
+    }
 });
 
 function initializeSliders() {
@@ -518,6 +524,19 @@ function hideLoginModal() {
     }
 }
 
+// Zavřít modal kliknutím na pozadí
+function handleLoginModalBackdropClick(event) {
+    if (event.target.id === 'loginModal') {
+        hideLoginModal();
+    }
+}
+
+function handleProfileModalBackdropClick(event) {
+    if (event.target.id === 'userProfileModal') {
+        hideUserProfileModal();
+    }
+}
+
 function showUserProfileModal() {
     const menuDropdown = document.getElementById('menuDropdown');
     const loginModal = document.getElementById('loginModal');
@@ -543,10 +562,43 @@ function showUserProfileModal() {
                 const safeEmail = escapeHtml(window.Clerk.user?.emailAddresses[0]?.emailAddress || '');
                 const safeName = escapeHtml(window.Clerk.user?.fullName || '');
                 
+                // Získat dostupné jazyky pro výběr
+                const availableLocales = window.i18n?.getAvailableLocales() || [];
+                const currentLocale = window.i18n?.getLocale() || 'cs';
+                
+                // Vytvořit options pro select
+                let languageOptions = '';
+                if (availableLocales.length > 0) {
+                    availableLocales.forEach(locale => {
+                        const selected = locale.code === currentLocale ? 'selected' : '';
+                        languageOptions += `<option value="${escapeHtml(locale.code)}" ${selected}>${escapeHtml(locale.native_name)}</option>`;
+                    });
+                } else {
+                    // Fallback pokud nejsou načtené lokalizace
+                    languageOptions = `
+                        <option value="cs" ${currentLocale === 'cs' ? 'selected' : ''}>Čeština</option>
+                        <option value="en" ${currentLocale === 'en' ? 'selected' : ''}>English</option>
+                        <option value="de" ${currentLocale === 'de' ? 'selected' : ''}>Deutsch</option>
+                        <option value="sk" ${currentLocale === 'sk' ? 'selected' : ''}>Slovenčina</option>
+                        <option value="pl" ${currentLocale === 'pl' ? 'selected' : ''}>Polski</option>
+                    `;
+                }
+                
                 profileDiv.innerHTML = `
                     <div class="user-info">
                         <p class="user-email">${safeEmail}</p>
                         <p class="user-name">${safeName}</p>
+                    </div>
+                    <div class="user-settings">
+                        <div class="setting-row">
+                            <label class="setting-label" for="userLanguageSelect">
+                                <span class="setting-icon">🌐</span>
+                                <span data-i18n="settings.language">Jazyk</span>
+                            </label>
+                            <select id="userLanguageSelect" class="neon-select language-select" onchange="handleLanguageChange(this.value)">
+                                ${languageOptions}
+                            </select>
+                        </div>
                     </div>
                     <div class="user-profile-buttons">
                         <button class="neon-button" onclick="showMyRecipes()">Mé recepty</button>
@@ -554,9 +606,37 @@ function showUserProfileModal() {
                         <button class="neon-button logout-btn" onclick="handleSignOut()">Odhlásit se</button>
                     </div>
                 `;
+                
+                // Aplikovat překlady na nově přidané elementy
+                if (window.i18n?.applyTranslations) {
+                    window.i18n.applyTranslations();
+                }
             }
         }
     }
+}
+
+// Zpracovat změnu jazyka
+async function handleLanguageChange(locale) {
+    if (!locale) return;
+    
+    // Změnit jazyk v i18n modulu (uloží do localStorage)
+    if (window.i18n?.setLocale) {
+        await window.i18n.setLocale(locale);
+    }
+    
+    // Uložit do databáze pokud je uživatel přihlášen
+    if (window.Clerk?.user?.id && window.LiquiMixerDB?.saveUserLocale) {
+        try {
+            await window.LiquiMixerDB.saveUserLocale(window.Clerk.user.id, locale);
+            console.log('User locale saved to database:', locale);
+        } catch (err) {
+            console.error('Error saving locale to database:', err);
+        }
+    }
+    
+    // Aktualizovat UI
+    showUserProfileModal();
 }
 
 function hideUserProfileModal() {
@@ -579,19 +659,133 @@ function showRegisterInfo() {
     showLoginModal();
 }
 
-function handleContact(event) {
+// Rate limiter pro kontaktní formulář (client-side)
+const contactRateLimiter = {
+    lastSubmit: 0,
+    minInterval: 30000, // 30 sekund mezi odesláními
+    
+    canSubmit() {
+        const now = Date.now();
+        if (now - this.lastSubmit < this.minInterval) {
+            return false;
+        }
+        this.lastSubmit = now;
+        return true;
+    }
+};
+
+// Zobrazit stav kontaktního formuláře
+function showContactStatus(message, isError = false) {
+    const statusEl = document.getElementById('contactStatus');
+    if (!statusEl) return;
+    
+    statusEl.textContent = message;
+    statusEl.className = 'contact-status ' + (isError ? 'error' : 'success');
+    statusEl.style.display = 'block';
+    
+    // Automaticky skrýt po 5 sekundách
+    setTimeout(() => {
+        statusEl.style.display = 'none';
+    }, 5000);
+}
+
+// Nastavit loading stav tlačítka
+function setContactLoading(isLoading) {
+    const btn = document.getElementById('contactSubmitBtn');
+    const text = document.getElementById('contactSubmitText');
+    const loader = document.getElementById('contactSubmitLoader');
+    
+    if (btn && text && loader) {
+        btn.disabled = isLoading;
+        text.style.display = isLoading ? 'none' : 'inline';
+        loader.classList.toggle('hidden', !isLoading);
+    }
+}
+
+// Hlavní handler kontaktního formuláře
+async function handleContact(event) {
     event.preventDefault();
-    const email = document.getElementById('contactEmail').value;
-    const subject = document.getElementById('contactSubject').value;
-    const message = document.getElementById('contactMessage').value;
     
-    // Placeholder for contact form functionality
-    alert('Děkujeme za Vaši zprávu!\n\nVaše zpráva byla odeslána a budeme Vás brzy kontaktovat na adrese: ' + email);
+    // Honeypot kontrola (anti-spam)
+    const honeypot = document.getElementById('contactHoneypot');
+    if (honeypot && honeypot.value) {
+        console.warn('Spam detected (honeypot)');
+        showContactStatus('Děkujeme za zprávu!', false); // Fake success pro boty
+        return false;
+    }
     
-    // Clear form
-    document.getElementById('contactEmail').value = '';
-    document.getElementById('contactSubject').value = '';
-    document.getElementById('contactMessage').value = '';
+    // Rate limiting
+    if (!contactRateLimiter.canSubmit()) {
+        showContactStatus('Počkejte prosím 30 sekund před dalším odesláním.', true);
+        return false;
+    }
+    
+    const email = document.getElementById('contactEmail').value.trim();
+    const subject = document.getElementById('contactSubject').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    
+    // Validace
+    if (!email || !subject || !message) {
+        showContactStatus('Vyplňte prosím všechna pole.', true);
+        return false;
+    }
+    
+    // Email validace
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showContactStatus('Zadejte platnou e-mailovou adresu.', true);
+        return false;
+    }
+    
+    // Délka validace
+    if (subject.length < 3 || subject.length > 200) {
+        showContactStatus('Předmět musí mít 3-200 znaků.', true);
+        return false;
+    }
+    
+    if (message.length < 10 || message.length > 5000) {
+        showContactStatus('Zpráva musí mít 10-5000 znaků.', true);
+        return false;
+    }
+    
+    setContactLoading(true);
+    
+    try {
+        // Uložit do databáze
+        const client = window.supabaseClient;
+        if (!client) {
+            throw new Error('Database not available');
+        }
+        
+        const { error } = await client
+            .from('contact_messages')
+            .insert({
+                email: email,
+                subject: subject,
+                message: message,
+                clerk_id: window.Clerk?.user?.id || null,
+                user_agent: navigator.userAgent.substring(0, 500)
+            });
+        
+        if (error) {
+            console.error('Contact form error:', error);
+            throw error;
+        }
+        
+        // Úspěch
+        showContactStatus('Děkujeme! Vaše zpráva byla odeslána.', false);
+        
+        // Vymazat formulář
+        document.getElementById('contactEmail').value = '';
+        document.getElementById('contactSubject').value = '';
+        document.getElementById('contactMessage').value = '';
+        
+    } catch (err) {
+        console.error('Error sending contact message:', err);
+        showContactStatus('Omlouváme se, zprávu se nepodařilo odeslat. Zkuste to prosím později.', true);
+    } finally {
+        setContactLoading(false);
+    }
     
     return false;
 }
@@ -610,7 +804,7 @@ function storeCurrentRecipe(data) {
 }
 
 // Zobrazit modal pro uložení receptu
-function showSaveRecipeModal() {
+async function showSaveRecipeModal() {
     if (!clerkLoaded || !window.Clerk || !window.Clerk.user) {
         alert('Pro uložení receptu se prosím přihlaste.');
         showLoginModal();
@@ -621,6 +815,124 @@ function showSaveRecipeModal() {
     if (modal) {
         modal.classList.remove('hidden');
         initStarRating();
+        
+        // Načíst oblíbené produkty pro výběr
+        loadProductsForRecipe();
+    }
+}
+
+// Produkty pro výběr v receptu
+let availableProductsForRecipe = [];
+let selectedProductRows = 0;
+
+// Načíst produkty pro výběr v receptu
+async function loadProductsForRecipe() {
+    const listContainer = document.getElementById('selectedProductsList');
+    if (!listContainer) return;
+    
+    // Reset
+    listContainer.innerHTML = '';
+    selectedProductRows = 0;
+    
+    try {
+        const products = await window.LiquiMixerDB.getProducts(window.Clerk.user.id);
+        availableProductsForRecipe = products || [];
+    } catch (error) {
+        console.error('Error loading products for recipe:', error);
+        availableProductsForRecipe = [];
+    }
+}
+
+// Přidat řádek pro výběr produktu
+function addProductRow() {
+    if (availableProductsForRecipe.length === 0) {
+        alert('Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.');
+        return;
+    }
+    
+    const listContainer = document.getElementById('selectedProductsList');
+    if (!listContainer) return;
+    
+    selectedProductRows++;
+    const rowId = `product-row-${selectedProductRows}`;
+    
+    const typeIcons = {
+        'vg': '💧',
+        'pg': '💧',
+        'flavor': '🍓',
+        'nicotine_booster': '⚡',
+        'nicotine_salt': '🧂'
+    };
+    
+    // Vytvořit options pro select
+    let optionsHtml = '<option value="">-- Vyberte produkt --</option>';
+    availableProductsForRecipe.forEach(product => {
+        const icon = typeIcons[product.product_type] || '📦';
+        optionsHtml += `<option value="${escapeHtml(product.id)}" data-icon="${icon}">${escapeHtml(product.name)}</option>`;
+    });
+    
+    const rowHtml = `
+        <div class="product-select-row" id="${rowId}">
+            <div class="product-select-wrapper">
+                <input type="text" class="product-search-input" placeholder="Hledat produkt..." oninput="filterProductOptions(this, '${rowId}')">
+                <select class="product-select" name="linkedProducts" onchange="onProductSelected(this)">
+                    ${optionsHtml}
+                </select>
+            </div>
+            <button type="button" class="remove-product-btn" onclick="removeProductRow('${rowId}')" title="Odebrat">✕</button>
+        </div>
+    `;
+    
+    listContainer.insertAdjacentHTML('beforeend', rowHtml);
+    
+    // Focus na vyhledávací pole
+    const row = document.getElementById(rowId);
+    if (row) {
+        const searchInput = row.querySelector('.product-search-input');
+        if (searchInput) searchInput.focus();
+    }
+}
+
+// Filtrovat produkty podle vyhledávání
+function filterProductOptions(searchInput, rowId) {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+    
+    const select = row.querySelector('.product-select');
+    if (!select) return;
+    
+    const searchTerm = searchInput.value.toLowerCase();
+    const options = select.querySelectorAll('option');
+    
+    options.forEach(option => {
+        if (option.value === '') {
+            option.style.display = '';
+            return;
+        }
+        
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+}
+
+// Když je vybrán produkt
+function onProductSelected(selectElement) {
+    const row = selectElement.closest('.product-select-row');
+    if (!row) return;
+    
+    const searchInput = row.querySelector('.product-search-input');
+    if (searchInput && selectElement.value) {
+        // Zobrazit vybraný název místo vyhledávání
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        searchInput.value = selectedOption.textContent;
+    }
+}
+
+// Odebrat řádek produktu
+function removeProductRow(rowId) {
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.remove();
     }
 }
 
@@ -635,6 +947,28 @@ function hideSaveRecipeModal() {
         document.getElementById('recipeRating').value = '0';
         selectedRating = 0;
         updateStarDisplay(0);
+        
+        // Reset produktů
+        const listContainer = document.getElementById('selectedProductsList');
+        if (listContainer) {
+            listContainer.innerHTML = '';
+        }
+        selectedProductRows = 0;
+        availableProductsForRecipe = [];
+        
+        // Reset režimu úpravy
+        window.editingRecipeId = null;
+        
+        // Obnovit původní nadpis a tlačítko
+        const modalTitle = modal.querySelector('.menu-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Uložit recept';
+        }
+        
+        const submitBtn = modal.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.textContent = 'Uložit recept';
+        }
     }
 }
 
@@ -684,32 +1018,73 @@ async function saveRecipe(event) {
         return false;
     }
     
-    if (!currentRecipeData) {
-        alert('Chyba: Není co uložit. Prosím vytvořte recept.');
-        return false;
-    }
-    
     const name = document.getElementById('recipeName').value;
     const description = document.getElementById('recipeDescription').value;
     const rating = parseInt(document.getElementById('recipeRating').value) || 0;
     
-    const recipeToSave = {
+    // Kontrola, zda jde o úpravu nebo nový recept
+    const isEditing = !!window.editingRecipeId;
+    
+    // Pro nový recept potřebujeme data receptu
+    if (!isEditing && !currentRecipeData) {
+        alert('Chyba: Není co uložit. Prosím vytvořte recept.');
+        return false;
+    }
+    
+    const recipeData = {
         name: name,
         description: description,
-        rating: rating,
-        data: currentRecipeData
+        rating: rating
     };
     
+    // Přidat data receptu pouze při vytváření nového
+    if (!isEditing) {
+        recipeData.data = currentRecipeData;
+    }
+    
     try {
-        const saved = await window.LiquiMixerDB.saveRecipe(window.Clerk.user.id, recipeToSave);
+        let saved;
+        
+        if (isEditing) {
+            // Aktualizace existujícího receptu
+            saved = await window.LiquiMixerDB.updateRecipe(
+                window.Clerk.user.id, 
+                window.editingRecipeId, 
+                recipeData
+            );
+        } else {
+            // Vytvoření nového receptu
+            saved = await window.LiquiMixerDB.saveRecipe(window.Clerk.user.id, recipeData);
+        }
         
         if (saved) {
-            // Zobrazit informace o uloženém receptu včetně ID a URL
-            const successMessage = `Recept byl úspěšně uložen!\n\n` +
-                `📋 ID receptu: ${saved.id}\n` +
-                `🔗 Odkaz pro sdílení:\n${saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id}`;
+            // Uložit propojené produkty
+            const selectedProductIds = getSelectedProductIds();
+            const recipeId = isEditing ? window.editingRecipeId : saved.id;
             
-            alert(successMessage);
+            // Aktualizovat propojené produkty (vždy - i prázdný seznam smaže staré)
+            await window.LiquiMixerDB.linkProductsToRecipe(
+                window.Clerk.user.id, 
+                recipeId, 
+                selectedProductIds
+            );
+            
+            // Zobrazit zprávu
+            const productInfo = selectedProductIds.length > 0 
+                ? `\n📦 Propojené produkty: ${selectedProductIds.length}` 
+                : '';
+            
+            if (isEditing) {
+                alert(`Recept byl úspěšně upraven!${productInfo}`);
+                // Obnovit detail receptu
+                await viewRecipeDetail(window.editingRecipeId);
+            } else {
+                const successMessage = `Recept byl úspěšně uložen!\n\n` +
+                    `📋 ID receptu: ${saved.id}${productInfo}\n` +
+                    `🔗 Odkaz pro sdílení:\n${saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id}`;
+                alert(successMessage);
+            }
+            
             hideSaveRecipeModal();
         } else {
             alert('Chyba při ukládání receptu. Zkuste to prosím znovu.');
@@ -720,6 +1095,19 @@ async function saveRecipe(event) {
     }
     
     return false;
+}
+
+// Získat vybrané produkty z select elementů
+function getSelectedProductIds() {
+    const selects = document.querySelectorAll('select[name="linkedProducts"]');
+    const ids = [];
+    selects.forEach(select => {
+        if (select.value && select.value !== '') {
+            ids.push(select.value);
+        }
+    });
+    // Odstranit duplicity
+    return [...new Set(ids)];
 }
 
 // Zobrazit mé recepty
@@ -929,7 +1317,11 @@ async function viewRecipeDetail(recipeId) {
         }
         
         currentViewingRecipe = recipe;
-        displayRecipeDetail(recipe, 'recipeDetailTitle', 'recipeDetailContent');
+        
+        // Načíst propojené produkty
+        const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(window.Clerk.user.id, recipeId);
+        
+        displayRecipeDetail(recipe, 'recipeDetailTitle', 'recipeDetailContent', linkedProducts);
         showPage('recipe-detail');
         
     } catch (error) {
@@ -939,7 +1331,7 @@ async function viewRecipeDetail(recipeId) {
 }
 
 // Zobrazit detail receptu (sdílené funkce)
-function displayRecipeDetail(recipe, titleId, contentId) {
+function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
     const titleEl = document.getElementById(titleId);
     const contentEl = document.getElementById(contentId);
     
@@ -979,6 +1371,38 @@ function displayRecipeDetail(recipe, titleId, contentId) {
         `;
     }
     
+    // Propojené produkty
+    let linkedProductsHtml = '';
+    if (linkedProducts && linkedProducts.length > 0) {
+        const typeIcons = {
+            'vg': '💧',
+            'pg': '💧',
+            'flavor': '🍓',
+            'nicotine_booster': '⚡',
+            'nicotine_salt': '🧂'
+        };
+        
+        linkedProductsHtml = `
+            <div class="recipe-linked-products">
+                <h4 class="recipe-ingredients-title">Použité produkty</h4>
+                <div class="linked-products-list">
+                    ${linkedProducts.map(product => {
+                        const icon = typeIcons[product.product_type] || '📦';
+                        const productRating = Math.min(Math.max(parseInt(product.rating) || 0, 0), 5);
+                        const productStars = '★'.repeat(productRating) + '☆'.repeat(5 - productRating);
+                        return `
+                            <div class="linked-product-item" onclick="viewProductDetail('${escapeHtml(product.id)}')">
+                                <span class="linked-product-icon">${icon}</span>
+                                <span class="linked-product-name">${escapeHtml(product.name)}</span>
+                                <span class="linked-product-rating">${productStars}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
     // SECURITY: Escapování všech hodnot z databáze
     const safeTotal = escapeHtml(data.totalAmount || '?');
     const safeVg = escapeHtml(data.vgPercent || '?');
@@ -1007,20 +1431,125 @@ function displayRecipeDetail(recipe, titleId, contentId) {
         </div>
         
         ${ingredientsHtml}
+        ${linkedProductsHtml}
         
         <div class="recipe-meta-info">
             <p class="recipe-date">Vytvořeno: ${date}</p>
-            <p class="recipe-id">ID: <code>${escapeHtml(recipe.id)}</code></p>
         </div>
     `;
 }
 
 // Upravit uložený recept
-function editSavedRecipe() {
+async function editSavedRecipe() {
     if (!currentViewingRecipe) return;
     
-    // TODO: Implementovat editaci receptu
-    alert('Funkce editace bude brzy k dispozici.');
+    if (!window.Clerk || !window.Clerk.user) {
+        alert('Pro úpravu receptu se prosím přihlaste.');
+        return;
+    }
+    
+    // Zobrazit modal pro úpravu
+    const modal = document.getElementById('editRecipeModal');
+    if (!modal) {
+        // Modal neexistuje, použít saveRecipeModal s úpravami
+        showEditRecipeForm();
+        return;
+    }
+    
+    modal.classList.remove('hidden');
+    await loadEditRecipeForm();
+}
+
+// Zobrazit formulář pro úpravu receptu
+async function showEditRecipeForm() {
+    // Použít existující modal pro uložení, ale v režimu úpravy
+    const modal = document.getElementById('saveRecipeModal');
+    if (!modal) return;
+    
+    // Označit jako režim úpravy
+    window.editingRecipeId = currentViewingRecipe.id;
+    
+    // Naplnit formulář existujícími daty
+    document.getElementById('recipeName').value = currentViewingRecipe.name || '';
+    document.getElementById('recipeDescription').value = currentViewingRecipe.description || '';
+    document.getElementById('recipeRating').value = currentViewingRecipe.rating || '0';
+    
+    // Aktualizovat zobrazení hvězdiček
+    selectedRating = parseInt(currentViewingRecipe.rating) || 0;
+    updateStarDisplay(selectedRating);
+    initStarRating();
+    
+    // Načíst produkty
+    await loadProductsForRecipe();
+    
+    // Načíst propojené produkty a předvybrat je
+    try {
+        const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(
+            window.Clerk.user.id, 
+            currentViewingRecipe.id
+        );
+        
+        // Přidat řádky pro každý propojený produkt
+        for (const product of linkedProducts) {
+            addProductRowWithValue(product.id, product.name);
+        }
+    } catch (error) {
+        console.error('Error loading linked products:', error);
+    }
+    
+    // Změnit nadpis a tlačítko
+    const modalTitle = modal.querySelector('.menu-title');
+    if (modalTitle) {
+        modalTitle.textContent = 'Upravit recept';
+    }
+    
+    const submitBtn = modal.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.textContent = 'Uložit změny';
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+// Přidat řádek produktu s předvybranou hodnotou
+function addProductRowWithValue(productId, productName) {
+    if (availableProductsForRecipe.length === 0) return;
+    
+    const listContainer = document.getElementById('selectedProductsList');
+    if (!listContainer) return;
+    
+    selectedProductRows++;
+    const rowId = `product-row-${selectedProductRows}`;
+    
+    const typeIcons = {
+        'vg': '💧',
+        'pg': '💧',
+        'flavor': '🍓',
+        'nicotine_booster': '⚡',
+        'nicotine_salt': '🧂'
+    };
+    
+    // Vytvořit options pro select s předvybranou hodnotou
+    let optionsHtml = '<option value="">-- Vyberte produkt --</option>';
+    availableProductsForRecipe.forEach(product => {
+        const icon = typeIcons[product.product_type] || '📦';
+        const selected = product.id === productId ? 'selected' : '';
+        optionsHtml += `<option value="${escapeHtml(product.id)}" data-icon="${icon}" ${selected}>${escapeHtml(product.name)}</option>`;
+    });
+    
+    const rowHtml = `
+        <div class="product-select-row" id="${rowId}">
+            <div class="product-select-wrapper">
+                <input type="text" class="product-search-input" placeholder="Hledat produkt..." value="${escapeHtml(productName || '')}" oninput="filterProductOptions(this, '${rowId}')">
+                <select class="product-select" name="linkedProducts" onchange="onProductSelected(this)">
+                    ${optionsHtml}
+                </select>
+            </div>
+            <button type="button" class="remove-product-btn" onclick="removeProductRow('${rowId}')" title="Odebrat">✕</button>
+        </div>
+    `;
+    
+    listContainer.insertAdjacentHTML('beforeend', rowHtml);
 }
 
 // Oficiální doména pro sdílení receptů
@@ -1062,6 +1591,69 @@ function copyShareLink(url) {
     }).catch(() => {
         prompt('Zkopírujte tento odkaz:', url);
     });
+}
+
+// Sdílet oblíbený produkt
+function shareProduct() {
+    if (!currentViewingProduct || !currentViewingProduct.share_id) {
+        alert('Tento produkt nelze sdílet.');
+        return;
+    }
+
+    // Použít share_url z databáze, nebo vytvořit novou
+    let shareUrl = currentViewingProduct.share_url;
+    
+    if (!shareUrl || !shareUrl.startsWith(SHARE_DOMAIN)) {
+        shareUrl = `${SHARE_DOMAIN}/?product=${currentViewingProduct.share_id}`;
+    }
+
+    // Zkusit použít Web Share API
+    if (navigator.share) {
+        navigator.share({
+            title: escapeHtml(currentViewingProduct.name),
+            text: `Podívej se na můj oblíbený produkt: ${escapeHtml(currentViewingProduct.name)}`,
+            url: shareUrl
+        }).catch(err => {
+            // Fallback na kopírování
+            copyShareLink(shareUrl);
+        });
+    } else {
+        copyShareLink(shareUrl);
+    }
+}
+
+// Smazat recept
+async function deleteRecipe() {
+    if (!currentViewingRecipe) return;
+    
+    if (!window.Clerk || !window.Clerk.user) {
+        alert('Pro smazání receptu se prosím přihlaste.');
+        return;
+    }
+    
+    const recipeName = currentViewingRecipe.name || 'Tento recept';
+    
+    if (!confirm(`Opravdu chcete smazat recept "${recipeName}"?\n\nTato akce je nevratná.`)) {
+        return;
+    }
+    
+    try {
+        const success = await window.LiquiMixerDB.deleteRecipe(
+            window.Clerk.user.id, 
+            currentViewingRecipe.id
+        );
+        
+        if (success) {
+            alert('Recept byl smazán.');
+            currentViewingRecipe = null;
+            showMyRecipes();
+        } else {
+            alert('Chyba při mazání receptu.');
+        }
+    } catch (error) {
+        console.error('Error deleting recipe:', error);
+        alert('Chyba při mazání receptu.');
+    }
 }
 
 // Validace share_id formátu (12 znaků alfanumerických)
@@ -1405,7 +1997,6 @@ function displayProductDetail(product) {
     const typeIcon = productTypeIcons[product.product_type] || '🍓';
     
     const safeDescription = escapeHtml(product.description);
-    const safeUrl = escapeHtml(product.product_url);
     
     let imageHtml = '';
     if (product.image_url) {
@@ -1414,13 +2005,17 @@ function displayProductDetail(product) {
     
     let urlHtml = '';
     if (product.product_url) {
-        urlHtml = `
-            <div class="product-detail-url">
-                <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="neon-button secondary">
-                    🔗 Otevřít odkaz na produkt
-                </a>
-            </div>
-        `;
+        // Použít sanitizeUrl pro bezpečnou URL
+        const cleanUrl = sanitizeUrl(product.product_url);
+        if (cleanUrl) {
+            urlHtml = `
+                <div class="product-detail-url">
+                    <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="neon-button secondary">
+                        Otevřít odkaz na produkt
+                    </a>
+                </div>
+            `;
+        }
     }
     
     contentEl.innerHTML = `
@@ -1435,7 +2030,6 @@ function displayProductDetail(product) {
         ${urlHtml}
         <div class="product-meta-info">
             <p class="product-date">Přidáno: ${date}</p>
-            <p class="product-id">ID: <code>${escapeHtml(product.id)}</code></p>
         </div>
     `;
 }
@@ -1744,6 +2338,29 @@ function showPage(pageId) {
         updateDiluteSourceRatioDisplay();
         updateDiluteTargetRatioDisplay();
     }
+    
+    // Zobrazit/skrýt tlačítko Domů
+    updateHomeButtonVisibility(pageId);
+}
+
+// Aktualizovat viditelnost tlačítka Domů
+function updateHomeButtonVisibility(pageId) {
+    const homeBtn = document.getElementById('homeButton');
+    if (!homeBtn) return;
+    
+    // Stránky kde se NEZOBRAZUJE tlačítko Domů (úvodní stránka a formuláře)
+    const hideOnPages = ['intro', 'form', 'dilute-form', 'product-form'];
+    
+    if (hideOnPages.includes(pageId)) {
+        homeBtn.classList.remove('visible');
+    } else {
+        homeBtn.classList.add('visible');
+    }
+}
+
+// Přejít na úvodní stránku
+function goHome() {
+    showPage('intro');
 }
 
 // =========================================
@@ -3676,10 +4293,14 @@ function calculateProMix() {
 window.toggleMenu = toggleMenu;
 window.showLoginModal = showLoginModal;
 window.hideLoginModal = hideLoginModal;
+window.handleLoginModalBackdropClick = handleLoginModalBackdropClick;
+window.handleProfileModalBackdropClick = handleProfileModalBackdropClick;
 window.showUserProfileModal = showUserProfileModal;
 window.hideUserProfileModal = hideUserProfileModal;
 window.handleSignOut = handleSignOut;
+window.handleLanguageChange = handleLanguageChange;
 window.showPage = showPage;
+window.goHome = goHome;
 window.goBack = goBack;
 window.calculateMixture = calculateMixture;
 window.storeCurrentRecipe = storeCurrentRecipe;
@@ -3688,8 +4309,14 @@ window.hideSaveRecipeModal = hideSaveRecipeModal;
 window.saveRecipe = saveRecipe;
 window.showMyRecipes = showMyRecipes;
 window.viewRecipeDetail = viewRecipeDetail;
+window.editSavedRecipe = editSavedRecipe;
 window.deleteRecipe = deleteRecipe;
 window.shareRecipe = shareRecipe;
+window.shareProduct = shareProduct;
+window.addProductRow = addProductRow;
+window.removeProductRow = removeProductRow;
+window.filterProductOptions = filterProductOptions;
+window.onProductSelected = onProductSelected;
 window.showFavoriteProducts = showFavoriteProducts;
 window.showAddProductForm = showAddProductForm;
 window.cancelProductForm = cancelProductForm;

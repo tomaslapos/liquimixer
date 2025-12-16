@@ -49,3 +49,4 @@ CREATE TRIGGER update_favorite_products_updated_at
 -- Ověření
 SELECT 'Tabulka favorite_products vytvořena!' as status;
 SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'favorite_products';
+

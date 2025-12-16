@@ -337,3 +337,4 @@ $$ LANGUAGE plpgsql;
 -- Poznámka: Pro automatickou expiraci použijte Supabase Edge Functions nebo cron job
 
 
+

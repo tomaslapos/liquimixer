@@ -962,3 +962,4 @@ FROM translations
 WHERE category IN ('products', 'product_types', 'search', 'recipes') 
 GROUP BY locale 
 ORDER BY locale;
+

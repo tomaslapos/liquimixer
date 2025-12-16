@@ -191,3 +191,4 @@ COMPANY_BANK_NAME=
 2. V produkci nastavte `COMGATE_TEST_MODE=false`
 3. Pravidelně rotujte API klíče
 4. Monitorujte logy funkcí v Supabase Dashboard
+
