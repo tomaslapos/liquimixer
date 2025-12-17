@@ -1096,9 +1096,9 @@ async function saveRecipe(event) {
                 // Obnovit detail receptu
                 await viewRecipeDetail(window.editingRecipeId);
             } else {
-                const successMessage = `Recept byl úspěšně uložen!\n\n` +
-                    `📋 ID receptu: ${saved.id}${productInfo}\n` +
-                    `🔗 Odkaz pro sdílení:\n${saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id}`;
+                const shareUrl = saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id;
+                const successMessage = t('save_recipe.success', 'Recept byl úspěšně uložen!') + '\n\n' +
+                    t('save_recipe.share_link', 'Odkaz pro sdílení:') + '\n' + shareUrl + productInfo;
                 alert(successMessage);
             }
             
@@ -1376,13 +1376,17 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${data.ingredients.map(ing => `
+                    ${data.ingredients.map(ing => {
+                        // Dynamicky přeložit název ingredience
+                        const ingredientName = escapeHtml(getIngredientName(ing));
+                        return `
                         <tr>
-                            <td>${escapeHtml(ing.name)}</td>
+                            <td>${ingredientName}</td>
                             <td>${parseFloat(ing.volume || 0).toFixed(2)}</td>
                             <td>${parseFloat(ing.percent || 0).toFixed(1)}%</td>
                         </tr>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </tbody>
             </table>
         `;
@@ -2819,6 +2823,46 @@ function getFlavorName(type) {
     return t(flavorKey, flavor ? flavor.name : type);
 }
 
+// Získat přeložený název ingredience z klíče a parametrů
+function getIngredientName(ingredient) {
+    // Pokud ingredience má starý formát (pouze name), vrať name
+    if (ingredient.name && !ingredient.ingredientKey) {
+        return ingredient.name;
+    }
+    
+    const key = ingredient.ingredientKey;
+    const params = ingredient.params || {};
+    
+    switch (key) {
+        case 'nicotine_booster':
+            const boosterName = t('ingredients.nicotine_booster', 'Nikotin booster');
+            return `${boosterName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
+        case 'nicotine_salt':
+            const saltName = t('ingredients.nicotine_salt', 'Nikotinová sůl');
+            return `${saltName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
+        case 'flavor':
+            const flavorName = getFlavorName(ingredient.flavorType || 'fruit');
+            return `${flavorName} (VG/PG ${params.vgpg})`;
+        case 'shakevape_flavor':
+            // Shake & Vape - příchuť již v lahvičce
+            const svFlavorLabel = t('ingredients.flavor', 'Příchuť');
+            const inBottleLabel = t('shakevape.in_bottle', 'již v lahvičce');
+            return `${svFlavorLabel} (${inBottleLabel}, VG/PG ${params.vgpg})`;
+        case 'vg':
+            return t('ingredients.vg', 'VG (Glycerin)');
+        case 'pg':
+            return t('ingredients.pg', 'PG (Propylenglykol)');
+        case 'nicotine_base':
+            const baseName = t('ingredients.nicotine_base', 'Nikotinová báze');
+            if (params.strength && params.vgpg) {
+                return `${baseName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
+            }
+            return baseName;
+        default:
+            return ingredient.name || key;
+    }
+}
+
 function updateFlavorDisplay() {
     const value = parseInt(flavorStrengthSlider.value);
     const type = flavorTypeSelect.value;
@@ -2987,17 +3031,21 @@ function calculateMix() {
     // =========================================
     // Build results
     // Drops calculation: 1 ml ≈ 20 drops (standard pipette)
+    // Ukládáme klíče pro dynamický překlad ingrediencí
     // =========================================
     const DROPS_PER_ML = 20;
     const ingredients = [];
 
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' 
-            ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
-            : t('ingredients.nicotine_booster', 'Nikotin booster');
         const nicotineRatioValue = document.getElementById('nicotineRatio').value;
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
+            // Klíč pro překlad
+            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            // Parametry pro zobrazení
+            params: {
+                strength: baseNicotine,
+                vgpg: nicotineRatioValue
+            },
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
@@ -3007,9 +3055,12 @@ function calculateMix() {
 
     if (flavorVolume > 0) {
         const flavorRatioValue = document.getElementById('flavorRatio').value;
-        const flavorName = getFlavorName(flavorType);
         ingredients.push({
-            name: `${flavorName} (VG/PG ${flavorRatioValue})`,
+            ingredientKey: 'flavor',
+            flavorType: flavorType,
+            params: {
+                vgpg: flavorRatioValue
+            },
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -3020,7 +3071,7 @@ function calculateMix() {
     // Add carrier liquids (no drops for these - measured in ml)
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.pg', 'PG (Propylenglykol)'),
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -3030,7 +3081,7 @@ function calculateMix() {
 
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.vg', 'VG (Glycerin)'),
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -3056,13 +3107,16 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     document.getElementById('resultNicotine').textContent = `${nicotine} mg/ml`;
 
     // Uložit data receptu pro možnost pozdějšího uložení
+    // Ukládáme klíče a parametry pro dynamický překlad
     storeCurrentRecipe({
         totalAmount: total,
         vgPercent: vg,
         pgPercent: pg,
         nicotine: nicotine,
         ingredients: ingredients.map(ing => ({
-            name: ing.name,
+            ingredientKey: ing.ingredientKey,
+            flavorType: ing.flavorType,
+            params: ing.params,
             volume: ing.volume,
             percent: ing.percent,
             drops: ing.drops
@@ -3087,8 +3141,11 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
             dropsDisplay = String(drops);
         }
 
+        // Dynamicky přeložit název ingredience
+        const ingredientName = getIngredientName(ing);
+
         row.innerHTML = `
-            <td class="ingredient-name">${ing.name}</td>
+            <td class="ingredient-name">${ingredientName}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
             <td class="ingredient-drops">${dropsDisplay}</td>
             <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
@@ -3528,34 +3585,35 @@ function calculateDilution() {
     if (pureVgNeeded < 0) pureVgNeeded = 0;
     if (purePgNeeded < 0) purePgNeeded = 0;
     
-    // Build results
-    const nicotineName = nicotineType === 'salt' 
-        ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
-        : t('ingredients.nicotine_booster', 'Nikotin booster');
+    // Build results - ukládáme klíče pro dynamický překlad
     const ingredients = [];
-    
+
     ingredients.push({
-        name: `${nicotineName} (${baseStrength} mg/ml, VG/PG ${sourceVg}/${sourcePg})`,
+        ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+        params: {
+            strength: baseStrength,
+            vgpg: `${sourceVg}/${sourcePg}`
+        },
         volume: nicotineVolume,
         percent: (nicotineVolume / totalAmount) * 100
     });
-    
+
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.pg', 'PG (Propylenglykol)'),
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100
         });
     }
-    
+
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.vg', 'VG (Glycerin)'),
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100
         });
     }
-    
+
     // Display results
     displayDiluteResults(totalAmount, targetVg, targetPg, targetStrength, ingredients);
     showPage('dilute-results');
@@ -3565,23 +3623,25 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
     document.getElementById('diluteResultTotal').textContent = `${total.toFixed(1)} ml`;
     document.getElementById('diluteResultRatio').textContent = `${vg}:${pg}`;
     document.getElementById('diluteResultNicotine').textContent = `${nicotine} mg/ml`;
-    
+
     const tbody = document.getElementById('diluteResultsBody');
     tbody.innerHTML = '';
-    
+
     let runningTotal = 0;
-    
+
     ingredients.forEach(ing => {
         const row = document.createElement('tr');
+        // Dynamicky přeložit název ingredience
+        const ingredientName = getIngredientName(ing);
         row.innerHTML = `
-            <td class="ingredient-name">${ing.name}</td>
+            <td class="ingredient-name">${ingredientName}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
             <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
         `;
         tbody.appendChild(row);
         runningTotal += ing.volume;
     });
-    
+
     // Add total row
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
@@ -3934,27 +3994,29 @@ function calculateShakeVape() {
     
     const DROPS_PER_ML = 20;
     const ingredients = [];
-    
+
     // Flavor first (already in bottle)
     if (flavorVolume > 0) {
-        const flavorLabel = t('ingredients.flavor', 'Příchuť');
-        const inBottleLabel = t('shakevape.in_bottle', 'již v lahvičce');
         ingredients.push({
-            name: `${flavorLabel} (${inBottleLabel}, VG/PG ${svFlavorRatio})`,
+            ingredientKey: 'shakevape_flavor',
+            params: {
+                vgpg: svFlavorRatio
+            },
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
             showDrops: true
         });
     }
-    
+
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' 
-            ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
-            : t('ingredients.nicotine_booster', 'Nikotin booster');
         const nicotineRatioValue = document.getElementById('svNicotineRatio').value;
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
+            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            params: {
+                strength: baseNicotine,
+                vgpg: nicotineRatioValue
+            },
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
@@ -3964,7 +4026,7 @@ function calculateShakeVape() {
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.pg', 'PG (Propylenglykol)'),
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -3974,7 +4036,7 @@ function calculateShakeVape() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.vg', 'VG (Glycerin)'),
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -4368,24 +4430,28 @@ function calculateProMix() {
     
     const DROPS_PER_ML = 20;
     const ingredients = [];
-    
+
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' 
-            ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
-            : t('ingredients.nicotine_booster', 'Nikotin booster');
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicVgPercent}/${nicPgPercent})`,
+            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            params: {
+                strength: baseNicotine,
+                vgpg: `${nicVgPercent}/${nicPgPercent}`
+            },
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
             showDrops: true
         });
     }
-    
+
     if (flavorVolume > 0) {
-        const flavorName = getFlavorName(flavorType);
         ingredients.push({
-            name: `${flavorName} (VG/PG ${flavorVgPercent}/${flavorPgPercent})`,
+            ingredientKey: 'flavor',
+            flavorType: flavorType,
+            params: {
+                vgpg: `${flavorVgPercent}/${flavorPgPercent}`
+            },
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -4395,7 +4461,7 @@ function calculateProMix() {
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.pg', 'PG (Propylenglykol)'),
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -4405,7 +4471,7 @@ function calculateProMix() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: t('ingredients.vg', 'VG (Glycerin)'),
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,

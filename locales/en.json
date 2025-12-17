@@ -211,6 +211,7 @@
     "save_changes": "Save changes",
     "success": "Recipe saved successfully!",
     "updated": "Recipe updated successfully!",
+    "share_link": "Share link:",
     "error": "Error saving recipe.",
     "login_required": "Please sign in to save the recipe.",
     "no_products": "You don't have any favorite products. Add them first in Favorite Products section.",
@@ -377,6 +378,7 @@
     "note_spice": "Spiced, careful with concentration"
   }
 }
+
 
 
 
