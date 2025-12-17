@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v38';
+const CACHE_NAME = 'liquimixer-v49';
 
 // Soubory pro precaching
 const urlsToCache = [
@@ -8,44 +8,15 @@ const urlsToCache = [
   '/index.html',
   '/styles.css',
   '/app.js',
+  '/locales/cs.json',
+  '/locales/sk.json',
+  '/locales/en.json',
   '/database.js',
   '/subscription.js',
   '/i18n.js',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  // Jazykové soubory (31 jazyků)
-  '/locales/cs.json',
-  '/locales/en.json',
-  '/locales/de.json',
-  '/locales/sk.json',
-  '/locales/pl.json',
-  '/locales/fr.json',
-  '/locales/it.json',
-  '/locales/es.json',
-  '/locales/pt.json',
-  '/locales/nl.json',
-  '/locales/ja.json',
-  '/locales/ko.json',
-  '/locales/tr.json',
-  '/locales/uk.json',
-  '/locales/ru.json',
-  '/locales/sv.json',
-  '/locales/da.json',
-  '/locales/no.json',
-  '/locales/fi.json',
-  '/locales/el.json',
-  '/locales/ar-SA.json',
-  '/locales/zh-CN.json',
-  '/locales/zh-TW.json',
-  '/locales/hu.json',
-  '/locales/et.json',
-  '/locales/lv.json',
-  '/locales/lt.json',
-  '/locales/ro.json',
-  '/locales/hr.json',
-  '/locales/bg.json',
-  '/locales/sr.json',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap'
 ];
 

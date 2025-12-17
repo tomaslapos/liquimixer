@@ -3,12 +3,15 @@
 // Šifrovaná databáze uživatelů oddělená od aplikace
 // ============================================
 
+console.log('database.js: Loading...');
+
 // Povolené domény pro přístup k databázi
 const ALLOWED_DOMAINS = [
     'liquimixer.com',
     'www.liquimixer.com',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    'zeabur.app'  // Zeabur preview/deployment URLs
 ];
 
 // Kontrola povolené domény
@@ -951,6 +954,7 @@ async function onClerkSignIn(clerkUser) {
 }
 
 // Exportuj funkce pro použití v app.js
+console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
     init: initSupabase,
     saveUser: saveUserToDatabase,
@@ -978,5 +982,4 @@ window.LiquiMixerDB = {
     onSignIn: onClerkSignIn
 };
 
-
-
+console.log('database.js: LiquiMixerDB exported successfully!', !!window.LiquiMixerDB);

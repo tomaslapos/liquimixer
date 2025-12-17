@@ -37,6 +37,14 @@ function isValidUUID(str) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 }
 
+// Helper funkce pro překlady
+function t(key, fallback = null) {
+    if (window.i18n && window.i18n.t) {
+        return window.i18n.t(key, fallback);
+    }
+    return fallback || key;
+}
+
 // Flavor database with recommended percentages (15 options)
 // Data z tabulky příchutí pro e-liquid
 const flavorDatabase = {
@@ -133,14 +141,23 @@ const ratioDescriptions = [
 
 // Nicotine strength descriptions
 const nicotineDescriptions = [
-    { min: 0, max: 0, color: '#00cc66', text: 'Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.' },
-    { min: 1, max: 3, color: '#00aaff', text: 'Velmi slabý nikotin - pro příležitostné vapery a finální fáze odvykání.' },
-    { min: 4, max: 6, color: '#0088dd', text: 'Slabý nikotin - pro lehké kuřáky (do 10 cigaret denně).' },
-    { min: 7, max: 11, color: '#00cc88', text: 'Střední nikotin - pro středně silné kuřáky (10-20 cigaret denně).' },
-    { min: 12, max: 20, color: '#ffaa00', text: 'Pro silné kuřáky, silné cigarety, bez předchozí zkušenosti hrozí nevolnost.' },
-    { min: 21, max: 35, color: '#ff6600', text: 'Vysoký nikotin - pouze pro velmi silné kuřáky nebo pod-systémy. Nikotinová sůl doporučena.' },
-    { min: 36, max: 45, color: '#ff0044', text: 'Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!' }
+    { min: 0, max: 0, color: '#00cc66', key: 'nic_0', text: 'Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.' },
+    { min: 1, max: 3, color: '#00aaff', key: 'nic_1_3', text: 'Velmi slabý nikotin - pro příležitostné vapery a finální fáze odvykání.' },
+    { min: 4, max: 6, color: '#0088dd', key: 'nic_4_6', text: 'Slabý nikotin - pro lehké kuřáky (do 10 cigaret denně).' },
+    { min: 7, max: 11, color: '#00cc88', key: 'nic_7_11', text: 'Střední nikotin - pro středně silné kuřáky (10-20 cigaret denně).' },
+    { min: 12, max: 20, color: '#ffaa00', key: 'nic_12_20', text: 'Pro silné kuřáky, silné cigarety, bez předchozí zkušenosti hrozí nevolnost.' },
+    { min: 21, max: 35, color: '#ff6600', key: 'nic_21_35', text: 'Vysoký nikotin - pouze pro velmi silné kuřáky nebo pod-systémy. Nikotinová sůl doporučena.' },
+    { min: 36, max: 45, color: '#ff0044', key: 'nic_36_45', text: 'Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!' }
 ];
+
+// Získat přeložený popis nikotinu
+function getNicotineDescriptionText(value) {
+    const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    if (desc) {
+        return t(`nicotine_descriptions.${desc.key}`, desc.text);
+    }
+    return '';
+}
 
 // DOM Elements
 let vgPgRatioSlider, targetNicotineSlider, flavorStrengthSlider;
@@ -157,6 +174,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContact);
+    }
+});
+
+// Aktualizovat dynamické texty při změně jazyka
+window.addEventListener('localeChanged', () => {
+    // Aktualizovat popisy u posuvníků (VG/PG, nikotin, příchuť)
+    updateAllDisplays();
+    
+    // Aktualizovat varování o omezení VG/PG
+    updateVgPgRatioLimits();
+    
+    // Aktualizovat Shake & Vape pokud je inicializován
+    if (document.getElementById('svVgPgRatio')) {
+        updateSvVgPgLimits();
+        updateSvRatioDisplay();
+        updateSvNicotineDisplay();
+    }
+    
+    // Aktualizovat Liquid PRO pokud je inicializován
+    if (document.getElementById('proVgPgRatio')) {
+        updateProVgPgLimits();
+        updateProRatioDisplay();
+        updateProNicotineDisplay();
+    }
+    
+    // Aktualizovat Dilute pokud je inicializován
+    if (document.getElementById('diluteTargetRatio')) {
+        updateDiluteRatioLimits();
+        updateDiluteSourceRatioDisplay();
+        updateDiluteTargetRatioDisplay();
     }
 });
 
@@ -359,6 +406,10 @@ window.addEventListener('load', async function() {
                     await window.LiquiMixerDB.onSignIn(window.Clerk.user);
                     // Zkontrolovat pending sdílený recept
                     await checkPendingSharedRecipe();
+                    // Načíst uložený jazyk uživatele z databáze
+                    if (window.i18n?.loadUserLocale) {
+                        await window.i18n.loadUserLocale(window.Clerk.user.id);
+                    }
                     // Zavřít login modal
                     hideLoginModal();
                     
@@ -554,89 +605,55 @@ function showUserProfileModal() {
     if (userProfileModal) {
         userProfileModal.classList.remove('hidden');
         
-        // Mount Clerk UserButton or UserProfile
-        if (clerkLoaded && window.Clerk) {
-            const profileDiv = document.getElementById('clerk-user-profile');
-            if (profileDiv) {
+        // Zobrazit informace o uživateli
+        if (clerkLoaded && window.Clerk?.user) {
+            const profileInfoDiv = document.getElementById('userProfileInfo');
+            if (profileInfoDiv) {
                 // SECURITY: Escapovat uživatelská data proti XSS
-                const safeEmail = escapeHtml(window.Clerk.user?.emailAddresses[0]?.emailAddress || '');
-                const safeName = escapeHtml(window.Clerk.user?.fullName || '');
+                const user = window.Clerk.user;
+                const safeEmail = escapeHtml(user.emailAddresses?.[0]?.emailAddress || '');
+                const safeName = escapeHtml(user.fullName || user.firstName || '');
+                const avatarUrl = user.imageUrl;
                 
-                // Získat dostupné jazyky pro výběr
-                const availableLocales = window.i18n?.getAvailableLocales() || [];
-                const currentLocale = window.i18n?.getLocale() || 'cs';
-                
-                // Vytvořit options pro select
-                let languageOptions = '';
-                if (availableLocales.length > 0) {
-                    availableLocales.forEach(locale => {
-                        const selected = locale.code === currentLocale ? 'selected' : '';
-                        languageOptions += `<option value="${escapeHtml(locale.code)}" ${selected}>${escapeHtml(locale.native_name)}</option>`;
-                    });
+                // Vytvořit avatar - buď obrázek nebo placeholder s iniciálami
+                let avatarHtml;
+                if (avatarUrl) {
+                    avatarHtml = `<img src="${escapeHtml(avatarUrl)}" alt="Avatar" class="profile-avatar">`;
                 } else {
-                    // Fallback pokud nejsou načtené lokalizace
-                    languageOptions = `
-                        <option value="cs" ${currentLocale === 'cs' ? 'selected' : ''}>Čeština</option>
-                        <option value="en" ${currentLocale === 'en' ? 'selected' : ''}>English</option>
-                        <option value="de" ${currentLocale === 'de' ? 'selected' : ''}>Deutsch</option>
-                        <option value="sk" ${currentLocale === 'sk' ? 'selected' : ''}>Slovenčina</option>
-                        <option value="pl" ${currentLocale === 'pl' ? 'selected' : ''}>Polski</option>
-                    `;
+                    const initials = safeName ? safeName.charAt(0).toUpperCase() : '👤';
+                    avatarHtml = `<div class="profile-avatar-placeholder">${initials}</div>`;
                 }
                 
-                profileDiv.innerHTML = `
-                    <div class="user-info">
-                        <p class="user-email">${safeEmail}</p>
-                        <p class="user-name">${safeName}</p>
-                    </div>
-                    <div class="user-settings">
-                        <div class="setting-row">
-                            <label class="setting-label" for="userLanguageSelect">
-                                <span class="setting-icon">🌐</span>
-                                <span data-i18n="settings.language">Jazyk</span>
-                            </label>
-                            <select id="userLanguageSelect" class="neon-select language-select" onchange="handleLanguageChange(this.value)">
-                                ${languageOptions}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="user-profile-buttons">
-                        <button class="neon-button" onclick="showMyRecipes()">Mé recepty</button>
-                        <button class="neon-button" onclick="showFavoriteProducts()">Oblíbené produkty</button>
-                        <button class="neon-button logout-btn" onclick="handleSignOut()">Odhlásit se</button>
+                profileInfoDiv.innerHTML = `
+                    ${avatarHtml}
+                    <div class="profile-details">
+                        <div class="profile-name">${safeName || t('auth.user', 'Uživatel')}</div>
+                        <div class="profile-email">${safeEmail}</div>
                     </div>
                 `;
-                
-                // Aplikovat překlady na nově přidané elementy
-                if (window.i18n?.applyTranslations) {
-                    window.i18n.applyTranslations();
-                }
             }
+        }
+        
+        // Vytvořit výběr jazyka
+        if (window.i18n?.createLanguageSelector) {
+            window.i18n.createLanguageSelector('profileLanguageSelector');
+        }
+        
+        // Aplikovat překlady na nově přidané elementy
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
         }
     }
 }
 
-// Zpracovat změnu jazyka
-async function handleLanguageChange(locale) {
-    if (!locale) return;
-    
-    // Změnit jazyk v i18n modulu (uloží do localStorage)
-    if (window.i18n?.setLocale) {
-        await window.i18n.setLocale(locale);
+// Funkce pro odhlášení
+async function signOut() {
+    if (clerkLoaded && window.Clerk) {
+        await window.Clerk.signOut();
+        hideUserProfileModal();
+        updateAuthUI();
+        showPage('intro');
     }
-    
-    // Uložit do databáze pokud je uživatel přihlášen
-    if (window.Clerk?.user?.id && window.LiquiMixerDB?.saveUserLocale) {
-        try {
-            await window.LiquiMixerDB.saveUserLocale(window.Clerk.user.id, locale);
-            console.log('User locale saved to database:', locale);
-        } catch (err) {
-            console.error('Error saving locale to database:', err);
-        }
-    }
-    
-    // Aktualizovat UI
-    showUserProfileModal();
 }
 
 function hideUserProfileModal() {
@@ -806,7 +823,7 @@ function storeCurrentRecipe(data) {
 // Zobrazit modal pro uložení receptu
 async function showSaveRecipeModal() {
     if (!clerkLoaded || !window.Clerk || !window.Clerk.user) {
-        alert('Pro uložení receptu se prosím přihlaste.');
+        alert(t('alert.login_required_recipe', 'Pro uložení receptu se prosím přihlaste.'));
         showLoginModal();
         return;
     }
@@ -846,7 +863,7 @@ async function loadProductsForRecipe() {
 // Přidat řádek pro výběr produktu
 function addProductRow() {
     if (availableProductsForRecipe.length === 0) {
-        alert('Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.');
+        alert(t('save_recipe.no_products', 'Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.'));
         return;
     }
     
@@ -1014,7 +1031,7 @@ async function saveRecipe(event) {
     event.preventDefault();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro uložení receptu se prosím přihlaste.');
+        alert(t('alert.login_required_recipe', 'Pro uložení receptu se prosím přihlaste.'));
         return false;
     }
     
@@ -1027,7 +1044,7 @@ async function saveRecipe(event) {
     
     // Pro nový recept potřebujeme data receptu
     if (!isEditing && !currentRecipeData) {
-        alert('Chyba: Není co uložit. Prosím vytvořte recept.');
+        alert(t('recipes.nothing_to_save', 'Chyba: Není co uložit. Prosím vytvořte recept.'));
         return false;
     }
     
@@ -1075,7 +1092,7 @@ async function saveRecipe(event) {
                 : '';
             
             if (isEditing) {
-                alert(`Recept byl úspěšně upraven!${productInfo}`);
+                alert(t('save_recipe.updated', 'Recept byl úspěšně upraven!') + productInfo);
                 // Obnovit detail receptu
                 await viewRecipeDetail(window.editingRecipeId);
             } else {
@@ -1087,11 +1104,11 @@ async function saveRecipe(event) {
             
             hideSaveRecipeModal();
         } else {
-            alert('Chyba při ukládání receptu. Zkuste to prosím znovu.');
+            alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
         }
     } catch (error) {
         console.error('Error saving recipe:', error);
-        alert('Chyba při ukládání receptu.');
+        alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
     }
     
     return false;
@@ -1115,12 +1132,12 @@ async function showMyRecipes() {
     hideUserProfileModal();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro zobrazení receptů se prosím přihlaste.');
+        alert(t('alert.login_required_recipes', 'Pro zobrazení receptů se prosím přihlaste.'));
         return;
     }
     
     const container = document.getElementById('recipesListContainer');
-    container.innerHTML = '<p class="no-recipes-text">Načítám recepty...</p>';
+    container.innerHTML = `<p class="no-recipes-text">${t('recipes.loading', 'Načítám recepty...')}</p>`;
     
     // Reset vyhledávacích filtrů
     resetRecipeFilters();
@@ -1133,8 +1150,8 @@ async function showMyRecipes() {
         
         renderRecipesList(allUserRecipes);
     } catch (error) {
-        console.error('Chyba při načítání receptů:', error);
-        container.innerHTML = '<p class="no-recipes-text" style="color: var(--neon-pink);">Chyba při načítání receptů.</p>';
+        console.error('Error loading recipes:', error);
+        container.innerHTML = `<p class="no-recipes-text" style="color: var(--neon-pink);">${t('recipes.load_error', 'Chyba při načítání receptů.')}</p>`;
     }
 }
 
@@ -1254,9 +1271,9 @@ function filterRecipes() {
 // Vykreslit seznam receptů
 function renderRecipesList(recipes) {
     const container = document.getElementById('recipesListContainer');
-    
+
     if (!recipes || recipes.length === 0) {
-        container.innerHTML = '<p class="no-recipes-text">Zatím nemáte žádné uložené recepty.</p>';
+        container.innerHTML = `<p class="no-recipes-text">${t('recipes.no_recipes', 'Zatím nemáte žádné uložené recepty.')}</p>`;
         return;
     }
     
@@ -1312,7 +1329,7 @@ async function viewRecipeDetail(recipeId) {
         const recipe = await window.LiquiMixerDB.getRecipeById(window.Clerk.user.id, recipeId);
         
         if (!recipe) {
-            alert('Recept nenalezen.');
+            alert(t('recipes.not_found', 'Recept nenalezen.'));
             return;
         }
         
@@ -1326,7 +1343,7 @@ async function viewRecipeDetail(recipeId) {
         
     } catch (error) {
         console.error('Error loading recipe:', error);
-        alert('Chyba při načítání receptu.');
+        alert(t('recipes.load_error', 'Chyba při načítání receptu.'));
     }
 }
 
@@ -1340,7 +1357,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
     
     const rating = Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    const date = new Date(recipe.created_at).toLocaleDateString('cs-CZ');
+    const date = new Date(recipe.created_at).toLocaleDateString(t('meta.code', 'cs') === 'en' ? 'en-GB' : t('meta.code', 'cs') + '-' + t('meta.code', 'CS').toUpperCase());
     const data = recipe.recipe_data || {};
     
     // SECURITY: Escapování popisku
@@ -1349,13 +1366,13 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
     let ingredientsHtml = '';
     if (data.ingredients && Array.isArray(data.ingredients)) {
         ingredientsHtml = `
-            <h4 class="recipe-ingredients-title">Složky</h4>
+            <h4 class="recipe-ingredients-title">${t('recipe_detail.ingredients_title', 'Složky')}</h4>
             <table class="results-table">
                 <thead>
                     <tr>
-                        <th>Složka</th>
-                        <th>Objem (ml)</th>
-                        <th>Procento</th>
+                        <th>${t('recipe_detail.table_component', 'Složka')}</th>
+                        <th>${t('recipe_detail.table_volume', 'Objem (ml)')}</th>
+                        <th>${t('recipe_detail.table_percent', 'Procento')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1384,7 +1401,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         
         linkedProductsHtml = `
             <div class="recipe-linked-products">
-                <h4 class="recipe-ingredients-title">Použité produkty</h4>
+                <h4 class="recipe-ingredients-title">${t('recipe_detail.linked_products', 'Použité produkty')}</h4>
                 <div class="linked-products-list">
                     ${linkedProducts.map(product => {
                         const icon = typeIcons[product.product_type] || '📦';
@@ -1417,15 +1434,15 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         
         <div class="recipe-detail-info">
             <div class="recipe-info-item">
-                <div class="recipe-info-label">Celkový objem</div>
+                <div class="recipe-info-label">${t('recipe_detail.total_volume', 'Celkový objem')}</div>
                 <div class="recipe-info-value">${safeTotal} ml</div>
             </div>
             <div class="recipe-info-item">
-                <div class="recipe-info-label">Poměr VG/PG</div>
+                <div class="recipe-info-label">${t('recipe_detail.ratio', 'Poměr VG/PG')}</div>
                 <div class="recipe-info-value">${safeVg}:${safePg}</div>
             </div>
             <div class="recipe-info-item">
-                <div class="recipe-info-label">Nikotin</div>
+                <div class="recipe-info-label">${t('recipe_detail.nicotine', 'Nikotin')}</div>
                 <div class="recipe-info-value">${safeNicotine} mg/ml</div>
             </div>
         </div>
@@ -1434,7 +1451,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         ${linkedProductsHtml}
         
         <div class="recipe-meta-info">
-            <p class="recipe-date">Vytvořeno: ${date}</p>
+            <p class="recipe-date">${t('recipe_detail.created', 'Vytvořeno')}: ${date}</p>
         </div>
     `;
 }
@@ -1444,7 +1461,7 @@ async function editSavedRecipe() {
     if (!currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro úpravu receptu se prosím přihlaste.');
+        alert(t('alert.login_required_edit', 'Pro úpravu receptu se prosím přihlaste.'));
         return;
     }
     
@@ -1558,7 +1575,7 @@ const SHARE_DOMAIN = 'https://www.liquimixer.com';
 // Sdílet recept
 function shareRecipe() {
     if (!currentViewingRecipe || !currentViewingRecipe.share_id) {
-        alert('Tento recept nelze sdílet.');
+        alert(t('share.cannot_share_recipe', 'Tento recept nelze sdílet.'));
         return;
     }
 
@@ -1587,7 +1604,7 @@ function shareRecipe() {
 
 function copyShareLink(url) {
     navigator.clipboard.writeText(url).then(() => {
-        alert('Odkaz byl zkopírován do schránky!\n\n' + url);
+        alert(t('recipes.share_copied', 'Odkaz byl zkopírován do schránky!') + '\n\n' + url);
     }).catch(() => {
         prompt('Zkopírujte tento odkaz:', url);
     });
@@ -1596,7 +1613,7 @@ function copyShareLink(url) {
 // Sdílet oblíbený produkt
 function shareProduct() {
     if (!currentViewingProduct || !currentViewingProduct.share_id) {
-        alert('Tento produkt nelze sdílet.');
+        alert(t('share.cannot_share_product', 'Tento produkt nelze sdílet.'));
         return;
     }
 
@@ -1627,13 +1644,13 @@ async function deleteRecipe() {
     if (!currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro smazání receptu se prosím přihlaste.');
+        alert(t('alert.login_required', 'Pro smazání receptu se prosím přihlaste.'));
         return;
     }
     
     const recipeName = currentViewingRecipe.name || 'Tento recept';
     
-    if (!confirm(`Opravdu chcete smazat recept "${recipeName}"?\n\nTato akce je nevratná.`)) {
+    if (!confirm(t('recipe_detail.delete_confirm', 'Opravdu chcete smazat tento recept?'))) {
         return;
     }
     
@@ -1644,15 +1661,15 @@ async function deleteRecipe() {
         );
         
         if (success) {
-            alert('Recept byl smazán.');
+            alert(t('recipe_detail.delete_success', 'Recept byl smazán.'));
             currentViewingRecipe = null;
             showMyRecipes();
         } else {
-            alert('Chyba při mazání receptu.');
+            alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
         }
     } catch (error) {
         console.error('Error deleting recipe:', error);
-        alert('Chyba při mazání receptu.');
+        alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
     }
 }
 
@@ -1726,7 +1743,7 @@ async function loadSharedRecipeContent(shareId) {
             return true;
         } else {
             const contentEl = document.getElementById('sharedRecipeContent');
-            contentEl.innerHTML = '<p class="no-recipes-text">Recept nebyl nalezen nebo byl smazán.</p>';
+            contentEl.innerHTML = `<p class="no-recipes-text">${t('recipe_detail.not_found', 'Recept nebyl nalezen nebo byl smazán.')}</p>`;
             showPage('shared-recipe');
             return true;
         }
@@ -1764,12 +1781,12 @@ async function showFavoriteProducts() {
     hideUserProfileModal();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro zobrazení produktů se prosím přihlaste.');
+        alert(t('alert.login_required_products', 'Pro zobrazení produktů se prosím přihlaste.'));
         return;
     }
     
     const container = document.getElementById('productsListContainer');
-    container.innerHTML = '<p class="no-products-text">Načítám produkty...</p>';
+    container.innerHTML = `<p class="no-products-text">${t('products.loading', 'Načítám produkty...')}</p>`;
     
     // Reset vyhledávacích filtrů
     resetProductFilters();
@@ -1782,8 +1799,8 @@ async function showFavoriteProducts() {
         
         renderProductsList(allUserProducts);
     } catch (error) {
-        console.error('Chyba při načítání produktů:', error);
-        container.innerHTML = '<p class="no-products-text" style="color: var(--neon-pink);">Chyba při načítání produktů.</p>';
+        console.error('Error loading products:', error);
+        container.innerHTML = `<p class="no-products-text" style="color: var(--neon-pink);">${t('products.load_error', 'Chyba při načítání produktů.')}</p>`;
     }
 }
 
@@ -1911,9 +1928,9 @@ function filterProducts() {
 // Vykreslit seznam produktů
 function renderProductsList(products) {
     const container = document.getElementById('productsListContainer');
-    
+
     if (!products || products.length === 0) {
-        container.innerHTML = '<p class="no-products-text">Zatím nemáte žádné oblíbené produkty.</p>';
+        container.innerHTML = `<p class="no-products-text">${t('products.no_products', 'Zatím nemáte žádné oblíbené produkty.')}</p>`;
         return;
     }
     
@@ -1969,7 +1986,7 @@ async function viewProductDetail(productId) {
         const product = await window.LiquiMixerDB.getProductById(window.Clerk.user.id, productId);
         
         if (!product) {
-            alert('Produkt nenalezen.');
+            alert(t('products.not_found', 'Produkt nenalezen.'));
             return;
         }
         
@@ -1979,7 +1996,7 @@ async function viewProductDetail(productId) {
         
     } catch (error) {
         console.error('Error loading product:', error);
-        alert('Chyba při načítání produktu.');
+        alert(t('products.load_error', 'Chyba při načítání produktu.'));
     }
 }
 
@@ -1992,8 +2009,8 @@ function displayProductDetail(product) {
     
     const rating = Math.min(Math.max(parseInt(product.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    const date = new Date(product.created_at).toLocaleDateString('cs-CZ');
-    const typeLabel = productTypeLabels[product.product_type] || 'Příchuť';
+    const date = new Date(product.created_at).toLocaleDateString(t('meta.code', 'cs') === 'en' ? 'en-GB' : t('meta.code', 'cs') + '-' + t('meta.code', 'CS').toUpperCase());
+    const typeLabel = getProductTypeLabel(product.product_type);
     const typeIcon = productTypeIcons[product.product_type] || '🍓';
     
     const safeDescription = escapeHtml(product.description);
@@ -2011,7 +2028,7 @@ function displayProductDetail(product) {
             urlHtml = `
                 <div class="product-detail-url">
                     <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="neon-button secondary">
-                        Otevřít odkaz na produkt
+                        ${t('product_detail.open_link', 'Otevřít odkaz na produkt')}
                     </a>
                 </div>
             `;
@@ -2029,9 +2046,22 @@ function displayProductDetail(product) {
         </div>
         ${urlHtml}
         <div class="product-meta-info">
-            <p class="product-date">Přidáno: ${date}</p>
+            <p class="product-date">${t('product_detail.added', 'Přidáno')}: ${date}</p>
         </div>
     `;
+}
+
+// Získat přeložený typ produktu
+function getProductTypeLabel(type) {
+    const typeKeys = {
+        'vg': 'products.type_vg',
+        'pg': 'products.type_pg',
+        'flavor': 'products.type_flavor',
+        'nicotine_booster': 'products.type_nicotine_booster',
+        'nicotine_salt': 'products.type_nicotine_salt'
+    };
+    const key = typeKeys[type] || 'products.type_flavor';
+    return t(key, productTypeLabels[type] || 'Příchuť');
 }
 
 // Mapování typů produktů na názvy
@@ -2101,21 +2131,21 @@ function editProduct() {
 async function deleteProduct() {
     if (!currentViewingProduct) return;
     
-    if (!confirm('Opravdu chcete smazat tento produkt?')) return;
+    if (!confirm(t('product_detail.delete_confirm', 'Opravdu chcete smazat tento produkt?'))) return;
     
     try {
         const success = await window.LiquiMixerDB.deleteProduct(window.Clerk.user.id, currentViewingProduct.id);
         
         if (success) {
-            alert('Produkt byl smazán.');
+            alert(t('products.deleted', 'Produkt byl smazán.'));
             currentViewingProduct = null;
             showFavoriteProducts();
         } else {
-            alert('Chyba při mazání produktu.');
+            alert(t('products.delete_error', 'Chyba při mazání produktu.'));
         }
     } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Chyba při mazání produktu.');
+        alert(t('products.delete_error', 'Chyba při mazání produktu.'));
     }
 }
 
@@ -2134,7 +2164,7 @@ async function saveProduct(event) {
     event.preventDefault();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro uložení produktu se prosím přihlaste.');
+        alert(t('alert.login_required_product', 'Pro uložení produktu se prosím přihlaste.'));
         return false;
     }
     
@@ -2147,12 +2177,12 @@ async function saveProduct(event) {
     const editingId = document.getElementById('editingProductId').value;
     
     if (!name) {
-        alert('Název produktu je povinný.');
+        alert(t('product_form.name_required', 'Název produktu je povinný.'));
         return false;
     }
     
     if (!productType) {
-        alert('Vyberte typ produktu.');
+        alert(t('product_form.type_required', 'Vyberte typ produktu.'));
         return false;
     }
     
@@ -2175,14 +2205,14 @@ async function saveProduct(event) {
         }
         
         if (saved) {
-            alert(editingId ? 'Produkt byl aktualizován!' : 'Produkt byl uložen!');
+            alert(editingId ? t('product_form.updated', 'Produkt byl aktualizován!') : t('product_form.success', 'Produkt byl uložen!'));
             showFavoriteProducts();
         } else {
-            alert('Chyba při ukládání produktu.');
+            alert(t('product_form.error', 'Chyba při ukládání produktu.'));
         }
     } catch (error) {
         console.error('Error saving product:', error);
-        alert('Chyba při ukládání produktu.');
+        alert(t('product_form.error', 'Chyba při ukládání produktu.'));
     }
     
     return false;
@@ -2229,13 +2259,13 @@ function previewProductImage(event) {
     // Validace
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-        alert('Povolené formáty: JPEG, PNG, WebP, GIF');
+        alert(t('product_form.image_format', 'Povolené formáty: JPEG, PNG, WebP, GIF'));
         return;
     }
     
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-        alert('Maximální velikost obrázku je 5MB.');
+        alert(t('product_form.image_size', 'Maximální velikost obrázku je 5MB.'));
         return;
     }
     
@@ -2253,7 +2283,7 @@ function previewProductImage(event) {
 function captureProductPhoto() {
     // Zkontrolovat podporu kamery
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Váš prohlížeč nepodporuje přístup ke kameře.');
+        alert(t('product_form.camera_error', 'Váš prohlížeč nepodporuje přístup ke kameře.'));
         return;
     }
     
@@ -2387,6 +2417,20 @@ function adjustRatio(change) {
     updateRatioDisplay();
 }
 
+// Získat přeložený popis poměru VG/PG
+function getRatioDescriptionText(vg) {
+    if (vg >= 0 && vg <= 9) return t('ratio_descriptions.vg_0_9', ratioDescriptions[0].text);
+    if (vg >= 10 && vg <= 29) return t('ratio_descriptions.vg_10_29', ratioDescriptions[1].text);
+    if (vg >= 30 && vg <= 34) return t('ratio_descriptions.vg_30_34', ratioDescriptions[2].text);
+    if (vg >= 35 && vg <= 40) return t('ratio_descriptions.vg_35_40', ratioDescriptions[3].text);
+    if (vg >= 41 && vg <= 55) return t('ratio_descriptions.vg_41_55', ratioDescriptions[4].text);
+    if (vg >= 56 && vg <= 60) return t('ratio_descriptions.vg_56_60', ratioDescriptions[5].text);
+    if (vg >= 61 && vg <= 70) return t('ratio_descriptions.vg_61_70', ratioDescriptions[6].text);
+    if (vg >= 71 && vg <= 90) return t('ratio_descriptions.vg_71_90', ratioDescriptions[7].text);
+    if (vg >= 91 && vg <= 100) return t('ratio_descriptions.vg_91_100', ratioDescriptions[8].text);
+    return '';
+}
+
 function updateRatioDisplay() {
     const vg = parseInt(vgPgRatioSlider.value);
     const pg = 100 - vg;
@@ -2398,7 +2442,7 @@ function updateRatioDisplay() {
     const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
     if (desc) {
         const descEl = document.getElementById('ratioDescription');
-        descEl.textContent = desc.text;
+        descEl.textContent = getRatioDescriptionText(vg);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
         document.getElementById('sliderTrack').style.background = 
@@ -2545,12 +2589,24 @@ function updateVgPgRatioLimits() {
         if (effectiveMinVg > 0 || effectiveMaxVg < 100) {
             const reasons = [];
             if (nicotineVolume > 0) {
-                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+                const nicReason = t('ratio_warning.reason_nicotine', 'nikotinová báze ({strength} mg/ml, VG/PG {vg}/{pg})')
+                    .replace('{strength}', baseNicotine)
+                    .replace('{vg}', nicVgPercent)
+                    .replace('{pg}', nicPgPercent);
+                reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorPercent}%, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+                const flavorReason = t('ratio_warning.reason_flavor_percent', 'příchuť ({percent}%, VG/PG {vg}/{pg})')
+                    .replace('{percent}', flavorPercent)
+                    .replace('{vg}', flavorVgPercent)
+                    .replace('{pg}', flavorPgPercent);
+                reasons.push(flavorReason);
             }
-            warningEl.textContent = `Poměr omezen na ${effectiveMinVg}–${effectiveMaxVg}% VG kvůli: ${reasons.join(', ')}.`;
+            const warningText = t('ratio_warning.limited_to', 'Poměr omezen na {min}–{max}% VG kvůli: {reasons}.')
+                .replace('{min}', effectiveMinVg)
+                .replace('{max}', effectiveMaxVg)
+                .replace('{reasons}', reasons.join(', '));
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -2691,7 +2747,7 @@ function updateNicotineDisplay() {
     // Find matching description
     const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
     if (desc) {
-        descEl.textContent = desc.text;
+        descEl.textContent = getNicotineDescriptionText(value);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
         // Set color on container so unit has same color as number
@@ -2733,6 +2789,36 @@ function adjustFlavor(change) {
     updateFlavorDisplay();
 }
 
+// Získat přeloženou poznámku pro typ příchutě
+function getFlavorNote(type) {
+    const noteKey = `flavor_descriptions.note_${type}`;
+    const fallbackNotes = {
+        none: 'Čistá báze PG/VG + nikotin',
+        fruit: 'Optimum: 10%, zrání 3–7 dní',
+        citrus: 'Silné kyseliny, méně stačí',
+        berry: 'Vyvážené, dobře fungují s 50/50 PG/VG',
+        tropical: 'Sladké, potřebují vyšší % pro hloubku',
+        tobacco: 'Dlouhý steeping: 1–4 týdny pro rozvinutí',
+        menthol: 'Intenzivní, dobře se kombinuje s ovocem',
+        candy: 'Sladký profil vyžaduje přesné dávkování',
+        dessert: 'Komplexní, steeping 2–3 týdny',
+        bakery: 'Máslové tóny, vyzrálost za 2 týdny',
+        biscuit: 'Jemné, funguje při nižším %',
+        drink: 'Osvěžující, rychlé zrání',
+        tobaccosweet: 'Kombinace vyžaduje 2+ týdny steepingu',
+        nuts: 'Krémové, vyžaduje 1–2 týdny zrání',
+        spice: 'Kořeněné, opatrně s koncentrací'
+    };
+    return t(noteKey, fallbackNotes[type] || '');
+}
+
+// Získat přeložený název příchutě
+function getFlavorName(type) {
+    const flavorKey = `form.flavor_${type}`;
+    const flavor = flavorDatabase[type];
+    return t(flavorKey, flavor ? flavor.name : type);
+}
+
 function updateFlavorDisplay() {
     const value = parseInt(flavorStrengthSlider.value);
     const type = flavorTypeSelect.value;
@@ -2747,15 +2833,23 @@ function updateFlavorDisplay() {
     let color, text;
     if (value < flavor.min) {
         color = '#ffaa00';
-        text = `Slabá až žádná chuť (doporučeno ${flavor.min}–${flavor.max}%)`;
+        text = t('flavor_descriptions.weak', 'Slabá až žádná chuť (doporučeno {min}–{max}%)')
+            .replace('{min}', flavor.min)
+            .replace('{max}', flavor.max);
         trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
     } else if (value > flavor.max) {
         color = '#ff0044';
-        text = `Výrazná nebo přeslazená chuť (doporučeno ${flavor.min}–${flavor.max}%)`;
+        text = t('flavor_descriptions.strong', 'Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)')
+            .replace('{min}', flavor.min)
+            .replace('{max}', flavor.max);
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
     } else {
         color = '#00cc66';
-        text = `Ideální chuť (${flavor.min}–${flavor.max}%) - ${flavor.note}`;
+        const note = getFlavorNote(type);
+        text = t('flavor_descriptions.ideal', 'Ideální chuť ({min}–{max}%) - {note}')
+            .replace('{min}', flavor.min)
+            .replace('{max}', flavor.max)
+            .replace('{note}', note);
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #00aaff)`;
     }
     
@@ -2898,7 +2992,9 @@ function calculateMix() {
     const ingredients = [];
 
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+        const nicotineName = nicotineType === 'salt' 
+            ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
+            : t('ingredients.nicotine_booster', 'Nikotin booster');
         const nicotineRatioValue = document.getElementById('nicotineRatio').value;
         ingredients.push({
             name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
@@ -2910,10 +3006,10 @@ function calculateMix() {
     }
 
     if (flavorVolume > 0) {
-        const flavor = flavorDatabase[flavorType];
         const flavorRatioValue = document.getElementById('flavorRatio').value;
+        const flavorName = getFlavorName(flavorType);
         ingredients.push({
-            name: `${flavor.name} příchuť (VG/PG ${flavorRatioValue})`,
+            name: `${flavorName} (VG/PG ${flavorRatioValue})`,
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -2924,7 +3020,7 @@ function calculateMix() {
     // Add carrier liquids (no drops for these - measured in ml)
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG) - nosná látka',
+            name: t('ingredients.pg', 'PG (Propylenglykol)'),
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -2934,7 +3030,7 @@ function calculateMix() {
 
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG) - nosná látka',
+            name: t('ingredients.vg', 'VG (Glycerin)'),
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -3005,7 +3101,7 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
-        <td class="ingredient-name">CELKEM</td>
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
         <td class="ingredient-drops">-</td>
         <td class="ingredient-percent">100%</td>
@@ -3020,11 +3116,11 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     const notesEl = document.querySelector('.results-notes ul');
     if (notesEl) {
         notesEl.innerHTML = `
-            <li>Nejprve přidejte nikotin (pokud používáte) - pracujte v rukavicích!</li>
-            <li>Poté přidejte příchutě</li>
-            <li>Nakonec doplňte PG a VG nosné látky</li>
-            <li>Důkladně protřepejte a nechte zrát 1-2 týdny</li>
-            <li>Skutečný poměr VG/PG ve směsi: ${actualVgPercent}% / ${actualPgPercent}%</li>
+            <li>${t('results.notes_1', 'Nejprve přidejte nikotin (pokud používáte)')} - ${t('results.dilute_notes_1', 'pracujte v rukavicích!')}</li>
+            <li>${t('results.notes_2', 'Poté přidejte příchutě')}</li>
+            <li>${t('results.notes_3', 'Nakonec doplňte PG a VG')}</li>
+            <li>${t('results.notes_4', 'Důkladně protřepejte a nechte zrát 1-2 týdny')}</li>
+            <li>${t('results.actual_ratio', 'Skutečný poměr VG/PG ve směsi')}: ${actualVgPercent}% / ${actualPgPercent}%</li>
         `;
     }
 }
@@ -3231,7 +3327,7 @@ function updateDiluteSourceRatioDisplay() {
         const descEl = document.getElementById('diluteSourceDescription');
         const trackEl = document.getElementById('diluteSourceTrack');
         if (descEl) {
-            descEl.textContent = desc.text;
+            descEl.textContent = getRatioDescriptionText(vg);
             descEl.style.color = desc.color;
             descEl.style.borderLeftColor = desc.color;
         }
@@ -3287,7 +3383,7 @@ function updateDiluteTargetRatioDisplay() {
         const descEl = document.getElementById('diluteTargetDescription');
         const trackEl = document.getElementById('diluteTargetTrack');
         if (descEl) {
-            descEl.textContent = desc.text;
+            descEl.textContent = getRatioDescriptionText(vg);
             descEl.style.color = desc.color;
             descEl.style.borderLeftColor = desc.color;
         }
@@ -3341,7 +3437,10 @@ function updateDiluteRatioLimits() {
     // Show warning if limited
     if (warningEl) {
         if (diluteLimits.min > 0 || diluteLimits.max < 100) {
-            warningEl.textContent = `Poměr omezen na ${diluteLimits.min}–${diluteLimits.max}% VG kvůli poměru v nikotinové bázi.`;
+            const warningText = t('ratio_warning.limited_nicotine', 'Poměr omezen na {min}–{max}% VG kvůli poměru v nikotinové bázi.')
+                .replace('{min}', diluteLimits.min)
+                .replace('{max}', diluteLimits.max);
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -3368,7 +3467,9 @@ function updateDiluteCalculation() {
     
     if (targetStrength > baseStrength && baseStrength > 0) {
         if (warningEl) {
-            warningEl.textContent = `Cílová síla nemůže být vyšší než zdrojová (${baseStrength} mg/ml).`;
+            const warningText = t('dilute.target_too_high', 'Cílová síla nemůže být vyšší než zdrojová ({strength} mg/ml).')
+                .replace('{strength}', baseStrength);
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         }
         document.getElementById('diluteTargetStrength').value = baseStrength;
@@ -3428,7 +3529,9 @@ function calculateDilution() {
     if (purePgNeeded < 0) purePgNeeded = 0;
     
     // Build results
-    const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+    const nicotineName = nicotineType === 'salt' 
+        ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
+        : t('ingredients.nicotine_booster', 'Nikotin booster');
     const ingredients = [];
     
     ingredients.push({
@@ -3439,7 +3542,7 @@ function calculateDilution() {
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG)',
+            name: t('ingredients.pg', 'PG (Propylenglykol)'),
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100
         });
@@ -3447,7 +3550,7 @@ function calculateDilution() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG)',
+            name: t('ingredients.vg', 'VG (Glycerin)'),
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100
         });
@@ -3483,7 +3586,7 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
-        <td class="ingredient-name">CELKEM</td>
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
         <td class="ingredient-percent">100%</td>
     `;
@@ -3600,7 +3703,7 @@ function updateSvNicotineDisplay() {
     
     const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
     if (desc) {
-        descEl.textContent = desc.text;
+        descEl.textContent = getNicotineDescriptionText(value);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
         // Set color on container so unit has same color as number
@@ -3633,17 +3736,17 @@ function updateSvRatioDisplay() {
     const slider = document.getElementById('svVgPgRatio');
     const vg = parseInt(slider.value);
     const pg = 100 - vg;
-    
+
     document.getElementById('svVgValue').textContent = vg;
     document.getElementById('svPgValue').textContent = pg;
-    
+
     const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
     if (desc) {
         const descEl = document.getElementById('svRatioDescription');
-        descEl.textContent = desc.text;
+        descEl.textContent = getRatioDescriptionText(vg);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
-        document.getElementById('svSliderTrack').style.background = 
+        document.getElementById('svSliderTrack').style.background =
             `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
     }
 }
@@ -3726,12 +3829,24 @@ function updateSvVgPgLimits() {
         if (svVgPgLimits.min > 0 || svVgPgLimits.max < 100) {
             const reasons = [];
             if (nicotineVolume > 0) {
-                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+                const nicReason = t('ratio_warning.reason_nicotine', 'nikotinová báze ({strength} mg/ml, VG/PG {vg}/{pg})')
+                    .replace('{strength}', baseNicotine)
+                    .replace('{vg}', nicVgPercent)
+                    .replace('{pg}', nicPgPercent);
+                reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorVolume} ml, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+                const flavorReason = t('ratio_warning.reason_flavor_volume', 'příchuť ({volume} ml, VG/PG {vg}/{pg})')
+                    .replace('{volume}', flavorVolume)
+                    .replace('{vg}', flavorVgPercent)
+                    .replace('{pg}', flavorPgPercent);
+                reasons.push(flavorReason);
             }
-            warningEl.textContent = `Poměr omezen na ${svVgPgLimits.min}–${svVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
+            const warningText = t('ratio_warning.limited_to', 'Poměr omezen na {min}–{max}% VG kvůli: {reasons}.')
+                .replace('{min}', svVgPgLimits.min)
+                .replace('{max}', svVgPgLimits.max)
+                .replace('{reasons}', reasons.join(', '));
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -3822,8 +3937,10 @@ function calculateShakeVape() {
     
     // Flavor first (already in bottle)
     if (flavorVolume > 0) {
+        const flavorLabel = t('ingredients.flavor', 'Příchuť');
+        const inBottleLabel = t('shakevape.in_bottle', 'již v lahvičce');
         ingredients.push({
-            name: `Příchuť (již v lahvičce, VG/PG ${svFlavorRatio})`,
+            name: `${flavorLabel} (${inBottleLabel}, VG/PG ${svFlavorRatio})`,
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -3832,7 +3949,9 @@ function calculateShakeVape() {
     }
     
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+        const nicotineName = nicotineType === 'salt' 
+            ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
+            : t('ingredients.nicotine_booster', 'Nikotin booster');
         const nicotineRatioValue = document.getElementById('svNicotineRatio').value;
         ingredients.push({
             name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
@@ -3845,7 +3964,7 @@ function calculateShakeVape() {
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG) - nosná látka',
+            name: t('ingredients.pg', 'PG (Propylenglykol)'),
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -3855,7 +3974,7 @@ function calculateShakeVape() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG) - nosná látka',
+            name: t('ingredients.vg', 'VG (Glycerin)'),
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -4160,12 +4279,24 @@ function updateProVgPgLimits() {
         if (proVgPgLimits.min > 0 || proVgPgLimits.max < 100) {
             const reasons = [];
             if (nicotineVolume > 0) {
-                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+                const nicReason = t('ratio_warning.reason_nicotine', 'nikotinová báze ({strength} mg/ml, VG/PG {vg}/{pg})')
+                    .replace('{strength}', baseNicotine)
+                    .replace('{vg}', nicVgPercent)
+                    .replace('{pg}', nicPgPercent);
+                reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorPercent}%, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+                const flavorReason = t('ratio_warning.reason_flavor_percent', 'příchuť ({percent}%, VG/PG {vg}/{pg})')
+                    .replace('{percent}', flavorPercent)
+                    .replace('{vg}', flavorVgPercent)
+                    .replace('{pg}', flavorPgPercent);
+                reasons.push(flavorReason);
             }
-            warningEl.textContent = `Poměr omezen na ${proVgPgLimits.min}–${proVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
+            const warningText = t('ratio_warning.limited_to', 'Poměr omezen na {min}–{max}% VG kvůli: {reasons}.')
+                .replace('{min}', proVgPgLimits.min)
+                .replace('{max}', proVgPgLimits.max)
+                .replace('{reasons}', reasons.join(', '));
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -4239,7 +4370,9 @@ function calculateProMix() {
     const ingredients = [];
     
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+        const nicotineName = nicotineType === 'salt' 
+            ? t('ingredients.nicotine_salt', 'Nikotinová sůl') 
+            : t('ingredients.nicotine_booster', 'Nikotin booster');
         ingredients.push({
             name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicVgPercent}/${nicPgPercent})`,
             volume: nicotineVolume,
@@ -4250,9 +4383,9 @@ function calculateProMix() {
     }
     
     if (flavorVolume > 0) {
-        const flavor = flavorDatabase[flavorType];
+        const flavorName = getFlavorName(flavorType);
         ingredients.push({
-            name: `${flavor.name} příchuť (VG/PG ${flavorVgPercent}/${flavorPgPercent})`,
+            name: `${flavorName} (VG/PG ${flavorVgPercent}/${flavorPgPercent})`,
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -4262,7 +4395,7 @@ function calculateProMix() {
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG) - nosná látka',
+            name: t('ingredients.pg', 'PG (Propylenglykol)'),
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -4272,7 +4405,7 @@ function calculateProMix() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG) - nosná látka',
+            name: t('ingredients.vg', 'VG (Glycerin)'),
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -4308,6 +4441,7 @@ window.showSaveRecipeModal = showSaveRecipeModal;
 window.hideSaveRecipeModal = hideSaveRecipeModal;
 window.saveRecipe = saveRecipe;
 window.showMyRecipes = showMyRecipes;
+window.signOut = signOut;
 window.viewRecipeDetail = viewRecipeDetail;
 window.editSavedRecipe = editSavedRecipe;
 window.deleteRecipe = deleteRecipe;

@@ -4,62 +4,34 @@
 // ============================================
 
 // Aktuální jazyk
-let currentLocale = 'cs';
+let currentLocale = 'en';
 let translations = {};
 let localesData = [];
+
+// Podporované jazyky (pro které máme překlady)
+const SUPPORTED_LOCALES = ['cs', 'sk', 'en'];
 
 // Detekce jazyka prohlížeče
 function detectBrowserLocale() {
     const browserLang = navigator.language || navigator.userLanguage;
-    const langCode = browserLang.split('-')[0];
+    const langCode = browserLang.split('-')[0].toLowerCase();
     
-    // Mapování jazyků na podporované lokalizace
-    const localeMap = {
-        'cs': 'cs',
-        'sk': 'sk',
-        'pl': 'pl',
-        'de': 'de',
-        'en': 'en',
-        'fr': 'fr',
-        'it': 'it',
-        'es': 'es',
-        'pt': 'pt',
-        'nl': 'nl',
-        'da': 'da',
-        'no': 'no',
-        'sv': 'sv',
-        'fi': 'fi',
-        'et': 'et',
-        'lv': 'lv',
-        'lt': 'lt',
-        'uk': 'uk',
-        'ro': 'ro',
-        'bg': 'bg',
-        'sr': 'sr',
-        'hr': 'hr',
-        'sl': 'sl',
-        'el': 'el',
-        'sq': 'sq',
-        'tr': 'tr',
-        'ar': 'ar-SA',
-        'ja': 'ja',
-        'ko': 'ko',
-        'fil': 'fil'
-    };
+    // Vrátit jazyk pouze pokud je podporovaný, jinak angličtinu
+    if (SUPPORTED_LOCALES.includes(langCode)) {
+        return langCode;
+    }
     
-    return localeMap[langCode] || 'en';
+    return 'en'; // Fallback na angličtinu
 }
 
 // Inicializace i18n
 async function initI18n() {
-    // Zkusit načíst uložený jazyk
-    const savedLocale = localStorage.getItem('liquimixer_locale');
+    // Priorita při inicializaci (před přihlášením):
+    // 1. Jazyk prohlížeče (pokud podporovaný)
+    // 2. Angličtina jako fallback
+    // Po přihlášení se načte uložený jazyk uživatele z databáze
     
-    if (savedLocale) {
-        currentLocale = savedLocale;
-    } else {
-        currentLocale = detectBrowserLocale();
-    }
+    currentLocale = detectBrowserLocale();
     
     // Načíst dostupné lokalizace
     await loadLocales();
@@ -70,101 +42,83 @@ async function initI18n() {
     // Aplikovat překlady na stránku
     applyTranslations();
     
+    // Vytvořit výběr jazyka v profilu uživatele
+    createLanguageSelector('profileLanguageSelector');
+    
     console.log('i18n initialized with locale:', currentLocale);
 }
 
 // Načíst seznam lokalizací
 async function loadLocales() {
     try {
-        // Použít supabaseClient z database.js
-        const client = window.supabaseClient;
-        if (!client) {
-            console.warn('Supabase client not initialized yet');
-            return;
-        }
-        
-        const { data, error } = await client
-            .from('locales')
-            .select('*')
-            .eq('is_active', true)
-            .order('name');
-        
-        if (error) throw error;
-        localesData = data || [];
+        // Statický seznam podporovaných lokalizací
+        localesData = [
+            { code: 'cs', name: 'Czech', native_name: 'Čeština', currency: 'CZK', currency_symbol: 'Kč', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'sk', name: 'Slovak', native_name: 'Slovenčina', currency: 'EUR', currency_symbol: '€', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'en', name: 'English', native_name: 'English', currency: 'USD', currency_symbol: '$', date_format: 'MM/DD/YYYY', is_active: true },
+            { code: 'de', name: 'German', native_name: 'Deutsch', currency: 'EUR', currency_symbol: '€', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'pl', name: 'Polish', native_name: 'Polski', currency: 'PLN', currency_symbol: 'zł', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'fr', name: 'French', native_name: 'Français', currency: 'EUR', currency_symbol: '€', date_format: 'DD/MM/YYYY', is_active: true },
+            { code: 'it', name: 'Italian', native_name: 'Italiano', currency: 'EUR', currency_symbol: '€', date_format: 'DD/MM/YYYY', is_active: true },
+            { code: 'es', name: 'Spanish', native_name: 'Español', currency: 'EUR', currency_symbol: '€', date_format: 'DD/MM/YYYY', is_active: true },
+            { code: 'pt', name: 'Portuguese', native_name: 'Português', currency: 'EUR', currency_symbol: '€', date_format: 'DD/MM/YYYY', is_active: true },
+            { code: 'nl', name: 'Dutch', native_name: 'Nederlands', currency: 'EUR', currency_symbol: '€', date_format: 'DD-MM-YYYY', is_active: true },
+            { code: 'ja', name: 'Japanese', native_name: '日本語', currency: 'JPY', currency_symbol: '¥', date_format: 'YYYY/MM/DD', is_active: true },
+            { code: 'ko', name: 'Korean', native_name: '한국어', currency: 'KRW', currency_symbol: '₩', date_format: 'YYYY.MM.DD', is_active: true },
+            { code: 'tr', name: 'Turkish', native_name: 'Türkçe', currency: 'TRY', currency_symbol: '₺', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'uk', name: 'Ukrainian', native_name: 'Українська', currency: 'UAH', currency_symbol: '₴', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'ru', name: 'Russian', native_name: 'Русский', currency: 'RUB', currency_symbol: '₽', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'sv', name: 'Swedish', native_name: 'Svenska', currency: 'SEK', currency_symbol: 'kr', date_format: 'YYYY-MM-DD', is_active: true },
+            { code: 'da', name: 'Danish', native_name: 'Dansk', currency: 'DKK', currency_symbol: 'kr', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'no', name: 'Norwegian', native_name: 'Norsk', currency: 'NOK', currency_symbol: 'kr', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'fi', name: 'Finnish', native_name: 'Suomi', currency: 'EUR', currency_symbol: '€', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'el', name: 'Greek', native_name: 'Ελληνικά', currency: 'EUR', currency_symbol: '€', date_format: 'DD/MM/YYYY', is_active: true },
+            { code: 'ar-SA', name: 'Arabic', native_name: 'العربية', currency: 'SAR', currency_symbol: 'ر.س', date_format: 'DD/MM/YYYY', is_active: true },
+            { code: 'zh-CN', name: 'Chinese (Simplified)', native_name: '简体中文', currency: 'CNY', currency_symbol: '¥', date_format: 'YYYY-MM-DD', is_active: true },
+            { code: 'zh-TW', name: 'Chinese (Traditional)', native_name: '繁體中文', currency: 'TWD', currency_symbol: 'NT$', date_format: 'YYYY/MM/DD', is_active: true },
+            { code: 'hu', name: 'Hungarian', native_name: 'Magyar', currency: 'HUF', currency_symbol: 'Ft', date_format: 'YYYY.MM.DD', is_active: true },
+            { code: 'et', name: 'Estonian', native_name: 'Eesti', currency: 'EUR', currency_symbol: '€', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'lv', name: 'Latvian', native_name: 'Latviešu', currency: 'EUR', currency_symbol: '€', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'lt', name: 'Lithuanian', native_name: 'Lietuvių', currency: 'EUR', currency_symbol: '€', date_format: 'YYYY-MM-DD', is_active: true },
+            { code: 'ro', name: 'Romanian', native_name: 'Română', currency: 'RON', currency_symbol: 'lei', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'hr', name: 'Croatian', native_name: 'Hrvatski', currency: 'EUR', currency_symbol: '€', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'bg', name: 'Bulgarian', native_name: 'Български', currency: 'BGN', currency_symbol: 'лв', date_format: 'DD.MM.YYYY', is_active: true },
+            { code: 'sr', name: 'Serbian', native_name: 'Српски', currency: 'RSD', currency_symbol: 'дин', date_format: 'DD.MM.YYYY', is_active: true }
+        ];
     } catch (err) {
         console.error('Error loading locales:', err);
         localesData = [];
     }
 }
 
-// Validace a sanitizace překladů pro bezpečnost
-function validateAndSanitizeTranslations(data) {
-    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-        console.error('Invalid translations format: expected object');
-        return {};
-    }
-    
-    const sanitized = {};
-    const validKeyPattern = /^[a-z][a-z0-9_.]*$/i;
-    
-    for (const [key, value] of Object.entries(data)) {
-        // Validace klíče - pouze povolené znaky
-        if (!validKeyPattern.test(key)) {
-            console.warn(`Invalid translation key skipped: ${key}`);
-            continue;
-        }
-        
-        // Validace hodnoty - pouze string
-        if (typeof value !== 'string') {
-            console.warn(`Invalid translation value for key ${key}: expected string`);
-            continue;
-        }
-        
-        // Sanitizace - odstranění potenciálně nebezpečných znaků
-        // (textContent už escapuje, ale extra vrstva ochrany)
-        const sanitizedValue = value
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/javascript:/gi, '')
-            .replace(/on\w+=/gi, '');
-        
-        // Omezení délky hodnoty
-        if (sanitizedValue.length > 1000) {
-            console.warn(`Translation value too long for key ${key}`);
-            sanitized[key] = sanitizedValue.substring(0, 1000);
-        } else {
-            sanitized[key] = sanitizedValue;
-        }
-    }
-    
-    return sanitized;
-}
+// Mapování locale na soubor (pro regionální varianty)
+const localeFileMap = {
+    'ar-SA': 'ar-SA',
+    'zh-CN': 'zh-CN',
+    'zh-TW': 'zh-TW',
+    'en-GB': 'en',
+    'en-AU': 'en',
+    'en-CA': 'en',
+    'en-NZ': 'en',
+    'de-AT': 'de',
+    'fr-BE': 'fr',
+    'nl-BE': 'nl',
+    'fr-CA': 'fr',
+    'es-MX': 'es',
+    'es-AR': 'es',
+    'pt-BR': 'pt'
+};
+
+// Validace locale - pouze povolené znaky (ochrana proti path traversal)
+const safeLocalePattern = /^[a-z]{2}(-[A-Z]{2})?$/;
 
 // Načíst překlady pro daný jazyk z lokálních JSON souborů
 async function loadTranslations(locale) {
     try {
-        // Mapování locale na soubor (pro regionální varianty)
-        const localeFileMap = {
-            'ar-SA': 'ar-SA',
-            'zh-CN': 'zh-CN',
-            'zh-TW': 'zh-TW',
-            'en-GB': 'en',
-            'en-AU': 'en',
-            'en-CA': 'en',
-            'en-NZ': 'en',
-            'de-AT': 'de',
-            'fr-BE': 'fr',
-            'nl-BE': 'nl',
-            'fr-CA': 'fr',
-            'es-MX': 'es',
-            'es-AR': 'es',
-            'pt-BR': 'pt'
-        };
-        
-        // Validace locale - pouze povolené znaky (ochrana proti path traversal)
-        const safeLocalePattern = /^[a-z]{2}(-[A-Z]{2})?$/;
+        // Mapování locale na soubor
         const fileLocale = localeFileMap[locale] || locale;
         
+        // Validace locale formátu
         if (!safeLocalePattern.test(fileLocale)) {
             console.error(`Invalid locale format: ${locale}`);
             translations = {};
@@ -175,16 +129,16 @@ async function loadTranslations(locale) {
         const response = await fetch(`./locales/${fileLocale}.json`);
         
         if (response.ok) {
-            const rawData = await response.json();
-            translations = validateAndSanitizeTranslations(rawData);
+            const data = await response.json();
+            translations = data || {};
             console.log(`Loaded ${Object.keys(translations).length} translations for ${locale} from local file`);
         } else {
             // Fallback na angličtinu
             console.warn(`Locale file not found for ${locale}, falling back to English`);
             const enResponse = await fetch('./locales/en.json');
             if (enResponse.ok) {
-                const rawData = await enResponse.json();
-                translations = validateAndSanitizeTranslations(rawData);
+                const enData = await enResponse.json();
+                translations = enData || {};
             } else {
                 translations = {};
             }
@@ -194,11 +148,10 @@ async function loadTranslations(locale) {
         if (Object.keys(translations).length < 10 && locale !== 'en') {
             const enResponse = await fetch('./locales/en.json');
             if (enResponse.ok) {
-                const rawData = await enResponse.json();
-                const enTranslations = validateAndSanitizeTranslations(rawData);
-                Object.keys(enTranslations).forEach(key => {
+                const enData = await enResponse.json();
+                Object.keys(enData).forEach(key => {
                     if (!translations[key]) {
-                        translations[key] = enTranslations[key];
+                        translations[key] = enData[key];
                     }
                 });
             }
@@ -209,8 +162,8 @@ async function loadTranslations(locale) {
         try {
             const enResponse = await fetch('./locales/en.json');
             if (enResponse.ok) {
-                const rawData = await enResponse.json();
-                translations = validateAndSanitizeTranslations(rawData);
+                const enData = await enResponse.json();
+                translations = enData || {};
             } else {
                 translations = {};
             }
@@ -220,18 +173,40 @@ async function loadTranslations(locale) {
     }
 }
 
-// Získat překlad
+// Získat překlad - podporuje tečkovou notaci (např. "nav.menu")
 function t(key, fallback = null) {
-    return translations[key] || fallback || key;
+    if (!key) return fallback || '';
+    
+    // Podpora tečkové notace pro vnořené klíče
+    const keys = key.split('.');
+    let value = translations;
+    
+    for (const k of keys) {
+        if (value && typeof value === 'object' && k in value) {
+            value = value[k];
+        } else {
+            return fallback || key;
+        }
+    }
+    
+    return typeof value === 'string' ? value : (fallback || key);
 }
 
 // Změnit jazyk
 async function setLocale(locale, saveToDb = true) {
+    // Validovat, že jazyk je podporovaný
+    if (!SUPPORTED_LOCALES.includes(locale)) {
+        console.warn(`Locale ${locale} not supported, falling back to English`);
+        locale = 'en';
+    }
+    
     currentLocale = locale;
-    localStorage.setItem('liquimixer_locale', locale);
     
     await loadTranslations(locale);
     applyTranslations();
+    
+    // Aktualizovat výběr jazyka v profilu
+    updateLanguageSelectorValue(locale);
     
     // Aktualizovat měnu v ceníku
     const localeData = localesData.find(l => l.code === locale);
@@ -243,6 +218,7 @@ async function setLocale(locale, saveToDb = true) {
     if (saveToDb && window.Clerk?.user?.id && window.LiquiMixerDB?.saveUserLocale) {
         try {
             await window.LiquiMixerDB.saveUserLocale(window.Clerk.user.id, locale);
+            console.log('User locale saved to database:', locale);
         } catch (err) {
             console.error('Error saving locale to database:', err);
         }
@@ -252,17 +228,25 @@ async function setLocale(locale, saveToDb = true) {
     window.dispatchEvent(new CustomEvent('localeChanged', { detail: { locale } }));
 }
 
-// Načíst jazyk uživatele z databáze
+// Aktualizovat hodnotu v selectu jazyka
+function updateLanguageSelectorValue(locale) {
+    const selector = document.getElementById('languageSelect');
+    if (selector) {
+        selector.value = locale;
+    }
+}
+
+// Načíst jazyk uživatele z databáze (volá se po přihlášení)
 async function loadUserLocale(clerkId) {
     if (!clerkId || !window.LiquiMixerDB?.getUserLocale) return null;
     
     try {
-        const locale = await window.LiquiMixerDB.getUserLocale(clerkId);
-        if (locale) {
-            console.log('Loaded user locale from database:', locale);
+        const userLocale = await window.LiquiMixerDB.getUserLocale(clerkId);
+        if (userLocale && SUPPORTED_LOCALES.includes(userLocale)) {
+            console.log('Loaded user locale from database:', userLocale);
             // Nastavit jazyk bez opětovného ukládání do DB
-            await setLocale(locale, false);
-            return locale;
+            await setLocale(userLocale, false);
+            return userLocale;
         }
     } catch (err) {
         console.error('Error loading user locale:', err);
@@ -300,7 +284,12 @@ function applyTranslations() {
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
             el.placeholder = translation;
         } else {
-            el.textContent = translation;
+            // Podporovat HTML v překladu
+            if (translation.includes('<') && translation.includes('>')) {
+                el.innerHTML = translation;
+            } else {
+                el.textContent = translation;
+            }
         }
     });
     
@@ -314,6 +303,15 @@ function applyTranslations() {
         const key = el.getAttribute('data-i18n-placeholder');
         el.placeholder = t(key);
     });
+    
+    // Přeložit aria-label
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+        const key = el.getAttribute('data-i18n-aria');
+        el.setAttribute('aria-label', t(key));
+    });
+    
+    // Aktualizovat lang atribut na <html> elementu
+    document.documentElement.lang = currentLocale.split('-')[0];
 }
 
 // Formátovat datum podle lokalizace
@@ -366,11 +364,18 @@ function formatCurrency(amount, currency = null) {
 // Vytvořit výběr jazyků
 function createLanguageSelector(containerId) {
     const container = document.getElementById(containerId);
-    if (!container || localesData.length === 0) return;
+    if (!container) return;
     
-    let html = '<select id="languageSelect" class="neon-select language-select" onchange="setLocale(this.value)">';
+    // Pouze jazyky, které mají překlady
+    const availableLanguages = [
+        { code: 'cs', native_name: 'Čeština' },
+        { code: 'sk', native_name: 'Slovenčina' },
+        { code: 'en', native_name: 'English' }
+    ];
     
-    localesData.forEach(locale => {
+    let html = '<select id="languageSelect" class="neon-select language-select" onchange="window.i18n.setLocale(this.value)">';
+    
+    availableLanguages.forEach(locale => {
         const selected = locale.code === currentLocale ? 'selected' : '';
         html += `<option value="${locale.code}" ${selected}>${locale.native_name}</option>`;
     });
@@ -397,14 +402,8 @@ window.i18n = {
     loadUserLocale: loadUserLocale
 };
 
-// Automatická inicializace po načtení Supabase
+// Automatická inicializace po načtení stránky
 window.addEventListener('load', async () => {
-    // Počkat na inicializaci Supabase
-    if (window.LiquiMixerDB) {
-        window.LiquiMixerDB.init();
-        await new Promise(resolve => setTimeout(resolve, 500));
-    }
-    
     await initI18n();
 });
 

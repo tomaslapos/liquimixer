@@ -1082,6 +1082,113 @@ body {
     box-shadow: none !important;
 }
 
+/* Skrýt Clerk nastavení jazyka - používáme vlastní */
+#clerk-user-profile .cl-profileSection__language,
+#clerk-user-profile [data-localization-key*="language"],
+#clerk-user-profile .cl-menuItem__language,
+#clerk-user-profile .cl-navbarButton__language {
+    display: none !important;
+}
+
+/* Vlastní tlačítka v profilu */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.profile-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: var(--border-radius-small);
+    color: var(--neon-cyan);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.profile-action-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.profile-action-btn.btn-pink {
+    border-color: rgba(255, 0, 255, 0.3);
+    color: var(--neon-pink);
+}
+
+.profile-action-btn.btn-pink:hover {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+/* Neon tlačítka v profilu - stejný styl jako "Začít míchání" */
+.profile-neon-btn {
+    width: 100%;
+    padding: 15px 30px !important;
+    font-size: 1rem !important;
+}
+
+/* Informace o uživateli v profilu */
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius-small);
+    margin-bottom: 15px;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    object-fit: cover;
+}
+
+.profile-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
 .cl-internal-b3fm6y {
     background: transparent !important;
 }
@@ -1141,6 +1248,19 @@ body {
     overflow-y: auto;
     position: relative;
     animation: slideDown 0.3s ease;
+}
+
+/* Save Recipe Form */
+.save-recipe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.save-recipe-form > .neon-button,
+#saveRecipeSubmitBtn {
+    align-self: center;
+    margin-top: 10px;
 }
 
 /* Star Rating */
@@ -2082,6 +2202,60 @@ body {
 
 .language-select option {
     padding: 8px;
+}
+
+/* Sekce jazyka v profilu */
+.profile-language-section {
+    margin-top: 20px;
+}
+
+.profile-language-label {
+    display: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Neon styl pro výběr jazyka v profilu */
+.profile-language-section .language-select {
+    width: 100%;
+    max-width: 100%;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    background: transparent;
+    border: 3px solid var(--neon-cyan);
+    border-radius: 50px;
+    padding: 15px 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-align-last: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ffff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    padding-right: 45px;
+}
+
+.profile-language-section .language-select:hover,
+.profile-language-section .language-select:focus {
+    color: var(--bg-dark);
+    background-color: var(--neon-cyan);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230a0a15' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    box-shadow:
+        0 0 20px var(--neon-cyan),
+        0 0 40px var(--neon-cyan);
+}
+
+.profile-language-section .language-select option {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    text-align: center;
 }
 
 /* Responsive for language select */
