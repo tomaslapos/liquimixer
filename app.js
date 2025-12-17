@@ -4431,7 +4431,7 @@ window.handleProfileModalBackdropClick = handleProfileModalBackdropClick;
 window.showUserProfileModal = showUserProfileModal;
 window.hideUserProfileModal = hideUserProfileModal;
 window.handleSignOut = handleSignOut;
-window.handleLanguageChange = handleLanguageChange;
+// handleLanguageChange is handled by i18n.js via window.i18n.setLocale()
 window.showPage = showPage;
 window.goHome = goHome;
 window.goBack = goBack;
