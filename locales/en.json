@@ -26,6 +26,9 @@
     "cookies_text": "Liquimixer does not collect any cookies. This application does not use tracking cookies, analytical cookies, or third-party cookies. Your privacy is our priority.",
     "gdpr_title": "GDPR and Personal Data Protection",
     "gdpr_text": "Personal data is stored exclusively for internal use of the Liquimixer website for the purpose of user login to the application. Your data is not shared with third parties or used for marketing purposes. You have the right to request deletion of your data at any time by contacting Liquimixer.",
+    "terms_title": "Terms and Conditions",
+    "terms_text": "By using the LiquiMixer service, you agree to our Terms and Conditions.",
+    "terms_button": "View Terms and Conditions",
     "contact_title": "Contact Form",
     "contact_email": "Your e-mail",
     "contact_email_placeholder": "your@email.com",
@@ -63,6 +66,8 @@
     "prep_dropper_detail": "Measuring tools are essential for precise dosing of ingredients. <strong>Dropper:</strong> Suitable for smaller volumes, less precise. <strong>Pipette:</strong> More accurate than dropper, suitable for medium volumes. <strong>Syringe (without needle):</strong> Most accurate option, ideal for nicotine. Use separate tools for each ingredient to avoid contamination.",
     "prep_measuring": "Measuring Tools",
     "prep_measuring_detail": "For accurate mixing, you need reliable measuring tools. <strong>Graduated cylinders:</strong> For measuring volume in ml. <strong>Measuring syringes:</strong> Various sizes for different ingredients (1ml for nicotine, 5-10ml for VG/PG). Always measure twice and mix once!",
+    "disclaimer_title": "Disclaimer",
+    "disclaimer_text": "By clicking the \"Start Mixing\" button, I confirm that I am at least 18 years of age. I acknowledge that LiquiMixer serves solely as a calculation tool (calculator) and assumes no responsibility for the final product. I, as the user, bear full responsibility for proper mixing, handling of ingredients, and compliance with safety procedures.",
     "start_button": "START MIXING"
   },
   "mode_select": {
@@ -376,9 +381,67 @@
     "note_tobaccosweet": "Combination requires 2+ weeks steeping",
     "note_nuts": "Creamy, requires 1–2 weeks steeping",
     "note_spice": "Spiced, careful with concentration"
+  },
+  "subscription": {
+    "title": "LiquiMixer Subscription",
+    "detecting_location": "Detecting your location...",
+    "per_year": "/ year",
+    "price_includes_vat": "Price includes VAT",
+    "feature_recipes": "Save unlimited recipes",
+    "feature_products": "Favorite products gallery",
+    "feature_share": "Share recipes with friends",
+    "feature_sync": "Sync across devices",
+    "agree_to": "I agree to the",
+    "terms_link": "Terms and Conditions",
+    "pay_button": "Pay and Activate",
+    "processing": "Processing payment...",
+    "success": "Subscription successfully activated!",
+    "error_generic": "An error occurred while processing your payment. Please try again.",
+    "error_payment": "Payment was not completed.",
+    "status_active": "Active Subscription",
+    "status_expired": "Subscription Expired",
+    "status_none": "No active subscription",
+    "expires_at": "Valid until:",
+    "days_left": "Days remaining:",
+    "renew_button": "Renew Subscription",
+    "activate_button": "Activate Subscription",
+    "required": "An active subscription is required to access this feature."
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "section1_title": "1. General Provisions",
+    "section1_text": "These Terms and Conditions govern the rights and obligations of the parties when providing the LiquiMixer service, operated by WOOs, s. r. o., Company ID: 05117810, VAT ID: CZ05117810, registered office at Brloh 12, 397 01 Drhovle, Czech Republic.",
+    "section2_title": "2. Subject of Contract",
+    "section2_text": "The subject of the contract is the provision of access to the LiquiMixer online application for e-liquid recipe calculations for a period of 365 days from the subscription activation date.",
+    "section3_title": "3. Price and Payment Terms",
+    "section3_text": "The subscription price includes VAT. Payment is a one-time charge processed through the Comgate payment gateway. An invoice is automatically issued and sent to your email after successful payment.",
+    "section4_title": "4. Withdrawal from Contract",
+    "section4_text": "Due to the nature of digital content and immediate service activation, the consumer agrees that they waive the right to withdraw from the contract.",
+    "section5_title": "5. Complaints",
+    "section5_text": "In case of technical issues with the service, please contact support via the contact form. Complaints will be resolved within 30 days.",
+    "section6_title": "6. Personal Data Protection",
+    "section6_text": "Personal data processing is governed by GDPR. Data is processed only for service provision purposes and is not shared with third parties except for the payment gateway.",
+    "section7_title": "7. User Declaration",
+    "section7_text": "By using the LiquiMixer application, the user confirms that they are at least 18 years of age. The user acknowledges that LiquiMixer serves solely as a calculation tool (calculator) and assumes no responsibility for the final product. The user bears full responsibility for proper mixing, handling of ingredients, and compliance with safety procedures.",
+    "section8_title": "8. Contact Information",
+    "close": "Close"
+  },
+  "invoice": {
+    "title": "Invoice",
+    "number": "Invoice Number",
+    "date": "Issue Date",
+    "due_date": "Due Date",
+    "supplier": "Supplier",
+    "customer": "Customer",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price excl. VAT",
+    "vat": "VAT",
+    "total": "Total incl. VAT",
+    "paid": "Paid",
+    "subscription_item": "LiquiMixer Annual Subscription (365 days)"
   }
 }
-
 
 
 

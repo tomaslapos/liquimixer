@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v52';
+const CACHE_NAME = 'liquimixer-v58';
 
 // Soubory pro precaching
 const urlsToCache = [
@@ -26,7 +26,10 @@ const networkFirstFiles = [
   '/database.js', 
   '/subscription.js',
   '/i18n.js',
-  '/index.html'
+  '/index.html',
+  '/locales/cs.json',
+  '/locales/sk.json',
+  '/locales/en.json'
 ];
 
 // Install event - cache resources

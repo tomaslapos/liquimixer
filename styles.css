@@ -721,6 +721,12 @@ body {
     color: rgba(255, 255, 255, 0.85);
 }
 
+.menu-terms-btn {
+    margin-top: 12px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+}
+
 /* Login Modal - Vycentrovaný overlay */
 .login-modal {
     position: fixed;
@@ -1959,6 +1965,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .product-meta-info {
@@ -2450,6 +2457,33 @@ body {
 
 .prep-detail strong {
     color: var(--neon-pink);
+}
+
+/* Disclaimer Section */
+.disclaimer-section {
+    margin: 30px 0 25px;
+    padding: 20px 25px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 2px solid #ff3333;
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.disclaimer-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ff3333;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px #ff3333;
+}
+
+.disclaimer-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
 }
 
 /* Neon Button */
@@ -4103,6 +4137,271 @@ body {
     
     .linked-product-item {
         padding: 10px 12px;
+    }
+}
+
+/* =========================================
+   Subscription & Payment Styles
+   ========================================= */
+
+.subscription-modal-content {
+    max-width: 450px;
+}
+
+.location-detection {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.location-detection .loader {
+    width: 40px;
+    height: 40px;
+    margin: 15px auto 0;
+    border: 3px solid var(--bg-input);
+    border-top-color: var(--neon-cyan);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.pricing-info {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pricing-box {
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid var(--neon-cyan);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.pricing-amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 20px var(--neon-cyan);
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pricing-period {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.pricing-vat {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.subscription-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.subscription-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 30px;
+    position: relative;
+}
+
+.subscription-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--neon-green);
+    font-weight: bold;
+}
+
+.subscription-features li:last-child {
+    border-bottom: none;
+}
+
+/* Terms checkbox */
+.terms-section {
+    margin: 25px 0;
+}
+
+.terms-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.terms-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--neon-cyan);
+    cursor: pointer;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.terms-checkbox-label a {
+    color: var(--neon-cyan);
+    text-decoration: underline;
+}
+
+.terms-checkbox-label a:hover {
+    color: var(--neon-pink);
+}
+
+/* Payment button */
+.payment-section {
+    margin-top: 20px;
+}
+
+.payment-btn {
+    width: 100%;
+    padding: 18px 30px;
+    font-size: 1.1rem;
+}
+
+.payment-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.subscription-error {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(255, 0, 68, 0.2);
+    border: 1px solid var(--neon-red);
+    border-radius: var(--border-radius-small);
+    color: var(--neon-red);
+    font-size: 0.9rem;
+}
+
+/* Subscription status in profile */
+.subscription-status-section {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: var(--border-radius-small);
+}
+
+.subscription-status-active {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid var(--neon-green);
+}
+
+.subscription-status-expired {
+    background: rgba(255, 136, 0, 0.1);
+    border: 1px solid var(--neon-orange);
+}
+
+.subscription-status-none {
+    background: rgba(255, 0, 68, 0.1);
+    border: 1px solid var(--neon-red);
+}
+
+.subscription-status-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.subscription-status-active .subscription-status-title {
+    color: var(--neon-green);
+}
+
+.subscription-status-expired .subscription-status-title,
+.subscription-status-none .subscription-status-title {
+    color: var(--neon-orange);
+}
+
+.subscription-expires {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.subscription-renew-btn {
+    margin-top: 12px;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+}
+
+/* Terms modal */
+.terms-modal-content {
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.terms-content {
+    text-align: left;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin: 20px 0;
+}
+
+.terms-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.terms-content::-webkit-scrollbar-track {
+    background: var(--bg-input);
+    border-radius: 3px;
+}
+
+.terms-content::-webkit-scrollbar-thumb {
+    background: var(--neon-cyan);
+    border-radius: 3px;
+}
+
+.terms-section-content {
+    margin-bottom: 20px;
+}
+
+.terms-section-content h4 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    color: var(--neon-cyan);
+    margin-bottom: 10px;
+}
+
+.terms-section-content p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.terms-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .pricing-amount {
+        font-size: 2rem;
+    }
+    
+    .terms-modal-content {
+        max-height: 90vh;
+    }
+    
+    .terms-content {
+        max-height: 50vh;
     }
 }
 

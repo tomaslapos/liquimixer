@@ -1,6 +1,7 @@
 // ============================================
 // EDGE FUNCTION: Payment Operations (Comgate)
-// Bezpečné zpracování plateb
+// Bezpečné zpracování plateb s DPH a fakturací
+// WOOs, s. r. o. - Plátce DPH
 // ============================================
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
@@ -18,6 +19,11 @@ const COMGATE_CONFIG = {
   testMode: Deno.env.get('COMGATE_TEST_MODE') === 'true',
   apiUrl: 'https://payments.comgate.cz/v1.0'
 }
+
+// Edge Function URLs pro interní volání
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
+const INVOICE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/invoice`
+const IDOKLAD_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/idoklad`
 
 // Konstanty
 const SUBSCRIPTION_DURATION_DAYS = 365
@@ -221,9 +227,24 @@ serve(async (req) => {
             .select()
             .single()
 
-          // Vytvořit fakturu
+          // Aktualizovat stav předplatného v users tabulce
           if (activatedSub) {
-            await createInvoice(supabaseAdmin, activatedSub)
+            await supabaseAdmin
+              .from('users')
+              .update({
+                subscription_status: 'active',
+                subscription_expires_at: validTo.toISOString(),
+                last_subscription_check: now.toISOString()
+              })
+              .eq('clerk_id', activatedSub.clerk_id)
+
+            // Generovat fakturu a odeslat email
+            await generateAndSendInvoice(activatedSub.id)
+
+            // Exportovat do iDoklad (async, neblokující)
+            exportToIdoklad(activatedSub.id).catch(err => {
+              console.error('iDoklad export failed (non-blocking):', err)
+            })
           }
 
           return new Response(
@@ -301,89 +322,89 @@ serve(async (req) => {
   }
 })
 
-// Pomocná funkce pro vytvoření faktury
-async function createInvoice(supabase: any, subscription: any) {
+// Generovat fakturu a odeslat email přes invoice Edge Function
+async function generateAndSendInvoice(subscriptionId: string): Promise<void> {
   try {
-    // Získat fakturační údaje uživatele
-    const { data: user } = await supabase
-      .from('users')
-      .select('*')
-      .eq('clerk_id', subscription.clerk_id)
-      .single()
-
-    const now = new Date()
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
     
-    // Generovat číslo faktury
-    const { data: invoiceNumber } = await supabase.rpc('generate_invoice_number')
+    const response = await fetch(INVOICE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${serviceKey}`,
+      },
+      body: JSON.stringify({
+        action: 'generateAndSend',
+        data: { subscriptionId }
+      })
+    })
 
-    const invoiceData = {
-      clerk_id: subscription.clerk_id,
-      subscription_id: subscription.id,
-      invoice_number: invoiceNumber || `${now.getFullYear()}-${Date.now()}`,
-      document_type: 'invoice',
-      issue_date: now.toISOString().split('T')[0],
-      taxable_supply_date: now.toISOString().split('T')[0],
-      due_date: now.toISOString().split('T')[0],
-      
-      // Dodavatel
-      supplier_name: Deno.env.get('COMPANY_NAME') || 'WOOs s.r.o.',
-      supplier_street: Deno.env.get('COMPANY_STREET') || '',
-      supplier_city: Deno.env.get('COMPANY_CITY') || '',
-      supplier_zip: Deno.env.get('COMPANY_ZIP') || '',
-      supplier_country: 'CZ',
-      supplier_ico: Deno.env.get('COMPANY_ICO') || '',
-      supplier_dic: Deno.env.get('COMPANY_DIC') || '',
-      supplier_bank_account: Deno.env.get('COMPANY_BANK_ACCOUNT') || '',
-      supplier_bank_name: Deno.env.get('COMPANY_BANK_NAME') || '',
-      
-      // Odběratel
-      customer_type: user?.billing_type || 'person',
-      customer_name: user?.billing_name || user?.name || '',
-      customer_company: user?.billing_company,
-      customer_street: user?.billing_street,
-      customer_city: user?.billing_city,
-      customer_zip: user?.billing_zip,
-      customer_country: user?.billing_country || 'CZ',
-      customer_ico: user?.billing_ico,
-      customer_dic: user?.billing_dic,
-      customer_email: user?.email,
-      customer_phone: user?.phone,
-      
-      // Položky
-      items: JSON.stringify([{
-        description: 'Roční předplatné LiquiMixer (365 dní)',
-        quantity: 1,
-        unit: 'ks',
-        unit_price: subscription.amount,
-        vat_rate: subscription.vat_rate,
-        vat_amount: subscription.vat_amount,
-        total_without_vat: subscription.amount,
-        total_with_vat: subscription.total_amount
-      }]),
-      
-      // Částky
-      subtotal: subscription.amount,
-      vat_amount: subscription.vat_amount,
-      total: subscription.total_amount,
-      currency: subscription.currency,
-      
-      // Stav
-      status: 'paid',
-      paid_at: now.toISOString(),
-      payment_method: subscription.payment_method,
-      payment_reference: subscription.payment_id,
-      
-      locale: 'cs'
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Invoice generation failed:', errorText)
+    } else {
+      const result = await response.json()
+      console.log('Invoice generated and sent:', result)
     }
-
-    await supabase
-      .from('invoices')
-      .insert(invoiceData)
-
   } catch (error) {
-    console.error('Error creating invoice:', error)
+    console.error('Error calling invoice function:', error)
   }
 }
+
+// Exportovat fakturu do iDoklad (async, neblokující)
+async function exportToIdoklad(subscriptionId: string): Promise<void> {
+  try {
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+    
+    // Počkat chvíli, aby se faktura stihla vytvořit
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    // Nejprve získat ID faktury
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      serviceKey,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    )
+
+    const { data: invoice } = await supabaseAdmin
+      .from('invoices')
+      .select('id')
+      .eq('subscription_id', subscriptionId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (!invoice) {
+      console.error('Invoice not found for subscription:', subscriptionId)
+      return
+    }
+
+    const response = await fetch(IDOKLAD_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${serviceKey}`,
+      },
+      body: JSON.stringify({
+        action: 'export',
+        data: { invoiceId: invoice.id }
+      })
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('iDoklad export failed:', errorText)
+    } else {
+      const result = await response.json()
+      console.log('Invoice exported to iDoklad:', result)
+    }
+  } catch (error) {
+    console.error('Error calling iDoklad function:', error)
+  }
+}
+
+
+
 
 
 

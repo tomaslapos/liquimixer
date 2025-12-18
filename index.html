@@ -118,9 +118,9 @@
                 <div class="menu-section">
                     <h4 class="menu-section-title" data-i18n="menu.gdpr_title">GDPR a ochrana osobních údajů</h4>
                     <p class="menu-text" data-i18n="menu.gdpr_text">
-                        Osobní údaje jsou ukládány výhradně pro interní použití stránky Liquimixer za účelem 
-                        přihlášení uživatele do aplikace. Vaše údaje nejsou sdíleny s třetími stranami 
-                        ani používány pro marketingové účely. Máte právo požádat o výmaz svých údajů 
+                        Osobní údaje jsou ukládány výhradně pro interní použití stránky Liquimixer za účelem
+                        přihlášení uživatele do aplikace. Vaše údaje nejsou sdíleny s třetími stranami
+                        ani používány pro marketingové účely. Máte právo požádat o výmaz svých údajů
                         kdykoli kontaktováním stránky Liquimixer.
                     </p>
                 </div>
@@ -149,6 +149,10 @@
                             <span id="contactSubmitLoader" class="btn-loader hidden"></span>
                         </button>
                     </form>
+                    <button class="neon-button menu-terms-btn" onclick="toggleMenu(); showTermsModal();" style="margin-top: 20px;">
+                        <span data-i18n="menu.terms_button">Zobrazit obchodní podmínky</span>
+                        <div class="button-glow"></div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -190,10 +194,127 @@
                     <div id="profileLanguageSelector"></div>
                 </div>
                 
+                <!-- Stav předplatného -->
+                <div id="subscriptionStatus" class="subscription-status-section"></div>
+
                 <!-- Odhlášení -->
                 <div class="profile-actions">
                     <button class="neon-button profile-neon-btn btn-red" onclick="signOut()">
                         <span data-i18n="auth.logout">Odhlásit se</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Payment Modal -->
+        <div id="subscriptionModal" class="login-modal hidden" onclick="handleSubscriptionModalBackdropClick(event)">
+            <div class="login-content subscription-modal-content">
+                <h3 class="menu-title" data-i18n="subscription.title">Předplatné LiquiMixer</h3>
+                
+                <!-- Detekce lokace -->
+                <div id="locationDetection" class="location-detection">
+                    <p data-i18n="subscription.detecting_location">Zjišťujeme vaši polohu...</p>
+                    <div class="loader"></div>
+                </div>
+                
+                <!-- Cenová informace -->
+                <div id="pricingInfo" class="pricing-info hidden">
+                    <div class="pricing-box">
+                        <div class="pricing-amount">
+                            <span id="priceAmount">59</span>
+                            <span id="priceCurrency">Kč</span>
+                            <span class="pricing-period" data-i18n="subscription.per_year">/ rok</span>
+                        </div>
+                        <p class="pricing-vat" id="pricingVatInfo" data-i18n="subscription.price_includes_vat">Cena je včetně DPH</p>
+                    </div>
+                    
+                    <ul class="subscription-features">
+                        <li data-i18n="subscription.feature_recipes">Ukládání receptů</li>
+                        <li data-i18n="subscription.feature_products">Oblíbené produkty</li>
+                        <li data-i18n="subscription.feature_share">Sdílení receptů</li>
+                        <li data-i18n="subscription.feature_sync">Synchronizace mezi zařízeními</li>
+                    </ul>
+                </div>
+                
+                <!-- Obchodní podmínky -->
+                <div id="termsSection" class="terms-section hidden">
+                    <label class="terms-checkbox-label">
+                        <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                        <span>
+                            <span data-i18n="subscription.agree_to">Souhlasím s</span>
+                            <a href="#" onclick="showTermsModal(); return false;" data-i18n="subscription.terms_link">obchodními podmínkami</a>
+                        </span>
+                    </label>
+                </div>
+                
+                <!-- Platební tlačítko -->
+                <div id="paymentSection" class="payment-section hidden">
+                    <button class="neon-button payment-btn" id="paySubscriptionBtn" onclick="startPayment()" disabled>
+                        <span data-i18n="subscription.pay_button">Zaplatit a aktivovat</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+                
+                <!-- Chybová zpráva -->
+                <div id="subscriptionError" class="subscription-error hidden"></div>
+            </div>
+        </div>
+
+        <!-- Terms and Conditions Modal -->
+        <div id="termsModal" class="login-modal hidden" onclick="handleTermsModalBackdropClick(event)">
+            <div class="login-content terms-modal-content">
+                <button class="menu-close" onclick="hideTermsModal()">✕</button>
+                <h3 class="menu-title" data-i18n="terms.title">Obchodní podmínky</h3>
+                
+                <div class="terms-content">
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section1_title">1. Úvodní ustanovení</h4>
+                        <p data-i18n="terms.section1_text">Tyto obchodní podmínky upravují práva a povinnosti smluvních stran při poskytování služby LiquiMixer, provozované společností WOOs, s. r. o., IČ: 05117810, DIČ: CZ05117810, se sídlem Brloh 12, 397 01 Drhovle.</p>
+                    </section>
+                    
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section2_title">2. Předmět smlouvy</h4>
+                        <p data-i18n="terms.section2_text">Předmětem smlouvy je poskytnutí přístupu k online aplikaci LiquiMixer pro výpočet receptur e-liquidů na dobu 365 dní od data aktivace předplatného.</p>
+                    </section>
+                    
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section3_title">3. Cena a platební podmínky</h4>
+                        <p data-i18n="terms.section3_text">Cena předplatného je uvedena včetně DPH. Platba je jednorázová a provádí se prostřednictvím platební brány Comgate. Po úspěšné platbě je automaticky vystavena faktura.</p>
+                    </section>
+                    
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section4_title">4. Odstoupení od smlouvy</h4>
+                        <p data-i18n="terms.section4_text">Vzhledem k povaze digitálního obsahu a okamžité aktivaci služby souhlasí spotřebitel s tím, že ztrácí právo na odstoupení od smlouvy ve smyslu § 1837 písm. l) občanského zákoníku.</p>
+                    </section>
+                    
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section5_title">5. Reklamace</h4>
+                        <p data-i18n="terms.section5_text">V případě technických problémů se službou kontaktujte podporu prostřednictvím kontaktního formuláře. Reklamace budou vyřízeny do 30 dnů.</p>
+                    </section>
+                    
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section6_title">6. Ochrana osobních údajů</h4>
+                        <p data-i18n="terms.section6_text">Zpracování osobních údajů se řídí Nařízením GDPR. Údaje jsou zpracovávány pouze pro účely poskytování služby a nejsou předávány třetím stranám s výjimkou platební brány.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section7_title">7. Prohlášení uživatele</h4>
+                        <p data-i18n="terms.section7_text">Používáním aplikace LiquiMixer uživatel potvrzuje, že dosáhl věku 18 let. Uživatel bere na vědomí, že LiquiMixer slouží výhradně jako výpočetní nástroj (kalkulačka) a nepřebírá žádnou odpovědnost za výsledný produkt. Veškerou odpovědnost za správné míchání, manipulaci s ingrediencemi a dodržení bezpečnostních postupů nese uživatel.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="terms.section8_title">8. Kontaktní údaje</h4>
+                        <p>WOOs, s. r. o.<br>
+                        Brloh 12, 397 01 Drhovle<br>
+                        IČ: 05117810<br>
+                        DIČ: CZ05117810</p>
+                    </section>
+                </div>
+                
+                <div class="terms-footer">
+                    <button class="neon-button" onclick="hideTermsModal()">
+                        <span data-i18n="terms.close">Zavřít</span>
                         <div class="button-glow"></div>
                     </button>
                 </div>
@@ -305,7 +426,18 @@
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Upozornění před zahájením -->
+            <div class="disclaimer-section">
+                <h3 class="disclaimer-title" data-i18n="intro.disclaimer_title">Upozornění</h3>
+                <p class="disclaimer-text" data-i18n="intro.disclaimer_text">
+                    Kliknutím na tlačítko 'Začít míchání' potvrzuji, že jsem dosáhl/a věku 18 let.
+                    Beru na vědomí, že LiquiMixer slouží výhradně jako výpočetní nástroj (kalkulačka)
+                    a nepřebírá žádnou odpovědnost za výsledný produkt. Veškerou odpovědnost za správné
+                    míchání, manipulaci s ingrediencemi a dodržení bezpečnostních postupů nesu já jako uživatel.
+                </p>
+            </div>
+
             <button class="neon-button" onclick="showPage('mode-select')">
                 <span data-i18n="intro.start_button">ZAČÍT MÍCHÁNÍ</span>
                 <div class="button-glow"></div>

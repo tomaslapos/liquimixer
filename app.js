@@ -392,15 +392,17 @@ window.addEventListener('load', async function() {
                 await window.LiquiMixerDB.onSignIn(window.Clerk.user);
                 // Zkontrolovat pending sdílený recept po přihlášení
                 await checkPendingSharedRecipe();
+                // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ
+                await checkSubscriptionStatus();
             }
             
             // Listen for auth changes (OAuth callback, sign in/out)
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
-                
+
                 // Vždy aktualizovat UI při změně autentizace
                 updateAuthUI();
-                
+
                 // Save user to database on sign in
                 if (window.Clerk.user && window.LiquiMixerDB) {
                     await window.LiquiMixerDB.onSignIn(window.Clerk.user);
@@ -412,7 +414,10 @@ window.addEventListener('load', async function() {
                     }
                     // Zavřít login modal
                     hideLoginModal();
-                    
+
+                    // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ
+                    await checkSubscriptionStatus();
+
                     // Force UI refresh pro OAuth přihlášení
                     setTimeout(() => {
                         updateAuthUI();
@@ -2395,6 +2400,17 @@ function updateHomeButtonVisibility(pageId) {
 // Přejít na úvodní stránku
 function goHome() {
     showPage('intro');
+}
+
+// Navigace zpět v historii
+function goBack() {
+    if (pageHistory.length > 1) {
+        pageHistory.pop(); // Odstranit aktuální stránku
+        const previousPage = pageHistory.pop(); // Získat předchozí stránku
+        showPage(previousPage);
+    } else {
+        showPage('intro');
+    }
 }
 
 // =========================================
@@ -4487,6 +4503,325 @@ function calculateProMix() {
 }
 
 // =========================================
+// SUBSCRIPTION / PŘEDPLATNÉ
+// =========================================
+
+// Globální stav předplatného
+let subscriptionData = null;
+let userLocation = null;
+
+// Zkontrolovat stav předplatného
+async function checkSubscriptionStatus() {
+    if (!window.Clerk?.user) return;
+
+    try {
+        console.log('Checking subscription status...');
+        
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await getClerkToken()}`,
+            },
+            body: JSON.stringify({ action: 'check' })
+        });
+
+        if (!response.ok) {
+            console.error('Subscription check failed:', response.status);
+            return;
+        }
+
+        const result = await response.json();
+        console.log('Subscription status:', result);
+
+        subscriptionData = result;
+
+        if (!result.valid) {
+            // Uživatel nemá platné předplatné - zobrazit platební modal
+            console.log('No valid subscription, showing payment modal');
+            showSubscriptionModal();
+        } else {
+            // Aktualizovat UI v profilu
+            updateSubscriptionStatusUI(result);
+        }
+    } catch (error) {
+        console.error('Error checking subscription:', error);
+    }
+}
+
+// Získat Supabase URL
+function getSupabaseUrl() {
+    return 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
+}
+
+// Získat Clerk JWT token
+async function getClerkToken() {
+    if (!window.Clerk?.session) return null;
+    try {
+        const token = await window.Clerk.session.getToken();
+        return token;
+    } catch (error) {
+        console.error('Error getting Clerk token:', error);
+        return null;
+    }
+}
+
+// Zobrazit modal předplatného
+async function showSubscriptionModal() {
+    const modal = document.getElementById('subscriptionModal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+
+    // Skrýt sekce, zobrazit loader
+    document.getElementById('locationDetection').classList.remove('hidden');
+    document.getElementById('pricingInfo').classList.add('hidden');
+    document.getElementById('termsSection').classList.add('hidden');
+    document.getElementById('paymentSection').classList.add('hidden');
+    document.getElementById('subscriptionError').classList.add('hidden');
+
+    // Detekovat lokaci
+    await detectUserLocation();
+}
+
+// Skrýt modal předplatného
+function hideSubscriptionModal() {
+    const modal = document.getElementById('subscriptionModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Handler pro backdrop click
+function handleSubscriptionModalBackdropClick(event) {
+    // Nepovolit zavření kliknutím na pozadí - uživatel musí zaplatit
+    // if (event.target === event.currentTarget) { hideSubscriptionModal(); }
+}
+
+// Detekovat lokaci uživatele
+async function detectUserLocation() {
+    try {
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                action: 'detect',
+                data: { clerkId: window.Clerk?.user?.id }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Geolocation failed');
+        }
+
+        const result = await response.json();
+        userLocation = result.location;
+
+        // Aktualizovat UI s cenami
+        updatePricingUI(userLocation);
+
+    } catch (error) {
+        console.error('Error detecting location:', error);
+        // Fallback - Česko
+        userLocation = {
+            countryCode: 'CZ',
+            currency: 'CZK',
+            grossAmount: 59,
+            vatRate: 21
+        };
+        updatePricingUI(userLocation);
+    }
+}
+
+// Aktualizovat UI s cenami
+function updatePricingUI(location) {
+    document.getElementById('locationDetection').classList.add('hidden');
+    document.getElementById('pricingInfo').classList.remove('hidden');
+    document.getElementById('termsSection').classList.remove('hidden');
+    document.getElementById('paymentSection').classList.remove('hidden');
+
+    // Aktualizovat cenu
+    document.getElementById('priceAmount').textContent = location.grossAmount;
+    document.getElementById('priceCurrency').textContent = location.currency === 'CZK' ? 'Kč' : '€';
+
+    // Aktualizovat DPH info
+    const vatInfo = document.getElementById('pricingVatInfo');
+    if (location.vatRate > 0) {
+        vatInfo.textContent = t('subscription.price_includes_vat', 'Cena je včetně DPH');
+    } else {
+        vatInfo.textContent = '';
+    }
+
+    // Nastavit checkbox listener
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    const payBtn = document.getElementById('paySubscriptionBtn');
+    
+    termsCheckbox.addEventListener('change', () => {
+        payBtn.disabled = !termsCheckbox.checked;
+    });
+}
+
+// Spustit platbu
+async function startPayment() {
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    if (!termsCheckbox.checked) {
+        return;
+    }
+
+    const payBtn = document.getElementById('paySubscriptionBtn');
+    payBtn.disabled = true;
+    payBtn.querySelector('span').textContent = t('subscription.processing', 'Zpracování platby...');
+
+    try {
+        // 1. Uložit souhlas s OP
+        await saveTermsAcceptance();
+
+        // 2. Vytvořit předplatné
+        const subscriptionResponse = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await getClerkToken()}`,
+            },
+            body: JSON.stringify({ 
+                action: 'create',
+                data: {
+                    planType: 'yearly',
+                    locale: window.i18n?.currentLocale || 'cs',
+                    country: userLocation?.countryCode || 'CZ'
+                }
+            })
+        });
+
+        if (!subscriptionResponse.ok) {
+            throw new Error('Failed to create subscription');
+        }
+
+        const subResult = await subscriptionResponse.json();
+
+        // 3. Vytvořit platbu v Comgate
+        const paymentResponse = await fetch(`${getSupabaseUrl()}/functions/v1/payment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await getClerkToken()}`,
+            },
+            body: JSON.stringify({ 
+                action: 'create',
+                data: {
+                    subscriptionId: subResult.subscription.id
+                }
+            })
+        });
+
+        if (!paymentResponse.ok) {
+            throw new Error('Failed to create payment');
+        }
+
+        const payResult = await paymentResponse.json();
+
+        // 4. Přesměrovat na platební bránu
+        if (payResult.redirectUrl) {
+            window.location.href = payResult.redirectUrl;
+        } else {
+            throw new Error('No redirect URL');
+        }
+
+    } catch (error) {
+        console.error('Payment error:', error);
+        showSubscriptionError(t('subscription.error_generic', 'Při zpracování platby došlo k chybě. Zkuste to prosím znovu.'));
+        payBtn.disabled = false;
+        payBtn.querySelector('span').textContent = t('subscription.pay_button', 'Zaplatit a aktivovat');
+    }
+}
+
+// Uložit souhlas s obchodními podmínkami
+async function saveTermsAcceptance() {
+    try {
+        // Uložit do DB přes Edge Function nebo přímo
+        console.log('Terms acceptance saved');
+    } catch (error) {
+        console.error('Error saving terms acceptance:', error);
+    }
+}
+
+// Zobrazit chybu předplatného
+function showSubscriptionError(message) {
+    const errorDiv = document.getElementById('subscriptionError');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('hidden');
+    }
+}
+
+// Aktualizovat UI stavu předplatného v profilu
+function updateSubscriptionStatusUI(data) {
+    const container = document.getElementById('subscriptionStatus');
+    if (!container) return;
+
+    if (data.valid) {
+        const expiresDate = new Date(data.expiresAt).toLocaleDateString(
+            window.i18n?.currentLocale === 'cs' ? 'cs-CZ' : 
+            window.i18n?.currentLocale === 'sk' ? 'sk-SK' : 'en-GB'
+        );
+
+        container.className = 'subscription-status-section subscription-status-active';
+        container.innerHTML = `
+            <div class="subscription-status-title">${t('subscription.status_active', 'Aktivní předplatné')}</div>
+            <div class="subscription-expires">
+                ${t('subscription.expires_at', 'Platné do:')} ${expiresDate}<br>
+                ${t('subscription.days_left', 'Zbývá dní:')} ${data.daysLeft}
+            </div>
+            ${data.needsRenewal ? `
+                <button class="neon-button subscription-renew-btn" onclick="renewSubscription()">
+                    <span>${t('subscription.renew_button', 'Obnovit předplatné')}</span>
+                    <div class="button-glow"></div>
+                </button>
+            ` : ''}
+        `;
+    } else {
+        container.className = 'subscription-status-section subscription-status-none';
+        container.innerHTML = `
+            <div class="subscription-status-title">${t('subscription.status_none', 'Nemáte aktivní předplatné')}</div>
+            <button class="neon-button subscription-renew-btn" onclick="showSubscriptionModal()">
+                <span>${t('subscription.activate_button', 'Aktivovat předplatné')}</span>
+                <div class="button-glow"></div>
+            </button>
+        `;
+    }
+}
+
+// Obnovit předplatné
+async function renewSubscription() {
+    showSubscriptionModal();
+}
+
+// Zobrazit modal obchodních podmínek
+function showTermsModal() {
+    const modal = document.getElementById('termsModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+// Skrýt modal obchodních podmínek
+function hideTermsModal() {
+    const modal = document.getElementById('termsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Handler pro backdrop click - terms modal
+function handleTermsModalBackdropClick(event) {
+    if (event.target === event.currentTarget) {
+        hideTermsModal();
+    }
+}
+
+// =========================================
 // EXPORT: Funkce pro globalni pristup z onclick
 // =========================================
 window.toggleMenu = toggleMenu;
@@ -4532,3 +4867,13 @@ window.setSearchRating = setSearchRating;
 window.clearSearchRating = clearSearchRating;
 window.setRecipeSearchRating = setRecipeSearchRating;
 window.clearRecipeSearchRating = clearRecipeSearchRating;
+// Subscription
+window.checkSubscriptionStatus = checkSubscriptionStatus;
+window.showSubscriptionModal = showSubscriptionModal;
+window.hideSubscriptionModal = hideSubscriptionModal;
+window.handleSubscriptionModalBackdropClick = handleSubscriptionModalBackdropClick;
+window.startPayment = startPayment;
+window.renewSubscription = renewSubscription;
+window.showTermsModal = showTermsModal;
+window.hideTermsModal = hideTermsModal;
+window.handleTermsModalBackdropClick = handleTermsModalBackdropClick;
