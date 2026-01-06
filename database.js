@@ -3,12 +3,15 @@
 // Šifrovaná databáze uživatelů oddělená od aplikace
 // ============================================
 
+console.log('database.js: Loading...');
+
 // Povolené domény pro přístup k databázi
 const ALLOWED_DOMAINS = [
     'liquimixer.com',
     'www.liquimixer.com',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    'zeabur.app'  // Zeabur preview/deployment URLs
 ];
 
 // Kontrola povolené domény
@@ -30,8 +33,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Oficiální doména pro sdílené recepty
 const SHARE_BASE_URL = 'https://www.liquimixer.com';
 
-// Supabase klient
-let supabase = null;
+// Supabase klient (používáme supabaseClient aby nedošlo ke konfliktu s window.supabase SDK)
+let supabaseClient = null;
 
 // Inicializace Supabase
 function initSupabase() {
@@ -42,36 +45,36 @@ function initSupabase() {
     }
     
     if (typeof window.supabase !== 'undefined') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
             }
         });
         // Expose client globally for other modules (i18n.js)
-        window.supabaseClient = supabase;
+        window.supabaseClientInstance = supabaseClient;
         return true;
     }
     console.warn('Supabase SDK not loaded');
     return false;
 }
 
-// Nastavit Clerk JWT token pro Supabase (pro RLS)
+// Nastavit Clerk JWT token pro supabaseClient (pro RLS)
 async function setSupabaseAuth() {
-    if (!supabase || typeof Clerk === 'undefined' || !Clerk.user) return false;
+    if (!supabaseClient || typeof Clerk === 'undefined' || !Clerk.user) return false;
     
     try {
-        // Získat JWT token z Clerk pro Supabase
-        const token = await Clerk.session?.getToken({ template: 'supabase' });
+        // Získat JWT token z Clerk pro supabaseClient
+        const token = await Clerk.session?.getToken({ template: 'supabaseClient' });
         if (token) {
             // Nastavit token pro všechny následující požadavky
-            supabase.realtime.setAuth(token);
+            supabaseClient.realtime.setAuth(token);
             // Alternativně pro REST API
-            supabase.rest.headers['Authorization'] = `Bearer ${token}`;
+            supabaseClient.rest.headers['Authorization'] = `Bearer ${token}`;
         }
         return true;
     } catch (err) {
-        // Pokud Clerk nemá Supabase template, pokračujeme bez JWT
+        // Pokud Clerk nemá supabaseClient template, pokračujeme bez JWT
         return false;
     }
 }
@@ -82,7 +85,7 @@ async function setSupabaseAuth() {
 
 // Uložit nebo aktualizovat uživatele po přihlášení přes Clerk
 async function saveUserToDatabase(clerkUser) {
-    if (!supabase || !clerkUser) return null;
+    if (!supabaseClient || !clerkUser) return null;
     
     const userData = {
         clerk_id: clerkUser.id,
@@ -96,7 +99,7 @@ async function saveUserToDatabase(clerkUser) {
     
     try {
         // Upsert - vloží nového uživatele nebo aktualizuje existujícího
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .upsert(userData, { 
                 onConflict: 'clerk_id',
@@ -120,10 +123,10 @@ async function saveUserToDatabase(clerkUser) {
 
 // Získat uživatele z databáze
 async function getUserFromDatabase(clerkId) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .select('*')
             .eq('clerk_id', clerkId)
@@ -143,10 +146,10 @@ async function getUserFromDatabase(clerkId) {
 
 // Uložit uživatelská nastavení/preference
 async function saveUserPreferences(clerkId, preferences) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .update({ 
                 preferences: preferences,
@@ -170,7 +173,7 @@ async function saveUserPreferences(clerkId, preferences) {
 
 // Uložit preferovaný jazyk uživatele
 async function saveUserLocale(clerkId, locale) {
-    if (!supabase || !clerkId || !locale) return null;
+    if (!supabaseClient || !clerkId || !locale) return null;
     
     // Validace clerk_id
     if (!isValidClerkId(clerkId)) {
@@ -185,7 +188,7 @@ async function saveUserLocale(clerkId, locale) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .update({ 
                 preferred_locale: locale,
@@ -209,7 +212,7 @@ async function saveUserLocale(clerkId, locale) {
 
 // Získat preferovaný jazyk uživatele
 async function getUserLocale(clerkId) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     // Validace clerk_id
     if (!isValidClerkId(clerkId)) {
@@ -218,7 +221,7 @@ async function getUserLocale(clerkId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .select('preferred_locale')
             .eq('clerk_id', clerkId)
@@ -324,7 +327,7 @@ const rateLimiter = {
 
 // Uložit recept uživatele
 async function saveUserRecipe(clerkId, recipe) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     // Rate limiting
     if (!rateLimiter.canProceed('saveRecipe')) {
@@ -349,12 +352,12 @@ async function saveUserRecipe(clerkId, recipe) {
         rating: Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5), // 0-5
         share_id: shareId,
         share_url: shareUrl, // Kompletní URL pro sdílení
-        recipe_data: recipe.data, // JSONB - Supabase escapuje automaticky
+        recipe_data: recipe.data, // JSONB - supabaseClient escapuje automaticky
         created_at: new Date().toISOString()
     };
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('recipes')
             .insert(recipeData)
             .select()
@@ -375,7 +378,7 @@ async function saveUserRecipe(clerkId, recipe) {
 
 // Aktualizovat recept
 async function updateUserRecipe(clerkId, recipeId, updates) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     // Validace clerk_id
     if (!isValidClerkId(clerkId)) {
@@ -384,7 +387,7 @@ async function updateUserRecipe(clerkId, recipeId, updates) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('recipes')
             .update({
                 name: sanitizeInput(updates.name),
@@ -418,7 +421,7 @@ function isValidShareId(shareId) {
 
 // Získat recept podle share_id (pro sdílení)
 async function getRecipeByShareId(shareId) {
-    if (!supabase || !shareId) return null;
+    if (!supabaseClient || !shareId) return null;
     
     // SECURITY: Validace formátu share_id
     if (!isValidShareId(shareId)) {
@@ -427,7 +430,7 @@ async function getRecipeByShareId(shareId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('recipes')
             .select('*')
             .eq('share_id', shareId)
@@ -447,7 +450,7 @@ async function getRecipeByShareId(shareId) {
 
 // Získat recept podle ID
 async function getRecipeById(clerkId, recipeId) {
-    if (!supabase) return null;
+    if (!supabaseClient) return null;
     
     // SECURITY: Validace vstupů
     if (!isValidClerkId(clerkId)) {
@@ -460,7 +463,7 @@ async function getRecipeById(clerkId, recipeId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('recipes')
             .select('*')
             .eq('id', recipeId)
@@ -481,7 +484,7 @@ async function getRecipeById(clerkId, recipeId) {
 
 // Získat recepty uživatele
 async function getUserRecipes(clerkId) {
-    if (!supabase || !clerkId) return [];
+    if (!supabaseClient || !clerkId) return [];
     
     // SECURITY: Validace clerk_id
     if (!isValidClerkId(clerkId)) {
@@ -490,7 +493,7 @@ async function getUserRecipes(clerkId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('recipes')
             .select('*')
             .eq('clerk_id', clerkId)
@@ -511,7 +514,7 @@ async function getUserRecipes(clerkId) {
 
 // Smazat recept
 async function deleteUserRecipe(clerkId, recipeId) {
-    if (!supabase || !clerkId) return false;
+    if (!supabaseClient || !clerkId) return false;
     
     // SECURITY: Validace vstupů
     if (!isValidClerkId(clerkId)) {
@@ -530,7 +533,7 @@ async function deleteUserRecipe(clerkId, recipeId) {
     }
     
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('recipes')
             .delete()
             .eq('id', recipeId)
@@ -554,7 +557,7 @@ async function deleteUserRecipe(clerkId, recipeId) {
 
 // Uložit oblíbený produkt
 async function saveFavoriteProduct(clerkId, product) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     // Rate limiting
     if (!rateLimiter.canProceed('saveProduct')) {
@@ -590,7 +593,7 @@ async function saveFavoriteProduct(clerkId, product) {
     };
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('favorite_products')
             .insert(productData)
             .select()
@@ -610,7 +613,7 @@ async function saveFavoriteProduct(clerkId, product) {
 
 // Aktualizovat oblíbený produkt
 async function updateFavoriteProduct(clerkId, productId, updates) {
-    if (!supabase || !clerkId) return null;
+    if (!supabaseClient || !clerkId) return null;
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -626,7 +629,7 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
     const productType = validTypes.includes(updates.product_type) ? updates.product_type : 'flavor';
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('favorite_products')
             .update({
                 name: sanitizeInput(updates.name),
@@ -656,7 +659,7 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
 
 // Získat oblíbené produkty uživatele
 async function getFavoriteProducts(clerkId) {
-    if (!supabase || !clerkId) return [];
+    if (!supabaseClient || !clerkId) return [];
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -664,7 +667,7 @@ async function getFavoriteProducts(clerkId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('favorite_products')
             .select('*')
             .eq('clerk_id', clerkId)
@@ -685,7 +688,7 @@ async function getFavoriteProducts(clerkId) {
 
 // Získat produkt podle ID
 async function getFavoriteProductById(clerkId, productId) {
-    if (!supabase) return null;
+    if (!supabaseClient) return null;
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -697,7 +700,7 @@ async function getFavoriteProductById(clerkId, productId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('favorite_products')
             .select('*')
             .eq('id', productId)
@@ -718,7 +721,7 @@ async function getFavoriteProductById(clerkId, productId) {
 
 // Získat produkt podle share_id (pro sdílení)
 async function getProductByShareId(shareId) {
-    if (!supabase || !shareId) return null;
+    if (!supabaseClient || !shareId) return null;
     
     // SECURITY: Validace formátu share_id
     if (!isValidShareId(shareId)) {
@@ -727,7 +730,7 @@ async function getProductByShareId(shareId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('favorite_products')
             .select('*')
             .eq('share_id', shareId)
@@ -747,7 +750,7 @@ async function getProductByShareId(shareId) {
 
 // Smazat oblíbený produkt
 async function deleteFavoriteProduct(clerkId, productId) {
-    if (!supabase || !clerkId) return false;
+    if (!supabaseClient || !clerkId) return false;
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -764,7 +767,7 @@ async function deleteFavoriteProduct(clerkId, productId) {
     }
     
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('favorite_products')
             .delete()
             .eq('id', productId)
@@ -782,9 +785,9 @@ async function deleteFavoriteProduct(clerkId, productId) {
     }
 }
 
-// Upload obrázku produktu do Supabase Storage
+// Upload obrázku produktu do supabaseClient Storage
 async function uploadProductImage(clerkId, file) {
-    if (!supabase || !clerkId || !file) return null;
+    if (!supabaseClient || !clerkId || !file) return null;
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -808,7 +811,7 @@ async function uploadProductImage(clerkId, file) {
     const fileName = `${clerkId}/${Date.now()}.${fileExt}`;
     
     try {
-        const { data, error } = await supabase.storage
+        const { data, error } = await supabaseClient.storage
             .from('product-images')
             .upload(fileName, file, {
                 cacheControl: '3600',
@@ -821,7 +824,7 @@ async function uploadProductImage(clerkId, file) {
         }
         
         // Získat veřejnou URL
-        const { data: urlData } = supabase.storage
+        const { data: urlData } = supabaseClient.storage
             .from('product-images')
             .getPublicUrl(fileName);
         
@@ -838,7 +841,7 @@ async function uploadProductImage(clerkId, file) {
 
 // Propojit produkty s receptem
 async function linkProductsToRecipe(clerkId, recipeId, productIds) {
-    if (!supabase || !clerkId || !recipeId || !productIds || productIds.length === 0) return false;
+    if (!supabaseClient || !clerkId || !recipeId || !productIds || productIds.length === 0) return false;
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -851,7 +854,7 @@ async function linkProductsToRecipe(clerkId, recipeId, productIds) {
     
     try {
         // Smazat existující propojení
-        await supabase
+        await supabaseClient
             .from('recipe_products')
             .delete()
             .eq('recipe_id', recipeId)
@@ -867,7 +870,7 @@ async function linkProductsToRecipe(clerkId, recipeId, productIds) {
             }));
         
         if (links.length > 0) {
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('recipe_products')
                 .insert(links);
             
@@ -886,7 +889,7 @@ async function linkProductsToRecipe(clerkId, recipeId, productIds) {
 
 // Získat produkty propojené s receptem
 async function getLinkedProducts(clerkId, recipeId) {
-    if (!supabase || !clerkId || !recipeId) return [];
+    if (!supabaseClient || !clerkId || !recipeId) return [];
     
     if (!isValidClerkId(clerkId)) {
         console.error('Invalid clerk_id format');
@@ -898,7 +901,7 @@ async function getLinkedProducts(clerkId, recipeId) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('recipe_products')
             .select(`
                 product_id,
@@ -936,8 +939,8 @@ async function getLinkedProducts(clerkId, recipeId) {
 async function onClerkSignIn(clerkUser) {
     if (!clerkUser) return;
     
-    // Inicializuj Supabase pokud ještě není
-    if (!supabase) {
+    // Inicializuj supabaseClient pokud ještě není
+    if (!supabaseClient) {
         initSupabase();
     }
     
@@ -951,6 +954,7 @@ async function onClerkSignIn(clerkUser) {
 }
 
 // Exportuj funkce pro použití v app.js
+console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
     init: initSupabase,
     saveUser: saveUserToDatabase,
@@ -978,5 +982,4 @@ window.LiquiMixerDB = {
     onSignIn: onClerkSignIn
 };
 
-
-
+console.log('database.js: LiquiMixerDB exported successfully!', !!window.LiquiMixerDB);
