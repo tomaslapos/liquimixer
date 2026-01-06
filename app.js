@@ -37,6 +37,14 @@ function isValidUUID(str) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 }
 
+// Helper funkce pro překlady
+function t(key, fallback = null) {
+    if (window.i18n && window.i18n.t) {
+        return window.i18n.t(key, fallback);
+    }
+    return fallback || key;
+}
+
 // Flavor database with recommended percentages (15 options)
 // Data z tabulky příchutí pro e-liquid
 const flavorDatabase = {
@@ -133,14 +141,23 @@ const ratioDescriptions = [
 
 // Nicotine strength descriptions
 const nicotineDescriptions = [
-    { min: 0, max: 0, color: '#00cc66', text: 'Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.' },
-    { min: 1, max: 3, color: '#00aaff', text: 'Velmi slabý nikotin - pro příležitostné vapery a finální fáze odvykání.' },
-    { min: 4, max: 6, color: '#0088dd', text: 'Slabý nikotin - pro lehké kuřáky (do 10 cigaret denně).' },
-    { min: 7, max: 11, color: '#00cc88', text: 'Střední nikotin - pro středně silné kuřáky (10-20 cigaret denně).' },
-    { min: 12, max: 20, color: '#ffaa00', text: 'Pro silné kuřáky, silné cigarety, bez předchozí zkušenosti hrozí nevolnost.' },
-    { min: 21, max: 35, color: '#ff6600', text: 'Vysoký nikotin - pouze pro velmi silné kuřáky nebo pod-systémy. Nikotinová sůl doporučena.' },
-    { min: 36, max: 45, color: '#ff0044', text: 'Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!' }
+    { min: 0, max: 0, color: '#00cc66', key: 'nic_0', text: 'Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.' },
+    { min: 1, max: 3, color: '#00aaff', key: 'nic_1_3', text: 'Velmi slabý nikotin - pro příležitostné vapery a finální fáze odvykání.' },
+    { min: 4, max: 6, color: '#0088dd', key: 'nic_4_6', text: 'Slabý nikotin - pro lehké kuřáky (do 10 cigaret denně).' },
+    { min: 7, max: 11, color: '#00cc88', key: 'nic_7_11', text: 'Střední nikotin - pro středně silné kuřáky (10-20 cigaret denně).' },
+    { min: 12, max: 20, color: '#ffaa00', key: 'nic_12_20', text: 'Pro silné kuřáky, silné cigarety, bez předchozí zkušenosti hrozí nevolnost.' },
+    { min: 21, max: 35, color: '#ff6600', key: 'nic_21_35', text: 'Vysoký nikotin - pouze pro velmi silné kuřáky nebo pod-systémy. Nikotinová sůl doporučena.' },
+    { min: 36, max: 45, color: '#ff0044', key: 'nic_36_45', text: 'Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!' }
 ];
+
+// Získat přeložený popis nikotinu
+function getNicotineDescriptionText(value) {
+    const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    if (desc) {
+        return t(`nicotine_descriptions.${desc.key}`, desc.text);
+    }
+    return '';
+}
 
 // DOM Elements
 let vgPgRatioSlider, targetNicotineSlider, flavorStrengthSlider;
@@ -157,6 +174,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContact);
+    }
+});
+
+// Aktualizovat dynamické texty při změně jazyka
+window.addEventListener('localeChanged', () => {
+    // Aktualizovat popisy u posuvníků (VG/PG, nikotin, příchuť)
+    updateAllDisplays();
+    
+    // Aktualizovat varování o omezení VG/PG
+    updateVgPgRatioLimits();
+    
+    // Aktualizovat Shake & Vape pokud je inicializován
+    if (document.getElementById('svVgPgRatio')) {
+        updateSvVgPgLimits();
+        updateSvRatioDisplay();
+        updateSvNicotineDisplay();
+    }
+    
+    // Aktualizovat Liquid PRO pokud je inicializován
+    if (document.getElementById('proVgPgRatio')) {
+        updateProVgPgLimits();
+        updateProRatioDisplay();
+        updateProNicotineDisplay();
+    }
+    
+    // Aktualizovat Dilute pokud je inicializován
+    if (document.getElementById('diluteTargetRatio')) {
+        updateDiluteRatioLimits();
+        updateDiluteSourceRatioDisplay();
+        updateDiluteTargetRatioDisplay();
     }
 });
 
@@ -345,23 +392,36 @@ window.addEventListener('load', async function() {
                 await window.LiquiMixerDB.onSignIn(window.Clerk.user);
                 // Zkontrolovat pending sdílený recept po přihlášení
                 await checkPendingSharedRecipe();
+                // Načíst uložený jazyk uživatele z databáze
+                if (window.i18n?.loadUserLocale) {
+                    await window.i18n.loadUserLocale(window.Clerk.user.id);
+                }
+                // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ
+                await checkSubscriptionStatus();
             }
             
             // Listen for auth changes (OAuth callback, sign in/out)
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
-                
+
                 // Vždy aktualizovat UI při změně autentizace
                 updateAuthUI();
-                
+
                 // Save user to database on sign in
                 if (window.Clerk.user && window.LiquiMixerDB) {
                     await window.LiquiMixerDB.onSignIn(window.Clerk.user);
                     // Zkontrolovat pending sdílený recept
                     await checkPendingSharedRecipe();
+                    // Načíst uložený jazyk uživatele z databáze
+                    if (window.i18n?.loadUserLocale) {
+                        await window.i18n.loadUserLocale(window.Clerk.user.id);
+                    }
                     // Zavřít login modal
                     hideLoginModal();
-                    
+
+                    // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ
+                    await checkSubscriptionStatus();
+
                     // Force UI refresh pro OAuth přihlášení
                     setTimeout(() => {
                         updateAuthUI();
@@ -537,6 +597,116 @@ function handleProfileModalBackdropClick(event) {
     }
 }
 
+// ============================================
+// LOGIN REQUIRED MODAL (pro nepřihlášené)
+// ============================================
+
+function showLoginRequiredModal() {
+    const modal = document.getElementById('loginRequiredModal');
+    if (modal) {
+        // Přeložit texty v modálu (kromě cen - ty se nastaví podle jazyka)
+        modal.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            // Přeskočit cenové elementy - ty se nastaví podle jazyka
+            if (key.includes('promo_price')) return;
+            
+            if (typeof t === 'function') {
+                el.textContent = t(key, el.textContent);
+            }
+        });
+        
+        // Aktualizovat zobrazení ceny podle aktuálního jazyka (MUSÍ být po překladu)
+        updatePriceDisplay();
+        
+        modal.classList.remove('hidden');
+    }
+}
+
+// Aktualizace zobrazení ceny podle jazyka
+function updatePriceDisplay() {
+    // Získat aktuální jazyk z i18n modulu
+    let currentLocale = 'cs'; // default
+    if (typeof window.i18n !== 'undefined' && typeof window.i18n.getLocale === 'function') {
+        currentLocale = window.i18n.getLocale();
+    }
+    
+    const priceCzElements = document.querySelectorAll('.price-cz');
+    const priceEuElements = document.querySelectorAll('.price-eu');
+    const priceUsdElements = document.querySelectorAll('.price-usd');
+    
+    // USD země: en, ja, ko, zh-CN, zh-TW, ar-SA
+    const usdLocales = ['en', 'ja', 'ko', 'zh-CN', 'zh-TW', 'ar-SA'];
+    
+    // Skrýt všechny ceny
+    priceCzElements.forEach(el => el.classList.add('hidden'));
+    priceEuElements.forEach(el => el.classList.add('hidden'));
+    priceUsdElements.forEach(el => el.classList.add('hidden'));
+    
+    if (currentLocale === 'cs') {
+        // Pro češtinu zobrazit CZK cenu
+        priceCzElements.forEach(el => el.classList.remove('hidden'));
+    } else if (usdLocales.includes(currentLocale)) {
+        // Pro USD země zobrazit USD cenu
+        priceUsdElements.forEach(el => el.classList.remove('hidden'));
+    } else {
+        // Pro ostatní jazyky (EUR země) zobrazit EUR cenu
+        priceEuElements.forEach(el => el.classList.remove('hidden'));
+    }
+}
+
+function hideLoginRequiredModal() {
+    const modal = document.getElementById('loginRequiredModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function handleLoginRequiredModalBackdropClick(event) {
+    if (event.target.id === 'loginRequiredModal') {
+        hideLoginRequiredModal();
+    }
+}
+
+// Kontrola, zda je uživatel přihlášen
+function isUserLoggedIn() {
+    return clerkLoaded && window.Clerk?.user;
+}
+
+// Kontrola, zda má uživatel aktivní předplatné
+function hasActiveSubscription() {
+    // TODO: Implementovat kontrolu předplatného z databáze
+    // Pro teď vracíme true pro všechny přihlášené uživatele
+    return isUserLoggedIn();
+}
+
+// Požadovat přihlášení pro přístup k funkci
+function requireLogin(callback) {
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
+        return false;
+    }
+    if (callback && typeof callback === 'function') {
+        callback();
+    }
+    return true;
+}
+
+// Požadovat předplatné pro přístup k PRO funkcím
+function requireSubscription(callback) {
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
+        return false;
+    }
+    if (!hasActiveSubscription()) {
+        showSubscriptionModal();
+        return false;
+    }
+    if (callback && typeof callback === 'function') {
+        callback();
+    }
+    return true;
+}
+
 function showUserProfileModal() {
     const menuDropdown = document.getElementById('menuDropdown');
     const loginModal = document.getElementById('loginModal');
@@ -554,89 +724,60 @@ function showUserProfileModal() {
     if (userProfileModal) {
         userProfileModal.classList.remove('hidden');
         
-        // Mount Clerk UserButton or UserProfile
-        if (clerkLoaded && window.Clerk) {
-            const profileDiv = document.getElementById('clerk-user-profile');
-            if (profileDiv) {
+        // Aplikovat překlady na modal (pro případ, že se jazyk změnil)
+        if (window.i18n && window.i18n.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+        
+        // Zobrazit informace o uživateli
+        if (clerkLoaded && window.Clerk?.user) {
+            const profileInfoDiv = document.getElementById('userProfileInfo');
+            if (profileInfoDiv) {
                 // SECURITY: Escapovat uživatelská data proti XSS
-                const safeEmail = escapeHtml(window.Clerk.user?.emailAddresses[0]?.emailAddress || '');
-                const safeName = escapeHtml(window.Clerk.user?.fullName || '');
+                const user = window.Clerk.user;
+                const safeEmail = escapeHtml(user.emailAddresses?.[0]?.emailAddress || '');
+                const safeName = escapeHtml(user.fullName || user.firstName || '');
+                const avatarUrl = user.imageUrl;
                 
-                // Získat dostupné jazyky pro výběr
-                const availableLocales = window.i18n?.getAvailableLocales() || [];
-                const currentLocale = window.i18n?.getLocale() || 'cs';
-                
-                // Vytvořit options pro select
-                let languageOptions = '';
-                if (availableLocales.length > 0) {
-                    availableLocales.forEach(locale => {
-                        const selected = locale.code === currentLocale ? 'selected' : '';
-                        languageOptions += `<option value="${escapeHtml(locale.code)}" ${selected}>${escapeHtml(locale.native_name)}</option>`;
-                    });
+                // Vytvořit avatar - buď obrázek nebo placeholder s iniciálami
+                let avatarHtml;
+                if (avatarUrl) {
+                    avatarHtml = `<img src="${escapeHtml(avatarUrl)}" alt="Avatar" class="profile-avatar">`;
                 } else {
-                    // Fallback pokud nejsou načtené lokalizace
-                    languageOptions = `
-                        <option value="cs" ${currentLocale === 'cs' ? 'selected' : ''}>Čeština</option>
-                        <option value="en" ${currentLocale === 'en' ? 'selected' : ''}>English</option>
-                        <option value="de" ${currentLocale === 'de' ? 'selected' : ''}>Deutsch</option>
-                        <option value="sk" ${currentLocale === 'sk' ? 'selected' : ''}>Slovenčina</option>
-                        <option value="pl" ${currentLocale === 'pl' ? 'selected' : ''}>Polski</option>
-                    `;
+                    const initials = safeName ? safeName.charAt(0).toUpperCase() : '👤';
+                    avatarHtml = `<div class="profile-avatar-placeholder">${initials}</div>`;
                 }
                 
-                profileDiv.innerHTML = `
-                    <div class="user-info">
-                        <p class="user-email">${safeEmail}</p>
-                        <p class="user-name">${safeName}</p>
-                    </div>
-                    <div class="user-settings">
-                        <div class="setting-row">
-                            <label class="setting-label" for="userLanguageSelect">
-                                <span class="setting-icon">🌐</span>
-                                <span data-i18n="settings.language">Jazyk</span>
-                            </label>
-                            <select id="userLanguageSelect" class="neon-select language-select" onchange="handleLanguageChange(this.value)">
-                                ${languageOptions}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="user-profile-buttons">
-                        <button class="neon-button" onclick="showMyRecipes()">Mé recepty</button>
-                        <button class="neon-button" onclick="showFavoriteProducts()">Oblíbené produkty</button>
-                        <button class="neon-button logout-btn" onclick="handleSignOut()">Odhlásit se</button>
+                profileInfoDiv.innerHTML = `
+                    ${avatarHtml}
+                    <div class="profile-details">
+                        <div class="profile-name">${safeName || t('auth.user', 'Uživatel')}</div>
+                        <div class="profile-email">${safeEmail}</div>
                     </div>
                 `;
-                
-                // Aplikovat překlady na nově přidané elementy
-                if (window.i18n?.applyTranslations) {
-                    window.i18n.applyTranslations();
-                }
             }
+        }
+        
+        // Vytvořit výběr jazyka
+        if (window.i18n?.createLanguageSelector) {
+            window.i18n.createLanguageSelector('profileLanguageSelector');
+        }
+        
+        // Aplikovat překlady na nově přidané elementy
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
         }
     }
 }
 
-// Zpracovat změnu jazyka
-async function handleLanguageChange(locale) {
-    if (!locale) return;
-    
-    // Změnit jazyk v i18n modulu (uloží do localStorage)
-    if (window.i18n?.setLocale) {
-        await window.i18n.setLocale(locale);
+// Funkce pro odhlášení
+async function signOut() {
+    if (clerkLoaded && window.Clerk) {
+        await window.Clerk.signOut();
+        hideUserProfileModal();
+        updateAuthUI();
+        showPage('intro');
     }
-    
-    // Uložit do databáze pokud je uživatel přihlášen
-    if (window.Clerk?.user?.id && window.LiquiMixerDB?.saveUserLocale) {
-        try {
-            await window.LiquiMixerDB.saveUserLocale(window.Clerk.user.id, locale);
-            console.log('User locale saved to database:', locale);
-        } catch (err) {
-            console.error('Error saving locale to database:', err);
-        }
-    }
-    
-    // Aktualizovat UI
-    showUserProfileModal();
 }
 
 function hideUserProfileModal() {
@@ -805,9 +946,8 @@ function storeCurrentRecipe(data) {
 
 // Zobrazit modal pro uložení receptu
 async function showSaveRecipeModal() {
-    if (!clerkLoaded || !window.Clerk || !window.Clerk.user) {
-        alert('Pro uložení receptu se prosím přihlaste.');
-        showLoginModal();
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
         return;
     }
     
@@ -846,7 +986,7 @@ async function loadProductsForRecipe() {
 // Přidat řádek pro výběr produktu
 function addProductRow() {
     if (availableProductsForRecipe.length === 0) {
-        alert('Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.');
+        alert(t('save_recipe.no_products', 'Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.'));
         return;
     }
     
@@ -1014,7 +1154,7 @@ async function saveRecipe(event) {
     event.preventDefault();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro uložení receptu se prosím přihlaste.');
+        alert(t('alert.login_required_recipe', 'Pro uložení receptu se prosím přihlaste.'));
         return false;
     }
     
@@ -1027,7 +1167,7 @@ async function saveRecipe(event) {
     
     // Pro nový recept potřebujeme data receptu
     if (!isEditing && !currentRecipeData) {
-        alert('Chyba: Není co uložit. Prosím vytvořte recept.');
+        alert(t('recipes.nothing_to_save', 'Chyba: Není co uložit. Prosím vytvořte recept.'));
         return false;
     }
     
@@ -1075,23 +1215,23 @@ async function saveRecipe(event) {
                 : '';
             
             if (isEditing) {
-                alert(`Recept byl úspěšně upraven!${productInfo}`);
+                alert(t('save_recipe.updated', 'Recept byl úspěšně upraven!') + productInfo);
                 // Obnovit detail receptu
                 await viewRecipeDetail(window.editingRecipeId);
             } else {
-                const successMessage = `Recept byl úspěšně uložen!\n\n` +
-                    `📋 ID receptu: ${saved.id}${productInfo}\n` +
-                    `🔗 Odkaz pro sdílení:\n${saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id}`;
+                const shareUrl = saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id;
+                const successMessage = t('save_recipe.success', 'Recept byl úspěšně uložen!') + '\n\n' +
+                    t('save_recipe.share_link', 'Odkaz pro sdílení:') + '\n' + shareUrl + productInfo;
                 alert(successMessage);
             }
             
             hideSaveRecipeModal();
         } else {
-            alert('Chyba při ukládání receptu. Zkuste to prosím znovu.');
+            alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
         }
     } catch (error) {
         console.error('Error saving recipe:', error);
-        alert('Chyba při ukládání receptu.');
+        alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
     }
     
     return false;
@@ -1115,12 +1255,12 @@ async function showMyRecipes() {
     hideUserProfileModal();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro zobrazení receptů se prosím přihlaste.');
+        alert(t('alert.login_required_recipes', 'Pro zobrazení receptů se prosím přihlaste.'));
         return;
     }
     
     const container = document.getElementById('recipesListContainer');
-    container.innerHTML = '<p class="no-recipes-text">Načítám recepty...</p>';
+    container.innerHTML = `<p class="no-recipes-text">${t('recipes.loading', 'Načítám recepty...')}</p>`;
     
     // Reset vyhledávacích filtrů
     resetRecipeFilters();
@@ -1133,8 +1273,8 @@ async function showMyRecipes() {
         
         renderRecipesList(allUserRecipes);
     } catch (error) {
-        console.error('Chyba při načítání receptů:', error);
-        container.innerHTML = '<p class="no-recipes-text" style="color: var(--neon-pink);">Chyba při načítání receptů.</p>';
+        console.error('Error loading recipes:', error);
+        container.innerHTML = `<p class="no-recipes-text" style="color: var(--neon-pink);">${t('recipes.load_error', 'Chyba při načítání receptů.')}</p>`;
     }
 }
 
@@ -1254,9 +1394,9 @@ function filterRecipes() {
 // Vykreslit seznam receptů
 function renderRecipesList(recipes) {
     const container = document.getElementById('recipesListContainer');
-    
+
     if (!recipes || recipes.length === 0) {
-        container.innerHTML = '<p class="no-recipes-text">Zatím nemáte žádné uložené recepty.</p>';
+        container.innerHTML = `<p class="no-recipes-text">${t('recipes.no_recipes', 'Zatím nemáte žádné uložené recepty.')}</p>`;
         return;
     }
     
@@ -1312,7 +1452,7 @@ async function viewRecipeDetail(recipeId) {
         const recipe = await window.LiquiMixerDB.getRecipeById(window.Clerk.user.id, recipeId);
         
         if (!recipe) {
-            alert('Recept nenalezen.');
+            alert(t('recipes.not_found', 'Recept nenalezen.'));
             return;
         }
         
@@ -1326,7 +1466,7 @@ async function viewRecipeDetail(recipeId) {
         
     } catch (error) {
         console.error('Error loading recipe:', error);
-        alert('Chyba při načítání receptu.');
+        alert(t('recipes.load_error', 'Chyba při načítání receptu.'));
     }
 }
 
@@ -1340,7 +1480,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
     
     const rating = Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    const date = new Date(recipe.created_at).toLocaleDateString('cs-CZ');
+    const date = new Date(recipe.created_at).toLocaleDateString(t('meta.code', 'cs') === 'en' ? 'en-GB' : t('meta.code', 'cs') + '-' + t('meta.code', 'CS').toUpperCase());
     const data = recipe.recipe_data || {};
     
     // SECURITY: Escapování popisku
@@ -1349,23 +1489,27 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
     let ingredientsHtml = '';
     if (data.ingredients && Array.isArray(data.ingredients)) {
         ingredientsHtml = `
-            <h4 class="recipe-ingredients-title">Složky</h4>
+            <h4 class="recipe-ingredients-title">${t('recipe_detail.ingredients_title', 'Složky')}</h4>
             <table class="results-table">
                 <thead>
                     <tr>
-                        <th>Složka</th>
-                        <th>Objem (ml)</th>
-                        <th>Procento</th>
+                        <th>${t('recipe_detail.table_component', 'Složka')}</th>
+                        <th>${t('recipe_detail.table_volume', 'Objem (ml)')}</th>
+                        <th>${t('recipe_detail.table_percent', 'Procento')}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${data.ingredients.map(ing => `
+                    ${data.ingredients.map(ing => {
+                        // Dynamicky přeložit název ingredience
+                        const ingredientName = escapeHtml(getIngredientName(ing));
+                        return `
                         <tr>
-                            <td>${escapeHtml(ing.name)}</td>
+                            <td>${ingredientName}</td>
                             <td>${parseFloat(ing.volume || 0).toFixed(2)}</td>
                             <td>${parseFloat(ing.percent || 0).toFixed(1)}%</td>
                         </tr>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </tbody>
             </table>
         `;
@@ -1384,7 +1528,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         
         linkedProductsHtml = `
             <div class="recipe-linked-products">
-                <h4 class="recipe-ingredients-title">Použité produkty</h4>
+                <h4 class="recipe-ingredients-title">${t('recipe_detail.linked_products', 'Použité produkty')}</h4>
                 <div class="linked-products-list">
                     ${linkedProducts.map(product => {
                         const icon = typeIcons[product.product_type] || '📦';
@@ -1417,15 +1561,15 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         
         <div class="recipe-detail-info">
             <div class="recipe-info-item">
-                <div class="recipe-info-label">Celkový objem</div>
+                <div class="recipe-info-label">${t('recipe_detail.total_volume', 'Celkový objem')}</div>
                 <div class="recipe-info-value">${safeTotal} ml</div>
             </div>
             <div class="recipe-info-item">
-                <div class="recipe-info-label">Poměr VG/PG</div>
+                <div class="recipe-info-label">${t('recipe_detail.ratio', 'Poměr VG/PG')}</div>
                 <div class="recipe-info-value">${safeVg}:${safePg}</div>
             </div>
             <div class="recipe-info-item">
-                <div class="recipe-info-label">Nikotin</div>
+                <div class="recipe-info-label">${t('recipe_detail.nicotine', 'Nikotin')}</div>
                 <div class="recipe-info-value">${safeNicotine} mg/ml</div>
             </div>
         </div>
@@ -1434,7 +1578,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
         ${linkedProductsHtml}
         
         <div class="recipe-meta-info">
-            <p class="recipe-date">Vytvořeno: ${date}</p>
+            <p class="recipe-date">${t('recipe_detail.created', 'Vytvořeno')}: ${date}</p>
         </div>
     `;
 }
@@ -1444,7 +1588,7 @@ async function editSavedRecipe() {
     if (!currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro úpravu receptu se prosím přihlaste.');
+        alert(t('alert.login_required_edit', 'Pro úpravu receptu se prosím přihlaste.'));
         return;
     }
     
@@ -1558,7 +1702,7 @@ const SHARE_DOMAIN = 'https://www.liquimixer.com';
 // Sdílet recept
 function shareRecipe() {
     if (!currentViewingRecipe || !currentViewingRecipe.share_id) {
-        alert('Tento recept nelze sdílet.');
+        alert(t('share.cannot_share_recipe', 'Tento recept nelze sdílet.'));
         return;
     }
 
@@ -1587,7 +1731,7 @@ function shareRecipe() {
 
 function copyShareLink(url) {
     navigator.clipboard.writeText(url).then(() => {
-        alert('Odkaz byl zkopírován do schránky!\n\n' + url);
+        alert(t('recipes.share_copied', 'Odkaz byl zkopírován do schránky!') + '\n\n' + url);
     }).catch(() => {
         prompt('Zkopírujte tento odkaz:', url);
     });
@@ -1596,7 +1740,7 @@ function copyShareLink(url) {
 // Sdílet oblíbený produkt
 function shareProduct() {
     if (!currentViewingProduct || !currentViewingProduct.share_id) {
-        alert('Tento produkt nelze sdílet.');
+        alert(t('share.cannot_share_product', 'Tento produkt nelze sdílet.'));
         return;
     }
 
@@ -1627,13 +1771,13 @@ async function deleteRecipe() {
     if (!currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro smazání receptu se prosím přihlaste.');
+        alert(t('alert.login_required', 'Pro smazání receptu se prosím přihlaste.'));
         return;
     }
     
     const recipeName = currentViewingRecipe.name || 'Tento recept';
     
-    if (!confirm(`Opravdu chcete smazat recept "${recipeName}"?\n\nTato akce je nevratná.`)) {
+    if (!confirm(t('recipe_detail.delete_confirm', 'Opravdu chcete smazat tento recept?'))) {
         return;
     }
     
@@ -1644,15 +1788,15 @@ async function deleteRecipe() {
         );
         
         if (success) {
-            alert('Recept byl smazán.');
+            alert(t('recipe_detail.delete_success', 'Recept byl smazán.'));
             currentViewingRecipe = null;
             showMyRecipes();
         } else {
-            alert('Chyba při mazání receptu.');
+            alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
         }
     } catch (error) {
         console.error('Error deleting recipe:', error);
-        alert('Chyba při mazání receptu.');
+        alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
     }
 }
 
@@ -1726,7 +1870,7 @@ async function loadSharedRecipeContent(shareId) {
             return true;
         } else {
             const contentEl = document.getElementById('sharedRecipeContent');
-            contentEl.innerHTML = '<p class="no-recipes-text">Recept nebyl nalezen nebo byl smazán.</p>';
+            contentEl.innerHTML = `<p class="no-recipes-text">${t('recipe_detail.not_found', 'Recept nebyl nalezen nebo byl smazán.')}</p>`;
             showPage('shared-recipe');
             return true;
         }
@@ -1764,12 +1908,12 @@ async function showFavoriteProducts() {
     hideUserProfileModal();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro zobrazení produktů se prosím přihlaste.');
+        alert(t('alert.login_required_products', 'Pro zobrazení produktů se prosím přihlaste.'));
         return;
     }
     
     const container = document.getElementById('productsListContainer');
-    container.innerHTML = '<p class="no-products-text">Načítám produkty...</p>';
+    container.innerHTML = `<p class="no-products-text">${t('products.loading', 'Načítám produkty...')}</p>`;
     
     // Reset vyhledávacích filtrů
     resetProductFilters();
@@ -1782,8 +1926,8 @@ async function showFavoriteProducts() {
         
         renderProductsList(allUserProducts);
     } catch (error) {
-        console.error('Chyba při načítání produktů:', error);
-        container.innerHTML = '<p class="no-products-text" style="color: var(--neon-pink);">Chyba při načítání produktů.</p>';
+        console.error('Error loading products:', error);
+        container.innerHTML = `<p class="no-products-text" style="color: var(--neon-pink);">${t('products.load_error', 'Chyba při načítání produktů.')}</p>`;
     }
 }
 
@@ -1911,9 +2055,9 @@ function filterProducts() {
 // Vykreslit seznam produktů
 function renderProductsList(products) {
     const container = document.getElementById('productsListContainer');
-    
+
     if (!products || products.length === 0) {
-        container.innerHTML = '<p class="no-products-text">Zatím nemáte žádné oblíbené produkty.</p>';
+        container.innerHTML = `<p class="no-products-text">${t('products.no_products', 'Zatím nemáte žádné oblíbené produkty.')}</p>`;
         return;
     }
     
@@ -1969,7 +2113,7 @@ async function viewProductDetail(productId) {
         const product = await window.LiquiMixerDB.getProductById(window.Clerk.user.id, productId);
         
         if (!product) {
-            alert('Produkt nenalezen.');
+            alert(t('products.not_found', 'Produkt nenalezen.'));
             return;
         }
         
@@ -1979,7 +2123,7 @@ async function viewProductDetail(productId) {
         
     } catch (error) {
         console.error('Error loading product:', error);
-        alert('Chyba při načítání produktu.');
+        alert(t('products.load_error', 'Chyba při načítání produktu.'));
     }
 }
 
@@ -1992,8 +2136,8 @@ function displayProductDetail(product) {
     
     const rating = Math.min(Math.max(parseInt(product.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    const date = new Date(product.created_at).toLocaleDateString('cs-CZ');
-    const typeLabel = productTypeLabels[product.product_type] || 'Příchuť';
+    const date = new Date(product.created_at).toLocaleDateString(t('meta.code', 'cs') === 'en' ? 'en-GB' : t('meta.code', 'cs') + '-' + t('meta.code', 'CS').toUpperCase());
+    const typeLabel = getProductTypeLabel(product.product_type);
     const typeIcon = productTypeIcons[product.product_type] || '🍓';
     
     const safeDescription = escapeHtml(product.description);
@@ -2011,7 +2155,7 @@ function displayProductDetail(product) {
             urlHtml = `
                 <div class="product-detail-url">
                     <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="neon-button secondary">
-                        Otevřít odkaz na produkt
+                        ${t('product_detail.open_link', 'Otevřít odkaz na produkt')}
                     </a>
                 </div>
             `;
@@ -2029,9 +2173,22 @@ function displayProductDetail(product) {
         </div>
         ${urlHtml}
         <div class="product-meta-info">
-            <p class="product-date">Přidáno: ${date}</p>
+            <p class="product-date">${t('product_detail.added', 'Přidáno')}: ${date}</p>
         </div>
     `;
+}
+
+// Získat přeložený typ produktu
+function getProductTypeLabel(type) {
+    const typeKeys = {
+        'vg': 'products.type_vg',
+        'pg': 'products.type_pg',
+        'flavor': 'products.type_flavor',
+        'nicotine_booster': 'products.type_nicotine_booster',
+        'nicotine_salt': 'products.type_nicotine_salt'
+    };
+    const key = typeKeys[type] || 'products.type_flavor';
+    return t(key, productTypeLabels[type] || 'Příchuť');
 }
 
 // Mapování typů produktů na názvy
@@ -2101,21 +2258,21 @@ function editProduct() {
 async function deleteProduct() {
     if (!currentViewingProduct) return;
     
-    if (!confirm('Opravdu chcete smazat tento produkt?')) return;
+    if (!confirm(t('product_detail.delete_confirm', 'Opravdu chcete smazat tento produkt?'))) return;
     
     try {
         const success = await window.LiquiMixerDB.deleteProduct(window.Clerk.user.id, currentViewingProduct.id);
         
         if (success) {
-            alert('Produkt byl smazán.');
+            alert(t('products.deleted', 'Produkt byl smazán.'));
             currentViewingProduct = null;
             showFavoriteProducts();
         } else {
-            alert('Chyba při mazání produktu.');
+            alert(t('products.delete_error', 'Chyba při mazání produktu.'));
         }
     } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Chyba při mazání produktu.');
+        alert(t('products.delete_error', 'Chyba při mazání produktu.'));
     }
 }
 
@@ -2134,7 +2291,7 @@ async function saveProduct(event) {
     event.preventDefault();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert('Pro uložení produktu se prosím přihlaste.');
+        alert(t('alert.login_required_product', 'Pro uložení produktu se prosím přihlaste.'));
         return false;
     }
     
@@ -2147,12 +2304,12 @@ async function saveProduct(event) {
     const editingId = document.getElementById('editingProductId').value;
     
     if (!name) {
-        alert('Název produktu je povinný.');
+        alert(t('product_form.name_required', 'Název produktu je povinný.'));
         return false;
     }
     
     if (!productType) {
-        alert('Vyberte typ produktu.');
+        alert(t('product_form.type_required', 'Vyberte typ produktu.'));
         return false;
     }
     
@@ -2175,14 +2332,14 @@ async function saveProduct(event) {
         }
         
         if (saved) {
-            alert(editingId ? 'Produkt byl aktualizován!' : 'Produkt byl uložen!');
+            alert(editingId ? t('product_form.updated', 'Produkt byl aktualizován!') : t('product_form.success', 'Produkt byl uložen!'));
             showFavoriteProducts();
         } else {
-            alert('Chyba při ukládání produktu.');
+            alert(t('product_form.error', 'Chyba při ukládání produktu.'));
         }
     } catch (error) {
         console.error('Error saving product:', error);
-        alert('Chyba při ukládání produktu.');
+        alert(t('product_form.error', 'Chyba při ukládání produktu.'));
     }
     
     return false;
@@ -2229,13 +2386,13 @@ function previewProductImage(event) {
     // Validace
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-        alert('Povolené formáty: JPEG, PNG, WebP, GIF');
+        alert(t('product_form.image_format', 'Povolené formáty: JPEG, PNG, WebP, GIF'));
         return;
     }
     
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-        alert('Maximální velikost obrázku je 5MB.');
+        alert(t('product_form.image_size', 'Maximální velikost obrázku je 5MB.'));
         return;
     }
     
@@ -2253,7 +2410,7 @@ function previewProductImage(event) {
 function captureProductPhoto() {
     // Zkontrolovat podporu kamery
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Váš prohlížeč nepodporuje přístup ke kameře.');
+        alert(t('product_form.camera_error', 'Váš prohlížeč nepodporuje přístup ke kameře.'));
         return;
     }
     
@@ -2339,6 +2496,11 @@ function showPage(pageId) {
         updateDiluteTargetRatioDisplay();
     }
     
+    // Animovat texty tlačítek na stránce mode-select
+    if (pageId === 'mode-select' && typeof window.animateModeButtons === 'function') {
+        setTimeout(window.animateModeButtons, 50);
+    }
+    
     // Zobrazit/skrýt tlačítko Domů
     updateHomeButtonVisibility(pageId);
 }
@@ -2361,6 +2523,17 @@ function updateHomeButtonVisibility(pageId) {
 // Přejít na úvodní stránku
 function goHome() {
     showPage('intro');
+}
+
+// Navigace zpět v historii
+function goBack() {
+    if (pageHistory.length > 1) {
+        pageHistory.pop(); // Odstranit aktuální stránku
+        const previousPage = pageHistory.pop(); // Získat předchozí stránku
+        showPage(previousPage);
+    } else {
+        showPage('intro');
+    }
 }
 
 // =========================================
@@ -2387,6 +2560,20 @@ function adjustRatio(change) {
     updateRatioDisplay();
 }
 
+// Získat přeložený popis poměru VG/PG
+function getRatioDescriptionText(vg) {
+    if (vg >= 0 && vg <= 9) return t('ratio_descriptions.vg_0_9', ratioDescriptions[0].text);
+    if (vg >= 10 && vg <= 29) return t('ratio_descriptions.vg_10_29', ratioDescriptions[1].text);
+    if (vg >= 30 && vg <= 34) return t('ratio_descriptions.vg_30_34', ratioDescriptions[2].text);
+    if (vg >= 35 && vg <= 40) return t('ratio_descriptions.vg_35_40', ratioDescriptions[3].text);
+    if (vg >= 41 && vg <= 55) return t('ratio_descriptions.vg_41_55', ratioDescriptions[4].text);
+    if (vg >= 56 && vg <= 60) return t('ratio_descriptions.vg_56_60', ratioDescriptions[5].text);
+    if (vg >= 61 && vg <= 70) return t('ratio_descriptions.vg_61_70', ratioDescriptions[6].text);
+    if (vg >= 71 && vg <= 90) return t('ratio_descriptions.vg_71_90', ratioDescriptions[7].text);
+    if (vg >= 91 && vg <= 100) return t('ratio_descriptions.vg_91_100', ratioDescriptions[8].text);
+    return '';
+}
+
 function updateRatioDisplay() {
     const vg = parseInt(vgPgRatioSlider.value);
     const pg = 100 - vg;
@@ -2398,7 +2585,7 @@ function updateRatioDisplay() {
     const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
     if (desc) {
         const descEl = document.getElementById('ratioDescription');
-        descEl.textContent = desc.text;
+        descEl.textContent = getRatioDescriptionText(vg);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
         document.getElementById('sliderTrack').style.background = 
@@ -2545,12 +2732,24 @@ function updateVgPgRatioLimits() {
         if (effectiveMinVg > 0 || effectiveMaxVg < 100) {
             const reasons = [];
             if (nicotineVolume > 0) {
-                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+                const nicReason = t('ratio_warning.reason_nicotine', 'nikotinová báze ({strength} mg/ml, VG/PG {vg}/{pg})')
+                    .replace('{strength}', baseNicotine)
+                    .replace('{vg}', nicVgPercent)
+                    .replace('{pg}', nicPgPercent);
+                reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorPercent}%, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+                const flavorReason = t('ratio_warning.reason_flavor_percent', 'příchuť ({percent}%, VG/PG {vg}/{pg})')
+                    .replace('{percent}', flavorPercent)
+                    .replace('{vg}', flavorVgPercent)
+                    .replace('{pg}', flavorPgPercent);
+                reasons.push(flavorReason);
             }
-            warningEl.textContent = `Poměr omezen na ${effectiveMinVg}–${effectiveMaxVg}% VG kvůli: ${reasons.join(', ')}.`;
+            const warningText = t('ratio_warning.limited_to', 'Poměr omezen na {min}–{max}% VG kvůli: {reasons}.')
+                .replace('{min}', effectiveMinVg)
+                .replace('{max}', effectiveMaxVg)
+                .replace('{reasons}', reasons.join(', '));
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -2691,7 +2890,7 @@ function updateNicotineDisplay() {
     // Find matching description
     const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
     if (desc) {
-        descEl.textContent = desc.text;
+        descEl.textContent = getNicotineDescriptionText(value);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
         // Set color on container so unit has same color as number
@@ -2733,6 +2932,76 @@ function adjustFlavor(change) {
     updateFlavorDisplay();
 }
 
+// Získat přeloženou poznámku pro typ příchutě
+function getFlavorNote(type) {
+    const noteKey = `flavor_descriptions.note_${type}`;
+    const fallbackNotes = {
+        none: 'Čistá báze PG/VG + nikotin',
+        fruit: 'Optimum: 10%, zrání 3–7 dní',
+        citrus: 'Silné kyseliny, méně stačí',
+        berry: 'Vyvážené, dobře fungují s 50/50 PG/VG',
+        tropical: 'Sladké, potřebují vyšší % pro hloubku',
+        tobacco: 'Dlouhý steeping: 1–4 týdny pro rozvinutí',
+        menthol: 'Intenzivní, dobře se kombinuje s ovocem',
+        candy: 'Sladký profil vyžaduje přesné dávkování',
+        dessert: 'Komplexní, steeping 2–3 týdny',
+        bakery: 'Máslové tóny, vyzrálost za 2 týdny',
+        biscuit: 'Jemné, funguje při nižším %',
+        drink: 'Osvěžující, rychlé zrání',
+        tobaccosweet: 'Kombinace vyžaduje 2+ týdny steepingu',
+        nuts: 'Krémové, vyžaduje 1–2 týdny zrání',
+        spice: 'Kořeněné, opatrně s koncentrací'
+    };
+    return t(noteKey, fallbackNotes[type] || '');
+}
+
+// Získat přeložený název příchutě
+function getFlavorName(type) {
+    const flavorKey = `form.flavor_${type}`;
+    const flavor = flavorDatabase[type];
+    return t(flavorKey, flavor ? flavor.name : type);
+}
+
+// Získat přeložený název ingredience z klíče a parametrů
+function getIngredientName(ingredient) {
+    // Pokud ingredience má starý formát (pouze name), vrať name
+    if (ingredient.name && !ingredient.ingredientKey) {
+        return ingredient.name;
+    }
+    
+    const key = ingredient.ingredientKey;
+    const params = ingredient.params || {};
+    
+    switch (key) {
+        case 'nicotine_booster':
+            const boosterName = t('ingredients.nicotine_booster', 'Nikotin booster');
+            return `${boosterName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
+        case 'nicotine_salt':
+            const saltName = t('ingredients.nicotine_salt', 'Nikotinová sůl');
+            return `${saltName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
+        case 'flavor':
+            const flavorName = getFlavorName(ingredient.flavorType || 'fruit');
+            return `${flavorName} (VG/PG ${params.vgpg})`;
+        case 'shakevape_flavor':
+            // Shake & Vape - příchuť již v lahvičce
+            const svFlavorLabel = t('ingredients.flavor', 'Příchuť');
+            const inBottleLabel = t('shakevape.in_bottle', 'již v lahvičce');
+            return `${svFlavorLabel} (${inBottleLabel}, VG/PG ${params.vgpg})`;
+        case 'vg':
+            return t('ingredients.vg', 'VG (Glycerin)');
+        case 'pg':
+            return t('ingredients.pg', 'PG (Propylenglykol)');
+        case 'nicotine_base':
+            const baseName = t('ingredients.nicotine_base', 'Nikotinová báze');
+            if (params.strength && params.vgpg) {
+                return `${baseName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
+            }
+            return baseName;
+        default:
+            return ingredient.name || key;
+    }
+}
+
 function updateFlavorDisplay() {
     const value = parseInt(flavorStrengthSlider.value);
     const type = flavorTypeSelect.value;
@@ -2747,15 +3016,23 @@ function updateFlavorDisplay() {
     let color, text;
     if (value < flavor.min) {
         color = '#ffaa00';
-        text = `Slabá až žádná chuť (doporučeno ${flavor.min}–${flavor.max}%)`;
+        text = t('flavor_descriptions.weak', 'Slabá až žádná chuť (doporučeno {min}–{max}%)')
+            .replace('{min}', flavor.min)
+            .replace('{max}', flavor.max);
         trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
     } else if (value > flavor.max) {
         color = '#ff0044';
-        text = `Výrazná nebo přeslazená chuť (doporučeno ${flavor.min}–${flavor.max}%)`;
+        text = t('flavor_descriptions.strong', 'Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)')
+            .replace('{min}', flavor.min)
+            .replace('{max}', flavor.max);
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
     } else {
         color = '#00cc66';
-        text = `Ideální chuť (${flavor.min}–${flavor.max}%) - ${flavor.note}`;
+        const note = getFlavorNote(type);
+        text = t('flavor_descriptions.ideal', 'Ideální chuť ({min}–{max}%) - {note}')
+            .replace('{min}', flavor.min)
+            .replace('{max}', flavor.max)
+            .replace('{note}', note);
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #00aaff)`;
     }
     
@@ -2893,15 +3170,21 @@ function calculateMix() {
     // =========================================
     // Build results
     // Drops calculation: 1 ml ≈ 20 drops (standard pipette)
+    // Ukládáme klíče pro dynamický překlad ingrediencí
     // =========================================
     const DROPS_PER_ML = 20;
     const ingredients = [];
 
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
         const nicotineRatioValue = document.getElementById('nicotineRatio').value;
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
+            // Klíč pro překlad
+            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            // Parametry pro zobrazení
+            params: {
+                strength: baseNicotine,
+                vgpg: nicotineRatioValue
+            },
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
@@ -2910,10 +3193,13 @@ function calculateMix() {
     }
 
     if (flavorVolume > 0) {
-        const flavor = flavorDatabase[flavorType];
         const flavorRatioValue = document.getElementById('flavorRatio').value;
         ingredients.push({
-            name: `${flavor.name} příchuť (VG/PG ${flavorRatioValue})`,
+            ingredientKey: 'flavor',
+            flavorType: flavorType,
+            params: {
+                vgpg: flavorRatioValue
+            },
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
@@ -2924,7 +3210,7 @@ function calculateMix() {
     // Add carrier liquids (no drops for these - measured in ml)
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG) - nosná látka',
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -2934,7 +3220,7 @@ function calculateMix() {
 
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG) - nosná látka',
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -2949,7 +3235,8 @@ function calculateMix() {
     const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
     const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
 
-    // Display results
+    // Display results - pro formulář Liquid zobrazí výsledky i nepřihlášeným
+    // Modál se zobrazí až při pokusu o uložení receptu
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, actualTotal, actualVg, actualPg);
     showPage('results');
 }
@@ -2960,13 +3247,16 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     document.getElementById('resultNicotine').textContent = `${nicotine} mg/ml`;
 
     // Uložit data receptu pro možnost pozdějšího uložení
+    // Ukládáme klíče a parametry pro dynamický překlad
     storeCurrentRecipe({
         totalAmount: total,
         vgPercent: vg,
         pgPercent: pg,
         nicotine: nicotine,
         ingredients: ingredients.map(ing => ({
-            name: ing.name,
+            ingredientKey: ing.ingredientKey,
+            flavorType: ing.flavorType,
+            params: ing.params,
             volume: ing.volume,
             percent: ing.percent,
             drops: ing.drops
@@ -2991,8 +3281,11 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
             dropsDisplay = String(drops);
         }
 
+        // Dynamicky přeložit název ingredience
+        const ingredientName = getIngredientName(ing);
+
         row.innerHTML = `
-            <td class="ingredient-name">${ing.name}</td>
+            <td class="ingredient-name">${ingredientName}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
             <td class="ingredient-drops">${dropsDisplay}</td>
             <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
@@ -3005,7 +3298,7 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
-        <td class="ingredient-name">CELKEM</td>
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
         <td class="ingredient-drops">-</td>
         <td class="ingredient-percent">100%</td>
@@ -3020,11 +3313,11 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     const notesEl = document.querySelector('.results-notes ul');
     if (notesEl) {
         notesEl.innerHTML = `
-            <li>Nejprve přidejte nikotin (pokud používáte) - pracujte v rukavicích!</li>
-            <li>Poté přidejte příchutě</li>
-            <li>Nakonec doplňte PG a VG nosné látky</li>
-            <li>Důkladně protřepejte a nechte zrát 1-2 týdny</li>
-            <li>Skutečný poměr VG/PG ve směsi: ${actualVgPercent}% / ${actualPgPercent}%</li>
+            <li>${t('results.notes_1', 'Nejprve přidejte nikotin (pokud používáte)')} - ${t('results.dilute_notes_1', 'pracujte v rukavicích!')}</li>
+            <li>${t('results.notes_2', 'Poté přidejte příchutě')}</li>
+            <li>${t('results.notes_3', 'Nakonec doplňte PG a VG')}</li>
+            <li>${t('results.notes_4', 'Důkladně protřepejte a nechte zrát 1-2 týdny')}</li>
+            <li>${t('results.actual_ratio', 'Skutečný poměr VG/PG ve směsi')}: ${actualVgPercent}% / ${actualPgPercent}%</li>
         `;
     }
 }
@@ -3231,7 +3524,7 @@ function updateDiluteSourceRatioDisplay() {
         const descEl = document.getElementById('diluteSourceDescription');
         const trackEl = document.getElementById('diluteSourceTrack');
         if (descEl) {
-            descEl.textContent = desc.text;
+            descEl.textContent = getRatioDescriptionText(vg);
             descEl.style.color = desc.color;
             descEl.style.borderLeftColor = desc.color;
         }
@@ -3287,7 +3580,7 @@ function updateDiluteTargetRatioDisplay() {
         const descEl = document.getElementById('diluteTargetDescription');
         const trackEl = document.getElementById('diluteTargetTrack');
         if (descEl) {
-            descEl.textContent = desc.text;
+            descEl.textContent = getRatioDescriptionText(vg);
             descEl.style.color = desc.color;
             descEl.style.borderLeftColor = desc.color;
         }
@@ -3341,7 +3634,10 @@ function updateDiluteRatioLimits() {
     // Show warning if limited
     if (warningEl) {
         if (diluteLimits.min > 0 || diluteLimits.max < 100) {
-            warningEl.textContent = `Poměr omezen na ${diluteLimits.min}–${diluteLimits.max}% VG kvůli poměru v nikotinové bázi.`;
+            const warningText = t('ratio_warning.limited_nicotine', 'Poměr omezen na {min}–{max}% VG kvůli poměru v nikotinové bázi.')
+                .replace('{min}', diluteLimits.min)
+                .replace('{max}', diluteLimits.max);
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -3368,7 +3664,9 @@ function updateDiluteCalculation() {
     
     if (targetStrength > baseStrength && baseStrength > 0) {
         if (warningEl) {
-            warningEl.textContent = `Cílová síla nemůže být vyšší než zdrojová (${baseStrength} mg/ml).`;
+            const warningText = t('dilute.target_too_high', 'Cílová síla nemůže být vyšší než zdrojová ({strength} mg/ml).')
+                .replace('{strength}', baseStrength);
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         }
         document.getElementById('diluteTargetStrength').value = baseStrength;
@@ -3427,30 +3725,39 @@ function calculateDilution() {
     if (pureVgNeeded < 0) pureVgNeeded = 0;
     if (purePgNeeded < 0) purePgNeeded = 0;
     
-    // Build results
-    const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
+    // Build results - ukládáme klíče pro dynamický překlad
     const ingredients = [];
-    
+
     ingredients.push({
-        name: `${nicotineName} (${baseStrength} mg/ml, VG/PG ${sourceVg}/${sourcePg})`,
+        ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+        params: {
+            strength: baseStrength,
+            vgpg: `${sourceVg}/${sourcePg}`
+        },
         volume: nicotineVolume,
         percent: (nicotineVolume / totalAmount) * 100
     });
-    
+
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG)',
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100
         });
     }
-    
+
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG)',
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100
         });
+    }
+
+    // Kontrola přihlášení před zobrazením výsledků - Ředění nikotinové báze vyžaduje přihlášení
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
+        return;
     }
     
     // Display results
@@ -3462,28 +3769,30 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
     document.getElementById('diluteResultTotal').textContent = `${total.toFixed(1)} ml`;
     document.getElementById('diluteResultRatio').textContent = `${vg}:${pg}`;
     document.getElementById('diluteResultNicotine').textContent = `${nicotine} mg/ml`;
-    
+
     const tbody = document.getElementById('diluteResultsBody');
     tbody.innerHTML = '';
-    
+
     let runningTotal = 0;
-    
+
     ingredients.forEach(ing => {
         const row = document.createElement('tr');
+        // Dynamicky přeložit název ingredience
+        const ingredientName = getIngredientName(ing);
         row.innerHTML = `
-            <td class="ingredient-name">${ing.name}</td>
+            <td class="ingredient-name">${ingredientName}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
             <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
         `;
         tbody.appendChild(row);
         runningTotal += ing.volume;
     });
-    
+
     // Add total row
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
-        <td class="ingredient-name">CELKEM</td>
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
         <td class="ingredient-percent">100%</td>
     `;
@@ -3497,6 +3806,8 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
 let currentFormTab = 'liquid';
 
 function switchFormTab(tabName) {
+    // Liquid PRO - modál se zobrazí až při kliknutí na MIXUJ, ne při přepnutí záložky
+    
     currentFormTab = tabName;
     
     // Update tab buttons
@@ -3600,7 +3911,7 @@ function updateSvNicotineDisplay() {
     
     const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
     if (desc) {
-        descEl.textContent = desc.text;
+        descEl.textContent = getNicotineDescriptionText(value);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
         // Set color on container so unit has same color as number
@@ -3633,17 +3944,17 @@ function updateSvRatioDisplay() {
     const slider = document.getElementById('svVgPgRatio');
     const vg = parseInt(slider.value);
     const pg = 100 - vg;
-    
+
     document.getElementById('svVgValue').textContent = vg;
     document.getElementById('svPgValue').textContent = pg;
-    
+
     const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
     if (desc) {
         const descEl = document.getElementById('svRatioDescription');
-        descEl.textContent = desc.text;
+        descEl.textContent = getRatioDescriptionText(vg);
         descEl.style.color = desc.color;
         descEl.style.borderLeftColor = desc.color;
-        document.getElementById('svSliderTrack').style.background = 
+        document.getElementById('svSliderTrack').style.background =
             `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
     }
 }
@@ -3726,12 +4037,24 @@ function updateSvVgPgLimits() {
         if (svVgPgLimits.min > 0 || svVgPgLimits.max < 100) {
             const reasons = [];
             if (nicotineVolume > 0) {
-                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+                const nicReason = t('ratio_warning.reason_nicotine', 'nikotinová báze ({strength} mg/ml, VG/PG {vg}/{pg})')
+                    .replace('{strength}', baseNicotine)
+                    .replace('{vg}', nicVgPercent)
+                    .replace('{pg}', nicPgPercent);
+                reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorVolume} ml, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+                const flavorReason = t('ratio_warning.reason_flavor_volume', 'příchuť ({volume} ml, VG/PG {vg}/{pg})')
+                    .replace('{volume}', flavorVolume)
+                    .replace('{vg}', flavorVgPercent)
+                    .replace('{pg}', flavorPgPercent);
+                reasons.push(flavorReason);
             }
-            warningEl.textContent = `Poměr omezen na ${svVgPgLimits.min}–${svVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
+            const warningText = t('ratio_warning.limited_to', 'Poměr omezen na {min}–{max}% VG kvůli: {reasons}.')
+                .replace('{min}', svVgPgLimits.min)
+                .replace('{max}', svVgPgLimits.max)
+                .replace('{reasons}', reasons.join(', '));
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -3819,23 +4142,29 @@ function calculateShakeVape() {
     
     const DROPS_PER_ML = 20;
     const ingredients = [];
-    
+
     // Flavor first (already in bottle)
     if (flavorVolume > 0) {
         ingredients.push({
-            name: `Příchuť (již v lahvičce, VG/PG ${svFlavorRatio})`,
+            ingredientKey: 'shakevape_flavor',
+            params: {
+                vgpg: svFlavorRatio
+            },
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
             showDrops: true
         });
     }
-    
+
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
         const nicotineRatioValue = document.getElementById('svNicotineRatio').value;
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicotineRatioValue})`,
+            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            params: {
+                strength: baseNicotine,
+                vgpg: nicotineRatioValue
+            },
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
@@ -3845,7 +4174,7 @@ function calculateShakeVape() {
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG) - nosná látka',
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -3855,7 +4184,7 @@ function calculateShakeVape() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG) - nosná látka',
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -3866,6 +4195,8 @@ function calculateShakeVape() {
     const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
     const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
     
+    // Display results - pro formulář Shake and Vape zobrazí výsledky i nepřihlášeným
+    // Modál se zobrazí až při pokusu o uložení receptu
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
     showPage('results');
 }
@@ -3969,61 +4300,88 @@ function updateProNicotineDisplay() {
     updateProVgPgLimits();
 }
 
-function updateProFlavorType() {
-    const type = document.getElementById('proFlavorType').value;
-    const strengthContainer = document.getElementById('proFlavorStrengthContainer');
+// ============================================
+// MULTI-FLAVOR PRO SYSTEM (až 4 příchutě)
+// ============================================
+
+// Stav pro multi-flavor
+let proFlavorCount = 1;
+const MAX_PRO_FLAVORS = 4;
+
+// Aktualizovat typ příchutě pro daný index
+function updateProFlavorType(flavorIndex = 1) {
+    const type = document.getElementById(`proFlavorType${flavorIndex}`).value;
+    const strengthContainer = document.getElementById(`proFlavorStrengthContainer${flavorIndex}`);
     
     if (type === 'none') {
         strengthContainer.classList.add('hidden');
     } else {
         strengthContainer.classList.remove('hidden');
         const flavor = flavorDatabase[type];
-        document.getElementById('proFlavorStrength').value = flavor.ideal;
-        updateProFlavorDisplay();
+        document.getElementById(`proFlavorStrength${flavorIndex}`).value = flavor.ideal;
+        updateProFlavorDisplay(flavorIndex);
     }
     
+    updateProTotalFlavorPercent();
     updateProVgPgLimits();
 }
 
-function adjustProFlavor(change) {
-    const slider = document.getElementById('proFlavorStrength');
+// Upravit sílu příchutě
+function adjustProFlavor(flavorIndex, change) {
+    const slider = document.getElementById(`proFlavorStrength${flavorIndex}`);
     let newValue = parseInt(slider.value) + change;
     newValue = Math.max(0, Math.min(30, newValue));
     slider.value = newValue;
-    updateProFlavorDisplay();
+    updateProFlavorDisplay(flavorIndex);
+    updateProTotalFlavorPercent();
 }
 
-function updateProFlavorDisplay() {
-    const value = parseInt(document.getElementById('proFlavorStrength').value);
-    const type = document.getElementById('proFlavorType').value;
-    const flavor = flavorDatabase[type];
-    const displayEl = document.getElementById('proFlavorValue');
-    const displayContainer = displayEl.parentElement;
-    const trackEl = document.getElementById('proFlavorTrack');
+// Aktualizovat sílu příchutě při změně slideru
+function updateProFlavorStrength(flavorIndex) {
+    updateProFlavorDisplay(flavorIndex);
+    updateProTotalFlavorPercent();
+}
 
+// Zobrazení hodnoty příchutě
+function updateProFlavorDisplay(flavorIndex = 1) {
+    const slider = document.getElementById(`proFlavorStrength${flavorIndex}`);
+    const type = document.getElementById(`proFlavorType${flavorIndex}`).value;
+    
+    if (!slider || type === 'none') return;
+    
+    const value = parseInt(slider.value);
+    const flavor = flavorDatabase[type];
+    const displayEl = document.getElementById(`proFlavorValue${flavorIndex}`);
+    const displayContainer = displayEl?.parentElement;
+    const trackEl = document.getElementById(`proFlavorTrack${flavorIndex}`);
+
+    if (!displayEl) return;
+    
     displayEl.textContent = value;
 
     let color;
     if (value < flavor.min) {
         color = '#ffaa00';
-        trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
+        if (trackEl) trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
     } else if (value > flavor.max) {
         color = '#ff0044';
-        trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
+        if (trackEl) trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
     } else {
         color = '#00cc66';
-        trackEl.style.background = `linear-gradient(90deg, #00cc66, #00aaff)`;
+        if (trackEl) trackEl.style.background = `linear-gradient(90deg, #00cc66, #00aaff)`;
     }
 
-    // Set color on container so unit has same color as number
     displayEl.style.color = 'inherit';
-    displayContainer.style.color = color;
+    if (displayContainer) displayContainer.style.color = color;
 
     updateProVgPgLimits();
 }
 
-function adjustProFlavorRatio(change) {
-    const slider = document.getElementById('proFlavorRatioSlider');
+// Upravit VG/PG poměr příchutě
+function adjustProFlavorRatio(flavorIndex, change) {
+    const slider = document.getElementById(`proFlavorRatioSlider${flavorIndex}`);
+    if (!slider) return;
+    
     let currentValue = parseInt(slider.value);
     
     let newValue;
@@ -4035,26 +4393,268 @@ function adjustProFlavorRatio(change) {
     
     newValue = Math.max(0, Math.min(100, newValue));
     slider.value = newValue;
-    updateProFlavorRatioDisplay();
+    updateProFlavorRatioDisplay(flavorIndex);
 }
 
-function updateProFlavorRatioDisplay() {
-    const slider = document.getElementById('proFlavorRatioSlider');
+// Zobrazit VG/PG poměr příchutě
+function updateProFlavorRatioDisplay(flavorIndex = 1) {
+    const slider = document.getElementById(`proFlavorRatioSlider${flavorIndex}`);
+    if (!slider) return;
+    
     const vg = parseInt(slider.value);
     const pg = 100 - vg;
     
-    document.getElementById('proFlavorVgValue').textContent = vg;
-    document.getElementById('proFlavorPgValue').textContent = pg;
+    const vgEl = document.getElementById(`proFlavorVgValue${flavorIndex}`);
+    const pgEl = document.getElementById(`proFlavorPgValue${flavorIndex}`);
+    
+    if (vgEl) vgEl.textContent = vg;
+    if (pgEl) pgEl.textContent = pg;
     
     const desc = ratioDescriptions.find(d => vg >= d.vgMin && vg <= d.vgMax);
     if (desc) {
-        const trackEl = document.getElementById('proFlavorTrackRatio');
+        const trackEl = document.getElementById(`proFlavorTrackRatio${flavorIndex}`);
         if (trackEl) {
             trackEl.style.background = `linear-gradient(90deg, ${desc.color}, ${adjustColorBrightness(desc.color, 30)})`;
         }
     }
     
     updateProVgPgLimits();
+}
+
+// Přidat další příchuť (max 4)
+function addProFlavor() {
+    if (proFlavorCount >= MAX_PRO_FLAVORS) {
+        return;
+    }
+    
+    proFlavorCount++;
+    const container = document.getElementById('proAdditionalFlavorsContainer');
+    
+    const flavorHtml = `
+        <div class="form-group pro-flavor-group" id="proFlavorGroup${proFlavorCount}">
+            <button type="button" class="remove-flavor-btn" onclick="removeProFlavor(${proFlavorCount})" title="${window.i18n?.t('form.remove_flavor') || 'Odebrat příchuť'}">×</button>
+            <label class="form-label">
+                <span data-i18n="form.flavor_label">${window.i18n?.t('form.flavor_label') || 'Příchuť'}</span>
+                <span class="flavor-number"> ${proFlavorCount}</span>
+            </label>
+            <div class="flavor-container">
+                <select id="proFlavorType${proFlavorCount}" class="neon-select pro-flavor-select" data-flavor-index="${proFlavorCount}" onchange="updateProFlavorType(${proFlavorCount})">
+                    <option value="none" data-i18n="form.flavor_none">${window.i18n?.t('form.flavor_none') || 'Žádná (bez příchutě)'}</option>
+                    <option value="fruit" data-i18n="form.flavor_fruit">${window.i18n?.t('form.flavor_fruit') || 'Ovoce'}</option>
+                    <option value="citrus" data-i18n="form.flavor_citrus">${window.i18n?.t('form.flavor_citrus') || 'Citrónové'}</option>
+                    <option value="berry" data-i18n="form.flavor_berry">${window.i18n?.t('form.flavor_berry') || 'Bobulové'}</option>
+                    <option value="tropical" data-i18n="form.flavor_tropical">${window.i18n?.t('form.flavor_tropical') || 'Tropické'}</option>
+                    <option value="tobacco" data-i18n="form.flavor_tobacco">${window.i18n?.t('form.flavor_tobacco') || 'Tabákové'}</option>
+                    <option value="menthol" data-i18n="form.flavor_menthol">${window.i18n?.t('form.flavor_menthol') || 'Mentol'}</option>
+                    <option value="candy" data-i18n="form.flavor_candy">${window.i18n?.t('form.flavor_candy') || 'Sladkosti'}</option>
+                    <option value="dessert" data-i18n="form.flavor_dessert">${window.i18n?.t('form.flavor_dessert') || 'Dezerty'}</option>
+                    <option value="bakery" data-i18n="form.flavor_bakery">${window.i18n?.t('form.flavor_bakery') || 'Zákusky'}</option>
+                    <option value="biscuit" data-i18n="form.flavor_biscuit">${window.i18n?.t('form.flavor_biscuit') || 'Piškotové'}</option>
+                    <option value="drink" data-i18n="form.flavor_drink">${window.i18n?.t('form.flavor_drink') || 'Nápojové'}</option>
+                    <option value="tobaccosweet" data-i18n="form.flavor_tobaccosweet">${window.i18n?.t('form.flavor_tobaccosweet') || 'Tabák + sladké'}</option>
+                    <option value="nuts" data-i18n="form.flavor_nuts">${window.i18n?.t('form.flavor_nuts') || 'Oříškové'}</option>
+                    <option value="spice" data-i18n="form.flavor_spice">${window.i18n?.t('form.flavor_spice') || 'Kořeněné'}</option>
+                </select>
+                <div id="proFlavorStrengthContainer${proFlavorCount}" class="hidden">
+                    <div class="slider-container small">
+                        <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, -1)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="proFlavorStrength${proFlavorCount}" min="0" max="30" value="10" class="flavor-slider pro-flavor-slider" data-flavor-index="${proFlavorCount}" oninput="updateProFlavorStrength(${proFlavorCount})">
+                            <div class="slider-track flavor-track" id="proFlavorTrack${proFlavorCount}"></div>
+                        </div>
+                        <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, 1)">▶</button>
+                    </div>
+                    <div class="flavor-display">
+                        <span id="proFlavorValue${proFlavorCount}">10</span>%
+                    </div>
+                    <div class="form-group-sub">
+                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG v koncentrátu příchutě'}</label>
+                        <div class="ratio-container compact">
+                            <div class="ratio-labels">
+                                <span class="ratio-label left" data-i18n="form.vg_label">${window.i18n?.t('form.vg_label') || 'Dým (VG)'}</span>
+                                <span class="ratio-label right" data-i18n="form.pg_label">${window.i18n?.t('form.pg_label') || 'Chuť (PG)'}</span>
+                            </div>
+                            <div class="slider-container">
+                                <button class="slider-btn small" onclick="adjustProFlavorRatio(${proFlavorCount}, -5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="proFlavorRatioSlider${proFlavorCount}" min="0" max="100" value="0" class="ratio-slider pro-flavor-ratio" data-flavor-index="${proFlavorCount}" oninput="updateProFlavorRatioDisplay(${proFlavorCount})">
+                                    <div class="slider-track" id="proFlavorTrackRatio${proFlavorCount}"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustProFlavorRatio(${proFlavorCount}, 5)">▶</button>
+                            </div>
+                            <div class="ratio-display small">
+                                <span id="proFlavorVgValue${proFlavorCount}">0</span>:<span id="proFlavorPgValue${proFlavorCount}">100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', flavorHtml);
+    
+    // Skrýt tlačítko "Přidat" pokud je max příchutí
+    if (proFlavorCount >= MAX_PRO_FLAVORS) {
+        document.getElementById('proAddFlavorGroup').classList.add('hidden');
+    }
+    
+    // Aktualizovat hint
+    updateProFlavorCountHint();
+}
+
+// Odebrat příchuť
+function removeProFlavor(flavorIndex) {
+    const flavorGroup = document.getElementById(`proFlavorGroup${flavorIndex}`);
+    if (flavorGroup) {
+        flavorGroup.remove();
+    }
+    
+    proFlavorCount--;
+    
+    // Renumber remaining flavors
+    renumberProFlavors();
+    
+    // Zobrazit tlačítko "Přidat" pokud je méně než max
+    if (proFlavorCount < MAX_PRO_FLAVORS) {
+        document.getElementById('proAddFlavorGroup').classList.remove('hidden');
+    }
+    
+    updateProFlavorCountHint();
+    updateProTotalFlavorPercent();
+    updateProVgPgLimits();
+}
+
+// Přečíslovat příchutě po odebrání
+function renumberProFlavors() {
+    const container = document.getElementById('proAdditionalFlavorsContainer');
+    const groups = container.querySelectorAll('.pro-flavor-group');
+    
+    groups.forEach((group, index) => {
+        const newIndex = index + 2; // Začínáme od 2 (1 je vždy první příchuť)
+        const oldId = group.id;
+        const oldIndex = parseInt(oldId.replace('proFlavorGroup', ''));
+        
+        if (oldIndex !== newIndex) {
+            // Aktualizovat ID skupiny
+            group.id = `proFlavorGroup${newIndex}`;
+            
+            // Aktualizovat číslo příchutě v labelu
+            const flavorNumber = group.querySelector('.flavor-number');
+            if (flavorNumber) flavorNumber.textContent = ` ${newIndex}`;
+            
+            // Aktualizovat všechny ID a reference uvnitř
+            updateFlavorElementIds(group, oldIndex, newIndex);
+        }
+    });
+}
+
+// Pomocná funkce pro aktualizaci ID elementů
+function updateFlavorElementIds(container, oldIndex, newIndex) {
+    const elementsToUpdate = [
+        'proFlavorType', 'proFlavorStrengthContainer', 'proFlavorStrength',
+        'proFlavorTrack', 'proFlavorValue', 'proFlavorRatioSlider',
+        'proFlavorTrackRatio', 'proFlavorVgValue', 'proFlavorPgValue'
+    ];
+    
+    elementsToUpdate.forEach(prefix => {
+        const el = container.querySelector(`#${prefix}${oldIndex}`);
+        if (el) {
+            el.id = `${prefix}${newIndex}`;
+            
+            // Aktualizovat data-flavor-index
+            if (el.dataset.flavorIndex) {
+                el.dataset.flavorIndex = newIndex;
+            }
+            
+            // Aktualizovat onchange/oninput
+            if (el.hasAttribute('onchange')) {
+                el.setAttribute('onchange', el.getAttribute('onchange').replace(oldIndex, newIndex));
+            }
+            if (el.hasAttribute('oninput')) {
+                el.setAttribute('oninput', el.getAttribute('oninput').replace(oldIndex, newIndex));
+            }
+        }
+    });
+    
+    // Aktualizovat onclick na tlačítkách
+    container.querySelectorAll('button').forEach(btn => {
+        const onclick = btn.getAttribute('onclick');
+        if (onclick && onclick.includes(oldIndex.toString())) {
+            btn.setAttribute('onclick', onclick.replace(new RegExp(oldIndex, 'g'), newIndex));
+        }
+    });
+}
+
+// Aktualizovat hint o počtu příchutí
+function updateProFlavorCountHint() {
+    const hint = document.getElementById('proFlavorCountHint');
+    if (hint) {
+        const remaining = MAX_PRO_FLAVORS - proFlavorCount;
+        if (remaining > 0) {
+            hint.textContent = `(${window.i18n?.t('form.flavor_remaining', { count: remaining }) || `zbývá ${remaining}`})`;
+        } else {
+            hint.textContent = `(${window.i18n?.t('form.flavor_max_reached') || 'maximum dosaženo'})`;
+        }
+    }
+}
+
+// Vypočítat celkové procento příchutí
+function updateProTotalFlavorPercent() {
+    let total = 0;
+    
+    for (let i = 1; i <= MAX_PRO_FLAVORS; i++) {
+        const typeEl = document.getElementById(`proFlavorType${i}`);
+        const strengthEl = document.getElementById(`proFlavorStrength${i}`);
+        
+        if (typeEl && strengthEl && typeEl.value !== 'none') {
+            total += parseInt(strengthEl.value) || 0;
+        }
+    }
+    
+    const totalEl = document.getElementById('proTotalFlavorPercent');
+    const warningEl = document.getElementById('proFlavorTotalWarning');
+    
+    if (totalEl) {
+        totalEl.textContent = total;
+    }
+    
+    if (warningEl) {
+        if (total > 30) {
+            warningEl.classList.remove('hidden');
+            warningEl.classList.add('error');
+            warningEl.textContent = window.i18n?.t('form.flavor_total_error') || '(příliš mnoho příchutí!)';
+        } else if (total > 25) {
+            warningEl.classList.remove('hidden', 'error');
+            warningEl.textContent = window.i18n?.t('form.flavor_total_warning') || '(doporučeno max 25%)';
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
+    
+    return total;
+}
+
+// Získat všechny příchutě pro výpočet
+function getProFlavorsData() {
+    const flavors = [];
+    
+    for (let i = 1; i <= MAX_PRO_FLAVORS; i++) {
+        const typeEl = document.getElementById(`proFlavorType${i}`);
+        const strengthEl = document.getElementById(`proFlavorStrength${i}`);
+        const ratioEl = document.getElementById(`proFlavorRatioSlider${i}`);
+        
+        if (typeEl && typeEl.value !== 'none') {
+            flavors.push({
+                index: i,
+                type: typeEl.value,
+                percent: parseInt(strengthEl?.value) || 10,
+                vgRatio: parseInt(ratioEl?.value) || 0
+            });
+        }
+    }
+    
+    return flavors;
 }
 
 function adjustProRatio(change) {
@@ -4108,33 +4708,38 @@ function updateProVgPgLimits() {
     const nicotineType = document.getElementById('proNicotineType').value;
     const targetNicotine = parseFloat(document.getElementById('proTargetNicotine').value) || 0;
     const baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength').value) || 0;
-    const flavorType = document.getElementById('proFlavorType').value;
-    const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('proFlavorStrength').value) : 0;
+    
+    // Získat data všech příchutí (multi-flavor support)
+    const flavorsData = typeof getProFlavorsData === 'function' ? getProFlavorsData() : [];
+    const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
     
     let nicotineVolume = 0;
     if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
         nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
     }
     
-    const flavorVolume = (flavorPercent / 100) * totalAmount;
-    
-    // Get VG/PG from sliders (using Number() to properly handle 0 as valid value)
+    // Get VG/PG from nicotine slider
     const nicSliderValue = document.getElementById('proNicotineRatioSlider').value;
     const nicVgPercent = nicSliderValue !== '' ? Number(nicSliderValue) : 50;
     const nicPgPercent = 100 - nicVgPercent;
-
-    const flavorSliderValue = flavorType !== 'none' ? document.getElementById('proFlavorRatioSlider').value : '0';
-    const flavorVgPercent = flavorSliderValue !== '' ? Number(flavorSliderValue) : 0;
-    const flavorPgPercent = 100 - flavorVgPercent;
     
     const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
     
-    const flavorVgVolume = flavorVolume * (flavorVgPercent / 100);
-    const flavorPgVolume = flavorVolume * (flavorPgPercent / 100);
+    // Spočítat VG/PG ze všech příchutí
+    let totalFlavorVgVolume = 0;
+    let totalFlavorPgVolume = 0;
     
-    const fixedPgVolume = nicotinePgVolume + flavorPgVolume;
-    const fixedVgVolume = nicotineVgVolume + flavorVgVolume;
+    flavorsData.forEach(flavor => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        const flavorVg = flavor.vgRatio;
+        const flavorPg = 100 - flavorVg;
+        totalFlavorVgVolume += flavorVolume * (flavorVg / 100);
+        totalFlavorPgVolume += flavorVolume * (flavorPg / 100);
+    });
+    
+    const fixedPgVolume = nicotinePgVolume + totalFlavorPgVolume;
+    const fixedVgVolume = nicotineVgVolume + totalFlavorVgVolume;
     
     const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
     const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
@@ -4160,12 +4765,22 @@ function updateProVgPgLimits() {
         if (proVgPgLimits.min > 0 || proVgPgLimits.max < 100) {
             const reasons = [];
             if (nicotineVolume > 0) {
-                reasons.push(`nikotinová báze (${nicVgPercent}/${nicPgPercent})`);
+                const nicReason = t('ratio_warning.reason_nicotine', 'nikotinová báze ({strength} mg/ml, VG/PG {vg}/{pg})')
+                    .replace('{strength}', baseNicotine)
+                    .replace('{vg}', nicVgPercent)
+                    .replace('{pg}', nicPgPercent);
+                reasons.push(nicReason);
             }
-            if (flavorVolume > 0) {
-                reasons.push(`příchuť (${flavorPercent}%, VG/PG ${flavorVgPercent}/${flavorPgPercent})`);
+            if (totalFlavorPercent > 0) {
+                const flavorReason = t('ratio_warning.reason_flavor_multi', 'příchutě (celkem {percent}%)')
+                    .replace('{percent}', totalFlavorPercent);
+                reasons.push(flavorReason);
             }
-            warningEl.textContent = `Poměr omezen na ${proVgPgLimits.min}–${proVgPgLimits.max}% VG kvůli: ${reasons.join(', ')}.`;
+            const warningText = t('ratio_warning.limited_to', 'Poměr omezen na {min}–{max}% VG kvůli: {reasons}.')
+                .replace('{min}', proVgPgLimits.min)
+                .replace('{max}', proVgPgLimits.max)
+                .replace('{reasons}', reasons.join(', '));
+            warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
@@ -4182,25 +4797,23 @@ function calculateProMix() {
     const nicotineType = document.getElementById('proNicotineType').value;
     const targetNicotine = parseFloat(document.getElementById('proTargetNicotine').value) || 0;
     const baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength').value) || 0;
-    const flavorType = document.getElementById('proFlavorType').value;
-    const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('proFlavorStrength').value) : 0;
+    
+    // Získat data všech příchutí (multi-flavor support)
+    const flavorsData = typeof getProFlavorsData === 'function' ? getProFlavorsData() : [];
+    const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
+    const totalFlavorVolume = (totalFlavorPercent / 100) * totalAmount;
     
     let nicotineVolume = 0;
     if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
         nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
     }
     
-    const flavorVolume = (flavorPercent / 100) * totalAmount;
-    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    const remainingVolume = totalAmount - nicotineVolume - totalFlavorVolume;
     
-    // Get VG/PG ratios from sliders (using Number() to properly handle 0 as valid value)
+    // Get VG/PG ratios from nicotine slider
     const nicSliderValue = document.getElementById('proNicotineRatioSlider').value;
     const nicVgPercent = nicSliderValue !== '' ? Number(nicSliderValue) : 50;
     const nicPgPercent = 100 - nicVgPercent;
-
-    const flavorSliderValue = flavorType !== 'none' ? document.getElementById('proFlavorRatioSlider').value : '0';
-    const flavorVgPercent = flavorSliderValue !== '' ? Number(flavorSliderValue) : 0;
-    const flavorPgPercent = 100 - flavorVgPercent;
     
     let nicotineVgContent = 0;
     let nicotinePgContent = 0;
@@ -4210,14 +4823,21 @@ function calculateProMix() {
         nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
     }
     
-    const flavorVgContent = flavorVolume * (flavorVgPercent / 100);
-    const flavorPgContent = flavorVolume * (flavorPgPercent / 100);
+    // Spočítat VG/PG obsah ze všech příchutí
+    let totalFlavorVgContent = 0;
+    let totalFlavorPgContent = 0;
+    
+    flavorsData.forEach(flavor => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        totalFlavorVgContent += flavorVolume * (flavor.vgRatio / 100);
+        totalFlavorPgContent += flavorVolume * ((100 - flavor.vgRatio) / 100);
+    });
     
     const targetVgTotal = (vgPercent / 100) * totalAmount;
     const targetPgTotal = (pgPercent / 100) * totalAmount;
     
-    let pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
-    let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
+    let pureVgNeeded = targetVgTotal - nicotineVgContent - totalFlavorVgContent;
+    let purePgNeeded = targetPgTotal - nicotinePgContent - totalFlavorPgContent;
     
     if (pureVgNeeded < 0) pureVgNeeded = 0;
     if (purePgNeeded < 0) purePgNeeded = 0;
@@ -4237,32 +4857,45 @@ function calculateProMix() {
     
     const DROPS_PER_ML = 20;
     const ingredients = [];
-    
+
     if (nicotineVolume > 0) {
-        const nicotineName = nicotineType === 'salt' ? 'Nikotinová sůl' : 'Nikotin booster';
         ingredients.push({
-            name: `${nicotineName} (${baseNicotine} mg/ml, VG/PG ${nicVgPercent}/${nicPgPercent})`,
+            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            params: {
+                strength: baseNicotine,
+                vgpg: `${nicVgPercent}/${nicPgPercent}`
+            },
             volume: nicotineVolume,
             percent: (nicotineVolume / totalAmount) * 100,
             drops: Math.round(nicotineVolume * DROPS_PER_ML),
             showDrops: true
         });
     }
-    
-    if (flavorVolume > 0) {
-        const flavor = flavorDatabase[flavorType];
+
+    // Přidat všechny příchutě jako ingredience
+    flavorsData.forEach((flavor, index) => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        const flavorVgPercent = flavor.vgRatio;
+        const flavorPgPercent = 100 - flavorVgPercent;
+        
         ingredients.push({
-            name: `${flavor.name} příchuť (VG/PG ${flavorVgPercent}/${flavorPgPercent})`,
+            ingredientKey: 'flavor',
+            flavorType: flavor.type,
+            flavorIndex: flavor.index,
+            flavorNumber: index + 1,
+            params: {
+                vgpg: `${flavorVgPercent}/${flavorPgPercent}`
+            },
             volume: flavorVolume,
             percent: (flavorVolume / totalAmount) * 100,
             drops: Math.round(flavorVolume * DROPS_PER_ML),
             showDrops: true
         });
-    }
+    });
     
     if (purePgNeeded > 0.01) {
         ingredients.push({
-            name: 'Propylenglykol (PG) - nosná látka',
+            ingredientKey: 'pg',
             volume: purePgNeeded,
             percent: (purePgNeeded / totalAmount) * 100,
             drops: null,
@@ -4272,7 +4905,7 @@ function calculateProMix() {
     
     if (pureVgNeeded > 0.01) {
         ingredients.push({
-            name: 'Rostlinný glycerin (VG) - nosná látka',
+            ingredientKey: 'vg',
             volume: pureVgNeeded,
             percent: (pureVgNeeded / totalAmount) * 100,
             drops: null,
@@ -4280,11 +4913,339 @@ function calculateProMix() {
         });
     }
     
-    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
-    const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
+    const actualVg = pureVgNeeded + nicotineVgContent + totalFlavorVgContent;
+    const actualPg = purePgNeeded + nicotinePgContent + totalFlavorPgContent;
+    
+    // Uložit data příchutí pro recept
+    window.lastProFlavorsData = flavorsData;
+    
+    // Kontrola přihlášení před zobrazením výsledků - Liquid PRO vyžaduje přihlášení
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
+        return;
+    }
     
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
     showPage('results');
+}
+
+// =========================================
+// SUBSCRIPTION / PŘEDPLATNÉ
+// =========================================
+
+// Globální stav předplatného
+let subscriptionData = null;
+let userLocation = null;
+
+// Zkontrolovat stav předplatného
+async function checkSubscriptionStatus() {
+    if (!window.Clerk?.user) return;
+
+    try {
+        console.log('Checking subscription status...');
+        
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await getClerkToken()}`,
+            },
+            body: JSON.stringify({ action: 'check' })
+        });
+
+        if (!response.ok) {
+            console.error('Subscription check failed:', response.status);
+            return;
+        }
+
+        const result = await response.json();
+        console.log('Subscription status:', result);
+
+        subscriptionData = result;
+
+        if (!result.valid) {
+            // Uživatel nemá platné předplatné - zobrazit platební modal
+            console.log('No valid subscription, showing payment modal');
+            showSubscriptionModal();
+        } else {
+            // Aktualizovat UI v profilu
+            updateSubscriptionStatusUI(result);
+        }
+    } catch (error) {
+        console.error('Error checking subscription:', error);
+    }
+}
+
+// Získat Supabase URL
+function getSupabaseUrl() {
+    return 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
+}
+
+// Získat Clerk JWT token
+async function getClerkToken() {
+    if (!window.Clerk?.session) return null;
+    try {
+        const token = await window.Clerk.session.getToken();
+        return token;
+    } catch (error) {
+        console.error('Error getting Clerk token:', error);
+        return null;
+    }
+}
+
+// Zobrazit modal předplatného
+async function showSubscriptionModal() {
+    const modal = document.getElementById('subscriptionModal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+
+    // Skrýt sekce, zobrazit loader
+    document.getElementById('locationDetection').classList.remove('hidden');
+    document.getElementById('pricingInfo').classList.add('hidden');
+    document.getElementById('termsSection').classList.add('hidden');
+    document.getElementById('paymentSection').classList.add('hidden');
+    document.getElementById('subscriptionError').classList.add('hidden');
+
+    // Detekovat lokaci
+    await detectUserLocation();
+}
+
+// Skrýt modal předplatného
+function hideSubscriptionModal() {
+    const modal = document.getElementById('subscriptionModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Handler pro backdrop click
+function handleSubscriptionModalBackdropClick(event) {
+    // Nepovolit zavření kliknutím na pozadí - uživatel musí zaplatit
+    // if (event.target === event.currentTarget) { hideSubscriptionModal(); }
+}
+
+// Detekovat lokaci uživatele
+async function detectUserLocation() {
+    try {
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                action: 'detect',
+                data: { clerkId: window.Clerk?.user?.id }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Geolocation failed');
+        }
+
+        const result = await response.json();
+        userLocation = result.location;
+
+        // Aktualizovat UI s cenami
+        updatePricingUI(userLocation);
+
+    } catch (error) {
+        console.error('Error detecting location:', error);
+        // Fallback - Česko
+        userLocation = {
+            countryCode: 'CZ',
+            currency: 'CZK',
+            grossAmount: 59,
+            vatRate: 21
+        };
+        updatePricingUI(userLocation);
+    }
+}
+
+// Aktualizovat UI s cenami
+function updatePricingUI(location) {
+    document.getElementById('locationDetection').classList.add('hidden');
+    document.getElementById('pricingInfo').classList.remove('hidden');
+    document.getElementById('termsSection').classList.remove('hidden');
+    document.getElementById('paymentSection').classList.remove('hidden');
+
+    // Aktualizovat cenu
+    document.getElementById('priceAmount').textContent = location.grossAmount;
+    document.getElementById('priceCurrency').textContent = location.currency === 'CZK' ? 'Kč' : '€';
+
+    // Aktualizovat DPH info
+    const vatInfo = document.getElementById('pricingVatInfo');
+    if (location.vatRate > 0) {
+        vatInfo.textContent = t('subscription.price_includes_vat', 'Cena je včetně DPH');
+    } else {
+        vatInfo.textContent = '';
+    }
+
+    // Nastavit checkbox listener
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    const payBtn = document.getElementById('paySubscriptionBtn');
+    
+    termsCheckbox.addEventListener('change', () => {
+        payBtn.disabled = !termsCheckbox.checked;
+    });
+}
+
+// Spustit platbu
+async function startPayment() {
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    if (!termsCheckbox.checked) {
+        return;
+    }
+
+    const payBtn = document.getElementById('paySubscriptionBtn');
+    payBtn.disabled = true;
+    payBtn.querySelector('span').textContent = t('subscription.processing', 'Zpracování platby...');
+
+    try {
+        // 1. Uložit souhlas s OP
+        await saveTermsAcceptance();
+
+        // 2. Vytvořit předplatné
+        const subscriptionResponse = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await getClerkToken()}`,
+            },
+            body: JSON.stringify({ 
+                action: 'create',
+                data: {
+                    planType: 'yearly',
+                    locale: window.i18n?.currentLocale || 'cs',
+                    country: userLocation?.countryCode || 'CZ'
+                }
+            })
+        });
+
+        if (!subscriptionResponse.ok) {
+            throw new Error('Failed to create subscription');
+        }
+
+        const subResult = await subscriptionResponse.json();
+
+        // 3. Vytvořit platbu v Comgate
+        const paymentResponse = await fetch(`${getSupabaseUrl()}/functions/v1/payment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await getClerkToken()}`,
+            },
+            body: JSON.stringify({ 
+                action: 'create',
+                data: {
+                    subscriptionId: subResult.subscription.id
+                }
+            })
+        });
+
+        if (!paymentResponse.ok) {
+            throw new Error('Failed to create payment');
+        }
+
+        const payResult = await paymentResponse.json();
+
+        // 4. Přesměrovat na platební bránu
+        if (payResult.redirectUrl) {
+            window.location.href = payResult.redirectUrl;
+        } else {
+            throw new Error('No redirect URL');
+        }
+
+    } catch (error) {
+        console.error('Payment error:', error);
+        showSubscriptionError(t('subscription.error_generic', 'Při zpracování platby došlo k chybě. Zkuste to prosím znovu.'));
+        payBtn.disabled = false;
+        payBtn.querySelector('span').textContent = t('subscription.pay_button', 'Zaplatit a aktivovat');
+    }
+}
+
+// Uložit souhlas s obchodními podmínkami
+async function saveTermsAcceptance() {
+    try {
+        // Uložit do DB přes Edge Function nebo přímo
+        console.log('Terms acceptance saved');
+    } catch (error) {
+        console.error('Error saving terms acceptance:', error);
+    }
+}
+
+// Zobrazit chybu předplatného
+function showSubscriptionError(message) {
+    const errorDiv = document.getElementById('subscriptionError');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('hidden');
+    }
+}
+
+// Aktualizovat UI stavu předplatného v profilu
+function updateSubscriptionStatusUI(data) {
+    const container = document.getElementById('subscriptionStatus');
+    if (!container) return;
+
+    if (data.valid) {
+        const expiresDate = new Date(data.expiresAt).toLocaleDateString(
+            window.i18n?.currentLocale === 'cs' ? 'cs-CZ' : 
+            window.i18n?.currentLocale === 'sk' ? 'sk-SK' : 'en-GB'
+        );
+
+        container.className = 'subscription-status-section subscription-status-active';
+        container.innerHTML = `
+            <div class="subscription-status-title">${t('subscription.status_active', 'Aktivní předplatné')}</div>
+            <div class="subscription-expires">
+                ${t('subscription.expires_at', 'Platné do:')} ${expiresDate}<br>
+                ${t('subscription.days_left', 'Zbývá dní:')} ${data.daysLeft}
+            </div>
+            ${data.needsRenewal ? `
+                <button class="neon-button subscription-renew-btn" onclick="renewSubscription()">
+                    <span>${t('subscription.renew_button', 'Obnovit předplatné')}</span>
+                    <div class="button-glow"></div>
+                </button>
+            ` : ''}
+        `;
+    } else {
+        container.className = 'subscription-status-section subscription-status-none';
+        container.innerHTML = `
+            <div class="subscription-status-title">${t('subscription.status_none', 'Nemáte aktivní předplatné')}</div>
+            <button class="neon-button subscription-renew-btn" onclick="showSubscriptionModal()">
+                <span>${t('subscription.activate_button', 'Aktivovat předplatné')}</span>
+                <div class="button-glow"></div>
+            </button>
+        `;
+    }
+}
+
+// Obnovit předplatné
+async function renewSubscription() {
+    showSubscriptionModal();
+}
+
+// Zobrazit modal obchodních podmínek
+function showTermsModal() {
+    const modal = document.getElementById('termsModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+// Skrýt modal obchodních podmínek
+function hideTermsModal() {
+    const modal = document.getElementById('termsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Handler pro backdrop click - terms modal
+function handleTermsModalBackdropClick(event) {
+    if (event.target === event.currentTarget) {
+        hideTermsModal();
+    }
 }
 
 // =========================================
@@ -4298,16 +5259,17 @@ window.handleProfileModalBackdropClick = handleProfileModalBackdropClick;
 window.showUserProfileModal = showUserProfileModal;
 window.hideUserProfileModal = hideUserProfileModal;
 window.handleSignOut = handleSignOut;
-window.handleLanguageChange = handleLanguageChange;
+// handleLanguageChange is handled by i18n.js via window.i18n.setLocale()
 window.showPage = showPage;
 window.goHome = goHome;
 window.goBack = goBack;
-window.calculateMixture = calculateMixture;
+window.calculateMixture = calculateMix;
 window.storeCurrentRecipe = storeCurrentRecipe;
 window.showSaveRecipeModal = showSaveRecipeModal;
 window.hideSaveRecipeModal = hideSaveRecipeModal;
 window.saveRecipe = saveRecipe;
 window.showMyRecipes = showMyRecipes;
+window.signOut = signOut;
 window.viewRecipeDetail = viewRecipeDetail;
 window.editSavedRecipe = editSavedRecipe;
 window.deleteRecipe = deleteRecipe;
@@ -4332,3 +5294,28 @@ window.setSearchRating = setSearchRating;
 window.clearSearchRating = clearSearchRating;
 window.setRecipeSearchRating = setRecipeSearchRating;
 window.clearRecipeSearchRating = clearRecipeSearchRating;
+// Subscription
+window.checkSubscriptionStatus = checkSubscriptionStatus;
+window.showSubscriptionModal = showSubscriptionModal;
+window.hideSubscriptionModal = hideSubscriptionModal;
+window.handleSubscriptionModalBackdropClick = handleSubscriptionModalBackdropClick;
+window.startPayment = startPayment;
+window.renewSubscription = renewSubscription;
+window.showTermsModal = showTermsModal;
+window.hideTermsModal = hideTermsModal;
+window.handleTermsModalBackdropClick = handleTermsModalBackdropClick;
+// Login Required
+window.showLoginRequiredModal = showLoginRequiredModal;
+window.hideLoginRequiredModal = hideLoginRequiredModal;
+window.handleLoginRequiredModalBackdropClick = handleLoginRequiredModalBackdropClick;
+window.requireLogin = requireLogin;
+window.requireSubscription = requireSubscription;
+window.isUserLoggedIn = isUserLoggedIn;
+// Multi-flavor PRO
+window.addProFlavor = addProFlavor;
+window.removeProFlavor = removeProFlavor;
+window.updateProFlavorType = updateProFlavorType;
+window.adjustProFlavor = adjustProFlavor;
+window.updateProFlavorStrength = updateProFlavorStrength;
+window.adjustProFlavorRatio = adjustProFlavorRatio;
+window.updateProFlavorRatioDisplay = updateProFlavorRatioDisplay;

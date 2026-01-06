@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v33';
+const CACHE_NAME = 'liquimixer-v69';
 
 // Soubory pro precaching
 const urlsToCache = [
@@ -8,6 +8,9 @@ const urlsToCache = [
   '/index.html',
   '/styles.css',
   '/app.js',
+  '/locales/cs.json',
+  '/locales/sk.json',
+  '/locales/en.json',
   '/database.js',
   '/subscription.js',
   '/i18n.js',
@@ -23,7 +26,10 @@ const networkFirstFiles = [
   '/database.js', 
   '/subscription.js',
   '/i18n.js',
-  '/index.html'
+  '/index.html',
+  '/locales/cs.json',
+  '/locales/sk.json',
+  '/locales/en.json'
 ];
 
 // Install event - cache resources
@@ -96,27 +102,27 @@ self.addEventListener('fetch', (event) => {
     );
   } else {
     // Cache-first pro statické soubory (CSS, obrázky, fonty)
-    event.respondWith(
-      caches.match(event.request)
-        .then((response) => {
-          if (response) {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request).then((response) => {
+          if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-          return fetch(event.request).then((response) => {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-            return response;
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
           });
-        })
-        .catch(() => {
+          return response;
+        });
+      })
+      .catch(() => {
           return caches.match('/index.html');
-        })
-    );
+      })
+  );
   }
 });
 
