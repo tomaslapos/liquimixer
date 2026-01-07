@@ -227,13 +227,7 @@
     "not_found": "Recette non trouvée ou supprimée.",
     "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette recette ?",
     "delete_success": "La recette a été supprimée.",
-    "delete_error": "Erreur lors de la suppression de la recette.",
-    "reminders_title": "Rappels de maturation",
-    "add_reminder": "Ajouter un nouveau mélange",
-    "no_reminders": "Aucun rappel. Cliquez sur le bouton ci-dessous pour en ajouter.",
-    "reminders_error": "Erreur lors du chargement des rappels.",
-    "show_all_reminders": "Afficher tout",
-    "show_less": "Afficher moins"
+    "delete_error": "Erreur lors de la suppression de la recette."
   },
   "save_recipe": {
     "title": "Enregistrer la recette",
@@ -253,36 +247,7 @@
     "error": "Erreur lors de l'enregistrement de la recette.",
     "login_required": "Veuillez vous connecter pour enregistrer la recette.",
     "no_products": "Vous n'avez pas de produits favoris. Ajoutez-les d'abord dans la section Produits favoris.",
-    "nothing_to_save": "Erreur : Rien à enregistrer. Veuillez créer une recette.",
-    "reminder_enable": "Me rappeler quand le liquide sera mature",
-    "mix_date": "Date de mélange",
-    "reminder_date": "Date de rappel",
-    "reminder_info": "La date de rappel a été calculée automatiquement en fonction du type d'arôme.",
-    "reminder_no_steeping": "Cet arôme ne nécessite pas de maturation.",
-    "reminder_calculated": "Temps de maturation recommandé : {days} {daysUnit}. Vous pouvez modifier la date.",
-    "reminder_set": "Rappel programmé pour",
-    "linked_products": "Produits associés"
-  },
-  "reminder": {
-    "mixed_on": "Mélangé le",
-    "reminder_on": "Rappel",
-    "sent": "Envoyé",
-    "cancelled": "Annulé",
-    "add_title": "Ajouter un mélange",
-    "edit_title": "Modifier le rappel",
-    "fill_dates": "Veuillez remplir les deux dates.",
-    "enter_mix_date": "Entrez la date de mélange (AAAA-MM-JJ) :",
-    "enter_remind_date": "Entrez la date de rappel (AAAA-MM-JJ) :",
-    "suggested": "Recommandé",
-    "enter_new_date": "Entrez la nouvelle date de rappel (AAAA-MM-JJ) :",
-    "invalid_date": "Format de date invalide.",
-    "saved": "Rappel enregistré !",
-    "updated": "Rappel mis à jour !",
-    "save_error": "Erreur lors de l'enregistrement du rappel.",
-    "update_error": "Erreur lors de la mise à jour du rappel.",
-    "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce rappel ?",
-    "deleted": "Rappel supprimé.",
-    "delete_error": "Erreur lors de la suppression du rappel."
+    "nothing_to_save": "Erreur : Rien à enregistrer. Veuillez créer une recette."
   },
   "share": {
     "copied": "Lien copié dans le presse-papiers !",
@@ -378,10 +343,7 @@
     "cancel": "Annuler",
     "confirm": "Confirmer",
     "yes": "Oui",
-    "no": "Non",
-    "day": "jour",
-    "days_few": "jours",
-    "days": "jours"
+    "no": "Non"
   },
   "alert": {
     "login_required": "Veuillez vous connecter pour cette action.",

@@ -227,13 +227,7 @@
     "not_found": "Ricetta non trovata o eliminata.",
     "delete_confirm": "Sei sicuro di voler eliminare questa ricetta?",
     "delete_success": "La ricetta è stata eliminata.",
-    "delete_error": "Errore nell'eliminazione della ricetta.",
-    "reminders_title": "Promemoria di maturazione",
-    "add_reminder": "Aggiungi nuova miscela",
-    "no_reminders": "Nessun promemoria. Clicca il pulsante qui sotto per aggiungerne uno.",
-    "reminders_error": "Errore nel caricamento dei promemoria.",
-    "show_all_reminders": "Mostra tutti",
-    "show_less": "Mostra meno"
+    "delete_error": "Errore nell'eliminazione della ricetta."
   },
   "save_recipe": {
     "title": "Salva ricetta",
@@ -253,36 +247,7 @@
     "error": "Errore nel salvataggio della ricetta.",
     "login_required": "Accedi per salvare la ricetta.",
     "no_products": "Non hai prodotti preferiti. Aggiungili prima nella sezione Prodotti preferiti.",
-    "nothing_to_save": "Errore: Niente da salvare. Crea una ricetta.",
-    "reminder_enable": "Ricordami quando il liquido sarà maturo",
-    "mix_date": "Data di miscelazione",
-    "reminder_date": "Data promemoria",
-    "reminder_info": "La data del promemoria è stata calcolata automaticamente in base al tipo di aroma.",
-    "reminder_no_steeping": "Questo aroma non richiede maturazione.",
-    "reminder_calculated": "Tempo di maturazione consigliato: {days} {daysUnit}. Puoi modificare la data.",
-    "reminder_set": "Promemoria impostato per",
-    "linked_products": "Prodotti collegati"
-  },
-  "reminder": {
-    "mixed_on": "Miscelato il",
-    "reminder_on": "Promemoria",
-    "sent": "Inviato",
-    "cancelled": "Annullato",
-    "add_title": "Aggiungi miscela",
-    "edit_title": "Modifica promemoria",
-    "fill_dates": "Compila entrambe le date.",
-    "enter_mix_date": "Inserisci la data di miscelazione (AAAA-MM-GG):",
-    "enter_remind_date": "Inserisci la data del promemoria (AAAA-MM-GG):",
-    "suggested": "Consigliato",
-    "enter_new_date": "Inserisci la nuova data del promemoria (AAAA-MM-GG):",
-    "invalid_date": "Formato data non valido.",
-    "saved": "Promemoria salvato!",
-    "updated": "Promemoria aggiornato!",
-    "save_error": "Errore nel salvataggio del promemoria.",
-    "update_error": "Errore nell'aggiornamento del promemoria.",
-    "delete_confirm": "Sei sicuro di voler eliminare questo promemoria?",
-    "deleted": "Promemoria eliminato.",
-    "delete_error": "Errore nell'eliminazione del promemoria."
+    "nothing_to_save": "Errore: Niente da salvare. Crea una ricetta."
   },
   "share": {
     "copied": "Link copiato negli appunti!",
@@ -378,10 +343,7 @@
     "cancel": "Annulla",
     "confirm": "Conferma",
     "yes": "Sì",
-    "no": "No",
-    "day": "giorno",
-    "days_few": "giorni",
-    "days": "giorni"
+    "no": "No"
   },
   "alert": {
     "login_required": "Accedi per questa azione.",

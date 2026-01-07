@@ -227,13 +227,7 @@
     "not_found": "Recept niet gevonden of is verwijderd.",
     "delete_confirm": "Weet je zeker dat je dit recept wilt verwijderen?",
     "delete_success": "Recept is verwijderd.",
-    "delete_error": "Fout bij verwijderen van recept.",
-    "reminders_title": "Steeping Herinneringen",
-    "add_reminder": "Nieuwe mix toevoegen",
-    "no_reminders": "Geen herinneringen. Klik op de knop hieronder om er een toe te voegen.",
-    "reminders_error": "Fout bij laden van herinneringen.",
-    "show_all_reminders": "Alles tonen",
-    "show_less": "Minder tonen"
+    "delete_error": "Fout bij verwijderen van recept."
   },
   "save_recipe": {
     "title": "Recept Opslaan",
@@ -253,36 +247,7 @@
     "error": "Fout bij opslaan van recept.",
     "login_required": "Log in om het recept op te slaan.",
     "no_products": "Je hebt geen favoriete producten. Voeg ze eerst toe in de sectie Favoriete Producten.",
-    "nothing_to_save": "Fout: Niets om op te slaan. Maak een recept.",
-    "reminder_enable": "Herinner me wanneer de vloeistof rijp is",
-    "mix_date": "Mixdatum",
-    "reminder_date": "Herinneringsdatum",
-    "reminder_info": "De herinneringsdatum is automatisch berekend op basis van het aromasoort.",
-    "reminder_no_steeping": "Dit aroma vereist geen steeping.",
-    "reminder_calculated": "Aanbevolen steepingtijd: {days} {daysUnit}. Je kunt de datum aanpassen.",
-    "reminder_set": "Herinnering ingesteld voor",
-    "linked_products": "Gekoppelde producten"
-  },
-  "reminder": {
-    "mixed_on": "Gemixt op",
-    "reminder_on": "Herinnering",
-    "sent": "Verzonden",
-    "cancelled": "Geannuleerd",
-    "add_title": "Mix toevoegen",
-    "edit_title": "Herinnering bewerken",
-    "fill_dates": "Vul beide datums in.",
-    "enter_mix_date": "Voer mixdatum in (JJJJ-MM-DD):",
-    "enter_remind_date": "Voer herinneringsdatum in (JJJJ-MM-DD):",
-    "suggested": "Aanbevolen",
-    "enter_new_date": "Voer nieuwe herinneringsdatum in (JJJJ-MM-DD):",
-    "invalid_date": "Ongeldig datumformaat.",
-    "saved": "Herinnering opgeslagen!",
-    "updated": "Herinnering bijgewerkt!",
-    "save_error": "Fout bij opslaan van herinnering.",
-    "update_error": "Fout bij bijwerken van herinnering.",
-    "delete_confirm": "Weet je zeker dat je deze herinnering wilt verwijderen?",
-    "deleted": "Herinnering verwijderd.",
-    "delete_error": "Fout bij verwijderen van herinnering."
+    "nothing_to_save": "Fout: Niets om op te slaan. Maak een recept."
   },
   "share": {
     "copied": "Link gekopieerd naar klembord!",
@@ -378,10 +343,7 @@
     "cancel": "Annuleren",
     "confirm": "Bevestigen",
     "yes": "Ja",
-    "no": "Nee",
-    "day": "dag",
-    "days_few": "dagen",
-    "days": "dagen"
+    "no": "Nee"
   },
   "alert": {
     "login_required": "Log in voor deze actie.",

@@ -227,13 +227,7 @@
     "not_found": "未找到配方或已删除。",
     "delete_confirm": "您确定要删除此配方吗？",
     "delete_success": "配方已删除。",
-    "delete_error": "删除配方出错。",
-    "reminders_title": "熟化提醒",
-    "add_reminder": "添加新混合",
-    "no_reminders": "暂无提醒。点击下方按钮添加。",
-    "reminders_error": "加载提醒出错。",
-    "show_all_reminders": "显示全部",
-    "show_less": "显示较少"
+    "delete_error": "删除配方出错。"
   },
   "save_recipe": {
     "title": "保存配方",
@@ -253,36 +247,7 @@
     "error": "保存配方出错。",
     "login_required": "请登录以保存配方。",
     "no_products": "您没有收藏产品。请先在「收藏产品」部分添加。",
-    "nothing_to_save": "错误：没有可保存的内容。请创建配方。",
-    "reminder_enable": "烟油熟化后提醒我",
-    "mix_date": "混合日期",
-    "reminder_date": "提醒日期",
-    "reminder_info": "提醒日期已根据香精类型自动计算。",
-    "reminder_no_steeping": "此香精无需熟化。",
-    "reminder_calculated": "推荐熟化时间：{days} {daysUnit}。您可以修改日期。",
-    "reminder_set": "提醒已设置为",
-    "linked_products": "关联产品"
-  },
-  "reminder": {
-    "mixed_on": "混合于",
-    "reminder_on": "提醒",
-    "sent": "已发送",
-    "cancelled": "已取消",
-    "add_title": "添加混合",
-    "edit_title": "编辑提醒",
-    "fill_dates": "请填写两个日期。",
-    "enter_mix_date": "输入混合日期 (YYYY-MM-DD)：",
-    "enter_remind_date": "输入提醒日期 (YYYY-MM-DD)：",
-    "suggested": "推荐",
-    "enter_new_date": "输入新的提醒日期 (YYYY-MM-DD)：",
-    "invalid_date": "日期格式无效。",
-    "saved": "提醒已保存！",
-    "updated": "提醒已更新！",
-    "save_error": "保存提醒出错。",
-    "update_error": "更新提醒出错。",
-    "delete_confirm": "您确定要删除此提醒吗？",
-    "deleted": "提醒已删除。",
-    "delete_error": "删除提醒出错。"
+    "nothing_to_save": "错误：没有可保存的内容。请创建配方。"
   },
   "share": {
     "copied": "链接已复制到剪贴板！",
@@ -378,10 +343,7 @@
     "cancel": "取消",
     "confirm": "确认",
     "yes": "是",
-    "no": "否",
-    "day": "天",
-    "days_few": "天",
-    "days": "天"
+    "no": "否"
   },
   "alert": {
     "login_required": "请登录以执行此操作。",

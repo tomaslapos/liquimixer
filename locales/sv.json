@@ -227,13 +227,7 @@
     "not_found": "Recept hittades inte eller har raderats.",
     "delete_confirm": "Är du säker på att du vill radera detta recept?",
     "delete_success": "Receptet har raderats.",
-    "delete_error": "Fel vid radering av recept.",
-    "reminders_title": "Mognadsåminnelser",
-    "add_reminder": "Lägg till ny blandning",
-    "no_reminders": "Inga påminnelser. Klicka på knappen nedan för att lägga till.",
-    "reminders_error": "Fel vid laddning av påminnelser.",
-    "show_all_reminders": "Visa alla",
-    "show_less": "Visa mindre"
+    "delete_error": "Fel vid radering av recept."
   },
   "save_recipe": {
     "title": "Spara recept",
@@ -253,36 +247,7 @@
     "error": "Fel vid sparande av recept.",
     "login_required": "Vänligen logga in för att spara receptet.",
     "no_products": "Du har inga favoritprodukter. Lägg till dem först i Favoritprodukter-sektionen.",
-    "nothing_to_save": "Fel: Inget att spara. Vänligen skapa ett recept.",
-    "reminder_enable": "Påminn mig när vätskan är mogen",
-    "mix_date": "Blandningsdatum",
-    "reminder_date": "Påminnelsedatum",
-    "reminder_info": "Påminnelsedatumet beräknades automatiskt baserat på aromtyp.",
-    "reminder_no_steeping": "Denna arom kräver ingen mognad.",
-    "reminder_calculated": "Rekommenderad mogningstid: {days} {daysUnit}. Du kan ändra datumet.",
-    "reminder_set": "Påminnelse inställd på",
-    "linked_products": "Länkade produkter"
-  },
-  "reminder": {
-    "mixed_on": "Blandat den",
-    "reminder_on": "Påminnelse",
-    "sent": "Skickat",
-    "cancelled": "Avbruten",
-    "add_title": "Lägg till blandning",
-    "edit_title": "Redigera påminnelse",
-    "fill_dates": "Vänligen fyll i båda datumen.",
-    "enter_mix_date": "Ange blandningsdatum (ÅÅÅÅ-MM-DD):",
-    "enter_remind_date": "Ange påminnelsedatum (ÅÅÅÅ-MM-DD):",
-    "suggested": "Rekommenderat",
-    "enter_new_date": "Ange nytt påminnelsedatum (ÅÅÅÅ-MM-DD):",
-    "invalid_date": "Ogiltigt datumformat.",
-    "saved": "Påminnelse sparad!",
-    "updated": "Påminnelse uppdaterad!",
-    "save_error": "Fel vid sparande av påminnelse.",
-    "update_error": "Fel vid uppdatering av påminnelse.",
-    "delete_confirm": "Är du säker på att du vill radera denna påminnelse?",
-    "deleted": "Påminnelse raderad.",
-    "delete_error": "Fel vid radering av påminnelse."
+    "nothing_to_save": "Fel: Inget att spara. Vänligen skapa ett recept."
   },
   "share": {
     "copied": "Länk kopierad till urklipp!",
@@ -378,10 +343,7 @@
     "cancel": "Avbryt",
     "confirm": "Bekräfta",
     "yes": "Ja",
-    "no": "Nej",
-    "day": "dag",
-    "days_few": "dagar",
-    "days": "dagar"
+    "no": "Nej"
   },
   "alert": {
     "login_required": "Vänligen logga in för denna åtgärd.",
