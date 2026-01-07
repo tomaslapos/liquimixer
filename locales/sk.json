@@ -227,7 +227,13 @@
     "not_found": "Recept sa nenašiel alebo bol zmazaný.",
     "delete_confirm": "Naozaj chcete zmazať tento recept?",
     "delete_success": "Recept bol zmazaný.",
-    "delete_error": "Chyba pri mazaní receptu."
+    "delete_error": "Chyba pri mazaní receptu.",
+    "reminders_title": "Pripomienky zrenia",
+    "no_reminders": "Žiadne pripomienky. Kliknite na tlačidlo nižšie pre pridanie.",
+    "reminders_error": "Chyba pri načítaní pripomienok.",
+    "add_reminder": "Pridať miešanie",
+    "show_all_reminders": "Zobraziť všetky",
+    "show_less": "Zobraziť menej"
   },
   "save_recipe": {
     "title": "Uložiť recept",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Odporúčaná doba zrenia: {days} {daysUnit}. Dátum môžete upraviť.",
     "reminder_no_steeping": "Táto príchuť nevyžaduje zrenie.",
     "products_linked": "Prepojené produkty"
-  },
-  "recipe_detail": {
-    "reminders_title": "Pripomienky zrenia",
-    "no_reminders": "Žiadne pripomienky. Kliknite na tlačidlo nižšie pre pridanie.",
-    "reminders_error": "Chyba pri načítaní pripomienok.",
-    "add_reminder": "Pridať miešanie",
-    "show_all_reminders": "Zobraziť všetky",
-    "show_less": "Zobraziť menej"
   },
   "notification": {
     "permission_prompt": "Chcete dostávať upozornenia, keď bude váš liquid vyzretý?\n\nPo povolení vám pošleme pripomienku v deň, keď bude liquid pripravený.",

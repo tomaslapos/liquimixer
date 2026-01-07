@@ -227,7 +227,13 @@
     "not_found": "Rețeta nu a fost găsită sau a fost ștearsă.",
     "delete_confirm": "Sigur doriți să ștergeți această rețetă?",
     "delete_success": "Rețeta a fost ștearsă.",
-    "delete_error": "Eroare la ștergerea rețetei."
+    "delete_error": "Eroare la ștergerea rețetei.",
+    "reminders_title": "Memento-uri de maturare",
+    "no_reminders": "Fără memento-uri. Faceți clic pe butonul de mai jos pentru a adăuga.",
+    "reminders_error": "Eroare la încărcarea memento-urilor.",
+    "add_reminder": "Adaugă amestec",
+    "show_all_reminders": "Arată toate",
+    "show_less": "Arată mai puțin"
   },
   "save_recipe": {
     "title": "Salvați rețeta",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Timp de maturare recomandat: {days} {daysUnit}. Puteți ajusta data.",
     "reminder_no_steeping": "Această aromă nu necesită maturare.",
     "products_linked": "Produse conectate"
-  },
-  "recipe_detail": {
-    "reminders_title": "Memento-uri de maturare",
-    "no_reminders": "Fără memento-uri. Faceți clic pe butonul de mai jos pentru a adăuga.",
-    "reminders_error": "Eroare la încărcarea memento-urilor.",
-    "add_reminder": "Adaugă amestec",
-    "show_all_reminders": "Arată toate",
-    "show_less": "Arată mai puțin"
   },
   "notification": {
     "permission_prompt": "Doriți să primiți notificări când lichidul dvs. este gata?\n\nDupă acordarea permisiunii, vă vom trimite un memento în ziua în care lichidul va fi maturat.",

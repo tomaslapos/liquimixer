@@ -227,7 +227,13 @@
     "not_found": "Recept niet gevonden of is verwijderd.",
     "delete_confirm": "Weet je zeker dat je dit recept wilt verwijderen?",
     "delete_success": "Recept is verwijderd.",
-    "delete_error": "Fout bij verwijderen van recept."
+    "delete_error": "Fout bij verwijderen van recept.",
+    "reminders_title": "Rijpingsherinneringen",
+    "no_reminders": "Geen herinneringen. Klik op de knop hieronder om er een toe te voegen.",
+    "reminders_error": "Fout bij laden van herinneringen.",
+    "add_reminder": "Menging toevoegen",
+    "show_all_reminders": "Alles tonen",
+    "show_less": "Minder tonen"
   },
   "save_recipe": {
     "title": "Recept Opslaan",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Aanbevolen rijptijd: {days} {daysUnit}. U kunt de datum aanpassen.",
     "reminder_no_steeping": "Dit aroma vereist geen rijping.",
     "products_linked": "Gekoppelde producten"
-  },
-  "recipe_detail": {
-    "reminders_title": "Rijpingsherinneringen",
-    "no_reminders": "Geen herinneringen. Klik op de knop hieronder om er een toe te voegen.",
-    "reminders_error": "Fout bij laden van herinneringen.",
-    "add_reminder": "Menging toevoegen",
-    "show_all_reminders": "Alles tonen",
-    "show_less": "Minder tonen"
   },
   "notification": {
     "permission_prompt": "Wilt u meldingen ontvangen wanneer uw vloeistof klaar is?\n\nNa toestemming sturen we u een herinnering op de dag dat uw vloeistof gerijpt is.",

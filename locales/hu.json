@@ -227,7 +227,13 @@
     "not_found": "A recept nem található vagy törölve lett.",
     "delete_confirm": "Biztosan törölni szeretnéd ezt a receptet?",
     "delete_success": "A recept törölve lett.",
-    "delete_error": "Hiba a recept törlésekor."
+    "delete_error": "Hiba a recept törlésekor.",
+    "reminders_title": "Érlelési emlékeztetők",
+    "no_reminders": "Nincs emlékeztető. Kattintson az alábbi gombra a hozzáadáshoz.",
+    "reminders_error": "Hiba az emlékeztetők betöltésekor.",
+    "add_reminder": "Keverés hozzáadása",
+    "show_all_reminders": "Összes megjelenítése",
+    "show_less": "Kevesebb megjelenítése"
   },
   "save_recipe": {
     "title": "Recept mentése",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Ajánlott érlelési idő: {days} {daysUnit}. A dátumot módosíthatja.",
     "reminder_no_steeping": "Ez az aroma nem igényel érlelést.",
     "products_linked": "Kapcsolt termékek"
-  },
-  "recipe_detail": {
-    "reminders_title": "Érlelési emlékeztetők",
-    "no_reminders": "Nincs emlékeztető. Kattintson az alábbi gombra a hozzáadáshoz.",
-    "reminders_error": "Hiba az emlékeztetők betöltésekor.",
-    "add_reminder": "Keverés hozzáadása",
-    "show_all_reminders": "Összes megjelenítése",
-    "show_less": "Kevesebb megjelenítése"
   },
   "notification": {
     "permission_prompt": "Szeretne értesítéseket kapni, amikor a folyadéka kész?\n\nAz engedély megadása után emlékeztetőt küldünk azon a napon, amikor a folyadék megérik.",

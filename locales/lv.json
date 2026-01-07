@@ -227,7 +227,13 @@
     "not_found": "Recepte nav atrasta vai ir dzēsta.",
     "delete_confirm": "Vai tiešām vēlaties dzēst šo recepti?",
     "delete_success": "Recepte ir dzēsta.",
-    "delete_error": "Kļūda, dzēšot recepti."
+    "delete_error": "Kļūda, dzēšot recepti.",
+    "reminders_title": "Nogatavināšanas atgādinājumi",
+    "no_reminders": "Nav atgādinājumu. Noklikšķiniet uz pogas zemāk, lai pievienotu.",
+    "reminders_error": "Kļūda ielādējot atgādinājumus.",
+    "add_reminder": "Pievienot sajaukšanu",
+    "show_all_reminders": "Rādīt visus",
+    "show_less": "Rādīt mazāk"
   },
   "save_recipe": {
     "title": "Saglabāt recepti",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Ieteicamais nogatavināšanas laiks: {days} {daysUnit}. Jūs varat pielāgot datumu.",
     "reminder_no_steeping": "Šī aromāts neprasa nogatavināšanu.",
     "products_linked": "Saistītie produkti"
-  },
-  "recipe_detail": {
-    "reminders_title": "Nogatavināšanas atgādinājumi",
-    "no_reminders": "Nav atgādinājumu. Noklikšķiniet uz pogas zemāk, lai pievienotu.",
-    "reminders_error": "Kļūda ielādējot atgādinājumus.",
-    "add_reminder": "Pievienot sajaukšanu",
-    "show_all_reminders": "Rādīt visus",
-    "show_less": "Rādīt mazāk"
   },
   "notification": {
     "permission_prompt": "Vai vēlaties saņemt paziņojumus, kad jūsu šķidrums būs gatavs?\n\nPēc atļaujas piešķiršanas mēs jums nosūtīsim atgādinājumu dienā, kad šķidrums būs nobriedis.",

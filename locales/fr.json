@@ -227,7 +227,13 @@
     "not_found": "Recette non trouvée ou supprimée.",
     "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette recette ?",
     "delete_success": "La recette a été supprimée.",
-    "delete_error": "Erreur lors de la suppression de la recette."
+    "delete_error": "Erreur lors de la suppression de la recette.",
+    "reminders_title": "Rappels de maturation",
+    "no_reminders": "Aucun rappel. Cliquez sur le bouton ci-dessous pour en ajouter un.",
+    "reminders_error": "Erreur lors du chargement des rappels.",
+    "add_reminder": "Ajouter un mélange",
+    "show_all_reminders": "Tout afficher",
+    "show_less": "Afficher moins"
   },
   "save_recipe": {
     "title": "Enregistrer la recette",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Temps de maturation recommandé : {days} {daysUnit}. Vous pouvez ajuster la date.",
     "reminder_no_steeping": "Cet arôme ne nécessite pas de maturation.",
     "products_linked": "Produits liés"
-  },
-  "recipe_detail": {
-    "reminders_title": "Rappels de maturation",
-    "no_reminders": "Aucun rappel. Cliquez sur le bouton ci-dessous pour en ajouter un.",
-    "reminders_error": "Erreur lors du chargement des rappels.",
-    "add_reminder": "Ajouter un mélange",
-    "show_all_reminders": "Tout afficher",
-    "show_less": "Afficher moins"
   },
   "notification": {
     "permission_prompt": "Souhaitez-vous recevoir des notifications lorsque votre liquide est prêt ?\n\nAprès autorisation, nous vous enverrons un rappel le jour où votre liquide sera mûr.",

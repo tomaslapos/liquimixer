@@ -227,7 +227,13 @@
     "not_found": "Reseptiä ei löytynyt tai se on poistettu.",
     "delete_confirm": "Haluatko varmasti poistaa tämän reseptin?",
     "delete_success": "Resepti on poistettu.",
-    "delete_error": "Virhe reseptin poistamisessa."
+    "delete_error": "Virhe reseptin poistamisessa.",
+    "reminders_title": "Kypsymismuistutukset",
+    "no_reminders": "Ei muistutuksia. Napsauta alla olevaa painiketta lisätäksesi.",
+    "reminders_error": "Virhe muistutusten lataamisessa.",
+    "add_reminder": "Lisää sekoitus",
+    "show_all_reminders": "Näytä kaikki",
+    "show_less": "Näytä vähemmän"
   },
   "save_recipe": {
     "title": "Tallenna resepti",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Suositeltu kypsymisaika: {days} {daysUnit}. Voit säätää päivämäärää.",
     "reminder_no_steeping": "Tämä maku ei vaadi kypsymistä.",
     "products_linked": "Linkitetyt tuotteet"
-  },
-  "recipe_detail": {
-    "reminders_title": "Kypsymismuistutukset",
-    "no_reminders": "Ei muistutuksia. Napsauta alla olevaa painiketta lisätäksesi.",
-    "reminders_error": "Virhe muistutusten lataamisessa.",
-    "add_reminder": "Lisää sekoitus",
-    "show_all_reminders": "Näytä kaikki",
-    "show_less": "Näytä vähemmän"
   },
   "notification": {
     "permission_prompt": "Haluatko saada ilmoituksia, kun nesteesi on valmis?\n\nLuvan antamisen jälkeen lähetämme sinulle muistutuksen päivänä, jona neste on kypsynyt.",

@@ -227,7 +227,13 @@
     "not_found": "Recept hittades inte eller har raderats.",
     "delete_confirm": "Är du säker på att du vill radera detta recept?",
     "delete_success": "Receptet har raderats.",
-    "delete_error": "Fel vid radering av recept."
+    "delete_error": "Fel vid radering av recept.",
+    "reminders_title": "Mognadspåminnelser",
+    "no_reminders": "Inga påminnelser. Klicka på knappen nedan för att lägga till.",
+    "reminders_error": "Fel vid laddning av påminnelser.",
+    "add_reminder": "Lägg till blandning",
+    "show_all_reminders": "Visa alla",
+    "show_less": "Visa mindre"
   },
   "save_recipe": {
     "title": "Spara recept",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Rekommenderad mognadstid: {days} {daysUnit}. Du kan justera datumet.",
     "reminder_no_steeping": "Denna smak kräver ingen mognad.",
     "products_linked": "Länkade produkter"
-  },
-  "recipe_detail": {
-    "reminders_title": "Mognadspåminnelser",
-    "no_reminders": "Inga påminnelser. Klicka på knappen nedan för att lägga till.",
-    "reminders_error": "Fel vid laddning av påminnelser.",
-    "add_reminder": "Lägg till blandning",
-    "show_all_reminders": "Visa alla",
-    "show_less": "Visa mindre"
   },
   "notification": {
     "permission_prompt": "Vill du få aviseringar när din vätska är klar?\n\nEfter att du gett tillstånd skickar vi en påminnelse den dag vätskan är mogen.",

@@ -227,7 +227,13 @@
     "not_found": "Oppskrift ikke funnet eller er slettet.",
     "delete_confirm": "Er du sikker på at du vil slette denne oppskriften?",
     "delete_success": "Oppskriften er slettet.",
-    "delete_error": "Feil ved sletting av oppskrift."
+    "delete_error": "Feil ved sletting av oppskrift.",
+    "reminders_title": "Modningspåminnelser",
+    "no_reminders": "Ingen påminnelser. Klikk på knappen nedenfor for å legge til.",
+    "reminders_error": "Feil ved lasting av påminnelser.",
+    "add_reminder": "Legg til blanding",
+    "show_all_reminders": "Vis alle",
+    "show_less": "Vis færre"
   },
   "save_recipe": {
     "title": "Lagre oppskrift",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Anbefalt modningstid: {days} {daysUnit}. Du kan justere datoen.",
     "reminder_no_steeping": "Denne smaken krever ikke modning.",
     "products_linked": "Koblede produkter"
-  },
-  "recipe_detail": {
-    "reminders_title": "Modningspåminnelser",
-    "no_reminders": "Ingen påminnelser. Klikk på knappen nedenfor for å legge til.",
-    "reminders_error": "Feil ved lasting av påminnelser.",
-    "add_reminder": "Legg til blanding",
-    "show_all_reminders": "Vis alle",
-    "show_less": "Vis færre"
   },
   "notification": {
     "permission_prompt": "Vil du motta varsler når væsken din er klar?\n\nEtter at du har gitt tillatelse, sender vi deg en påminnelse den dagen væsken er moden.",

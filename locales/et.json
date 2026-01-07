@@ -227,7 +227,13 @@
     "not_found": "Retsepti ei leitud või see on kustutatud.",
     "delete_confirm": "Kas oled kindel, et soovid selle retsepti kustutada?",
     "delete_success": "Retsept kustutatud.",
-    "delete_error": "Viga retsepti kustutamisel."
+    "delete_error": "Viga retsepti kustutamisel.",
+    "reminders_title": "Küpsemise meeldetuletused",
+    "no_reminders": "Meeldetuletusi pole. Klõpsake allolevat nuppu lisamiseks.",
+    "reminders_error": "Viga meeldetuletuste laadimisel.",
+    "add_reminder": "Lisa segamine",
+    "show_all_reminders": "Näita kõiki",
+    "show_less": "Näita vähem"
   },
   "save_recipe": {
     "title": "Salvesta retsept",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Soovitatav küpsemisaeg: {days} {daysUnit}. Saate kuupäeva kohandada.",
     "reminder_no_steeping": "See maitse ei vaja küpsemist.",
     "products_linked": "Seotud tooted"
-  },
-  "recipe_detail": {
-    "reminders_title": "Küpsemise meeldetuletused",
-    "no_reminders": "Meeldetuletusi pole. Klõpsake allolevat nuppu lisamiseks.",
-    "reminders_error": "Viga meeldetuletuste laadimisel.",
-    "add_reminder": "Lisa segamine",
-    "show_all_reminders": "Näita kõiki",
-    "show_less": "Näita vähem"
   },
   "notification": {
     "permission_prompt": "Kas soovite saada teateid, kui teie vedelik on valmis?\n\nPärast loa andmist saadame teile meeldetuletuse päeval, mil vedelik on küpsenud.",

@@ -227,7 +227,13 @@
     "not_found": "Nie znaleziono przepisu lub został usunięty.",
     "delete_confirm": "Czy na pewno chcesz usunąć ten przepis?",
     "delete_success": "Przepis został usunięty.",
-    "delete_error": "Błąd podczas usuwania przepisu."
+    "delete_error": "Błąd podczas usuwania przepisu.",
+    "reminders_title": "Przypomnienia o dojrzewaniu",
+    "no_reminders": "Brak przypomnień. Kliknij przycisk poniżej, aby dodać.",
+    "reminders_error": "Błąd podczas ładowania przypomnień.",
+    "add_reminder": "Dodaj mieszanie",
+    "show_all_reminders": "Pokaż wszystkie",
+    "show_less": "Pokaż mniej"
   },
   "save_recipe": {
     "title": "Zapisz przepis",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Zalecany czas dojrzewania: {days} {daysUnit}. Możesz dostosować datę.",
     "reminder_no_steeping": "Ten aromat nie wymaga dojrzewania.",
     "products_linked": "Powiązane produkty"
-  },
-  "recipe_detail": {
-    "reminders_title": "Przypomnienia o dojrzewaniu",
-    "no_reminders": "Brak przypomnień. Kliknij przycisk poniżej, aby dodać.",
-    "reminders_error": "Błąd podczas ładowania przypomnień.",
-    "add_reminder": "Dodaj mieszanie",
-    "show_all_reminders": "Pokaż wszystkie",
-    "show_less": "Pokaż mniej"
   },
   "notification": {
     "permission_prompt": "Czy chcesz otrzymywać powiadomienia, gdy Twój liquid będzie gotowy?\n\nPo wyrażeniu zgody wyślemy Ci przypomnienie w dniu, gdy liquid będzie dojrzały.",

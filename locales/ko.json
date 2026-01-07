@@ -227,7 +227,13 @@
     "not_found": "레시피를 찾을 수 없거나 삭제되었습니다.",
     "delete_confirm": "이 레시피를 삭제하시겠습니까?",
     "delete_success": "레시피가 삭제되었습니다.",
-    "delete_error": "레시피 삭제 오류."
+    "delete_error": "레시피 삭제 오류.",
+    "reminders_title": "숙성 알림",
+    "no_reminders": "알림이 없습니다. 아래 버튼을 클릭하여 추가하세요.",
+    "reminders_error": "알림을 불러오는 중 오류가 발생했습니다.",
+    "add_reminder": "혼합 추가",
+    "show_all_reminders": "모두 표시",
+    "show_less": "간략히 표시"
   },
   "save_recipe": {
     "title": "레시피 저장",
@@ -516,14 +522,6 @@
     "reminder_calculated": "권장 숙성 시간: {days}{daysUnit}. 날짜를 조정할 수 있습니다.",
     "reminder_no_steeping": "이 향료는 숙성이 필요하지 않습니다.",
     "products_linked": "연결된 제품"
-  },
-  "recipe_detail": {
-    "reminders_title": "숙성 알림",
-    "no_reminders": "알림이 없습니다. 아래 버튼을 클릭하여 추가하세요.",
-    "reminders_error": "알림을 불러오는 중 오류가 발생했습니다.",
-    "add_reminder": "혼합 추가",
-    "show_all_reminders": "모두 표시",
-    "show_less": "간략히 표시"
   },
   "notification": {
     "permission_prompt": "액상이 준비되면 알림을 받으시겠습니까?\n\n허용 후, 액상이 숙성된 날에 알림을 보내드립니다.",
