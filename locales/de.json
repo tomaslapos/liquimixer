@@ -227,7 +227,13 @@
     "not_found": "Rezept nicht gefunden oder wurde gelöscht.",
     "delete_confirm": "Sind Sie sicher, dass Sie dieses Rezept löschen möchten?",
     "delete_success": "Rezept wurde gelöscht.",
-    "delete_error": "Fehler beim Löschen des Rezepts."
+    "delete_error": "Fehler beim Löschen des Rezepts.",
+    "reminders_title": "Reifungserinnerungen",
+    "add_reminder": "Neue Mischung hinzufügen",
+    "no_reminders": "Keine Erinnerungen. Klicken Sie auf die Schaltfläche unten, um eine hinzuzufügen.",
+    "reminders_error": "Fehler beim Laden der Erinnerungen.",
+    "show_all_reminders": "Alle anzeigen",
+    "show_less": "Weniger anzeigen"
   },
   "save_recipe": {
     "title": "Rezept speichern",
@@ -247,7 +253,36 @@
     "error": "Fehler beim Speichern des Rezepts.",
     "login_required": "Bitte melden Sie sich an, um das Rezept zu speichern.",
     "no_products": "Sie haben keine Lieblingsprodukte. Fügen Sie diese zuerst im Bereich Lieblingsprodukte hinzu.",
-    "nothing_to_save": "Fehler: Nichts zu speichern. Bitte erstellen Sie ein Rezept."
+    "nothing_to_save": "Fehler: Nichts zu speichern. Bitte erstellen Sie ein Rezept.",
+    "reminder_enable": "Erinnerung, wenn das Liquid gereift ist",
+    "mix_date": "Mischdatum",
+    "reminder_date": "Erinnerungsdatum",
+    "reminder_info": "Das Erinnerungsdatum wurde automatisch basierend auf dem Aromaart berechnet.",
+    "reminder_no_steeping": "Dieses Aroma erfordert keine Reifung.",
+    "reminder_calculated": "Empfohlene Reifezeit: {days} {daysUnit}. Sie können das Datum anpassen.",
+    "reminder_set": "Erinnerung eingestellt für",
+    "linked_products": "Verknüpfte Produkte"
+  },
+  "reminder": {
+    "mixed_on": "Gemischt am",
+    "reminder_on": "Erinnerung",
+    "sent": "Gesendet",
+    "cancelled": "Abgebrochen",
+    "add_title": "Mischung hinzufügen",
+    "edit_title": "Erinnerung bearbeiten",
+    "fill_dates": "Bitte füllen Sie beide Daten aus.",
+    "enter_mix_date": "Mischdatum eingeben (JJJJ-MM-TT):",
+    "enter_remind_date": "Erinnerungsdatum eingeben (JJJJ-MM-TT):",
+    "suggested": "Empfohlen",
+    "enter_new_date": "Neues Erinnerungsdatum eingeben (JJJJ-MM-TT):",
+    "invalid_date": "Ungültiges Datumsformat.",
+    "saved": "Erinnerung wurde gespeichert!",
+    "updated": "Erinnerung wurde aktualisiert!",
+    "save_error": "Fehler beim Speichern der Erinnerung.",
+    "update_error": "Fehler beim Aktualisieren der Erinnerung.",
+    "delete_confirm": "Sind Sie sicher, dass Sie diese Erinnerung löschen möchten?",
+    "deleted": "Erinnerung wurde gelöscht.",
+    "delete_error": "Fehler beim Löschen der Erinnerung."
   },
   "share": {
     "copied": "Link in die Zwischenablage kopiert!",
@@ -343,7 +378,10 @@
     "cancel": "Abbrechen",
     "confirm": "Bestätigen",
     "yes": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "day": "Tag",
+    "days_few": "Tage",
+    "days": "Tage"
   },
   "alert": {
     "login_required": "Bitte melden Sie sich für diese Aktion an.",

@@ -227,7 +227,13 @@
     "not_found": "Receta no encontrada o eliminada.",
     "delete_confirm": "¿Estás seguro de que quieres eliminar esta receta?",
     "delete_success": "La receta ha sido eliminada.",
-    "delete_error": "Error al eliminar la receta."
+    "delete_error": "Error al eliminar la receta.",
+    "reminders_title": "Recordatorios de maceración",
+    "add_reminder": "Añadir nueva mezcla",
+    "no_reminders": "Sin recordatorios. Haz clic en el botón de abajo para añadir uno.",
+    "reminders_error": "Error al cargar los recordatorios.",
+    "show_all_reminders": "Mostrar todos",
+    "show_less": "Mostrar menos"
   },
   "save_recipe": {
     "title": "Guardar receta",
@@ -247,7 +253,36 @@
     "error": "Error al guardar la receta.",
     "login_required": "Por favor, inicia sesión para guardar la receta.",
     "no_products": "No tienes productos favoritos. Añádelos primero en la sección Productos favoritos.",
-    "nothing_to_save": "Error: Nada que guardar. Por favor, crea una receta."
+    "nothing_to_save": "Error: Nada que guardar. Por favor, crea una receta.",
+    "reminder_enable": "Recordarme cuando el líquido esté maduro",
+    "mix_date": "Fecha de mezcla",
+    "reminder_date": "Fecha de recordatorio",
+    "reminder_info": "La fecha de recordatorio se calculó automáticamente según el tipo de aroma.",
+    "reminder_no_steeping": "Este aroma no requiere maceración.",
+    "reminder_calculated": "Tiempo de maceración recomendado: {days} {daysUnit}. Puedes modificar la fecha.",
+    "reminder_set": "Recordatorio programado para",
+    "linked_products": "Productos vinculados"
+  },
+  "reminder": {
+    "mixed_on": "Mezclado el",
+    "reminder_on": "Recordatorio",
+    "sent": "Enviado",
+    "cancelled": "Cancelado",
+    "add_title": "Añadir mezcla",
+    "edit_title": "Editar recordatorio",
+    "fill_dates": "Por favor, completa ambas fechas.",
+    "enter_mix_date": "Introduce la fecha de mezcla (AAAA-MM-DD):",
+    "enter_remind_date": "Introduce la fecha de recordatorio (AAAA-MM-DD):",
+    "suggested": "Recomendado",
+    "enter_new_date": "Introduce la nueva fecha de recordatorio (AAAA-MM-DD):",
+    "invalid_date": "Formato de fecha inválido.",
+    "saved": "¡Recordatorio guardado!",
+    "updated": "¡Recordatorio actualizado!",
+    "save_error": "Error al guardar el recordatorio.",
+    "update_error": "Error al actualizar el recordatorio.",
+    "delete_confirm": "¿Estás seguro de que quieres eliminar este recordatorio?",
+    "deleted": "Recordatorio eliminado.",
+    "delete_error": "Error al eliminar el recordatorio."
   },
   "share": {
     "copied": "¡Enlace copiado al portapapeles!",
@@ -343,7 +378,10 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "day": "día",
+    "days_few": "días",
+    "days": "días"
   },
   "alert": {
     "login_required": "Por favor, inicia sesión para esta acción.",

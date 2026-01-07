@@ -227,7 +227,13 @@
     "not_found": "Reseptiä ei löytynyt tai se on poistettu.",
     "delete_confirm": "Haluatko varmasti poistaa tämän reseptin?",
     "delete_success": "Resepti on poistettu.",
-    "delete_error": "Virhe reseptin poistamisessa."
+    "delete_error": "Virhe reseptin poistamisessa.",
+    "reminders_title": "Kypsytysmuistutukset",
+    "add_reminder": "Lisää uusi sekoitus",
+    "no_reminders": "Ei muistutuksia. Lisää klikkaamalla alla olevaa painiketta.",
+    "reminders_error": "Virhe muistutusten lataamisessa.",
+    "show_all_reminders": "Näytä kaikki",
+    "show_less": "Näytä vähemmän"
   },
   "save_recipe": {
     "title": "Tallenna resepti",
@@ -247,7 +253,36 @@
     "error": "Virhe reseptin tallentamisessa.",
     "login_required": "Kirjaudu sisään tallentaaksesi reseptin.",
     "no_products": "Sinulla ei ole suosikkituotteita. Lisää ne ensin Suosikkituotteet-osiossa.",
-    "nothing_to_save": "Virhe: Ei mitään tallennettavaa. Luo resepti."
+    "nothing_to_save": "Virhe: Ei mitään tallennettavaa. Luo resepti.",
+    "reminder_enable": "Muistuta, kun neste on kypsynyt",
+    "mix_date": "Sekoituspäivä",
+    "reminder_date": "Muistutuspäivä",
+    "reminder_info": "Muistutuspäivä laskettiin automaattisesti aromityypin perusteella.",
+    "reminder_no_steeping": "Tämä aromi ei vaadi kypsytystä.",
+    "reminder_calculated": "Suositeltu kypsytysaika: {days} {daysUnit}. Voit muuttaa päivämäärää.",
+    "reminder_set": "Muistutus asetettu",
+    "linked_products": "Liitetyt tuotteet"
+  },
+  "reminder": {
+    "mixed_on": "Sekoitettu",
+    "reminder_on": "Muistutus",
+    "sent": "Lähetetty",
+    "cancelled": "Peruutettu",
+    "add_title": "Lisää sekoitus",
+    "edit_title": "Muokkaa muistutusta",
+    "fill_dates": "Täytä molemmat päivämäärät.",
+    "enter_mix_date": "Syötä sekoituspäivä (VVVV-KK-PP):",
+    "enter_remind_date": "Syötä muistutuspäivä (VVVV-KK-PP):",
+    "suggested": "Suositeltu",
+    "enter_new_date": "Syötä uusi muistutuspäivä (VVVV-KK-PP):",
+    "invalid_date": "Virheellinen päivämäärämuoto.",
+    "saved": "Muistutus tallennettu!",
+    "updated": "Muistutus päivitetty!",
+    "save_error": "Virhe muistutuksen tallentamisessa.",
+    "update_error": "Virhe muistutuksen päivittämisessä.",
+    "delete_confirm": "Haluatko varmasti poistaa tämän muistutuksen?",
+    "deleted": "Muistutus poistettu.",
+    "delete_error": "Virhe muistutuksen poistamisessa."
   },
   "share": {
     "copied": "Linkki kopioitu leikepöydälle!",
@@ -343,7 +378,10 @@
     "cancel": "Peruuta",
     "confirm": "Vahvista",
     "yes": "Kyllä",
-    "no": "Ei"
+    "no": "Ei",
+    "day": "päivä",
+    "days_few": "päivää",
+    "days": "päivää"
   },
   "alert": {
     "login_required": "Kirjaudu sisään tähän toimintoon.",

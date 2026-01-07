@@ -227,7 +227,13 @@
     "not_found": "Retsepti ei leitud või see on kustutatud.",
     "delete_confirm": "Kas oled kindel, et soovid selle retsepti kustutada?",
     "delete_success": "Retsept kustutatud.",
-    "delete_error": "Viga retsepti kustutamisel."
+    "delete_error": "Viga retsepti kustutamisel.",
+    "reminders_title": "Küpsemise meeldetuletused",
+    "add_reminder": "Lisa uus segu",
+    "no_reminders": "Meeldetuletusi pole. Lisamiseks klõpsa alloleval nupul.",
+    "reminders_error": "Viga meeldetuletuste laadimisel.",
+    "show_all_reminders": "Kuva kõik",
+    "show_less": "Kuva vähem"
   },
   "save_recipe": {
     "title": "Salvesta retsept",
@@ -247,7 +253,36 @@
     "error": "Viga retsepti salvestamisel.",
     "login_required": "Retsepti salvestamiseks palun logi sisse.",
     "no_products": "Sul pole lemmiktooteid. Lisa need esmalt Lemmiktooted sektsioonis.",
-    "nothing_to_save": "Viga: Pole midagi salvestada. Loo retsept."
+    "nothing_to_save": "Viga: Pole midagi salvestada. Loo retsept.",
+    "reminder_enable": "Teavita mind, kui vedelik on küpsenud",
+    "mix_date": "Segamise kuupäev",
+    "reminder_date": "Meeldetuletuse kuupäev",
+    "reminder_info": "Meeldetuletuse kuupäev arvutati automaatselt aroomi tüübi põhjal.",
+    "reminder_no_steeping": "See aroom ei vaja küpsemist.",
+    "reminder_calculated": "Soovitatav küpsemisaeg: {days} {daysUnit}. Saad kuupäeva muuta.",
+    "reminder_set": "Meeldetuletus seatud",
+    "linked_products": "Seotud tooted"
+  },
+  "reminder": {
+    "mixed_on": "Segatud",
+    "reminder_on": "Meeldetuletus",
+    "sent": "Saadetud",
+    "cancelled": "Tühistatud",
+    "add_title": "Lisa segu",
+    "edit_title": "Muuda meeldetuletust",
+    "fill_dates": "Palun täida mõlemad kuupäevad.",
+    "enter_mix_date": "Sisesta segamise kuupäev (AAAA-KK-PP):",
+    "enter_remind_date": "Sisesta meeldetuletuse kuupäev (AAAA-KK-PP):",
+    "suggested": "Soovitatav",
+    "enter_new_date": "Sisesta uus meeldetuletuse kuupäev (AAAA-KK-PP):",
+    "invalid_date": "Vigane kuupäevavorming.",
+    "saved": "Meeldetuletus salvestatud!",
+    "updated": "Meeldetuletus uuendatud!",
+    "save_error": "Viga meeldetuletuse salvestamisel.",
+    "update_error": "Viga meeldetuletuse uuendamisel.",
+    "delete_confirm": "Kas oled kindel, et soovid selle meeldetuletuse kustutada?",
+    "deleted": "Meeldetuletus kustutatud.",
+    "delete_error": "Viga meeldetuletuse kustutamisel."
   },
   "share": {
     "copied": "Link kopeeritud lõikelauale!",
@@ -343,7 +378,10 @@
     "cancel": "Tühista",
     "confirm": "Kinnita",
     "yes": "Jah",
-    "no": "Ei"
+    "no": "Ei",
+    "day": "päev",
+    "days_few": "päeva",
+    "days": "päeva"
   },
   "alert": {
     "login_required": "Selle toimingu jaoks palun logi sisse.",

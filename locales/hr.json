@@ -227,7 +227,13 @@
     "not_found": "Recept nije pronađen ili je obrisan.",
     "delete_confirm": "Jeste li sigurni da želite obrisati ovaj recept?",
     "delete_success": "Recept je obrisan.",
-    "delete_error": "Greška pri brisanju recepta."
+    "delete_error": "Greška pri brisanju recepta.",
+    "reminders_title": "Podsjetnici za odležavanje",
+    "add_reminder": "Dodaj novo miješanje",
+    "no_reminders": "Nema podsjetnika. Kliknite gumb ispod za dodavanje.",
+    "reminders_error": "Greška pri učitavanju podsjetnika.",
+    "show_all_reminders": "Prikaži sve",
+    "show_less": "Prikaži manje"
   },
   "save_recipe": {
     "title": "Spremi recept",
@@ -247,7 +253,36 @@
     "error": "Greška pri spremanju recepta.",
     "login_required": "Prijavite se za spremanje recepta.",
     "no_products": "Nemate omiljenih proizvoda. Dodajte ih prvo u odjeljku Omiljeni proizvodi.",
-    "nothing_to_save": "Greška: Nema ništa za spremiti. Stvorite recept."
+    "nothing_to_save": "Greška: Nema ništa za spremiti. Stvorite recept.",
+    "reminder_enable": "Podsjeti me kada tekućina sazri",
+    "mix_date": "Datum miješanja",
+    "reminder_date": "Datum podsjetnika",
+    "reminder_info": "Datum podsjetnika automatski je izračunat na temelju vrste arome.",
+    "reminder_no_steeping": "Ova aroma ne zahtijeva odležavanje.",
+    "reminder_calculated": "Preporučeno vrijeme odležavanja: {days} {daysUnit}. Možete promijeniti datum.",
+    "reminder_set": "Podsjetnik postavljen za",
+    "linked_products": "Povezani proizvodi"
+  },
+  "reminder": {
+    "mixed_on": "Pomiješano",
+    "reminder_on": "Podsjetnik",
+    "sent": "Poslano",
+    "cancelled": "Otkazano",
+    "add_title": "Dodaj miješanje",
+    "edit_title": "Uredi podsjetnik",
+    "fill_dates": "Molimo ispunite oba datuma.",
+    "enter_mix_date": "Unesite datum miješanja (GGGG-MM-DD):",
+    "enter_remind_date": "Unesite datum podsjetnika (GGGG-MM-DD):",
+    "suggested": "Preporučeno",
+    "enter_new_date": "Unesite novi datum podsjetnika (GGGG-MM-DD):",
+    "invalid_date": "Nevažeći format datuma.",
+    "saved": "Podsjetnik spremljen!",
+    "updated": "Podsjetnik ažuriran!",
+    "save_error": "Greška pri spremanju podsjetnika.",
+    "update_error": "Greška pri ažuriranju podsjetnika.",
+    "delete_confirm": "Jeste li sigurni da želite obrisati ovaj podsjetnik?",
+    "deleted": "Podsjetnik obrisan.",
+    "delete_error": "Greška pri brisanju podsjetnika."
   },
   "share": {
     "copied": "Link kopiran u međuspremnik!",
@@ -343,7 +378,10 @@
     "cancel": "Otkaži",
     "confirm": "Potvrdi",
     "yes": "Da",
-    "no": "Ne"
+    "no": "Ne",
+    "day": "dan",
+    "days_few": "dana",
+    "days": "dana"
   },
   "alert": {
     "login_required": "Prijavite se za ovu radnju.",

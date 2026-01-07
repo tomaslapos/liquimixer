@@ -227,7 +227,13 @@
     "not_found": "Tarif bulunamadı veya silindi.",
     "delete_confirm": "Bu tarifi silmek istediğinizden emin misiniz?",
     "delete_success": "Tarif silindi.",
-    "delete_error": "Tarif silinirken hata."
+    "delete_error": "Tarif silinirken hata.",
+    "reminders_title": "Olgunlaştırma Hatırlatıcıları",
+    "add_reminder": "Yeni karışım ekle",
+    "no_reminders": "Hatırlatıcı yok. Eklemek için aşağıdaki düğmeye tıklayın.",
+    "reminders_error": "Hatırlatıcılar yüklenirken hata.",
+    "show_all_reminders": "Tümünü göster",
+    "show_less": "Daha az göster"
   },
   "save_recipe": {
     "title": "Tarifi Kaydet",
@@ -247,7 +253,36 @@
     "error": "Tarif kaydedilirken hata.",
     "login_required": "Tarifi kaydetmek için lütfen giriş yapın.",
     "no_products": "Favori ürününüz yok. Önce Favori Ürünler bölümüne ekleyin.",
-    "nothing_to_save": "Hata: Kaydedilecek bir şey yok. Lütfen bir tarif oluşturun."
+    "nothing_to_save": "Hata: Kaydedilecek bir şey yok. Lütfen bir tarif oluşturun.",
+    "reminder_enable": "Likit olgunlaştığında hatırlat",
+    "mix_date": "Karıştırma tarihi",
+    "reminder_date": "Hatırlatma tarihi",
+    "reminder_info": "Hatırlatma tarihi aroma türüne göre otomatik hesaplandı.",
+    "reminder_no_steeping": "Bu aroma olgunlaştırma gerektirmez.",
+    "reminder_calculated": "Önerilen olgunlaştırma süresi: {days} {daysUnit}. Tarihi değiştirebilirsiniz.",
+    "reminder_set": "Hatırlatma ayarlandı",
+    "linked_products": "Bağlı ürünler"
+  },
+  "reminder": {
+    "mixed_on": "Karıştırıldı",
+    "reminder_on": "Hatırlatma",
+    "sent": "Gönderildi",
+    "cancelled": "İptal edildi",
+    "add_title": "Karışım ekle",
+    "edit_title": "Hatırlatıcıyı düzenle",
+    "fill_dates": "Lütfen her iki tarihi de doldurun.",
+    "enter_mix_date": "Karıştırma tarihini girin (YYYY-AA-GG):",
+    "enter_remind_date": "Hatırlatma tarihini girin (YYYY-AA-GG):",
+    "suggested": "Önerilen",
+    "enter_new_date": "Yeni hatırlatma tarihini girin (YYYY-AA-GG):",
+    "invalid_date": "Geçersiz tarih formatı.",
+    "saved": "Hatırlatıcı kaydedildi!",
+    "updated": "Hatırlatıcı güncellendi!",
+    "save_error": "Hatırlatıcı kaydedilirken hata.",
+    "update_error": "Hatırlatıcı güncellenirken hata.",
+    "delete_confirm": "Bu hatırlatıcıyı silmek istediğinizden emin misiniz?",
+    "deleted": "Hatırlatıcı silindi.",
+    "delete_error": "Hatırlatıcı silinirken hata."
   },
   "share": {
     "copied": "Bağlantı panoya kopyalandı!",
@@ -343,7 +378,10 @@
     "cancel": "İptal",
     "confirm": "Onayla",
     "yes": "Evet",
-    "no": "Hayır"
+    "no": "Hayır",
+    "day": "gün",
+    "days_few": "gün",
+    "days": "gün"
   },
   "alert": {
     "login_required": "Bu işlem için lütfen giriş yapın.",

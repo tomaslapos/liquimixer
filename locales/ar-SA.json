@@ -228,7 +228,13 @@
     "not_found": "الوصفة غير موجودة أو تم حذفها.",
     "delete_confirm": "هل أنت متأكد أنك تريد حذف هذه الوصفة؟",
     "delete_success": "تم حذف الوصفة.",
-    "delete_error": "خطأ في حذف الوصفة."
+    "delete_error": "خطأ في حذف الوصفة.",
+    "reminders_title": "تذكيرات النقع",
+    "add_reminder": "إضافة خلط جديد",
+    "no_reminders": "لا توجد تذكيرات. انقر على الزر أدناه للإضافة.",
+    "reminders_error": "خطأ في تحميل التذكيرات.",
+    "show_all_reminders": "عرض الكل",
+    "show_less": "عرض أقل"
   },
   "save_recipe": {
     "title": "حفظ الوصفة",
@@ -248,7 +254,36 @@
     "error": "خطأ في حفظ الوصفة.",
     "login_required": "سجّل الدخول لحفظ الوصفة.",
     "no_products": "ليس لديك منتجات مفضلة. أضفها أولاً في قسم المنتجات المفضلة.",
-    "nothing_to_save": "خطأ: لا يوجد شيء للحفظ. أنشئ وصفة."
+    "nothing_to_save": "خطأ: لا يوجد شيء للحفظ. أنشئ وصفة.",
+    "reminder_enable": "ذكّرني عندما ينضج السائل",
+    "mix_date": "تاريخ الخلط",
+    "reminder_date": "تاريخ التذكير",
+    "reminder_info": "تم حساب تاريخ التذكير تلقائياً بناءً على نوع النكهة.",
+    "reminder_no_steeping": "هذه النكهة لا تتطلب نقعاً.",
+    "reminder_calculated": "وقت النقع الموصى به: {days} {daysUnit}. يمكنك تعديل التاريخ.",
+    "reminder_set": "تم تعيين التذكير لـ",
+    "linked_products": "المنتجات المرتبطة"
+  },
+  "reminder": {
+    "mixed_on": "تم الخلط في",
+    "reminder_on": "التذكير",
+    "sent": "تم الإرسال",
+    "cancelled": "ملغى",
+    "add_title": "إضافة خلط",
+    "edit_title": "تعديل التذكير",
+    "fill_dates": "يرجى ملء كلا التاريخين.",
+    "enter_mix_date": "أدخل تاريخ الخلط (YYYY-MM-DD):",
+    "enter_remind_date": "أدخل تاريخ التذكير (YYYY-MM-DD):",
+    "suggested": "موصى به",
+    "enter_new_date": "أدخل تاريخ التذكير الجديد (YYYY-MM-DD):",
+    "invalid_date": "صيغة تاريخ غير صالحة.",
+    "saved": "تم حفظ التذكير!",
+    "updated": "تم تحديث التذكير!",
+    "save_error": "خطأ في حفظ التذكير.",
+    "update_error": "خطأ في تحديث التذكير.",
+    "delete_confirm": "هل أنت متأكد أنك تريد حذف هذا التذكير؟",
+    "deleted": "تم حذف التذكير.",
+    "delete_error": "خطأ في حذف التذكير."
   },
   "share": {
     "copied": "تم نسخ الرابط إلى الحافظة!",
@@ -344,7 +379,10 @@
     "cancel": "إلغاء",
     "confirm": "تأكيد",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "day": "يوم",
+    "days_few": "أيام",
+    "days": "يوم"
   },
   "alert": {
     "login_required": "سجّل الدخول لهذا الإجراء.",

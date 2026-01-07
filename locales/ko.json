@@ -227,7 +227,13 @@
     "not_found": "레시피를 찾을 수 없거나 삭제되었습니다.",
     "delete_confirm": "이 레시피를 삭제하시겠습니까?",
     "delete_success": "레시피가 삭제되었습니다.",
-    "delete_error": "레시피 삭제 오류."
+    "delete_error": "레시피 삭제 오류.",
+    "reminders_title": "숙성 알림",
+    "add_reminder": "새 조합 추가",
+    "no_reminders": "알림이 없습니다. 아래 버튼을 클릭하여 추가하세요.",
+    "reminders_error": "알림 로딩 오류.",
+    "show_all_reminders": "모두 보기",
+    "show_less": "간략히 보기"
   },
   "save_recipe": {
     "title": "레시피 저장",
@@ -247,7 +253,36 @@
     "error": "레시피 저장 오류.",
     "login_required": "레시피를 저장하려면 로그인하세요.",
     "no_products": "즐겨찾기 제품이 없습니다. 먼저 '즐겨찾기 제품' 섹션에 추가하세요.",
-    "nothing_to_save": "오류: 저장할 것이 없습니다. 레시피를 만드세요."
+    "nothing_to_save": "오류: 저장할 것이 없습니다. 레시피를 만드세요.",
+    "reminder_enable": "리퀴드가 숙성되면 알림",
+    "mix_date": "조합일",
+    "reminder_date": "알림일",
+    "reminder_info": "알림일은 향료 유형에 따라 자동 계산되었습니다.",
+    "reminder_no_steeping": "이 향료는 숙성이 필요하지 않습니다.",
+    "reminder_calculated": "권장 숙성 시간: {days} {daysUnit}. 날짜를 변경할 수 있습니다.",
+    "reminder_set": "알림 설정됨",
+    "linked_products": "연결된 제품"
+  },
+  "reminder": {
+    "mixed_on": "조합일",
+    "reminder_on": "알림",
+    "sent": "전송됨",
+    "cancelled": "취소됨",
+    "add_title": "조합 추가",
+    "edit_title": "알림 편집",
+    "fill_dates": "두 날짜를 모두 입력하세요.",
+    "enter_mix_date": "조합일 입력 (YYYY-MM-DD):",
+    "enter_remind_date": "알림일 입력 (YYYY-MM-DD):",
+    "suggested": "권장",
+    "enter_new_date": "새 알림일 입력 (YYYY-MM-DD):",
+    "invalid_date": "잘못된 날짜 형식입니다.",
+    "saved": "알림이 저장되었습니다!",
+    "updated": "알림이 업데이트되었습니다!",
+    "save_error": "알림 저장 오류.",
+    "update_error": "알림 업데이트 오류.",
+    "delete_confirm": "이 알림을 삭제하시겠습니까?",
+    "deleted": "알림이 삭제되었습니다.",
+    "delete_error": "알림 삭제 오류."
   },
   "share": {
     "copied": "링크가 클립보드에 복사되었습니다!",
@@ -343,7 +378,10 @@
     "cancel": "취소",
     "confirm": "확인",
     "yes": "예",
-    "no": "아니오"
+    "no": "아니오",
+    "day": "일",
+    "days_few": "일",
+    "days": "일"
   },
   "alert": {
     "login_required": "이 작업을 수행하려면 로그인하세요.",

@@ -932,6 +932,331 @@ async function getLinkedProducts(clerkId, recipeId) {
 }
 
 // ============================================
+// PŘIPOMÍNKY ZRÁNÍ (RECIPE REMINDERS)
+// ============================================
+
+// Uložit novou připomínku zrání
+async function saveReminder(clerkId, reminderData) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Rate limiting
+    if (!rateLimiter.canProceed('saveReminder')) {
+        console.error('Too many save attempts. Please wait.');
+        return null;
+    }
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace recipe_id
+    if (reminderData.recipe_id && !isValidUUID(reminderData.recipe_id)) {
+        console.error('Invalid recipe_id format');
+        return null;
+    }
+    
+    const data = {
+        clerk_id: clerkId,
+        recipe_id: reminderData.recipe_id || null,
+        mixed_at: reminderData.mixed_at,
+        remind_at: reminderData.remind_at,
+        remind_time: reminderData.remind_time || '16:30',
+        flavor_type: sanitizeInput(reminderData.flavor_type) || null,
+        flavor_name: sanitizeInput(reminderData.flavor_name) || null,
+        recipe_name: sanitizeInput(reminderData.recipe_name) || null,
+        fcm_token: reminderData.fcm_token || null,
+        timezone: reminderData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague',
+        status: 'pending',
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const { data: result, error } = await supabaseClient
+            .from('recipe_reminders')
+            .insert(data)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving reminder:', error);
+            return null;
+        }
+        
+        return result;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Aktualizovat připomínku
+async function updateReminder(clerkId, reminderId, updates) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace reminder_id
+    if (!isValidUUID(reminderId)) {
+        console.error('Invalid reminder ID format');
+        return null;
+    }
+    
+    const updateData = {
+        updated_at: new Date().toISOString()
+    };
+    
+    if (updates.mixed_at) updateData.mixed_at = updates.mixed_at;
+    if (updates.remind_at) updateData.remind_at = updates.remind_at;
+    if (updates.remind_time) updateData.remind_time = updates.remind_time;
+    if (updates.status) updateData.status = updates.status;
+    if (updates.fcm_token) updateData.fcm_token = updates.fcm_token;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .update(updateData)
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error updating reminder:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat připomínky pro recept
+async function getRecipeReminders(clerkId, recipeId) {
+    if (!supabaseClient || !clerkId) return [];
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    // Validace recipe_id
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .eq('recipe_id', recipeId)
+            .order('remind_at', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching reminders:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Získat všechny aktivní připomínky uživatele
+async function getUserReminders(clerkId, statusFilter = 'pending') {
+    if (!supabaseClient || !clerkId) return [];
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        let query = supabaseClient
+            .from('recipe_reminders')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .order('remind_at', { ascending: true })
+            .limit(100);
+        
+        if (statusFilter) {
+            query = query.eq('status', statusFilter);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) {
+            console.error('Error fetching user reminders:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Smazat připomínku
+async function deleteReminder(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId) return false;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    
+    // Validace reminder_id
+    if (!isValidUUID(reminderId)) {
+        console.error('Invalid reminder ID format');
+        return false;
+    }
+    
+    if (!rateLimiter.canProceed('deleteReminder')) {
+        console.error('Too many delete attempts. Please wait.');
+        return false;
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('recipe_reminders')
+            .delete()
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error deleting reminder:', error);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// Zrušit připomínku (změna statusu na cancelled)
+async function cancelReminder(clerkId, reminderId) {
+    return updateReminder(clerkId, reminderId, { status: 'cancelled' });
+}
+
+// ============================================
+// FCM TOKENY PRO PUSH NOTIFIKACE
+// ============================================
+
+// Uložit nebo aktualizovat FCM token
+async function saveFcmToken(clerkId, token, deviceInfo = null) {
+    if (!supabaseClient || !clerkId || !token) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    const data = {
+        clerk_id: clerkId,
+        token: token,
+        device_info: deviceInfo,
+        updated_at: new Date().toISOString(),
+        last_used_at: new Date().toISOString()
+    };
+    
+    try {
+        const { data: result, error } = await supabaseClient
+            .from('fcm_tokens')
+            .upsert(data, {
+                onConflict: 'clerk_id,token',
+                returning: 'representation'
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving FCM token:', error);
+            return null;
+        }
+        
+        return result;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat FCM tokeny uživatele
+async function getFcmTokens(clerkId) {
+    if (!supabaseClient || !clerkId) return [];
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('fcm_tokens')
+            .select('*')
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error fetching FCM tokens:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Smazat FCM token
+async function deleteFcmToken(clerkId, token) {
+    if (!supabaseClient || !clerkId || !token) return false;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('fcm_tokens')
+            .delete()
+            .eq('clerk_id', clerkId)
+            .eq('token', token);
+        
+        if (error) {
+            console.error('Error deleting FCM token:', error);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// ============================================
 // INTEGRACE S CLERK
 // ============================================
 
@@ -979,6 +1304,17 @@ window.LiquiMixerDB = {
     // Propojení produktů s recepty
     linkProductsToRecipe: linkProductsToRecipe,
     getLinkedProducts: getLinkedProducts,
+    // Připomínky zrání
+    saveReminder: saveReminder,
+    updateReminder: updateReminder,
+    getRecipeReminders: getRecipeReminders,
+    getUserReminders: getUserReminders,
+    deleteReminder: deleteReminder,
+    cancelReminder: cancelReminder,
+    // FCM tokeny pro push notifikace
+    saveFcmToken: saveFcmToken,
+    getFcmTokens: getFcmTokens,
+    deleteFcmToken: deleteFcmToken,
     onSignIn: onClerkSignIn
 };
 
