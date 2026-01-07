@@ -264,7 +264,6 @@
     <script src="/database.js"></script>
     <script src="/subscription.js"></script>
     <script src="/i18n.js"></script>
-    <script src="/fcm.js"></script>
 </head>
 <body>
     <div class="neon-grid"></div>
@@ -1469,29 +1468,6 @@
             </div>
         </section>
 
-        <!-- Modal pro přidání/úpravu připomínky zrání -->
-        <div id="addReminderModal" class="modal hidden">
-            <div class="modal-content modal-small">
-                <button class="menu-close" onclick="hideAddReminderModal()">✕</button>
-                <h3 class="menu-title" data-i18n="reminder.add_title">Přidat míchání</h3>
-                <form class="save-recipe-form" onsubmit="return saveReminderFromModal(event)">
-                    <div class="form-group-login">
-                        <label class="login-label" data-i18n="save_recipe.mix_date">Datum míchání</label>
-                        <input type="date" id="reminderMixDate" class="login-input date-picker-input" onchange="updateReminderModalDate()" required>
-                    </div>
-                    <div class="form-group-login">
-                        <label class="login-label" data-i18n="save_recipe.reminder_date">Datum připomínky</label>
-                        <input type="date" id="reminderRemindDate" class="login-input date-picker-input" required>
-                    </div>
-                    <div class="reminder-info">
-                        <span class="info-icon">ℹ️</span>
-                        <span id="reminderModalInfo" data-i18n="save_recipe.reminder_info">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
-                    </div>
-                    <button type="submit" class="neon-button" data-i18n="common.confirm">Potvrdit</button>
-                </form>
-            </div>
-        </div>
-
         <!-- Uložení receptu modal -->
         <div id="saveRecipeModal" class="modal hidden">
             <div class="modal-content">
@@ -1528,35 +1504,6 @@
                             </button>
                         </div>
                     </div>
-                    
-                    <!-- Připomínka zrání -->
-                    <div class="form-group-login reminder-section">
-                        <div class="reminder-toggle">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="enableReminder" onchange="toggleReminderFields()">
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <label class="login-label toggle-label" for="enableReminder" data-i18n="save_recipe.reminder_enable">Připomenout, až bude liquid vyzrálý</label>
-                        </div>
-                        
-                        <div id="reminderFields" class="reminder-fields hidden">
-                            <div class="reminder-row">
-                                <div class="reminder-field">
-                                    <label class="login-label" data-i18n="save_recipe.mix_date">Datum míchání</label>
-                                    <input type="date" id="mixDate" class="login-input date-picker-input" onchange="updateReminderDate()">
-                                </div>
-                                <div class="reminder-field">
-                                    <label class="login-label" data-i18n="save_recipe.reminder_date">Datum připomínky</label>
-                                    <input type="date" id="reminderDate" class="login-input date-picker-input">
-                                </div>
-                            </div>
-                            <div class="reminder-info" id="reminderInfo">
-                                <span class="info-icon">ℹ️</span>
-                                <span id="reminderInfoText" data-i18n="save_recipe.reminder_info">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <button type="submit" class="neon-button" id="saveRecipeSubmitBtn"><span data-i18n="save_recipe.save_button">Uložit recept</span></button>
                 </form>
             </div>
@@ -1794,6 +1741,11 @@
 
     <script src="/app.js"></script>
     
+    <!-- Firebase Cloud Messaging -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+    <script src="/fcm.js"></script>
+    
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -1896,10 +1848,10 @@
     <!-- Install prompt for PWA (Android) -->
     <div id="installPrompt" class="install-prompt hidden">
         <div class="install-content">
-            <p data-i18n="install.prompt_android">Nainstalovat LiquiMixer na váš telefon?</p>
+            <p>Nainstalovat LiquiMixer na váš telefon?</p>
             <div class="install-buttons">
-                <button id="installBtn" class="neon-button small" data-i18n="install.install_button">Instalovat</button>
-                <button id="dismissBtn" class="neon-button secondary small" data-i18n="install.later_button">Později</button>
+                <button id="installBtn" class="neon-button small">Instalovat</button>
+                <button id="dismissBtn" class="neon-button secondary small">Později</button>
             </div>
         </div>
     </div>
@@ -1907,23 +1859,23 @@
     <!-- Install prompt for iOS -->
     <div id="iosInstallPrompt" class="install-prompt ios-prompt hidden">
         <div class="install-content">
-            <p data-i18n="install.prompt_ios">Nainstalovat LiquiMixer na váš iPhone?</p>
+            <p>Nainstalovat LiquiMixer na váš iPhone?</p>
             <div class="ios-instructions">
                 <div class="ios-step">
                     <span class="ios-step-number">1</span>
-                    <span data-i18n="install.ios_step1">Klepněte na ikonu ⬆ (Sdílet)</span>
+                    <span>Klepněte na ikonu <span class="ios-share-icon">⬆</span> (Sdílet)</span>
                 </div>
                 <div class="ios-step">
                     <span class="ios-step-number">2</span>
-                    <span data-i18n="install.ios_step2">Vyberte "Přidat na plochu"</span>
+                    <span>Vyberte "Přidat na plochu"</span>
                 </div>
                 <div class="ios-step">
                     <span class="ios-step-number">3</span>
-                    <span data-i18n="install.ios_step3">Potvrďte klepnutím na "Přidat"</span>
+                    <span>Potvrďte klepnutím na "Přidat"</span>
                 </div>
             </div>
             <div class="install-buttons">
-                <button id="iosDismissBtn" class="neon-button secondary small" data-i18n="install.understand_button">Rozumím</button>
+                <button id="iosDismissBtn" class="neon-button secondary small">Rozumím</button>
             </div>
         </div>
     </div>

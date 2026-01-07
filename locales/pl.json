@@ -227,13 +227,7 @@
     "not_found": "Nie znaleziono przepisu lub został usunięty.",
     "delete_confirm": "Czy na pewno chcesz usunąć ten przepis?",
     "delete_success": "Przepis został usunięty.",
-    "delete_error": "Błąd podczas usuwania przepisu.",
-    "reminders_title": "Przypomnienia o leżakowaniu",
-    "add_reminder": "Dodaj nowe mieszanie",
-    "no_reminders": "Brak przypomnień. Kliknij przycisk poniżej, aby dodać.",
-    "reminders_error": "Błąd ładowania przypomnień.",
-    "show_all_reminders": "Pokaż wszystkie",
-    "show_less": "Pokaż mniej"
+    "delete_error": "Błąd podczas usuwania przepisu."
   },
   "save_recipe": {
     "title": "Zapisz przepis",
@@ -253,36 +247,7 @@
     "error": "Błąd podczas zapisywania przepisu.",
     "login_required": "Proszę się zalogować, aby zapisać przepis.",
     "no_products": "Nie masz ulubionych produktów. Dodaj je najpierw w sekcji Ulubione produkty.",
-    "nothing_to_save": "Błąd: Nie ma nic do zapisania. Proszę utworzyć przepis.",
-    "reminder_enable": "Przypomnij, gdy liquid będzie dojrzały",
-    "mix_date": "Data mieszania",
-    "reminder_date": "Data przypomnienia",
-    "reminder_info": "Data przypomnienia została automatycznie obliczona na podstawie typu aromatu.",
-    "reminder_no_steeping": "Ten aromat nie wymaga leżakowania.",
-    "reminder_calculated": "Zalecany czas leżakowania: {days} {daysUnit}. Możesz zmienić datę.",
-    "reminder_set": "Przypomnienie ustawione na",
-    "linked_products": "Powiązane produkty"
-  },
-  "reminder": {
-    "mixed_on": "Zmieszano",
-    "reminder_on": "Przypomnienie",
-    "sent": "Wysłane",
-    "cancelled": "Anulowane",
-    "add_title": "Dodaj mieszanie",
-    "edit_title": "Edytuj przypomnienie",
-    "fill_dates": "Proszę wypełnić obie daty.",
-    "enter_mix_date": "Wprowadź datę mieszania (RRRR-MM-DD):",
-    "enter_remind_date": "Wprowadź datę przypomnienia (RRRR-MM-DD):",
-    "suggested": "Zalecane",
-    "enter_new_date": "Wprowadź nową datę przypomnienia (RRRR-MM-DD):",
-    "invalid_date": "Nieprawidłowy format daty.",
-    "saved": "Przypomnienie zostało zapisane!",
-    "updated": "Przypomnienie zostało zaktualizowane!",
-    "save_error": "Błąd podczas zapisywania przypomnienia.",
-    "update_error": "Błąd podczas aktualizacji przypomnienia.",
-    "delete_confirm": "Czy na pewno chcesz usunąć to przypomnienie?",
-    "deleted": "Przypomnienie zostało usunięte.",
-    "delete_error": "Błąd podczas usuwania przypomnienia."
+    "nothing_to_save": "Błąd: Nie ma nic do zapisania. Proszę utworzyć przepis."
   },
   "share": {
     "copied": "Link skopiowany do schowka!",
@@ -378,10 +343,7 @@
     "cancel": "Anuluj",
     "confirm": "Potwierdź",
     "yes": "Tak",
-    "no": "Nie",
-    "day": "dzień",
-    "days_few": "dni",
-    "days": "dni"
+    "no": "Nie"
   },
   "alert": {
     "login_required": "Proszę się zalogować, aby wykonać tę akcję.",

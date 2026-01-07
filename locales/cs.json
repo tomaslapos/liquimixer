@@ -224,13 +224,7 @@
     "not_found": "Recept nebyl nalezen nebo byl smazán.",
     "delete_confirm": "Opravdu chcete smazat tento recept?",
     "delete_success": "Recept byl smazán.",
-    "delete_error": "Chyba při mazání receptu.",
-    "reminders_title": "Připomínky zrání",
-    "add_reminder": "Přidat nové míchání",
-    "no_reminders": "Žádné připomínky. Klikněte na tlačítko níže pro přidání.",
-    "reminders_error": "Chyba při načítání připomínek.",
-    "show_all_reminders": "Zobrazit všechny",
-    "show_less": "Zobrazit méně"
+    "delete_error": "Chyba při mazání receptu."
   },
   "products": {
     "title": "Oblíbené produkty",
@@ -315,10 +309,7 @@
     "cancel": "Zrušit",
     "confirm": "Potvrdit",
     "yes": "Ano",
-    "no": "Ne",
-    "day": "den",
-    "days_few": "dny",
-    "days": "dní"
+    "no": "Ne"
   },
   "alert": {
     "login_required": "Pro tuto akci se prosím přihlaste.",
@@ -403,38 +394,7 @@
     "error": "Chyba při ukládání receptu.",
     "login_required": "Pro uložení receptu se prosím přihlaste.",
     "no_products": "Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.",
-    "nothing_to_save": "Chyba: Není co uložit. Prosím vytvořte recept.",
-    "reminder_enable": "Připomenout, až bude liquid vyzrálý",
-    "mix_date": "Datum míchání",
-    "reminder_date": "Datum připomínky",
-    "reminder_info": "Datum připomínky bylo automaticky vypočteno na základě typu příchutě.",
-    "reminder_no_steeping": "Tato příchuť nevyžaduje zrání.",
-    "reminder_calculated": "Doporučená doba zrání: {days} {daysUnit}. Datum můžete upravit.",
-    "reminder_set": "Připomínka nastavena na",
-    "linked_products": "Propojené produkty"
-  },
-  "reminder": {
-    "mixed_on": "Namícháno",
-    "reminder_on": "Připomínka",
-    "sent": "Odesláno",
-    "cancelled": "Zrušeno",
-    "add_title": "Přidat míchání",
-    "edit_title": "Upravit připomínku",
-    "fill_dates": "Vyplňte prosím obě data.",
-    "enter_mix_date": "Zadejte datum míchání (YYYY-MM-DD):",
-    "enter_remind_date": "Zadejte datum připomínky (YYYY-MM-DD):",
-    "suggested": "Doporučeno",
-    "enter_new_date": "Zadejte nové datum připomínky (YYYY-MM-DD):",
-    "invalid_date": "Neplatný formát data. Použijte YYYY-MM-DD.",
-    "saved": "Připomínka byla uložena!",
-    "save_error": "Chyba při ukládání připomínky.",
-    "updated": "Připomínka byla upravena!",
-    "update_error": "Chyba při úpravě připomínky.",
-    "delete_confirm": "Opravdu chcete smazat tuto připomínku?",
-    "deleted": "Připomínka byla smazána!",
-    "delete_error": "Chyba při mazání připomínky.",
-    "notification_title": "LiquiMixer - Liquid vyzrálý!",
-    "notification_body": "Váš liquid s příchutí {flavor} namíchaný dne {date} je vyzrálý a připraven."
+    "nothing_to_save": "Chyba: Není co uložit. Prosím vytvořte recept."
   },
   "share": {
     "copied": "Odkaz zkopírován do schránky!",

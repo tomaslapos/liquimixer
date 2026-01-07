@@ -227,13 +227,7 @@
     "not_found": "Receita não encontrada ou eliminada.",
     "delete_confirm": "Tem a certeza de que deseja eliminar esta receita?",
     "delete_success": "A receita foi eliminada.",
-    "delete_error": "Erro ao eliminar a receita.",
-    "reminders_title": "Lembretes de maturação",
-    "add_reminder": "Adicionar nova mistura",
-    "no_reminders": "Sem lembretes. Clique no botão abaixo para adicionar um.",
-    "reminders_error": "Erro ao carregar os lembretes.",
-    "show_all_reminders": "Mostrar todos",
-    "show_less": "Mostrar menos"
+    "delete_error": "Erro ao eliminar a receita."
   },
   "save_recipe": {
     "title": "Guardar receita",
@@ -253,36 +247,7 @@
     "error": "Erro ao guardar a receita.",
     "login_required": "Por favor, entre para guardar a receita.",
     "no_products": "Não tem produtos favoritos. Adicione-os primeiro na secção Produtos favoritos.",
-    "nothing_to_save": "Erro: Nada para guardar. Por favor, crie uma receita.",
-    "reminder_enable": "Lembrar-me quando o líquido estiver maduro",
-    "mix_date": "Data de mistura",
-    "reminder_date": "Data do lembrete",
-    "reminder_info": "A data do lembrete foi calculada automaticamente com base no tipo de aroma.",
-    "reminder_no_steeping": "Este aroma não requer maturação.",
-    "reminder_calculated": "Tempo de maturação recomendado: {days} {daysUnit}. Pode modificar a data.",
-    "reminder_set": "Lembrete programado para",
-    "linked_products": "Produtos associados"
-  },
-  "reminder": {
-    "mixed_on": "Misturado em",
-    "reminder_on": "Lembrete",
-    "sent": "Enviado",
-    "cancelled": "Cancelado",
-    "add_title": "Adicionar mistura",
-    "edit_title": "Editar lembrete",
-    "fill_dates": "Por favor, preencha ambas as datas.",
-    "enter_mix_date": "Introduza a data de mistura (AAAA-MM-DD):",
-    "enter_remind_date": "Introduza a data do lembrete (AAAA-MM-DD):",
-    "suggested": "Recomendado",
-    "enter_new_date": "Introduza a nova data do lembrete (AAAA-MM-DD):",
-    "invalid_date": "Formato de data inválido.",
-    "saved": "Lembrete guardado!",
-    "updated": "Lembrete atualizado!",
-    "save_error": "Erro ao guardar o lembrete.",
-    "update_error": "Erro ao atualizar o lembrete.",
-    "delete_confirm": "Tem a certeza de que deseja eliminar este lembrete?",
-    "deleted": "Lembrete eliminado.",
-    "delete_error": "Erro ao eliminar o lembrete."
+    "nothing_to_save": "Erro: Nada para guardar. Por favor, crie uma receita."
   },
   "share": {
     "copied": "Link copiado para a área de transferência!",
@@ -378,10 +343,7 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "yes": "Sim",
-    "no": "Não",
-    "day": "dia",
-    "days_few": "dias",
-    "days": "dias"
+    "no": "Não"
   },
   "alert": {
     "login_required": "Por favor, entre para esta ação.",

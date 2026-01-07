@@ -227,13 +227,7 @@
     "not_found": "Recept sa nenašiel alebo bol zmazaný.",
     "delete_confirm": "Naozaj chcete zmazať tento recept?",
     "delete_success": "Recept bol zmazaný.",
-    "delete_error": "Chyba pri mazaní receptu.",
-    "reminders_title": "Pripomienky zrenia",
-    "add_reminder": "Pridať nové miešanie",
-    "no_reminders": "Žiadne pripomienky. Kliknite na tlačidlo nižšie pre pridanie.",
-    "reminders_error": "Chyba pri načítavaní pripomienok.",
-    "show_all_reminders": "Zobraziť všetky",
-    "show_less": "Zobraziť menej"
+    "delete_error": "Chyba pri mazaní receptu."
   },
   "save_recipe": {
     "title": "Uložiť recept",
@@ -253,36 +247,7 @@
     "error": "Chyba pri ukladaní receptu.",
     "login_required": "Pre uloženie receptu sa prosím prihláste.",
     "no_products": "Nemáte žiadne obľúbené produkty. Najprv ich pridajte v sekcii Obľúbené produkty.",
-    "nothing_to_save": "Chyba: Nie je čo uložiť. Prosím vytvorte recept.",
-    "reminder_enable": "Pripomenúť, keď bude liquid vyzretý",
-    "mix_date": "Dátum miešania",
-    "reminder_date": "Dátum pripomienky",
-    "reminder_info": "Dátum pripomienky bol automaticky vypočítaný na základe typu príchute.",
-    "reminder_no_steeping": "Táto príchuť nevyžaduje zrenie.",
-    "reminder_calculated": "Odporúčaná doba zrenia: {days} {daysUnit}. Dátum môžete upraviť.",
-    "reminder_set": "Pripomienka nastavená na",
-    "linked_products": "Prepojené produkty"
-  },
-  "reminder": {
-    "mixed_on": "Namiešané",
-    "reminder_on": "Pripomienka",
-    "sent": "Odoslané",
-    "cancelled": "Zrušené",
-    "add_title": "Pridať miešanie",
-    "edit_title": "Upraviť pripomienku",
-    "fill_dates": "Vyplňte prosím oba dátumy.",
-    "enter_mix_date": "Zadajte dátum miešania (RRRR-MM-DD):",
-    "enter_remind_date": "Zadajte dátum pripomienky (RRRR-MM-DD):",
-    "suggested": "Odporúčané",
-    "enter_new_date": "Zadajte nový dátum pripomienky (RRRR-MM-DD):",
-    "invalid_date": "Neplatný formát dátumu.",
-    "saved": "Pripomienka bola uložená!",
-    "updated": "Pripomienka bola upravená!",
-    "save_error": "Chyba pri ukladaní pripomienky.",
-    "update_error": "Chyba pri aktualizácii pripomienky.",
-    "delete_confirm": "Naozaj chcete zmazať túto pripomienku?",
-    "deleted": "Pripomienka bola zmazaná.",
-    "delete_error": "Chyba pri mazaní pripomienky."
+    "nothing_to_save": "Chyba: Nie je čo uložiť. Prosím vytvorte recept."
   },
   "share": {
     "copied": "Odkaz skopírovaný do schránky!",
@@ -378,10 +343,7 @@
     "cancel": "Zrušiť",
     "confirm": "Potvrdiť",
     "yes": "Áno",
-    "no": "Nie",
-    "day": "deň",
-    "days_few": "dni",
-    "days": "dní"
+    "no": "Nie"
   },
   "alert": {
     "login_required": "Pre túto akciu sa prosím prihláste.",

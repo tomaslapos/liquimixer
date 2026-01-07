@@ -227,13 +227,7 @@
     "not_found": "Oppskrift ikke funnet eller er slettet.",
     "delete_confirm": "Er du sikker på at du vil slette denne oppskriften?",
     "delete_success": "Oppskriften er slettet.",
-    "delete_error": "Feil ved sletting av oppskrift.",
-    "reminders_title": "Modningspåminnelser",
-    "add_reminder": "Legg til ny blanding",
-    "no_reminders": "Ingen påminnelser. Klikk på knappen nedenfor for å legge til.",
-    "reminders_error": "Feil ved lasting av påminnelser.",
-    "show_all_reminders": "Vis alle",
-    "show_less": "Vis mindre"
+    "delete_error": "Feil ved sletting av oppskrift."
   },
   "save_recipe": {
     "title": "Lagre oppskrift",
@@ -253,36 +247,7 @@
     "error": "Feil ved lagring av oppskrift.",
     "login_required": "Vennligst logg inn for å lagre oppskriften.",
     "no_products": "Du har ingen favorittprodukter. Legg dem til først i Favorittprodukter-seksjonen.",
-    "nothing_to_save": "Feil: Ingenting å lagre. Vennligst opprett en oppskrift.",
-    "reminder_enable": "Påminn meg når væsken er moden",
-    "mix_date": "Blandingsdato",
-    "reminder_date": "Påminnelsesdato",
-    "reminder_info": "Påminnelsesdatoen ble automatisk beregnet basert på aromaype.",
-    "reminder_no_steeping": "Denne aromaen krever ikke modning.",
-    "reminder_calculated": "Anbefalt modningstid: {days} {daysUnit}. Du kan endre datoen.",
-    "reminder_set": "Påminnelse satt til",
-    "linked_products": "Tilknyttede produkter"
-  },
-  "reminder": {
-    "mixed_on": "Blandet den",
-    "reminder_on": "Påminnelse",
-    "sent": "Sendt",
-    "cancelled": "Avbrutt",
-    "add_title": "Legg til blanding",
-    "edit_title": "Rediger påminnelse",
-    "fill_dates": "Vennligst fyll ut begge datoene.",
-    "enter_mix_date": "Angi blandingsdato (ÅÅÅÅ-MM-DD):",
-    "enter_remind_date": "Angi påminnelsesdato (ÅÅÅÅ-MM-DD):",
-    "suggested": "Anbefalt",
-    "enter_new_date": "Angi ny påminnelsesdato (ÅÅÅÅ-MM-DD):",
-    "invalid_date": "Ugyldig datoformat.",
-    "saved": "Påminnelse lagret!",
-    "updated": "Påminnelse oppdatert!",
-    "save_error": "Feil ved lagring av påminnelse.",
-    "update_error": "Feil ved oppdatering av påminnelse.",
-    "delete_confirm": "Er du sikker på at du vil slette denne påminnelsen?",
-    "deleted": "Påminnelse slettet.",
-    "delete_error": "Feil ved sletting av påminnelse."
+    "nothing_to_save": "Feil: Ingenting å lagre. Vennligst opprett en oppskrift."
   },
   "share": {
     "copied": "Lenke kopiert til utklippstavlen!",
@@ -378,10 +343,7 @@
     "cancel": "Avbryt",
     "confirm": "Bekreft",
     "yes": "Ja",
-    "no": "Nei",
-    "day": "dag",
-    "days_few": "dager",
-    "days": "dager"
+    "no": "Nei"
   },
   "alert": {
     "login_required": "Vennligst logg inn for denne handlingen.",

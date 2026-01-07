@@ -227,13 +227,7 @@
     "not_found": "Opskrift ikke fundet eller er blevet slettet.",
     "delete_confirm": "Er du sikker på, at du vil slette denne opskrift?",
     "delete_success": "Opskriften er blevet slettet.",
-    "delete_error": "Fejl ved sletning af opskrift.",
-    "reminders_title": "Modningspåmindelser",
-    "add_reminder": "Tilføj ny blanding",
-    "no_reminders": "Ingen påmindelser. Klik på knappen nedenfor for at tilføje.",
-    "reminders_error": "Fejl ved indlæsning af påmindelser.",
-    "show_all_reminders": "Vis alle",
-    "show_less": "Vis mindre"
+    "delete_error": "Fejl ved sletning af opskrift."
   },
   "save_recipe": {
     "title": "Gem opskrift",
@@ -253,36 +247,7 @@
     "error": "Fejl ved gemning af opskrift.",
     "login_required": "Log venligst ind for at gemme opskriften.",
     "no_products": "Du har ingen favoritprodukter. Tilføj dem først i Favoritprodukter-sektionen.",
-    "nothing_to_save": "Fejl: Intet at gemme. Opret venligst en opskrift.",
-    "reminder_enable": "Påmind mig når væsken er modnet",
-    "mix_date": "Blandingsdato",
-    "reminder_date": "Påmindelsesdato",
-    "reminder_info": "Påmindelsesdatoen blev automatisk beregnet baseret på aromatype.",
-    "reminder_no_steeping": "Denne aroma kræver ikke modning.",
-    "reminder_calculated": "Anbefalet modningstid: {days} {daysUnit}. Du kan ændre datoen.",
-    "reminder_set": "Påmindelse sat til",
-    "linked_products": "Tilknyttede produkter"
-  },
-  "reminder": {
-    "mixed_on": "Blandet den",
-    "reminder_on": "Påmindelse",
-    "sent": "Sendt",
-    "cancelled": "Annulleret",
-    "add_title": "Tilføj blanding",
-    "edit_title": "Rediger påmindelse",
-    "fill_dates": "Udfyld venligst begge datoer.",
-    "enter_mix_date": "Indtast blandingsdato (ÅÅÅÅ-MM-DD):",
-    "enter_remind_date": "Indtast påmindelsesdato (ÅÅÅÅ-MM-DD):",
-    "suggested": "Anbefalet",
-    "enter_new_date": "Indtast ny påmindelsesdato (ÅÅÅÅ-MM-DD):",
-    "invalid_date": "Ugyldigt datoformat.",
-    "saved": "Påmindelse gemt!",
-    "updated": "Påmindelse opdateret!",
-    "save_error": "Fejl ved gemning af påmindelse.",
-    "update_error": "Fejl ved opdatering af påmindelse.",
-    "delete_confirm": "Er du sikker på, at du vil slette denne påmindelse?",
-    "deleted": "Påmindelse slettet.",
-    "delete_error": "Fejl ved sletning af påmindelse."
+    "nothing_to_save": "Fejl: Intet at gemme. Opret venligst en opskrift."
   },
   "share": {
     "copied": "Link kopieret til udklipsholder!",
@@ -378,10 +343,7 @@
     "cancel": "Annuller",
     "confirm": "Bekræft",
     "yes": "Ja",
-    "no": "Nej",
-    "day": "dag",
-    "days_few": "dage",
-    "days": "dage"
+    "no": "Nej"
   },
   "alert": {
     "login_required": "Log venligst ind for denne handling.",

@@ -227,13 +227,7 @@
     "not_found": "A recept nem található vagy törölve lett.",
     "delete_confirm": "Biztosan törölni szeretnéd ezt a receptet?",
     "delete_success": "A recept törölve lett.",
-    "delete_error": "Hiba a recept törlésekor.",
-    "reminders_title": "Érlelési emlékeztetők",
-    "add_reminder": "Új keverés hozzáadása",
-    "no_reminders": "Nincsenek emlékeztetők. Kattints az alábbi gombra a hozzáadáshoz.",
-    "reminders_error": "Hiba az emlékeztetők betöltésekor.",
-    "show_all_reminders": "Összes megjelenítése",
-    "show_less": "Kevesebb megjelenítése"
+    "delete_error": "Hiba a recept törlésekor."
   },
   "save_recipe": {
     "title": "Recept mentése",
@@ -253,36 +247,7 @@
     "error": "Hiba a recept mentésekor.",
     "login_required": "Kérjük, jelentkezz be a recept mentéséhez.",
     "no_products": "Nincsenek kedvenc termékeid. Előbb add hozzá őket a Kedvenc termékek részben.",
-    "nothing_to_save": "Hiba: Nincs mit menteni. Kérjük, hozz létre receptet.",
-    "reminder_enable": "Emlékeztess, amikor a folyadék megérett",
-    "mix_date": "Keverés dátuma",
-    "reminder_date": "Emlékeztető dátuma",
-    "reminder_info": "Az emlékeztető dátuma automatikusan kiszámításra került az aroma típusa alapján.",
-    "reminder_no_steeping": "Ez az aroma nem igényel érlelést.",
-    "reminder_calculated": "Ajánlott érlelési idő: {days} {daysUnit}. A dátumot módosíthatod.",
-    "reminder_set": "Emlékeztető beállítva",
-    "linked_products": "Kapcsolódó termékek"
-  },
-  "reminder": {
-    "mixed_on": "Keverve",
-    "reminder_on": "Emlékeztető",
-    "sent": "Elküldve",
-    "cancelled": "Törölve",
-    "add_title": "Keverés hozzáadása",
-    "edit_title": "Emlékeztető szerkesztése",
-    "fill_dates": "Kérjük, töltsd ki mindkét dátumot.",
-    "enter_mix_date": "Add meg a keverés dátumát (ÉÉÉÉ-HH-NN):",
-    "enter_remind_date": "Add meg az emlékeztető dátumát (ÉÉÉÉ-HH-NN):",
-    "suggested": "Ajánlott",
-    "enter_new_date": "Add meg az új emlékeztető dátumát (ÉÉÉÉ-HH-NN):",
-    "invalid_date": "Érvénytelen dátumformátum.",
-    "saved": "Emlékeztető mentve!",
-    "updated": "Emlékeztető frissítve!",
-    "save_error": "Hiba az emlékeztető mentésekor.",
-    "update_error": "Hiba az emlékeztető frissítésekor.",
-    "delete_confirm": "Biztosan törölni szeretnéd ezt az emlékeztetőt?",
-    "deleted": "Emlékeztető törölve.",
-    "delete_error": "Hiba az emlékeztető törlésekor."
+    "nothing_to_save": "Hiba: Nincs mit menteni. Kérjük, hozz létre receptet."
   },
   "share": {
     "copied": "Link a vágólapra másolva!",
@@ -378,10 +343,7 @@
     "cancel": "Mégse",
     "confirm": "Megerősítés",
     "yes": "Igen",
-    "no": "Nem",
-    "day": "nap",
-    "days_few": "nap",
-    "days": "nap"
+    "no": "Nem"
   },
   "alert": {
     "login_required": "Kérjük, jelentkezz be ehhez a művelethez.",

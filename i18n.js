@@ -206,9 +206,6 @@ async function setLocale(locale, saveToDb = true) {
     await loadTranslations(locale);
     applyTranslations();
     
-    // Přerenderovat dynamický obsah (recepty, produkty)
-    rerenderDynamicContent();
-    
     // Aktualizovat výběr jazyka v profilu
     updateLanguageSelectorValue(locale);
     
@@ -230,88 +227,6 @@ async function setLocale(locale, saveToDb = true) {
     
     // Event pro ostatní komponenty
     window.dispatchEvent(new CustomEvent('localeChanged', { detail: { locale } }));
-}
-
-// Přerenderovat dynamický obsah při změně jazyka
-function rerenderDynamicContent() {
-    try {
-        // Pokud je zobrazen detail receptu, přerenderovat ho
-        if (window.currentViewingRecipe) {
-            const recipeDetailPage = document.getElementById('recipe-detail');
-            const sharedRecipePage = document.getElementById('shared-recipe');
-            
-            if (recipeDetailPage && !recipeDetailPage.classList.contains('hidden')) {
-                // Detail vlastního receptu - potřebujeme také propojené produkty
-                if (typeof window.displayRecipeDetail === 'function') {
-                    // Načíst propojené produkty a pak přerenderovat
-                    if (window.Clerk?.user && window.LiquiMixerDB?.getLinkedProducts) {
-                        window.LiquiMixerDB.getLinkedProducts(window.Clerk.user.id, window.currentViewingRecipe.id)
-                            .then(linkedProducts => {
-                                window.displayRecipeDetail(
-                                    window.currentViewingRecipe, 
-                                    'recipeDetailTitle', 
-                                    'recipeDetailContent',
-                                    linkedProducts || []
-                                );
-                            })
-                            .catch(err => {
-                                console.warn('Error loading linked products for rerender:', err);
-                                window.displayRecipeDetail(
-                                    window.currentViewingRecipe, 
-                                    'recipeDetailTitle', 
-                                    'recipeDetailContent',
-                                    []
-                                );
-                            });
-                    } else {
-                        window.displayRecipeDetail(
-                            window.currentViewingRecipe, 
-                            'recipeDetailTitle', 
-                            'recipeDetailContent',
-                            []
-                        );
-                    }
-                }
-            } else if (sharedRecipePage && !sharedRecipePage.classList.contains('hidden')) {
-                // Sdílený recept
-                if (typeof window.displayRecipeDetail === 'function') {
-                    window.displayRecipeDetail(
-                        window.currentViewingRecipe, 
-                        'sharedRecipeTitle', 
-                        'sharedRecipeContent'
-                    );
-                }
-            }
-        }
-        
-        // Pokud je zobrazen detail produktu, přerenderovat ho
-        if (window.currentViewingProduct) {
-            const productDetailPage = document.getElementById('product-detail');
-            if (productDetailPage && !productDetailPage.classList.contains('hidden')) {
-                if (typeof window.displayProductDetail === 'function') {
-                    window.displayProductDetail(window.currentViewingProduct);
-                }
-            }
-        }
-        
-        // Přerenderovat seznam receptů pokud je zobrazen
-        const myRecipesPage = document.getElementById('my-recipes');
-        if (myRecipesPage && !myRecipesPage.classList.contains('hidden')) {
-            if (typeof window.renderRecipesList === 'function' && window.allUserRecipes) {
-                window.renderRecipesList(window.allUserRecipes);
-            }
-        }
-        
-        // Přerenderovat seznam produktů pokud je zobrazen
-        const favoriteProductsPage = document.getElementById('favorite-products');
-        if (favoriteProductsPage && !favoriteProductsPage.classList.contains('hidden')) {
-            if (typeof window.renderProductsList === 'function' && window.allUserProducts) {
-                window.renderProductsList(window.allUserProducts);
-            }
-        }
-    } catch (error) {
-        console.warn('Error in rerenderDynamicContent:', error);
-    }
 }
 
 // Aktualizovat hodnotu v selectu jazyka
