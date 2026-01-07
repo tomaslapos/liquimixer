@@ -227,7 +227,13 @@
     "not_found": "Recepte nav atrasta vai ir dzēsta.",
     "delete_confirm": "Vai tiešām vēlaties dzēst šo recepti?",
     "delete_success": "Recepte ir dzēsta.",
-    "delete_error": "Kļūda, dzēšot recepti."
+    "delete_error": "Kļūda, dzēšot recepti.",
+    "reminders_title": "Nogatavināšanas atgādinājumi",
+    "add_reminder": "Pievienot jaunu maisījumu",
+    "no_reminders": "Nav atgādinājumu. Noklikšķiniet uz zemāk esošās pogas, lai pievienotu.",
+    "reminders_error": "Kļūda, ielādējot atgādinājumus.",
+    "show_all_reminders": "Rādīt visus",
+    "show_less": "Rādīt mazāk"
   },
   "save_recipe": {
     "title": "Saglabāt recepti",
@@ -247,7 +253,36 @@
     "error": "Kļūda, saglabājot recepti.",
     "login_required": "Lūdzu, pieslēdzieties, lai saglabātu recepti.",
     "no_products": "Jums nav mīļāko produktu. Vispirms pievienojiet tos sadaļā Mīļākie produkti.",
-    "nothing_to_save": "Kļūda: Nav ko saglabāt. Izveidojiet recepti."
+    "nothing_to_save": "Kļūda: Nav ko saglabāt. Izveidojiet recepti.",
+    "reminder_enable": "Atgādināt, kad šķidrums ir nogatavināts",
+    "mix_date": "Maisīšanas datums",
+    "reminder_date": "Atgādinājuma datums",
+    "reminder_info": "Atgādinājuma datums tika automātiski aprēķināts, pamatojoties uz aromāta veidu.",
+    "reminder_no_steeping": "Šis aromāts neprasa nogatavināšanu.",
+    "reminder_calculated": "Ieteicamais nogatavināšanas laiks: {days} {daysUnit}. Jūs varat mainīt datumu.",
+    "reminder_set": "Atgādinājums iestatīts uz",
+    "linked_products": "Saistītie produkti"
+  },
+  "reminder": {
+    "mixed_on": "Samaisīts",
+    "reminder_on": "Atgādinājums",
+    "sent": "Nosūtīts",
+    "cancelled": "Atcelts",
+    "add_title": "Pievienot maisījumu",
+    "edit_title": "Rediģēt atgādinājumu",
+    "fill_dates": "Lūdzu, aizpildiet abus datumus.",
+    "enter_mix_date": "Ievadiet maisīšanas datumu (GGGG-MM-DD):",
+    "enter_remind_date": "Ievadiet atgādinājuma datumu (GGGG-MM-DD):",
+    "suggested": "Ieteicams",
+    "enter_new_date": "Ievadiet jaunu atgādinājuma datumu (GGGG-MM-DD):",
+    "invalid_date": "Nederīgs datuma formāts.",
+    "saved": "Atgādinājums saglabāts!",
+    "updated": "Atgādinājums atjaunināts!",
+    "save_error": "Kļūda, saglabājot atgādinājumu.",
+    "update_error": "Kļūda, atjauninot atgādinājumu.",
+    "delete_confirm": "Vai tiešām vēlaties dzēst šo atgādinājumu?",
+    "deleted": "Atgādinājums dzēsts.",
+    "delete_error": "Kļūda, dzēšot atgādinājumu."
   },
   "share": {
     "copied": "Saite nokopēta starpliktuvē!",
@@ -343,7 +378,10 @@
     "cancel": "Atcelt",
     "confirm": "Apstiprināt",
     "yes": "Jā",
-    "no": "Nē"
+    "no": "Nē",
+    "day": "diena",
+    "days_few": "dienas",
+    "days": "dienu"
   },
   "alert": {
     "login_required": "Lūdzu, pieslēdzieties šai darbībai.",

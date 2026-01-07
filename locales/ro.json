@@ -227,7 +227,13 @@
     "not_found": "Rețeta nu a fost găsită sau a fost ștearsă.",
     "delete_confirm": "Sigur doriți să ștergeți această rețetă?",
     "delete_success": "Rețeta a fost ștearsă.",
-    "delete_error": "Eroare la ștergerea rețetei."
+    "delete_error": "Eroare la ștergerea rețetei.",
+    "reminders_title": "Memento-uri de macerare",
+    "add_reminder": "Adăugați un amestec nou",
+    "no_reminders": "Fără memento-uri. Faceți clic pe butonul de mai jos pentru a adăuga.",
+    "reminders_error": "Eroare la încărcarea memento-urilor.",
+    "show_all_reminders": "Afișați toate",
+    "show_less": "Afișați mai puțin"
   },
   "save_recipe": {
     "title": "Salvați rețeta",
@@ -247,7 +253,36 @@
     "error": "Eroare la salvarea rețetei.",
     "login_required": "Autentificați-vă pentru a salva rețeta.",
     "no_products": "Nu aveți produse preferate. Adăugați-le mai întâi în secțiunea Produse preferate.",
-    "nothing_to_save": "Eroare: Nimic de salvat. Creați o rețetă."
+    "nothing_to_save": "Eroare: Nimic de salvat. Creați o rețetă.",
+    "reminder_enable": "Reamintește-mi când lichidul este maturat",
+    "mix_date": "Data amestecării",
+    "reminder_date": "Data memento-ului",
+    "reminder_info": "Data memento-ului a fost calculată automat pe baza tipului de aromă.",
+    "reminder_no_steeping": "Această aromă nu necesită macerare.",
+    "reminder_calculated": "Timp de macerare recomandat: {days} {daysUnit}. Puteți modifica data.",
+    "reminder_set": "Memento setat pentru",
+    "linked_products": "Produse asociate"
+  },
+  "reminder": {
+    "mixed_on": "Amestecat la",
+    "reminder_on": "Memento",
+    "sent": "Trimis",
+    "cancelled": "Anulat",
+    "add_title": "Adăugați amestec",
+    "edit_title": "Editați memento",
+    "fill_dates": "Vă rugăm să completați ambele date.",
+    "enter_mix_date": "Introduceți data amestecării (AAAA-LL-ZZ):",
+    "enter_remind_date": "Introduceți data memento-ului (AAAA-LL-ZZ):",
+    "suggested": "Recomandat",
+    "enter_new_date": "Introduceți noua dată a memento-ului (AAAA-LL-ZZ):",
+    "invalid_date": "Format de dată invalid.",
+    "saved": "Memento salvat!",
+    "updated": "Memento actualizat!",
+    "save_error": "Eroare la salvarea memento-ului.",
+    "update_error": "Eroare la actualizarea memento-ului.",
+    "delete_confirm": "Sigur doriți să ștergeți acest memento?",
+    "deleted": "Memento șters.",
+    "delete_error": "Eroare la ștergerea memento-ului."
   },
   "share": {
     "copied": "Link copiat în clipboard!",
@@ -343,7 +378,10 @@
     "cancel": "Anulare",
     "confirm": "Confirmare",
     "yes": "Da",
-    "no": "Nu"
+    "no": "Nu",
+    "day": "zi",
+    "days_few": "zile",
+    "days": "zile"
   },
   "alert": {
     "login_required": "Autentificați-vă pentru această acțiune.",

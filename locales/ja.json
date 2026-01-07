@@ -227,7 +227,13 @@
     "not_found": "レシピが見つからないか、削除されました。",
     "delete_confirm": "このレシピを削除してもよろしいですか？",
     "delete_success": "レシピが削除されました。",
-    "delete_error": "レシピ削除エラー。"
+    "delete_error": "レシピ削除エラー。",
+    "reminders_title": "熟成リマインダー",
+    "add_reminder": "新しい調合を追加",
+    "no_reminders": "リマインダーがありません。下のボタンをクリックして追加してください。",
+    "reminders_error": "リマインダーの読み込みエラー。",
+    "show_all_reminders": "すべて表示",
+    "show_less": "少なく表示"
   },
   "save_recipe": {
     "title": "レシピを保存",
@@ -247,7 +253,36 @@
     "error": "レシピ保存エラー。",
     "login_required": "レシピを保存するにはログインしてください。",
     "no_products": "お気に入り製品がありません。まず「お気に入り製品」セクションに追加してください。",
-    "nothing_to_save": "エラー：保存するものがありません。レシピを作成してください。"
+    "nothing_to_save": "エラー：保存するものがありません。レシピを作成してください。",
+    "reminder_enable": "リキッドが熟成したら通知",
+    "mix_date": "調合日",
+    "reminder_date": "リマインダー日",
+    "reminder_info": "リマインダー日はフレーバータイプに基づいて自動計算されました。",
+    "reminder_no_steeping": "このフレーバーは熟成不要です。",
+    "reminder_calculated": "推奨熟成時間：{days} {daysUnit}。日付を変更できます。",
+    "reminder_set": "リマインダーを設定",
+    "linked_products": "関連製品"
+  },
+  "reminder": {
+    "mixed_on": "調合日",
+    "reminder_on": "リマインダー",
+    "sent": "送信済み",
+    "cancelled": "キャンセル済み",
+    "add_title": "調合を追加",
+    "edit_title": "リマインダーを編集",
+    "fill_dates": "両方の日付を入力してください。",
+    "enter_mix_date": "調合日を入力 (YYYY-MM-DD)：",
+    "enter_remind_date": "リマインダー日を入力 (YYYY-MM-DD)：",
+    "suggested": "推奨",
+    "enter_new_date": "新しいリマインダー日を入力 (YYYY-MM-DD)：",
+    "invalid_date": "日付形式が無効です。",
+    "saved": "リマインダーを保存しました！",
+    "updated": "リマインダーを更新しました！",
+    "save_error": "リマインダー保存エラー。",
+    "update_error": "リマインダー更新エラー。",
+    "delete_confirm": "このリマインダーを削除してもよろしいですか？",
+    "deleted": "リマインダーを削除しました。",
+    "delete_error": "リマインダー削除エラー。"
   },
   "share": {
     "copied": "リンクがクリップボードにコピーされました！",
@@ -343,7 +378,10 @@
     "cancel": "キャンセル",
     "confirm": "確認",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "day": "日",
+    "days_few": "日",
+    "days": "日"
   },
   "alert": {
     "login_required": "この操作にはログインしてください。",
