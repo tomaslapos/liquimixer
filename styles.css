@@ -2600,9 +2600,18 @@ body {
     font-family: 'Orbitron', monospace;
     font-size: 2rem;
     text-align: center;
+    margin-top: 60px; /* Prostor pro fixní navigaci */
     margin-bottom: 40px;
     color: var(--neon-pink);
     text-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+}
+
+/* Na mobilních zařízeních menší margin */
+@media (max-width: 480px) {
+    .page-title {
+        margin-top: 50px;
+        font-size: 1.5rem;
+    }
 }
 
 /* Form container - uses global clouds */
