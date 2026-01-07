@@ -936,7 +936,7 @@ async function handleContact(event) {
 // ============================================
 
 let currentRecipeData = null;
-let currentViewingRecipe = null;
+window.currentViewingRecipe = null; // Exportováno pro i18n přerenderování
 let selectedRating = 0;
 
 // Uložit aktuální recept do paměti pro pozdější uložení
@@ -1269,9 +1269,9 @@ async function showMyRecipes() {
     
     try {
         const recipes = await window.LiquiMixerDB.getRecipes(window.Clerk.user.id);
-        allUserRecipes = recipes || []; // Uložit pro filtrování
+        window.allUserRecipes = recipes || []; // Uložit pro filtrování
         
-        renderRecipesList(allUserRecipes);
+        renderRecipesList(window.allUserRecipes);
     } catch (error) {
         console.error('Error loading recipes:', error);
         container.innerHTML = `<p class="no-recipes-text" style="color: var(--neon-pink);">${t('recipes.load_error', 'Chyba při načítání receptů.')}</p>`;
@@ -1350,7 +1350,7 @@ function initRecipeSearchStarsHover() {
 function filterRecipes() {
     const searchText = (document.getElementById('recipeSearchText')?.value || '').toLowerCase().trim();
     
-    let filtered = allUserRecipes.filter(recipe => {
+    let filtered = window.allUserRecipes.filter(recipe => {
         // Textový filtr (název a popis)
         if (searchText) {
             const name = (recipe.name || '').toLowerCase();
@@ -1379,7 +1379,7 @@ function filterRecipes() {
                 resultsInfo.textContent = 'Žádné recepty neodpovídají filtrům.';
                 resultsInfo.className = 'search-results-info no-results';
             } else {
-                resultsInfo.textContent = `Nalezeno ${filtered.length} z ${allUserRecipes.length} receptů.`;
+                resultsInfo.textContent = `Nalezeno ${filtered.length} z ${window.allUserRecipes.length} receptů.`;
                 resultsInfo.className = 'search-results-info has-results';
             }
         } else {
@@ -1456,7 +1456,7 @@ async function viewRecipeDetail(recipeId) {
             return;
         }
         
-        currentViewingRecipe = recipe;
+        window.currentViewingRecipe = recipe;
         
         // Načíst propojené produkty
         const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(window.Clerk.user.id, recipeId);
@@ -1480,7 +1480,28 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
     
     const rating = Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    const date = new Date(recipe.created_at).toLocaleDateString(t('meta.code', 'cs') === 'en' ? 'en-GB' : t('meta.code', 'cs') + '-' + t('meta.code', 'CS').toUpperCase());
+    
+    // Získat správný locale pro formátování data
+    const localeCode = t('meta.code', 'cs');
+    let dateLocale;
+    if (localeCode === 'en') {
+        dateLocale = 'en-GB';
+    } else if (localeCode.includes('-')) {
+        // Již obsahuje region (např. ar-SA, zh-CN)
+        dateLocale = localeCode;
+    } else {
+        // Pouze jazyk (např. cs, de) - přidat region
+        dateLocale = localeCode + '-' + localeCode.toUpperCase();
+    }
+    
+    let date;
+    try {
+        date = new Date(recipe.created_at).toLocaleDateString(dateLocale);
+    } catch (e) {
+        // Fallback na výchozí formát pokud locale není podporovaný
+        date = new Date(recipe.created_at).toLocaleDateString();
+    }
+    
     const data = recipe.recipe_data || {};
     
     // SECURITY: Escapování popisku
@@ -1504,9 +1525,9 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
                         const ingredientName = escapeHtml(getIngredientName(ing));
                         return `
                         <tr>
-                            <td>${ingredientName}</td>
-                            <td>${parseFloat(ing.volume || 0).toFixed(2)}</td>
-                            <td>${parseFloat(ing.percent || 0).toFixed(1)}%</td>
+                            <td class="ingredient-name">${ingredientName}</td>
+                            <td class="ingredient-value">${parseFloat(ing.volume || 0).toFixed(2)} ml</td>
+                            <td class="ingredient-percent">${parseFloat(ing.percent || 0).toFixed(1)}%</td>
                         </tr>
                         `;
                     }).join('')}
@@ -1585,7 +1606,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = []) {
 
 // Upravit uložený recept
 async function editSavedRecipe() {
-    if (!currentViewingRecipe) return;
+    if (!window.currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
         alert(t('alert.login_required_edit', 'Pro úpravu receptu se prosím přihlaste.'));
@@ -1611,15 +1632,15 @@ async function showEditRecipeForm() {
     if (!modal) return;
     
     // Označit jako režim úpravy
-    window.editingRecipeId = currentViewingRecipe.id;
+    window.editingRecipeId = window.currentViewingRecipe.id;
     
     // Naplnit formulář existujícími daty
-    document.getElementById('recipeName').value = currentViewingRecipe.name || '';
-    document.getElementById('recipeDescription').value = currentViewingRecipe.description || '';
-    document.getElementById('recipeRating').value = currentViewingRecipe.rating || '0';
+    document.getElementById('recipeName').value = window.currentViewingRecipe.name || '';
+    document.getElementById('recipeDescription').value = window.currentViewingRecipe.description || '';
+    document.getElementById('recipeRating').value = window.currentViewingRecipe.rating || '0';
     
     // Aktualizovat zobrazení hvězdiček
-    selectedRating = parseInt(currentViewingRecipe.rating) || 0;
+    selectedRating = parseInt(window.currentViewingRecipe.rating) || 0;
     updateStarDisplay(selectedRating);
     initStarRating();
     
@@ -1630,7 +1651,7 @@ async function showEditRecipeForm() {
     try {
         const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(
             window.Clerk.user.id, 
-            currentViewingRecipe.id
+            window.currentViewingRecipe.id
         );
         
         // Přidat řádky pro každý propojený produkt
@@ -1701,24 +1722,24 @@ const SHARE_DOMAIN = 'https://www.liquimixer.com';
 
 // Sdílet recept
 function shareRecipe() {
-    if (!currentViewingRecipe || !currentViewingRecipe.share_id) {
+    if (!window.currentViewingRecipe || !window.currentViewingRecipe.share_id) {
         alert(t('share.cannot_share_recipe', 'Tento recept nelze sdílet.'));
         return;
     }
 
     // Použít share_url z databáze, nebo vytvořit novou
     // SECURITY: Vždy kontrolovat, že URL začíná oficiální doménou
-    let shareUrl = currentViewingRecipe.share_url;
+    let shareUrl = window.currentViewingRecipe.share_url;
     
     if (!shareUrl || !shareUrl.startsWith(SHARE_DOMAIN)) {
-        shareUrl = `${SHARE_DOMAIN}/?recipe=${currentViewingRecipe.share_id}`;
+        shareUrl = `${SHARE_DOMAIN}/?recipe=${window.currentViewingRecipe.share_id}`;
     }
 
     // Zkusit použít Web Share API
     if (navigator.share) {
         navigator.share({
-            title: escapeHtml(currentViewingRecipe.name),
-            text: `Podívej se na můj recept: ${escapeHtml(currentViewingRecipe.name)}`,
+            title: escapeHtml(window.currentViewingRecipe.name),
+            text: `Podívej se na můj recept: ${escapeHtml(window.currentViewingRecipe.name)}`,
             url: shareUrl
         }).catch(err => {
             // Fallback na kopírování
@@ -1739,23 +1760,23 @@ function copyShareLink(url) {
 
 // Sdílet oblíbený produkt
 function shareProduct() {
-    if (!currentViewingProduct || !currentViewingProduct.share_id) {
+    if (!window.currentViewingProduct || !window.currentViewingProduct.share_id) {
         alert(t('share.cannot_share_product', 'Tento produkt nelze sdílet.'));
         return;
     }
 
     // Použít share_url z databáze, nebo vytvořit novou
-    let shareUrl = currentViewingProduct.share_url;
+    let shareUrl = window.currentViewingProduct.share_url;
     
     if (!shareUrl || !shareUrl.startsWith(SHARE_DOMAIN)) {
-        shareUrl = `${SHARE_DOMAIN}/?product=${currentViewingProduct.share_id}`;
+        shareUrl = `${SHARE_DOMAIN}/?product=${window.currentViewingProduct.share_id}`;
     }
 
     // Zkusit použít Web Share API
     if (navigator.share) {
         navigator.share({
-            title: escapeHtml(currentViewingProduct.name),
-            text: `Podívej se na můj oblíbený produkt: ${escapeHtml(currentViewingProduct.name)}`,
+            title: escapeHtml(window.currentViewingProduct.name),
+            text: `Podívej se na můj oblíbený produkt: ${escapeHtml(window.currentViewingProduct.name)}`,
             url: shareUrl
         }).catch(err => {
             // Fallback na kopírování
@@ -1768,14 +1789,14 @@ function shareProduct() {
 
 // Smazat recept
 async function deleteRecipe() {
-    if (!currentViewingRecipe) return;
+    if (!window.currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
         alert(t('alert.login_required', 'Pro smazání receptu se prosím přihlaste.'));
         return;
     }
     
-    const recipeName = currentViewingRecipe.name || 'Tento recept';
+    const recipeName = window.currentViewingRecipe.name || 'Tento recept';
     
     if (!confirm(t('recipe_detail.delete_confirm', 'Opravdu chcete smazat tento recept?'))) {
         return;
@@ -1784,12 +1805,12 @@ async function deleteRecipe() {
     try {
         const success = await window.LiquiMixerDB.deleteRecipe(
             window.Clerk.user.id, 
-            currentViewingRecipe.id
+            window.currentViewingRecipe.id
         );
         
         if (success) {
             alert(t('recipe_detail.delete_success', 'Recept byl smazán.'));
-            currentViewingRecipe = null;
+            window.currentViewingRecipe = null;
             showMyRecipes();
         } else {
             alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
@@ -1814,7 +1835,7 @@ async function loadSharedRecipe() {
     // SECURITY: Validace share_id formátu
     if (!shareId || !isValidShareId(shareId)) return false;
     
-    // Uložit shareId pro pozdější načtení po přihlášení
+    // Uložit shareId pro pozdější načtení po přihlášení (pro Liquid PRO recepty)
     window.pendingSharedRecipeId = shareId;
     
     // Počkat na inicializaci Supabase a Clerk
@@ -1825,15 +1846,42 @@ async function loadSharedRecipe() {
     // Počkat na Clerk
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Zkontrolovat přihlášení
-    if (!window.Clerk || !window.Clerk.user) {
-        // Zobrazit stránku s výzvou k přihlášení
-        showSharedRecipeLoginPrompt();
+    // Nejprve načíst recept z databáze, abychom zjistili jeho typ
+    try {
+        const recipe = await window.LiquiMixerDB.getRecipeByShareId(shareId);
+        
+        if (!recipe) {
+            // Recept neexistuje
+            const contentEl = document.getElementById('sharedRecipeContent');
+            const titleEl = document.getElementById('sharedRecipeTitle');
+            titleEl.textContent = t('share.shared_recipe', 'Sdílený recept');
+            contentEl.innerHTML = `<p class="no-recipes-text">${t('recipe_detail.not_found', 'Recept nebyl nalezen nebo byl smazán.')}</p>`;
+            showPage('shared-recipe');
+            return true;
+        }
+        
+        // Zjistit typ formuláře z uložených dat
+        const formType = recipe.recipe_data?.formType || 'liquid';
+        
+        // Liquid PRO recepty vyžadují přihlášení
+        if (formType === 'liquidpro') {
+            if (!window.Clerk || !window.Clerk.user) {
+                // Zobrazit stránku s výzvou k přihlášení
+                showSharedRecipeLoginPrompt();
+                return true;
+            }
+        }
+        
+        // Zobrazit recept (Liquid a Shake and Vape jsou veřejné, Liquid PRO pouze pro přihlášené)
+        displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent');
+        showPage('shared-recipe');
+        window.pendingSharedRecipeId = null; // Vymazat pending ID
         return true;
+        
+    } catch (error) {
+        console.error('Error loading shared recipe:', error);
+        return false;
     }
-    
-    // Uživatel je přihlášen, načíst recept
-    return await loadSharedRecipeContent(shareId);
 }
 
 // Zobrazit výzvu k přihlášení pro sdílený recept
@@ -1894,13 +1942,13 @@ async function checkPendingSharedRecipe() {
 // OBLÍBENÉ PRODUKTY
 // ============================================
 
-let currentViewingProduct = null;
+window.currentViewingProduct = null; // Exportováno pro i18n přerenderování
 let selectedProductRating = 0;
-let allUserProducts = []; // Všechny načtené produkty pro filtrování
+window.allUserProducts = []; // Exportováno pro i18n přerenderování
 let searchRatingFilter = 0; // Aktuální filtr hodnocení produktů
 
 // Stav pro filtrování receptů
-let allUserRecipes = []; // Všechny načtené recepty pro filtrování
+window.allUserRecipes = []; // Exportováno pro i18n přerenderování
 let recipeSearchRatingFilter = 0; // Aktuální filtr hodnocení receptů
 
 // Zobrazit seznam oblíbených produktů
@@ -1922,9 +1970,9 @@ async function showFavoriteProducts() {
     
     try {
         const products = await window.LiquiMixerDB.getProducts(window.Clerk.user.id);
-        allUserProducts = products || []; // Uložit pro filtrování
+        window.allUserProducts = products || []; // Uložit pro filtrování
         
-        renderProductsList(allUserProducts);
+        renderProductsList(window.allUserProducts);
     } catch (error) {
         console.error('Error loading products:', error);
         container.innerHTML = `<p class="no-products-text" style="color: var(--neon-pink);">${t('products.load_error', 'Chyba při načítání produktů.')}</p>`;
@@ -2006,7 +2054,7 @@ function filterProducts() {
     const searchText = (document.getElementById('productSearchText')?.value || '').toLowerCase().trim();
     const searchType = document.getElementById('productSearchType')?.value || '';
     
-    let filtered = allUserProducts.filter(product => {
+    let filtered = window.allUserProducts.filter(product => {
         // Textový filtr (název a popis)
         if (searchText) {
             const name = (product.name || '').toLowerCase();
@@ -2040,7 +2088,7 @@ function filterProducts() {
                 resultsInfo.textContent = 'Žádné produkty neodpovídají filtrům.';
                 resultsInfo.className = 'search-results-info no-results';
             } else {
-                resultsInfo.textContent = `Nalezeno ${filtered.length} z ${allUserProducts.length} produktů.`;
+                resultsInfo.textContent = `Nalezeno ${filtered.length} z ${window.allUserProducts.length} produktů.`;
                 resultsInfo.className = 'search-results-info has-results';
             }
         } else {
@@ -2117,7 +2165,7 @@ async function viewProductDetail(productId) {
             return;
         }
         
-        currentViewingProduct = product;
+        window.currentViewingProduct = product;
         displayProductDetail(product);
         showPage('product-detail');
         
@@ -2136,7 +2184,25 @@ function displayProductDetail(product) {
     
     const rating = Math.min(Math.max(parseInt(product.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    const date = new Date(product.created_at).toLocaleDateString(t('meta.code', 'cs') === 'en' ? 'en-GB' : t('meta.code', 'cs') + '-' + t('meta.code', 'CS').toUpperCase());
+    
+    // Získat správný locale pro formátování data
+    const localeCode = t('meta.code', 'cs');
+    let dateLocale;
+    if (localeCode === 'en') {
+        dateLocale = 'en-GB';
+    } else if (localeCode.includes('-')) {
+        dateLocale = localeCode;
+    } else {
+        dateLocale = localeCode + '-' + localeCode.toUpperCase();
+    }
+    
+    let date;
+    try {
+        date = new Date(product.created_at).toLocaleDateString(dateLocale);
+    } catch (e) {
+        date = new Date(product.created_at).toLocaleDateString();
+    }
+    
     const typeLabel = getProductTypeLabel(product.product_type);
     const typeIcon = productTypeIcons[product.product_type] || '🍓';
     
@@ -2230,24 +2296,24 @@ function showAddProductForm() {
 
 // Upravit produkt
 function editProduct() {
-    if (!currentViewingProduct) return;
+    if (!window.currentViewingProduct) return;
     
     document.getElementById('productFormTitle').textContent = 'Upravit produkt';
-    document.getElementById('editingProductId').value = currentViewingProduct.id;
-    document.getElementById('productName').value = currentViewingProduct.name || '';
-    document.getElementById('productType').value = currentViewingProduct.product_type || 'flavor';
-    document.getElementById('productDescription').value = currentViewingProduct.description || '';
-    document.getElementById('productRating').value = currentViewingProduct.rating || '0';
-    document.getElementById('productUrl').value = currentViewingProduct.product_url || '';
-    document.getElementById('productImageUrl').value = currentViewingProduct.image_url || '';
+    document.getElementById('editingProductId').value = window.currentViewingProduct.id;
+    document.getElementById('productName').value = window.currentViewingProduct.name || '';
+    document.getElementById('productType').value = window.currentViewingProduct.product_type || 'flavor';
+    document.getElementById('productDescription').value = window.currentViewingProduct.description || '';
+    document.getElementById('productRating').value = window.currentViewingProduct.rating || '0';
+    document.getElementById('productUrl').value = window.currentViewingProduct.product_url || '';
+    document.getElementById('productImageUrl').value = window.currentViewingProduct.image_url || '';
     
-    if (currentViewingProduct.image_url) {
-        document.getElementById('productImagePreview').innerHTML = `<img src="${escapeHtml(currentViewingProduct.image_url)}" alt="Preview">`;
+    if (window.currentViewingProduct.image_url) {
+        document.getElementById('productImagePreview').innerHTML = `<img src="${escapeHtml(window.currentViewingProduct.image_url)}" alt="Preview">`;
     } else {
         document.getElementById('productImagePreview').innerHTML = '<span class="image-placeholder">📷</span>';
     }
     
-    selectedProductRating = currentViewingProduct.rating || 0;
+    selectedProductRating = window.currentViewingProduct.rating || 0;
     updateProductStarDisplay(selectedProductRating);
     initProductStarRating();
     
@@ -2256,16 +2322,16 @@ function editProduct() {
 
 // Smazat produkt
 async function deleteProduct() {
-    if (!currentViewingProduct) return;
+    if (!window.currentViewingProduct) return;
     
     if (!confirm(t('product_detail.delete_confirm', 'Opravdu chcete smazat tento produkt?'))) return;
     
     try {
-        const success = await window.LiquiMixerDB.deleteProduct(window.Clerk.user.id, currentViewingProduct.id);
+        const success = await window.LiquiMixerDB.deleteProduct(window.Clerk.user.id, window.currentViewingProduct.id);
         
         if (success) {
             alert(t('products.deleted', 'Produkt byl smazán.'));
-            currentViewingProduct = null;
+            window.currentViewingProduct = null;
             showFavoriteProducts();
         } else {
             alert(t('products.delete_error', 'Chyba při mazání produktu.'));
@@ -2279,7 +2345,7 @@ async function deleteProduct() {
 // Zrušit formulář produktu
 function cancelProductForm() {
     const editingId = document.getElementById('editingProductId').value;
-    if (editingId && currentViewingProduct) {
+    if (editingId && window.currentViewingProduct) {
         showPage('product-detail');
     } else {
         showFavoriteProducts();
@@ -3237,11 +3303,11 @@ function calculateMix() {
 
     // Display results - pro formulář Liquid zobrazí výsledky i nepřihlášeným
     // Modál se zobrazí až při pokusu o uložení receptu
-    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, actualTotal, actualVg, actualPg);
+    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, actualTotal, actualVg, actualPg, 'liquid');
     showPage('results');
 }
 
-function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actualVg, actualPg) {
+function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actualVg, actualPg, formType = 'liquid') {
     document.getElementById('resultTotal').textContent = `${total} ml`;
     document.getElementById('resultRatio').textContent = `${vg}:${pg}`;
     document.getElementById('resultNicotine').textContent = `${nicotine} mg/ml`;
@@ -3249,6 +3315,7 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     // Uložit data receptu pro možnost pozdějšího uložení
     // Ukládáme klíče a parametry pro dynamický překlad
     storeCurrentRecipe({
+        formType: formType, // 'liquid', 'shakevape', nebo 'liquidpro'
         totalAmount: total,
         vgPercent: vg,
         pgPercent: pg,
@@ -4197,7 +4264,7 @@ function calculateShakeVape() {
     
     // Display results - pro formulář Shake and Vape zobrazí výsledky i nepřihlášeným
     // Modál se zobrazí až při pokusu o uložení receptu
-    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
+    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg, 'shakevape');
     showPage('results');
 }
 
@@ -4925,7 +4992,7 @@ function calculateProMix() {
         return;
     }
     
-    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg);
+    displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg, 'liquidpro');
     showPage('results');
 }
 
@@ -5189,10 +5256,23 @@ function updateSubscriptionStatusUI(data) {
     if (!container) return;
 
     if (data.valid) {
-        const expiresDate = new Date(data.expiresAt).toLocaleDateString(
-            window.i18n?.currentLocale === 'cs' ? 'cs-CZ' : 
-            window.i18n?.currentLocale === 'sk' ? 'sk-SK' : 'en-GB'
-        );
+        // Získat správný locale pro formátování data
+        const localeCode = window.i18n?.getLocale?.() || 'en';
+        let dateLocale;
+        if (localeCode === 'en') {
+            dateLocale = 'en-GB';
+        } else if (localeCode.includes('-')) {
+            dateLocale = localeCode;
+        } else {
+            dateLocale = localeCode + '-' + localeCode.toUpperCase();
+        }
+        
+        let expiresDate;
+        try {
+            expiresDate = new Date(data.expiresAt).toLocaleDateString(dateLocale);
+        } catch (e) {
+            expiresDate = new Date(data.expiresAt).toLocaleDateString();
+        }
 
         container.className = 'subscription-status-section subscription-status-active';
         container.innerHTML = `
@@ -5269,8 +5349,10 @@ window.showSaveRecipeModal = showSaveRecipeModal;
 window.hideSaveRecipeModal = hideSaveRecipeModal;
 window.saveRecipe = saveRecipe;
 window.showMyRecipes = showMyRecipes;
+window.renderRecipesList = renderRecipesList; // Exportováno pro i18n přerenderování
 window.signOut = signOut;
 window.viewRecipeDetail = viewRecipeDetail;
+window.displayRecipeDetail = displayRecipeDetail; // Exportováno pro i18n přerenderování
 window.editSavedRecipe = editSavedRecipe;
 window.deleteRecipe = deleteRecipe;
 window.shareRecipe = shareRecipe;
@@ -5280,10 +5362,12 @@ window.removeProductRow = removeProductRow;
 window.filterProductOptions = filterProductOptions;
 window.onProductSelected = onProductSelected;
 window.showFavoriteProducts = showFavoriteProducts;
+window.renderProductsList = renderProductsList; // Exportováno pro i18n přerenderování
 window.showAddProductForm = showAddProductForm;
 window.cancelProductForm = cancelProductForm;
 window.saveProduct = saveProduct;
 window.viewProductDetail = viewProductDetail;
+window.displayProductDetail = displayProductDetail; // Exportováno pro i18n přerenderování
 window.editProduct = editProduct;
 window.deleteProduct = deleteProduct;
 window.filterProducts = filterProducts;
