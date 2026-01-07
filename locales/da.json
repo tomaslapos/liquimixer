@@ -227,7 +227,13 @@
     "not_found": "Opskrift ikke fundet eller er blevet slettet.",
     "delete_confirm": "Er du sikker på, at du vil slette denne opskrift?",
     "delete_success": "Opskriften er blevet slettet.",
-    "delete_error": "Fejl ved sletning af opskrift."
+    "delete_error": "Fejl ved sletning af opskrift.",
+    "reminders_title": "Modningspåmindelser",
+    "no_reminders": "Ingen påmindelser. Klik på knappen nedenfor for at tilføje.",
+    "reminders_error": "Fejl ved indlæsning af påmindelser.",
+    "add_reminder": "Tilføj blanding",
+    "show_all_reminders": "Vis alle",
+    "show_less": "Vis færre"
   },
   "save_recipe": {
     "title": "Gem opskrift",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Anbefalet modningstid: {days} {daysUnit}. Du kan justere datoen.",
     "reminder_no_steeping": "Denne smag kræver ikke modning.",
     "products_linked": "Tilknyttede produkter"
-  },
-  "recipe_detail": {
-    "reminders_title": "Modningspåmindelser",
-    "no_reminders": "Ingen påmindelser. Klik på knappen nedenfor for at tilføje.",
-    "reminders_error": "Fejl ved indlæsning af påmindelser.",
-    "add_reminder": "Tilføj blanding",
-    "show_all_reminders": "Vis alle",
-    "show_less": "Vis færre"
   },
   "notification": {
     "permission_prompt": "Vil du modtage notifikationer, når din væske er klar?\n\nEfter tilladelse sender vi dig en påmindelse den dag, væsken er moden.",

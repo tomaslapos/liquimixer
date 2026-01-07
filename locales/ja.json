@@ -227,7 +227,13 @@
     "not_found": "レシピが見つからないか、削除されました。",
     "delete_confirm": "このレシピを削除してもよろしいですか？",
     "delete_success": "レシピが削除されました。",
-    "delete_error": "レシピ削除エラー。"
+    "delete_error": "レシピ削除エラー。",
+    "reminders_title": "熟成リマインダー",
+    "no_reminders": "リマインダーがありません。下のボタンをクリックして追加してください。",
+    "reminders_error": "リマインダーの読み込み中にエラーが発生しました。",
+    "add_reminder": "調合を追加",
+    "show_all_reminders": "すべて表示",
+    "show_less": "表示を減らす"
   },
   "save_recipe": {
     "title": "レシピを保存",
@@ -516,14 +522,6 @@
     "reminder_calculated": "推奨熟成期間：{days}{daysUnit}。日付は調整できます。",
     "reminder_no_steeping": "このフレーバーは熟成不要です。",
     "products_linked": "リンクされた製品"
-  },
-  "recipe_detail": {
-    "reminders_title": "熟成リマインダー",
-    "no_reminders": "リマインダーがありません。下のボタンをクリックして追加してください。",
-    "reminders_error": "リマインダーの読み込み中にエラーが発生しました。",
-    "add_reminder": "調合を追加",
-    "show_all_reminders": "すべて表示",
-    "show_less": "表示を減らす"
   },
   "notification": {
     "permission_prompt": "リキッドが準備できたときに通知を受け取りますか？\n\n許可後、リキッドが熟成した日にリマインダーをお送りします。",

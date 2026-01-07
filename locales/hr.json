@@ -227,7 +227,13 @@
     "not_found": "Recept nije pronađen ili je obrisan.",
     "delete_confirm": "Jeste li sigurni da želite obrisati ovaj recept?",
     "delete_success": "Recept je obrisan.",
-    "delete_error": "Greška pri brisanju recepta."
+    "delete_error": "Greška pri brisanju recepta.",
+    "reminders_title": "Podsjetnici za zrenje",
+    "no_reminders": "Nema podsjetnika. Kliknite gumb ispod za dodavanje.",
+    "reminders_error": "Greška pri učitavanju podsjetnika.",
+    "add_reminder": "Dodaj miješanje",
+    "show_all_reminders": "Prikaži sve",
+    "show_less": "Prikaži manje"
   },
   "save_recipe": {
     "title": "Spremi recept",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Preporučeno vrijeme zrenja: {days} {daysUnit}. Možete prilagoditi datum.",
     "reminder_no_steeping": "Ova aroma ne zahtijeva zrenje.",
     "products_linked": "Povezani proizvodi"
-  },
-  "recipe_detail": {
-    "reminders_title": "Podsjetnici za zrenje",
-    "no_reminders": "Nema podsjetnika. Kliknite gumb ispod za dodavanje.",
-    "reminders_error": "Greška pri učitavanju podsjetnika.",
-    "add_reminder": "Dodaj miješanje",
-    "show_all_reminders": "Prikaži sve",
-    "show_less": "Prikaži manje"
   },
   "notification": {
     "permission_prompt": "Želite li primati obavijesti kada vaša tekućina bude spremna?\n\nNakon odobrenja, poslat ćemo vam podsjetnik na dan kada tekućina sazrije.",

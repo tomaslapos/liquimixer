@@ -224,7 +224,13 @@
     "not_found": "Recept nebyl nalezen nebo byl smazán.",
     "delete_confirm": "Opravdu chcete smazat tento recept?",
     "delete_success": "Recept byl smazán.",
-    "delete_error": "Chyba při mazání receptu."
+    "delete_error": "Chyba při mazání receptu.",
+    "reminders_title": "Připomínky zrání",
+    "no_reminders": "Žádné připomínky. Klikněte na tlačítko níže pro přidání.",
+    "reminders_error": "Chyba při načítání připomínek.",
+    "add_reminder": "Přidat míchání",
+    "show_all_reminders": "Zobrazit všechny",
+    "show_less": "Zobrazit méně"
   },
   "products": {
     "title": "Oblíbené produkty",
@@ -513,14 +519,6 @@
     "reminder_calculated": "Doporučená doba zrání: {days} {daysUnit}. Datum můžete upravit.",
     "reminder_no_steeping": "Tato příchuť nevyžaduje zrání.",
     "products_linked": "Propojené produkty"
-  },
-  "recipe_detail": {
-    "reminders_title": "Připomínky zrání",
-    "no_reminders": "Žádné připomínky. Klikněte na tlačítko níže pro přidání.",
-    "reminders_error": "Chyba při načítání připomínek.",
-    "add_reminder": "Přidat míchání",
-    "show_all_reminders": "Zobrazit všechny",
-    "show_less": "Zobrazit méně"
   },
   "notification": {
     "permission_prompt": "Chcete dostávat upozornění, když bude váš liquid vyzrálý?\n\nPo povolení vám pošleme připomínku v den, kdy bude liquid připraven.",

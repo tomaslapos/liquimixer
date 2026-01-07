@@ -228,7 +228,13 @@
     "not_found": "الوصفة غير موجودة أو تم حذفها.",
     "delete_confirm": "هل أنت متأكد أنك تريد حذف هذه الوصفة؟",
     "delete_success": "تم حذف الوصفة.",
-    "delete_error": "خطأ في حذف الوصفة."
+    "delete_error": "خطأ في حذف الوصفة.",
+    "reminders_title": "تذكيرات النضج",
+    "no_reminders": "لا توجد تذكيرات. انقر على الزر أدناه للإضافة.",
+    "reminders_error": "خطأ في تحميل التذكيرات.",
+    "add_reminder": "إضافة خلط",
+    "show_all_reminders": "عرض الكل",
+    "show_less": "عرض أقل"
   },
   "save_recipe": {
     "title": "حفظ الوصفة",
@@ -517,14 +523,6 @@
     "reminder_calculated": "وقت النضج الموصى به: {days} {daysUnit}. يمكنك تعديل التاريخ.",
     "reminder_no_steeping": "هذه النكهة لا تحتاج إلى نضج.",
     "products_linked": "المنتجات المرتبطة"
-  },
-  "recipe_detail": {
-    "reminders_title": "تذكيرات النضج",
-    "no_reminders": "لا توجد تذكيرات. انقر على الزر أدناه للإضافة.",
-    "reminders_error": "خطأ في تحميل التذكيرات.",
-    "add_reminder": "إضافة خلط",
-    "show_all_reminders": "عرض الكل",
-    "show_less": "عرض أقل"
   },
   "notification": {
     "permission_prompt": "هل تريد تلقي إشعارات عندما يكون السائل جاهزًا؟\n\nبعد منح الإذن، سنرسل لك تذكيرًا في اليوم الذي ينضج فيه السائل.",

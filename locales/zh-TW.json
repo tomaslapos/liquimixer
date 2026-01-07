@@ -227,7 +227,13 @@
     "not_found": "未找到配方或已刪除。",
     "delete_confirm": "您確定要刪除此配方嗎？",
     "delete_success": "配方已刪除。",
-    "delete_error": "刪除配方時出錯。"
+    "delete_error": "刪除配方時出錯。",
+    "reminders_title": "陳化提醒",
+    "no_reminders": "暫無提醒。點擊下方按鈕新增。",
+    "reminders_error": "載入提醒時發生錯誤。",
+    "add_reminder": "新增調配",
+    "show_all_reminders": "顯示全部",
+    "show_less": "顯示更少"
   },
   "save_recipe": {
     "title": "儲存配方",
@@ -516,14 +522,6 @@
     "reminder_calculated": "建議陳化時間：{days}{daysUnit}。您可以調整日期。",
     "reminder_no_steeping": "此香料不需要陳化。",
     "products_linked": "關聯產品"
-  },
-  "recipe_detail": {
-    "reminders_title": "陳化提醒",
-    "no_reminders": "暫無提醒。點擊下方按鈕新增。",
-    "reminders_error": "載入提醒時發生錯誤。",
-    "add_reminder": "新增調配",
-    "show_all_reminders": "顯示全部",
-    "show_less": "顯示更少"
   },
   "notification": {
     "permission_prompt": "您想在液體準備好時收到通知嗎？\n\n授權後，我們將在液體成熟當天向您發送提醒。",

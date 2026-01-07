@@ -227,7 +227,13 @@
     "not_found": "Receptas nerastas arba buvo ištrintas.",
     "delete_confirm": "Ar tikrai norite ištrinti šį receptą?",
     "delete_success": "Receptas ištrintas.",
-    "delete_error": "Klaida trinant receptą."
+    "delete_error": "Klaida trinant receptą.",
+    "reminders_title": "Brandinimo priminimai",
+    "no_reminders": "Nėra priminimų. Spustelėkite mygtuką žemiau, kad pridėtumėte.",
+    "reminders_error": "Klaida įkeliant priminimus.",
+    "add_reminder": "Pridėti maišymą",
+    "show_all_reminders": "Rodyti visus",
+    "show_less": "Rodyti mažiau"
   },
   "save_recipe": {
     "title": "Išsaugoti receptą",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Rekomenduojamas brandinimo laikas: {days} {daysUnit}. Galite koreguoti datą.",
     "reminder_no_steeping": "Šis aromatas nereikalauja brandinimo.",
     "products_linked": "Susiję produktai"
-  },
-  "recipe_detail": {
-    "reminders_title": "Brandinimo priminimai",
-    "no_reminders": "Nėra priminimų. Spustelėkite mygtuką žemiau, kad pridėtumėte.",
-    "reminders_error": "Klaida įkeliant priminimus.",
-    "add_reminder": "Pridėti maišymą",
-    "show_all_reminders": "Rodyti visus",
-    "show_less": "Rodyti mažiau"
   },
   "notification": {
     "permission_prompt": "Ar norėtumėte gauti pranešimus, kai jūsų skystis bus paruoštas?\n\nSuteikus leidimą, atsiųsime priminimą tą dieną, kai skystis subręs.",

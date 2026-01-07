@@ -227,7 +227,13 @@
     "not_found": "Receta no encontrada o eliminada.",
     "delete_confirm": "¿Estás seguro de que quieres eliminar esta receta?",
     "delete_success": "La receta ha sido eliminada.",
-    "delete_error": "Error al eliminar la receta."
+    "delete_error": "Error al eliminar la receta.",
+    "reminders_title": "Recordatorios de maduración",
+    "no_reminders": "Sin recordatorios. Haga clic en el botón de abajo para añadir uno.",
+    "reminders_error": "Error al cargar los recordatorios.",
+    "add_reminder": "Añadir mezcla",
+    "show_all_reminders": "Mostrar todos",
+    "show_less": "Mostrar menos"
   },
   "save_recipe": {
     "title": "Guardar receta",
@@ -516,14 +522,6 @@
     "reminder_calculated": "Tiempo de maduración recomendado: {days} {daysUnit}. Puede ajustar la fecha.",
     "reminder_no_steeping": "Este sabor no requiere maduración.",
     "products_linked": "Productos vinculados"
-  },
-  "recipe_detail": {
-    "reminders_title": "Recordatorios de maduración",
-    "no_reminders": "Sin recordatorios. Haga clic en el botón de abajo para añadir uno.",
-    "reminders_error": "Error al cargar los recordatorios.",
-    "add_reminder": "Añadir mezcla",
-    "show_all_reminders": "Mostrar todos",
-    "show_less": "Mostrar menos"
   },
   "notification": {
     "permission_prompt": "¿Le gustaría recibir notificaciones cuando su líquido esté listo?\n\nDespués de otorgar permiso, le enviaremos un recordatorio el día en que su líquido esté maduro.",
