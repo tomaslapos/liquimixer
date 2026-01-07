@@ -224,13 +224,7 @@
     "not_found": "Recept nebyl nalezen nebo byl smazán.",
     "delete_confirm": "Opravdu chcete smazat tento recept?",
     "delete_success": "Recept byl smazán.",
-    "delete_error": "Chyba při mazání receptu.",
-    "reminders_title": "Připomínky zrání",
-    "no_reminders": "Žádné připomínky. Klikněte na tlačítko níže pro přidání.",
-    "reminders_error": "Chyba při načítání připomínek.",
-    "add_reminder": "Přidat míchání",
-    "show_all_reminders": "Zobrazit všechny",
-    "show_less": "Zobrazit méně"
+    "delete_error": "Chyba při mazání receptu."
   },
   "products": {
     "title": "Oblíbené produkty",
@@ -492,43 +486,5 @@
     "total": "Celkem s DPH",
     "paid": "Uhrazeno",
     "subscription_item": "Roční předplatné LiquiMixer (365 dní)"
-  },
-  "reminder": {
-    "add_title": "Přidat míchání",
-    "edit_title": "Upravit připomínku",
-    "save_button": "Uložit připomínku",
-    "mixed_on": "Namícháno",
-    "reminder_on": "Připomínka",
-    "sent": "Odesláno",
-    "cancelled": "Zrušeno",
-    "fill_dates": "Vyplňte prosím obě data.",
-    "invalid_date": "Neplatný formát data.",
-    "saved": "Připomínka byla uložena!",
-    "updated": "Připomínka byla upravena!",
-    "deleted": "Připomínka byla smazána!",
-    "save_error": "Chyba při ukládání připomínky.",
-    "update_error": "Chyba při úpravě připomínky.",
-    "delete_error": "Chyba při mazání připomínky.",
-    "delete_confirm": "Opravdu chcete smazat tuto připomínku?",
-    "reminder_set": "Připomínka nastavena na"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Připomenout, až bude liquid vyzrálý",
-    "mix_date": "Datum míchání",
-    "reminder_date": "Datum připomínky",
-    "reminder_calculated": "Doporučená doba zrání: {days} {daysUnit}. Datum můžete upravit.",
-    "reminder_no_steeping": "Tato příchuť nevyžaduje zrání.",
-    "products_linked": "Propojené produkty"
-  },
-  "notification": {
-    "permission_prompt": "Chcete dostávat upozornění, když bude váš liquid vyzrálý?\n\nPo povolení vám pošleme připomínku v den, kdy bude liquid připraven.",
-    "denied": "Notifikace byly zablokovány. Povolte je v nastavení prohlížeče.",
-    "title": "Liquid je vyzrálý!",
-    "body": "Váš liquid s příchutí {flavor} namíchaný dne {date} je vyzrálý a připraven."
-  },
-  "common": {
-    "day": "den",
-    "days_few": "dny",
-    "days": "dní"
   }
 }

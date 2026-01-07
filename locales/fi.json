@@ -227,13 +227,7 @@
     "not_found": "Reseptiä ei löytynyt tai se on poistettu.",
     "delete_confirm": "Haluatko varmasti poistaa tämän reseptin?",
     "delete_success": "Resepti on poistettu.",
-    "delete_error": "Virhe reseptin poistamisessa.",
-    "reminders_title": "Kypsymismuistutukset",
-    "no_reminders": "Ei muistutuksia. Napsauta alla olevaa painiketta lisätäksesi.",
-    "reminders_error": "Virhe muistutusten lataamisessa.",
-    "add_reminder": "Lisää sekoitus",
-    "show_all_reminders": "Näytä kaikki",
-    "show_less": "Näytä vähemmän"
+    "delete_error": "Virhe reseptin poistamisessa."
   },
   "save_recipe": {
     "title": "Tallenna resepti",
@@ -495,43 +489,5 @@
     "total": "Yhteensä sis. ALV",
     "paid": "Maksettu",
     "subscription_item": "LiquiMixer vuositilaus (365 päivää)"
-  },
-  "reminder": {
-    "add_title": "Lisää sekoitus",
-    "edit_title": "Muokkaa muistutusta",
-    "save_button": "Tallenna muistutus",
-    "mixed_on": "Sekoitettu",
-    "reminder_on": "Muistutus",
-    "sent": "Lähetetty",
-    "cancelled": "Peruutettu",
-    "fill_dates": "Täytä molemmat päivämäärät.",
-    "invalid_date": "Virheellinen päivämäärämuoto.",
-    "saved": "Muistutus tallennettu!",
-    "updated": "Muistutus päivitetty!",
-    "deleted": "Muistutus poistettu!",
-    "save_error": "Virhe muistutuksen tallentamisessa.",
-    "update_error": "Virhe muistutuksen päivittämisessä.",
-    "delete_error": "Virhe muistutuksen poistamisessa.",
-    "delete_confirm": "Haluatko varmasti poistaa tämän muistutuksen?",
-    "reminder_set": "Muistutus asetettu"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Muistuta, kun neste on kypsynyt",
-    "mix_date": "Sekoituspäivämäärä",
-    "reminder_date": "Muistutuspäivämäärä",
-    "reminder_calculated": "Suositeltu kypsymisaika: {days} {daysUnit}. Voit säätää päivämäärää.",
-    "reminder_no_steeping": "Tämä maku ei vaadi kypsymistä.",
-    "products_linked": "Linkitetyt tuotteet"
-  },
-  "notification": {
-    "permission_prompt": "Haluatko saada ilmoituksia, kun nesteesi on valmis?\n\nLuvan antamisen jälkeen lähetämme sinulle muistutuksen päivänä, jona neste on kypsynyt.",
-    "denied": "Ilmoitukset on estetty. Ota ne käyttöön selaimen asetuksista.",
-    "title": "Neste on valmis!",
-    "body": "Nesteesi, jonka maku on {flavor} ja joka sekoitettiin {date}, on kypsynyt ja valmis."
-  },
-  "common": {
-    "day": "päivä",
-    "days_few": "päivää",
-    "days": "päivää"
   }
 }

@@ -227,13 +227,7 @@
     "not_found": "Recette non trouvée ou supprimée.",
     "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette recette ?",
     "delete_success": "La recette a été supprimée.",
-    "delete_error": "Erreur lors de la suppression de la recette.",
-    "reminders_title": "Rappels de maturation",
-    "no_reminders": "Aucun rappel. Cliquez sur le bouton ci-dessous pour en ajouter un.",
-    "reminders_error": "Erreur lors du chargement des rappels.",
-    "add_reminder": "Ajouter un mélange",
-    "show_all_reminders": "Tout afficher",
-    "show_less": "Afficher moins"
+    "delete_error": "Erreur lors de la suppression de la recette."
   },
   "save_recipe": {
     "title": "Enregistrer la recette",
@@ -495,43 +489,5 @@
     "total": "Total TTC",
     "paid": "Payé",
     "subscription_item": "Abonnement annuel LiquiMixer (365 jours)"
-  },
-  "reminder": {
-    "add_title": "Ajouter un mélange",
-    "edit_title": "Modifier le rappel",
-    "save_button": "Enregistrer le rappel",
-    "mixed_on": "Mélangé",
-    "reminder_on": "Rappel",
-    "sent": "Envoyé",
-    "cancelled": "Annulé",
-    "fill_dates": "Veuillez remplir les deux dates.",
-    "invalid_date": "Format de date invalide.",
-    "saved": "Le rappel a été enregistré !",
-    "updated": "Le rappel a été mis à jour !",
-    "deleted": "Le rappel a été supprimé !",
-    "save_error": "Erreur lors de l'enregistrement du rappel.",
-    "update_error": "Erreur lors de la mise à jour du rappel.",
-    "delete_error": "Erreur lors de la suppression du rappel.",
-    "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce rappel ?",
-    "reminder_set": "Rappel défini pour"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Me rappeler quand le liquide est mûr",
-    "mix_date": "Date de mélange",
-    "reminder_date": "Date de rappel",
-    "reminder_calculated": "Temps de maturation recommandé : {days} {daysUnit}. Vous pouvez ajuster la date.",
-    "reminder_no_steeping": "Cet arôme ne nécessite pas de maturation.",
-    "products_linked": "Produits liés"
-  },
-  "notification": {
-    "permission_prompt": "Souhaitez-vous recevoir des notifications lorsque votre liquide est prêt ?\n\nAprès autorisation, nous vous enverrons un rappel le jour où votre liquide sera mûr.",
-    "denied": "Les notifications ont été bloquées. Veuillez les activer dans les paramètres de votre navigateur.",
-    "title": "Le liquide est prêt !",
-    "body": "Votre liquide avec l'arôme {flavor} mélangé le {date} est mûr et prêt."
-  },
-  "common": {
-    "day": "jour",
-    "days_few": "jours",
-    "days": "jours"
   }
 }

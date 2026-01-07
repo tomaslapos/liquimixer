@@ -227,13 +227,7 @@
     "not_found": "Oppskrift ikke funnet eller er slettet.",
     "delete_confirm": "Er du sikker på at du vil slette denne oppskriften?",
     "delete_success": "Oppskriften er slettet.",
-    "delete_error": "Feil ved sletting av oppskrift.",
-    "reminders_title": "Modningspåminnelser",
-    "no_reminders": "Ingen påminnelser. Klikk på knappen nedenfor for å legge til.",
-    "reminders_error": "Feil ved lasting av påminnelser.",
-    "add_reminder": "Legg til blanding",
-    "show_all_reminders": "Vis alle",
-    "show_less": "Vis færre"
+    "delete_error": "Feil ved sletting av oppskrift."
   },
   "save_recipe": {
     "title": "Lagre oppskrift",
@@ -495,43 +489,5 @@
     "total": "Totalt inkl. MVA",
     "paid": "Betalt",
     "subscription_item": "LiquiMixer årsabonnement (365 dager)"
-  },
-  "reminder": {
-    "add_title": "Legg til blanding",
-    "edit_title": "Rediger påminnelse",
-    "save_button": "Lagre påminnelse",
-    "mixed_on": "Blandet",
-    "reminder_on": "Påminnelse",
-    "sent": "Sendt",
-    "cancelled": "Avbrutt",
-    "fill_dates": "Vennligst fyll ut begge datoene.",
-    "invalid_date": "Ugyldig datoformat.",
-    "saved": "Påminnelsen er lagret!",
-    "updated": "Påminnelsen er oppdatert!",
-    "deleted": "Påminnelsen er slettet!",
-    "save_error": "Feil ved lagring av påminnelse.",
-    "update_error": "Feil ved oppdatering av påminnelse.",
-    "delete_error": "Feil ved sletting av påminnelse.",
-    "delete_confirm": "Er du sikker på at du vil slette denne påminnelsen?",
-    "reminder_set": "Påminnelse satt til"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Påminn meg når væsken er moden",
-    "mix_date": "Blandingsdato",
-    "reminder_date": "Påminnelsesdato",
-    "reminder_calculated": "Anbefalt modningstid: {days} {daysUnit}. Du kan justere datoen.",
-    "reminder_no_steeping": "Denne smaken krever ikke modning.",
-    "products_linked": "Koblede produkter"
-  },
-  "notification": {
-    "permission_prompt": "Vil du motta varsler når væsken din er klar?\n\nEtter at du har gitt tillatelse, sender vi deg en påminnelse den dagen væsken er moden.",
-    "denied": "Varsler er blokkert. Aktiver dem i nettleserinnstillingene.",
-    "title": "Væsken er klar!",
-    "body": "Væsken din med {flavor} smak blandet {date} er moden og klar."
-  },
-  "common": {
-    "day": "dag",
-    "days_few": "dager",
-    "days": "dager"
   }
 }

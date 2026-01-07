@@ -1468,6 +1468,29 @@
             </div>
         </section>
 
+        <!-- Přidat připomínku modal -->
+        <div id="addReminderModal" class="modal hidden">
+            <div class="modal-content">
+                <button class="menu-close" onclick="hideAddReminderModal()">✕</button>
+                <h3 class="menu-title" data-i18n="reminder.add_title">Přidat míchání</h3>
+                <form class="save-recipe-form" onsubmit="return saveReminderFromModal(event)">
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="save_recipe.mix_date">Datum míchání</label>
+                        <input type="date" id="reminderMixDate" class="login-input date-picker-input" onchange="updateReminderModalDate()" required>
+                    </div>
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="save_recipe.reminder_date">Datum připomínky</label>
+                        <input type="date" id="reminderRemindDate" class="login-input date-picker-input" required>
+                    </div>
+                    <div class="reminder-info">
+                        <span class="info-icon">ℹ️</span>
+                        <span id="reminderModalInfo" data-i18n="save_recipe.reminder_info_short">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
+                    </div>
+                    <button type="submit" class="neon-button primary" data-i18n="common.confirm">Potvrdit</button>
+                </form>
+            </div>
+        </div>
+
         <!-- Uložení receptu modal -->
         <div id="saveRecipeModal" class="modal hidden">
             <div class="modal-content">
@@ -1504,54 +1527,7 @@
                             </button>
                         </div>
                     </div>
-                    
-                    <!-- Připomínka zrání -->
-                    <div class="form-group-login">
-                        <div class="reminder-toggle-container">
-                            <label class="reminder-toggle">
-                                <input type="checkbox" id="enableReminder" onchange="toggleReminderFields()">
-                                <span class="slider"></span>
-                            </label>
-                            <span class="reminder-toggle-label" data-i18n="save_recipe.reminder_toggle">Připomenout, až bude liquid vyzrálý</span>
-                        </div>
-                        <div id="reminderFields" class="reminder-fields hidden">
-                            <div class="reminder-date-row">
-                                <div class="reminder-date-group">
-                                    <label data-i18n="save_recipe.mix_date">Datum míchání</label>
-                                    <input type="date" id="mixDate" class="date-picker-input" onchange="updateReminderDate()">
-                                </div>
-                                <div class="reminder-date-group">
-                                    <label data-i18n="save_recipe.reminder_date">Datum připomínky</label>
-                                    <input type="date" id="reminderDate" class="date-picker-input">
-                                </div>
-                            </div>
-                            <div id="reminderInfoText" class="reminder-info-text"></div>
-                        </div>
-                    </div>
-                    
                     <button type="submit" class="neon-button" id="saveRecipeSubmitBtn"><span data-i18n="save_recipe.save_button">Uložit recept</span></button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Přidat/upravit připomínku modal -->
-        <div id="addReminderModal" class="modal hidden">
-            <div class="modal-content">
-                <button class="menu-close" onclick="hideAddReminderModal()">✕</button>
-                <h3 class="menu-title" data-i18n="reminder.add_title">Přidat míchání</h3>
-                <form class="save-recipe-form" onsubmit="return saveReminderFromModal(event)">
-                    <div class="reminder-date-row">
-                        <div class="reminder-date-group">
-                            <label data-i18n="save_recipe.mix_date">Datum míchání</label>
-                            <input type="date" id="reminderMixDate" class="date-picker-input" onchange="updateReminderModalDate()">
-                        </div>
-                        <div class="reminder-date-group">
-                            <label data-i18n="save_recipe.reminder_date">Datum připomínky</label>
-                            <input type="date" id="reminderRemindDate" class="date-picker-input">
-                        </div>
-                    </div>
-                    <div id="reminderModalInfo" class="reminder-modal-info"></div>
-                    <button type="submit" class="neon-button"><span data-i18n="reminder.save_button">Uložit připomínku</span></button>
                 </form>
             </div>
         </div>
