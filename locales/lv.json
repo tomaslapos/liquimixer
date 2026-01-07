@@ -489,5 +489,51 @@
     "total": "Kopā ar PVN",
     "paid": "Samaksāts",
     "subscription_item": "LiquiMixer gada abonements (365 dienas)"
+  },
+  "reminder": {
+    "add_title": "Pievienot sajaukšanu",
+    "edit_title": "Rediģēt atgādinājumu",
+    "save_button": "Saglabāt atgādinājumu",
+    "mixed_on": "Sajaukts",
+    "reminder_on": "Atgādinājums",
+    "sent": "Nosūtīts",
+    "cancelled": "Atcelts",
+    "fill_dates": "Lūdzu, aizpildiet abus datumus.",
+    "invalid_date": "Nederīgs datuma formāts.",
+    "saved": "Atgādinājums saglabāts!",
+    "updated": "Atgādinājums atjaunināts!",
+    "deleted": "Atgādinājums dzēsts!",
+    "save_error": "Kļūda saglabājot atgādinājumu.",
+    "update_error": "Kļūda atjauninot atgādinājumu.",
+    "delete_error": "Kļūda dzēšot atgādinājumu.",
+    "delete_confirm": "Vai tiešām vēlaties dzēst šo atgādinājumu?",
+    "reminder_set": "Atgādinājums iestatīts"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Atgādināt, kad šķidrums ir nobriedis",
+    "mix_date": "Sajaukšanas datums",
+    "reminder_date": "Atgādinājuma datums",
+    "reminder_calculated": "Ieteicamais nogatavināšanas laiks: {days} {daysUnit}. Jūs varat pielāgot datumu.",
+    "reminder_no_steeping": "Šī aromāts neprasa nogatavināšanu.",
+    "products_linked": "Saistītie produkti"
+  },
+  "recipe_detail": {
+    "reminders_title": "Nogatavināšanas atgādinājumi",
+    "no_reminders": "Nav atgādinājumu. Noklikšķiniet uz pogas zemāk, lai pievienotu.",
+    "reminders_error": "Kļūda ielādējot atgādinājumus.",
+    "add_reminder": "Pievienot sajaukšanu",
+    "show_all_reminders": "Rādīt visus",
+    "show_less": "Rādīt mazāk"
+  },
+  "notification": {
+    "permission_prompt": "Vai vēlaties saņemt paziņojumus, kad jūsu šķidrums būs gatavs?\n\nPēc atļaujas piešķiršanas mēs jums nosūtīsim atgādinājumu dienā, kad šķidrums būs nobriedis.",
+    "denied": "Paziņojumi ir bloķēti. Lūdzu, iespējojiet tos pārlūka iestatījumos.",
+    "title": "Šķidrums ir gatavs!",
+    "body": "Jūsu šķidrums ar {flavor} aromātu, sajaukts {date}, ir nobriedis un gatavs."
+  },
+  "common": {
+    "day": "diena",
+    "days_few": "dienas",
+    "days": "dienas"
   }
 }

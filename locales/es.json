@@ -489,5 +489,51 @@
     "total": "Total con IVA",
     "paid": "Pagado",
     "subscription_item": "Suscripción anual LiquiMixer (365 días)"
+  },
+  "reminder": {
+    "add_title": "Añadir mezcla",
+    "edit_title": "Editar recordatorio",
+    "save_button": "Guardar recordatorio",
+    "mixed_on": "Mezclado",
+    "reminder_on": "Recordatorio",
+    "sent": "Enviado",
+    "cancelled": "Cancelado",
+    "fill_dates": "Por favor complete ambas fechas.",
+    "invalid_date": "Formato de fecha inválido.",
+    "saved": "¡El recordatorio ha sido guardado!",
+    "updated": "¡El recordatorio ha sido actualizado!",
+    "deleted": "¡El recordatorio ha sido eliminado!",
+    "save_error": "Error al guardar el recordatorio.",
+    "update_error": "Error al actualizar el recordatorio.",
+    "delete_error": "Error al eliminar el recordatorio.",
+    "delete_confirm": "¿Está seguro de que desea eliminar este recordatorio?",
+    "reminder_set": "Recordatorio establecido para"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Recordarme cuando el líquido esté maduro",
+    "mix_date": "Fecha de mezcla",
+    "reminder_date": "Fecha de recordatorio",
+    "reminder_calculated": "Tiempo de maduración recomendado: {days} {daysUnit}. Puede ajustar la fecha.",
+    "reminder_no_steeping": "Este sabor no requiere maduración.",
+    "products_linked": "Productos vinculados"
+  },
+  "recipe_detail": {
+    "reminders_title": "Recordatorios de maduración",
+    "no_reminders": "Sin recordatorios. Haga clic en el botón de abajo para añadir uno.",
+    "reminders_error": "Error al cargar los recordatorios.",
+    "add_reminder": "Añadir mezcla",
+    "show_all_reminders": "Mostrar todos",
+    "show_less": "Mostrar menos"
+  },
+  "notification": {
+    "permission_prompt": "¿Le gustaría recibir notificaciones cuando su líquido esté listo?\n\nDespués de otorgar permiso, le enviaremos un recordatorio el día en que su líquido esté maduro.",
+    "denied": "Las notificaciones han sido bloqueadas. Por favor habilítelas en la configuración de su navegador.",
+    "title": "¡El líquido está listo!",
+    "body": "Su líquido con sabor {flavor} mezclado el {date} está maduro y listo."
+  },
+  "common": {
+    "day": "día",
+    "days_few": "días",
+    "days": "días"
   }
 }

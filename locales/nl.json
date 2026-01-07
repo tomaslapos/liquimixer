@@ -489,5 +489,51 @@
     "total": "Totaal incl. BTW",
     "paid": "Betaald",
     "subscription_item": "LiquiMixer jaarabonnement (365 dagen)"
+  },
+  "reminder": {
+    "add_title": "Menging toevoegen",
+    "edit_title": "Herinnering bewerken",
+    "save_button": "Herinnering opslaan",
+    "mixed_on": "Gemengd",
+    "reminder_on": "Herinnering",
+    "sent": "Verzonden",
+    "cancelled": "Geannuleerd",
+    "fill_dates": "Vul beide datums in.",
+    "invalid_date": "Ongeldig datumformaat.",
+    "saved": "Herinnering is opgeslagen!",
+    "updated": "Herinnering is bijgewerkt!",
+    "deleted": "Herinnering is verwijderd!",
+    "save_error": "Fout bij opslaan van herinnering.",
+    "update_error": "Fout bij bijwerken van herinnering.",
+    "delete_error": "Fout bij verwijderen van herinnering.",
+    "delete_confirm": "Weet u zeker dat u deze herinnering wilt verwijderen?",
+    "reminder_set": "Herinnering ingesteld voor"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Herinner me wanneer de vloeistof gerijpt is",
+    "mix_date": "Mengdatum",
+    "reminder_date": "Herinneringsdatum",
+    "reminder_calculated": "Aanbevolen rijptijd: {days} {daysUnit}. U kunt de datum aanpassen.",
+    "reminder_no_steeping": "Dit aroma vereist geen rijping.",
+    "products_linked": "Gekoppelde producten"
+  },
+  "recipe_detail": {
+    "reminders_title": "Rijpingsherinneringen",
+    "no_reminders": "Geen herinneringen. Klik op de knop hieronder om er een toe te voegen.",
+    "reminders_error": "Fout bij laden van herinneringen.",
+    "add_reminder": "Menging toevoegen",
+    "show_all_reminders": "Alles tonen",
+    "show_less": "Minder tonen"
+  },
+  "notification": {
+    "permission_prompt": "Wilt u meldingen ontvangen wanneer uw vloeistof klaar is?\n\nNa toestemming sturen we u een herinnering op de dag dat uw vloeistof gerijpt is.",
+    "denied": "Meldingen zijn geblokkeerd. Schakel ze in via uw browserinstellingen.",
+    "title": "Vloeistof is klaar!",
+    "body": "Uw vloeistof met {flavor} aroma gemengd op {date} is gerijpt en klaar."
+  },
+  "common": {
+    "day": "dag",
+    "days_few": "dagen",
+    "days": "dagen"
   }
 }

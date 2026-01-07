@@ -489,5 +489,51 @@
     "total": "含税总计",
     "paid": "已付款",
     "subscription_item": "LiquiMixer 年度订阅（365 天）"
+  },
+  "reminder": {
+    "add_title": "添加调配",
+    "edit_title": "编辑提醒",
+    "save_button": "保存提醒",
+    "mixed_on": "调配于",
+    "reminder_on": "提醒",
+    "sent": "已发送",
+    "cancelled": "已取消",
+    "fill_dates": "请填写两个日期。",
+    "invalid_date": "日期格式无效。",
+    "saved": "提醒已保存！",
+    "updated": "提醒已更新！",
+    "deleted": "提醒已删除！",
+    "save_error": "保存提醒时出错。",
+    "update_error": "更新提醒时出错。",
+    "delete_error": "删除提醒时出错。",
+    "delete_confirm": "确定要删除此提醒吗？",
+    "reminder_set": "提醒设置为"
+  },
+  "save_recipe": {
+    "reminder_toggle": "液体成熟时提醒我",
+    "mix_date": "调配日期",
+    "reminder_date": "提醒日期",
+    "reminder_calculated": "建议陈化时间：{days}{daysUnit}。您可以调整日期。",
+    "reminder_no_steeping": "此香料不需要陈化。",
+    "products_linked": "关联产品"
+  },
+  "recipe_detail": {
+    "reminders_title": "陈化提醒",
+    "no_reminders": "暂无提醒。点击下方按钮添加。",
+    "reminders_error": "加载提醒时出错。",
+    "add_reminder": "添加调配",
+    "show_all_reminders": "显示全部",
+    "show_less": "显示更少"
+  },
+  "notification": {
+    "permission_prompt": "您想在液体准备好时收到通知吗？\n\n授权后，我们将在液体成熟当天向您发送提醒。",
+    "denied": "通知已被阻止。请在浏览器设置中启用。",
+    "title": "液体已准备好！",
+    "body": "您于 {date} 调配的 {flavor} 风味液体已成熟，可以使用了。"
+  },
+  "common": {
+    "day": "天",
+    "days_few": "天",
+    "days": "天"
   }
 }

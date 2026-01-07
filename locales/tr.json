@@ -489,5 +489,51 @@
     "total": "KDV dahil toplam",
     "paid": "Ödendi",
     "subscription_item": "LiquiMixer yıllık abonelik (365 gün)"
+  },
+  "reminder": {
+    "add_title": "Karışım ekle",
+    "edit_title": "Hatırlatıcıyı düzenle",
+    "save_button": "Hatırlatıcıyı kaydet",
+    "mixed_on": "Karıştırıldı",
+    "reminder_on": "Hatırlatıcı",
+    "sent": "Gönderildi",
+    "cancelled": "İptal edildi",
+    "fill_dates": "Lütfen her iki tarihi de doldurun.",
+    "invalid_date": "Geçersiz tarih formatı.",
+    "saved": "Hatırlatıcı kaydedildi!",
+    "updated": "Hatırlatıcı güncellendi!",
+    "deleted": "Hatırlatıcı silindi!",
+    "save_error": "Hatırlatıcı kaydedilirken hata oluştu.",
+    "update_error": "Hatırlatıcı güncellenirken hata oluştu.",
+    "delete_error": "Hatırlatıcı silinirken hata oluştu.",
+    "delete_confirm": "Bu hatırlatıcıyı silmek istediğinizden emin misiniz?",
+    "reminder_set": "Hatırlatıcı ayarlandı"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Sıvı olgunlaştığında hatırlat",
+    "mix_date": "Karıştırma tarihi",
+    "reminder_date": "Hatırlatıcı tarihi",
+    "reminder_calculated": "Önerilen dinlenme süresi: {days} {daysUnit}. Tarihi ayarlayabilirsiniz.",
+    "reminder_no_steeping": "Bu aroma dinlenme gerektirmiyor.",
+    "products_linked": "Bağlı ürünler"
+  },
+  "recipe_detail": {
+    "reminders_title": "Olgunlaşma hatırlatıcıları",
+    "no_reminders": "Hatırlatıcı yok. Eklemek için aşağıdaki düğmeye tıklayın.",
+    "reminders_error": "Hatırlatıcılar yüklenirken hata oluştu.",
+    "add_reminder": "Karışım ekle",
+    "show_all_reminders": "Tümünü göster",
+    "show_less": "Daha az göster"
+  },
+  "notification": {
+    "permission_prompt": "Sıvınız hazır olduğunda bildirim almak ister misiniz?\n\nİzin verdikten sonra, sıvınızın olgunlaştığı gün size bir hatırlatıcı göndereceğiz.",
+    "denied": "Bildirimler engellendi. Lütfen tarayıcı ayarlarından etkinleştirin.",
+    "title": "Sıvı hazır!",
+    "body": "{date} tarihinde karıştırılan {flavor} aromalı sıvınız olgunlaştı ve hazır."
+  },
+  "common": {
+    "day": "gün",
+    "days_few": "gün",
+    "days": "gün"
   }
 }

@@ -489,5 +489,51 @@
     "total": "Total inkl. moms",
     "paid": "Betalt",
     "subscription_item": "LiquiMixer årsabonnement (365 dage)"
+  },
+  "reminder": {
+    "add_title": "Tilføj blanding",
+    "edit_title": "Rediger påmindelse",
+    "save_button": "Gem påmindelse",
+    "mixed_on": "Blandet",
+    "reminder_on": "Påmindelse",
+    "sent": "Sendt",
+    "cancelled": "Annulleret",
+    "fill_dates": "Udfyld venligst begge datoer.",
+    "invalid_date": "Ugyldigt datoformat.",
+    "saved": "Påmindelsen er gemt!",
+    "updated": "Påmindelsen er opdateret!",
+    "deleted": "Påmindelsen er slettet!",
+    "save_error": "Fejl ved gemning af påmindelse.",
+    "update_error": "Fejl ved opdatering af påmindelse.",
+    "delete_error": "Fejl ved sletning af påmindelse.",
+    "delete_confirm": "Er du sikker på, at du vil slette denne påmindelse?",
+    "reminder_set": "Påmindelse sat til"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Påmind mig, når væsken er moden",
+    "mix_date": "Blandingsdato",
+    "reminder_date": "Påmindelsesdato",
+    "reminder_calculated": "Anbefalet modningstid: {days} {daysUnit}. Du kan justere datoen.",
+    "reminder_no_steeping": "Denne smag kræver ikke modning.",
+    "products_linked": "Tilknyttede produkter"
+  },
+  "recipe_detail": {
+    "reminders_title": "Modningspåmindelser",
+    "no_reminders": "Ingen påmindelser. Klik på knappen nedenfor for at tilføje.",
+    "reminders_error": "Fejl ved indlæsning af påmindelser.",
+    "add_reminder": "Tilføj blanding",
+    "show_all_reminders": "Vis alle",
+    "show_less": "Vis færre"
+  },
+  "notification": {
+    "permission_prompt": "Vil du modtage notifikationer, når din væske er klar?\n\nEfter tilladelse sender vi dig en påmindelse den dag, væsken er moden.",
+    "denied": "Notifikationer er blokeret. Aktiver dem i browserindstillingerne.",
+    "title": "Væsken er klar!",
+    "body": "Din væske med {flavor} smag blandet {date} er moden og klar."
+  },
+  "common": {
+    "day": "dag",
+    "days_few": "dage",
+    "days": "dage"
   }
 }
