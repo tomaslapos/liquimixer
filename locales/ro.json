@@ -489,5 +489,51 @@
     "total": "Total cu TVA",
     "paid": "Plătit",
     "subscription_item": "Abonament anual LiquiMixer (365 zile)"
+  },
+  "reminder": {
+    "add_title": "Adaugă amestec",
+    "edit_title": "Editează memento",
+    "save_button": "Salvează memento",
+    "mixed_on": "Amestecat",
+    "reminder_on": "Memento",
+    "sent": "Trimis",
+    "cancelled": "Anulat",
+    "fill_dates": "Vă rugăm să completați ambele date.",
+    "invalid_date": "Format de dată invalid.",
+    "saved": "Memento-ul a fost salvat!",
+    "updated": "Memento-ul a fost actualizat!",
+    "deleted": "Memento-ul a fost șters!",
+    "save_error": "Eroare la salvarea memento-ului.",
+    "update_error": "Eroare la actualizarea memento-ului.",
+    "delete_error": "Eroare la ștergerea memento-ului.",
+    "delete_confirm": "Sigur doriți să ștergeți acest memento?",
+    "reminder_set": "Memento setat pentru"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Amintește-mi când lichidul este maturat",
+    "mix_date": "Data amestecării",
+    "reminder_date": "Data memento",
+    "reminder_calculated": "Timp de maturare recomandat: {days} {daysUnit}. Puteți ajusta data.",
+    "reminder_no_steeping": "Această aromă nu necesită maturare.",
+    "products_linked": "Produse conectate"
+  },
+  "recipe_detail": {
+    "reminders_title": "Memento-uri de maturare",
+    "no_reminders": "Fără memento-uri. Faceți clic pe butonul de mai jos pentru a adăuga.",
+    "reminders_error": "Eroare la încărcarea memento-urilor.",
+    "add_reminder": "Adaugă amestec",
+    "show_all_reminders": "Arată toate",
+    "show_less": "Arată mai puțin"
+  },
+  "notification": {
+    "permission_prompt": "Doriți să primiți notificări când lichidul dvs. este gata?\n\nDupă acordarea permisiunii, vă vom trimite un memento în ziua în care lichidul va fi maturat.",
+    "denied": "Notificările au fost blocate. Vă rugăm să le activați din setările browserului.",
+    "title": "Lichidul este gata!",
+    "body": "Lichidul dvs. cu aromă {flavor} amestecat pe {date} este maturat și gata."
+  },
+  "common": {
+    "day": "zi",
+    "days_few": "zile",
+    "days": "zile"
   }
 }

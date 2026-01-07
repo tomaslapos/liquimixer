@@ -489,5 +489,51 @@
     "total": "Ukupno s PDV-om",
     "paid": "Plaćeno",
     "subscription_item": "LiquiMixer godišnja pretplata (365 dana)"
+  },
+  "reminder": {
+    "add_title": "Dodaj miješanje",
+    "edit_title": "Uredi podsjetnik",
+    "save_button": "Spremi podsjetnik",
+    "mixed_on": "Pomiješano",
+    "reminder_on": "Podsjetnik",
+    "sent": "Poslano",
+    "cancelled": "Otkazano",
+    "fill_dates": "Molimo unesite oba datuma.",
+    "invalid_date": "Neispravan format datuma.",
+    "saved": "Podsjetnik je spremljen!",
+    "updated": "Podsjetnik je ažuriran!",
+    "deleted": "Podsjetnik je obrisan!",
+    "save_error": "Greška pri spremanju podsjetnika.",
+    "update_error": "Greška pri ažuriranju podsjetnika.",
+    "delete_error": "Greška pri brisanju podsjetnika.",
+    "delete_confirm": "Jeste li sigurni da želite obrisati ovaj podsjetnik?",
+    "reminder_set": "Podsjetnik postavljen za"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Podsjeti me kad tekućina sazrije",
+    "mix_date": "Datum miješanja",
+    "reminder_date": "Datum podsjetnika",
+    "reminder_calculated": "Preporučeno vrijeme zrenja: {days} {daysUnit}. Možete prilagoditi datum.",
+    "reminder_no_steeping": "Ova aroma ne zahtijeva zrenje.",
+    "products_linked": "Povezani proizvodi"
+  },
+  "recipe_detail": {
+    "reminders_title": "Podsjetnici za zrenje",
+    "no_reminders": "Nema podsjetnika. Kliknite gumb ispod za dodavanje.",
+    "reminders_error": "Greška pri učitavanju podsjetnika.",
+    "add_reminder": "Dodaj miješanje",
+    "show_all_reminders": "Prikaži sve",
+    "show_less": "Prikaži manje"
+  },
+  "notification": {
+    "permission_prompt": "Želite li primati obavijesti kada vaša tekućina bude spremna?\n\nNakon odobrenja, poslat ćemo vam podsjetnik na dan kada tekućina sazrije.",
+    "denied": "Obavijesti su blokirane. Omogućite ih u postavkama preglednika.",
+    "title": "Tekućina je spremna!",
+    "body": "Vaša tekućina s aromom {flavor} pomiješana {date} je sazrela i spremna."
+  },
+  "common": {
+    "day": "dan",
+    "days_few": "dana",
+    "days": "dana"
   }
 }

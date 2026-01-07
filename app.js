@@ -47,83 +47,116 @@ function t(key, fallback = null) {
 
 // Flavor database with recommended percentages (15 options)
 // Data z tabulky příchutí pro e-liquid
+// steepingDays = doporučená doba zrání ve dnech
 const flavorDatabase = {
     none: { 
         name: 'Žádná (bez příchutě)', 
-        min: 0, max: 0, ideal: 0,
+        min: 0, max: 0, ideal: 0, steepingDays: 0,
         note: 'Čistá báze PG/VG + nikotin'
     },
     fruit: { 
         name: 'Ovoce (jahoda, jablko)', 
-        min: 8, max: 12, ideal: 10,
+        min: 8, max: 12, ideal: 10, steepingDays: 7,
         note: 'Optimum: 10%, zrání 3–7 dní'
     },
     citrus: { 
         name: 'Citrónové (citron, limeta)', 
-        min: 6, max: 10, ideal: 8,
+        min: 6, max: 10, ideal: 8, steepingDays: 7,
         note: 'Silné kyseliny, méně stačí'
     },
     berry: { 
         name: 'Bobulové (borůvka, malina)', 
-        min: 10, max: 15, ideal: 12,
+        min: 10, max: 15, ideal: 12, steepingDays: 7,
         note: 'Vyvážené, dobře fungují s 50/50 PG/VG'
     },
     tropical: { 
         name: 'Tropické (ananas, mango)', 
-        min: 12, max: 18, ideal: 15,
+        min: 12, max: 18, ideal: 15, steepingDays: 10,
         note: 'Sladké, potřebují vyšší % pro hloubku'
     },
     tobacco: { 
         name: 'Tabákové (klasický, kubánský)', 
-        min: 10, max: 15, ideal: 12,
+        min: 10, max: 15, ideal: 12, steepingDays: 14,
         note: 'Dlouhý steeping: 1–4 týdny pro rozvinutí'
     },
     menthol: { 
         name: 'Mentol / Mátové', 
-        min: 4, max: 8, ideal: 6,
+        min: 4, max: 8, ideal: 6, steepingDays: 7,
         note: 'Velmi koncentrované, při 10% chladí až pálí'
     },
     candy: { 
         name: 'Sladkosti (cukroví, karamel)', 
-        min: 12, max: 20, ideal: 16,
+        min: 12, max: 20, ideal: 16, steepingDays: 10,
         note: 'Sladké tlumí škrábání, vyšší % nutné'
     },
     dessert: { 
         name: 'Dezerty (koláč, pudink)', 
-        min: 15, max: 22, ideal: 18,
+        min: 15, max: 22, ideal: 18, steepingDays: 21,
         note: 'Komplexní: 2–4 týdny zrání, riziko přechucení'
     },
     bakery: { 
         name: 'Zákusky (tyčinka, donut)', 
-        min: 18, max: 25, ideal: 20,
+        min: 18, max: 25, ideal: 20, steepingDays: 21,
         note: 'Doporučujeme vyzkoušet na 15%'
     },
     biscuit: { 
         name: 'Piškotové (vanilka, máslo)', 
-        min: 10, max: 15, ideal: 12,
+        min: 10, max: 15, ideal: 12, steepingDays: 10,
         note: 'Univerzální, funguje s vysokým VG'
     },
     drink: { 
         name: 'Nápojové (kola, čaj)', 
-        min: 8, max: 12, ideal: 10,
+        min: 8, max: 12, ideal: 10, steepingDays: 7,
         note: 'Jemné, méně intenzivní'
     },
     tobaccosweet: { 
         name: 'Tabák + sladké (custard tobacco)', 
-        min: 15, max: 20, ideal: 17,
+        min: 15, max: 20, ideal: 17, steepingDays: 28,
         note: 'Nejsložitější: 3–6 týdnů zrání'
     },
     nuts: { 
         name: 'Oříškové (arašíd, lískový)', 
-        min: 12, max: 18, ideal: 15,
+        min: 12, max: 18, ideal: 15, steepingDays: 14,
         note: 'Dobře tlumí nikotin'
     },
     spice: { 
         name: 'Kořeněné (skořice, perník)', 
-        min: 5, max: 10, ideal: 7,
+        min: 5, max: 10, ideal: 7, steepingDays: 14,
         note: 'Silné: při 12% dominují nad vším'
     }
 };
+
+// Helper funkce pro výpočet doporučeného data zrání
+function calculateMaturityDate(mixedDate, flavorType) {
+    const flavor = flavorDatabase[flavorType] || flavorDatabase.fruit;
+    const steepingDays = flavor.steepingDays || 7;
+    const maturityDate = new Date(mixedDate);
+    maturityDate.setDate(maturityDate.getDate() + steepingDays);
+    return maturityDate;
+}
+
+// Pro Liquid PRO s více příchutěmi - najde nejdelší dobu zrání
+function calculateMaxMaturityDate(mixedDate, flavorTypes) {
+    if (!flavorTypes || flavorTypes.length === 0) {
+        return calculateMaturityDate(mixedDate, 'fruit');
+    }
+    let maxSteepingDays = 0;
+    for (const type of flavorTypes) {
+        const flavor = flavorDatabase[type] || flavorDatabase.fruit;
+        const days = flavor.steepingDays || 7;
+        if (days > maxSteepingDays) {
+            maxSteepingDays = days;
+        }
+    }
+    const maturityDate = new Date(mixedDate);
+    maturityDate.setDate(maturityDate.getDate() + maxSteepingDays);
+    return maturityDate;
+}
+
+// Export pro použití v jiných modulech
+window.flavorDatabase = flavorDatabase;
+window.calculateMaturityDate = calculateMaturityDate;
+window.calculateMaxMaturityDate = calculateMaxMaturityDate;
 
 // VG/PG ratio descriptions with colors
 // VG value = dým (vapor), PG value = chuť (flavor)
@@ -1209,9 +1242,36 @@ async function saveRecipe(event) {
                 selectedProductIds
             );
             
+            // Uložit připomínku zrání (pouze pro nové recepty)
+            let reminderInfo = '';
+            if (!isEditing) {
+                const reminderData = getReminderDataFromForm();
+                if (reminderData) {
+                    // Vyžádat povolení notifikací pokud ještě nebylo uděleno
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        const permissionGranted = await requestNotificationPermissionWithPrompt();
+                        if (permissionGranted && window.fcm && window.fcm.getToken) {
+                            await window.fcm.getToken();
+                        }
+                    }
+                    
+                    // Uložit připomínku
+                    reminderData.recipe_id = recipeId;
+                    reminderData.recipe_name = name;
+                    const reminderSaved = await window.LiquiMixerDB.saveReminder(
+                        window.Clerk.user.id,
+                        reminderData
+                    );
+                    if (reminderSaved) {
+                        const remindDate = new Date(reminderData.remind_at).toLocaleDateString();
+                        reminderInfo = `\n🔔 ${t('reminder.reminder_set', 'Připomínka nastavena na')} ${remindDate}`;
+                    }
+                }
+            }
+            
             // Zobrazit zprávu
             const productInfo = selectedProductIds.length > 0 
-                ? `\n📦 Propojené produkty: ${selectedProductIds.length}` 
+                ? `\n📦 ${t('save_recipe.products_linked', 'Propojené produkty')}: ${selectedProductIds.length}` 
                 : '';
             
             if (isEditing) {
@@ -1221,11 +1281,12 @@ async function saveRecipe(event) {
             } else {
                 const shareUrl = saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id;
                 const successMessage = t('save_recipe.success', 'Recept byl úspěšně uložen!') + '\n\n' +
-                    t('save_recipe.share_link', 'Odkaz pro sdílení:') + '\n' + shareUrl + productInfo;
+                    t('save_recipe.share_link', 'Odkaz pro sdílení:') + '\n' + shareUrl + productInfo + reminderInfo;
                 alert(successMessage);
             }
             
             hideSaveRecipeModal();
+            resetReminderFields();
         } else {
             alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
         }
@@ -5247,6 +5308,476 @@ function handleTermsModalBackdropClick(event) {
         hideTermsModal();
     }
 }
+
+// ============================================
+// PŘIPOMÍNKY ZRÁNÍ - UI FUNKCE
+// ============================================
+
+// Toggle zobrazení polí pro připomínku
+function toggleReminderFields() {
+    const checkbox = document.getElementById('enableReminder');
+    const fields = document.getElementById('reminderFields');
+    if (checkbox && fields) {
+        if (checkbox.checked) {
+            fields.classList.remove('hidden');
+            initReminderDates();
+        } else {
+            fields.classList.add('hidden');
+        }
+    }
+}
+
+// Inicializace datumů pro připomínku
+function initReminderDates() {
+    const mixDateInput = document.getElementById('mixDate');
+    const reminderDateInput = document.getElementById('reminderDate');
+    if (!mixDateInput || !reminderDateInput) return;
+    const today = new Date();
+    const todayStr = formatDateForInput(today);
+    mixDateInput.value = todayStr;
+    updateReminderDate();
+}
+
+// Formátovat datum pro input type="date"
+function formatDateForInput(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Inicializovat date picker pro všechny date inputy
+function initDatePickers() {
+    const dateInputs = document.querySelectorAll('input[type="date"].date-picker-input');
+    dateInputs.forEach(input => {
+        input.removeAttribute('readonly');
+        input.addEventListener('click', function(e) {
+            if (typeof this.showPicker === 'function') {
+                try { this.showPicker(); } catch (err) { this.focus(); }
+            }
+        });
+    });
+}
+
+// Inicializovat date pickery při načtení stránky
+document.addEventListener('DOMContentLoaded', initDatePickers);
+
+// Aktualizovat datum připomínky na základě data míchání a typu příchutě
+function updateReminderDate() {
+    const mixDateInput = document.getElementById('mixDate');
+    const reminderDateInput = document.getElementById('reminderDate');
+    const infoText = document.getElementById('reminderInfoText');
+    if (!mixDateInput || !reminderDateInput || !mixDateInput.value) return;
+
+    const mixDate = new Date(mixDateInput.value);
+    let maxSteepingDays = 7;
+
+    if (currentRecipeData) {
+        if (currentRecipeData.formType === 'liquidpro' && currentRecipeData.flavors) {
+            for (const flavor of currentRecipeData.flavors) {
+                if (flavor.type && flavor.type !== 'none') {
+                    const flavorData = flavorDatabase[flavor.type];
+                    if (flavorData && flavorData.steepingDays > maxSteepingDays) {
+                        maxSteepingDays = flavorData.steepingDays;
+                    }
+                }
+            }
+        } else if (currentRecipeData.flavorType && currentRecipeData.flavorType !== 'none') {
+            const flavorData = flavorDatabase[currentRecipeData.flavorType];
+            if (flavorData && flavorData.steepingDays) {
+                maxSteepingDays = flavorData.steepingDays;
+            }
+        }
+    }
+
+    const maturityDate = new Date(mixDate);
+    maturityDate.setDate(maturityDate.getDate() + maxSteepingDays);
+    reminderDateInput.value = formatDateForInput(maturityDate);
+
+    if (infoText) {
+        if (maxSteepingDays === 0) {
+            infoText.textContent = t('save_recipe.reminder_no_steeping', 'Tato příchuť nevyžaduje zrání.');
+        } else {
+            const daysText = maxSteepingDays === 1 ? t('common.day', 'den') : 
+                (maxSteepingDays >= 2 && maxSteepingDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+            let text = t('save_recipe.reminder_calculated', `Doporučená doba zrání: ${maxSteepingDays} ${daysText}. Datum můžete upravit.`);
+            text = text.replace('{days}', maxSteepingDays.toString()).replace('{daysUnit}', daysText);
+            infoText.textContent = text;
+        }
+    }
+}
+
+// Reset polí pro připomínku
+function resetReminderFields() {
+    const checkbox = document.getElementById('enableReminder');
+    const fields = document.getElementById('reminderFields');
+    const mixDateInput = document.getElementById('mixDate');
+    const reminderDateInput = document.getElementById('reminderDate');
+    if (checkbox) checkbox.checked = false;
+    if (fields) fields.classList.add('hidden');
+    if (mixDateInput) mixDateInput.value = '';
+    if (reminderDateInput) reminderDateInput.value = '';
+}
+
+// Inicializovat připomínku jako zapnutou s dnešním datem
+function initReminderFieldsEnabled() {
+    const checkbox = document.getElementById('enableReminder');
+    const fields = document.getElementById('reminderFields');
+    const mixDateInput = document.getElementById('mixDate');
+    if (checkbox) checkbox.checked = true;
+    if (fields) fields.classList.remove('hidden');
+    if (mixDateInput) {
+        mixDateInput.value = formatDateForInput(new Date());
+        initDatePickerElement(mixDateInput);
+    }
+    const reminderDateInput = document.getElementById('reminderDate');
+    if (reminderDateInput) initDatePickerElement(reminderDateInput);
+    updateReminderDate();
+}
+
+// Inicializovat jeden date picker element
+function initDatePickerElement(input) {
+    if (!input) return input;
+    input.removeAttribute('readonly');
+    if (input.dataset.datePickerInit) return input;
+    input.dataset.datePickerInit = 'true';
+    input.addEventListener('click', function(e) {
+        if (typeof this.showPicker === 'function') {
+            try { this.showPicker(); } catch (err) { this.focus(); }
+        }
+    });
+    return input;
+}
+
+// Získat data připomínky z formuláře
+function getReminderDataFromForm() {
+    const checkbox = document.getElementById('enableReminder');
+    if (!checkbox || !checkbox.checked) return null;
+    const mixDateInput = document.getElementById('mixDate');
+    const reminderDateInput = document.getElementById('reminderDate');
+    if (!mixDateInput || !reminderDateInput || !mixDateInput.value || !reminderDateInput.value) return null;
+
+    let flavorType = 'fruit';
+    let flavorName = '';
+    if (currentRecipeData) {
+        if (currentRecipeData.formType === 'liquidpro' && currentRecipeData.flavors) {
+            let maxSteeping = 0;
+            for (const flavor of currentRecipeData.flavors) {
+                if (flavor.type && flavor.type !== 'none') {
+                    const flavorData = flavorDatabase[flavor.type];
+                    if (flavorData && flavorData.steepingDays > maxSteeping) {
+                        maxSteeping = flavorData.steepingDays;
+                        flavorType = flavor.type;
+                    }
+                }
+            }
+            flavorName = currentRecipeData.flavors
+                .filter(f => f.type && f.type !== 'none')
+                .map(f => getFlavorName(f.type))
+                .join(', ');
+        } else if (currentRecipeData.flavorType && currentRecipeData.flavorType !== 'none') {
+            flavorType = currentRecipeData.flavorType;
+            flavorName = getFlavorName(flavorType);
+        }
+    }
+
+    return {
+        mixed_at: mixDateInput.value,
+        remind_at: reminderDateInput.value,
+        remind_time: '16:30',
+        flavor_type: flavorType,
+        flavor_name: flavorName,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague'
+    };
+}
+
+// SVG ikony pro připomínky (neonově růžová)
+const reminderEditIcon = '<svg class="reminder-icon" viewBox="0 0 24 24" fill="none" stroke="#ff00ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+const reminderDeleteIcon = '<svg class="reminder-icon" viewBox="0 0 24 24" fill="none" stroke="#ff00ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+
+// Vyžádat povolení notifikací s přeloženým promptem
+async function requestNotificationPermissionWithPrompt() {
+    if (!('Notification' in window)) {
+        console.warn('Notifications not supported');
+        return false;
+    }
+    
+    if (Notification.permission === 'granted') {
+        return true;
+    }
+    
+    if (Notification.permission === 'denied') {
+        alert(t('notification.denied', 'Notifikace byly zablokovány. Povolte je v nastavení prohlížeče.'));
+        return false;
+    }
+    
+    // Zobrazit přeložený confirm dialog
+    const message = t('notification.permission_prompt', 
+        'Chcete dostávat upozornění, když bude váš liquid vyzrálý?\n\nPo povolení vám pošleme připomínku v den, kdy bude liquid připraven.');
+    
+    const userWants = confirm(message);
+    if (!userWants) {
+        return false;
+    }
+    
+    try {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+    } catch (error) {
+        console.error('Error requesting notification permission:', error);
+        return false;
+    }
+}
+
+// Uložit všechny připomínky pro aktuální recept
+let allRecipeReminders = [];
+
+// Načíst a zobrazit připomínky pro recept
+async function loadRecipeReminders(recipeId, showAll = false) {
+    if (!window.Clerk || !window.Clerk.user) return;
+    const listContainer = document.getElementById(`remindersList-${recipeId}`);
+    if (!listContainer) return;
+
+    try {
+        const reminders = await window.LiquiMixerDB.getRecipeReminders(window.Clerk.user.id, recipeId);
+        if (!reminders || reminders.length === 0) {
+            listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.no_reminders', 'Žádné připomínky. Klikněte na tlačítko níže pro přidání.')}</div>`;
+            return;
+        }
+
+        // Seřadit podle data připomínky (od nejstarší po nejnovější)
+        reminders.sort((a, b) => new Date(a.remind_at) - new Date(b.remind_at));
+        allRecipeReminders = reminders;
+
+        const displayCount = showAll ? reminders.length : Math.min(3, reminders.length);
+        const displayReminders = reminders.slice(0, displayCount);
+        let html = displayReminders.map(reminder => renderReminderItem(reminder, recipeId)).join('');
+
+        if (!showAll && reminders.length > 3) {
+            html += `<button type="button" class="show-all-reminders-btn" onclick="loadRecipeReminders('${recipeId}', true)">${t('recipe_detail.show_all_reminders', 'Zobrazit všechny')} (${reminders.length})</button>`;
+        } else if (showAll && reminders.length > 3) {
+            html += `<button type="button" class="show-all-reminders-btn" onclick="loadRecipeReminders('${recipeId}', false)">${t('recipe_detail.show_less', 'Zobrazit méně')}</button>`;
+        }
+
+        listContainer.innerHTML = html;
+    } catch (error) {
+        console.error('Error loading reminders:', error);
+        listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.reminders_error', 'Chyba při načítání připomínek.')}</div>`;
+    }
+}
+
+// Renderovat jednu položku připomínky
+function renderReminderItem(reminder, recipeId) {
+    const mixedDate = new Date(reminder.mixed_at).toLocaleDateString();
+    const remindDate = new Date(reminder.remind_at).toLocaleDateString();
+    const statusClass = reminder.status === 'sent' ? 'sent' : reminder.status === 'cancelled' ? 'cancelled' : '';
+
+    let statusBadge = '';
+    if (reminder.status === 'sent') {
+        statusBadge = `<span class="reminder-status-badge sent">✓ ${t('reminder.sent', 'Odesláno')}</span>`;
+    } else if (reminder.status === 'cancelled') {
+        statusBadge = `<span class="reminder-status-badge cancelled">✕ ${t('reminder.cancelled', 'Zrušeno')}</span>`;
+    }
+
+    return `
+        <div class="reminder-item ${statusClass}" data-reminder-id="${reminder.id}">
+            <div class="reminder-dates">
+                <div class="reminder-mixed-date">${t('reminder.mixed_on', 'Namícháno')}: ${mixedDate}</div>
+                <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
+            </div>
+            ${reminder.status === 'pending' ? `
+                <div class="reminder-actions">
+                    <button type="button" class="reminder-btn edit" onclick="showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
+                    <button type="button" class="reminder-btn delete" onclick="deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+// Aktuální recept pro přidání připomínky
+let currentReminderRecipeId = null;
+let currentReminderFlavorType = 'fruit';
+let currentReminderFlavorName = '';
+let currentReminderSteepingDays = 7;
+let editingReminderId = null;
+
+function showAddReminderModal(recipeId) {
+    if (!window.currentViewingRecipe) return;
+    currentReminderRecipeId = recipeId;
+    editingReminderId = null;
+
+    const recipe = window.currentViewingRecipe;
+    const data = recipe.recipe_data || {};
+    currentReminderSteepingDays = 7;
+    currentReminderFlavorType = 'fruit';
+    currentReminderFlavorName = '';
+
+    if (data.formType === 'liquidpro' && data.flavors) {
+        for (const flavor of data.flavors) {
+            if (flavor.type && flavor.type !== 'none') {
+                const flavorData = flavorDatabase[flavor.type];
+                if (flavorData && flavorData.steepingDays > currentReminderSteepingDays) {
+                    currentReminderSteepingDays = flavorData.steepingDays;
+                    currentReminderFlavorType = flavor.type;
+                }
+            }
+        }
+        currentReminderFlavorName = data.flavors.filter(f => f.type && f.type !== 'none').map(f => getFlavorName(f.type)).join(', ');
+    } else if (data.flavorType && data.flavorType !== 'none') {
+        currentReminderFlavorType = data.flavorType;
+        currentReminderFlavorName = getFlavorName(currentReminderFlavorType);
+        const flavorData = flavorDatabase[currentReminderFlavorType];
+        if (flavorData && flavorData.steepingDays) currentReminderSteepingDays = flavorData.steepingDays;
+    }
+
+    const modal = document.getElementById('addReminderModal');
+    if (!modal) { console.error('Add reminder modal not found'); return; }
+
+    const titleEl = modal.querySelector('.menu-title');
+    if (titleEl) titleEl.textContent = t('reminder.add_title', 'Přidat míchání');
+
+    const mixDateInput = document.getElementById('reminderMixDate');
+    if (mixDateInput) { mixDateInput.value = formatDateForInput(new Date()); initDatePickerElement(mixDateInput); }
+
+    const remindDateInput = document.getElementById('reminderRemindDate');
+    if (remindDateInput) initDatePickerElement(remindDateInput);
+
+    updateReminderModalDate();
+    modal.classList.remove('hidden');
+}
+
+function showEditReminderModal(reminderId, recipeId) {
+    const reminder = allRecipeReminders.find(r => r.id === reminderId);
+    if (!reminder) { console.error('Reminder not found:', reminderId); return; }
+
+    currentReminderRecipeId = recipeId;
+    editingReminderId = reminderId;
+
+    const modal = document.getElementById('addReminderModal');
+    if (!modal) return;
+
+    const titleEl = modal.querySelector('.menu-title');
+    if (titleEl) titleEl.textContent = t('reminder.edit_title', 'Upravit připomínku');
+
+    const mixDateInput = document.getElementById('reminderMixDate');
+    const remindDateInput = document.getElementById('reminderRemindDate');
+    if (mixDateInput) { mixDateInput.value = reminder.mixed_at; initDatePickerElement(mixDateInput); }
+    if (remindDateInput) { remindDateInput.value = reminder.remind_at; initDatePickerElement(remindDateInput); }
+
+    modal.classList.remove('hidden');
+}
+
+function hideAddReminderModal() {
+    const modal = document.getElementById('addReminderModal');
+    if (modal) modal.classList.add('hidden');
+    currentReminderRecipeId = null;
+    editingReminderId = null;
+}
+
+function updateReminderModalDate() {
+    const mixDateInput = document.getElementById('reminderMixDate');
+    const remindDateInput = document.getElementById('reminderRemindDate');
+    const infoText = document.getElementById('reminderModalInfo');
+    if (!mixDateInput || !remindDateInput || !mixDateInput.value) return;
+
+    const mixDate = new Date(mixDateInput.value);
+    const maturityDate = new Date(mixDate);
+    maturityDate.setDate(maturityDate.getDate() + currentReminderSteepingDays);
+    remindDateInput.value = formatDateForInput(maturityDate);
+
+    if (infoText) {
+        const daysText = currentReminderSteepingDays === 1 ? t('common.day', 'den') : 
+            (currentReminderSteepingDays >= 2 && currentReminderSteepingDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+        let text = t('save_recipe.reminder_calculated', `Doporučená doba zrání: ${currentReminderSteepingDays} ${daysText}. Datum můžete upravit.`);
+        text = text.replace('{days}', currentReminderSteepingDays.toString()).replace('{daysUnit}', daysText);
+        infoText.textContent = text;
+    }
+}
+
+async function saveReminderFromModal(event) {
+    if (event) event.preventDefault();
+    if (!window.Clerk || !window.Clerk.user) return false;
+
+    const mixDateInput = document.getElementById('reminderMixDate');
+    const remindDateInput = document.getElementById('reminderRemindDate');
+    if (!mixDateInput || !remindDateInput || !mixDateInput.value || !remindDateInput.value) {
+        alert(t('reminder.fill_dates', 'Vyplňte prosím obě data.'));
+        return false;
+    }
+
+    const mixDate = mixDateInput.value;
+    const remindDate = remindDateInput.value;
+
+    if (isNaN(new Date(mixDate).getTime()) || isNaN(new Date(remindDate).getTime())) {
+        alert(t('reminder.invalid_date', 'Neplatný formát data.'));
+        return false;
+    }
+
+    try {
+        if (editingReminderId) {
+            const updated = await window.LiquiMixerDB.updateReminder(window.Clerk.user.id, editingReminderId, { mixed_at: mixDate, remind_at: remindDate });
+            if (updated) { alert(t('reminder.updated', 'Připomínka byla upravena!')); }
+            else { alert(t('reminder.update_error', 'Chyba při úpravě připomínky.')); return false; }
+        } else {
+            const recipe = window.currentViewingRecipe;
+            await saveNewReminder(currentReminderRecipeId, mixDate, remindDate, currentReminderFlavorType, currentReminderFlavorName, recipe?.name || '');
+        }
+        hideAddReminderModal();
+        if (currentReminderRecipeId) loadRecipeReminders(currentReminderRecipeId);
+    } catch (error) {
+        console.error('Error saving reminder:', error);
+        alert(t('reminder.save_error', 'Chyba při ukládání připomínky.'));
+    }
+    return false;
+}
+
+async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavorName, recipeName) {
+    if (!window.Clerk || !window.Clerk.user) return false;
+    const reminderData = {
+        recipe_id: recipeId,
+        mixed_at: mixDate,
+        remind_at: remindDate,
+        remind_time: '16:30',
+        flavor_type: flavorType,
+        flavor_name: flavorName,
+        recipe_name: recipeName,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague'
+    };
+    try {
+        const saved = await window.LiquiMixerDB.saveReminder(window.Clerk.user.id, reminderData);
+        if (saved) { alert(t('reminder.saved', 'Připomínka byla uložena!')); return true; }
+        return false;
+    } catch (error) {
+        console.error('Error saving reminder:', error);
+        return false;
+    }
+}
+
+async function deleteReminderConfirm(reminderId, recipeId) {
+    if (!window.Clerk || !window.Clerk.user) return;
+    if (!confirm(t('reminder.delete_confirm', 'Opravdu chcete smazat tuto připomínku?'))) return;
+    try {
+        const deleted = await window.LiquiMixerDB.deleteReminder(window.Clerk.user.id, reminderId);
+        if (deleted) { alert(t('reminder.deleted', 'Připomínka byla smazána!')); loadRecipeReminders(recipeId); }
+        else { alert(t('reminder.delete_error', 'Chyba při mazání připomínky.')); }
+    } catch (error) {
+        console.error('Error deleting reminder:', error);
+        alert(t('reminder.delete_error', 'Chyba při mazání připomínky.'));
+    }
+}
+
+// Export funkcí pro připomínky
+window.toggleReminderFields = toggleReminderFields;
+window.updateReminderDate = updateReminderDate;
+window.initReminderFieldsEnabled = initReminderFieldsEnabled;
+window.loadRecipeReminders = loadRecipeReminders;
+window.showAddReminderModal = showAddReminderModal;
+window.showEditReminderModal = showEditReminderModal;
+window.hideAddReminderModal = hideAddReminderModal;
+window.updateReminderModalDate = updateReminderModalDate;
+window.saveReminderFromModal = saveReminderFromModal;
+window.deleteReminderConfirm = deleteReminderConfirm;
 
 // =========================================
 // EXPORT: Funkce pro globalni pristup z onclick

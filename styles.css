@@ -4783,3 +4783,320 @@ body {
     display: none;
 }
 
+/* ============================================
+   PŘIPOMÍNKY ZRÁNÍ - Reminder Styles
+   ============================================ */
+
+/* Kontejner sekce připomínek */
+.reminders-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--bg-card);
+    border-radius: var(--border-radius-small);
+    border: 1px solid rgba(255, 0, 255, 0.2);
+}
+
+.reminders-title {
+    font-size: 1.1rem;
+    color: var(--neon-pink);
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+/* Seznam připomínek */
+.reminders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.no-reminders {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 15px;
+    font-style: italic;
+}
+
+/* Jednotlivá připomínka */
+.reminder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: var(--bg-input);
+    border-radius: var(--border-radius-small);
+    border: 1px solid rgba(255, 0, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.reminder-item:hover {
+    border-color: rgba(255, 0, 255, 0.4);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.15);
+}
+
+.reminder-item.sent {
+    opacity: 0.6;
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+.reminder-item.cancelled {
+    opacity: 0.5;
+    border-color: rgba(255, 0, 68, 0.3);
+}
+
+.reminder-dates {
+    flex: 1;
+}
+
+.reminder-mixed-date,
+.reminder-remind-date {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.reminder-remind-date {
+    color: var(--neon-cyan);
+    margin-top: 4px;
+}
+
+/* Status badge */
+.reminder-status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin-left: 8px;
+}
+
+.reminder-status-badge.sent {
+    background: rgba(0, 255, 0, 0.2);
+    color: var(--neon-green);
+}
+
+.reminder-status-badge.cancelled {
+    background: rgba(255, 0, 68, 0.2);
+    color: var(--neon-red);
+}
+
+/* Akční tlačítka */
+.reminder-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.reminder-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reminder-btn:hover {
+    background: rgba(255, 0, 255, 0.15);
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+}
+
+.reminder-btn.delete:hover {
+    background: rgba(255, 0, 68, 0.15);
+    border-color: var(--neon-red);
+    box-shadow: 0 0 15px rgba(255, 0, 68, 0.4);
+}
+
+.reminder-btn.delete:hover .reminder-icon {
+    stroke: var(--neon-red);
+}
+
+/* SVG ikony */
+.reminder-icon {
+    width: 18px;
+    height: 18px;
+    stroke: var(--neon-pink);
+    transition: stroke 0.3s ease;
+}
+
+/* Tlačítko Zobrazit všechny / Zobrazit méně */
+.show-all-reminders-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    background: transparent;
+    border: 1px dashed rgba(255, 0, 255, 0.3);
+    border-radius: var(--border-radius-small);
+    color: var(--neon-pink);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.show-all-reminders-btn:hover {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: var(--neon-pink);
+}
+
+/* Přidat novou připomínku */
+.add-reminder-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(255, 0, 255, 0.1);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    border-radius: var(--border-radius-small);
+    color: var(--neon-pink);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.add-reminder-btn:hover {
+    background: rgba(255, 0, 255, 0.2);
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+/* Toggle switch pro připomínku v save modal */
+.reminder-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.reminder-toggle {
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.reminder-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.reminder-toggle .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(30, 30, 60, 0.9);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    transition: 0.4s;
+    border-radius: 26px;
+}
+
+.reminder-toggle .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 3px;
+    background-color: var(--text-secondary);
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.reminder-toggle input:checked + .slider {
+    background-color: rgba(255, 0, 255, 0.3);
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+.reminder-toggle input:checked + .slider:before {
+    transform: translateX(22px);
+    background-color: var(--neon-pink);
+    box-shadow: 0 0 10px var(--neon-pink);
+}
+
+.reminder-toggle-label {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+/* Pole pro datum */
+.reminder-fields {
+    padding: 15px;
+    background: rgba(30, 30, 60, 0.5);
+    border-radius: var(--border-radius-small);
+    border: 1px solid rgba(255, 0, 255, 0.15);
+    margin-bottom: 15px;
+}
+
+.reminder-fields.hidden {
+    display: none;
+}
+
+.reminder-date-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.reminder-date-group {
+    flex: 1;
+}
+
+.reminder-date-group label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+}
+
+/* Date picker styling */
+.date-picker-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: var(--bg-input);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    border-radius: var(--border-radius-small);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.date-picker-input:focus {
+    outline: none;
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+.date-picker-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Info text pod datumem */
+.reminder-info-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 8px;
+}
+
+/* Add reminder modal */
+#addReminderModal .modal-body {
+    padding: 20px;
+}
+
+#addReminderModal .reminder-modal-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+

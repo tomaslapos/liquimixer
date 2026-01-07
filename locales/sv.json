@@ -489,5 +489,51 @@
     "total": "Totalt inkl. moms",
     "paid": "Betald",
     "subscription_item": "LiquiMixer årsprenumeration (365 dagar)"
+  },
+  "reminder": {
+    "add_title": "Lägg till blandning",
+    "edit_title": "Redigera påminnelse",
+    "save_button": "Spara påminnelse",
+    "mixed_on": "Blandat",
+    "reminder_on": "Påminnelse",
+    "sent": "Skickat",
+    "cancelled": "Avbruten",
+    "fill_dates": "Fyll i båda datumen.",
+    "invalid_date": "Ogiltigt datumformat.",
+    "saved": "Påminnelsen har sparats!",
+    "updated": "Påminnelsen har uppdaterats!",
+    "deleted": "Påminnelsen har tagits bort!",
+    "save_error": "Fel vid sparande av påminnelse.",
+    "update_error": "Fel vid uppdatering av påminnelse.",
+    "delete_error": "Fel vid borttagning av påminnelse.",
+    "delete_confirm": "Är du säker på att du vill ta bort denna påminnelse?",
+    "reminder_set": "Påminnelse inställd för"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Påminn mig när vätskan är mogen",
+    "mix_date": "Blandningsdatum",
+    "reminder_date": "Påminnelsedatum",
+    "reminder_calculated": "Rekommenderad mognadstid: {days} {daysUnit}. Du kan justera datumet.",
+    "reminder_no_steeping": "Denna smak kräver ingen mognad.",
+    "products_linked": "Länkade produkter"
+  },
+  "recipe_detail": {
+    "reminders_title": "Mognadspåminnelser",
+    "no_reminders": "Inga påminnelser. Klicka på knappen nedan för att lägga till.",
+    "reminders_error": "Fel vid laddning av påminnelser.",
+    "add_reminder": "Lägg till blandning",
+    "show_all_reminders": "Visa alla",
+    "show_less": "Visa mindre"
+  },
+  "notification": {
+    "permission_prompt": "Vill du få aviseringar när din vätska är klar?\n\nEfter att du gett tillstånd skickar vi en påminnelse den dag vätskan är mogen.",
+    "denied": "Aviseringar har blockerats. Aktivera dem i webbläsarinställningarna.",
+    "title": "Vätskan är klar!",
+    "body": "Din vätska med {flavor} smak blandad {date} är mogen och klar."
+  },
+  "common": {
+    "day": "dag",
+    "days_few": "dagar",
+    "days": "dagar"
   }
 }

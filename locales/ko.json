@@ -489,5 +489,51 @@
     "total": "세후 합계",
     "paid": "결제됨",
     "subscription_item": "LiquiMixer 연간 구독 (365일)"
+  },
+  "reminder": {
+    "add_title": "혼합 추가",
+    "edit_title": "알림 편집",
+    "save_button": "알림 저장",
+    "mixed_on": "혼합됨",
+    "reminder_on": "알림",
+    "sent": "전송됨",
+    "cancelled": "취소됨",
+    "fill_dates": "두 날짜를 모두 입력해 주세요.",
+    "invalid_date": "잘못된 날짜 형식입니다.",
+    "saved": "알림이 저장되었습니다!",
+    "updated": "알림이 업데이트되었습니다!",
+    "deleted": "알림이 삭제되었습니다!",
+    "save_error": "알림 저장 중 오류가 발생했습니다.",
+    "update_error": "알림 업데이트 중 오류가 발생했습니다.",
+    "delete_error": "알림 삭제 중 오류가 발생했습니다.",
+    "delete_confirm": "이 알림을 삭제하시겠습니까?",
+    "reminder_set": "알림 설정됨"
+  },
+  "save_recipe": {
+    "reminder_toggle": "액상이 숙성되면 알림",
+    "mix_date": "혼합 날짜",
+    "reminder_date": "알림 날짜",
+    "reminder_calculated": "권장 숙성 시간: {days}{daysUnit}. 날짜를 조정할 수 있습니다.",
+    "reminder_no_steeping": "이 향료는 숙성이 필요하지 않습니다.",
+    "products_linked": "연결된 제품"
+  },
+  "recipe_detail": {
+    "reminders_title": "숙성 알림",
+    "no_reminders": "알림이 없습니다. 아래 버튼을 클릭하여 추가하세요.",
+    "reminders_error": "알림을 불러오는 중 오류가 발생했습니다.",
+    "add_reminder": "혼합 추가",
+    "show_all_reminders": "모두 표시",
+    "show_less": "간략히 표시"
+  },
+  "notification": {
+    "permission_prompt": "액상이 준비되면 알림을 받으시겠습니까?\n\n허용 후, 액상이 숙성된 날에 알림을 보내드립니다.",
+    "denied": "알림이 차단되었습니다. 브라우저 설정에서 활성화해 주세요.",
+    "title": "액상이 준비되었습니다!",
+    "body": "{date}에 혼합한 {flavor} 향의 액상이 숙성되어 준비되었습니다."
+  },
+  "common": {
+    "day": "일",
+    "days_few": "일",
+    "days": "일"
   }
 }

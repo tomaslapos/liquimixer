@@ -490,5 +490,51 @@
     "total": "الإجمالي مع الضريبة",
     "paid": "مدفوع",
     "subscription_item": "اشتراك LiquiMixer السنوي (365 يومًا)"
+  },
+  "reminder": {
+    "add_title": "إضافة خلط",
+    "edit_title": "تعديل التذكير",
+    "save_button": "حفظ التذكير",
+    "mixed_on": "تم الخلط",
+    "reminder_on": "التذكير",
+    "sent": "تم الإرسال",
+    "cancelled": "ملغى",
+    "fill_dates": "يرجى ملء كلا التاريخين.",
+    "invalid_date": "تنسيق تاريخ غير صالح.",
+    "saved": "تم حفظ التذكير!",
+    "updated": "تم تحديث التذكير!",
+    "deleted": "تم حذف التذكير!",
+    "save_error": "خطأ في حفظ التذكير.",
+    "update_error": "خطأ في تحديث التذكير.",
+    "delete_error": "خطأ في حذف التذكير.",
+    "delete_confirm": "هل أنت متأكد من حذف هذا التذكير؟",
+    "reminder_set": "تم ضبط التذكير لـ"
+  },
+  "save_recipe": {
+    "reminder_toggle": "ذكرني عندما ينضج السائل",
+    "mix_date": "تاريخ الخلط",
+    "reminder_date": "تاريخ التذكير",
+    "reminder_calculated": "وقت النضج الموصى به: {days} {daysUnit}. يمكنك تعديل التاريخ.",
+    "reminder_no_steeping": "هذه النكهة لا تحتاج إلى نضج.",
+    "products_linked": "المنتجات المرتبطة"
+  },
+  "recipe_detail": {
+    "reminders_title": "تذكيرات النضج",
+    "no_reminders": "لا توجد تذكيرات. انقر على الزر أدناه للإضافة.",
+    "reminders_error": "خطأ في تحميل التذكيرات.",
+    "add_reminder": "إضافة خلط",
+    "show_all_reminders": "عرض الكل",
+    "show_less": "عرض أقل"
+  },
+  "notification": {
+    "permission_prompt": "هل تريد تلقي إشعارات عندما يكون السائل جاهزًا؟\n\nبعد منح الإذن، سنرسل لك تذكيرًا في اليوم الذي ينضج فيه السائل.",
+    "denied": "تم حظر الإشعارات. يرجى تمكينها في إعدادات المتصفح.",
+    "title": "السائل جاهز!",
+    "body": "السائل بنكهة {flavor} الذي تم خلطه في {date} قد نضج وجاهز."
+  },
+  "common": {
+    "day": "يوم",
+    "days_few": "أيام",
+    "days": "يوم"
   }
 }

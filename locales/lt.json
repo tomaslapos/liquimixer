@@ -489,5 +489,51 @@
     "total": "Iš viso su PVM",
     "paid": "Apmokėta",
     "subscription_item": "LiquiMixer metinė prenumerata (365 dienos)"
+  },
+  "reminder": {
+    "add_title": "Pridėti maišymą",
+    "edit_title": "Redaguoti priminimą",
+    "save_button": "Išsaugoti priminimą",
+    "mixed_on": "Sumaišyta",
+    "reminder_on": "Priminimas",
+    "sent": "Išsiųsta",
+    "cancelled": "Atšaukta",
+    "fill_dates": "Prašome užpildyti abi datas.",
+    "invalid_date": "Neteisingas datos formatas.",
+    "saved": "Priminimas išsaugotas!",
+    "updated": "Priminimas atnaujintas!",
+    "deleted": "Priminimas ištrintas!",
+    "save_error": "Klaida išsaugant priminimą.",
+    "update_error": "Klaida atnaujinant priminimą.",
+    "delete_error": "Klaida ištrinant priminimą.",
+    "delete_confirm": "Ar tikrai norite ištrinti šį priminimą?",
+    "reminder_set": "Priminimas nustatytas"
+  },
+  "save_recipe": {
+    "reminder_toggle": "Priminti, kai skystis subręs",
+    "mix_date": "Maišymo data",
+    "reminder_date": "Priminimo data",
+    "reminder_calculated": "Rekomenduojamas brandinimo laikas: {days} {daysUnit}. Galite koreguoti datą.",
+    "reminder_no_steeping": "Šis aromatas nereikalauja brandinimo.",
+    "products_linked": "Susiję produktai"
+  },
+  "recipe_detail": {
+    "reminders_title": "Brandinimo priminimai",
+    "no_reminders": "Nėra priminimų. Spustelėkite mygtuką žemiau, kad pridėtumėte.",
+    "reminders_error": "Klaida įkeliant priminimus.",
+    "add_reminder": "Pridėti maišymą",
+    "show_all_reminders": "Rodyti visus",
+    "show_less": "Rodyti mažiau"
+  },
+  "notification": {
+    "permission_prompt": "Ar norėtumėte gauti pranešimus, kai jūsų skystis bus paruoštas?\n\nSuteikus leidimą, atsiųsime priminimą tą dieną, kai skystis subręs.",
+    "denied": "Pranešimai užblokuoti. Įjunkite juos naršyklės nustatymuose.",
+    "title": "Skystis paruoštas!",
+    "body": "Jūsų skystis su {flavor} aromatu, sumaišytas {date}, subrendęs ir paruoštas."
+  },
+  "common": {
+    "day": "diena",
+    "days_few": "dienos",
+    "days": "dienų"
   }
 }
