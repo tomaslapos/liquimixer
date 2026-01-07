@@ -227,13 +227,7 @@
     "not_found": "A recept nem található vagy törölve lett.",
     "delete_confirm": "Biztosan törölni szeretnéd ezt a receptet?",
     "delete_success": "A recept törölve lett.",
-    "delete_error": "Hiba a recept törlésekor.",
-    "reminders_title": "Érlelési emlékeztetők",
-    "no_reminders": "Nincs emlékeztető. Kattintson az alábbi gombra a hozzáadáshoz.",
-    "reminders_error": "Hiba az emlékeztetők betöltésekor.",
-    "add_reminder": "Keverés hozzáadása",
-    "show_all_reminders": "Összes megjelenítése",
-    "show_less": "Kevesebb megjelenítése"
+    "delete_error": "Hiba a recept törlésekor."
   },
   "save_recipe": {
     "title": "Recept mentése",
@@ -495,43 +489,5 @@
     "total": "Összesen ÁFA-val",
     "paid": "Fizetve",
     "subscription_item": "LiquiMixer éves előfizetés (365 nap)"
-  },
-  "reminder": {
-    "add_title": "Keverés hozzáadása",
-    "edit_title": "Emlékeztető szerkesztése",
-    "save_button": "Emlékeztető mentése",
-    "mixed_on": "Keverve",
-    "reminder_on": "Emlékeztető",
-    "sent": "Elküldve",
-    "cancelled": "Törölve",
-    "fill_dates": "Kérjük, töltse ki mindkét dátumot.",
-    "invalid_date": "Érvénytelen dátumformátum.",
-    "saved": "Az emlékeztető mentve!",
-    "updated": "Az emlékeztető frissítve!",
-    "deleted": "Az emlékeztető törölve!",
-    "save_error": "Hiba az emlékeztető mentésekor.",
-    "update_error": "Hiba az emlékeztető frissítésekor.",
-    "delete_error": "Hiba az emlékeztető törlésekor.",
-    "delete_confirm": "Biztosan törölni szeretné ezt az emlékeztetőt?",
-    "reminder_set": "Emlékeztető beállítva"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Emlékeztessen, amikor a folyadék érett",
-    "mix_date": "Keverés dátuma",
-    "reminder_date": "Emlékeztető dátuma",
-    "reminder_calculated": "Ajánlott érlelési idő: {days} {daysUnit}. A dátumot módosíthatja.",
-    "reminder_no_steeping": "Ez az aroma nem igényel érlelést.",
-    "products_linked": "Kapcsolt termékek"
-  },
-  "notification": {
-    "permission_prompt": "Szeretne értesítéseket kapni, amikor a folyadéka kész?\n\nAz engedély megadása után emlékeztetőt küldünk azon a napon, amikor a folyadék megérik.",
-    "denied": "Az értesítések le vannak tiltva. Kérjük, engedélyezze őket a böngésző beállításaiban.",
-    "title": "A folyadék kész!",
-    "body": "Az Ön {flavor} ízű folyadéka, amelyet {date} napon kevert, megérett és kész."
-  },
-  "common": {
-    "day": "nap",
-    "days_few": "nap",
-    "days": "nap"
   }
 }

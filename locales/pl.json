@@ -227,13 +227,7 @@
     "not_found": "Nie znaleziono przepisu lub został usunięty.",
     "delete_confirm": "Czy na pewno chcesz usunąć ten przepis?",
     "delete_success": "Przepis został usunięty.",
-    "delete_error": "Błąd podczas usuwania przepisu.",
-    "reminders_title": "Przypomnienia o dojrzewaniu",
-    "no_reminders": "Brak przypomnień. Kliknij przycisk poniżej, aby dodać.",
-    "reminders_error": "Błąd podczas ładowania przypomnień.",
-    "add_reminder": "Dodaj mieszanie",
-    "show_all_reminders": "Pokaż wszystkie",
-    "show_less": "Pokaż mniej"
+    "delete_error": "Błąd podczas usuwania przepisu."
   },
   "save_recipe": {
     "title": "Zapisz przepis",
@@ -495,43 +489,5 @@
     "total": "Razem brutto",
     "paid": "Zapłacono",
     "subscription_item": "Roczna subskrypcja LiquiMixer (365 dni)"
-  },
-  "reminder": {
-    "add_title": "Dodaj mieszanie",
-    "edit_title": "Edytuj przypomnienie",
-    "save_button": "Zapisz przypomnienie",
-    "mixed_on": "Zmieszano",
-    "reminder_on": "Przypomnienie",
-    "sent": "Wysłano",
-    "cancelled": "Anulowano",
-    "fill_dates": "Proszę wypełnić obie daty.",
-    "invalid_date": "Nieprawidłowy format daty.",
-    "saved": "Przypomnienie zostało zapisane!",
-    "updated": "Przypomnienie zostało zaktualizowane!",
-    "deleted": "Przypomnienie zostało usunięte!",
-    "save_error": "Błąd podczas zapisywania przypomnienia.",
-    "update_error": "Błąd podczas aktualizacji przypomnienia.",
-    "delete_error": "Błąd podczas usuwania przypomnienia.",
-    "delete_confirm": "Czy na pewno chcesz usunąć to przypomnienie?",
-    "reminder_set": "Przypomnienie ustawione na"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Przypomnij mi, gdy liquid jest dojrzały",
-    "mix_date": "Data mieszania",
-    "reminder_date": "Data przypomnienia",
-    "reminder_calculated": "Zalecany czas dojrzewania: {days} {daysUnit}. Możesz dostosować datę.",
-    "reminder_no_steeping": "Ten aromat nie wymaga dojrzewania.",
-    "products_linked": "Powiązane produkty"
-  },
-  "notification": {
-    "permission_prompt": "Czy chcesz otrzymywać powiadomienia, gdy Twój liquid będzie gotowy?\n\nPo wyrażeniu zgody wyślemy Ci przypomnienie w dniu, gdy liquid będzie dojrzały.",
-    "denied": "Powiadomienia zostały zablokowane. Włącz je w ustawieniach przeglądarki.",
-    "title": "Liquid jest gotowy!",
-    "body": "Twój liquid o smaku {flavor} zmieszany dnia {date} jest dojrzały i gotowy."
-  },
-  "common": {
-    "day": "dzień",
-    "days_few": "dni",
-    "days": "dni"
   }
 }

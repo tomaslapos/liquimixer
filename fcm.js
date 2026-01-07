@@ -136,12 +136,12 @@ async function saveFcmTokenToDatabase(token) {
         };
         
         // Save to database using database.js function
-        if (typeof window.LiquiMixerDB !== 'undefined' && window.LiquiMixerDB.saveFcmToken) {
-            await window.LiquiMixerDB.saveFcmToken(clerkId, token, deviceInfo);
+        if (typeof window.database !== 'undefined' && window.database.saveFcmToken) {
+            await window.database.saveFcmToken(clerkId, token, deviceInfo);
             console.log('FCM token saved to database');
             return true;
         } else {
-            console.warn('LiquiMixerDB module not available');
+            console.warn('Database module not available');
             return false;
         }
     } catch (error) {
@@ -184,8 +184,8 @@ async function deleteFcmToken() {
         // Also delete from database
         if (typeof Clerk !== 'undefined' && Clerk.user) {
             const clerkId = Clerk.user.id;
-            if (typeof window.LiquiMixerDB !== 'undefined' && window.LiquiMixerDB.deleteFcmToken) {
-                await window.LiquiMixerDB.deleteFcmToken(clerkId, fcmToken);
+            if (typeof window.database !== 'undefined' && window.database.deleteFcmToken) {
+                await window.database.deleteFcmToken(clerkId, fcmToken);
             }
         }
         

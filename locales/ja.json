@@ -227,13 +227,7 @@
     "not_found": "レシピが見つからないか、削除されました。",
     "delete_confirm": "このレシピを削除してもよろしいですか？",
     "delete_success": "レシピが削除されました。",
-    "delete_error": "レシピ削除エラー。",
-    "reminders_title": "熟成リマインダー",
-    "no_reminders": "リマインダーがありません。下のボタンをクリックして追加してください。",
-    "reminders_error": "リマインダーの読み込み中にエラーが発生しました。",
-    "add_reminder": "調合を追加",
-    "show_all_reminders": "すべて表示",
-    "show_less": "表示を減らす"
+    "delete_error": "レシピ削除エラー。"
   },
   "save_recipe": {
     "title": "レシピを保存",
@@ -495,43 +489,5 @@
     "total": "税込合計",
     "paid": "支払済",
     "subscription_item": "LiquiMixer年間購読（365日）"
-  },
-  "reminder": {
-    "add_title": "調合を追加",
-    "edit_title": "リマインダーを編集",
-    "save_button": "リマインダーを保存",
-    "mixed_on": "調合日",
-    "reminder_on": "リマインダー",
-    "sent": "送信済み",
-    "cancelled": "キャンセル",
-    "fill_dates": "両方の日付を入力してください。",
-    "invalid_date": "無効な日付形式です。",
-    "saved": "リマインダーが保存されました！",
-    "updated": "リマインダーが更新されました！",
-    "deleted": "リマインダーが削除されました！",
-    "save_error": "リマインダーの保存中にエラーが発生しました。",
-    "update_error": "リマインダーの更新中にエラーが発生しました。",
-    "delete_error": "リマインダーの削除中にエラーが発生しました。",
-    "delete_confirm": "このリマインダーを削除してもよろしいですか？",
-    "reminder_set": "リマインダー設定日"
-  },
-  "save_recipe": {
-    "reminder_toggle": "リキッドが熟成したら通知する",
-    "mix_date": "調合日",
-    "reminder_date": "リマインダー日",
-    "reminder_calculated": "推奨熟成期間：{days}{daysUnit}。日付は調整できます。",
-    "reminder_no_steeping": "このフレーバーは熟成不要です。",
-    "products_linked": "リンクされた製品"
-  },
-  "notification": {
-    "permission_prompt": "リキッドが準備できたときに通知を受け取りますか？\n\n許可後、リキッドが熟成した日にリマインダーをお送りします。",
-    "denied": "通知がブロックされています。ブラウザの設定で有効にしてください。",
-    "title": "リキッドが完成しました！",
-    "body": "{date}に調合した{flavor}フレーバーのリキッドが熟成し、準備ができました。"
-  },
-  "common": {
-    "day": "日",
-    "days_few": "日",
-    "days": "日"
   }
 }

@@ -227,13 +227,7 @@
     "not_found": "Ricetta non trovata o eliminata.",
     "delete_confirm": "Sei sicuro di voler eliminare questa ricetta?",
     "delete_success": "La ricetta è stata eliminata.",
-    "delete_error": "Errore nell'eliminazione della ricetta.",
-    "reminders_title": "Promemoria di maturazione",
-    "no_reminders": "Nessun promemoria. Clicca sul pulsante qui sotto per aggiungerne uno.",
-    "reminders_error": "Errore nel caricamento dei promemoria.",
-    "add_reminder": "Aggiungi miscelazione",
-    "show_all_reminders": "Mostra tutti",
-    "show_less": "Mostra meno"
+    "delete_error": "Errore nell'eliminazione della ricetta."
   },
   "save_recipe": {
     "title": "Salva ricetta",
@@ -495,43 +489,5 @@
     "total": "Totale IVA inclusa",
     "paid": "Pagato",
     "subscription_item": "Abbonamento annuale LiquiMixer (365 giorni)"
-  },
-  "reminder": {
-    "add_title": "Aggiungi miscelazione",
-    "edit_title": "Modifica promemoria",
-    "save_button": "Salva promemoria",
-    "mixed_on": "Miscelato",
-    "reminder_on": "Promemoria",
-    "sent": "Inviato",
-    "cancelled": "Annullato",
-    "fill_dates": "Si prega di compilare entrambe le date.",
-    "invalid_date": "Formato data non valido.",
-    "saved": "Il promemoria è stato salvato!",
-    "updated": "Il promemoria è stato aggiornato!",
-    "deleted": "Il promemoria è stato eliminato!",
-    "save_error": "Errore nel salvataggio del promemoria.",
-    "update_error": "Errore nell'aggiornamento del promemoria.",
-    "delete_error": "Errore nell'eliminazione del promemoria.",
-    "delete_confirm": "Sei sicuro di voler eliminare questo promemoria?",
-    "reminder_set": "Promemoria impostato per"
-  },
-  "save_recipe": {
-    "reminder_toggle": "Ricordami quando il liquido è maturato",
-    "mix_date": "Data di miscelazione",
-    "reminder_date": "Data promemoria",
-    "reminder_calculated": "Tempo di maturazione consigliato: {days} {daysUnit}. Puoi regolare la data.",
-    "reminder_no_steeping": "Questo aroma non richiede maturazione.",
-    "products_linked": "Prodotti collegati"
-  },
-  "notification": {
-    "permission_prompt": "Vuoi ricevere notifiche quando il tuo liquido è pronto?\n\nDopo aver concesso il permesso, ti invieremo un promemoria il giorno in cui il tuo liquido sarà maturato.",
-    "denied": "Le notifiche sono state bloccate. Per favore abilitale nelle impostazioni del browser.",
-    "title": "Il liquido è pronto!",
-    "body": "Il tuo liquido con aroma {flavor} miscelato il {date} è maturato e pronto."
-  },
-  "common": {
-    "day": "giorno",
-    "days_few": "giorni",
-    "days": "giorni"
   }
 }
