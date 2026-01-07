@@ -7,7 +7,7 @@
 -- RECIPE_REMINDERS - Row Level Security
 -- ============================================
 
--- Nejprve odstraníme existující příliš permisivní politiky
+-- Nejprve odstraníme VŠECHNY existující politiky
 DROP POLICY IF EXISTS "recipe_reminders_select" ON recipe_reminders;
 DROP POLICY IF EXISTS "recipe_reminders_insert" ON recipe_reminders;
 DROP POLICY IF EXISTS "recipe_reminders_update" ON recipe_reminders;
@@ -16,6 +16,11 @@ DROP POLICY IF EXISTS "Users can view own reminders" ON recipe_reminders;
 DROP POLICY IF EXISTS "Users can insert own reminders" ON recipe_reminders;
 DROP POLICY IF EXISTS "Users can update own reminders" ON recipe_reminders;
 DROP POLICY IF EXISTS "Users can delete own reminders" ON recipe_reminders;
+DROP POLICY IF EXISTS "reminders_select_own" ON recipe_reminders;
+DROP POLICY IF EXISTS "reminders_insert_own" ON recipe_reminders;
+DROP POLICY IF EXISTS "reminders_update_own" ON recipe_reminders;
+DROP POLICY IF EXISTS "reminders_delete_own" ON recipe_reminders;
+DROP POLICY IF EXISTS "service_role_reminders_all" ON recipe_reminders;
 
 -- Zajistit, že RLS je zapnutá
 ALTER TABLE recipe_reminders ENABLE ROW LEVEL SECURITY;
@@ -52,7 +57,7 @@ USING (clerk_id = current_setting('request.jwt.claims', true)::json->>'clerk_id'
 -- FCM_TOKENS - Row Level Security
 -- ============================================
 
--- Nejprve odstraníme existující příliš permisivní politiky
+-- Nejprve odstraníme VŠECHNY existující politiky
 DROP POLICY IF EXISTS "fcm_tokens_select" ON fcm_tokens;
 DROP POLICY IF EXISTS "fcm_tokens_insert" ON fcm_tokens;
 DROP POLICY IF EXISTS "fcm_tokens_update" ON fcm_tokens;
@@ -61,6 +66,11 @@ DROP POLICY IF EXISTS "Users can view own tokens" ON fcm_tokens;
 DROP POLICY IF EXISTS "Users can insert own tokens" ON fcm_tokens;
 DROP POLICY IF EXISTS "Users can update own tokens" ON fcm_tokens;
 DROP POLICY IF EXISTS "Users can delete own tokens" ON fcm_tokens;
+DROP POLICY IF EXISTS "fcm_tokens_select_own" ON fcm_tokens;
+DROP POLICY IF EXISTS "fcm_tokens_insert_own" ON fcm_tokens;
+DROP POLICY IF EXISTS "fcm_tokens_update_own" ON fcm_tokens;
+DROP POLICY IF EXISTS "fcm_tokens_delete_own" ON fcm_tokens;
+DROP POLICY IF EXISTS "service_role_fcm_tokens_all" ON fcm_tokens;
 
 -- Zajistit, že RLS je zapnutá
 ALTER TABLE fcm_tokens ENABLE ROW LEVEL SECURITY;
