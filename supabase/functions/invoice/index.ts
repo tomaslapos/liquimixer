@@ -7,11 +7,13 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { 
+  getCorsHeaders, 
+  handleCorsPreflght, 
+  checkRateLimit, 
+  getRateLimitIdentifier,
+  rateLimitResponse 
+} from '../_shared/cors.ts'
 
 // Firemní údaje z Secrets
 const COMPANY = {
@@ -38,8 +40,20 @@ const SMTP_CONFIG = {
 const EMAIL_FROM = Deno.env.get('EMAIL_FROM') || 'faktury@liquimixer.com'
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return handleCorsPreflght(origin)
+  }
+
+  // Rate limiting
+  const identifier = getRateLimitIdentifier(req)
+  const rateCheck = checkRateLimit(identifier, 'default')
+  
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt, origin)
   }
 
   try {
