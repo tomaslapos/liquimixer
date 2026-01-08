@@ -227,7 +227,13 @@
     "not_found": "Recept hittades inte eller har raderats.",
     "delete_confirm": "Är du säker på att du vill radera detta recept?",
     "delete_success": "Receptet har raderats.",
-    "delete_error": "Fel vid radering av recept."
+    "delete_error": "Fel vid radering av recept.",
+    "reminders_title": "Mognadspåminnelser",
+    "no_reminders": "Inga påminnelser. Klicka på knappen nedan för att lägga till.",
+    "add_reminder": "Lägg till ny blandning",
+    "show_all_reminders": "Visa alla",
+    "show_less": "Visa mindre",
+    "reminders_error": "Fel vid laddning av påminnelser."
   },
   "save_recipe": {
     "title": "Spara recept",
@@ -247,7 +253,14 @@
     "error": "Fel vid sparande av recept.",
     "login_required": "Vänligen logga in för att spara receptet.",
     "no_products": "Du har inga favoritprodukter. Lägg till dem först i Favoritprodukter-sektionen.",
-    "nothing_to_save": "Fel: Inget att spara. Vänligen skapa ett recept."
+    "nothing_to_save": "Fel: Inget att spara. Vänligen skapa ett recept.",
+    "reminder_enable": "Påminn mig när vätskan är mognad",
+    "mix_date": "Blandningsdatum",
+    "reminder_date": "Påminnelsedatum",
+    "reminder_info": "Påminnelsedatumet beräknades automatiskt baserat på aromtyp.",
+    "reminder_info_short": "Påminnelsedatumet beräknades automatiskt baserat på aromtyp.",
+    "reminder_calculated": "Rekommenderad mogningstid: {days} {daysUnit}. Du kan justera datumet.",
+    "reminder_no_steeping": "Denna arom kräver ingen mognad."
   },
   "share": {
     "copied": "Länk kopierad till urklipp!",
@@ -343,7 +356,29 @@
     "cancel": "Avbryt",
     "confirm": "Bekräfta",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "day": "dag",
+    "days": "dagar",
+    "days_few": "dagar"
+  },
+  "reminder": {
+    "add_title": "Lägg till blandning",
+    "edit_title": "Redigera påminnelse",
+    "saved": "Påminnelse sparad!",
+    "updated": "Påminnelse uppdaterad!",
+    "deleted": "Påminnelse raderad!",
+    "delete_confirm": "Är du säker på att du vill ta bort denna påminnelse?",
+    "save_error": "Fel vid sparande av påminnelse.",
+    "update_error": "Fel vid uppdatering av påminnelse.",
+    "delete_error": "Fel vid radering av påminnelse.",
+    "fill_dates": "Vänligen fyll i båda datumen.",
+    "invalid_date": "Ogiltigt datumformat.",
+    "mixed_on": "Blandat",
+    "reminder_on": "Påminnelse",
+    "sent": "Skickad",
+    "cancelled": "Avbruten",
+    "note_label": "Anteckning",
+    "note_placeholder": "Valfri anteckning..."
   },
   "alert": {
     "login_required": "Vänligen logga in för denna åtgärd.",

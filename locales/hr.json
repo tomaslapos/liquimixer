@@ -227,7 +227,13 @@
     "not_found": "Recept nije pronađen ili je obrisan.",
     "delete_confirm": "Jeste li sigurni da želite obrisati ovaj recept?",
     "delete_success": "Recept je obrisan.",
-    "delete_error": "Greška pri brisanju recepta."
+    "delete_error": "Greška pri brisanju recepta.",
+    "reminders_title": "Podsjetnici za sazrijevanje",
+    "no_reminders": "Nema podsjetnika. Kliknite gumb ispod za dodavanje.",
+    "add_reminder": "Dodaj novo miješanje",
+    "show_all_reminders": "Prikaži sve",
+    "show_less": "Prikaži manje",
+    "reminders_error": "Greška pri učitavanju podsjetnika."
   },
   "save_recipe": {
     "title": "Spremi recept",
@@ -247,7 +253,14 @@
     "error": "Greška pri spremanju recepta.",
     "login_required": "Prijavite se za spremanje recepta.",
     "no_products": "Nemate omiljenih proizvoda. Dodajte ih prvo u odjeljku Omiljeni proizvodi.",
-    "nothing_to_save": "Greška: Nema ništa za spremiti. Stvorite recept."
+    "nothing_to_save": "Greška: Nema ništa za spremiti. Stvorite recept.",
+    "reminder_enable": "Podsjeti me kad tekućina sazrije",
+    "mix_date": "Datum miješanja",
+    "reminder_date": "Datum podsjetnika",
+    "reminder_info": "Datum podsjetnika automatski je izračunat na temelju vrste arome.",
+    "reminder_info_short": "Datum podsjetnika automatski je izračunat na temelju vrste arome.",
+    "reminder_calculated": "Preporučeno vrijeme sazrijevanja: {days} {daysUnit}. Možete prilagoditi datum.",
+    "reminder_no_steeping": "Ova aroma ne zahtijeva sazrijevanje."
   },
   "share": {
     "copied": "Link kopiran u međuspremnik!",
@@ -343,7 +356,29 @@
     "cancel": "Otkaži",
     "confirm": "Potvrdi",
     "yes": "Da",
-    "no": "Ne"
+    "no": "Ne",
+    "day": "dan",
+    "days": "dana",
+    "days_few": "dana"
+  },
+  "reminder": {
+    "add_title": "Dodaj miješanje",
+    "edit_title": "Uredi podsjetnik",
+    "saved": "Podsjetnik spremljen!",
+    "updated": "Podsjetnik ažuriran!",
+    "deleted": "Podsjetnik izbrisan!",
+    "delete_confirm": "Jeste li sigurni da želite izbrisati ovaj podsjetnik?",
+    "save_error": "Pogreška pri spremanju podsjetnika.",
+    "update_error": "Pogreška pri ažuriranju podsjetnika.",
+    "delete_error": "Pogreška pri brisanju podsjetnika.",
+    "fill_dates": "Ispunite oba datuma.",
+    "invalid_date": "Neispravan format datuma.",
+    "mixed_on": "Pomiješano",
+    "reminder_on": "Podsjetnik",
+    "sent": "Poslano",
+    "cancelled": "Otkazano",
+    "note_label": "Bilješka",
+    "note_placeholder": "Opcionalna bilješka..."
   },
   "alert": {
     "login_required": "Prijavite se za ovu radnju.",

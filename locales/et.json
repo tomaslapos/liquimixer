@@ -227,7 +227,13 @@
     "not_found": "Retsepti ei leitud või see on kustutatud.",
     "delete_confirm": "Kas oled kindel, et soovid selle retsepti kustutada?",
     "delete_success": "Retsept kustutatud.",
-    "delete_error": "Viga retsepti kustutamisel."
+    "delete_error": "Viga retsepti kustutamisel.",
+    "reminders_title": "Küpsemise meeldetuletused",
+    "no_reminders": "Meeldetuletusi pole. Lisamiseks klõpsa alloleval nupul.",
+    "add_reminder": "Lisa uus segamine",
+    "show_all_reminders": "Näita kõiki",
+    "show_less": "Näita vähem",
+    "reminders_error": "Viga meeldetuletuste laadimisel."
   },
   "save_recipe": {
     "title": "Salvesta retsept",
@@ -247,7 +253,14 @@
     "error": "Viga retsepti salvestamisel.",
     "login_required": "Retsepti salvestamiseks palun logi sisse.",
     "no_products": "Sul pole lemmiktooteid. Lisa need esmalt Lemmiktooted sektsioonis.",
-    "nothing_to_save": "Viga: Pole midagi salvestada. Loo retsept."
+    "nothing_to_save": "Viga: Pole midagi salvestada. Loo retsept.",
+    "reminder_enable": "Tuleta meelde, kui vedelik on küpsenud",
+    "mix_date": "Segamise kuupäev",
+    "reminder_date": "Meeldetuletuse kuupäev",
+    "reminder_info": "Meeldetuletuse kuupäev arvutati automaatselt maitse tüübi põhjal.",
+    "reminder_info_short": "Meeldetuletuse kuupäev arvutati automaatselt maitse tüübi põhjal.",
+    "reminder_calculated": "Soovitatav küpsemisaeg: {days} {daysUnit}. Saate kuupäeva muuta.",
+    "reminder_no_steeping": "See maitse ei vaja küpsemist."
   },
   "share": {
     "copied": "Link kopeeritud lõikelauale!",
@@ -343,7 +356,29 @@
     "cancel": "Tühista",
     "confirm": "Kinnita",
     "yes": "Jah",
-    "no": "Ei"
+    "no": "Ei",
+    "day": "päev",
+    "days": "päeva",
+    "days_few": "päeva"
+  },
+  "reminder": {
+    "add_title": "Lisa segamine",
+    "edit_title": "Redigeeri meeldetuletust",
+    "saved": "Meeldetuletus salvestatud!",
+    "updated": "Meeldetuletus uuendatud!",
+    "deleted": "Meeldetuletus kustutatud!",
+    "delete_confirm": "Kas olete kindel, et soovite selle meeldetuletuse kustutada?",
+    "save_error": "Viga meeldetuletuse salvestamisel.",
+    "update_error": "Viga meeldetuletuse uuendamisel.",
+    "delete_error": "Viga meeldetuletuse kustutamisel.",
+    "fill_dates": "Palun täitke mõlemad kuupäevad.",
+    "invalid_date": "Vigane kuupäeva formaat.",
+    "mixed_on": "Segatud",
+    "reminder_on": "Meeldetuletus",
+    "sent": "Saadetud",
+    "cancelled": "Tühistatud",
+    "note_label": "Märge",
+    "note_placeholder": "Valikuline märge..."
   },
   "alert": {
     "login_required": "Selle toimingu jaoks palun logi sisse.",

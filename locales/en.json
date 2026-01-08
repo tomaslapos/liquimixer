@@ -227,7 +227,13 @@
     "not_found": "Recipe not found or has been deleted.",
     "delete_confirm": "Are you sure you want to delete this recipe?",
     "delete_success": "Recipe has been deleted.",
-    "delete_error": "Error deleting recipe."
+    "delete_error": "Error deleting recipe.",
+    "reminders_title": "Steeping Reminders",
+    "no_reminders": "No reminders. Click the button below to add one.",
+    "add_reminder": "Add new mixing",
+    "show_all_reminders": "Show all",
+    "show_less": "Show less",
+    "reminders_error": "Error loading reminders."
   },
   "save_recipe": {
     "title": "Save Recipe",
@@ -247,7 +253,14 @@
     "error": "Error saving recipe.",
     "login_required": "Please sign in to save the recipe.",
     "no_products": "You don't have any favorite products. Add them first in Favorite Products section.",
-    "nothing_to_save": "Error: Nothing to save. Please create a recipe."
+    "nothing_to_save": "Error: Nothing to save. Please create a recipe.",
+    "reminder_enable": "Remind me when the liquid is steeped",
+    "mix_date": "Mix date",
+    "reminder_date": "Reminder date",
+    "reminder_info": "The reminder date was automatically calculated based on the flavor type.",
+    "reminder_info_short": "The reminder date was automatically calculated based on the flavor type.",
+    "reminder_calculated": "Recommended steeping time: {days} {daysUnit}. You can adjust the date.",
+    "reminder_no_steeping": "This flavor does not require steeping."
   },
   "share": {
     "copied": "Link copied to clipboard!",
@@ -343,7 +356,29 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "day": "day",
+    "days": "days",
+    "days_few": "days"
+  },
+  "reminder": {
+    "add_title": "Add mixing",
+    "edit_title": "Edit reminder",
+    "saved": "Reminder saved!",
+    "updated": "Reminder updated!",
+    "deleted": "Reminder deleted!",
+    "delete_confirm": "Are you sure you want to delete this reminder?",
+    "save_error": "Error saving reminder.",
+    "update_error": "Error updating reminder.",
+    "delete_error": "Error deleting reminder.",
+    "fill_dates": "Please fill in both dates.",
+    "invalid_date": "Invalid date format.",
+    "mixed_on": "Mixed on",
+    "reminder_on": "Reminder",
+    "sent": "Sent",
+    "cancelled": "Cancelled",
+    "note_label": "Note",
+    "note_placeholder": "Optional note..."
   },
   "alert": {
     "login_required": "Please sign in for this action.",

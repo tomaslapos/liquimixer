@@ -227,7 +227,13 @@
     "not_found": "A recept nem található vagy törölve lett.",
     "delete_confirm": "Biztosan törölni szeretnéd ezt a receptet?",
     "delete_success": "A recept törölve lett.",
-    "delete_error": "Hiba a recept törlésekor."
+    "delete_error": "Hiba a recept törlésekor.",
+    "reminders_title": "Érlelési emlékeztetők",
+    "no_reminders": "Nincsenek emlékeztetők. Kattintson az alábbi gombra a hozzáadáshoz.",
+    "add_reminder": "Új keverés hozzáadása",
+    "show_all_reminders": "Összes megjelenítése",
+    "show_less": "Kevesebb megjelenítése",
+    "reminders_error": "Hiba az emlékeztetők betöltésekor."
   },
   "save_recipe": {
     "title": "Recept mentése",
@@ -247,7 +253,14 @@
     "error": "Hiba a recept mentésekor.",
     "login_required": "Kérjük, jelentkezz be a recept mentéséhez.",
     "no_products": "Nincsenek kedvenc termékeid. Előbb add hozzá őket a Kedvenc termékek részben.",
-    "nothing_to_save": "Hiba: Nincs mit menteni. Kérjük, hozz létre receptet."
+    "nothing_to_save": "Hiba: Nincs mit menteni. Kérjük, hozz létre receptet.",
+    "reminder_enable": "Emlékeztess, ha a folyadék beérett",
+    "mix_date": "Keverés dátuma",
+    "reminder_date": "Emlékeztető dátuma",
+    "reminder_info": "Az emlékeztető dátuma automatikusan számítva az aroma típusa alapján.",
+    "reminder_info_short": "Az emlékeztető dátuma automatikusan számítva az aroma típusa alapján.",
+    "reminder_calculated": "Ajánlott érlelési idő: {days} {daysUnit}. A dátum módosítható.",
+    "reminder_no_steeping": "Ez az aroma nem igényel érlelést."
   },
   "share": {
     "copied": "Link a vágólapra másolva!",
@@ -343,7 +356,29 @@
     "cancel": "Mégse",
     "confirm": "Megerősítés",
     "yes": "Igen",
-    "no": "Nem"
+    "no": "Nem",
+    "day": "nap",
+    "days": "nap",
+    "days_few": "nap"
+  },
+  "reminder": {
+    "add_title": "Keverés hozzáadása",
+    "edit_title": "Emlékeztető szerkesztése",
+    "saved": "Emlékeztető mentve!",
+    "updated": "Emlékeztető frissítve!",
+    "deleted": "Emlékeztető törölve!",
+    "delete_confirm": "Biztosan törölni szeretné ezt az emlékeztetőt?",
+    "save_error": "Hiba az emlékeztető mentésekor.",
+    "update_error": "Hiba az emlékeztető frissítésekor.",
+    "delete_error": "Hiba az emlékeztető törlésekor.",
+    "fill_dates": "Kérjük, töltse ki mindkét dátumot.",
+    "invalid_date": "Érvénytelen dátumformátum.",
+    "mixed_on": "Keverve",
+    "reminder_on": "Emlékeztető",
+    "sent": "Elküldve",
+    "cancelled": "Lemondva",
+    "note_label": "Jegyzet",
+    "note_placeholder": "Opcionális jegyzet..."
   },
   "alert": {
     "login_required": "Kérjük, jelentkezz be ehhez a művelethez.",

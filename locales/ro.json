@@ -227,7 +227,13 @@
     "not_found": "Rețeta nu a fost găsită sau a fost ștearsă.",
     "delete_confirm": "Sigur doriți să ștergeți această rețetă?",
     "delete_success": "Rețeta a fost ștearsă.",
-    "delete_error": "Eroare la ștergerea rețetei."
+    "delete_error": "Eroare la ștergerea rețetei.",
+    "reminders_title": "Memento-uri de maturare",
+    "no_reminders": "Fără memento-uri. Faceți clic pe butonul de mai jos pentru a adăuga.",
+    "add_reminder": "Adaugă amestecare nouă",
+    "show_all_reminders": "Afișează toate",
+    "show_less": "Afișează mai puțin",
+    "reminders_error": "Eroare la încărcarea memento-urilor."
   },
   "save_recipe": {
     "title": "Salvați rețeta",
@@ -247,7 +253,14 @@
     "error": "Eroare la salvarea rețetei.",
     "login_required": "Autentificați-vă pentru a salva rețeta.",
     "no_products": "Nu aveți produse preferate. Adăugați-le mai întâi în secțiunea Produse preferate.",
-    "nothing_to_save": "Eroare: Nimic de salvat. Creați o rețetă."
+    "nothing_to_save": "Eroare: Nimic de salvat. Creați o rețetă.",
+    "reminder_enable": "Reamintește-mi când lichidul este maturat",
+    "mix_date": "Data amestecării",
+    "reminder_date": "Data amintirii",
+    "reminder_info": "Data amintirii a fost calculată automat pe baza tipului de aromă.",
+    "reminder_info_short": "Data amintirii a fost calculată automat pe baza tipului de aromă.",
+    "reminder_calculated": "Timp de maturare recomandat: {days} {daysUnit}. Puteți ajusta data.",
+    "reminder_no_steeping": "Această aromă nu necesită maturare."
   },
   "share": {
     "copied": "Link copiat în clipboard!",
@@ -343,7 +356,29 @@
     "cancel": "Anulare",
     "confirm": "Confirmare",
     "yes": "Da",
-    "no": "Nu"
+    "no": "Nu",
+    "day": "zi",
+    "days": "zile",
+    "days_few": "zile"
+  },
+  "reminder": {
+    "add_title": "Adaugă amestecare",
+    "edit_title": "Editează amintire",
+    "saved": "Amintirea a fost salvată!",
+    "updated": "Amintirea a fost actualizată!",
+    "deleted": "Amintirea a fost ștearsă!",
+    "delete_confirm": "Sunteți sigur că doriți să ștergeți această amintire?",
+    "save_error": "Eroare la salvarea amintirii.",
+    "update_error": "Eroare la actualizarea amintirii.",
+    "delete_error": "Eroare la ștergerea amintirii.",
+    "fill_dates": "Vă rugăm să completați ambele date.",
+    "invalid_date": "Format de dată invalid.",
+    "mixed_on": "Amestecat",
+    "reminder_on": "Amintire",
+    "sent": "Trimis",
+    "cancelled": "Anulat",
+    "note_label": "Notă",
+    "note_placeholder": "Notă opțională..."
   },
   "alert": {
     "login_required": "Autentificați-vă pentru această acțiune.",

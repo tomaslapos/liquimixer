@@ -227,7 +227,13 @@
     "not_found": "Nie znaleziono przepisu lub został usunięty.",
     "delete_confirm": "Czy na pewno chcesz usunąć ten przepis?",
     "delete_success": "Przepis został usunięty.",
-    "delete_error": "Błąd podczas usuwania przepisu."
+    "delete_error": "Błąd podczas usuwania przepisu.",
+    "reminders_title": "Przypomnienia o dojrzewaniu",
+    "no_reminders": "Brak przypomnień. Kliknij przycisk poniżej, aby dodać.",
+    "add_reminder": "Dodaj nowe mieszanie",
+    "show_all_reminders": "Pokaż wszystkie",
+    "show_less": "Pokaż mniej",
+    "reminders_error": "Błąd podczas ładowania przypomnień."
   },
   "save_recipe": {
     "title": "Zapisz przepis",
@@ -247,7 +253,14 @@
     "error": "Błąd podczas zapisywania przepisu.",
     "login_required": "Proszę się zalogować, aby zapisać przepis.",
     "no_products": "Nie masz ulubionych produktów. Dodaj je najpierw w sekcji Ulubione produkty.",
-    "nothing_to_save": "Błąd: Nie ma nic do zapisania. Proszę utworzyć przepis."
+    "nothing_to_save": "Błąd: Nie ma nic do zapisania. Proszę utworzyć przepis.",
+    "reminder_enable": "Przypomnij mi, gdy liquid będzie dojrzały",
+    "mix_date": "Data mieszania",
+    "reminder_date": "Data przypomnienia",
+    "reminder_info": "Data przypomnienia została automatycznie obliczona na podstawie typu aromatu.",
+    "reminder_info_short": "Data przypomnienia została automatycznie obliczona na podstawie typu aromatu.",
+    "reminder_calculated": "Zalecany czas dojrzewania: {days} {daysUnit}. Możesz dostosować datę.",
+    "reminder_no_steeping": "Ten aromat nie wymaga dojrzewania."
   },
   "share": {
     "copied": "Link skopiowany do schowka!",
@@ -343,7 +356,29 @@
     "cancel": "Anuluj",
     "confirm": "Potwierdź",
     "yes": "Tak",
-    "no": "Nie"
+    "no": "Nie",
+    "day": "dzień",
+    "days": "dni",
+    "days_few": "dni"
+  },
+  "reminder": {
+    "add_title": "Dodaj mieszanie",
+    "edit_title": "Edytuj przypomnienie",
+    "saved": "Przypomnienie zostało zapisane!",
+    "updated": "Przypomnienie zostało zaktualizowane!",
+    "deleted": "Przypomnienie zostało usunięte!",
+    "delete_confirm": "Czy na pewno chcesz usunąć to przypomnienie?",
+    "save_error": "Błąd podczas zapisywania przypomnienia.",
+    "update_error": "Błąd podczas aktualizacji przypomnienia.",
+    "delete_error": "Błąd podczas usuwania przypomnienia.",
+    "fill_dates": "Proszę wypełnić obie daty.",
+    "invalid_date": "Nieprawidłowy format daty.",
+    "mixed_on": "Zmieszano",
+    "reminder_on": "Przypomnienie",
+    "sent": "Wysłane",
+    "cancelled": "Anulowane",
+    "note_label": "Notatka",
+    "note_placeholder": "Opcjonalna notatka..."
   },
   "alert": {
     "login_required": "Proszę się zalogować, aby wykonać tę akcję.",

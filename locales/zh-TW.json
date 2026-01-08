@@ -227,7 +227,13 @@
     "not_found": "未找到配方或已刪除。",
     "delete_confirm": "您確定要刪除此配方嗎？",
     "delete_success": "配方已刪除。",
-    "delete_error": "刪除配方時出錯。"
+    "delete_error": "刪除配方時出錯。",
+    "reminders_title": "熟化提醒",
+    "no_reminders": "沒有提醒。點擊下方按鈕新增。",
+    "add_reminder": "新增調配",
+    "show_all_reminders": "顯示全部",
+    "show_less": "顯示較少",
+    "reminders_error": "載入提醒時出錯。"
   },
   "save_recipe": {
     "title": "儲存配方",
@@ -247,7 +253,14 @@
     "error": "儲存配方時出錯。",
     "login_required": "請登入以儲存配方。",
     "no_products": "您沒有收藏產品。請先在「收藏產品」部分新增。",
-    "nothing_to_save": "錯誤：沒有可儲存的內容。請建立配方。"
+    "nothing_to_save": "錯誤：沒有可儲存的內容。請建立配方。",
+    "reminder_enable": "在菸油熟化後提醒我",
+    "mix_date": "調配日期",
+    "reminder_date": "提醒日期",
+    "reminder_info": "提醒日期已根據香精類型自動計算。",
+    "reminder_info_short": "提醒日期已根據香精類型自動計算。",
+    "reminder_calculated": "建議熟化時間：{days} {daysUnit}。您可以修改日期。",
+    "reminder_no_steeping": "此香精不需要熟化。"
   },
   "share": {
     "copied": "連結已複製到剪貼簿！",
@@ -343,7 +356,29 @@
     "cancel": "取消",
     "confirm": "確認",
     "yes": "是",
-    "no": "否"
+    "no": "否",
+    "day": "天",
+    "days": "天",
+    "days_few": "天"
+  },
+  "reminder": {
+    "add_title": "新增調配",
+    "edit_title": "編輯提醒",
+    "saved": "提醒已儲存！",
+    "updated": "提醒已更新！",
+    "deleted": "提醒已刪除！",
+    "delete_confirm": "您確定要刪除此提醒嗎？",
+    "save_error": "儲存提醒時出錯。",
+    "update_error": "更新提醒時出錯。",
+    "delete_error": "刪除提醒時出錯。",
+    "fill_dates": "請填寫兩個日期。",
+    "invalid_date": "無效的日期格式。",
+    "mixed_on": "調配日期",
+    "reminder_on": "提醒",
+    "sent": "已發送",
+    "cancelled": "已取消",
+    "note_label": "備註",
+    "note_placeholder": "選填備註..."
   },
   "alert": {
     "login_required": "請登入以執行此操作。",

@@ -6,6 +6,7 @@
 // Aktuální jazyk
 let currentLocale = 'en';
 let translations = {};
+let englishTranslations = {}; // Fallback překlady v angličtině
 let localesData = [];
 
 // Podporované jazyky (pro které máme překlady)
@@ -112,9 +113,28 @@ const localeFileMap = {
 // Validace locale - pouze povolené znaky (ochrana proti path traversal)
 const safeLocalePattern = /^[a-z]{2}(-[A-Z]{2})?$/;
 
+// Načíst anglické překlady jako fallback (volá se jednou při inicializaci)
+async function loadEnglishFallback() {
+    try {
+        const enResponse = await fetch('./locales/en.json');
+        if (enResponse.ok) {
+            englishTranslations = await enResponse.json();
+            console.log('Loaded English fallback translations');
+        }
+    } catch (err) {
+        console.error('Error loading English fallback:', err);
+        englishTranslations = {};
+    }
+}
+
 // Načíst překlady pro daný jazyk z lokálních JSON souborů
 async function loadTranslations(locale) {
     try {
+        // Načíst anglické překlady jako fallback pokud ještě nejsou načteny
+        if (Object.keys(englishTranslations).length === 0) {
+            await loadEnglishFallback();
+        }
+        
         // Mapování locale na soubor
         const fileLocale = localeFileMap[locale] || locale;
         
@@ -135,62 +155,47 @@ async function loadTranslations(locale) {
         } else {
             // Fallback na angličtinu
             console.warn(`Locale file not found for ${locale}, falling back to English`);
-            const enResponse = await fetch('./locales/en.json');
-            if (enResponse.ok) {
-                const enData = await enResponse.json();
-                translations = enData || {};
-            } else {
-                translations = {};
-            }
-        }
-        
-        // Pokud není dostatek překladů, doplnit z angličtiny
-        if (Object.keys(translations).length < 10 && locale !== 'en') {
-            const enResponse = await fetch('./locales/en.json');
-            if (enResponse.ok) {
-                const enData = await enResponse.json();
-                Object.keys(enData).forEach(key => {
-                    if (!translations[key]) {
-                        translations[key] = enData[key];
-                    }
-                });
-            }
+            translations = { ...englishTranslations };
         }
     } catch (err) {
         console.error('Error loading translations:', err);
-        // Fallback - zkusit načíst angličtinu
-        try {
-            const enResponse = await fetch('./locales/en.json');
-            if (enResponse.ok) {
-                const enData = await enResponse.json();
-                translations = enData || {};
-            } else {
-                translations = {};
-            }
-        } catch {
-            translations = {};
+        // Fallback na anglické překlady
+        translations = { ...englishTranslations };
+    }
+}
+
+// Helper funkce pro získání hodnoty z vnořeného objektu pomocí tečkové notace
+function getNestedValue(obj, keys) {
+    let value = obj;
+    for (const k of keys) {
+        if (value && typeof value === 'object' && k in value) {
+            value = value[k];
+        } else {
+            return undefined;
         }
     }
+    return typeof value === 'string' ? value : undefined;
 }
 
 // Získat překlad - používá vnořenou strukturu s tečkovou notací (např. "intro.subtitle")
 // Všechny lokalizační soubory musí mít vnořenou strukturu (ne flat)
+// Pokud překlad chybí v aktuálním jazyce, použije se anglický fallback
 function t(key, fallback = null) {
     if (!key) return fallback || '';
     
     // Podpora tečkové notace pro vnořené klíče
     const keys = key.split('.');
-    let value = translations;
     
-    for (const k of keys) {
-        if (value && typeof value === 'object' && k in value) {
-            value = value[k];
-        } else {
-            return fallback || key;
-        }
+    // Nejdříve zkusit aktuální překlady
+    let value = getNestedValue(translations, keys);
+    
+    // Pokud hodnota chybí, zkusit anglický fallback
+    if (value === undefined && Object.keys(englishTranslations).length > 0) {
+        value = getNestedValue(englishTranslations, keys);
     }
     
-    return typeof value === 'string' ? value : (fallback || key);
+    // Vrátit hodnotu, fallback nebo klíč
+    return value !== undefined ? value : (fallback || key);
 }
 
 // Změnit jazyk

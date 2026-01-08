@@ -227,7 +227,13 @@
     "not_found": "レシピが見つからないか、削除されました。",
     "delete_confirm": "このレシピを削除してもよろしいですか？",
     "delete_success": "レシピが削除されました。",
-    "delete_error": "レシピ削除エラー。"
+    "delete_error": "レシピ削除エラー。",
+    "reminders_title": "熟成リマインダー",
+    "no_reminders": "リマインダーがありません。下のボタンをクリックして追加してください。",
+    "add_reminder": "新しい調合を追加",
+    "show_all_reminders": "すべて表示",
+    "show_less": "表示を減らす",
+    "reminders_error": "リマインダーの読み込みエラー。"
   },
   "save_recipe": {
     "title": "レシピを保存",
@@ -247,7 +253,14 @@
     "error": "レシピ保存エラー。",
     "login_required": "レシピを保存するにはログインしてください。",
     "no_products": "お気に入り製品がありません。まず「お気に入り製品」セクションに追加してください。",
-    "nothing_to_save": "エラー：保存するものがありません。レシピを作成してください。"
+    "nothing_to_save": "エラー：保存するものがありません。レシピを作成してください。",
+    "reminder_enable": "リキッドが熟成したらリマインドする",
+    "mix_date": "調合日",
+    "reminder_date": "リマインド日",
+    "reminder_info": "リマインド日はフレーバータイプに基づいて自動計算されました。",
+    "reminder_info_short": "リマインド日はフレーバータイプに基づいて自動計算されました。",
+    "reminder_calculated": "推奨熟成期間：{days} {daysUnit}。日付は調整できます。",
+    "reminder_no_steeping": "このフレーバーは熟成不要です。"
   },
   "share": {
     "copied": "リンクがクリップボードにコピーされました！",
@@ -343,7 +356,29 @@
     "cancel": "キャンセル",
     "confirm": "確認",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "day": "日",
+    "days": "日間",
+    "days_few": "日間"
+  },
+  "reminder": {
+    "add_title": "調合を追加",
+    "edit_title": "リマインダーを編集",
+    "saved": "リマインダーが保存されました！",
+    "updated": "リマインダーが更新されました！",
+    "deleted": "リマインダーが削除されました！",
+    "delete_confirm": "このリマインダーを削除してもよろしいですか？",
+    "save_error": "リマインダーの保存エラー。",
+    "update_error": "リマインダーの更新エラー。",
+    "delete_error": "リマインダーの削除エラー。",
+    "fill_dates": "両方の日付を入力してください。",
+    "invalid_date": "無効な日付形式です。",
+    "mixed_on": "調合日",
+    "reminder_on": "リマインド",
+    "sent": "送信済み",
+    "cancelled": "キャンセル",
+    "note_label": "メモ",
+    "note_placeholder": "オプションのメモ..."
   },
   "alert": {
     "login_required": "この操作にはログインしてください。",

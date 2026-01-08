@@ -224,11 +224,11 @@
     <!-- Security -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://clerk.liquimixer.com blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://clerk.liquimixer.com https://www.gstatic.com https://*.firebaseio.com blob:;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.clerk.accounts.dev;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: https: blob:;
-        connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co;
+        connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co https://*.googleapis.com https://*.firebaseio.com https://fcm.googleapis.com;
         frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://accounts.google.com https://www.facebook.com https://appleid.apple.com https://*.tiktok.com https://www.tiktok.com;
         worker-src 'self' blob:;
         upgrade-insecure-requests;
@@ -1482,6 +1482,10 @@
                         <label class="login-label" data-i18n="save_recipe.reminder_date">Datum připomínky</label>
                         <input type="date" id="reminderRemindDate" class="login-input date-picker-input" required>
                     </div>
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="reminder.note_label">Poznámka</label>
+                        <textarea id="reminderNote" class="login-input" rows="3" data-i18n-placeholder="reminder.note_placeholder" placeholder="Volitelná poznámka..."></textarea>
+                    </div>
                     <div class="reminder-info">
                         <span class="info-icon">ℹ️</span>
                         <span id="reminderModalInfo" data-i18n="save_recipe.reminder_info_short">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
@@ -1527,6 +1531,38 @@
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Sekce připomínky zrání -->
+                    <div class="form-group-login reminder-section">
+                        <div class="reminder-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enableReminder" onchange="toggleReminderFields()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="login-label toggle-label" for="enableReminder" data-i18n="save_recipe.reminder_enable">Připomenout, až bude liquid vyzrálý</label>
+                        </div>
+                        <div id="reminderFields" class="reminder-fields hidden">
+                            <div class="reminder-row">
+                                <div class="reminder-field">
+                                    <label class="login-label" data-i18n="save_recipe.mix_date">Datum míchání</label>
+                                    <input type="date" id="mixDate" class="login-input date-picker-input" onchange="updateReminderDate()">
+                                </div>
+                                <div class="reminder-field">
+                                    <label class="login-label" data-i18n="save_recipe.reminder_date">Datum připomínky</label>
+                                    <input type="date" id="reminderDate" class="login-input date-picker-input">
+                                </div>
+                            </div>
+                            <div class="reminder-field" style="margin-top: 10px;">
+                                <label class="login-label" data-i18n="reminder.note_label">Poznámka</label>
+                                <textarea id="saveRecipeReminderNote" class="login-input" rows="2" data-i18n-placeholder="reminder.note_placeholder" placeholder="Volitelná poznámka..."></textarea>
+                            </div>
+                            <div class="reminder-info">
+                                <span class="info-icon">ℹ️</span>
+                                <span id="reminderInfoText" data-i18n="save_recipe.reminder_info">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button type="submit" class="neon-button" id="saveRecipeSubmitBtn"><span data-i18n="save_recipe.save_button">Uložit recept</span></button>
                 </form>
             </div>
