@@ -227,7 +227,13 @@
     "not_found": "Recept niet gevonden of is verwijderd.",
     "delete_confirm": "Weet je zeker dat je dit recept wilt verwijderen?",
     "delete_success": "Recept is verwijderd.",
-    "delete_error": "Fout bij verwijderen van recept."
+    "delete_error": "Fout bij verwijderen van recept.",
+    "reminders_title": "Rijpingsherinneringen",
+    "no_reminders": "Geen herinneringen. Klik op de knop hieronder om toe te voegen.",
+    "add_reminder": "Nieuw mengsel toevoegen",
+    "show_all_reminders": "Alles tonen",
+    "show_less": "Minder tonen",
+    "reminders_error": "Fout bij laden van herinneringen."
   },
   "save_recipe": {
     "title": "Recept Opslaan",
@@ -247,7 +253,14 @@
     "error": "Fout bij opslaan van recept.",
     "login_required": "Log in om het recept op te slaan.",
     "no_products": "Je hebt geen favoriete producten. Voeg ze eerst toe in de sectie Favoriete Producten.",
-    "nothing_to_save": "Fout: Niets om op te slaan. Maak een recept."
+    "nothing_to_save": "Fout: Niets om op te slaan. Maak een recept.",
+    "reminder_enable": "Herinner me wanneer de vloeistof gerijpt is",
+    "mix_date": "Mengdatum",
+    "reminder_date": "Herinneringsdatum",
+    "reminder_info": "De herinneringsdatum is automatisch berekend op basis van het smaaktype.",
+    "reminder_info_short": "De herinneringsdatum is automatisch berekend op basis van het smaaktype.",
+    "reminder_calculated": "Aanbevolen rijpingstijd: {days} {daysUnit}. Je kunt de datum aanpassen.",
+    "reminder_no_steeping": "Deze smaak vereist geen rijping."
   },
   "share": {
     "copied": "Link gekopieerd naar klembord!",
@@ -343,7 +356,29 @@
     "cancel": "Annuleren",
     "confirm": "Bevestigen",
     "yes": "Ja",
-    "no": "Nee"
+    "no": "Nee",
+    "day": "dag",
+    "days": "dagen",
+    "days_few": "dagen"
+  },
+  "reminder": {
+    "add_title": "Mengsel toevoegen",
+    "edit_title": "Herinnering bewerken",
+    "saved": "Herinnering opgeslagen!",
+    "updated": "Herinnering bijgewerkt!",
+    "deleted": "Herinnering verwijderd!",
+    "delete_confirm": "Weet u zeker dat u deze herinnering wilt verwijderen?",
+    "save_error": "Fout bij opslaan van herinnering.",
+    "update_error": "Fout bij bijwerken van herinnering.",
+    "delete_error": "Fout bij verwijderen van herinnering.",
+    "fill_dates": "Vul beide datums in.",
+    "invalid_date": "Ongeldig datumformaat.",
+    "mixed_on": "Gemengd",
+    "reminder_on": "Herinnering",
+    "sent": "Verzonden",
+    "cancelled": "Geannuleerd",
+    "note_label": "Notitie",
+    "note_placeholder": "Optionele notitie..."
   },
   "alert": {
     "login_required": "Log in voor deze actie.",

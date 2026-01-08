@@ -227,7 +227,13 @@
     "not_found": "Opskrift ikke fundet eller er blevet slettet.",
     "delete_confirm": "Er du sikker på, at du vil slette denne opskrift?",
     "delete_success": "Opskriften er blevet slettet.",
-    "delete_error": "Fejl ved sletning af opskrift."
+    "delete_error": "Fejl ved sletning af opskrift.",
+    "reminders_title": "Modningspåmindelser",
+    "no_reminders": "Ingen påmindelser. Klik på knappen nedenfor for at tilføje.",
+    "add_reminder": "Tilføj ny blanding",
+    "show_all_reminders": "Vis alle",
+    "show_less": "Vis mindre",
+    "reminders_error": "Fejl ved indlæsning af påmindelser."
   },
   "save_recipe": {
     "title": "Gem opskrift",
@@ -247,7 +253,14 @@
     "error": "Fejl ved gemning af opskrift.",
     "login_required": "Log venligst ind for at gemme opskriften.",
     "no_products": "Du har ingen favoritprodukter. Tilføj dem først i Favoritprodukter-sektionen.",
-    "nothing_to_save": "Fejl: Intet at gemme. Opret venligst en opskrift."
+    "nothing_to_save": "Fejl: Intet at gemme. Opret venligst en opskrift.",
+    "reminder_enable": "Mind mig, når væsken er modnet",
+    "mix_date": "Blandedato",
+    "reminder_date": "Påmindelsesdato",
+    "reminder_info": "Påmindelsesdatoen blev automatisk beregnet baseret på aromatype.",
+    "reminder_info_short": "Påmindelsesdatoen blev automatisk beregnet baseret på aromatype.",
+    "reminder_calculated": "Anbefalet modningstid: {days} {daysUnit}. Du kan justere datoen.",
+    "reminder_no_steeping": "Denne aroma kræver ikke modning."
   },
   "share": {
     "copied": "Link kopieret til udklipsholder!",
@@ -343,7 +356,29 @@
     "cancel": "Annuller",
     "confirm": "Bekræft",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "day": "dag",
+    "days": "dage",
+    "days_few": "dage"
+  },
+  "reminder": {
+    "add_title": "Tilføj blanding",
+    "edit_title": "Rediger påmindelse",
+    "saved": "Påmindelse gemt!",
+    "updated": "Påmindelse opdateret!",
+    "deleted": "Påmindelse slettet!",
+    "delete_confirm": "Er du sikker på, at du vil slette denne påmindelse?",
+    "save_error": "Fejl ved gemning af påmindelse.",
+    "update_error": "Fejl ved opdatering af påmindelse.",
+    "delete_error": "Fejl ved sletning af påmindelse.",
+    "fill_dates": "Udfyld venligst begge datoer.",
+    "invalid_date": "Ugyldigt datoformat.",
+    "mixed_on": "Blandet",
+    "reminder_on": "Påmindelse",
+    "sent": "Sendt",
+    "cancelled": "Annulleret",
+    "note_label": "Note",
+    "note_placeholder": "Valgfri note..."
   },
   "alert": {
     "login_required": "Log venligst ind for denne handling.",

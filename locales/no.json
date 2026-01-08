@@ -227,7 +227,13 @@
     "not_found": "Oppskrift ikke funnet eller er slettet.",
     "delete_confirm": "Er du sikker på at du vil slette denne oppskriften?",
     "delete_success": "Oppskriften er slettet.",
-    "delete_error": "Feil ved sletting av oppskrift."
+    "delete_error": "Feil ved sletting av oppskrift.",
+    "reminders_title": "Modningspåminnelser",
+    "no_reminders": "Ingen påminnelser. Klikk på knappen nedenfor for å legge til.",
+    "add_reminder": "Legg til ny blanding",
+    "show_all_reminders": "Vis alle",
+    "show_less": "Vis mindre",
+    "reminders_error": "Feil ved lasting av påminnelser."
   },
   "save_recipe": {
     "title": "Lagre oppskrift",
@@ -247,7 +253,14 @@
     "error": "Feil ved lagring av oppskrift.",
     "login_required": "Vennligst logg inn for å lagre oppskriften.",
     "no_products": "Du har ingen favorittprodukter. Legg dem til først i Favorittprodukter-seksjonen.",
-    "nothing_to_save": "Feil: Ingenting å lagre. Vennligst opprett en oppskrift."
+    "nothing_to_save": "Feil: Ingenting å lagre. Vennligst opprett en oppskrift.",
+    "reminder_enable": "Påminn meg når væsken er modnet",
+    "mix_date": "Blandedato",
+    "reminder_date": "Påminnelsesdato",
+    "reminder_info": "Påminnelsesdatoen ble automatisk beregnet basert på aromtype.",
+    "reminder_info_short": "Påminnelsesdatoen ble automatisk beregnet basert på aromtype.",
+    "reminder_calculated": "Anbefalt modningstid: {days} {daysUnit}. Du kan justere datoen.",
+    "reminder_no_steeping": "Denne aromaen krever ikke modning."
   },
   "share": {
     "copied": "Lenke kopiert til utklippstavlen!",
@@ -343,7 +356,29 @@
     "cancel": "Avbryt",
     "confirm": "Bekreft",
     "yes": "Ja",
-    "no": "Nei"
+    "no": "Nei",
+    "day": "dag",
+    "days": "dager",
+    "days_few": "dager"
+  },
+  "reminder": {
+    "add_title": "Legg til blanding",
+    "edit_title": "Rediger påminnelse",
+    "saved": "Påminnelsen ble lagret!",
+    "updated": "Påminnelsen ble oppdatert!",
+    "deleted": "Påminnelsen ble slettet!",
+    "delete_confirm": "Er du sikker på at du vil slette denne påminnelsen?",
+    "save_error": "Feil ved lagring av påminnelse.",
+    "update_error": "Feil ved oppdatering av påminnelse.",
+    "delete_error": "Feil ved sletting av påminnelse.",
+    "fill_dates": "Vennligst fyll ut begge datoer.",
+    "invalid_date": "Ugyldig datoformat.",
+    "mixed_on": "Blandet",
+    "reminder_on": "Påminnelse",
+    "sent": "Sendt",
+    "cancelled": "Avbrutt",
+    "note_label": "Notat",
+    "note_placeholder": "Valgfritt notat..."
   },
   "alert": {
     "login_required": "Vennligst logg inn for denne handlingen.",

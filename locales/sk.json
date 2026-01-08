@@ -227,7 +227,13 @@
     "not_found": "Recept sa nenašiel alebo bol zmazaný.",
     "delete_confirm": "Naozaj chcete zmazať tento recept?",
     "delete_success": "Recept bol zmazaný.",
-    "delete_error": "Chyba pri mazaní receptu."
+    "delete_error": "Chyba pri mazaní receptu.",
+    "reminders_title": "Pripomienky zrenia",
+    "no_reminders": "Žiadne pripomienky. Kliknite na tlačidlo nižšie pre pridanie.",
+    "add_reminder": "Pridať nové miešanie",
+    "show_all_reminders": "Zobraziť všetky",
+    "show_less": "Zobraziť menej",
+    "reminders_error": "Chyba pri načítaní pripomienok."
   },
   "save_recipe": {
     "title": "Uložiť recept",
@@ -247,7 +253,14 @@
     "error": "Chyba pri ukladaní receptu.",
     "login_required": "Pre uloženie receptu sa prosím prihláste.",
     "no_products": "Nemáte žiadne obľúbené produkty. Najprv ich pridajte v sekcii Obľúbené produkty.",
-    "nothing_to_save": "Chyba: Nie je čo uložiť. Prosím vytvorte recept."
+    "nothing_to_save": "Chyba: Nie je čo uložiť. Prosím vytvorte recept.",
+    "reminder_enable": "Pripomenúť, keď bude liquid vyzretý",
+    "mix_date": "Dátum miešania",
+    "reminder_date": "Dátum pripomienky",
+    "reminder_info": "Dátum pripomienky bol automaticky vypočítaný na základe typu príchute.",
+    "reminder_info_short": "Dátum pripomienky bol automaticky vypočítaný na základe typu príchute.",
+    "reminder_calculated": "Odporúčaná doba zrenia: {days} {daysUnit}. Dátum môžete upraviť.",
+    "reminder_no_steeping": "Táto príchuť nevyžaduje zrenie."
   },
   "share": {
     "copied": "Odkaz skopírovaný do schránky!",
@@ -343,7 +356,29 @@
     "cancel": "Zrušiť",
     "confirm": "Potvrdiť",
     "yes": "Áno",
-    "no": "Nie"
+    "no": "Nie",
+    "day": "deň",
+    "days": "dní",
+    "days_few": "dni"
+  },
+  "reminder": {
+    "add_title": "Pridať miešanie",
+    "edit_title": "Upraviť pripomienku",
+    "saved": "Pripomienka bola uložená!",
+    "updated": "Pripomienka bola upravená!",
+    "deleted": "Pripomienka bola zmazaná!",
+    "delete_confirm": "Naozaj chcete zmazať túto pripomienku?",
+    "save_error": "Chyba pri ukladaní pripomienky.",
+    "update_error": "Chyba pri úprave pripomienky.",
+    "delete_error": "Chyba pri mazaní pripomienky.",
+    "fill_dates": "Vyplňte prosím obe dáta.",
+    "invalid_date": "Neplatný formát dátumu.",
+    "mixed_on": "Namiešané",
+    "reminder_on": "Pripomienka",
+    "sent": "Odoslané",
+    "cancelled": "Zrušené",
+    "note_label": "Poznámka",
+    "note_placeholder": "Voliteľná poznámka..."
   },
   "alert": {
     "login_required": "Pre túto akciu sa prosím prihláste.",

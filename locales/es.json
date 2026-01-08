@@ -227,7 +227,13 @@
     "not_found": "Receta no encontrada o eliminada.",
     "delete_confirm": "¿Estás seguro de que quieres eliminar esta receta?",
     "delete_success": "La receta ha sido eliminada.",
-    "delete_error": "Error al eliminar la receta."
+    "delete_error": "Error al eliminar la receta.",
+    "reminders_title": "Recordatorios de maceración",
+    "no_reminders": "Sin recordatorios. Haz clic en el botón de abajo para añadir.",
+    "add_reminder": "Añadir nueva mezcla",
+    "show_all_reminders": "Mostrar todo",
+    "show_less": "Mostrar menos",
+    "reminders_error": "Error al cargar los recordatorios."
   },
   "save_recipe": {
     "title": "Guardar receta",
@@ -247,7 +253,14 @@
     "error": "Error al guardar la receta.",
     "login_required": "Por favor, inicia sesión para guardar la receta.",
     "no_products": "No tienes productos favoritos. Añádelos primero en la sección Productos favoritos.",
-    "nothing_to_save": "Error: Nada que guardar. Por favor, crea una receta."
+    "nothing_to_save": "Error: Nada que guardar. Por favor, crea una receta.",
+    "reminder_enable": "Recordarme cuando el líquido esté macerado",
+    "mix_date": "Fecha de mezcla",
+    "reminder_date": "Fecha de recordatorio",
+    "reminder_info": "La fecha del recordatorio se calculó automáticamente según el tipo de aroma.",
+    "reminder_info_short": "La fecha del recordatorio se calculó automáticamente según el tipo de aroma.",
+    "reminder_calculated": "Tiempo de maceración recomendado: {days} {daysUnit}. Puedes ajustar la fecha.",
+    "reminder_no_steeping": "Este aroma no requiere maceración."
   },
   "share": {
     "copied": "¡Enlace copiado al portapapeles!",
@@ -343,7 +356,29 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "day": "día",
+    "days": "días",
+    "days_few": "días"
+  },
+  "reminder": {
+    "add_title": "Añadir mezcla",
+    "edit_title": "Editar recordatorio",
+    "saved": "¡Recordatorio guardado!",
+    "updated": "¡Recordatorio actualizado!",
+    "deleted": "¡Recordatorio eliminado!",
+    "delete_confirm": "¿Está seguro de que desea eliminar este recordatorio?",
+    "save_error": "Error al guardar el recordatorio.",
+    "update_error": "Error al actualizar el recordatorio.",
+    "delete_error": "Error al eliminar el recordatorio.",
+    "fill_dates": "Por favor, complete ambas fechas.",
+    "invalid_date": "Formato de fecha no válido.",
+    "mixed_on": "Mezclado",
+    "reminder_on": "Recordatorio",
+    "sent": "Enviado",
+    "cancelled": "Cancelado",
+    "note_label": "Nota",
+    "note_placeholder": "Nota opcional..."
   },
   "alert": {
     "login_required": "Por favor, inicia sesión para esta acción.",

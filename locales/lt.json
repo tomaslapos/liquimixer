@@ -227,7 +227,13 @@
     "not_found": "Receptas nerastas arba buvo ištrintas.",
     "delete_confirm": "Ar tikrai norite ištrinti šį receptą?",
     "delete_success": "Receptas ištrintas.",
-    "delete_error": "Klaida trinant receptą."
+    "delete_error": "Klaida trinant receptą.",
+    "reminders_title": "Brandinimo priminimai",
+    "no_reminders": "Nėra priminimų. Paspauskite mygtuką žemiau, kad pridėtumėte.",
+    "add_reminder": "Pridėti naują maišymą",
+    "show_all_reminders": "Rodyti visus",
+    "show_less": "Rodyti mažiau",
+    "reminders_error": "Klaida įkeliant priminimus."
   },
   "save_recipe": {
     "title": "Išsaugoti receptą",
@@ -247,7 +253,14 @@
     "error": "Klaida išsaugant receptą.",
     "login_required": "Prisijunkite, kad išsaugotumėte receptą.",
     "no_products": "Neturite mėgstamų produktų. Pirmiausia įtraukite juos Mėgstamų produktų skiltyje.",
-    "nothing_to_save": "Klaida: Nėra ką išsaugoti. Sukurkite receptą."
+    "nothing_to_save": "Klaida: Nėra ką išsaugoti. Sukurkite receptą.",
+    "reminder_enable": "Priminti, kai skystis subręsta",
+    "mix_date": "Maišymo data",
+    "reminder_date": "Priminimo data",
+    "reminder_info": "Priminimo data buvo automatiškai apskaičiuota pagal skonio tipą.",
+    "reminder_info_short": "Priminimo data buvo automatiškai apskaičiuota pagal skonio tipą.",
+    "reminder_calculated": "Rekomenduojamas brandinimo laikas: {days} {daysUnit}. Galite koreguoti datą.",
+    "reminder_no_steeping": "Šis skonis nereikalauja brandinimo."
   },
   "share": {
     "copied": "Nuoroda nukopijuota į iškarpinę!",
@@ -343,7 +356,29 @@
     "cancel": "Atšaukti",
     "confirm": "Patvirtinti",
     "yes": "Taip",
-    "no": "Ne"
+    "no": "Ne",
+    "day": "diena",
+    "days": "dienų",
+    "days_few": "dienos"
+  },
+  "reminder": {
+    "add_title": "Pridėti maišymą",
+    "edit_title": "Redaguoti priminimą",
+    "saved": "Priminimas išsaugotas!",
+    "updated": "Priminimas atnaujintas!",
+    "deleted": "Priminimas ištrintas!",
+    "delete_confirm": "Ar tikrai norite ištrinti šį priminimą?",
+    "save_error": "Klaida išsaugant priminimą.",
+    "update_error": "Klaida atnaujinant priminimą.",
+    "delete_error": "Klaida trinant priminimą.",
+    "fill_dates": "Užpildykite abi datas.",
+    "invalid_date": "Neteisingas datos formatas.",
+    "mixed_on": "Sumaišyta",
+    "reminder_on": "Priminimas",
+    "sent": "Išsiųsta",
+    "cancelled": "Atšaukta",
+    "note_label": "Pastaba",
+    "note_placeholder": "Pasirinktinė pastaba..."
   },
   "alert": {
     "login_required": "Prisijunkite šiam veiksmui.",

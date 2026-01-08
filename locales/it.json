@@ -227,7 +227,13 @@
     "not_found": "Ricetta non trovata o eliminata.",
     "delete_confirm": "Sei sicuro di voler eliminare questa ricetta?",
     "delete_success": "La ricetta è stata eliminata.",
-    "delete_error": "Errore nell'eliminazione della ricetta."
+    "delete_error": "Errore nell'eliminazione della ricetta.",
+    "reminders_title": "Promemoria di maturazione",
+    "no_reminders": "Nessun promemoria. Clicca sul pulsante qui sotto per aggiungerne uno.",
+    "add_reminder": "Aggiungi nuova miscelazione",
+    "show_all_reminders": "Mostra tutto",
+    "show_less": "Mostra meno",
+    "reminders_error": "Errore nel caricamento dei promemoria."
   },
   "save_recipe": {
     "title": "Salva ricetta",
@@ -247,7 +253,14 @@
     "error": "Errore nel salvataggio della ricetta.",
     "login_required": "Accedi per salvare la ricetta.",
     "no_products": "Non hai prodotti preferiti. Aggiungili prima nella sezione Prodotti preferiti.",
-    "nothing_to_save": "Errore: Niente da salvare. Crea una ricetta."
+    "nothing_to_save": "Errore: Niente da salvare. Crea una ricetta.",
+    "reminder_enable": "Ricordami quando il liquido è maturato",
+    "mix_date": "Data di miscelazione",
+    "reminder_date": "Data promemoria",
+    "reminder_info": "La data del promemoria è stata calcolata automaticamente in base al tipo di aroma.",
+    "reminder_info_short": "La data del promemoria è stata calcolata automaticamente in base al tipo di aroma.",
+    "reminder_calculated": "Tempo di maturazione consigliato: {days} {daysUnit}. Puoi modificare la data.",
+    "reminder_no_steeping": "Questo aroma non richiede maturazione."
   },
   "share": {
     "copied": "Link copiato negli appunti!",
@@ -343,7 +356,29 @@
     "cancel": "Annulla",
     "confirm": "Conferma",
     "yes": "Sì",
-    "no": "No"
+    "no": "No",
+    "day": "giorno",
+    "days": "giorni",
+    "days_few": "giorni"
+  },
+  "reminder": {
+    "add_title": "Aggiungi miscelazione",
+    "edit_title": "Modifica promemoria",
+    "saved": "Promemoria salvato!",
+    "updated": "Promemoria aggiornato!",
+    "deleted": "Promemoria eliminato!",
+    "delete_confirm": "Sei sicuro di voler eliminare questo promemoria?",
+    "save_error": "Errore nel salvataggio del promemoria.",
+    "update_error": "Errore nell'aggiornamento del promemoria.",
+    "delete_error": "Errore nell'eliminazione del promemoria.",
+    "fill_dates": "Compila entrambe le date.",
+    "invalid_date": "Formato data non valido.",
+    "mixed_on": "Miscelato",
+    "reminder_on": "Promemoria",
+    "sent": "Inviato",
+    "cancelled": "Annullato",
+    "note_label": "Nota",
+    "note_placeholder": "Nota opzionale..."
   },
   "alert": {
     "login_required": "Accedi per questa azione.",
