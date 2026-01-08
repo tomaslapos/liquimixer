@@ -30,14 +30,6 @@ const SUBSCRIPTION_DURATION_DAYS = 365
 const CALLBACK_URL = Deno.env.get('GPWEBPAY_CALLBACK_URL') || ''
 const SUCCESS_URL = Deno.env.get('GPWEBPAY_SUCCESS_URL') || 'https://www.liquimixer.com/?payment=success'
 const FAIL_URL = Deno.env.get('GPWEBPAY_FAIL_URL') || 'https://www.liquimixer.com/?payment=failed'
-  
-  if (userLimit.count >= RATE_LIMIT) {
-    return false
-  }
-  
-  userLimit.count++
-  return true
-}
 
 // Verify Clerk JWT token
 async function verifyClerkToken(token: string): Promise<{ sub: string; email?: string } | null> {
