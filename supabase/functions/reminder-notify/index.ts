@@ -3,11 +3,13 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { 
+  getCorsHeaders, 
+  handleCorsPreflght, 
+  checkRateLimit, 
+  getRateLimitIdentifier,
+  rateLimitResponse 
+} from '../_shared/cors.ts'
 
 // Get access token for FCM V1 API using Service Account
 async function getAccessToken(serviceAccount: any): Promise<string> {
@@ -148,9 +150,20 @@ async function sendNotification(
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return handleCorsPreflght(origin);
+  }
+
+  // Rate limiting (pro CRON job je vyšší limit)
+  const identifier = getRateLimitIdentifier(req)
+  const rateCheck = checkRateLimit(identifier, 'reminder-notify')
+  
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt, origin)
   }
 
   try {

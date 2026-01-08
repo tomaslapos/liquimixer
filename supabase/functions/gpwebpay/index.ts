@@ -8,11 +8,13 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { encode as base64Encode } from 'https://deno.land/std@0.168.0/encoding/base64.ts'
 import { crypto } from 'https://deno.land/std@0.168.0/crypto/mod.ts'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { 
+  getCorsHeaders, 
+  handleCorsPreflght, 
+  checkRateLimit as sharedRateLimit, 
+  getRateLimitIdentifier,
+  rateLimitResponse 
+} from '../_shared/cors.ts'
 
 // GP webpay konfigurace
 const GPWEBPAY_CONFIG = {
@@ -28,20 +30,6 @@ const SUBSCRIPTION_DURATION_DAYS = 365
 const CALLBACK_URL = Deno.env.get('GPWEBPAY_CALLBACK_URL') || ''
 const SUCCESS_URL = Deno.env.get('GPWEBPAY_SUCCESS_URL') || 'https://www.liquimixer.com/?payment=success'
 const FAIL_URL = Deno.env.get('GPWEBPAY_FAIL_URL') || 'https://www.liquimixer.com/?payment=failed'
-
-// Rate limiting per user
-const rateLimits = new Map<string, { count: number; resetAt: number }>()
-const RATE_LIMIT = 10
-const RATE_WINDOW_MS = 60000
-
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now()
-  const userLimit = rateLimits.get(userId)
-  
-  if (!userLimit || userLimit.resetAt < now) {
-    rateLimits.set(userId, { count: 1, resetAt: now + RATE_WINDOW_MS })
-    return true
-  }
   
   if (userLimit.count >= RATE_LIMIT) {
     return false
@@ -131,8 +119,20 @@ async function verifySignature(data: string, signature: string, publicKeyPem: st
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return handleCorsPreflght(origin)
+  }
+
+  // Rate limiting
+  const identifier = getRateLimitIdentifier(req)
+  const rateCheck = sharedRateLimit(identifier, 'payment')
+  
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt, origin)
   }
 
   const supabaseAdmin = createClient(

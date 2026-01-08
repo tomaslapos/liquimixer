@@ -5,11 +5,13 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { 
+  getCorsHeaders, 
+  handleCorsPreflght, 
+  checkRateLimit, 
+  getRateLimitIdentifier,
+  rateLimitResponse 
+} from '../_shared/cors.ts'
 
 // GP webpay konfigurace pro refund
 const GPWEBPAY_CONFIG = {
@@ -53,8 +55,20 @@ function generateApprovalToken(): string {
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return handleCorsPreflght(origin)
+  }
+
+  // Rate limiting
+  const identifier = getRateLimitIdentifier(req)
+  const rateCheck = checkRateLimit(identifier, 'refund')
+  
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt, origin)
   }
 
   const supabaseAdmin = createClient(

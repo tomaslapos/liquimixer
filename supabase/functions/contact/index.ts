@@ -5,11 +5,14 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { 
+  getCorsHeaders, 
+  handleCorsPreflght, 
+  checkRateLimit, 
+  getRateLimitIdentifier,
+  rateLimitResponse,
+  addRateLimitHeaders 
+} from '../_shared/cors.ts'
 
 const N8N_WEBHOOK_URL = Deno.env.get('N8N_CONTACT_WEBHOOK_URL') || ''
 const N8N_WEBHOOK_SECRET = Deno.env.get('N8N_WEBHOOK_SECRET') || ''
@@ -24,28 +27,6 @@ const VALID_CATEGORIES = [
   'gdpr',        // GDPR / Smazání údajů
   'other'        // Jiné
 ]
-
-// Rate limiting
-const rateLimits = new Map<string, { count: number; resetAt: number }>()
-const RATE_LIMIT = 5 // 5 messages per window
-const RATE_WINDOW_MS = 300000 // 5 minutes
-
-function checkRateLimit(identifier: string): boolean {
-  const now = Date.now()
-  const limit = rateLimits.get(identifier)
-  
-  if (!limit || limit.resetAt < now) {
-    rateLimits.set(identifier, { count: 1, resetAt: now + RATE_WINDOW_MS })
-    return true
-  }
-  
-  if (limit.count >= RATE_LIMIT) {
-    return false
-  }
-  
-  limit.count++
-  return true
-}
 
 // Sanitize input
 function sanitizeInput(input: string, maxLength: number = 5000): string {
@@ -62,8 +43,20 @@ function isValidEmail(email: string): boolean {
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return handleCorsPreflght(origin)
+  }
+
+  // Rate limiting
+  const identifier = getRateLimitIdentifier(req)
+  const rateCheck = checkRateLimit(identifier, 'contact')
+  
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt, origin)
   }
 
   const supabaseAdmin = createClient(
