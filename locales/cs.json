@@ -14,6 +14,8 @@
   "auth": {
     "login_title": "Přihlášení",
     "login_subtitle": "Přihlaste se pro přístup k uloženým receptům a produktům",
+    "register_title": "Registrace",
+    "register_subtitle": "Vytvořte si účet pro přístup ke všem funkcím",
     "profile_title": "Můj účet",
     "logout": "Odhlásit se",
     "my_recipes": "Mé recepty",

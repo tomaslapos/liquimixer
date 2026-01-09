@@ -644,7 +644,20 @@ function showLoginModal(mode = 'signIn') {
     if (loginModal) {
         loginModal.classList.remove('hidden');
         
-        // Mount Clerk SignIn component
+        // Aktualizovat titulek podle mode
+        const modalTitle = loginModal.querySelector('.menu-title');
+        const modalSubtitle = loginModal.querySelector('.login-subtitle');
+        if (modalTitle && modalSubtitle) {
+            if (mode === 'signUp') {
+                modalTitle.textContent = window.i18n?.t('auth.register_title') || 'Registrace';
+                modalSubtitle.textContent = window.i18n?.t('auth.register_subtitle') || 'Vytvořte si účet pro přístup ke všem funkcím';
+            } else {
+                modalTitle.textContent = window.i18n?.t('auth.login_title') || 'Přihlášení';
+                modalSubtitle.textContent = window.i18n?.t('auth.login_subtitle') || 'Přihlaste se pro přístup k uloženým receptům a produktům';
+            }
+        }
+        
+        // Mount Clerk SignIn/SignUp component
         if (clerkLoaded && window.Clerk) {
             const signInDiv = document.getElementById('clerk-sign-in');
             if (signInDiv) {
@@ -659,11 +672,17 @@ function showLoginModal(mode = 'signIn') {
                     formFieldLabel__emailAddress_username: 'E-mail nebo uživatelské jméno',
                     formFieldLabel__username: 'Uživatelské jméno',
                     formFieldLabel__password: 'Heslo',
+                    formFieldLabel__firstName: 'Jméno',
+                    formFieldLabel__lastName: 'Příjmení',
                     formFieldInputPlaceholder__emailAddress: 'Zadejte e-mail',
                     formFieldInputPlaceholder__emailAddress_username: 'Zadejte e-mail nebo uživatelské jméno',
                     formFieldInputPlaceholder__password: 'Zadejte heslo',
+                    formFieldInputPlaceholder__firstName: 'Zadejte jméno',
+                    formFieldInputPlaceholder__lastName: 'Zadejte příjmení',
+                    formFieldHintText__optional: 'Volitelné',
                     dividerText: 'nebo',
                     socialButtonsBlockButton: 'Pokračovat přes {{provider|titleize}}',
+                    socialButtonsBlockButtonManyInView: '{{provider|titleize}}',
                     signIn: {
                         start: {
                             title: 'Přihlášení',
@@ -694,6 +713,7 @@ function showLoginModal(mode = 'signIn') {
                     },
                     footerActionLink__signIn: 'Přihlásit se',
                     footerActionLink__signUp: 'Zaregistrovat se',
+                    footerActionLink__useAnotherMethod: 'Použít jinou metodu',
                     footerPageLink__help: 'Nápověda',
                     footerPageLink__privacy: 'Ochrana soukromí',
                     footerPageLink__terms: 'Podmínky'
