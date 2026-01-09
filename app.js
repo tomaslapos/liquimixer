@@ -435,8 +435,10 @@ window.addEventListener('load', async function() {
                 if (window.i18n?.loadUserLocale) {
                     await window.i18n.loadUserLocale(window.Clerk.user.id);
                 }
-                // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ
-                await checkSubscriptionStatus();
+                // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ - S KRÁTKÝM DELAYEM PRO STABILITU
+                setTimeout(async () => {
+                    await checkSubscriptionStatus();
+                }, 500);
             }
             
             // Listen for auth changes (OAuth callback, sign in/out)
@@ -569,50 +571,70 @@ function showLoginModal() {
                 // Získat aktuální jazyk pro lokalizaci Clerk
                 const currentLang = window.i18n?.currentLanguage || 'cs';
                 
-                // Lokalizace pro Clerk
-                const clerkLocalization = {
-                    cs: {
-                        signIn: {
-                            start: {
-                                title: 'Přihlášení',
-                                subtitle: 'Přihlaste se pro přístup k uloženým receptům a produktům',
-                                actionText: 'Pokračovat',
-                                actionLink: ''
-                            },
-                            emailCode: {
-                                title: 'Ověření e-mailu',
-                                subtitle: 'Zadejte kód, který jsme vám poslali',
-                                formTitle: 'Ověřovací kód',
-                                formSubtitle: 'Zkontrolujte svůj e-mail',
-                                resendButton: 'Znovu odeslat kód'
-                            }
+                // Česká lokalizace pro Clerk (struktura dle Clerk dokumentace)
+                const czechLocalization = {
+                    formButtonPrimary: 'Pokračovat',
+                    formFieldLabel__emailAddress: 'E-mailová adresa',
+                    formFieldLabel__emailAddress_username: 'E-mail nebo uživatelské jméno',
+                    formFieldLabel__username: 'Uživatelské jméno',
+                    formFieldLabel__password: 'Heslo',
+                    formFieldInputPlaceholder__emailAddress: 'Zadejte e-mail',
+                    formFieldInputPlaceholder__emailAddress_username: 'Zadejte e-mail nebo uživatelské jméno',
+                    formFieldInputPlaceholder__password: 'Zadejte heslo',
+                    dividerText: 'nebo',
+                    socialButtonsBlockButton: 'Pokračovat přes {{provider|titleize}}',
+                    signIn: {
+                        start: {
+                            title: 'Přihlášení',
+                            subtitle: 'pro přístup do {{applicationName}}',
+                            actionText: 'Nemáte účet?',
+                            actionLink: 'Zaregistrovat se'
                         },
-                        signUp: {
-                            start: {
-                                title: 'Registrace',
-                                subtitle: 'Vytvořte si účet pro ukládání receptů',
-                                actionText: 'Registrovat se',
-                                actionLink: ''
-                            }
+                        password: {
+                            title: 'Zadejte heslo',
+                            subtitle: 'pro pokračování do {{applicationName}}',
+                            actionLink: 'Použít jinou metodu'
                         },
-                        formButtonPrimary: 'Pokračovat',
-                        formFieldLabel__emailAddress: 'E-mailová adresa',
-                        formFieldLabel__password: 'Heslo',
-                        signIn: { start: { actionText: 'Pokračovat' } },
-                        footerActionLink__signUp: 'Registrace',
-                        footerActionLink__signIn: 'Přihlášení',
-                        dividerText: 'nebo'
+                        emailCode: {
+                            title: 'Ověřte e-mail',
+                            subtitle: 'pro pokračování do {{applicationName}}',
+                            formTitle: 'Ověřovací kód',
+                            formSubtitle: 'Zadejte ověřovací kód zaslaný na váš e-mail',
+                            resendButton: 'Znovu odeslat kód'
+                        }
                     },
-                    en: {
-                        formButtonPrimary: 'Continue'
+                    signUp: {
+                        start: {
+                            title: 'Registrace',
+                            subtitle: 'pro přístup do {{applicationName}}',
+                            actionText: 'Máte již účet?',
+                            actionLink: 'Přihlásit se'
+                        }
                     },
+                    footerActionLink__signIn: 'Přihlásit se',
+                    footerActionLink__signUp: 'Zaregistrovat se',
+                    footerPageLink__help: 'Nápověda',
+                    footerPageLink__privacy: 'Ochrana soukromí',
+                    footerPageLink__terms: 'Podmínky'
+                };
+                
+                // Další jazyky
+                const localizations = {
+                    cs: czechLocalization,
                     sk: {
                         formButtonPrimary: 'Pokračovať',
-                        dividerText: 'alebo'
+                        dividerText: 'alebo',
+                        formFieldLabel__emailAddress: 'E-mailová adresa',
+                        formFieldLabel__emailAddress_username: 'E-mail alebo užívateľské meno',
+                        formFieldLabel__password: 'Heslo'
                     },
                     de: {
                         formButtonPrimary: 'Fortfahren',
                         dividerText: 'oder'
+                    },
+                    pl: {
+                        formButtonPrimary: 'Kontynuuj',
+                        dividerText: 'lub'
                     }
                 };
                 
@@ -661,7 +683,7 @@ function showLoginModal() {
                             }
                         }
                     },
-                    localization: clerkLocalization[currentLang] || clerkLocalization['en']
+                    localization: localizations[currentLang] || czechLocalization
                 });
             }
         }
