@@ -1,10 +1,43 @@
 # Word documents
 *.docx
 *.doc
+~$*
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# GP WebPay - BEZPEČNOSTNÍ KRITICKÉ SOUBORY
+# NIKDY necommitovat privátní klíče!
+GPWebpay/
+*.pem
+*.p12
+*.pfx
+*.ks
+*.jks
+*.keystore
+*_key*.txt
+test_key*.txt
+gpe_*_key*.txt
+
+# Node modules (pokud někdy přidáme)
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Supabase temp files and setup scripts
+supabase/.temp/
+supabase/setup_secrets.cmd
+setup_secrets.cmd
 
 
 

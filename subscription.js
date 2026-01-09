@@ -7,7 +7,7 @@
 const EDGE_FUNCTIONS = {
     billing: '/functions/v1/billing',
     subscription: '/functions/v1/subscription',
-    payment: '/functions/v1/payment'
+    payment: '/functions/v1/gpwebpay'  // GP WebPay platební brána
 };
 
 // Získat base URL pro Edge Functions
