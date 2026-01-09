@@ -5,9 +5,12 @@
 
 // Povolené domény pro CORS
 // PRODUKCE: Pouze liquimixer.com a N8N webhook
+// DEV: Přidány localhost a 127.0.0.1 pro lokální vývoj
 const ALLOWED_ORIGINS = [
   'https://www.liquimixer.com',
   'https://liquimixer.com',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
 ];
 
 // N8N webhook domény (server-to-server, bez origin header)

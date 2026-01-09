@@ -14,6 +14,8 @@
   "auth": {
     "login_title": "Sign In",
     "login_subtitle": "Sign in to access your saved recipes and products",
+    "register_title": "Register",
+    "register_subtitle": "Create an account to access all features",
     "profile_title": "My Account",
     "logout": "Sign Out",
     "my_recipes": "My Recipes",
@@ -531,6 +533,36 @@
     "total": "Total incl. VAT",
     "paid": "Paid",
     "subscription_item": "LiquiMixer Annual Subscription (365 days)"
+  },
+  "emails": {
+    "warning_subject": "LiquiMixer: Your account will be deleted in {days} {dayWord}",
+    "warning_greeting": "Hello",
+    "warning_body": "Your LiquiMixer account will be automatically deleted in {days} {dayWord} due to inactivity.",
+    "warning_cta": "Renew subscription",
+    "warning_data_lost": "After deletion, all your data will be permanently lost:",
+    "warning_data_recipes": "Saved recipes",
+    "warning_data_products": "Favorite products",
+    "warning_data_settings": "Settings and preferences",
+    "warning_thanks": "Thank you for using LiquiMixer!",
+    "warning_footer": "This email was sent automatically. If you have questions, contact us at support@liquimixer.com",
+    "deletion_subject": "LiquiMixer: Your account has been deleted",
+    "deletion_body": "Your LiquiMixer account has been deleted due to prolonged inactivity.",
+    "deletion_data_removed": "All your data (recipes, products, settings) has been permanently removed.",
+    "deletion_new_account": "If you wish to use LiquiMixer again, you can create a new account anytime.",
+    "invoice_subject": "LiquiMixer: Subscription Invoice",
+    "invoice_greeting": "Thank you for your order!",
+    "invoice_body": "Please find attached your LiquiMixer subscription invoice.",
+    "invoice_number": "Invoice number",
+    "invoice_amount": "Amount",
+    "invoice_date": "Date",
+    "invoice_download": "Download invoice",
+    "subscription_activated_subject": "LiquiMixer: Subscription Activated",
+    "subscription_activated_body": "Your LiquiMixer subscription has been successfully activated.",
+    "subscription_expires": "Valid until",
+    "subscription_features": "You now have access to all premium features.",
+    "day": "day",
+    "days_2_4": "days",
+    "days_5_plus": "days"
   }
 }
 
