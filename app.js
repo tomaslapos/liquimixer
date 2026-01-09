@@ -566,6 +566,56 @@ function showLoginModal() {
             const signInDiv = document.getElementById('clerk-sign-in');
             if (signInDiv) {
                 signInDiv.innerHTML = '';
+                // Získat aktuální jazyk pro lokalizaci Clerk
+                const currentLang = window.i18n?.currentLanguage || 'cs';
+                
+                // Lokalizace pro Clerk
+                const clerkLocalization = {
+                    cs: {
+                        signIn: {
+                            start: {
+                                title: 'Přihlášení',
+                                subtitle: 'Přihlaste se pro přístup k uloženým receptům a produktům',
+                                actionText: 'Pokračovat',
+                                actionLink: ''
+                            },
+                            emailCode: {
+                                title: 'Ověření e-mailu',
+                                subtitle: 'Zadejte kód, který jsme vám poslali',
+                                formTitle: 'Ověřovací kód',
+                                formSubtitle: 'Zkontrolujte svůj e-mail',
+                                resendButton: 'Znovu odeslat kód'
+                            }
+                        },
+                        signUp: {
+                            start: {
+                                title: 'Registrace',
+                                subtitle: 'Vytvořte si účet pro ukládání receptů',
+                                actionText: 'Registrovat se',
+                                actionLink: ''
+                            }
+                        },
+                        formButtonPrimary: 'Pokračovat',
+                        formFieldLabel__emailAddress: 'E-mailová adresa',
+                        formFieldLabel__password: 'Heslo',
+                        signIn: { start: { actionText: 'Pokračovat' } },
+                        footerActionLink__signUp: 'Registrace',
+                        footerActionLink__signIn: 'Přihlášení',
+                        dividerText: 'nebo'
+                    },
+                    en: {
+                        formButtonPrimary: 'Continue'
+                    },
+                    sk: {
+                        formButtonPrimary: 'Pokračovať',
+                        dividerText: 'alebo'
+                    },
+                    de: {
+                        formButtonPrimary: 'Fortfahren',
+                        dividerText: 'oder'
+                    }
+                };
+                
                 window.Clerk.mountSignIn(signInDiv, {
                     appearance: {
                         variables: {
@@ -593,19 +643,25 @@ function showLoginModal() {
                                 display: 'none'
                             },
                             formButtonPrimary: {
-                                background: 'transparent',
-                                border: '2px solid #ff00ff',
-                                color: '#ff00ff',
-                                fontFamily: 'Orbitron, sans-serif'
+                                background: 'linear-gradient(135deg, #ff00ff 0%, #aa00ff 100%)',
+                                border: 'none',
+                                color: '#ffffff',
+                                fontFamily: 'Orbitron, sans-serif',
+                                fontWeight: '600',
+                                fontSize: '16px',
+                                padding: '14px 24px',
+                                textShadow: '0 0 10px rgba(0,0,0,0.5)'
                             },
-                            formButtonPrimary__hover: {
-                                background: 'rgba(255,0,255,0.2)'
+                            'formButtonPrimary:hover': {
+                                background: 'linear-gradient(135deg, #ff33ff 0%, #cc33ff 100%)',
+                                boxShadow: '0 0 20px rgba(255, 0, 255, 0.5)'
                             },
                             footerActionLink: {
                                 color: '#00ffff'
                             }
                         }
-                    }
+                    },
+                    localization: clerkLocalization[currentLang] || clerkLocalization['en']
                 });
             }
         }
@@ -5165,17 +5221,31 @@ async function checkSubscriptionStatus() {
     try {
         console.log('Checking subscription status...');
         
+        const token = await getClerkToken();
+        if (!token) {
+            console.error('No auth token available');
+            // Bez tokenu nemůžeme ověřit - zobrazit modal pro bezpečnost
+            showSubscriptionModal();
+            return;
+        }
+        
         const response = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await getClerkToken()}`,
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ action: 'check' })
         });
 
         if (!response.ok) {
             console.error('Subscription check failed:', response.status);
+            // Při selhání serveru zobrazit modal - lepší být přísný
+            if (response.status !== 401) {
+                // 401 = neautorizován, nenutit platbu
+                // Jiné chyby = bezpečnostně zobrazit modal
+                showSubscriptionModal();
+            }
             return;
         }
 
@@ -5194,6 +5264,9 @@ async function checkSubscriptionStatus() {
         }
     } catch (error) {
         console.error('Error checking subscription:', error);
+        // Při network erroru nebo jiné chybě zobrazit modal pro bezpečnost
+        // Uživatel by měl zaplatit, pokud nemůžeme ověřit předplatné
+        showSubscriptionModal();
     }
 }
 
