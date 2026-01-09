@@ -1020,16 +1020,28 @@ body {
     font-weight: 500 !important;
 }
 
-/* Primární tlačítko */
+/* Primární tlačítko - Continue/Pokračovat */
 #clerk-sign-in .cl-formButtonPrimary {
     border-radius: var(--border-radius-small) !important;
     background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%) !important;
     border: none !important;
     font-weight: 600 !important;
+    color: #ffffff !important;
+    font-size: 16px !important;
+    padding: 14px 24px !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+    letter-spacing: 0.5px !important;
 }
 
 #clerk-sign-in .cl-formButtonPrimary:hover {
     box-shadow: 0 0 20px rgba(255, 0, 255, 0.5) !important;
+    background: linear-gradient(135deg, #ff33ff 0%, #cc33ff 100%) !important;
+}
+
+/* Zajistit viditelnost textu na tlačítku */
+#clerk-sign-in .cl-formButtonPrimary span,
+#clerk-sign-in .cl-formButtonPrimary__loading {
+    color: #ffffff !important;
 }
 
 /* Inputy */
