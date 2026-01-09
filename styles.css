@@ -755,12 +755,26 @@ body {
     right: 0;
     bottom: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding: 20px 0;
+    overflow-y: auto;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     z-index: 1001;
     animation: fadeIn 0.3s ease;
+}
+
+/* Pro menší modaly - centrovat vertikálně */
+.login-modal .login-content:not(.subscription-modal-content):not(.login-required-content) {
+    margin: auto 0;
+}
+
+/* Pro větší modaly - začít od vrchu s marginem */
+.login-modal .subscription-modal-content,
+.login-modal .login-required-content {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 @keyframes fadeIn {
@@ -5239,14 +5253,53 @@ body {
 }
 
 /* Subscription Required - Blokace UI */
-body.subscription-required > *:not(.login-modal):not(#subscriptionModal) {
+/* Modal sám má vlastní backdrop, nepotřebujeme další vrstvu */
+body.subscription-required .neon-grid,
+body.subscription-required .neon-clouds,
+body.subscription-required nav,
+body.subscription-required .container > *:not(.login-modal) {
     pointer-events: none;
-    filter: blur(2px);
-    opacity: 0.5;
 }
 
-body.subscription-required #subscriptionModal {
-    pointer-events: auto;
-    filter: none;
-    opacity: 1;
+/* Zajistit že všechny modaly jsou čitelné */
+body.subscription-required .login-modal,
+body.subscription-required #subscriptionModal,
+body.subscription-required #loginModal,
+body.subscription-required #loginRequiredModal {
+    pointer-events: auto !important;
+    z-index: 1002 !important;
+}
+
+/* Modal content bez rozmazání - SILNÝ OVERRIDE */
+.subscription-modal-content,
+body.subscription-required .subscription-modal-content,
+#subscriptionModal .subscription-modal-content,
+#subscriptionModal > .subscription-modal-content {
+    background: #0a0a14 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Subscription modal overlay - BEZ blur efektu */
+#subscriptionModal,
+#subscriptionModal.login-modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.92) !important;
+}
+
+/* Všechny elementy uvnitř subscription modalu - bez blur */
+#subscriptionModal *,
+.subscription-modal-content * {
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Fix: Zajistit ze button-glow neprekryva klikatelnou oblast tlacitek */
+.button-glow,
+.neon-button .button-glow {
+    pointer-events: none !important;
 }

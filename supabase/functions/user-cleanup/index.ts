@@ -11,6 +11,11 @@ import {
   getCorsHeaders, 
   handleCorsPreflight
 } from '../_shared/cors.ts'
+import {
+  getEmailTranslations,
+  getDayWord,
+  formatEmailText
+} from '../_shared/email-translations.ts'
 
 // ============================================
 // KONFIGURACE
@@ -126,105 +131,61 @@ function getHoursSince(date: string | Date): number {
   return (now.getTime() - then.getTime()) / (1000 * 60 * 60)
 }
 
-// Generovat email pro upozornění
+// Generovat email pro upozornění - používá centrální překlady
 function generateWarningEmail(userName: string, daysLeft: number, locale: string = 'cs'): { subject: string; html: string } {
-  const translations: Record<string, { subject: string; html: string }> = {
-    cs: {
-      subject: `LiquiMixer: Váš účet bude smazán za ${daysLeft} ${daysLeft === 1 ? 'den' : daysLeft < 5 ? 'dny' : 'dní'}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #ff00ff;">LiquiMixer</h2>
-          <p>Dobrý den${userName ? ` ${userName}` : ''},</p>
-          <p>Váš účet na LiquiMixer bude <strong>automaticky smazán za ${daysLeft} ${daysLeft === 1 ? 'den' : daysLeft < 5 ? 'dny' : 'dní'}</strong> z důvodu neaktivity.</p>
-          <p>Pokud si přejete zachovat svůj účet a uložené recepty, prosím obnovte své předplatné:</p>
-          <p style="text-align: center; margin: 30px 0;">
-            <a href="https://www.liquimixer.com/?action=renew" style="background: linear-gradient(135deg, #ff00ff, #aa00ff); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-              Obnovit předplatné
-            </a>
-          </p>
-          <p>Po smazání účtu budou <strong>nenávratně ztracena</strong> všechna vaše data:</p>
-          <ul>
-            <li>Uložené recepty</li>
-            <li>Oblíbené produkty</li>
-            <li>Nastavení a preference</li>
-          </ul>
-          <p>Děkujeme za používání LiquiMixer!</p>
-          <p style="color: #666; font-size: 12px; margin-top: 30px;">
-            Tento email byl odeslán automaticky. Pokud máte dotazy, kontaktujte nás na support@liquimixer.com
-          </p>
-        </div>
-      `
-    },
-    en: {
-      subject: `LiquiMixer: Your account will be deleted in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #ff00ff;">LiquiMixer</h2>
-          <p>Hello${userName ? ` ${userName}` : ''},</p>
-          <p>Your LiquiMixer account will be <strong>automatically deleted in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}</strong> due to inactivity.</p>
-          <p>If you wish to keep your account and saved recipes, please renew your subscription:</p>
-          <p style="text-align: center; margin: 30px 0;">
-            <a href="https://www.liquimixer.com/?action=renew" style="background: linear-gradient(135deg, #ff00ff, #aa00ff); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-              Renew subscription
-            </a>
-          </p>
-          <p>After deletion, all your data will be <strong>permanently lost</strong>:</p>
-          <ul>
-            <li>Saved recipes</li>
-            <li>Favorite products</li>
-            <li>Settings and preferences</li>
-          </ul>
-          <p>Thank you for using LiquiMixer!</p>
-        </div>
-      `
-    }
-  }
+  const t = getEmailTranslations(locale)
+  const dayWord = getDayWord(daysLeft, locale)
   
-  return translations[locale] || translations['cs']
+  const subject = formatEmailText(t.warning_subject, { days: daysLeft, dayWord })
+  const bodyText = formatEmailText(t.warning_body, { days: daysLeft, dayWord })
+  
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #0a0a15; color: #ffffff;">
+      <h2 style="color: #ff00ff;">LiquiMixer</h2>
+      <p>${t.warning_greeting}${userName ? ` ${userName}` : ''},</p>
+      <p><strong>${bodyText}</strong></p>
+      <p style="text-align: center; margin: 30px 0;">
+        <a href="https://www.liquimixer.com/?action=renew" style="background: linear-gradient(135deg, #ff00ff, #aa00ff); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+          ${t.warning_cta}
+        </a>
+      </p>
+      <p>${t.warning_data_lost}</p>
+      <ul>
+        <li>${t.warning_data_recipes}</li>
+        <li>${t.warning_data_products}</li>
+        <li>${t.warning_data_settings}</li>
+      </ul>
+      <p>${t.warning_thanks}</p>
+      <p style="color: #888; font-size: 12px; margin-top: 30px;">
+        ${t.warning_footer}
+      </p>
+    </div>
+  `
+  
+  return { subject, html }
 }
 
-// Generovat email pro potvrzení smazání
+// Generovat email pro potvrzení smazání - používá centrální překlady
 function generateDeletionEmail(userName: string, locale: string = 'cs'): { subject: string; html: string } {
-  const translations: Record<string, { subject: string; html: string }> = {
-    cs: {
-      subject: 'LiquiMixer: Váš účet byl smazán',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #ff00ff;">LiquiMixer</h2>
-          <p>Dobrý den${userName ? ` ${userName}` : ''},</p>
-          <p>Váš účet na LiquiMixer byl <strong>smazán</strong> z důvodu dlouhodobé neaktivity.</p>
-          <p>Všechna vaše data (recepty, produkty, nastavení) byla nenávratně odstraněna.</p>
-          <p>Pokud si budete přát znovu využívat LiquiMixer, můžete si kdykoliv vytvořit nový účet na:</p>
-          <p style="text-align: center; margin: 30px 0;">
-            <a href="https://www.liquimixer.com" style="background: linear-gradient(135deg, #ff00ff, #aa00ff); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-              www.liquimixer.com
-            </a>
-          </p>
-          <p>Děkujeme, že jste používali LiquiMixer!</p>
-        </div>
-      `
-    },
-    en: {
-      subject: 'LiquiMixer: Your account has been deleted',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #ff00ff;">LiquiMixer</h2>
-          <p>Hello${userName ? ` ${userName}` : ''},</p>
-          <p>Your LiquiMixer account has been <strong>deleted</strong> due to prolonged inactivity.</p>
-          <p>All your data (recipes, products, settings) has been permanently removed.</p>
-          <p>If you wish to use LiquiMixer again, you can create a new account at:</p>
-          <p style="text-align: center; margin: 30px 0;">
-            <a href="https://www.liquimixer.com" style="background: linear-gradient(135deg, #ff00ff, #aa00ff); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-              www.liquimixer.com
-            </a>
-          </p>
-          <p>Thank you for using LiquiMixer!</p>
-        </div>
-      `
-    }
-  }
+  const t = getEmailTranslations(locale)
   
-  return translations[locale] || translations['cs']
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #0a0a15; color: #ffffff;">
+      <h2 style="color: #ff00ff;">LiquiMixer</h2>
+      <p>${t.warning_greeting}${userName ? ` ${userName}` : ''},</p>
+      <p><strong>${t.deletion_body}</strong></p>
+      <p>${t.deletion_data_removed}</p>
+      <p>${t.deletion_new_account}</p>
+      <p style="text-align: center; margin: 30px 0;">
+        <a href="https://www.liquimixer.com" style="background: linear-gradient(135deg, #ff00ff, #aa00ff); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+          www.liquimixer.com
+        </a>
+      </p>
+      <p>${t.warning_thanks}</p>
+    </div>
+  `
+  
+  return { subject: t.deletion_subject, html }
 }
 
 // ============================================
