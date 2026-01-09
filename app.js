@@ -627,6 +627,22 @@ function proceedToLogin() {
     showLoginModal('signIn');
 }
 
+// Handler pro přihlášení z loginRequiredModal
+function handleLoginFromRequired() {
+    hideLoginRequiredModal();
+    setTimeout(() => {
+        showLoginModal('signIn');
+    }, 50);
+}
+
+// Handler pro registraci z loginRequiredModal
+function handleRegisterFromRequired() {
+    hideLoginRequiredModal();
+    setTimeout(() => {
+        showLoginModal('signUp');
+    }, 50);
+}
+
 function showLoginModal(mode = 'signIn') {
     const menuDropdown = document.getElementById('menuDropdown');
     const loginModal = document.getElementById('loginModal');
@@ -6171,6 +6187,8 @@ window.hideAuthChoiceModal = hideAuthChoiceModal;
 window.handleAuthChoiceBackdropClick = handleAuthChoiceBackdropClick;
 window.proceedToRegistration = proceedToRegistration;
 window.proceedToLogin = proceedToLogin;
+window.handleLoginFromRequired = handleLoginFromRequired;
+window.handleRegisterFromRequired = handleRegisterFromRequired;
 window.showLoginModal = showLoginModal;
 window.hideLoginModal = hideLoginModal;
 window.handleLoginModalBackdropClick = handleLoginModalBackdropClick;
