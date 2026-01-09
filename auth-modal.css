@@ -1,0 +1,119 @@
+/* =========================================
+   Auth Choice Modal - Výběr přihlášení/registrace
+   ========================================= */
+
+.auth-choice-content {
+    text-align: center;
+    max-width: 400px;
+}
+
+.pricing-preview {
+    margin: 25px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.1) 0%, rgba(170, 0, 255, 0.1) 100%);
+    border: 2px solid #ff00ff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+}
+
+.pricing-badge {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pricing-label {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.9rem;
+    color: #b0b0c0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.pricing-amount-preview {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pricing-amount-preview #previewPriceAmount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff00ff;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+.pricing-amount-preview #previewPriceCurrency {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #ff00ff;
+}
+
+.pricing-period {
+    font-size: 0.9rem;
+    color: #b0b0c0;
+}
+
+.auth-choice-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.auth-choice-btn {
+    width: 100%;
+    padding: 16px 24px;
+    font-size: 1rem;
+}
+
+.auth-choice-btn.register-btn {
+    background: linear-gradient(135deg, #ff00ff 0%, #aa00ff 100%);
+    border-color: #ff00ff;
+}
+
+.auth-choice-btn.register-btn:hover {
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+}
+
+.auth-choice-btn.login-existing-btn {
+    background: transparent;
+    border: 2px solid #00ffff;
+    color: #00ffff;
+}
+
+.auth-choice-btn.login-existing-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #b0b0c0;
+    font-size: 0.85rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+/* Subscription Required - Blokace UI */
+body.subscription-required > *:not(.login-modal):not(#subscriptionModal) {
+    pointer-events: none;
+    filter: blur(2px);
+    opacity: 0.5;
+}
+
+body.subscription-required #subscriptionModal {
+    pointer-events: auto;
+    filter: none;
+    opacity: 1;
+}

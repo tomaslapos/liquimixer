@@ -27,7 +27,14 @@
     "register_button": "Regisztráció",
     "pro_required_title": "PRO funkció",
     "pro_required_text": "Ez a funkció csak PRO előfizetőknek érhető el.",
-    "subscribe_button": "PRO előfizetés"
+    "subscribe_button": "PRO előfizetés",
+    "welcome_title": "Üdvözöljük a LiquiMixerben",
+    "welcome_subtitle": "Mentse el receptjeit, ossza meg barátaival és tartson mindent kéznél",
+    "yearly_subscription": "Éves előfizetés",
+    "per_year": "/ év",
+    "create_account": "Fiók létrehozása",
+    "or_divider": "vagy",
+    "have_account": "Már van fiókom"
   },
   "menu": {
     "title": "Menü",

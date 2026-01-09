@@ -27,7 +27,14 @@
     "register_button": "Registruotis",
     "pro_required_title": "PRO funkcija",
     "pro_required_text": "Ši funkcija prieinama tik PRO prenumeratoriams.",
-    "subscribe_button": "Prenumeruoti PRO"
+    "subscribe_button": "Prenumeruoti PRO",
+    "welcome_title": "Sveiki atvykę į LiquiMixer",
+    "welcome_subtitle": "Išsaugokite receptus, dalinkitės su draugais ir turėkite viską po ranka",
+    "yearly_subscription": "Metinė prenumerata",
+    "per_year": "/ metai",
+    "create_account": "Sukurti paskyrą",
+    "or_divider": "arba",
+    "have_account": "Jau turiu paskyrą"
   },
   "menu": {
     "title": "Meniu",

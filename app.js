@@ -423,50 +423,52 @@ window.addEventListener('load', async function() {
             await window.Clerk.load();
             clerkLoaded = true;
             
-            // Okamžitá aktualizace UI
-            updateAuthUI();
-            
             // Save user to database if signed in
             if (window.Clerk.user && window.LiquiMixerDB) {
                 await window.LiquiMixerDB.onSignIn(window.Clerk.user);
-                // Zkontrolovat pending sdílený recept po přihlášení
-                await checkPendingSharedRecipe();
                 // Načíst uložený jazyk uživatele z databáze
                 if (window.i18n?.loadUserLocale) {
                     await window.i18n.loadUserLocale(window.Clerk.user.id);
                 }
-                // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ - S KRÁTKÝM DELAYEM PRO STABILITU
-                setTimeout(async () => {
-                    await checkSubscriptionStatus();
-                }, 500);
+                // KONTROLA PŘEDPLATNÉHO IHNED - před aktualizací UI!
+                await checkSubscriptionStatus();
+                // Teprve po kontrole předplatného aktualizovat UI
+                updateAuthUI();
+                // Zkontrolovat pending sdílený recept (až po ověření předplatného)
+                await checkPendingSharedRecipe();
+            } else {
+                // Nepřihlášený uživatel - aktualizovat UI
+                updateAuthUI();
             }
             
             // Listen for auth changes (OAuth callback, sign in/out)
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
 
-                // Vždy aktualizovat UI při změně autentizace
-                updateAuthUI();
-
                 // Save user to database on sign in
                 if (window.Clerk.user && window.LiquiMixerDB) {
                     await window.LiquiMixerDB.onSignIn(window.Clerk.user);
-                    // Zkontrolovat pending sdílený recept
-                    await checkPendingSharedRecipe();
+                    
                     // Načíst uložený jazyk uživatele z databáze
                     if (window.i18n?.loadUserLocale) {
                         await window.i18n.loadUserLocale(window.Clerk.user.id);
                     }
-                    // Zavřít login modal
-                    hideLoginModal();
-
-                    // KONTROLA PŘEDPLATNÉHO PŘI KAŽDÉM PŘIHLÁŠENÍ
+                    
+                    // NEJPRVE KONTROLA PŘEDPLATNÉHO - před jakoukoliv další akcí!
+                    // Toto může zobrazit platební modal pokud uživatel nemá předplatné
                     await checkSubscriptionStatus();
-
-                    // Force UI refresh pro OAuth přihlášení
-                    setTimeout(() => {
-                        updateAuthUI();
-                    }, 100);
+                    
+                    // Teprve po kontrole předplatného zavřít login modal a aktualizovat UI
+                    hideLoginModal();
+                    updateAuthUI();
+                    
+                    // Zkontrolovat pending sdílený recept (až po ověření předplatného)
+                    await checkPendingSharedRecipe();
+                }
+                
+                // Pokud se uživatel odhlásil, aktualizovat UI
+                if (!window.Clerk.user) {
+                    updateAuthUI();
                 }
             });
             
@@ -546,7 +548,86 @@ function toggleMenu() {
     }
 }
 
-function showLoginModal() {
+// Zobrazit Auth Choice modal (výběr mezi přihlášením a registrací)
+function showAuthChoiceModal() {
+    const menuDropdown = document.getElementById('menuDropdown');
+    const authChoiceModal = document.getElementById('authChoiceModal');
+    const userProfileModal = document.getElementById('userProfileModal');
+    
+    // Close other modals
+    if (menuDropdown && !menuDropdown.classList.contains('hidden')) {
+        menuDropdown.classList.add('hidden');
+    }
+    if (userProfileModal && !userProfileModal.classList.contains('hidden')) {
+        userProfileModal.classList.add('hidden');
+    }
+    
+    // Detekovat lokaci pro zobrazení správné ceny
+    detectPricingForAuthChoice();
+    
+    // Show auth choice modal
+    if (authChoiceModal) {
+        authChoiceModal.classList.remove('hidden');
+    }
+}
+
+function hideAuthChoiceModal() {
+    const authChoiceModal = document.getElementById('authChoiceModal');
+    if (authChoiceModal) {
+        authChoiceModal.classList.add('hidden');
+    }
+}
+
+function handleAuthChoiceBackdropClick(event) {
+    if (event.target === event.currentTarget) {
+        hideAuthChoiceModal();
+    }
+}
+
+// Detekovat cenu pro auth choice modal
+async function detectPricingForAuthChoice() {
+    try {
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const priceAmount = document.getElementById('previewPriceAmount');
+            const priceCurrency = document.getElementById('previewPriceCurrency');
+            
+            if (priceAmount && priceCurrency) {
+                if (data.country === 'CZ') {
+                    priceAmount.textContent = '59';
+                    priceCurrency.textContent = 'Kč';
+                } else if (data.isEU) {
+                    priceAmount.textContent = '2,40';
+                    priceCurrency.textContent = '€';
+                } else {
+                    priceAmount.textContent = '2.90';
+                    priceCurrency.textContent = '$';
+                }
+            }
+        }
+    } catch (error) {
+        console.log('Could not detect location for pricing');
+    }
+}
+
+// Přejít na registraci (po zobrazení ceny)
+function proceedToRegistration() {
+    hideAuthChoiceModal();
+    showLoginModal('signUp');
+}
+
+// Přejít na přihlášení
+function proceedToLogin() {
+    hideAuthChoiceModal();
+    showLoginModal('signIn');
+}
+
+function showLoginModal(mode = 'signIn') {
     const menuDropdown = document.getElementById('menuDropdown');
     const loginModal = document.getElementById('loginModal');
     const userProfileModal = document.getElementById('userProfileModal');
@@ -638,7 +719,7 @@ function showLoginModal() {
                     }
                 };
                 
-                window.Clerk.mountSignIn(signInDiv, {
+                const clerkOptions = {
                     appearance: {
                         variables: {
                             colorPrimary: '#ff00ff',
@@ -684,7 +765,14 @@ function showLoginModal() {
                         }
                     },
                     localization: localizations[currentLang] || czechLocalization
-                });
+                };
+                
+                // Mount SignIn nebo SignUp podle mode
+                if (mode === 'signUp') {
+                    window.Clerk.mountSignUp(signInDiv, clerkOptions);
+                } else {
+                    window.Clerk.mountSignIn(signInDiv, clerkOptions);
+                }
             }
         }
     }
@@ -5314,25 +5402,30 @@ async function showSubscriptionModal() {
     const modal = document.getElementById('subscriptionModal');
     if (!modal) return;
 
+    // ZABLOKOVAT INTERAKCI S APLIKACÍ - přidat třídu na body
+    document.body.classList.add('subscription-required');
+    
     modal.classList.remove('hidden');
 
     // Skrýt sekce, zobrazit loader
-    document.getElementById('locationDetection').classList.remove('hidden');
-    document.getElementById('pricingInfo').classList.add('hidden');
-    document.getElementById('termsSection').classList.add('hidden');
-    document.getElementById('paymentSection').classList.add('hidden');
-    document.getElementById('subscriptionError').classList.add('hidden');
+    document.getElementById('locationDetection')?.classList.remove('hidden');
+    document.getElementById('pricingInfo')?.classList.add('hidden');
+    document.getElementById('termsSection')?.classList.add('hidden');
+    document.getElementById('paymentSection')?.classList.add('hidden');
+    document.getElementById('subscriptionError')?.classList.add('hidden');
 
     // Detekovat lokaci
     await detectUserLocation();
 }
 
-// Skrýt modal předplatného
+// Skrýt modal předplatného (pouze po úspěšné platbě!)
 function hideSubscriptionModal() {
     const modal = document.getElementById('subscriptionModal');
     if (modal) {
         modal.classList.add('hidden');
     }
+    // Odblokovat interakci s aplikací
+    document.body.classList.remove('subscription-required');
 }
 
 // Handler pro backdrop click
@@ -6053,6 +6146,11 @@ window.deleteReminderConfirm = deleteReminderConfirm;
 // EXPORT: Funkce pro globalni pristup z onclick
 // =========================================
 window.toggleMenu = toggleMenu;
+window.showAuthChoiceModal = showAuthChoiceModal;
+window.hideAuthChoiceModal = hideAuthChoiceModal;
+window.handleAuthChoiceBackdropClick = handleAuthChoiceBackdropClick;
+window.proceedToRegistration = proceedToRegistration;
+window.proceedToLogin = proceedToLogin;
 window.showLoginModal = showLoginModal;
 window.hideLoginModal = hideLoginModal;
 window.handleLoginModalBackdropClick = handleLoginModalBackdropClick;

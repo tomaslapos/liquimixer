@@ -24,7 +24,14 @@
     "premium_access_title": "Získej přístup k prémiovým funkcím",
     "premium_access_text": "Přihlas se nebo se zaregistruj a odemkni všechny prémiové funkce LiquiMixer!",
     "login_button": "Přihlásit se",
-    "register_button": "Registrovat se"
+    "register_button": "Registrovat se",
+    "welcome_title": "Vítejte v LiquiMixer",
+    "welcome_subtitle": "Ukládejte recepty, sdílejte s přáteli a mějte vše po ruce",
+    "yearly_subscription": "Roční předplatné",
+    "per_year": "/ rok",
+    "create_account": "Vytvořit účet",
+    "or_divider": "nebo",
+    "have_account": "Již mám účet"
   },
   "menu": {
     "title": "Menu",

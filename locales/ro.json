@@ -27,7 +27,14 @@
     "register_button": "Înregistrare",
     "pro_required_title": "Funcție PRO",
     "pro_required_text": "Această funcție este disponibilă doar pentru abonații PRO.",
-    "subscribe_button": "Abonați-vă la PRO"
+    "subscribe_button": "Abonați-vă la PRO",
+    "welcome_title": "Bun venit la LiquiMixer",
+    "welcome_subtitle": "Salvați rețete, partajați cu prietenii și aveți totul la îndemână",
+    "yearly_subscription": "Abonament anual",
+    "per_year": "/ an",
+    "create_account": "Creează cont",
+    "or_divider": "sau",
+    "have_account": "Am deja un cont"
   },
   "menu": {
     "title": "Meniu",

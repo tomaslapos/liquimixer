@@ -27,7 +27,14 @@
     "register_button": "Registrovať sa",
     "pro_required_title": "PRO funkcia",
     "pro_required_text": "Táto funkcia je dostupná iba pre PRO predplatiteľov.",
-    "subscribe_button": "Predplatiť PRO"
+    "subscribe_button": "Predplatiť PRO",
+    "welcome_title": "Vitajte v LiquiMixer",
+    "welcome_subtitle": "Ukladajte recepty, zdieľajte s priateľmi a majte všetko po ruke",
+    "yearly_subscription": "Ročné predplatné",
+    "per_year": "/ rok",
+    "create_account": "Vytvoriť účet",
+    "or_divider": "alebo",
+    "have_account": "Už mám účet"
   },
   "menu": {
     "title": "Menu",

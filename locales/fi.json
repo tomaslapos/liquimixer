@@ -27,7 +27,14 @@
     "register_button": "Rekisteröidy",
     "pro_required_title": "PRO-ominaisuus",
     "pro_required_text": "Tämä ominaisuus on käytettävissä vain PRO-tilaajille.",
-    "subscribe_button": "Tilaa PRO"
+    "subscribe_button": "Tilaa PRO",
+    "welcome_title": "Tervetuloa LiquiMixeriin",
+    "welcome_subtitle": "Tallenna reseptejä, jaa ystävien kanssa ja pidä kaikki käden ulottuvilla",
+    "yearly_subscription": "Vuositilaus",
+    "per_year": "/ vuosi",
+    "create_account": "Luo tili",
+    "or_divider": "tai",
+    "have_account": "Minulla on jo tili"
   },
   "menu": {
     "title": "Valikko",

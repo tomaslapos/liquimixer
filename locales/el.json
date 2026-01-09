@@ -27,7 +27,14 @@
     "register_button": "Εγγραφή",
     "pro_required_title": "Λειτουργία PRO",
     "pro_required_text": "Αυτή η λειτουργία είναι διαθέσιμη μόνο για συνδρομητές PRO.",
-    "subscribe_button": "Εγγραφείτε στο PRO"
+    "subscribe_button": "Εγγραφείτε στο PRO",
+    "welcome_title": "Καλώς ήρθατε στο LiquiMixer",
+    "welcome_subtitle": "Αποθηκεύστε συνταγές, μοιραστείτε με φίλους και έχετε τα πάντα στο χέρι",
+    "yearly_subscription": "Ετήσια συνδρομή",
+    "per_year": "/ έτος",
+    "create_account": "Δημιουργία λογαριασμού",
+    "or_divider": "ή",
+    "have_account": "Έχω ήδη λογαριασμό"
   },
   "menu": {
     "title": "Μενού",

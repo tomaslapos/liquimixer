@@ -249,6 +249,7 @@
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/auth-modal.css">
     
     <!-- Clerk Authentication -->
     <script 
@@ -300,7 +301,7 @@
                     <span class="nav-icon">☰</span>
                     <span class="nav-text" data-i18n="nav.menu">Menu</span>
                 </button>
-                <button class="nav-btn login-btn" onclick="showLoginModal()">
+                <button class="nav-btn login-btn" onclick="showAuthChoiceModal()">
                     <span class="nav-icon">👤</span>
                     <span class="nav-text" data-i18n="nav.login">Přihlášení</span>
                 </button>
@@ -368,6 +369,42 @@
                     </form>
                     <button class="neon-button menu-terms-btn" onclick="toggleMenu(); showTermsModal();" style="margin-top: 20px;">
                         <span data-i18n="menu.terms_button">Zobrazit obchodní podmínky</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pre-registration modal - Výběr: Přihlášení vs Registrace -->
+        <div id="authChoiceModal" class="login-modal hidden" onclick="handleAuthChoiceBackdropClick(event)">
+            <div class="login-content auth-choice-content">
+                <button class="menu-close" onclick="hideAuthChoiceModal()">✕</button>
+                <h3 class="menu-title" data-i18n="auth.welcome_title">Vítejte v LiquiMixer</h3>
+                <p class="login-subtitle" data-i18n="auth.welcome_subtitle">Ukládejte recepty, sdílejte s přáteli a mějte vše po ruce</p>
+                
+                <!-- Cenová informace pro nové uživatele -->
+                <div class="pricing-preview">
+                    <div class="pricing-badge">
+                        <span class="pricing-label" data-i18n="auth.yearly_subscription">Roční předplatné</span>
+                        <div class="pricing-amount-preview">
+                            <span id="previewPriceAmount">59</span>
+                            <span id="previewPriceCurrency">Kč</span>
+                            <span class="pricing-period" data-i18n="auth.per_year">/ rok</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tlačítka volby -->
+                <div class="auth-choice-buttons">
+                    <button class="neon-button auth-choice-btn register-btn" onclick="proceedToRegistration()">
+                        <span data-i18n="auth.create_account">Vytvořit účet</span>
+                        <div class="button-glow"></div>
+                    </button>
+                    <div class="auth-divider">
+                        <span data-i18n="auth.or_divider">nebo</span>
+                    </div>
+                    <button class="neon-button auth-choice-btn login-existing-btn" onclick="proceedToLogin()">
+                        <span data-i18n="auth.have_account">Již mám účet</span>
                         <div class="button-glow"></div>
                     </button>
                 </div>
@@ -504,11 +541,11 @@
                 </div>
                 
                 <div class="login-required-actions">
-                    <button class="neon-button" onclick="hideLoginRequiredModal(); showLoginModal();">
+                    <button class="neon-button" onclick="hideLoginRequiredModal(); proceedToLogin();">
                         <span data-i18n="auth.login_button">Přihlásit se</span>
                         <div class="button-glow"></div>
                     </button>
-                    <button class="neon-button secondary" onclick="hideLoginRequiredModal(); showRegisterModal();">
+                    <button class="neon-button secondary" onclick="hideLoginRequiredModal(); proceedToRegistration();">
                         <span data-i18n="auth.register_button">Registrovat se</span>
                     </button>
                 </div>

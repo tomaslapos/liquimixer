@@ -27,7 +27,14 @@
     "register_button": "Registracija",
     "pro_required_title": "PRO značajka",
     "pro_required_text": "Ova značajka je dostupna samo PRO pretplatnicima.",
-    "subscribe_button": "Pretplatite se na PRO"
+    "subscribe_button": "Pretplatite se na PRO",
+    "welcome_title": "Dobrodošli u LiquiMixer",
+    "welcome_subtitle": "Spremajte recepte, dijelite s prijateljima i imajte sve pri ruci",
+    "yearly_subscription": "Godišnja pretplata",
+    "per_year": "/ godina",
+    "create_account": "Izradi račun",
+    "or_divider": "ili",
+    "have_account": "Već imam račun"
   },
   "menu": {
     "title": "Izbornik",
