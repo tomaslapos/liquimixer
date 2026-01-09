@@ -6,6 +6,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
 import { 
   getCorsHeaders, 
   handleCorsPreflight
@@ -37,44 +38,49 @@ const CLERK_API_URL = 'https://api.clerk.com/v1'
 
 // SMTP konfigurace
 const SMTP_CONFIG = {
-  host: Deno.env.get('SMTP_HOST') || '',
+  hostname: Deno.env.get('SMTP_HOST') || 'smtp.websupport.cz',
   port: parseInt(Deno.env.get('SMTP_PORT') || '465'),
-  user: Deno.env.get('SMTP_USER') || '',
+  username: Deno.env.get('SMTP_USER') || 'noreply@liquimixer.com',
   password: Deno.env.get('SMTP_PASSWORD') || '',
-  from: Deno.env.get('EMAIL_FROM') || 'noreply@liquimixer.com'
+  tls: true,
 }
+
+const EMAIL_FROM = Deno.env.get('EMAIL_FROM') || 'noreply@liquimixer.com'
 
 // ============================================
 // POMOCNÉ FUNKCE
 // ============================================
 
-// Odeslat email
+// Odeslat email přes SMTP
 async function sendEmail(to: string, subject: string, htmlBody: string): Promise<boolean> {
   try {
-    // Použijeme SMTP přes externí službu nebo fetch na email API
-    // Pro Deno Edge Functions použijeme Resend nebo podobnou službu
-    const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
-    
-    if (RESEND_API_KEY) {
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'LiquiMixer <noreply@liquimixer.com>',
-          to: [to],
-          subject: subject,
-          html: htmlBody
-        })
-      })
-      
-      return response.ok
+    if (!SMTP_CONFIG.password) {
+      console.log(`SMTP not configured. Would send email to ${to}: ${subject}`)
+      return true // Pretend success for testing
     }
-    
-    // Fallback - log pouze
-    console.log(`Would send email to ${to}: ${subject}`)
+
+    const client = new SMTPClient({
+      connection: {
+        hostname: SMTP_CONFIG.hostname,
+        port: SMTP_CONFIG.port,
+        tls: SMTP_CONFIG.tls,
+        auth: {
+          username: SMTP_CONFIG.username,
+          password: SMTP_CONFIG.password,
+        },
+      },
+    })
+
+    await client.send({
+      from: `LiquiMixer <${EMAIL_FROM}>`,
+      to: to,
+      subject: subject,
+      content: htmlBody.replace(/<[^>]*>/g, ''), // Plain text fallback
+      html: htmlBody,
+    })
+
+    await client.close()
+    console.log(`Email sent successfully to ${to}: ${subject}`)
     return true
     
   } catch (error) {
