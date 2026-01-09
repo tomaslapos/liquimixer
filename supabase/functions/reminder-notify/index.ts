@@ -5,7 +5,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { 
   getCorsHeaders, 
-  handleCorsPreflght, 
+  handleCorsPreflight, 
   checkRateLimit, 
   getRateLimitIdentifier,
   rateLimitResponse 
@@ -155,7 +155,7 @@ serve(async (req) => {
 
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return handleCorsPreflght(origin);
+    return handleCorsPreflight(origin);
   }
 
   // Rate limiting (pro CRON job je vyšší limit)
