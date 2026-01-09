@@ -1,10 +1,18 @@
 # Word documents
 *.docx
 *.doc
+~$*
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# GP WebPay - obsahuje privátní klíče a dokumentaci
+GPWebpay/
+
+# Supabase temp a secrets
+supabase/.temp/
+supabase/setup_secrets.cmd
 
 
 

@@ -10,7 +10,7 @@ import { encode as base64Encode } from 'https://deno.land/std@0.168.0/encoding/b
 import { crypto } from 'https://deno.land/std@0.168.0/crypto/mod.ts'
 import { 
   getCorsHeaders, 
-  handleCorsPreflght, 
+  handleCorsPreflight, 
   checkRateLimit as sharedRateLimit, 
   getRateLimitIdentifier,
   rateLimitResponse 
@@ -116,7 +116,7 @@ serve(async (req) => {
 
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return handleCorsPreflght(origin)
+    return handleCorsPreflight(origin)
   }
 
   // Rate limiting

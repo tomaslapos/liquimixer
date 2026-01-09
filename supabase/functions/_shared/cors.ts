@@ -55,7 +55,7 @@ export function getCorsHeaders(origin: string | null): Record<string, string> {
 }
 
 // Vytvořit CORS preflight response
-export function handleCorsPreflght(origin: string | null): Response {
+export function handleCorsPreflight(origin: string | null): Response {
   return new Response(null, {
     status: 204,
     headers: getCorsHeaders(origin),
