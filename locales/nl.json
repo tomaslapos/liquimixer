@@ -27,7 +27,14 @@
     "register_button": "Registreren",
     "pro_required_title": "PRO Functie",
     "pro_required_text": "Deze functie is alleen beschikbaar voor PRO-abonnees.",
-    "subscribe_button": "Abonneer op PRO"
+    "subscribe_button": "Abonneer op PRO",
+    "welcome_title": "Welkom bij LiquiMixer",
+    "welcome_subtitle": "Bewaar recepten, deel met vrienden en houd alles bij de hand",
+    "yearly_subscription": "Jaarabonnement",
+    "per_year": "/ jaar",
+    "create_account": "Account aanmaken",
+    "or_divider": "of",
+    "have_account": "Ik heb al een account"
   },
   "menu": {
     "title": "Menu",

@@ -28,7 +28,14 @@
     "register_button": "التسجيل",
     "pro_required_title": "ميزة PRO",
     "pro_required_text": "هذه الميزة متاحة فقط لمشتركي PRO.",
-    "subscribe_button": "اشترك في PRO"
+    "subscribe_button": "اشترك في PRO",
+    "welcome_title": "مرحباً بك في LiquiMixer",
+    "welcome_subtitle": "احفظ الوصفات وشاركها مع الأصدقاء واحتفظ بكل شيء في متناول اليد",
+    "yearly_subscription": "اشتراك سنوي",
+    "per_year": "/ سنة",
+    "create_account": "إنشاء حساب",
+    "or_divider": "أو",
+    "have_account": "لدي حساب بالفعل"
   },
   "menu": {
     "title": "القائمة",

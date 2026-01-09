@@ -27,7 +27,14 @@
     "register_button": "Reģistrēties",
     "pro_required_title": "PRO funkcija",
     "pro_required_text": "Šī funkcija ir pieejama tikai PRO abonentiem.",
-    "subscribe_button": "Abonēt PRO"
+    "subscribe_button": "Abonēt PRO",
+    "welcome_title": "Laipni lūdzam LiquiMixer",
+    "welcome_subtitle": "Saglabājiet receptes, dalieties ar draugiem un turiet visu pa rokai",
+    "yearly_subscription": "Gada abonements",
+    "per_year": "/ gadā",
+    "create_account": "Izveidot kontu",
+    "or_divider": "vai",
+    "have_account": "Man jau ir konts"
   },
   "menu": {
     "title": "Izvēlne",

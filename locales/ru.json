@@ -27,7 +27,14 @@
     "register_button": "Регистрация",
     "pro_required_title": "PRO функция",
     "pro_required_text": "Эта функция доступна только для PRO подписчиков.",
-    "subscribe_button": "Подписаться на PRO"
+    "subscribe_button": "Подписаться на PRO",
+    "welcome_title": "Добро пожаловать в LiquiMixer",
+    "welcome_subtitle": "Сохраняйте рецепты, делитесь с друзьями и держите всё под рукой",
+    "yearly_subscription": "Годовая подписка",
+    "per_year": "/ год",
+    "create_account": "Создать аккаунт",
+    "or_divider": "или",
+    "have_account": "У меня уже есть аккаунт"
   },
   "menu": {
     "title": "Меню",

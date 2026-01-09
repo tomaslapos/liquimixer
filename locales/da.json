@@ -27,7 +27,14 @@
     "register_button": "Registrer",
     "pro_required_title": "PRO-funktion",
     "pro_required_text": "Denne funktion er kun tilgængelig for PRO-abonnenter.",
-    "subscribe_button": "Abonner på PRO"
+    "subscribe_button": "Abonner på PRO",
+    "welcome_title": "Velkommen til LiquiMixer",
+    "welcome_subtitle": "Gem opskrifter, del med venner og hav alt ved hånden",
+    "yearly_subscription": "Årligt abonnement",
+    "per_year": "/ år",
+    "create_account": "Opret konto",
+    "or_divider": "eller",
+    "have_account": "Jeg har allerede en konto"
   },
   "menu": {
     "title": "Menu",

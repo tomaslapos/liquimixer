@@ -27,7 +27,14 @@
     "register_button": "登録",
     "pro_required_title": "PRO機能",
     "pro_required_text": "この機能はPRO購読者のみ利用可能です。",
-    "subscribe_button": "PROに購読"
+    "subscribe_button": "PROに購読",
+    "welcome_title": "LiquiMixerへようこそ",
+    "welcome_subtitle": "レシピを保存し、友達と共有し、すべてを手元に",
+    "yearly_subscription": "年間サブスクリプション",
+    "per_year": "/ 年",
+    "create_account": "アカウント作成",
+    "or_divider": "または",
+    "have_account": "すでにアカウントをお持ちです"
   },
   "menu": {
     "title": "メニュー",

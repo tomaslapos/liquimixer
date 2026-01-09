@@ -27,7 +27,14 @@
     "register_button": "Zarejestruj się",
     "pro_required_title": "Funkcja PRO",
     "pro_required_text": "Ta funkcja jest dostępna tylko dla subskrybentów PRO.",
-    "subscribe_button": "Subskrybuj PRO"
+    "subscribe_button": "Subskrybuj PRO",
+    "welcome_title": "Witaj w LiquiMixer",
+    "welcome_subtitle": "Zapisuj przepisy, udostępniaj znajomym i miej wszystko pod ręką",
+    "yearly_subscription": "Roczna subskrypcja",
+    "per_year": "/ rok",
+    "create_account": "Utwórz konto",
+    "or_divider": "lub",
+    "have_account": "Mam już konto"
   },
   "menu": {
     "title": "Menu",

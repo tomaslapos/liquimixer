@@ -27,7 +27,14 @@
     "register_button": "Registreeru",
     "pro_required_title": "PRO funktsioon",
     "pro_required_text": "See funktsioon on saadaval ainult PRO-tellimuse kasutajatele.",
-    "subscribe_button": "Telli PRO"
+    "subscribe_button": "Telli PRO",
+    "welcome_title": "Tere tulemast LiquiMixerisse",
+    "welcome_subtitle": "Salvestage retsepte, jagage sõpradega ja hoidke kõike käeulatuses",
+    "yearly_subscription": "Aastatellimus",
+    "per_year": "/ aastas",
+    "create_account": "Loo konto",
+    "or_divider": "või",
+    "have_account": "Mul on juba konto"
   },
   "menu": {
     "title": "Menüü",
