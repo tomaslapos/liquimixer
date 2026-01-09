@@ -9,7 +9,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
 import { 
   getCorsHeaders, 
-  handleCorsPreflight, 
+  handleCorsPreflght, 
   checkRateLimit, 
   getRateLimitIdentifier,
   rateLimitResponse 
@@ -45,7 +45,7 @@ serve(async (req) => {
 
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return handleCorsPreflight(origin)
+    return handleCorsPreflght(origin)
   }
 
   // Rate limiting
