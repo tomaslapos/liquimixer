@@ -50,7 +50,7 @@ export function getCorsHeaders(origin: string | null): Record<string, string> {
   
   return {
     'Access-Control-Allow-Origin': allowedOrigin!,
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-rate-limit-key',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-rate-limit-key, x-clerk-token',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Max-Age': '86400', // Cache preflight na 24 hodin
     'Vary': 'Origin', // Důležité pro správné cachování

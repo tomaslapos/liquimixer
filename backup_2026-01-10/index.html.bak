@@ -248,7 +248,7 @@
     
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20260110b">
+    <link rel="stylesheet" href="/styles.css">
     
     <!-- Clerk Authentication -->
     <script 
@@ -262,6 +262,7 @@
     <!-- Supabase Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/database.js"></script>
+    <script src="/subscription.js"></script>
     <script src="/i18n.js"></script>
 </head>
 <body>
@@ -424,7 +425,7 @@
         </div>
 
         <!-- Subscription Payment Modal -->
-        <div id="subscriptionModal" class="login-modal hidden" style="background: #000000 !important; backdrop-filter: none !important;" onclick="handleSubscriptionModalBackdropClick(event)">
+        <div id="subscriptionModal" class="login-modal hidden" onclick="handleSubscriptionModalBackdropClick(event)">
             <div class="login-content subscription-modal-content">
                 <button class="menu-close" onclick="handleSubscriptionModalClose()">✕</button>
                 <h3 class="menu-title" data-i18n="subscription.title">Předplatné LiquiMixer</h3>
@@ -1835,7 +1836,7 @@
         </section>
     </div>
 
-    <script src="/app.js?v=20260110d"></script>
+    <script src="/app.js"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

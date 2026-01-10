@@ -1272,8 +1272,8 @@ function storeCurrentRecipe(data) {
 
 // Zobrazit modal pro uložení receptu
 async function showSaveRecipeModal() {
-    // PRO funkce - vyžaduje přihlášení A předplatné
-    if (!requireSubscription()) {
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
         return;
     }
     
@@ -1631,8 +1631,8 @@ function getSelectedProductIds() {
 async function showMyRecipes() {
     hideUserProfileModal();
     
-    // PRO funkce - vyžaduje přihlášení A předplatné
-    if (!requireSubscription()) {
+    if (!window.Clerk || !window.Clerk.user) {
+        alert(t('alert.login_required_recipes', 'Pro zobrazení receptů se prosím přihlaste.'));
         return;
     }
     
@@ -2312,8 +2312,8 @@ let recipeSearchRatingFilter = 0; // Aktuální filtr hodnocení receptů
 async function showFavoriteProducts() {
     hideUserProfileModal();
     
-    // PRO funkce - vyžaduje přihlášení A předplatné
-    if (!requireSubscription()) {
+    if (!window.Clerk || !window.Clerk.user) {
+        alert(t('alert.login_required_products', 'Pro zobrazení produktů se prosím přihlaste.'));
         return;
     }
     
@@ -2618,11 +2618,6 @@ const productTypeIcons = {
 
 // Zobrazit formulář pro přidání produktu
 function showAddProductForm() {
-    // PRO funkce - vyžaduje přihlášení A předplatné
-    if (!requireSubscription()) {
-        return;
-    }
-    
     document.getElementById('productFormTitle').textContent = 'Přidat produkt';
     document.getElementById('editingProductId').value = '';
     document.getElementById('productName').value = '';
@@ -2702,8 +2697,8 @@ function cancelProductForm() {
 async function saveProduct(event) {
     event.preventDefault();
     
-    // PRO funkce - vyžaduje přihlášení A předplatné
-    if (!requireSubscription()) {
+    if (!window.Clerk || !window.Clerk.user) {
+        alert(t('alert.login_required_product', 'Pro uložení produktu se prosím přihlaste.'));
         return false;
     }
     
@@ -5490,8 +5485,7 @@ async function checkSubscriptionStatus() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getSupabaseAnonKey()}`,
-                'x-clerk-token': token,
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ action: 'check' })
         });
@@ -5531,13 +5525,7 @@ function getSupabaseUrl() {
     return 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
 }
 
-// Získat Supabase Anon Key (potřebný pro volání Edge Functions)
-function getSupabaseAnonKey() {
-    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd2RmeG52aG54dGtodGtiYWRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0NzA1NDcsImV4cCI6MjA4MTA0NjU0N30.IKpOTRfPaOwyBSnIpqOK2utwIDnllLM3XcV9NH-tXrA';
-}
-
-// Získat Clerk JWT token pro Supabase
-// DŮLEŽITÉ: Používá template 'supabase' pro kompatibilitu se Supabase Edge Functions
+// Získat Clerk JWT token
 async function getClerkToken(maxRetries = 1, retryDelay = 500) {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         if (!window.Clerk?.session) {
@@ -5549,19 +5537,7 @@ async function getClerkToken(maxRetries = 1, retryDelay = 500) {
             return null;
         }
         try {
-            // Nejdříve zkusit template pro Supabase (pokud existuje v Clerk dashboard)
-            let token = null;
-            try {
-                token = await window.Clerk.session.getToken({ template: 'supabase' });
-            } catch (templateError) {
-                console.log('Supabase template not found, trying default token...');
-            }
-            
-            // Fallback na standardní token pokud template není nakonfigurován
-            if (!token) {
-                token = await window.Clerk.session.getToken();
-            }
-            
+            const token = await window.Clerk.session.getToken();
             if (token) {
                 return token;
             }
@@ -5591,49 +5567,16 @@ async function showSubscriptionModal() {
         return;
     }
 
-    // KRITICKÉ: Unmount Clerk komponenty PŘED skrytím loginModal
-    // Toto zabrání tomu, aby Clerk iframe zůstával viditelný
-    const signInDiv = document.getElementById('clerk-sign-in');
-    if (signInDiv && window.Clerk) {
-        try {
-            // Zkusit unmount obou variant (signUp i signIn)
-            if (signInDiv._clerkMode === 'signUp') {
-                window.Clerk.unmountSignUp(signInDiv);
-            } else {
-                window.Clerk.unmountSignIn(signInDiv);
-            }
-            signInDiv._clerkMode = null;
-            console.log('showSubscriptionModal: Clerk component unmounted');
-        } catch(e) {
-            console.warn('showSubscriptionModal: Clerk unmount warning:', e.message);
-        }
-    }
-
     // NEJPRVE skrýt VŠECHNY ostatní modaly - zabránit překrývání
-    const loginModal = document.getElementById('loginModal');
-    const loginRequiredModal = document.getElementById('loginRequiredModal');
-    const menuDropdown = document.getElementById('menuDropdown');
-    
-    if (loginModal) {
-        loginModal.classList.add('hidden');
-        loginModal.style.display = 'none'; // Force hide
-    }
-    if (loginRequiredModal) {
-        loginRequiredModal.classList.add('hidden');
-        loginRequiredModal.style.display = 'none';
-    }
-    if (menuDropdown) {
-        menuDropdown.classList.add('hidden');
-    }
+    document.getElementById('loginModal')?.classList.add('hidden');
+    document.getElementById('loginRequiredModal')?.classList.add('hidden');
+    document.getElementById('menuDropdown')?.classList.add('hidden');
     
     // ZABLOKOVAT INTERAKCI S APLIKACÍ - přidat třídu na body
     document.body.classList.add('subscription-required');
     
-    // Zobrazit modal a ZAJISTIT černé neprůhledné pozadí (inline styl pro jistotu)
+    // Zobrazit modal
     modal.classList.remove('hidden');
-    modal.style.background = '#000000';
-    modal.style.backdropFilter = 'none';
-    modal.style.webkitBackdropFilter = 'none';
     
     // Zajistit správné scroll pozice - modal nahoře
     modal.scrollTop = 0;
@@ -5642,25 +5585,10 @@ async function showSubscriptionModal() {
     // Skrýt chybovou zprávu
     document.getElementById('subscriptionError')?.classList.add('hidden');
     
-    // Získat elementy - s kontrolou existence
-    let guestState = document.getElementById('guestState');
-    let loggedInState = document.getElementById('loggedInState');
-    let locationDetection = document.getElementById('locationDetection');
-    
-    // Kontrola: pokud elementy neexistují, počkat 100ms a zkusit znovu
-    if (!guestState || !loggedInState) {
-        console.warn('showSubscriptionModal: Elements not found, waiting for DOM...');
-        await new Promise(r => setTimeout(r, 100));
-        guestState = document.getElementById('guestState');
-        loggedInState = document.getElementById('loggedInState');
-        locationDetection = document.getElementById('locationDetection');
-    }
-    
-    // Stále neexistují? Kritická chyba
-    if (!guestState && !loggedInState) {
-        console.error('showSubscriptionModal: Critical - neither guestState nor loggedInState found!');
-        return;
-    }
+    // Získat elementy
+    const guestState = document.getElementById('guestState');
+    const loggedInState = document.getElementById('loggedInState');
+    const locationDetection = document.getElementById('locationDetection');
     
     // Zobrazit loader, skrýt oba stavy
     if (locationDetection) locationDetection.classList.remove('hidden');
@@ -5723,17 +5651,10 @@ async function showSubscriptionModal() {
         updateGuestPayButton();
         
         console.log('showSubscriptionModal: Showing State A (guest)');
-    } else if (loggedInState) {
-        // FALLBACK: guestState neexistuje, ale loggedInState ano - použít loggedInState
-        console.warn('showSubscriptionModal: guestState not found, using loggedInState as fallback');
-        loggedInState.classList.remove('hidden');
     } else {
-        // KRITICKÝ FALLBACK: Žádný stav neexistuje - zkusit najít znovu
-        console.error('showSubscriptionModal: CRITICAL FALLBACK - trying to force visibility');
-        const gs = document.getElementById('guestState');
-        const ls = document.getElementById('loggedInState');
-        if (gs) gs.classList.remove('hidden');
-        else if (ls) ls.classList.remove('hidden');
+        // FALLBACK: Pokud nic nefunguje, zobraz guestState
+        console.error('showSubscriptionModal: FALLBACK - forcing guestState visible');
+        document.getElementById('guestState')?.classList.remove('hidden');
     }
     
     // Aplikovat překlady na modal
@@ -5790,12 +5711,6 @@ function hideSubscriptionModal() {
     }
     // Odblokovat interakci s aplikací
     document.body.classList.remove('subscription-required');
-    
-    // Resetovat inline styly na loginModal a loginRequiredModal
-    const loginModal = document.getElementById('loginModal');
-    const loginRequiredModal = document.getElementById('loginRequiredModal');
-    if (loginModal) loginModal.style.display = '';
-    if (loginRequiredModal) loginRequiredModal.style.display = '';
 }
 
 // Handler pro zavření subscription modalu křížkem
@@ -5843,13 +5758,11 @@ async function detectUserLocation() {
     try {
         // Zkusit geolokaci pouze pokud je uživatel přihlášen
         if (window.Clerk?.user) {
-            const clerkToken = await getClerkToken();
             const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getSupabaseAnonKey()}`,
-                    'x-clerk-token': clerkToken || '',
+                    'Authorization': `Bearer ${await getClerkToken()}`
                 },
                 body: JSON.stringify({ 
                     action: 'detect',
@@ -5975,8 +5888,7 @@ async function processPayment() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getSupabaseAnonKey()}`,
-                'x-clerk-token': token,
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ 
                 action: 'create',
@@ -6002,8 +5914,7 @@ async function processPayment() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getSupabaseAnonKey()}`,
-                'x-clerk-token': token,
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ 
                 action: 'create',
