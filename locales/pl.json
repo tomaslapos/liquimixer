@@ -496,7 +496,14 @@
     "promo_price_cz": "tylko 59 CZK / rok",
     "promo_price_eu": "tylko 2,40 € / rok",
     "promo_price_usd": "tylko 2,90 $ / rok",
-    "feature_pro_multiflavor": "Idealne dostrojenie z maksymalnie 4 aromatami"
+    "feature_pro_multiflavor": "Idealne dostrojenie z maksymalnie 4 aromatami",
+    "register_first": "Aby aktywować subskrypcję, najpierw zarejestruj się lub zaloguj.",
+    "error_not_logged_in": "Zaloguj się, aby dokończyć płatność.",
+    "register_and_pay": "Zarejestruj się i zapłać",
+    "already_have_account": "Masz już konto?",
+    "logged_in_as": "Jesteś zalogowany jako:",
+    "pay_button_simple": "Zapłać",
+    "redirect_info": "Zostaniesz przekierowany do bramki płatniczej GP WebPay"
   },
   "terms": {
     "title": "Regulamin",

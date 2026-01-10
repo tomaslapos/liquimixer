@@ -496,7 +496,14 @@
     "promo_price_cz": "only 59 CZK / year",
     "promo_price_eu": "only €2.40 / year",
     "promo_price_usd": "only $2.90 / year",
-    "feature_pro_multiflavor": "Perfect tuning with up to 4 flavors"
+    "feature_pro_multiflavor": "Perfect tuning with up to 4 flavors",
+    "register_first": "To activate subscription, please register or sign in first.",
+    "error_not_logged_in": "Please sign in to complete the payment.",
+    "register_and_pay": "Register and Pay",
+    "already_have_account": "Already have an account?",
+    "logged_in_as": "You are signed in as:",
+    "pay_button_simple": "Pay",
+    "redirect_info": "You will be redirected to GP WebPay payment gateway"
   },
   "terms": {
     "title": "Terms and Conditions",

@@ -493,7 +493,14 @@
     "promo_price_cz": "jenom 59 Kč / rok",
     "promo_price_eu": "jenom 2,40 € / rok",
     "promo_price_usd": "jenom $2,90 / rok",
-    "feature_pro_multiflavor": "Perfektní vyladění s až 4 příchutěmi"
+    "feature_pro_multiflavor": "Perfektní vyladění s až 4 příchutěmi",
+    "register_first": "Pro aktivaci předplatného se nejprve zaregistrujte nebo přihlaste.",
+    "error_not_logged_in": "Pro dokončení platby se nejprve přihlaste.",
+    "register_and_pay": "Registrovat a zaplatit",
+    "already_have_account": "Již máte účet?",
+    "logged_in_as": "Jste přihlášen jako:",
+    "pay_button_simple": "Zaplatit",
+    "redirect_info": "Budete přesměrováni na platební bránu GP WebPay"
   },
   "terms": {
     "title": "Obchodní podmínky",

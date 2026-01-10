@@ -46,22 +46,26 @@ serve(async (req) => {
       }
     )
 
-    // Ověřit JWT token
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
+    // Ověřit Clerk token (přijatý v custom headeru x-clerk-token)
+    // Authorization header obsahuje Supabase anon key pro přístup k Edge Function
+    const clerkToken = req.headers.get('x-clerk-token')
+    if (!clerkToken) {
       return new Response(
-        JSON.stringify({ error: 'Chybí autorizační token' }),
+        JSON.stringify({ error: 'Chybí Clerk token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    const token = authHeader.replace('Bearer ', '')
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    const clerkId = payload.sub
-
-    if (!clerkId) {
+    let clerkId: string
+    try {
+      const payload = JSON.parse(atob(clerkToken.split('.')[1]))
+      clerkId = payload.sub
+      if (!clerkId) {
+        throw new Error('Missing sub claim')
+      }
+    } catch (e) {
       return new Response(
-        JSON.stringify({ error: 'Neplatný token' }),
+        JSON.stringify({ error: 'Neplatný Clerk token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }

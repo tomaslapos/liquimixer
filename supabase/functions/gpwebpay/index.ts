@@ -293,17 +293,16 @@ serve(async (req) => {
       // CREATE PAYMENT - Vytvořit platbu a přesměrovat na bránu
       // ============================================
       case 'create': {
-        // 1. Ověřit JWT token
-        const authHeader = req.headers.get('Authorization')
-        if (!authHeader) {
+        // 1. Ověřit Clerk token (přijatý v custom headeru x-clerk-token)
+        const clerkToken = req.headers.get('x-clerk-token')
+        if (!clerkToken) {
           return new Response(
-            JSON.stringify({ error: 'Unauthorized' }),
+            JSON.stringify({ error: 'Unauthorized - missing Clerk token' }),
             { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
 
-        const token = authHeader.replace('Bearer ', '')
-        const payload = await verifyClerkToken(token)
+        const payload = await verifyClerkToken(clerkToken)
         
         if (!payload) {
           return new Response(
