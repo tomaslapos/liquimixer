@@ -107,18 +107,18 @@ serve(async (req) => {
           : t.idoklad_note
         const unit = t.idoklad_unit
 
-        // Určit DPH sazbu podle země
+        // Určit DPH sazbu podle země (OSS režim - české DPH 21% pro EU, 0% mimo EU)
         const vatRate = getVatRateForCountry(country || 'CZ')
         
-        // DŮLEŽITÉ: amount je konečná cena S DPH, kterou zákazník platí
-        // Musíme vypočítat cenu bez DPH pro iDoklad
-        // Cena s DPH = Cena bez DPH * (1 + DPH/100)
-        // Cena bez DPH = Cena s DPH / (1 + DPH/100)
+        // amount je konečná cena S DPH (59 Kč, 2.40 EUR, 2.90 USD)
+        // Pro iDoklad: PriceType=1 znamená, že UnitPrice je cena S DPH
+        // Cena bez DPH = amount / (1 + vatRate/100)
         const unitPriceWithoutVat = vatRate.rate > 0 
           ? Math.round((amount / (1 + vatRate.rate / 100)) * 100) / 100
           : amount
+        const vatAmount = amount - unitPriceWithoutVat
         
-        console.log(`Price calculation: total=${amount}, vatRate=${vatRate.rate}%, unitPriceWithoutVat=${unitPriceWithoutVat}`)
+        console.log(`Price calculation: total=${amount} ${currency}, vatRate=${vatRate.rate}%, base=${unitPriceWithoutVat}, vat=${vatAmount}`)
 
         const invoiceData: any = {
           Description: invoiceDescription,
@@ -136,9 +136,10 @@ serve(async (req) => {
             Name: itemName,
             Amount: 1,
             Unit: unit,
-            UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH
+            UnitPrice: amount, // Konečná cena S DPH
             VatRateType: vatRate.type,
-            PriceType: 0, // 0 = cena bez DPH
+            VatRate: vatRate.rate, // Explicitní sazba DPH
+            PriceType: 1, // 1 = cena S DPH
             DiscountPercentage: 0,
             IsTaxMovement: false,
           }],
@@ -179,11 +180,8 @@ serve(async (req) => {
         const invoice = invoiceResult.Data || invoiceResult
         console.log('Invoice created:', JSON.stringify(invoice).substring(0, 500))
 
-        // 6. Uložit referenci do naší DB
-        // Použijeme již vypočítanou cenu bez DPH
-        const vatAmount = amount - unitPriceWithoutVat
-        
-        const { error: dbError } = await supabaseAdmin
+        // 6. Uložit referenci do naší DB a získat ID
+        const { data: dbInvoice, error: dbError } = await supabaseAdmin
           .from('invoices')
           .insert({
             clerk_id: clerkId,
@@ -206,11 +204,15 @@ serve(async (req) => {
             due_date: dueDate,
             locale: locale,
           })
+          .select('id')
+          .single()
 
         if (dbError) {
           console.error('DB insert error:', dbError)
           // Pokračujeme - faktura je vytvořena v iDoklad
         }
+
+        const dbInvoiceId = dbInvoice?.id
 
         // 7. Vrátit data faktury pro email
         return new Response(
@@ -218,6 +220,7 @@ serve(async (req) => {
             success: true,
             invoice: {
               id: invoice.Id,
+              dbId: dbInvoiceId, // ID z naší databáze pro link na fakturu
               number: invoice.DocumentNumber || invoice.DocumentSerialNumber?.toString(),
               dateOfIssue: invoice.DateOfIssue,
               dateOfMaturity: invoice.DateOfMaturity,
@@ -232,15 +235,13 @@ serve(async (req) => {
                 totalWithVat: item.TotalWithVat,
               })),
               supplier: {
-                name: 'WOOs, s.r.o.',
-                street: 'Ke Skalce 688',
-                city: 'Jesenice',
-                zip: '252 42',
+                name: 'WOOs, s. r. o.',
+                street: 'Brloh 12',
+                city: 'Drhovle',
+                zip: '397 01',
                 country: 'CZ',
-                ico: '21246751',
-                dic: 'CZ21246751',
-                email: 'info@woos.cz',
-                bankAccount: '2402919848/2010', // FIO Banka
+                ico: '05117810',
+                dic: 'CZ05117810',
               },
               customer: {
                 name: customerName || customerEmail,
