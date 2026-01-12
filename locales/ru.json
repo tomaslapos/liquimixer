@@ -532,7 +532,19 @@
     "vat": "НДС",
     "total": "Итого с НДС",
     "paid": "Оплачено",
-    "subscription_item": "Годовая подписка LiquiMixer (365 дней)"
+    "subscription_item": "Годовая подписка LiquiMixer (365 дней)",
+    "status": "Статус",
+    "payment_date": "Дата оплаты",
+    "ico": "ИНН",
+    "dic": "КПП",
+    "vat_payer": "Плательщик НДС",
+    "print": "Распечатать счет",
+    "back": "Вернуться в приложение",
+    "loading": "Загрузка счета...",
+    "not_found": "Счет не найден",
+    "no_access": "Запрошенный счет не существует или у вас нет доступа.",
+    "back_home": "На главную",
+    "total_to_pay": "Итого к оплате"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Ваш аккаунт будет удалён через {days} {dayWord}",

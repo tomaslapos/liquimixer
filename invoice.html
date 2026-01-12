@@ -237,112 +237,48 @@
         const SUPABASE_URL = 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd2RmeG52aG54dGtodGtiYWRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MTczNTMsImV4cCI6MjA1MjA5MzM1M30.5p87u59YPrHsje0E-GK3lnBKGfEdE3rD2kzxNcEfa5w';
 
-        // Překlady
-        const translations = {
-            cs: {
-                title: 'Faktura',
-                invoiceNumber: 'Číslo faktury',
-                issueDate: 'Datum vystavení',
-                dueDate: 'Datum splatnosti',
-                supplier: 'Dodavatel',
-                customer: 'Odběratel',
-                item: 'Položka',
-                quantity: 'Množství',
-                total: 'Celkem',
-                totalToPay: 'Celkem k úhradě',
-                status: 'Stav',
-                paid: 'Zaplaceno',
-                paymentDate: 'Datum úhrady',
-                ico: 'IČO',
-                dic: 'DIČ',
-                vatPayer: 'Plátce DPH',
-                print: 'Vytisknout fakturu',
-                back: 'Zpět do aplikace',
-                loading: 'Načítání faktury...',
-                notFound: 'Faktura nenalezena',
-                noAccess: 'Požadovaná faktura neexistuje nebo k ní nemáte přístup.',
-                backHome: 'Zpět na hlavní stránku',
-                itemName: 'Roční předplatné LiquiMixer'
-            },
-            en: {
-                title: 'Invoice',
-                invoiceNumber: 'Invoice Number',
-                issueDate: 'Issue Date',
-                dueDate: 'Due Date',
-                supplier: 'Supplier',
-                customer: 'Customer',
-                item: 'Item',
-                quantity: 'Quantity',
-                total: 'Total',
-                totalToPay: 'Total to Pay',
-                status: 'Status',
-                paid: 'Paid',
-                paymentDate: 'Payment Date',
-                ico: 'Company ID',
-                dic: 'VAT ID',
-                vatPayer: 'VAT Payer',
-                print: 'Print Invoice',
-                back: 'Back to App',
-                loading: 'Loading invoice...',
-                notFound: 'Invoice not found',
-                noAccess: 'The requested invoice does not exist or you do not have access.',
-                backHome: 'Back to Home',
-                itemName: 'LiquiMixer Annual Subscription'
-            },
-            ko: {
-                title: '청구서',
-                invoiceNumber: '청구서 번호',
-                issueDate: '발행일',
-                dueDate: '결제 기한',
-                supplier: '공급자',
-                customer: '고객',
-                item: '항목',
-                quantity: '수량',
-                total: '합계',
-                totalToPay: '총 결제 금액',
-                status: '상태',
-                paid: '결제됨',
-                paymentDate: '결제일',
-                ico: '사업자 번호',
-                dic: 'VAT ID',
-                vatPayer: 'VAT 납부자',
-                print: '청구서 인쇄',
-                back: '앱으로 돌아가기',
-                loading: '청구서 로딩 중...',
-                notFound: '청구서를 찾을 수 없습니다',
-                noAccess: '요청한 청구서가 존재하지 않거나 접근 권한이 없습니다.',
-                backHome: '홈으로 돌아가기',
-                itemName: 'LiquiMixer 연간 구독'
-            },
-            sk: {
-                title: 'Faktúra',
-                invoiceNumber: 'Číslo faktúry',
-                issueDate: 'Dátum vystavenia',
-                dueDate: 'Dátum splatnosti',
-                supplier: 'Dodávateľ',
-                customer: 'Odberateľ',
-                item: 'Položka',
-                quantity: 'Množstvo',
-                total: 'Celkom',
-                totalToPay: 'Celkom k úhrade',
-                status: 'Stav',
-                paid: 'Zaplatené',
-                paymentDate: 'Dátum úhrady',
-                ico: 'IČO',
-                dic: 'DIČ',
-                vatPayer: 'Platca DPH',
-                print: 'Vytlačiť faktúru',
-                back: 'Späť do aplikácie',
-                loading: 'Načítanie faktúry...',
-                notFound: 'Faktúra nenájdená',
-                noAccess: 'Požadovaná faktúra neexistuje alebo k nej nemáte prístup.',
-                backHome: 'Späť na hlavnú stránku',
-                itemName: 'Ročné predplatné LiquiMixer'
-            }
-        };
+        // Cache pro překlady
+        let translationsCache = {};
 
-        function getTranslation(locale) {
-            return translations[locale] || translations[locale.split('-')[0]] || translations.en;
+        // Načíst překlady z JSON souboru
+        async function loadTranslations(locale) {
+            // Zkusit cache
+            if (translationsCache[locale]) {
+                return translationsCache[locale];
+            }
+
+            try {
+                const response = await fetch(`/locales/${locale}.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    translationsCache[locale] = data;
+                    return data;
+                }
+            } catch (e) {
+                console.error('Error loading translations for', locale, e);
+            }
+
+            // Fallback na angličtinu
+            if (locale !== 'en') {
+                return loadTranslations('en');
+            }
+
+            // Pokud ani angličtina nefunguje, vrátit prázdný objekt
+            return {};
+        }
+
+        // Získat překlad z objektu
+        function t(translations, key, fallback = '') {
+            const keys = key.split('.');
+            let value = translations;
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    return fallback || key;
+                }
+            }
+            return value || fallback || key;
         }
 
         function formatDate(dateStr, locale) {
@@ -355,12 +291,41 @@
             }
         }
 
+        // Podporované jazyky
+        const SUPPORTED_LOCALES = ['cs', 'sk', 'en', 'de', 'fr', 'es', 'it', 'pl', 'pt', 'nl', 'ru', 'uk', 'ja', 'ko', 'zh-CN', 'zh-TW', 'ar-SA', 'tr', 'sv', 'da', 'no', 'fi', 'hu', 'ro', 'bg', 'hr', 'sr', 'el', 'et', 'lv', 'lt'];
+        
+        // Detekce jazyka prohlížeče
+        function detectBrowserLocale() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            // Zkusit přesnou shodu (např. zh-CN)
+            if (SUPPORTED_LOCALES.includes(browserLang)) {
+                return browserLang;
+            }
+            // Zkusit shodu základního jazyka (např. en z en-US)
+            const baseLang = browserLang.split('-')[0];
+            if (SUPPORTED_LOCALES.includes(baseLang)) {
+                return baseLang;
+            }
+            // Fallback na angličtinu
+            return 'en';
+        }
+
         async function loadInvoice() {
             const urlParams = new URLSearchParams(window.location.search);
             const invoiceId = urlParams.get('id');
             
+            // Priorita jazyka: 1. localStorage (uživatelské nastavení), 2. jazyk prohlížeče, 3. čeština
+            const locale = localStorage.getItem('liquimixer_locale') || detectBrowserLocale() || 'en';
+            
+            // Načíst překlady pro loading a error state
+            const translations = await loadTranslations(locale);
+            const tr = (key, fallback) => t(translations, key, fallback);
+            
+            // Aktualizovat loading text
+            document.getElementById('loadingState').textContent = tr('invoice.loading', 'Loading invoice...');
+            
             if (!invoiceId) {
-                showError();
+                showError(tr);
                 return;
             }
 
@@ -378,50 +343,65 @@
                 });
 
                 if (!response.ok) {
-                    showError();
+                    showError(tr);
                     return;
                 }
 
                 const result = await response.json();
                 if (!result.success || !result.invoice) {
-                    showError();
+                    showError(tr);
                     return;
                 }
 
                 displayInvoice(result.invoice);
             } catch (error) {
                 console.error('Error loading invoice:', error);
-                showError();
+                showError(tr);
             }
         }
 
-        function showError() {
+        function showError(tr) {
+            const errorState = document.getElementById('errorState');
+            if (tr) {
+                errorState.querySelector('h2').textContent = tr('invoice.not_found', 'Invoice not found');
+                errorState.querySelector('p').textContent = tr('invoice.no_access', 'The requested invoice does not exist.');
+                errorState.querySelector('.back-link').textContent = tr('invoice.back_home', 'Back to Home');
+            }
             document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
+            errorState.style.display = 'block';
         }
 
-        function displayInvoice(invoice) {
-            const locale = invoice.locale || localStorage.getItem('liquimixer_locale') || 'cs';
-            const t = getTranslation(locale);
+        async function displayInvoice(invoice) {
+            // Priorita jazyka: 1. localStorage (uživatelské nastavení), 2. jazyk prohlížeče, 3. čeština
+            const locale = localStorage.getItem('liquimixer_locale') || detectBrowserLocale() || 'en';
+            const translations = await loadTranslations(locale);
             const currency = invoice.currency || 'CZK';
 
+            // Helper pro překlady
+            const tr = (key, fallback) => t(translations, key, fallback);
+
             // Aktualizovat HTML text podle jazyka
-            document.getElementById('invoiceTitle').textContent = t.title;
-            document.getElementById('labelInvoiceNumber').textContent = t.invoiceNumber + ':';
-            document.getElementById('labelIssueDate').textContent = t.issueDate + ':';
-            document.getElementById('labelDueDate').textContent = t.dueDate + ':';
-            document.getElementById('labelSupplier').textContent = t.supplier;
-            document.getElementById('labelCustomer').textContent = t.customer;
-            document.getElementById('labelItem').textContent = t.item;
-            document.getElementById('labelQuantity').textContent = t.quantity;
-            document.getElementById('labelTotal').textContent = t.total;
-            document.getElementById('labelTotalToPay').textContent = t.totalToPay + ':';
-            document.getElementById('labelStatus').textContent = t.status + ':';
-            document.getElementById('labelPaymentDate').textContent = t.paymentDate + ':';
-            document.getElementById('paidBadge').textContent = t.paid.toUpperCase();
-            document.getElementById('statusText').textContent = t.paid;
-            document.querySelector('.print-btn').innerHTML = '🖨️ ' + t.print;
-            document.querySelector('.back-link').textContent = '← ' + t.back;
+            document.getElementById('invoiceTitle').textContent = tr('invoice.title', 'Invoice');
+            document.getElementById('labelInvoiceNumber').textContent = tr('invoice.number', 'Invoice Number') + ':';
+            document.getElementById('labelIssueDate').textContent = tr('invoice.date', 'Issue Date') + ':';
+            document.getElementById('labelDueDate').textContent = tr('invoice.due_date', 'Due Date') + ':';
+            document.getElementById('labelSupplier').textContent = tr('invoice.supplier', 'Supplier');
+            document.getElementById('labelCustomer').textContent = tr('invoice.customer', 'Customer');
+            document.getElementById('labelItem').textContent = tr('invoice.item', 'Item');
+            document.getElementById('labelQuantity').textContent = tr('invoice.quantity', 'Quantity');
+            document.getElementById('labelTotal').textContent = tr('invoice.total', 'Total');
+            document.getElementById('labelTotalToPay').textContent = tr('invoice.total_to_pay', 'Total to Pay') + ':';
+            document.getElementById('labelStatus').textContent = tr('invoice.status', 'Status') + ':';
+            document.getElementById('labelPaymentDate').textContent = tr('invoice.payment_date', 'Payment Date') + ':';
+            document.getElementById('paidBadge').textContent = tr('invoice.paid', 'Paid').toUpperCase();
+            document.getElementById('statusText').textContent = tr('invoice.paid', 'Paid');
+            document.querySelector('.print-btn').innerHTML = '🖨️ ' + tr('invoice.print', 'Print Invoice');
+            document.querySelector('.back-link').textContent = '← ' + tr('invoice.back', 'Back to App');
+
+            // Aktualizovat chybové stavy
+            document.querySelector('#errorState h2').textContent = tr('invoice.not_found', 'Invoice not found');
+            document.querySelector('#errorState p').textContent = tr('invoice.no_access', 'The requested invoice does not exist.');
+            document.querySelector('#errorState .back-link').textContent = tr('invoice.back_home', 'Back to Home');
 
             // Vyplnit data
             document.getElementById('invoiceNumber').textContent = invoice.number;
@@ -436,8 +416,8 @@
                 <strong>${supplier.name || 'WOOs, s. r. o.'}</strong><br>
                 ${supplier.street || 'Brloh 12'}<br>
                 ${supplier.zip || '397 01'} ${supplier.city || 'Drhovle'}<br><br>
-                ${t.ico}: ${supplier.ico || '05117810'}<br>
-                ${t.dic}: ${supplier.dic || 'CZ05117810'}
+                ${tr('invoice.ico', 'IČO')}: ${supplier.ico || '05117810'}<br>
+                ${tr('invoice.dic', 'DIČ')}: ${supplier.dic || 'CZ05117810'}
             `;
 
             // Zákazník
@@ -447,11 +427,12 @@
             `;
 
             // Položky
+            const itemName = tr('invoice.subscription_item', 'LiquiMixer Annual Subscription');
             const itemsBody = document.getElementById('itemsBody');
-            const items = invoice.items || [{ name: t.itemName, amount: 1, totalWithVat: invoice.totalWithVat }];
+            const items = invoice.items || [{ name: itemName, amount: 1, totalWithVat: invoice.totalWithVat }];
             itemsBody.innerHTML = items.map(item => `
                 <tr>
-                    <td>${item.name || t.itemName}</td>
+                    <td>${item.name || itemName}</td>
                     <td style="text-align: center;">${item.amount || 1}</td>
                     <td>${Number(item.totalWithVat || item.unitPrice || invoice.totalWithVat).toFixed(2)} ${currency}</td>
                 </tr>
@@ -459,14 +440,14 @@
 
             // Footer
             document.getElementById('invoiceFooter').textContent = 
-                `${supplier.name || 'WOOs, s. r. o.'} | ${t.vatPayer} | ${t.dic}: ${supplier.dic || 'CZ05117810'}`;
+                `${supplier.name || 'WOOs, s. r. o.'} | ${tr('invoice.vat_payer', 'VAT Payer')} | ${tr('invoice.dic', 'VAT ID')}: ${supplier.dic || 'CZ05117810'}`;
 
             // Zobrazit fakturu
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('invoiceContent').style.display = 'block';
 
             // Aktualizovat titul stránky
-            document.title = `${t.title} ${invoice.number} - LiquiMixer`;
+            document.title = `${tr('invoice.title', 'Invoice')} ${invoice.number} - LiquiMixer`;
         }
 
         // Načíst fakturu při načtení stránky

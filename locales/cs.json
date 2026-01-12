@@ -539,7 +539,19 @@
     "vat": "DPH",
     "total": "Celkem s DPH",
     "paid": "Uhrazeno",
-    "subscription_item": "Roční předplatné LiquiMixer (365 dní)"
+    "subscription_item": "Roční předplatné LiquiMixer (365 dní)",
+    "status": "Stav",
+    "payment_date": "Datum úhrady",
+    "ico": "IČO",
+    "dic": "DIČ",
+    "vat_payer": "Plátce DPH",
+    "print": "Vytisknout fakturu",
+    "back": "Zpět do aplikace",
+    "loading": "Načítání faktury...",
+    "not_found": "Faktura nenalezena",
+    "no_access": "Požadovaná faktura neexistuje nebo k ní nemáte přístup.",
+    "back_home": "Zpět na hlavní stránku",
+    "total_to_pay": "Celkem k úhradě"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Váš účet bude smazán za {days} {dayWord}",

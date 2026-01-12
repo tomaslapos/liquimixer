@@ -532,7 +532,19 @@
     "vat": "BTW",
     "total": "Totaal incl. BTW",
     "paid": "Betaald",
-    "subscription_item": "LiquiMixer jaarabonnement (365 dagen)"
+    "subscription_item": "LiquiMixer jaarabonnement (365 dagen)",
+    "status": "Status",
+    "payment_date": "Betaaldatum",
+    "ico": "KvK-nummer",
+    "dic": "BTW-nummer",
+    "vat_payer": "BTW-plichtig",
+    "print": "Factuur afdrukken",
+    "back": "Terug naar app",
+    "loading": "Factuur laden...",
+    "not_found": "Factuur niet gevonden",
+    "no_access": "De gevraagde factuur bestaat niet of u heeft geen toegang.",
+    "back_home": "Terug naar home",
+    "total_to_pay": "Totaal te betalen"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Uw account wordt over {days} {dayWord} verwijderd",

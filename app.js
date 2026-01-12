@@ -331,6 +331,11 @@ window.addEventListener('localeChanged', () => {
     
     // Překreslit detail receptu pokud je zobrazen
     refreshRecipeDetail();
+    
+    // Aktualizovat stav předplatného v profilu (pokud je zobrazen)
+    if (subscriptionData) {
+        updateSubscriptionStatusUI(subscriptionData);
+    }
 });
 
 function initializeSliders() {

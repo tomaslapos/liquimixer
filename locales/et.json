@@ -532,7 +532,19 @@
     "vat": "Käibemaks",
     "total": "Kokku koos käibemaksuga",
     "paid": "Makstud",
-    "subscription_item": "LiquiMixer aastatellimus (365 päeva)"
+    "subscription_item": "LiquiMixer aastatellimus (365 päeva)",
+    "status": "Olek",
+    "payment_date": "Makse kuupäev",
+    "ico": "Registrikood",
+    "dic": "KMKR number",
+    "vat_payer": "Käibemaksukohustuslane",
+    "print": "Prindi arve",
+    "back": "Tagasi rakendusse",
+    "loading": "Arve laadimine...",
+    "not_found": "Arvet ei leitud",
+    "no_access": "Taotletud arve ei eksisteeri või teil pole juurdepääsu.",
+    "back_home": "Tagasi avalehele",
+    "total_to_pay": "Kokku tasumiseks"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Teie konto kustutatakse {days} {dayWord} pärast",

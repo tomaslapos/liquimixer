@@ -532,7 +532,19 @@
     "vat": "MVA",
     "total": "Totalt inkl. MVA",
     "paid": "Betalt",
-    "subscription_item": "LiquiMixer årsabonnement (365 dager)"
+    "subscription_item": "LiquiMixer årsabonnement (365 dager)",
+    "status": "Status",
+    "payment_date": "Betalingsdato",
+    "ico": "Org.nr",
+    "dic": "MVA-nr",
+    "vat_payer": "MVA-registrert",
+    "print": "Skriv ut faktura",
+    "back": "Tilbake til appen",
+    "loading": "Laster faktura...",
+    "not_found": "Faktura ikke funnet",
+    "no_access": "Den forespurte fakturaen finnes ikke eller du har ikke tilgang.",
+    "back_home": "Tilbake til forsiden",
+    "total_to_pay": "Totalt å betale"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Kontoen din slettes om {days} {dayWord}",

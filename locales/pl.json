@@ -539,7 +539,19 @@
     "vat": "VAT",
     "total": "Razem brutto",
     "paid": "Zapłacono",
-    "subscription_item": "Roczna subskrypcja LiquiMixer (365 dni)"
+    "subscription_item": "Roczna subskrypcja LiquiMixer (365 dni)",
+    "status": "Status",
+    "payment_date": "Data płatności",
+    "ico": "NIP",
+    "dic": "NIP UE",
+    "vat_payer": "Płatnik VAT",
+    "print": "Drukuj fakturę",
+    "back": "Wróć do aplikacji",
+    "loading": "Ładowanie faktury...",
+    "not_found": "Faktura nie znaleziona",
+    "no_access": "Żądana faktura nie istnieje lub nie masz dostępu.",
+    "back_home": "Wróć do strony głównej",
+    "total_to_pay": "Razem do zapłaty"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Twoje konto zostanie usunięte za {days} {dayWord}",

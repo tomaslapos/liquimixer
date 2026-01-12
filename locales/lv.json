@@ -532,7 +532,19 @@
     "vat": "PVN",
     "total": "Kopā ar PVN",
     "paid": "Samaksāts",
-    "subscription_item": "LiquiMixer gada abonements (365 dienas)"
+    "subscription_item": "LiquiMixer gada abonements (365 dienas)",
+    "status": "Statuss",
+    "payment_date": "Maksājuma datums",
+    "ico": "Reģ. nr.",
+    "dic": "PVN nr.",
+    "vat_payer": "PVN maksātājs",
+    "print": "Drukāt rēķinu",
+    "back": "Atpakaļ uz lietotni",
+    "loading": "Rēķina ielāde...",
+    "not_found": "Rēķins nav atrasts",
+    "no_access": "Pieprasītais rēķins neeksistē vai jums nav piekļuves.",
+    "back_home": "Atpakaļ uz sākumlapu",
+    "total_to_pay": "Kopā apmaksai"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Jūsu konts tiks dzēsts pēc {days} {dayWord}",

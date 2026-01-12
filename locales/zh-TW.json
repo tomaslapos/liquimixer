@@ -532,7 +532,19 @@
     "vat": "營業稅",
     "total": "含稅總計",
     "paid": "已付款",
-    "subscription_item": "LiquiMixer 年度訂閱（365 天）"
+    "subscription_item": "LiquiMixer 年度訂閱（365 天）",
+    "status": "狀態",
+    "payment_date": "付款日期",
+    "ico": "統一編號",
+    "dic": "稅籍編號",
+    "vat_payer": "營業稅納稅人",
+    "print": "列印發票",
+    "back": "返回應用程式",
+    "loading": "正在載入發票...",
+    "not_found": "找不到發票",
+    "no_access": "請求的發票不存在或您沒有存取權限。",
+    "back_home": "返回首頁",
+    "total_to_pay": "應付總額"
   },
   "emails": {
     "warning_subject": "LiquiMixer：您的帳戶將在{days}{dayWord}後被刪除",

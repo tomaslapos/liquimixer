@@ -532,7 +532,19 @@
     "vat": "消費税",
     "total": "税込合計",
     "paid": "支払済",
-    "subscription_item": "LiquiMixer年間購読（365日）"
+    "subscription_item": "LiquiMixer年間購読（365日）",
+    "status": "ステータス",
+    "payment_date": "支払日",
+    "ico": "法人番号",
+    "dic": "消費税登録番号",
+    "vat_payer": "消費税課税事業者",
+    "print": "請求書を印刷",
+    "back": "アプリに戻る",
+    "loading": "請求書を読み込み中...",
+    "not_found": "請求書が見つかりません",
+    "no_access": "リクエストされた請求書は存在しないか、アクセス権がありません。",
+    "back_home": "ホームに戻る",
+    "total_to_pay": "お支払い合計"
   },
   "emails": {
     "warning_subject": "LiquiMixer: アカウントは{days}{dayWord}後に削除されます",

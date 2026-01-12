@@ -542,7 +542,19 @@
     "vat": "VAT",
     "total": "Total incl. VAT",
     "paid": "Paid",
-    "subscription_item": "LiquiMixer Annual Subscription (365 days)"
+    "subscription_item": "LiquiMixer Annual Subscription (365 days)",
+    "status": "Status",
+    "payment_date": "Payment Date",
+    "ico": "Company ID",
+    "dic": "VAT ID",
+    "vat_payer": "VAT Payer",
+    "print": "Print Invoice",
+    "back": "Back to App",
+    "loading": "Loading invoice...",
+    "not_found": "Invoice not found",
+    "no_access": "The requested invoice does not exist or you do not have access.",
+    "back_home": "Back to Home",
+    "total_to_pay": "Total to Pay"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Your account will be deleted in {days} {dayWord}",

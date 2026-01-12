@@ -532,7 +532,19 @@
     "vat": "KDV",
     "total": "KDV dahil toplam",
     "paid": "Ödendi",
-    "subscription_item": "LiquiMixer yıllık abonelik (365 gün)"
+    "subscription_item": "LiquiMixer yıllık abonelik (365 gün)",
+    "status": "Durum",
+    "payment_date": "Ödeme tarihi",
+    "ico": "Şirket No",
+    "dic": "Vergi No",
+    "vat_payer": "KDV Mükellefi",
+    "print": "Faturayı yazdır",
+    "back": "Uygulamaya dön",
+    "loading": "Fatura yükleniyor...",
+    "not_found": "Fatura bulunamadı",
+    "no_access": "İstenen fatura mevcut değil veya erişim izniniz yok.",
+    "back_home": "Ana sayfaya dön",
+    "total_to_pay": "Ödenecek toplam"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Hesabınız {days} {dayWord} sonra silinecek",

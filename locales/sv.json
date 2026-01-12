@@ -532,7 +532,19 @@
     "vat": "Moms",
     "total": "Totalt inkl. moms",
     "paid": "Betald",
-    "subscription_item": "LiquiMixer årsprenumeration (365 dagar)"
+    "subscription_item": "LiquiMixer årsprenumeration (365 dagar)",
+    "status": "Status",
+    "payment_date": "Betalningsdatum",
+    "ico": "Org.nr",
+    "dic": "Momsnr",
+    "vat_payer": "Momsregistrerad",
+    "print": "Skriv ut faktura",
+    "back": "Tillbaka till appen",
+    "loading": "Laddar faktura...",
+    "not_found": "Faktura hittades inte",
+    "no_access": "Den begärda fakturan finns inte eller du har inte åtkomst.",
+    "back_home": "Tillbaka till startsidan",
+    "total_to_pay": "Totalt att betala"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Ditt konto raderas om {days} {dayWord}",
