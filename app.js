@@ -6069,7 +6069,9 @@ async function processPayment() {
                 action: 'create',
                 data: {
                     planType: 'yearly',
-                    locale: window.i18n?.currentLocale || 'cs',
+                    // Jazyk uživatele z localStorage pro fakturu (priorita před lokalizací)
+                    locale: localStorage.getItem('liquimixer_locale') || window.i18n?.currentLocale || 'cs',
+                    // Země pro DPH účely
                     country: userLocation?.countryCode || 'CZ'
                 }
             })

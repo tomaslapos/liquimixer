@@ -164,7 +164,9 @@ serve(async (req) => {
           vat_amount: vatAmount,
           total_amount: totalAmount,
           currency: pricing.currency,
-          auto_renew: false
+          auto_renew: false,
+          user_locale: data?.locale || 'cs', // Jazyk uživatele pro fakturu
+          user_country: data?.country || 'CZ', // Země pro DPH
         }
 
         const { data: newSubscription, error } = await supabaseAdmin

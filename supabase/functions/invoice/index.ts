@@ -16,17 +16,15 @@ import {
 } from '../_shared/cors.ts'
 import { getEmailTranslations } from '../_shared/email-translations.ts'
 
-// Firemní údaje z Secrets
+// Firemní údaje - správné hodnoty
 const COMPANY = {
-  name: Deno.env.get('COMPANY_NAME') || 'WOOs, s. r. o.',
-  street: Deno.env.get('COMPANY_STREET') || 'Brloh 12',
-  city: Deno.env.get('COMPANY_CITY') || 'Drhovle',
-  zip: Deno.env.get('COMPANY_ZIP') || '397 01',
+  name: 'WOOs, s. r. o.',
+  street: 'Brloh 12',
+  city: 'Drhovle',
+  zip: '397 01',
   country: 'CZ',
-  ico: Deno.env.get('COMPANY_ICO') || '05117810',
-  dic: Deno.env.get('COMPANY_DIC') || 'CZ05117810',
-  bankAccount: Deno.env.get('COMPANY_BANK_ACCOUNT') || 'CZ9520100000002601012639',
-  bankName: Deno.env.get('COMPANY_BANK_NAME') || 'Fio banka',
+  ico: '05117810',
+  dic: 'CZ05117810',
 }
 
 // SMTP konfigurace
@@ -74,6 +72,71 @@ serve(async (req) => {
     const { action, data } = await req.json()
 
     switch (action) {
+      case 'getInvoice': {
+        // Získat fakturu pro zobrazení na stránce
+        const { invoiceId, clerkId: requestClerkId } = data
+
+        if (!invoiceId) {
+          return new Response(
+            JSON.stringify({ error: 'Chybí ID faktury' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        // Načíst fakturu z DB
+        const { data: invoice, error: invoiceError } = await supabaseAdmin
+          .from('invoices')
+          .select('*')
+          .eq('id', invoiceId)
+          .single()
+
+        if (invoiceError || !invoice) {
+          return new Response(
+            JSON.stringify({ error: 'Faktura nenalezena' }),
+            { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        // Ověřit, že faktura patří uživateli (pokud byl předán clerkId)
+        if (requestClerkId && invoice.clerk_id !== requestClerkId) {
+          return new Response(
+            JSON.stringify({ error: 'Přístup odepřen' }),
+            { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        // Vrátit data faktury
+        return new Response(
+          JSON.stringify({
+            success: true,
+            invoice: {
+              id: invoice.id,
+              number: invoice.invoice_number,
+              dateOfIssue: invoice.issue_date,
+              dateOfMaturity: invoice.due_date,
+              dateOfPayment: invoice.paid_at,
+              totalWithVat: invoice.total_amount,
+              totalWithoutVat: invoice.subtotal,
+              vatAmount: invoice.vat_amount,
+              vatRate: invoice.vat_rate,
+              currency: invoice.currency,
+              customerName: invoice.customer_name,
+              customerEmail: invoice.customer_email,
+              locale: invoice.locale,
+              status: invoice.status,
+              items: [{
+                name: 'Roční předplatné LiquiMixer',
+                amount: 1,
+                unitPrice: invoice.total_amount,
+                totalWithVat: invoice.total_amount
+              }],
+              supplier: COMPANY
+            }
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
       case 'generate': {
         // Generovat fakturu pro předplatné
         const { subscriptionId } = data
@@ -592,32 +655,29 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
   const dateLocale = locale === 'cs' ? 'cs-CZ' : locale === 'sk' ? 'sk-SK' : 'en-GB'
   const currency = invoice.currency || 'CZK'
   
-  // Supplier data z iDoklad nebo fallback
-  const supplier = invoice.supplier || {
+  // Supplier data - vždy použít správné firemní údaje
+  const supplier = {
     name: COMPANY.name,
     street: COMPANY.street,
     city: COMPANY.city,
     zip: COMPANY.zip,
     ico: COMPANY.ico,
     dic: COMPANY.dic,
-    bankAccount: COMPANY.bankAccount,
   }
 
-  // Položky z iDoklad
+  // Položky z iDoklad - použít správnou částku
+  const totalAmount = invoice.totalWithVat || invoice.total || 59
   const items = invoice.items || [{
     name: trans.idoklad_item_name,
     amount: 1,
-    unitPrice: invoice.totalWithVat,
-    totalWithVat: invoice.totalWithVat
+    unitPrice: totalAmount,
+    totalWithVat: totalAmount
   }]
 
-  const itemsHtml = items.map((item: any) => `
-    <tr>
-      <td style="padding: 8px; border: 1px solid #ddd;">${item.name}</td>
-      <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${item.amount || 1}</td>
-      <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${(item.totalWithVat || item.unitPrice || 0).toFixed(2)} ${currency}</td>
-    </tr>
-  `).join('')
+  const itemsHtml = items.map((item: any) => {
+    const itemTotal = item.totalWithVat || item.unitPrice || totalAmount
+    return `<tr><td style="padding:8px;border:1px solid #ddd;">${item.name}</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${item.amount || 1}</td><td style="padding:8px;border:1px solid #ddd;text-align:right;">${Number(itemTotal).toFixed(2)} ${currency}</td></tr>`
+  }).join('')
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '-'
@@ -628,121 +688,13 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
     }
   }
 
-    return `
-<!DOCTYPE html>
-      <html>
-<head>
-  <meta charset="UTF-8">
-  <style>
-    @media print {
-      .no-print { display: none !important; }
-      body { font-size: 12px; }
-    }
-  </style>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333;">
-  
-  <div class="no-print" style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-    <h2 style="margin: 0 0 10px 0; color: #2e7d32;">✓ ${t.title}</h2>
-    <p style="margin: 0;">${t.greeting} ${t.intro}</p>
-    <p style="margin: 10px 0 0 0;"><strong>${t.subscriptionActive}</strong></p>
-  </div>
+  // Link na online zobrazení faktury v LiquiMixer (pokud máme ID z naší DB)
+  // Použijeme invoice.dbId pro link na naši stránku, nebo invoice.id jako fallback
+  const invoiceDbId = invoice.dbId || invoice.id
+  const invoiceLink = invoiceDbId ? `https://www.liquimixer.com/invoice.html?id=${invoiceDbId}` : ''
 
-  <div style="border: 2px solid #333; padding: 20px; background: #fff;">
-    
-    <h1 style="text-align: center; margin: 0 0 20px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">
-      ${t.invoiceTitle}
-    </h1>
-
-    <table style="width: 100%; margin-bottom: 20px;">
-      <tr>
-        <td style="width: 50%; vertical-align: top;">
-          <strong>${t.invoiceNumber}:</strong> ${invoice.number}<br>
-          <strong>${t.issueDate}:</strong> ${formatDate(invoice.dateOfIssue)}<br>
-          <strong>${t.dueDate}:</strong> ${formatDate(invoice.dateOfMaturity)}
-        </td>
-        <td style="width: 50%; vertical-align: top; text-align: right;">
-          <span style="background: #4caf50; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold;">
-            ${t.paid}
-          </span>
-        </td>
-      </tr>
-    </table>
-
-    <table style="width: 100%; margin-bottom: 20px;">
-      <tr>
-        <td style="width: 50%; vertical-align: top; padding-right: 20px;">
-          <div style="background: #f5f5f5; padding: 15px; border-radius: 4px;">
-            <strong style="font-size: 14px;">${t.supplier}</strong><br><br>
-            <strong>${supplier.name}</strong><br>
-            ${supplier.street}<br>
-            ${supplier.zip} ${supplier.city}<br><br>
-            ${t.ico}: ${supplier.ico}<br>
-            ${t.dic}: ${supplier.dic}<br><br>
-            ${t.bankAccount}:<br>
-            ${supplier.bankAccount}
-          </div>
-        </td>
-        <td style="width: 50%; vertical-align: top;">
-          <div style="background: #f5f5f5; padding: 15px; border-radius: 4px;">
-            <strong style="font-size: 14px;">${t.customer}</strong><br><br>
-            <strong>${customerName}</strong><br>
-            ${customerEmail}
-          </div>
-        </td>
-      </tr>
-    </table>
-
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-      <thead>
-        <tr style="background: #333; color: white;">
-          <th style="padding: 10px; text-align: left;">${t.item}</th>
-          <th style="padding: 10px; text-align: center;">${t.quantity}</th>
-          <th style="padding: 10px; text-align: right;">${t.total}</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${itemsHtml}
-      </tbody>
-    </table>
-
-    <table style="width: 100%; margin-bottom: 20px;">
-      <tr>
-        <td style="width: 60%;"></td>
-        <td style="width: 40%;">
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr style="font-size: 18px; font-weight: bold; background: #f5f5f5;">
-              <td style="padding: 10px;">${t.totalToPay}:</td>
-              <td style="padding: 10px; text-align: right;">${(invoice.totalWithVat || 0).toFixed(2)} ${currency}</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-
-    <div style="border-top: 1px solid #ddd; padding-top: 15px;">
-      <p><strong>${t.status}:</strong> <span style="color: #4caf50; font-weight: bold;">${t.paid}</span></p>
-      ${invoice.dateOfPayment ? `<p><strong>${t.paymentDate}:</strong> ${formatDate(invoice.dateOfPayment)}</p>` : ''}
-    </div>
-
-    <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">
-      ${supplier.name} | ${t.vatPayer} | ${t.dic}: ${supplier.dic}
-    </div>
-
-  </div>
-
-  <div class="no-print" style="margin-top: 20px; padding: 15px; background: #fff3e0; border-radius: 8px;">
-    <p style="margin: 0;">📄 <strong>${t.printLink}</strong></p>
-  </div>
-
-  <div class="no-print" style="margin-top: 20px; text-align: center; color: #666;">
-    <p>${t.regards},<br><strong>${t.team}</strong></p>
-  </div>
-
-      </body>
-      </html>
-    `
-  }
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>@media print{.no-print{display:none!important}body{font-size:12px}}</style></head><body style="font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px;color:#333;"><div class="no-print" style="background:#e8f5e9;padding:15px;border-radius:8px;margin-bottom:20px;"><h2 style="margin:0 0 10px 0;color:#2e7d32;">&#10003; ${t.title}</h2><p style="margin:0;">${t.greeting} ${t.intro}</p><p style="margin:10px 0 0 0;"><strong>${t.subscriptionActive}</strong></p></div><div style="border:2px solid #333;padding:20px;background:#fff;"><h1 style="text-align:center;margin:0 0 20px 0;color:#333;border-bottom:2px solid #333;padding-bottom:10px;">${t.invoiceTitle}</h1><table style="width:100%;margin-bottom:20px;"><tr><td style="width:50%;vertical-align:top;"><strong>${t.invoiceNumber}:</strong> ${invoice.number}<br><strong>${t.issueDate}:</strong> ${formatDate(invoice.dateOfIssue)}<br><strong>${t.dueDate}:</strong> ${formatDate(invoice.dateOfMaturity)}</td><td style="width:50%;vertical-align:top;text-align:right;"><span style="background:#4caf50;color:white;padding:5px 15px;border-radius:4px;font-weight:bold;">${t.paid}</span></td></tr></table><table style="width:100%;margin-bottom:20px;"><tr><td style="width:50%;vertical-align:top;padding-right:20px;"><div style="background:#f5f5f5;padding:15px;border-radius:4px;"><strong style="font-size:14px;">${t.supplier}</strong><br><br><strong>${supplier.name}</strong><br>${supplier.street}<br>${supplier.zip} ${supplier.city}<br><br>${t.ico}: ${supplier.ico}<br>${t.dic}: ${supplier.dic}</div></td><td style="width:50%;vertical-align:top;"><div style="background:#f5f5f5;padding:15px;border-radius:4px;"><strong style="font-size:14px;">${t.customer}</strong><br><br><strong>${customerName}</strong><br>${customerEmail}</div></td></tr></table><table style="width:100%;border-collapse:collapse;margin-bottom:20px;"><thead><tr style="background:#333;color:white;"><th style="padding:10px;text-align:left;">${t.item}</th><th style="padding:10px;text-align:center;">${t.quantity}</th><th style="padding:10px;text-align:right;">${t.total}</th></tr></thead><tbody>${itemsHtml}</tbody></table><table style="width:100%;margin-bottom:20px;"><tr><td style="width:60%;"></td><td style="width:40%;"><table style="width:100%;border-collapse:collapse;"><tr style="font-size:18px;font-weight:bold;background:#f5f5f5;"><td style="padding:10px;">${t.totalToPay}:</td><td style="padding:10px;text-align:right;">${Number(totalAmount).toFixed(2)} ${currency}</td></tr></table></td></tr></table><div style="border-top:1px solid #ddd;padding-top:15px;"><p><strong>${t.status}:</strong> <span style="color:#4caf50;font-weight:bold;">${t.paid}</span></p>${invoice.dateOfPayment ? `<p><strong>${t.paymentDate}:</strong> ${formatDate(invoice.dateOfPayment)}</p>` : ''}</div><div style="text-align:center;margin-top:20px;padding-top:15px;border-top:1px solid #ddd;font-size:12px;color:#666;">${supplier.name} | ${t.vatPayer} | ${t.dic}: ${supplier.dic}</div></div>${invoiceLink ? `<div class="no-print" style="margin-top:20px;padding:15px;background:#e3f2fd;border-radius:8px;text-align:center;"><a href="${invoiceLink}" style="color:#1976d2;text-decoration:none;font-weight:bold;">&#128196; ${t.printLink}</a></div>` : ''}<div class="no-print" style="margin-top:20px;text-align:center;color:#666;"><p>${t.regards},<br><strong>${t.team}</strong></p></div></body></html>`
+}
 
 function getEmailBody(locale: string, invoice: any): string {
   // Získat překlady z centrální překladové struktury
