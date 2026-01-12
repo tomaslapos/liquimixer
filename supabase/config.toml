@@ -1,0 +1,6 @@
+# Supabase Edge Functions Configuration
+
+[functions.gpwebpay]
+# Disable JWT verification for GP WebPay callback
+# GP WebPay sends callbacks without Authorization header
+verify_jwt = false
