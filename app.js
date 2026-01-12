@@ -4,6 +4,23 @@
 // =========================================
 
 // =========================================
+// SECURITY: HTML Sanitization
+// Ochrana proti XSS útokům
+// =========================================
+
+// Escapování HTML entit - VŽDY použít pro uživatelský vstup
+function escapeHtml(unsafe) {
+    if (unsafe === null || unsafe === undefined) return '';
+    return String(unsafe)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
+}
+
+// =========================================
 // NOTIFICATIONS
 // Toast notifikace pro uživatele
 // =========================================
@@ -34,23 +51,6 @@ function showNotification(message, type = 'info') {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
     }, 5000);
-}
-
-// =========================================
-// SECURITY: HTML Sanitization
-// Ochrana proti XSS útokům
-// =========================================
-
-// Escapování HTML entit - VŽDY použít pro uživatelský vstup
-function escapeHtml(unsafe) {
-    if (unsafe === null || unsafe === undefined) return '';
-    return String(unsafe)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#x27;')
-        .replace(/\//g, '&#x2F;');
 }
 
 // Sanitizace URL - povoluje pouze bezpečné protokoly
