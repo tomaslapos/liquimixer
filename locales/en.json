@@ -541,6 +541,7 @@
     "price": "Price excl. VAT",
     "vat": "VAT",
     "total": "Total incl. VAT",
+    "subtotal": "Subtotal excl. VAT",
     "paid": "Paid",
     "subscription_item": "LiquiMixer Annual Subscription (365 days)",
     "status": "Status",

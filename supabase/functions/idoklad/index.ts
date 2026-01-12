@@ -111,14 +111,15 @@ serve(async (req) => {
         const vatRate = getVatRateForCountry(country || 'CZ')
         
         // amount je konečná cena S DPH (59 Kč, 2.40 EUR, 2.90 USD)
-        // Pro iDoklad: PriceType=1 znamená, že UnitPrice je cena S DPH
+        // Pro iDoklad: PriceType=0 znamená, že UnitPrice je cena BEZ DPH
+        // iDoklad pak správně dopočítá DPH a celkovou cenu S DPH
         // Cena bez DPH = amount / (1 + vatRate/100)
         const unitPriceWithoutVat = vatRate.rate > 0 
           ? Math.round((amount / (1 + vatRate.rate / 100)) * 100) / 100
           : amount
-        const vatAmount = amount - unitPriceWithoutVat
+        const vatAmount = Math.round((amount - unitPriceWithoutVat) * 100) / 100
         
-        console.log(`Price calculation: total=${amount} ${currency}, vatRate=${vatRate.rate}%, base=${unitPriceWithoutVat}, vat=${vatAmount}`)
+        console.log(`Price calculation: totalWithVat=${amount} ${currency}, vatRate=${vatRate.rate}%, baseWithoutVat=${unitPriceWithoutVat}, vat=${vatAmount}`)
 
         const invoiceData: any = {
           Description: invoiceDescription,
@@ -136,9 +137,9 @@ serve(async (req) => {
             Name: itemName,
             Amount: 1,
             Unit: unit,
-            UnitPrice: amount, // Konečná cena S DPH
+            UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH - iDoklad dopočítá DPH
             VatRateType: vatRate.type, // 0 = základní 21%, 3 = osvobozeno 0%
-            PriceType: 1, // 1 = cena S DPH
+            PriceType: 0, // 0 = cena BEZ DPH (iDoklad přidá DPH)
             DiscountPercentage: 0,
             IsTaxMovement: false,
           }],
@@ -458,15 +459,14 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
     if (response.ok) {
       const result = await response.json()
       const options = result.Data || result.Items || []
-      console.log('Available payment options:', JSON.stringify(options))
+      console.log('Available payment options:', JSON.stringify(options.map((o: any) => ({ Id: o.Id, Name: o.Name }))))
       
-      // Hledat platbu kartou (různé varianty názvu)
-      const cardOption = options.find((opt: any) => 
-        opt.Name?.toLowerCase().includes('kart') || 
-        opt.Name?.toLowerCase().includes('card') ||
-        opt.Name?.toLowerCase().includes('platební karta') ||
-        opt.Name?.toLowerCase().includes('online')
-      )
+      // Hledat platbu kartou (různé varianty názvu) - rozšířený seznam
+      const cardKeywords = ['kart', 'card', 'platební karta', 'online', 'platba kartou', 'kartou']
+      const cardOption = options.find((opt: any) => {
+        const name = opt.Name?.toLowerCase() || ''
+        return cardKeywords.some(kw => name.includes(kw))
+      })
       
       if (cardOption) {
         console.log('Found card payment option:', cardOption.Id, cardOption.Name)
@@ -474,7 +474,7 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
       }
       
       // Platba kartou neexistuje - vytvořit ji
-      console.log('Card payment option not found, creating new one...')
+      console.log('Card payment option not found, creating "Platba kartou"...')
       const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/PaymentOptions`, {
         method: 'POST',
         headers: {
@@ -482,7 +482,7 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          Name: 'Platební kartou',
+          Name: 'Platba kartou',
           IsDefault: false,
         })
       })
@@ -493,15 +493,34 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
         console.log('Created card payment option:', optionData.Id, optionData.Name)
         return optionData.Id
       } else {
-        console.error('Failed to create payment option:', await createResponse.text())
+        const errorText = await createResponse.text()
+        console.error('Failed to create payment option:', errorText)
+        
+        // Pokud vytvoření selhalo, zkusit najít existující nebo použít první dostupný
+        if (options.length > 0) {
+          // Preferovat "Hotovost" před "Převodným příkazem"
+          const cashOption = options.find((opt: any) => 
+            opt.Name?.toLowerCase().includes('hotov') || 
+            opt.Name?.toLowerCase().includes('cash')
+          )
+          if (cashOption) {
+            console.log('Using cash option as fallback:', cashOption.Id, cashOption.Name)
+            return cashOption.Id
+          }
+          // Jinak použít první
+          console.log('Using first available payment option:', options[0].Id, options[0].Name)
+          return options[0].Id
+        }
       }
+    } else {
+      console.error('Failed to fetch payment options:', await response.text())
     }
   } catch (e) {
     console.error('Payment options error:', e)
   }
   
-  // Fallback - vrátit ID pro "Hotově" (1) aby faktura prošla, ale zalogovat varování
-  console.warn('Using fallback payment option ID 1 (Hotově)')
+  // Fallback - vrátit ID pro "Hotově" (typicky 1) aby faktura prošla
+  console.warn('Using fallback payment option ID 1')
   return 1
 }
 
