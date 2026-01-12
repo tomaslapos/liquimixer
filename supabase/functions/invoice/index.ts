@@ -14,6 +14,7 @@ import {
   getRateLimitIdentifier,
   rateLimitResponse 
 } from '../_shared/cors.ts'
+import { getEmailTranslations } from '../_shared/email-translations.ts'
 
 // Firemní údaje z Secrets
 const COMPANY = {
@@ -498,15 +499,15 @@ serve(async (req) => {
 
         } catch (emailError: any) {
           console.error('Email send error:', emailError.message, emailError.stack)
-          return new Response(
-            JSON.stringify({ 
-              success: true,
+        return new Response(
+          JSON.stringify({ 
+            success: true,
               invoice: { id: invoice.id, invoice_number: invoice.invoice_number, pdf_url: pdfUrl },
               emailSent: false,
               emailError: emailError.message
-            }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          )
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
         }
       }
 
@@ -545,119 +546,49 @@ function getLocaleFromCountry(country: string): string {
   return localeMap[country] || 'en'
 }
 
-function getItemDescription(currency: string, locale: string): string {
-  if (locale === 'cs') {
-    return 'Roční předplatné LiquiMixer (365 dní)'
-  }
-  if (locale === 'sk') {
-    return 'Ročné predplatné LiquiMixer (365 dní)'
-  }
-  if (locale === 'de') {
-    return 'LiquiMixer Jahresabonnement (365 Tage)'
-  }
-  if (locale === 'pl') {
-    return 'Roczna subskrypcja LiquiMixer (365 dni)'
-  }
-  return 'LiquiMixer Annual Subscription (365 days)'
+function getItemDescription(currency: string, locale: string = 'en'): string {
+  const t = getEmailTranslations(locale)
+  return t.idoklad_item_name
 }
 
 function getEmailSubject(locale: string, invoiceNumber: string): string {
-  if (locale === 'cs') {
-    return `Faktura ${invoiceNumber} - LiquiMixer`
-  }
-  if (locale === 'sk') {
-    return `Faktúra ${invoiceNumber} - LiquiMixer`
-  }
-  return `Invoice ${invoiceNumber} - LiquiMixer`
+  const t = getEmailTranslations(locale)
+  return `${t.invoice_number} ${invoiceNumber} - LiquiMixer`
 }
 
 // Generovat email z dat z iDoklad
 function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: string, customerEmail: string): string {
-  const texts: Record<string, any> = {
-    cs: {
-      title: 'Děkujeme za Váš nákup!',
-      greeting: 'Dobrý den,',
-      intro: 'níže naleznete daňový doklad za předplatné služby LiquiMixer.',
-      invoiceTitle: 'FAKTURA - DAŇOVÝ DOKLAD',
-      invoiceNumber: 'Číslo faktury',
-      issueDate: 'Datum vystavení',
-      dueDate: 'Datum splatnosti',
-      supplier: 'DODAVATEL',
-      customer: 'ODBĚRATEL',
-      ico: 'IČ',
-      dic: 'DIČ',
-      bankAccount: 'Bankovní účet',
-      item: 'Položka',
-      quantity: 'Množství',
-      unitPrice: 'Cena',
-      total: 'Celkem',
-      totalToPay: 'CELKEM K ÚHRADĚ',
-      status: 'Stav',
-      paid: 'UHRAZENO',
-      paymentDate: 'Datum úhrady',
-      subscriptionActive: 'Vaše předplatné je nyní aktivní.',
-      printLink: 'Pro tisk faktury použijte funkci tisku ve vašem emailovém klientovi (Ctrl+P).',
-      regards: 'S pozdravem',
-      team: 'tým LiquiMixer',
-      vatPayer: 'Plátce DPH',
-    },
-    sk: {
-      title: 'Ďakujeme za Váš nákup!',
-      greeting: 'Dobrý deň,',
-      intro: 'nižšie nájdete daňový doklad za predplatné služby LiquiMixer.',
-      invoiceTitle: 'FAKTÚRA - DAŇOVÝ DOKLAD',
-      invoiceNumber: 'Číslo faktúry',
-      issueDate: 'Dátum vystavenia',
-      dueDate: 'Dátum splatnosti',
-      supplier: 'DODÁVATEĽ',
-      customer: 'ODBERATEĽ',
-      ico: 'IČ',
-      dic: 'DIČ',
-      bankAccount: 'Bankový účet',
-      item: 'Položka',
-      quantity: 'Množstvo',
-      unitPrice: 'Cena',
-      total: 'Celkom',
-      totalToPay: 'CELKOM NA ÚHRADU',
-      status: 'Stav',
-      paid: 'UHRADENÉ',
-      paymentDate: 'Dátum úhrady',
-      subscriptionActive: 'Vaše predplatné je teraz aktívne.',
-      printLink: 'Pre tlač faktúry použite funkciu tlače vo vašom emailovom klientovi (Ctrl+P).',
-      regards: 'S pozdravom',
-      team: 'tím LiquiMixer',
-      vatPayer: 'Platca DPH',
-    },
-    en: {
-      title: 'Thank you for your purchase!',
-      greeting: 'Hello,',
-      intro: 'Please find below your invoice for LiquiMixer subscription.',
-      invoiceTitle: 'INVOICE - TAX DOCUMENT',
-      invoiceNumber: 'Invoice number',
-      issueDate: 'Issue date',
-      dueDate: 'Due date',
-      supplier: 'SUPPLIER',
-      customer: 'CUSTOMER',
-      ico: 'Company ID',
-      dic: 'VAT ID',
-      bankAccount: 'Bank account',
-      item: 'Item',
-      quantity: 'Qty',
-      unitPrice: 'Price',
-      total: 'Total',
-      totalToPay: 'TOTAL',
-      status: 'Status',
-      paid: 'PAID',
-      paymentDate: 'Payment date',
-      subscriptionActive: 'Your subscription is now active.',
-      printLink: 'To print this invoice, use your email client\'s print function (Ctrl+P).',
-      regards: 'Best regards',
-      team: 'The LiquiMixer Team',
-      vatPayer: 'VAT payer',
-    }
+  // Získat překlady z centrální překladové struktury
+  const trans = getEmailTranslations(locale)
+  
+  // Mapování na lokální proměnné pro zpětnou kompatibilitu
+  const t = {
+    title: trans.invoice_email_title,
+    greeting: trans.invoice_greeting,
+    intro: trans.invoice_email_intro,
+    invoiceTitle: trans.invoice_email_invoice_title,
+    invoiceNumber: trans.invoice_number,
+    issueDate: trans.invoice_email_issue_date,
+    dueDate: trans.invoice_email_due_date,
+    supplier: trans.invoice_email_supplier,
+    customer: trans.invoice_email_customer,
+    ico: trans.invoice_email_ico,
+    dic: trans.invoice_email_dic,
+    bankAccount: trans.invoice_email_bank_account,
+    item: trans.invoice_email_item,
+    quantity: trans.invoice_email_quantity,
+    unitPrice: trans.invoice_email_unit_price,
+    total: trans.invoice_email_total,
+    totalToPay: trans.invoice_email_total_to_pay,
+    status: trans.invoice_email_status,
+    paid: trans.invoice_email_paid,
+    paymentDate: trans.invoice_email_payment_date,
+    subscriptionActive: trans.invoice_email_subscription_active,
+    printLink: trans.invoice_email_print_link,
+    regards: trans.invoice_email_regards,
+    team: trans.invoice_email_team,
+    vatPayer: trans.invoice_email_vat_payer,
   }
-
-  const t = texts[locale] || texts.en
   const dateLocale = locale === 'cs' ? 'cs-CZ' : locale === 'sk' ? 'sk-SK' : 'en-GB'
   const currency = invoice.currency || 'CZK'
   
@@ -674,7 +605,7 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
 
   // Položky z iDoklad
   const items = invoice.items || [{
-    name: locale === 'cs' ? 'Roční předplatné LiquiMixer PRO (365 dní)' : 'LiquiMixer PRO Annual Subscription (365 days)',
+    name: trans.idoklad_item_name,
     amount: 1,
     unitPrice: invoice.totalWithVat,
     totalWithVat: invoice.totalWithVat
@@ -697,9 +628,9 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
     }
   }
 
-  return `
+    return `
 <!DOCTYPE html>
-<html>
+      <html>
 <head>
   <meta charset="UTF-8">
   <style>
@@ -808,19 +739,22 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
     <p>${t.regards},<br><strong>${t.team}</strong></p>
   </div>
 
-</body>
-</html>
-  `
-}
+      </body>
+      </html>
+    `
+  }
 
 function getEmailBody(locale: string, invoice: any): string {
+  // Získat překlady z centrální překladové struktury
+  const trans = getEmailTranslations(locale)
+  
   // Parsovat položky
   let items = []
   try {
     items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items || []
   } catch {
     items = [{
-      description: invoice.locale === 'cs' ? 'Roční předplatné LiquiMixer (365 dní)' : 'LiquiMixer Annual Subscription (365 days)',
+      description: trans.idoklad_item_name,
       quantity: 1,
       unit_price_net: invoice.subtotal,
       vat_rate: invoice.vat_rate,
@@ -829,110 +763,41 @@ function getEmailBody(locale: string, invoice: any): string {
     }]
   }
 
-  // Texty podle locale
-  const texts: Record<string, any> = {
-    cs: {
-      title: 'Děkujeme za Váš nákup!',
-      greeting: 'Dobrý den,',
-      intro: 'níže naleznete daňový doklad za předplatné služby LiquiMixer.',
-      invoiceTitle: 'FAKTURA - DAŇOVÝ DOKLAD',
-      invoiceNumber: 'Číslo faktury',
-      issueDate: 'Datum vystavení',
-      duzp: 'DUZP',
-      dueDate: 'Datum splatnosti',
-      supplier: 'DODAVATEL',
-      customer: 'ODBĚRATEL',
-      ico: 'IČ',
-      dic: 'DIČ',
-      bankAccount: 'Bankovní účet',
-      item: 'Položka',
-      quantity: 'Množství',
-      unitPrice: 'Cena bez DPH',
-      vat: 'DPH',
-      total: 'Celkem s DPH',
-      subtotal: 'Základ daně',
-      vatAmount: 'DPH',
-      totalToPay: 'CELKEM K ÚHRADĚ',
-      status: 'Stav',
-      paid: 'UHRAZENO',
-      paymentMethod: 'Způsob platby',
-      paymentDate: 'Datum úhrady',
-      subscriptionActive: 'Vaše předplatné je nyní aktivní.',
-      printLink: 'Pro tisk faktury použijte funkci tisku ve vašem emailovém klientovi (Ctrl+P).',
-      regards: 'S pozdravem',
-      team: 'tým LiquiMixer',
-      vatPayer: 'Plátce DPH',
-      gateway: 'Platební brána'
-    },
-    sk: {
-      title: 'Ďakujeme za Váš nákup!',
-      greeting: 'Dobrý deň,',
-      intro: 'nižšie nájdete daňový doklad za predplatné služby LiquiMixer.',
-      invoiceTitle: 'FAKTÚRA - DAŇOVÝ DOKLAD',
-      invoiceNumber: 'Číslo faktúry',
-      issueDate: 'Dátum vystavenia',
-      duzp: 'DUZP',
-      dueDate: 'Dátum splatnosti',
-      supplier: 'DODÁVATEĽ',
-      customer: 'ODBERATEĽ',
-      ico: 'IČ',
-      dic: 'DIČ',
-      bankAccount: 'Bankový účet',
-      item: 'Položka',
-      quantity: 'Množstvo',
-      unitPrice: 'Cena bez DPH',
-      vat: 'DPH',
-      total: 'Celkom s DPH',
-      subtotal: 'Základ dane',
-      vatAmount: 'DPH',
-      totalToPay: 'CELKOM NA ÚHRADU',
-      status: 'Stav',
-      paid: 'UHRADENÉ',
-      paymentMethod: 'Spôsob platby',
-      paymentDate: 'Dátum úhrady',
-      subscriptionActive: 'Vaše predplatné je teraz aktívne.',
-      printLink: 'Pre tlač faktúry použite funkciu tlače vo vašom emailovom klientovi (Ctrl+P).',
-      regards: 'S pozdravom',
-      team: 'tím LiquiMixer',
-      vatPayer: 'Platca DPH',
-      gateway: 'Platobná brána'
-    },
-    en: {
-      title: 'Thank you for your purchase!',
-      greeting: 'Hello,',
-      intro: 'Please find below your invoice for LiquiMixer subscription.',
-      invoiceTitle: 'INVOICE - TAX DOCUMENT',
-      invoiceNumber: 'Invoice number',
-      issueDate: 'Issue date',
-      duzp: 'Tax point date',
-      dueDate: 'Due date',
-      supplier: 'SUPPLIER',
-      customer: 'CUSTOMER',
-      ico: 'Company ID',
-      dic: 'VAT ID',
-      bankAccount: 'Bank account',
-      item: 'Item',
-      quantity: 'Qty',
-      unitPrice: 'Price excl. VAT',
-      vat: 'VAT',
-      total: 'Total incl. VAT',
-      subtotal: 'Subtotal',
-      vatAmount: 'VAT',
-      totalToPay: 'TOTAL',
-      status: 'Status',
-      paid: 'PAID',
-      paymentMethod: 'Payment method',
-      paymentDate: 'Payment date',
-      subscriptionActive: 'Your subscription is now active.',
-      printLink: 'To print this invoice, use your email client\'s print function (Ctrl+P).',
-      regards: 'Best regards',
-      team: 'The LiquiMixer Team',
-      vatPayer: 'VAT payer',
-      gateway: 'Payment gateway'
-    }
+  // Mapování na lokální proměnné pro zpětnou kompatibilitu
+  const t = {
+    title: trans.invoice_email_title,
+    greeting: trans.invoice_greeting,
+    intro: trans.invoice_email_intro,
+    invoiceTitle: trans.invoice_email_invoice_title,
+    invoiceNumber: trans.invoice_number,
+    issueDate: trans.invoice_email_issue_date,
+    duzp: trans.invoice_email_duzp,
+    dueDate: trans.invoice_email_due_date,
+    supplier: trans.invoice_email_supplier,
+    customer: trans.invoice_email_customer,
+    ico: trans.invoice_email_ico,
+    dic: trans.invoice_email_dic,
+    bankAccount: trans.invoice_email_bank_account,
+    item: trans.invoice_email_item,
+    quantity: trans.invoice_email_quantity,
+    unitPrice: trans.invoice_email_unit_price,
+    vat: trans.invoice_email_vat,
+    total: trans.invoice_email_total,
+    subtotal: trans.invoice_email_subtotal,
+    vatAmount: trans.invoice_email_vat_amount,
+    totalToPay: trans.invoice_email_total_to_pay,
+    status: trans.invoice_email_status,
+    paid: trans.invoice_email_paid,
+    paymentMethod: trans.invoice_email_payment_method,
+    paymentDate: trans.invoice_email_payment_date,
+    subscriptionActive: trans.invoice_email_subscription_active,
+    printLink: trans.invoice_email_print_link,
+    regards: trans.invoice_email_regards,
+    team: trans.invoice_email_team,
+    vatPayer: trans.invoice_email_vat_payer,
+    gateway: trans.invoice_email_gateway,
   }
 
-  const t = texts[locale] || texts.en
   const dateLocale = locale === 'cs' ? 'cs-CZ' : locale === 'sk' ? 'sk-SK' : 'en-GB'
 
   // Generovat HTML tabulku s fakturou
@@ -948,7 +813,7 @@ function getEmailBody(locale: string, invoice: any): string {
 
   return `
 <!DOCTYPE html>
-<html>
+    <html>
 <head>
   <meta charset="UTF-8">
   <style>
@@ -1076,15 +941,15 @@ function getEmailBody(locale: string, invoice: any): string {
     </p>
   </div>
 
-</body>
-</html>
+    </body>
+    </html>
   `
 }
 
 // Generování PDF faktury (jednoduchý textový formát - pro produkci použít knihovnu jako pdfkit)
 function generateInvoicePDF(invoice: any, subscription: any): Uint8Array {
   const locale = invoice.locale || 'cs'
-  const isCzech = locale === 'cs'
+  const t = getEmailTranslations(locale)
 
   // Parsovat položky
   let items = []
@@ -1092,7 +957,7 @@ function generateInvoicePDF(invoice: any, subscription: any): Uint8Array {
     items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items
   } catch {
     items = [{
-      description: getItemDescription(invoice.currency, invoice.locale || 'en'),
+      description: t.idoklad_item_name,
       quantity: 1,
       unit_price_net: invoice.subtotal,
       vat_rate: invoice.vat_rate,
@@ -1101,54 +966,56 @@ function generateInvoicePDF(invoice: any, subscription: any): Uint8Array {
     }]
   }
 
+  const dateLocale = locale === 'cs' ? 'cs-CZ' : locale === 'sk' ? 'sk-SK' : 'en-GB'
+
   // Pro jednoduchost generujeme textový obsah
   // V produkci by se použila knihovna pro PDF generování
   const content = `
-${isCzech ? 'FAKTURA - DAŇOVÝ DOKLAD' : 'INVOICE - TAX DOCUMENT'}
+${t.invoice_email_invoice_title}
 ==========================================
-${isCzech ? 'Číslo faktury' : 'Invoice number'}: ${invoice.invoice_number}
-${isCzech ? 'Datum vystavení' : 'Issue date'}: ${invoice.issue_date}
-${isCzech ? 'Datum uskutečnění zdanitelného plnění' : 'Taxable supply date'}: ${invoice.taxable_supply_date}
-${isCzech ? 'Datum splatnosti' : 'Due date'}: ${invoice.due_date}
+${t.invoice_number}: ${invoice.invoice_number}
+${t.invoice_email_issue_date}: ${invoice.issue_date}
+${t.invoice_email_duzp}: ${invoice.taxable_supply_date}
+${t.invoice_email_due_date}: ${invoice.due_date}
 
-${isCzech ? 'DODAVATEL' : 'SUPPLIER'}
+${t.invoice_email_supplier}
 ------------------------------------------
 ${invoice.supplier_name}
 ${invoice.supplier_street}
 ${invoice.supplier_zip} ${invoice.supplier_city}
-${isCzech ? 'IČ' : 'Company ID'}: ${invoice.supplier_ico}
-${isCzech ? 'DIČ' : 'VAT ID'}: ${invoice.supplier_dic}
-${isCzech ? 'Bankovní účet' : 'Bank account'}: ${invoice.supplier_bank_account}
+${t.invoice_email_ico}: ${invoice.supplier_ico}
+${t.invoice_email_dic}: ${invoice.supplier_dic}
+${t.invoice_email_bank_account}: ${invoice.supplier_bank_account}
 ${invoice.supplier_bank_name}
 
-${isCzech ? 'ODBĚRATEL' : 'CUSTOMER'}
+${t.invoice_email_customer}
 ------------------------------------------
 ${invoice.customer_name}
 ${invoice.customer_email}
 
-${isCzech ? 'POLOŽKY' : 'ITEMS'}
+${t.invoice_email_item}
 ------------------------------------------
 ${items.map((item: any) => `
 ${item.description}
-  ${isCzech ? 'Množství' : 'Quantity'}: ${item.quantity} ${item.unit || 'ks'}
-  ${isCzech ? 'Cena bez DPH' : 'Price excl. VAT'}: ${item.unit_price_net} ${invoice.currency}
-  ${isCzech ? 'DPH' : 'VAT'} ${item.vat_rate}%: ${item.vat_amount} ${invoice.currency}
-  ${isCzech ? 'Celkem s DPH' : 'Total incl. VAT'}: ${item.total_gross} ${invoice.currency}
+  ${t.invoice_email_quantity}: ${item.quantity} ${item.unit || t.idoklad_unit}
+  ${t.invoice_email_unit_price}: ${item.unit_price_net} ${invoice.currency}
+  ${t.invoice_email_vat} ${item.vat_rate}%: ${item.vat_amount} ${invoice.currency}
+  ${t.invoice_email_total}: ${item.total_gross} ${invoice.currency}
 `).join('\n')}
 
-${isCzech ? 'SOUHRN' : 'SUMMARY'}
+${t.invoice_email_subtotal}
 ------------------------------------------
-${isCzech ? 'Základ daně' : 'Tax base'}: ${invoice.subtotal} ${invoice.currency}
-${isCzech ? 'DPH' : 'VAT'} ${invoice.vat_rate}%: ${invoice.vat_amount} ${invoice.currency}
-${isCzech ? 'CELKEM K ÚHRADĚ' : 'TOTAL'}: ${invoice.total} ${invoice.currency}
+${t.invoice_email_subtotal}: ${invoice.subtotal} ${invoice.currency}
+${t.invoice_email_vat_amount} ${invoice.vat_rate}%: ${invoice.vat_amount} ${invoice.currency}
+${t.invoice_email_total_to_pay}: ${invoice.total} ${invoice.currency}
 
-${isCzech ? 'Stav' : 'Status'}: ${isCzech ? 'UHRAZENO' : 'PAID'}
-${isCzech ? 'Způsob platby' : 'Payment method'}: ${invoice.payment_method || 'Platební brána'}
-${invoice.paid_at ? `${isCzech ? 'Datum úhrady' : 'Payment date'}: ${new Date(invoice.paid_at).toLocaleDateString(isCzech ? 'cs-CZ' : 'en-GB')}` : ''}
+${t.invoice_email_status}: ${t.invoice_email_paid}
+${t.invoice_email_payment_method}: ${invoice.payment_method || t.invoice_email_gateway}
+${invoice.paid_at ? `${t.invoice_email_payment_date}: ${new Date(invoice.paid_at).toLocaleDateString(dateLocale)}` : ''}
 
 ==========================================
 ${COMPANY.name}
-${isCzech ? 'Plátce DPH' : 'VAT payer'}
+${t.invoice_email_vat_payer}
   `.trim()
 
   // Převést na Uint8Array (pro skutečné PDF by se použila jiná metoda)
