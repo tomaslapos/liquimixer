@@ -403,9 +403,6 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
 
   // Vytvořit nový kontakt
   try {
-    // Získat název země pro zobrazení
-    const countryName = getCountryName(contact.country)
-    
     const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts`, {
       method: 'POST',
       headers: {
@@ -416,8 +413,7 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
         CompanyName: contact.name,
         Email: contact.email,
         CountryId: getCountryId(contact.country),
-        // Adresa - použít název země jako město, aby se nezobrazovala čárka
-        City: countryName,
+        // Nechat City prázdné - iDoklad zobrazí pouze zemi
       })
     })
 
@@ -452,7 +448,7 @@ async function getDefaultInvoiceSettings(token: string): Promise<any> {
   return {}
 }
 
-// Získat PaymentOptionId pro platbu kartou
+// Získat nebo vytvořit PaymentOptionId pro platbu kartou
 async function getCardPaymentOptionId(token: string): Promise<number> {
   try {
     const response = await fetch(`${IDOKLAD_CONFIG.apiUrl}/PaymentOptions`, {
@@ -468,7 +464,8 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
       const cardOption = options.find((opt: any) => 
         opt.Name?.toLowerCase().includes('kart') || 
         opt.Name?.toLowerCase().includes('card') ||
-        opt.Name?.toLowerCase().includes('platební karta')
+        opt.Name?.toLowerCase().includes('platební karta') ||
+        opt.Name?.toLowerCase().includes('online')
       )
       
       if (cardOption) {
@@ -476,13 +473,36 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
         return cardOption.Id
       }
       
-      // Fallback - pokud nenajdeme kartu, použijeme první dostupnou nebo výchozí 3
-      console.log('Card payment option not found, using default')
+      // Platba kartou neexistuje - vytvořit ji
+      console.log('Card payment option not found, creating new one...')
+      const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/PaymentOptions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Name: 'Platební kartou',
+          IsDefault: false,
+        })
+      })
+      
+      if (createResponse.ok) {
+        const newOption = await createResponse.json()
+        const optionData = newOption.Data || newOption
+        console.log('Created card payment option:', optionData.Id, optionData.Name)
+        return optionData.Id
+      } else {
+        console.error('Failed to create payment option:', await createResponse.text())
+      }
     }
   } catch (e) {
     console.error('Payment options error:', e)
   }
-  return 3 // Výchozí hodnota pro kartu
+  
+  // Fallback - vrátit ID pro "Hotově" (1) aby faktura prošla, ale zalogovat varování
+  console.warn('Using fallback payment option ID 1 (Hotově)')
+  return 1
 }
 
 function getCountryId(countryCode: string): number {
@@ -513,21 +533,16 @@ function getCountryName(countryCode: string): string {
 }
 
 function getVatRateForCountry(countryCode: string): { rate: number, type: number } {
-  // type: 0 = základní, 1 = snížená, 2 = druhá snížená, 3 = nulová
-  const vatRates: Record<string, { rate: number, type: number }> = {
-    'CZ': { rate: 21, type: 0 },
-    'SK': { rate: 20, type: 0 },
-    'DE': { rate: 19, type: 0 },
-    'AT': { rate: 20, type: 0 },
-    'PL': { rate: 23, type: 0 },
-    'HU': { rate: 27, type: 0 },
-    'FR': { rate: 20, type: 0 },
-    'IT': { rate: 22, type: 0 },
-    'ES': { rate: 21, type: 0 },
-    'NL': { rate: 21, type: 0 },
-    'BE': { rate: 21, type: 0 },
-    'GB': { rate: 0, type: 3 }, // Mimo EU
-    'US': { rate: 0, type: 3 }, // Mimo EU
+  // REŽIM OSS do 10 000 EUR: české DPH 21% pro všechny EU země
+  // type: 0 = základní (21%), 1 = snížená, 2 = druhá snížená, 3 = nulová/osvobozeno
+  
+  // Země mimo EU - bez DPH
+  const nonEuCountries = ['GB', 'US', 'CH', 'NO', 'UA', 'RU', 'JP', 'KR', 'CN', 'AU', 'CA']
+  
+  if (nonEuCountries.includes(countryCode)) {
+    return { rate: 0, type: 3 } // Osvobozeno od DPH - export mimo EU
   }
-  return vatRates[countryCode] || { rate: 21, type: 0 }
+  
+  // Všechny EU země - české DPH 21% (režim OSS do 10 000 EUR)
+  return { rate: 21, type: 0 }
 }
