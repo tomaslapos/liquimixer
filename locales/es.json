@@ -496,7 +496,17 @@
     "promo_price_cz": "solo 59 CZK / año",
     "promo_price_eu": "solo 2,40 € / año",
     "promo_price_usd": "solo $2,90 / año",
-    "feature_pro_multiflavor": "Ajuste perfecto con hasta 4 aromas"
+    "feature_pro_multiflavor": "Ajuste perfecto con hasta 4 aromas",
+    "register_first": "Para activar la suscripción, regístrese o inicie sesión primero.",
+    "error_not_logged_in": "Inicie sesión para completar el pago.",
+    "register_and_pay": "Registrarse y pagar",
+    "already_have_account": "¿Ya tiene una cuenta?",
+    "logged_in_as": "Ha iniciado sesión como:",
+    "pay_button_simple": "Pagar",
+    "redirect_info": "Será redirigido a la pasarela de pago GP WebPay",
+    "payment_success": "¡Pago exitoso! Su suscripción ha sido activada.",
+    "payment_failed": "El pago falló. Por favor, inténtelo de nuevo.",
+    "payment_declined": "El pago fue rechazado por su banco. Pruebe otro método de pago."
   },
   "terms": {
     "title": "Términos y Condiciones",

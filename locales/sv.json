@@ -496,7 +496,17 @@
     "promo_price_cz": "endast 59 CZK / år",
     "promo_price_eu": "endast 2,40 € / år",
     "promo_price_usd": "endast $2,90 / år",
-    "feature_pro_multiflavor": "Perfekt inställning med upp till 4 smaker"
+    "feature_pro_multiflavor": "Perfekt inställning med upp till 4 smaker",
+    "register_first": "För att aktivera prenumerationen, registrera dig eller logga in först.",
+    "error_not_logged_in": "Logga in för att slutföra betalningen.",
+    "register_and_pay": "Registrera och betala",
+    "already_have_account": "Har du redan ett konto?",
+    "logged_in_as": "Du är inloggad som:",
+    "pay_button_simple": "Betala",
+    "redirect_info": "Du kommer att omdirigeras till GP WebPay betalningsgateway",
+    "payment_success": "Betalning lyckades! Din prenumeration har aktiverats.",
+    "payment_failed": "Betalningen misslyckades. Försök igen.",
+    "payment_declined": "Betalningen avvisades av din bank. Prova en annan betalningsmetod."
   },
   "terms": {
     "title": "Villkor och bestämmelser",

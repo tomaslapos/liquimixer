@@ -496,7 +496,17 @@
     "promo_price_cz": "tik 59 CZK / metai",
     "promo_price_eu": "tik 2,40 € / metai",
     "promo_price_usd": "tik $2,90 / metai",
-    "feature_pro_multiflavor": "Tobulas derinimas su iki 4 skonių"
+    "feature_pro_multiflavor": "Tobulas derinimas su iki 4 skonių",
+    "register_first": "Norėdami aktyvuoti prenumeratą, pirmiausia užsiregistruokite arba prisijunkite.",
+    "error_not_logged_in": "Prisijunkite, kad užbaigtumėte mokėjimą.",
+    "register_and_pay": "Registruotis ir mokėti",
+    "already_have_account": "Jau turite paskyrą?",
+    "logged_in_as": "Esate prisijungęs kaip:",
+    "pay_button_simple": "Mokėti",
+    "redirect_info": "Būsite nukreipti į GP WebPay mokėjimo vartus",
+    "payment_success": "Mokėjimas sėkmingas! Jūsų prenumerata aktyvuota.",
+    "payment_failed": "Mokėjimas nepavyko. Bandykite dar kartą.",
+    "payment_declined": "Mokėjimą atmetė jūsų bankas. Išbandykite kitą mokėjimo būdą."
   },
   "terms": {
     "title": "Naudojimo sąlygos",

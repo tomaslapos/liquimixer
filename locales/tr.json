@@ -496,7 +496,17 @@
     "promo_price_cz": "sadece 59 CZK / yıl",
     "promo_price_eu": "sadece 2,40 € / yıl",
     "promo_price_usd": "sadece $2,90 / yıl",
-    "feature_pro_multiflavor": "4 aromaya kadar mükemmel ayar"
+    "feature_pro_multiflavor": "4 aromaya kadar mükemmel ayar",
+    "register_first": "Aboneliği etkinleştirmek için lütfen önce kaydolun veya giriş yapın.",
+    "error_not_logged_in": "Ödemeyi tamamlamak için lütfen giriş yapın.",
+    "register_and_pay": "Kaydol ve öde",
+    "already_have_account": "Zaten bir hesabınız var mı?",
+    "logged_in_as": "Şu kullanıcı olarak giriş yaptınız:",
+    "pay_button_simple": "Öde",
+    "redirect_info": "GP WebPay ödeme ağ geçidine yönlendirileceksiniz",
+    "payment_success": "Ödeme başarılı! Aboneliğiniz etkinleştirildi.",
+    "payment_failed": "Ödeme başarısız. Lütfen tekrar deneyin.",
+    "payment_declined": "Ödeme bankanız tarafından reddedildi. Başka bir ödeme yöntemi deneyin."
   },
   "terms": {
     "title": "Kullanım Şartları",

@@ -496,7 +496,17 @@
     "promo_price_cz": "seulement 59 CZK / an",
     "promo_price_eu": "seulement 2,40 € / an",
     "promo_price_usd": "seulement 2,90 $ / an",
-    "feature_pro_multiflavor": "Réglage parfait avec jusqu'à 4 arômes"
+    "feature_pro_multiflavor": "Réglage parfait avec jusqu'à 4 arômes",
+    "register_first": "Pour activer l'abonnement, veuillez d'abord vous inscrire ou vous connecter.",
+    "error_not_logged_in": "Veuillez vous connecter pour finaliser le paiement.",
+    "register_and_pay": "S'inscrire et payer",
+    "already_have_account": "Vous avez déjà un compte ?",
+    "logged_in_as": "Vous êtes connecté en tant que :",
+    "pay_button_simple": "Payer",
+    "redirect_info": "Vous serez redirigé vers la passerelle de paiement GP WebPay",
+    "payment_success": "Paiement réussi ! Votre abonnement a été activé.",
+    "payment_failed": "Le paiement a échoué. Veuillez réessayer.",
+    "payment_declined": "Le paiement a été refusé par votre banque. Essayez un autre moyen de paiement."
   },
   "terms": {
     "title": "Conditions générales",

@@ -496,7 +496,17 @@
     "promo_price_cz": "わずか59 CZK / 年",
     "promo_price_eu": "わずか2.40 € / 年",
     "promo_price_usd": "わずか$2.90 / 年",
-    "feature_pro_multiflavor": "最大4つのフレーバーで完璧な設定"
+    "feature_pro_multiflavor": "最大4つのフレーバーで完璧な設定",
+    "register_first": "サブスクリプションを有効にするには、まず登録またはログインしてください。",
+    "error_not_logged_in": "支払いを完了するにはログインしてください。",
+    "register_and_pay": "登録して支払う",
+    "already_have_account": "すでにアカウントをお持ちですか？",
+    "logged_in_as": "ログイン中：",
+    "pay_button_simple": "支払う",
+    "redirect_info": "GP WebPay決済ゲートウェイにリダイレクトされます",
+    "payment_success": "支払いが完了しました！サブスクリプションが有効になりました。",
+    "payment_failed": "支払いに失敗しました。もう一度お試しください。",
+    "payment_declined": "お支払いが銀行により拒否されました。別の支払い方法をお試しください。"
   },
   "terms": {
     "title": "利用規約",

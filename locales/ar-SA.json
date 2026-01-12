@@ -497,7 +497,17 @@
     "promo_price_cz": "فقط 59 CZK / سنة",
     "promo_price_eu": "فقط 2.40 € / سنة",
     "promo_price_usd": "فقط $2.90 / سنة",
-    "feature_pro_multiflavor": "إعداد مثالي بحد أقصى 4 نكهات"
+    "feature_pro_multiflavor": "إعداد مثالي بحد أقصى 4 نكهات",
+    "register_first": "لتفعيل الاشتراك، يرجى التسجيل أو تسجيل الدخول أولاً.",
+    "error_not_logged_in": "يرجى تسجيل الدخول لإكمال الدفع.",
+    "register_and_pay": "التسجيل والدفع",
+    "already_have_account": "هل لديك حساب بالفعل؟",
+    "logged_in_as": "أنت مسجل الدخول كـ:",
+    "pay_button_simple": "ادفع",
+    "redirect_info": "سيتم توجيهك إلى بوابة الدفع GP WebPay",
+    "payment_success": "تم الدفع بنجاح! تم تفعيل اشتراكك.",
+    "payment_failed": "فشل الدفع. يرجى المحاولة مرة أخرى.",
+    "payment_declined": "تم رفض الدفع من قبل البنك. جرب طريقة دفع أخرى."
   },
   "terms": {
     "title": "الشروط والأحكام",
