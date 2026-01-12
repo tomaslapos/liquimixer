@@ -137,8 +137,7 @@ serve(async (req) => {
             Amount: 1,
             Unit: unit,
             UnitPrice: amount, // Konečná cena S DPH
-            VatRateType: vatRate.type,
-            VatRate: vatRate.rate, // Explicitní sazba DPH
+            VatRateType: vatRate.type, // 0 = základní 21%, 3 = osvobozeno 0%
             PriceType: 1, // 1 = cena S DPH
             DiscountPercentage: 0,
             IsTaxMovement: false,

@@ -258,11 +258,16 @@ function handlePaymentReturn() {
         // Vyčistit URL parametry
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        // Zobrazit úspěšnou notifikaci
-        setTimeout(() => {
-            const message = window.i18n?.t('subscription.payment_success') || 'Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.';
-            showNotification(message, 'success');
-        }, 1000);
+        // Zobrazit úspěšnou notifikaci po načtení překladů
+        const showSuccessMessage = () => {
+            if (window.i18n?.t) {
+                const message = window.i18n.t('subscription.payment_success') || 'Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.';
+                showNotification(message, 'success');
+            } else {
+                setTimeout(showSuccessMessage, 200);
+            }
+        };
+        setTimeout(showSuccessMessage, 500);
         
         // Počkat na Clerk a pak zkontrolovat subscription
         const checkClerkAndSubscription = () => {
