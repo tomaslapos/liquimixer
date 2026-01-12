@@ -4,6 +4,39 @@
 // =========================================
 
 // =========================================
+// NOTIFICATIONS
+// Toast notifikace pro uživatele
+// =========================================
+
+function showNotification(message, type = 'info') {
+    // Odstranit existující notifikaci
+    const existing = document.querySelector('.toast-notification');
+    if (existing) {
+        existing.remove();
+    }
+    
+    // Vytvořit novou notifikaci
+    const notification = document.createElement('div');
+    notification.className = `toast-notification toast-${type}`;
+    notification.innerHTML = `
+        <span class="toast-message">${escapeHtml(message)}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Přidat do stránky
+    document.body.appendChild(notification);
+    
+    // Animace zobrazení
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Automaticky skrýt po 5 sekundách
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+// =========================================
 // SECURITY: HTML Sanitization
 // Ochrana proti XSS útokům
 // =========================================

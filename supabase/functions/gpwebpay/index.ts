@@ -579,17 +579,21 @@ serve(async (req) => {
           .single()
 
         if (!payment) {
+          console.error('Payment not found for order_number:', ORDERNUMBER)
           await logAudit(supabaseAdmin, null, 'payment_callback_not_found', 'payment', null, { ORDERNUMBER }, false, 'Payment not found', req)
           return Response.redirect(`${FAIL_URL}&error=payment_not_found`, 302)
         }
         
+        console.log('Payment found:', payment.id, 'subscription_id:', payment.subscription_id, 'clerk_id:', payment.clerk_id)
         const isTestMode = payment.test_mode || false
 
         // 4. Zkontrolovat výsledek (PRCODE = 0 znamená úspěch)
         const isSuccess = PRCODE === '0' && SRCODE === '0'
+        console.log('Payment result - isSuccess:', isSuccess, 'PRCODE:', PRCODE, 'SRCODE:', SRCODE)
 
         // 5. Aktualizovat payment
-        await supabaseAdmin
+        console.log('Updating payment status to:', isSuccess ? 'completed' : 'failed')
+        const { error: paymentUpdateError } = await supabaseAdmin
           .from('payments')
           .update({
             status: isSuccess ? 'completed' : 'failed',
@@ -601,13 +605,20 @@ serve(async (req) => {
           })
           .eq('id', payment.id)
 
+        if (paymentUpdateError) {
+          console.error('Payment update error:', paymentUpdateError)
+        } else {
+          console.log('Payment updated successfully')
+        }
+
         if (isSuccess) {
           // 6. Aktivovat subscription
           const now = new Date()
           const validTo = new Date(now)
           validTo.setDate(validTo.getDate() + SUBSCRIPTION_DURATION_DAYS)
 
-          await supabaseAdmin
+          console.log('Activating subscription:', payment.subscription_id, 'valid_to:', validTo.toISOString())
+          const { error: subUpdateError } = await supabaseAdmin
             .from('subscriptions')
             .update({
               status: 'active',
@@ -619,8 +630,15 @@ serve(async (req) => {
             })
             .eq('id', payment.subscription_id)
 
+          if (subUpdateError) {
+            console.error('Subscription update error:', subUpdateError)
+          } else {
+            console.log('Subscription activated successfully')
+          }
+
           // 7. Aktualizovat uživatele
-          await supabaseAdmin
+          console.log('Updating user:', payment.clerk_id)
+          const { error: userUpdateError } = await supabaseAdmin
             .from('users')
             .update({
               subscription_status: 'active',
@@ -629,6 +647,12 @@ serve(async (req) => {
               subscription_expires_at: validTo.toISOString()
             })
             .eq('clerk_id', payment.clerk_id)
+
+          if (userUpdateError) {
+            console.error('User update error:', userUpdateError)
+          } else {
+            console.log('User updated successfully')
+          }
 
           // 8. Generovat fakturu a exportovat do iDoklad (asynchronně)
           const invoiceFunctionUrl = `${SUPABASE_URL}/functions/v1/invoice`
