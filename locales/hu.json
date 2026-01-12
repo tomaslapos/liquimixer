@@ -496,7 +496,17 @@
     "promo_price_cz": "csak 59 CZK / év",
     "promo_price_eu": "csak 2,40 € / év",
     "promo_price_usd": "csak $2,90 / év",
-    "feature_pro_multiflavor": "Tökéletes hangolás akár 4 aromával"
+    "feature_pro_multiflavor": "Tökéletes hangolás akár 4 aromával",
+    "register_first": "Az előfizetés aktiválásához először regisztrálj vagy jelentkezz be.",
+    "error_not_logged_in": "A fizetés befejezéséhez jelentkezz be.",
+    "register_and_pay": "Regisztráció és fizetés",
+    "already_have_account": "Már van fiókod?",
+    "logged_in_as": "Bejelentkezve mint:",
+    "pay_button_simple": "Fizetés",
+    "redirect_info": "Átirányításra kerülsz a GP WebPay fizetési kapura",
+    "payment_success": "Sikeres fizetés! Az előfizetésed aktiválva lett.",
+    "payment_failed": "A fizetés sikertelen. Kérjük, próbáld újra.",
+    "payment_declined": "A fizetést a bankod elutasította. Próbálj más fizetési módot."
   },
   "terms": {
     "title": "Általános szerződési feltételek",

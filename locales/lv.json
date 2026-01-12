@@ -496,7 +496,17 @@
     "promo_price_cz": "tikai 59 CZK / gadā",
     "promo_price_eu": "tikai 2,40 € / gadā",
     "promo_price_usd": "tikai $2,90 / gadā",
-    "feature_pro_multiflavor": "Perfekts iestatījums ar līdz 4 garšām"
+    "feature_pro_multiflavor": "Perfekts iestatījums ar līdz 4 garšām",
+    "register_first": "Lai aktivizētu abonementu, vispirms reģistrējieties vai piesakieties.",
+    "error_not_logged_in": "Piesakieties, lai pabeigtu maksājumu.",
+    "register_and_pay": "Reģistrēties un maksāt",
+    "already_have_account": "Jau ir konts?",
+    "logged_in_as": "Esat pieteicies kā:",
+    "pay_button_simple": "Maksāt",
+    "redirect_info": "Jūs tiksiet novirzīts uz GP WebPay maksājumu vārteju",
+    "payment_success": "Maksājums veiksmīgs! Jūsu abonements ir aktivizēts.",
+    "payment_failed": "Maksājums neizdevās. Lūdzu, mēģiniet vēlreiz.",
+    "payment_declined": "Jūsu banka noraidīja maksājumu. Izmēģiniet citu maksājuma veidu."
   },
   "terms": {
     "title": "Lietošanas noteikumi",

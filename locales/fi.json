@@ -496,7 +496,17 @@
     "promo_price_cz": "vain 59 CZK / vuosi",
     "promo_price_eu": "vain 2,40 € / vuosi",
     "promo_price_usd": "vain $2,90 / vuosi",
-    "feature_pro_multiflavor": "Täydellinen säätö jopa 4 maulla"
+    "feature_pro_multiflavor": "Täydellinen säätö jopa 4 maulla",
+    "register_first": "Aktivoidaksesi tilauksen, rekisteröidy tai kirjaudu ensin.",
+    "error_not_logged_in": "Kirjaudu sisään suorittaaksesi maksun.",
+    "register_and_pay": "Rekisteröidy ja maksa",
+    "already_have_account": "Onko sinulla jo tili?",
+    "logged_in_as": "Olet kirjautunut käyttäjänä:",
+    "pay_button_simple": "Maksa",
+    "redirect_info": "Sinut ohjataan GP WebPay -maksuyhdyskäytävään",
+    "payment_success": "Maksu onnistui! Tilauksesi on aktivoitu.",
+    "payment_failed": "Maksu epäonnistui. Yritä uudelleen.",
+    "payment_declined": "Pankkisi hylkäsi maksun. Kokeile toista maksutapaa."
   },
   "terms": {
     "title": "Käyttöehdot",

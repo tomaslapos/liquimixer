@@ -496,7 +496,17 @@
     "promo_price_cz": "ainult 59 CZK / aastas",
     "promo_price_eu": "ainult 2,40 € / aastas",
     "promo_price_usd": "ainult $2,90 / aastas",
-    "feature_pro_multiflavor": "Täiuslik seadistus kuni 4 maitsega"
+    "feature_pro_multiflavor": "Täiuslik seadistus kuni 4 maitsega",
+    "register_first": "Tellimuse aktiveerimiseks registreeru või logi sisse esmalt.",
+    "error_not_logged_in": "Makse lõpetamiseks logi sisse.",
+    "register_and_pay": "Registreeru ja maksa",
+    "already_have_account": "Juba on konto?",
+    "logged_in_as": "Oled sisse logitud kui:",
+    "pay_button_simple": "Maksa",
+    "redirect_info": "Sind suunatakse GP WebPay makseväravasse",
+    "payment_success": "Makse õnnestus! Sinu tellimus on aktiveeritud.",
+    "payment_failed": "Makse ebaõnnestus. Palun proovi uuesti.",
+    "payment_declined": "Makse lükati sinu panga poolt tagasi. Proovi teist makseviisi."
   },
   "terms": {
     "title": "Kasutustingimused",

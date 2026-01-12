@@ -496,7 +496,17 @@
     "promo_price_cz": "仅 59 CZK / 年",
     "promo_price_eu": "仅 2.40 € / 年",
     "promo_price_usd": "仅 $2.90 / 年",
-    "feature_pro_multiflavor": "最多 4 种香精的完美设置"
+    "feature_pro_multiflavor": "最多 4 种香精的完美设置",
+    "register_first": "要激活订阅，请先注册或登录。",
+    "error_not_logged_in": "请登录以完成付款。",
+    "register_and_pay": "注册并付款",
+    "already_have_account": "已有账户？",
+    "logged_in_as": "您已登录为：",
+    "pay_button_simple": "付款",
+    "redirect_info": "您将被重定向到 GP WebPay 支付网关",
+    "payment_success": "付款成功！您的订阅已激活。",
+    "payment_failed": "付款失败。请重试。",
+    "payment_declined": "您的银行拒绝了付款。请尝试其他付款方式。"
   },
   "terms": {
     "title": "使用条款",

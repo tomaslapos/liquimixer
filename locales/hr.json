@@ -496,7 +496,17 @@
     "promo_price_cz": "samo 59 CZK / godišnje",
     "promo_price_eu": "samo 2,40 € / godišnje",
     "promo_price_usd": "samo $2,90 / godišnje",
-    "feature_pro_multiflavor": "Savršeno podešavanje s do 4 okusa"
+    "feature_pro_multiflavor": "Savršeno podešavanje s do 4 okusa",
+    "register_first": "Za aktivaciju pretplate, prvo se registrirajte ili prijavite.",
+    "error_not_logged_in": "Prijavite se za dovršetak plaćanja.",
+    "register_and_pay": "Registrirajte se i platite",
+    "already_have_account": "Već imate račun?",
+    "logged_in_as": "Prijavljeni ste kao:",
+    "pay_button_simple": "Plati",
+    "redirect_info": "Bit ćete preusmjereni na GP WebPay platni sustav",
+    "payment_success": "Plaćanje uspješno! Vaša pretplata je aktivirana.",
+    "payment_failed": "Plaćanje nije uspjelo. Molimo pokušajte ponovo.",
+    "payment_declined": "Plaćanje je odbijeno od strane vaše banke. Pokušajte drugi način plaćanja."
   },
   "terms": {
     "title": "Uvjeti korištenja",
