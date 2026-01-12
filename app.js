@@ -260,21 +260,35 @@ function handlePaymentReturn() {
         
         // Zobrazit úspěšnou notifikaci po načtení překladů
         const showSuccessMessage = () => {
-            if (window.i18n?.t) {
-                const message = window.i18n.t('subscription.payment_success') || 'Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.';
-                showNotification(message, 'success');
+            // Zkontrolovat, že i18n je inicializováno A překlady byly načteny
+            const translatedMessage = window.i18n?.t?.('subscription.payment_success');
+            // Pokud překlad vrací klíč místo překladu, překlady ještě nejsou načteny
+            if (translatedMessage && translatedMessage !== 'subscription.payment_success') {
+                showNotification(translatedMessage, 'success');
             } else {
-                setTimeout(showSuccessMessage, 200);
+                // Čekat na načtení překladů
+                setTimeout(showSuccessMessage, 300);
             }
         };
-        setTimeout(showSuccessMessage, 500);
+        // Počkat déle na inicializaci stránky a překladů
+        setTimeout(showSuccessMessage, 1000);
         
         // Počkat na Clerk a pak zkontrolovat subscription
+        // Omezit počet pokusů aby se nečekalo nekonečně
+        let clerkCheckAttempts = 0;
+        const maxClerkCheckAttempts = 20; // Max 10 sekund čekání
+        
         const checkClerkAndSubscription = () => {
+            clerkCheckAttempts++;
             if (window.Clerk?.user) {
+                console.log('User is signed in after payment, checking subscription...');
                 checkSubscriptionStatus();
-            } else {
+            } else if (clerkCheckAttempts < maxClerkCheckAttempts) {
                 setTimeout(checkClerkAndSubscription, 500);
+            } else {
+                console.log('User is not signed in after payment redirect - session may have expired');
+                // Uživatel není přihlášen - zobrazíme notifikaci a modal pro přihlášení
+                // Platba ale proběhla úspěšně, takže po přihlášení by měl mít předplatné
             }
         };
         checkClerkAndSubscription();
@@ -289,16 +303,20 @@ function handlePaymentReturn() {
         // Vyčistit URL parametry
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        // Zobrazit chybovou notifikaci
-        setTimeout(() => {
-            const message = window.i18n?.t('subscription.payment_failed') || 'Platba se nezdařila. Zkuste to prosím znovu.';
-            showNotification(message, 'error');
-            
-            // Zobrazit subscription modal pro opakování platby
-            if (window.Clerk?.user) {
-                showSubscriptionModal();
+        // Zobrazit chybovou notifikaci po načtení překladů
+        const showFailMessage = () => {
+            const translatedMessage = window.i18n?.t?.('subscription.payment_failed');
+            if (translatedMessage && translatedMessage !== 'subscription.payment_failed') {
+                showNotification(translatedMessage, 'error');
+                // Zobrazit subscription modal pro opakování platby
+                if (window.Clerk?.user) {
+                    showSubscriptionModal();
+                }
+            } else {
+                setTimeout(showFailMessage, 300);
             }
-        }, 1000);
+        };
+        setTimeout(showFailMessage, 1000);
     }
 }
 
