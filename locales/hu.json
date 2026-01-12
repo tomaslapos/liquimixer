@@ -532,7 +532,19 @@
     "vat": "ÁFA",
     "total": "Összesen ÁFA-val",
     "paid": "Fizetve",
-    "subscription_item": "LiquiMixer éves előfizetés (365 nap)"
+    "subscription_item": "LiquiMixer éves előfizetés (365 nap)",
+    "status": "Állapot",
+    "payment_date": "Fizetés dátuma",
+    "ico": "Cégjegyzékszám",
+    "dic": "Adószám",
+    "vat_payer": "ÁFA-fizető",
+    "print": "Számla nyomtatása",
+    "back": "Vissza az alkalmazáshoz",
+    "loading": "Számla betöltése...",
+    "not_found": "Számla nem található",
+    "no_access": "A kért számla nem létezik, vagy nincs hozzáférése.",
+    "back_home": "Vissza a főoldalra",
+    "total_to_pay": "Fizetendő összesen"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Fiókja {days} {dayWord} múlva törlődik",

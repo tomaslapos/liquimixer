@@ -532,7 +532,19 @@
     "vat": "PDV",
     "total": "Ukupno s PDV-om",
     "paid": "Plaćeno",
-    "subscription_item": "LiquiMixer godišnja pretplata (365 dana)"
+    "subscription_item": "LiquiMixer godišnja pretplata (365 dana)",
+    "status": "Status",
+    "payment_date": "Datum plaćanja",
+    "ico": "OIB",
+    "dic": "PDV ID",
+    "vat_payer": "Obveznik PDV-a",
+    "print": "Ispiši račun",
+    "back": "Natrag u aplikaciju",
+    "loading": "Učitavanje računa...",
+    "not_found": "Račun nije pronađen",
+    "no_access": "Traženi račun ne postoji ili nemate pristup.",
+    "back_home": "Natrag na početnu",
+    "total_to_pay": "Ukupno za platiti"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Vaš račun bit će izbrisan za {days} {dayWord}",

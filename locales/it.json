@@ -532,7 +532,19 @@
     "vat": "IVA",
     "total": "Totale IVA inclusa",
     "paid": "Pagato",
-    "subscription_item": "Abbonamento annuale LiquiMixer (365 giorni)"
+    "subscription_item": "Abbonamento annuale LiquiMixer (365 giorni)",
+    "status": "Stato",
+    "payment_date": "Data di pagamento",
+    "ico": "ID azienda",
+    "dic": "Partita IVA",
+    "vat_payer": "Soggetto IVA",
+    "print": "Stampa fattura",
+    "back": "Torna all'app",
+    "loading": "Caricamento fattura...",
+    "not_found": "Fattura non trovata",
+    "no_access": "La fattura richiesta non esiste o non hai accesso.",
+    "back_home": "Torna alla home",
+    "total_to_pay": "Totale da pagare"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Il tuo account verrà eliminato tra {days} {dayWord}",

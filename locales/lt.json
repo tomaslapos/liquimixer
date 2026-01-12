@@ -532,7 +532,19 @@
     "vat": "PVM",
     "total": "Iš viso su PVM",
     "paid": "Apmokėta",
-    "subscription_item": "LiquiMixer metinė prenumerata (365 dienos)"
+    "subscription_item": "LiquiMixer metinė prenumerata (365 dienos)",
+    "status": "Būsena",
+    "payment_date": "Mokėjimo data",
+    "ico": "Įm. kodas",
+    "dic": "PVM kodas",
+    "vat_payer": "PVM mokėtojas",
+    "print": "Spausdinti sąskaitą",
+    "back": "Grįžti į programą",
+    "loading": "Kraunama sąskaita...",
+    "not_found": "Sąskaita nerasta",
+    "no_access": "Prašoma sąskaita neegzistuoja arba neturite prieigos.",
+    "back_home": "Grįžti į pagrindinį",
+    "total_to_pay": "Iš viso mokėti"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Jūsų paskyra bus ištrinta po {days} {dayWord}",

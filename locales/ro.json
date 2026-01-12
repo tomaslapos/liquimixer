@@ -532,7 +532,19 @@
     "vat": "TVA",
     "total": "Total cu TVA",
     "paid": "Plătit",
-    "subscription_item": "Abonament anual LiquiMixer (365 zile)"
+    "subscription_item": "Abonament anual LiquiMixer (365 zile)",
+    "status": "Stare",
+    "payment_date": "Data plății",
+    "ico": "CUI",
+    "dic": "CIF",
+    "vat_payer": "Plătitor TVA",
+    "print": "Tipărește factura",
+    "back": "Înapoi la aplicație",
+    "loading": "Se încarcă factura...",
+    "not_found": "Factură negăsită",
+    "no_access": "Factura solicitată nu există sau nu aveți acces.",
+    "back_home": "Înapoi la pagina principală",
+    "total_to_pay": "Total de plătit"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Contul tău va fi șters în {days} {dayWord}",

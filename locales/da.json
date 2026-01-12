@@ -532,7 +532,19 @@
     "vat": "Moms",
     "total": "Total inkl. moms",
     "paid": "Betalt",
-    "subscription_item": "LiquiMixer årsabonnement (365 dage)"
+    "subscription_item": "LiquiMixer årsabonnement (365 dage)",
+    "status": "Status",
+    "payment_date": "Betalingsdato",
+    "ico": "CVR-nr",
+    "dic": "Momsnr",
+    "vat_payer": "Momsregistreret",
+    "print": "Udskriv faktura",
+    "back": "Tilbage til app",
+    "loading": "Indlæser faktura...",
+    "not_found": "Faktura ikke fundet",
+    "no_access": "Den ønskede faktura findes ikke eller du har ikke adgang.",
+    "back_home": "Tilbage til forsiden",
+    "total_to_pay": "I alt at betale"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Din konto slettes om {days} {dayWord}",

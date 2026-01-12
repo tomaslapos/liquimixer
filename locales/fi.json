@@ -532,7 +532,19 @@
     "vat": "ALV",
     "total": "Yhteensä sis. ALV",
     "paid": "Maksettu",
-    "subscription_item": "LiquiMixer vuositilaus (365 päivää)"
+    "subscription_item": "LiquiMixer vuositilaus (365 päivää)",
+    "status": "Tila",
+    "payment_date": "Maksupäivä",
+    "ico": "Y-tunnus",
+    "dic": "ALV-tunnus",
+    "vat_payer": "ALV-velvollinen",
+    "print": "Tulosta lasku",
+    "back": "Takaisin sovellukseen",
+    "loading": "Ladataan laskua...",
+    "not_found": "Laskua ei löydy",
+    "no_access": "Pyydettyä laskua ei ole olemassa tai sinulla ei ole käyttöoikeutta.",
+    "back_home": "Takaisin etusivulle",
+    "total_to_pay": "Maksettava yhteensä"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Tilisi poistetaan {days} {dayWord} kuluttua",

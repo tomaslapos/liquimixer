@@ -532,7 +532,19 @@
     "vat": "ПДВ",
     "total": "Укупно са ПДВ-ом",
     "paid": "Плаћено",
-    "subscription_item": "LiquiMixer годишња претплата (365 дана)"
+    "subscription_item": "LiquiMixer годишња претплата (365 дана)",
+    "status": "Статус",
+    "payment_date": "Датум плаћања",
+    "ico": "Матични број",
+    "dic": "ПИБ",
+    "vat_payer": "Обвезник ПДВ-а",
+    "print": "Штампај рачун",
+    "back": "Назад у апликацију",
+    "loading": "Учитавање рачуна...",
+    "not_found": "Рачун није пронађен",
+    "no_access": "Тражени рачун не постоји или немате приступ.",
+    "back_home": "Назад на почетну",
+    "total_to_pay": "Укупно за плаћање"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Ваш налог ће бити обрисан за {days} {dayWord}",

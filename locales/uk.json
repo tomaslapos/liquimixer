@@ -532,7 +532,19 @@
     "vat": "ПДВ",
     "total": "Разом з ПДВ",
     "paid": "Оплачено",
-    "subscription_item": "Річна підписка LiquiMixer (365 днів)"
+    "subscription_item": "Річна підписка LiquiMixer (365 днів)",
+    "status": "Статус",
+    "payment_date": "Дата оплати",
+    "ico": "ЄДРПОУ",
+    "dic": "ІПН",
+    "vat_payer": "Платник ПДВ",
+    "print": "Друкувати рахунок",
+    "back": "Повернутися до додатку",
+    "loading": "Завантаження рахунку...",
+    "not_found": "Рахунок не знайдено",
+    "no_access": "Запитаний рахунок не існує або у вас немає доступу.",
+    "back_home": "На головну",
+    "total_to_pay": "Разом до сплати"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Ваш обліковий запис буде видалено через {days} {dayWord}",

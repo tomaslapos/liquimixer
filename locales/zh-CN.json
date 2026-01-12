@@ -532,7 +532,19 @@
     "vat": "增值税",
     "total": "含税总计",
     "paid": "已付款",
-    "subscription_item": "LiquiMixer 年度订阅（365 天）"
+    "subscription_item": "LiquiMixer 年度订阅（365 天）",
+    "status": "状态",
+    "payment_date": "付款日期",
+    "ico": "企业编号",
+    "dic": "税号",
+    "vat_payer": "增值税纳税人",
+    "print": "打印发票",
+    "back": "返回应用",
+    "loading": "正在加载发票...",
+    "not_found": "未找到发票",
+    "no_access": "请求的发票不存在或您没有访问权限。",
+    "back_home": "返回首页",
+    "total_to_pay": "应付总额"
   },
   "emails": {
     "warning_subject": "LiquiMixer：您的账户将在{days}{dayWord}后被删除",

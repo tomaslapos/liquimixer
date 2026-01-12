@@ -532,7 +532,19 @@
     "vat": "IVA",
     "total": "Total com IVA",
     "paid": "Pago",
-    "subscription_item": "Subscrição anual LiquiMixer (365 dias)"
+    "subscription_item": "Subscrição anual LiquiMixer (365 dias)",
+    "status": "Estado",
+    "payment_date": "Data de pagamento",
+    "ico": "NIF",
+    "dic": "NIF IVA",
+    "vat_payer": "Contribuinte IVA",
+    "print": "Imprimir fatura",
+    "back": "Voltar à aplicação",
+    "loading": "A carregar fatura...",
+    "not_found": "Fatura não encontrada",
+    "no_access": "A fatura solicitada não existe ou não tem acesso.",
+    "back_home": "Voltar ao início",
+    "total_to_pay": "Total a pagar"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Sua conta será excluída em {days} {dayWord}",

@@ -540,7 +540,19 @@
     "vat": "부가세",
     "total": "세후 합계",
     "paid": "결제됨",
-    "subscription_item": "LiquiMixer 연간 구독 (365일)"
+    "subscription_item": "LiquiMixer 연간 구독 (365일)",
+    "status": "상태",
+    "payment_date": "결제일",
+    "ico": "사업자 번호",
+    "dic": "VAT ID",
+    "vat_payer": "VAT 납부자",
+    "print": "청구서 인쇄",
+    "back": "앱으로 돌아가기",
+    "loading": "청구서 로딩 중...",
+    "not_found": "청구서를 찾을 수 없습니다",
+    "no_access": "요청한 청구서가 존재하지 않거나 접근 권한이 없습니다.",
+    "back_home": "홈으로 돌아가기",
+    "total_to_pay": "총 결제 금액"
   },
   "emails": {
     "warning_subject": "LiquiMixer: 계정이 {days}{dayWord} 후 삭제됩니다",

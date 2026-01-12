@@ -539,7 +539,19 @@
     "vat": "MwSt.",
     "total": "Gesamt inkl. MwSt.",
     "paid": "Bezahlt",
-    "subscription_item": "LiquiMixer Jahresabonnement (365 Tage)"
+    "subscription_item": "LiquiMixer Jahresabonnement (365 Tage)",
+    "status": "Status",
+    "payment_date": "Zahlungsdatum",
+    "ico": "Firmen-ID",
+    "dic": "USt-IdNr.",
+    "vat_payer": "MwSt.-Zahler",
+    "print": "Rechnung drucken",
+    "back": "Zurück zur App",
+    "loading": "Rechnung wird geladen...",
+    "not_found": "Rechnung nicht gefunden",
+    "no_access": "Die angeforderte Rechnung existiert nicht oder Sie haben keinen Zugriff.",
+    "back_home": "Zurück zur Startseite",
+    "total_to_pay": "Gesamtbetrag"
   },
   "emails": {
     "warning_subject": "LiquiMixer: Ihr Konto wird in {days} {dayWord} gelöscht",
