@@ -219,11 +219,69 @@ Czech, Slovak, English, German, Polish, French, Spanish, Italian, Dutch, Portugu
 
 ## Update History
 
+- **2026-01-12**: GP WebPay payment gateway integration complete, invoice generation with email delivery
+- **2026-01-10**: Subscription flow redesign (Version D - separate registration and payment steps)
 - **2026-01**: Multi-language expansion to 31 languages, SEO optimization
 - **2025-Q4**: Cloud sync feature, premium subscriptions
 - **2025-Q3**: Recipe management system
 - **2025-Q2**: PWA offline functionality
 - **2025-Q1**: Initial launch with core calculator
+
+## Technical Architecture Notes (for AI/Developers)
+
+### Payment System
+- **Payment Gateway**: GP WebPay (Czech payment processor)
+- **Authentication**: Clerk (https://clerk.com)
+- **Backend**: Supabase Edge Functions (Deno runtime)
+- **Database**: Supabase PostgreSQL with RLS
+
+### Edge Functions
+| Function | Purpose |
+|----------|---------|
+| gpwebpay | Payment processing, callback handling, signature verification |
+| subscription | Subscription CRUD, status check, pricing |
+| invoice | Invoice generation, PDF creation, email delivery |
+| idoklad | Export invoices to iDoklad accounting system |
+| geolocation | User location detection for pricing |
+| contact | Contact form handling |
+| billing | Billing data management |
+| refund | Refund processing |
+| reminder-notify | Subscription reminder emails |
+| user-cleanup | Inactive user cleanup |
+
+### Key Secrets Required (Supabase)
+- `GPWEBPAY_MERCHANT_NUMBER` - GP WebPay merchant ID
+- `GPWEBPAY_PRIVATE_KEY` - Base64 encoded RSA private key (PKCS#8)
+- `GPWEBPAY_PRIVATE_KEY_PASSWORD` - Key password
+- `GPWEBPAY_PUBLIC_KEY` - GPE public key for signature verification
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` - Email configuration
+- `IDOKLAD_CLIENT_ID`, `IDOKLAD_CLIENT_SECRET` - iDoklad API credentials
+- `CLERK_SECRET_KEY` - Clerk backend key
+
+### Database Tables
+- `users` - User profiles synced with Clerk
+- `subscriptions` - Subscription records with status, pricing
+- `payments` - Payment transactions (order_number, status, gateway response)
+- `invoices` - Generated invoices with PDF URLs
+- `pricing` - Locale-specific pricing (CZK, EUR, USD)
+- `recipes`, `products`, `favorites` - User data
+
+### Payment Flow (Version D)
+1. User sees pricing modal (guest state)
+2. User accepts terms, clicks "Register and Pay"
+3. Clerk registration modal opens
+4. After successful registration, subscription modal shows (logged-in state)
+5. User clicks "Pay" - Supabase creates subscription + payment records
+6. User redirected to GP WebPay gateway
+7. After payment, callback updates payment status
+8. Invoice generated and emailed to user
+9. User redirected back with success/failure notification
+
+### Known Issues & Solutions
+- GP WebPay requires pure numeric ORDERNUMBER (max 15 digits)
+- Signature uses RSA-SHA1 with pipe-delimited data string
+- Edge Functions need `--no-verify-jwt` for payment callbacks
+- Invoice columns: vat_rate, subtotal, vat_amount must exist in DB
 
 ---
 
