@@ -500,7 +500,9 @@
     "already_have_account": "Již máte účet?",
     "logged_in_as": "Jste přihlášen jako:",
     "pay_button_simple": "Zaplatit",
-    "redirect_info": "Budete přesměrováni na platební bránu GP WebPay"
+    "redirect_info": "Budete přesměrováni na platební bránu GP WebPay",
+    "payment_success": "Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.",
+    "payment_failed": "Platba se nezdařila. Zkuste to prosím znovu."
   },
   "terms": {
     "title": "Obchodní podmínky",

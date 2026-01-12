@@ -208,7 +208,61 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContact);
     }
+    
+    // Zpracovat návrat z platební brány
+    handlePaymentReturn();
 });
+
+// Zpracování návratu z platební brány GP WebPay
+function handlePaymentReturn() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+        // Úspěšná platba - zobrazit notifikaci a vyčistit URL
+        console.log('Payment successful, refreshing subscription status...');
+        
+        // Vyčistit URL parametry
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Zobrazit úspěšnou notifikaci
+        setTimeout(() => {
+            const message = window.i18n?.t('payment_success') || 'Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.';
+            showNotification(message, 'success');
+        }, 1000);
+        
+        // Počkat na Clerk a pak zkontrolovat subscription
+        const checkClerkAndSubscription = () => {
+            if (window.Clerk?.user) {
+                checkSubscriptionStatus();
+            } else {
+                setTimeout(checkClerkAndSubscription, 500);
+            }
+        };
+        checkClerkAndSubscription();
+        
+    } else if (paymentStatus === 'failed') {
+        // Neúspěšná platba
+        const prcode = urlParams.get('prcode');
+        const srcode = urlParams.get('srcode');
+        
+        console.error('Payment failed:', { prcode, srcode });
+        
+        // Vyčistit URL parametry
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Zobrazit chybovou notifikaci
+        setTimeout(() => {
+            const message = window.i18n?.t('payment_failed') || 'Platba se nezdařila. Zkuste to prosím znovu.';
+            showNotification(message, 'error');
+            
+            // Zobrazit subscription modal pro opakování platby
+            if (window.Clerk?.user) {
+                showSubscriptionModal();
+            }
+        }, 1000);
+    }
+}
 
 // Aktualizovat dynamické texty při změně jazyka
 window.addEventListener('localeChanged', () => {
@@ -6014,10 +6068,13 @@ async function processPayment() {
         });
 
         if (!paymentResponse.ok) {
-            throw new Error('Failed to create payment');
+            const paymentErrorData = await paymentResponse.json().catch(() => ({}));
+            console.error('Payment creation failed:', paymentResponse.status, JSON.stringify(paymentErrorData));
+            throw new Error(`Failed to create payment: ${paymentErrorData.details || paymentErrorData.error || 'Unknown error'}`);
         }
 
         const payResult = await paymentResponse.json();
+        console.log('Payment created, redirect URL:', payResult.redirectUrl);
 
         // 3. Přesměrovat na platební bránu
         if (payResult.redirectUrl) {
