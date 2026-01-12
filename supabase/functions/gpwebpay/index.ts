@@ -681,16 +681,38 @@ serve(async (req) => {
             console.log('User updated successfully')
           }
 
-          // 8. Generovat fakturu a exportovat do iDoklad (SYNCHRONNĚ - musí se dokončit před přesměrováním)
-          const invoiceFunctionUrl = `${SUPABASE_URL}/functions/v1/invoice`
+          // 8. NOVÝ TOK: iDoklad vytvoří fakturu, pak pošleme email
           const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
           
-          console.log('Calling invoice function:')
-          console.log('  URL:', invoiceFunctionUrl)
-          console.log('  Subscription ID:', payment.subscription_id)
-          console.log('  Clerk ID:', payment.clerk_id)
+          // 8a. Získat subscription data pro fakturu
+          const { data: subscription } = await supabaseAdmin
+            .from('subscriptions')
+            .select('*')
+            .eq('id', payment.subscription_id)
+            .single()
+          
+          // 8b. Získat uživatele pro email
+          const { data: user } = await supabaseAdmin
+            .from('users')
+            .select('email, first_name, last_name')
+            .eq('clerk_id', payment.clerk_id)
+            .single()
+          
+          const customerEmail = user?.email || ''
+          const customerName = user?.first_name && user?.last_name 
+            ? `${user.first_name} ${user.last_name}` 
+            : (user?.first_name || customerEmail)
+          
+          console.log('Customer:', customerName, customerEmail)
+          console.log('Subscription:', subscription?.id, 'Amount:', subscription?.total_amount, subscription?.currency)
+          
+          // 8c. Vytvořit fakturu v iDoklad (HLAVNÍ zdroj faktur)
+          const idokladFunctionUrl = `${SUPABASE_URL}/functions/v1/idoklad`
+          let invoiceData = null
+          
           try {
-            const invoiceResponse = await fetch(invoiceFunctionUrl, {
+            console.log('Creating invoice in iDoklad...')
+            const idokladResponse = await fetch(idokladFunctionUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -698,42 +720,64 @@ serve(async (req) => {
                 'apikey': serviceRoleKey,
               },
               body: JSON.stringify({
-                action: 'generateAndSend',
-                data: { 
+                action: 'createInvoice',
+                data: {
                   subscriptionId: payment.subscription_id,
-                  clerkId: payment.clerk_id
+                  clerkId: payment.clerk_id,
+                  customerEmail: customerEmail,
+                  customerName: customerName,
+                  amount: subscription?.total_amount || payment.amount,
+                  currency: subscription?.currency || payment.currency,
+                  locale: subscription?.user_locale || 'cs',
+                  country: subscription?.user_country || 'CZ',
+                  orderNumber: ORDERNUMBER // Číslo objednávky z platební brány
                 }
               })
             })
             
-            const invoiceResult = await invoiceResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
-            console.log('Invoice generation result:', invoiceResult)
+            const idokladResult = await idokladResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
+            console.log('iDoklad result:', JSON.stringify(idokladResult).substring(0, 500))
             
-            // Export do iDoklad pokud faktura byla vytvořena
-            if (invoiceResult.success && invoiceResult.invoice?.id) {
-              console.log('Exporting to iDoklad, invoice ID:', invoiceResult.invoice.id)
-              const idokladFunctionUrl = `${SUPABASE_URL}/functions/v1/idoklad`
-              try {
-                const idokladResponse = await fetch(idokladFunctionUrl, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${serviceRoleKey}`,
-                    'apikey': serviceRoleKey,
-                  },
-                  body: JSON.stringify({
-                    action: 'export',
-                    data: { invoiceId: invoiceResult.invoice.id }
-                  })
-                })
-                const idokladResult = await idokladResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
-                console.log('iDoklad export result:', idokladResult)
-              } catch (idokladErr: any) {
-                console.error('iDoklad export error:', idokladErr.message)
-              }
+            if (idokladResult.success && idokladResult.invoice) {
+              invoiceData = idokladResult.invoice
+              console.log('Invoice created in iDoklad:', invoiceData.number)
+            } else {
+              console.error('iDoklad invoice creation failed:', idokladResult.error)
             }
-          } catch (invoiceErr: any) {
-            console.error('Invoice generation error:', invoiceErr.message)
+          } catch (idokladErr: any) {
+            console.error('iDoklad error:', idokladErr.message)
+          }
+          
+          // 8d. Odeslat email s fakturou (používá data z iDoklad)
+          if (invoiceData && customerEmail) {
+            const invoiceFunctionUrl = `${SUPABASE_URL}/functions/v1/invoice`
+            try {
+              console.log('Sending invoice email to:', customerEmail)
+              const emailResponse = await fetch(invoiceFunctionUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${serviceRoleKey}`,
+                  'apikey': serviceRoleKey,
+                },
+                body: JSON.stringify({
+                  action: 'sendEmail',
+                  data: {
+                    invoice: invoiceData,
+                    customerEmail: customerEmail,
+                    customerName: customerName,
+                    locale: subscription?.user_locale || 'cs'
+                  }
+                })
+              })
+              
+              const emailResult = await emailResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
+              console.log('Email send result:', emailResult)
+            } catch (emailErr: any) {
+              console.error('Email send error:', emailErr.message)
+            }
+          } else {
+            console.log('Skipping email - no invoice data or no customer email')
           }
 
           await logAudit(supabaseAdmin, payment.clerk_id, 'payment_completed', 'payment', payment.id, {
