@@ -311,11 +311,61 @@ serve(async (req) => {
         
         console.log('Found subscription:', subscription.id, 'amount:', subscription.total_amount, 'currency:', subscription.currency)
 
-        // 5. Generovat číslo objednávky (max 15 znaků pro GP WebPay)
-        // DŮLEŽITÉ: ORDERNUMBER musí být POUZE NUMERICKÝ (čísla), max 15 znaků!
-        const timestamp = Date.now().toString().slice(-10) // 10 číslic z timestampu
-        const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0') // 5 náhodných číslic
-        const orderNumber = `${timestamp}${random}`.substring(0, 15) // max 15 číslic
+        // 5. Hledat existující pending platbu pro tuto subscription
+        // Tím zabráníme vytváření duplicitních plateb při opakovaných pokusech
+        const { data: existingPayment } = await supabaseAdmin
+          .from('payments')
+          .select('*')
+          .eq('subscription_id', subscription.id)
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        let payment: any
+        let orderNumber: string
+
+        if (existingPayment) {
+          // Použít existující pending platbu
+          console.log('Using existing pending payment:', existingPayment.id, 'order_number:', existingPayment.order_number)
+          payment = existingPayment
+          orderNumber = existingPayment.order_number
+        } else {
+          // Vytvořit novou platbu
+          // Generovat číslo objednávky (max 15 znaků pro GP WebPay)
+          // DŮLEŽITÉ: ORDERNUMBER musí být POUZE NUMERICKÝ (čísla), max 15 znaků!
+          const timestamp = Date.now().toString().slice(-10) // 10 číslic z timestampu
+          const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0') // 5 náhodných číslic
+          orderNumber = `${timestamp}${random}`.substring(0, 15) // max 15 číslic
+          
+          console.log('Creating new payment with order_number:', orderNumber)
+
+          const { data: newPayment, error: payError } = await supabaseAdmin
+            .from('payments')
+            .insert({
+              clerk_id: clerkId,
+              subscription_id: subscription.id,
+              order_number: orderNumber,
+              amount: subscription.total_amount,
+              currency: subscription.currency,
+              status: 'pending',
+              gateway: 'gpwebpay',
+              test_mode: IS_TEST_MODE
+            })
+            .select()
+            .single()
+
+          if (payError) {
+            console.error('Payment insert error:', payError)
+            await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { error: payError.message }, false, payError.message, req)
+            return new Response(
+              JSON.stringify({ error: 'Failed to create payment', details: payError.message, code: payError.code }),
+              { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
+          
+          payment = newPayment
+        }
         
         // 6. Získat email uživatele
         const { data: user } = await supabaseAdmin
@@ -323,31 +373,6 @@ serve(async (req) => {
           .select('email')
           .eq('clerk_id', clerkId)
           .single()
-
-        // 7. Vytvořit payment záznam
-        const { data: payment, error: payError } = await supabaseAdmin
-          .from('payments')
-          .insert({
-            clerk_id: clerkId,
-            subscription_id: subscription.id,
-            order_number: orderNumber,
-            amount: subscription.total_amount,
-            currency: subscription.currency,
-            status: 'pending',
-            gateway: 'gpwebpay',
-            test_mode: IS_TEST_MODE
-          })
-          .select()
-          .single()
-
-        if (payError) {
-          console.error('Payment insert error:', payError)
-          await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { error: payError.message }, false, payError.message, req)
-          return new Response(
-            JSON.stringify({ error: 'Failed to create payment', details: payError.message, code: payError.code }),
-            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          )
-        }
 
         // 8. Připravit parametry pro GP WebPay
         // Částka v haléřích/centech (nejmenší jednotka měny)
