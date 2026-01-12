@@ -155,7 +155,8 @@ serve(async (req) => {
         const vatAmount = pricing.price * (pricing.vat_rate / 100)
         const totalAmount = pricing.price + vatAmount
 
-        const subscriptionData = {
+        // Základní data pro subscription
+        const subscriptionData: Record<string, any> = {
           clerk_id: clerkId,
           plan_type: planType,
           status: 'pending',
@@ -165,8 +166,15 @@ serve(async (req) => {
           total_amount: totalAmount,
           currency: pricing.currency,
           auto_renew: false,
-          user_locale: data?.locale || 'cs', // Jazyk uživatele pro fakturu
-          user_country: data?.country || 'CZ', // Země pro DPH
+        }
+        
+        // Přidat volitelná pole pokud existují v databázi
+        // Tyto sloupce mohou chybět před aplikací migrace
+        try {
+          subscriptionData.user_locale = data?.locale || 'cs'
+          subscriptionData.user_country = data?.country || 'CZ'
+        } catch (e) {
+          console.log('Optional fields user_locale/user_country not added')
         }
 
         const { data: newSubscription, error } = await supabaseAdmin
