@@ -319,41 +319,227 @@ serve(async (req) => {
 
       case 'generateAndSend': {
         // Kombinovaná akce - generovat a odeslat
-        const { subscriptionId } = data
+        const { subscriptionId, clerkId } = data
+        
+        console.log('generateAndSend: subscriptionId =', subscriptionId, 'clerkId =', clerkId)
 
-        // Nejprve generovat
-        const generateResponse = await fetch(req.url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'generate', data: { subscriptionId } })
-        })
-
-        const generateResult = await generateResponse.json()
-
-        if (!generateResult.success) {
+        if (!subscriptionId) {
           return new Response(
-            JSON.stringify(generateResult),
+            JSON.stringify({ error: 'Chybí ID předplatného' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        // 1. Získat předplatné
+        const { data: subscription, error: subError } = await supabaseAdmin
+          .from('subscriptions')
+          .select('*')
+          .eq('id', subscriptionId)
+          .single()
+
+        if (subError || !subscription) {
+          console.error('Subscription not found:', subError)
+          return new Response(
+            JSON.stringify({ error: 'Předplatné nenalezeno', details: subError?.message }),
+            { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        console.log('Found subscription:', subscription.id, 'clerk_id:', subscription.clerk_id)
+
+        // 2. Získat uživatele
+        const { data: user } = await supabaseAdmin
+          .from('users')
+          .select('*')
+          .eq('clerk_id', subscription.clerk_id)
+          .single()
+
+        console.log('Found user:', user?.email)
+
+        // 3. Generovat číslo faktury
+        const { data: invoiceNumber } = await supabaseAdmin.rpc('generate_invoice_number')
+
+        const now = new Date()
+        const issueDate = now.toISOString().split('T')[0]
+
+        // Vypočítat DPH (ceny jsou s DPH)
+        const grossAmount = subscription.total_amount || subscription.gross_amount
+        const vatRate = subscription.vat_rate || 21
+        const netAmount = grossAmount / (1 + vatRate / 100)
+        const vatAmount = grossAmount - netAmount
+
+        // 4. Vytvořit fakturu v DB
+        const invoiceData = {
+          clerk_id: subscription.clerk_id,
+          subscription_id: subscriptionId,
+          invoice_number: invoiceNumber || `3${now.getFullYear().toString().slice(-2)}${Date.now().toString().slice(-7)}`,
+          document_type: 'invoice',
+          issue_date: issueDate,
+          taxable_supply_date: issueDate,
+          due_date: issueDate,
+          supplier_name: COMPANY.name,
+          supplier_street: COMPANY.street,
+          supplier_city: COMPANY.city,
+          supplier_zip: COMPANY.zip,
+          supplier_country: COMPANY.country,
+          supplier_ico: COMPANY.ico,
+          supplier_dic: COMPANY.dic,
+          supplier_bank_account: COMPANY.bankAccount,
+          supplier_bank_name: COMPANY.bankName,
+          customer_type: 'person',
+          customer_name: user?.first_name && user?.last_name 
+            ? `${user.first_name} ${user.last_name}` 
+            : user?.email || 'Zákazník',
+          customer_email: user?.email,
+          customer_country: subscription.user_country || 'CZ',
+          items: JSON.stringify([{
+            description: getItemDescription(subscription.currency),
+            quantity: 1,
+            unit: 'ks',
+            unit_price_net: Math.round(netAmount * 100) / 100,
+            vat_rate: vatRate,
+            vat_amount: Math.round(vatAmount * 100) / 100,
+            total_net: Math.round(netAmount * 100) / 100,
+            total_gross: Math.round(grossAmount * 100) / 100
+          }]),
+          subtotal: Math.round(netAmount * 100) / 100,
+          vat_rate: vatRate,
+          vat_amount: Math.round(vatAmount * 100) / 100,
+          total: Math.round(grossAmount * 100) / 100,
+          currency: subscription.currency,
+          status: 'paid',
+          paid_at: now.toISOString(),
+          payment_method: subscription.payment_method,
+          payment_reference: subscription.payment_id,
+          locale: subscription.user_country === 'CZ' ? 'cs' : 'en'
+        }
+
+        const { data: invoice, error: invoiceError } = await supabaseAdmin
+          .from('invoices')
+          .insert(invoiceData)
+          .select()
+          .single()
+
+        if (invoiceError) {
+          console.error('Error creating invoice:', invoiceError)
+          return new Response(
+            JSON.stringify({ error: 'Chyba při vytváření faktury', details: invoiceError.message }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
 
-        // Pak odeslat email
-        const sendResponse = await fetch(req.url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'sendEmail', data: { invoiceId: generateResult.invoice.id } })
-        })
+        console.log('Invoice created:', invoice.id, invoice.invoice_number)
 
-        const sendResult = await sendResponse.json()
+        // 5. Generovat PDF
+        const pdfContent = generateInvoicePDF(invoice, subscription)
 
-        return new Response(
-          JSON.stringify({ 
-            success: true,
-            invoice: generateResult.invoice,
-            emailSent: sendResult.success
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        // 6. Uložit PDF do Storage
+        const pdfFileName = `invoices/${invoice.clerk_id}/${invoice.invoice_number}.pdf`
+        const { error: uploadError } = await supabaseAdmin.storage
+          .from('documents')
+          .upload(pdfFileName, pdfContent, {
+            contentType: 'application/pdf',
+            upsert: true
+          })
+
+        let pdfUrl = null
+        if (!uploadError) {
+          const { data: urlData } = supabaseAdmin.storage
+            .from('documents')
+            .getPublicUrl(pdfFileName)
+          pdfUrl = urlData?.publicUrl
+        } else {
+          console.warn('PDF upload error (non-critical):', uploadError.message)
+        }
+
+        // 7. Aktualizovat fakturu s PDF URL
+        if (pdfUrl) {
+          await supabaseAdmin
+            .from('invoices')
+            .update({ pdf_url: pdfUrl })
+            .eq('id', invoice.id)
+        }
+
+        // 8. Odeslat email s fakturou
+        if (!invoice.customer_email) {
+          console.warn('No customer email, skipping email send')
+          return new Response(
+            JSON.stringify({ 
+              success: true, 
+              invoice: { id: invoice.id, invoice_number: invoice.invoice_number, pdf_url: pdfUrl },
+              emailSent: false,
+              emailError: 'No customer email'
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        const emailSubject = getEmailSubject(invoice.locale, invoice.invoice_number)
+        const emailBody = getEmailBody(invoice.locale, invoice)
+
+        console.log('Sending email to:', invoice.customer_email)
+        console.log('SMTP config:', SMTP_CONFIG.hostname, SMTP_CONFIG.port, 'user:', SMTP_CONFIG.username)
+
+        try {
+          const client = new SMTPClient({
+            connection: {
+              hostname: SMTP_CONFIG.hostname,
+              port: SMTP_CONFIG.port,
+              tls: SMTP_CONFIG.tls,
+              auth: {
+                username: SMTP_CONFIG.username,
+                password: SMTP_CONFIG.password,
+              },
+            },
+          })
+
+          await client.send({
+            from: EMAIL_FROM,
+            to: invoice.customer_email,
+            subject: emailSubject,
+            content: emailBody,
+            html: emailBody,
+            attachments: [{
+              filename: `faktura-${invoice.invoice_number}.pdf`,
+              content: pdfContent,
+              contentType: 'application/pdf',
+            }],
+          })
+
+          await client.close()
+
+          console.log('Email sent successfully')
+
+          // Aktualizovat fakturu
+          await supabaseAdmin
+            .from('invoices')
+            .update({ 
+              email_sent: true,
+              email_sent_at: new Date().toISOString()
+            })
+            .eq('id', invoice.id)
+
+          return new Response(
+            JSON.stringify({ 
+              success: true,
+              invoice: { id: invoice.id, invoice_number: invoice.invoice_number, pdf_url: pdfUrl },
+              emailSent: true
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+
+        } catch (emailError: any) {
+          console.error('Email send error:', emailError.message, emailError.stack)
+          return new Response(
+            JSON.stringify({ 
+              success: true,
+              invoice: { id: invoice.id, invoice_number: invoice.invoice_number, pdf_url: pdfUrl },
+              emailSent: false,
+              emailError: emailError.message
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
       }
 
       default:

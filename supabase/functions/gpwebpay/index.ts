@@ -226,9 +226,13 @@ serve(async (req) => {
     if (url.searchParams.has('PRCODE') || url.searchParams.has('OPERATION')) {
       action = 'callback'
       
-      // Funkce pro čištění hodnoty - odstranit VŠECHNY whitespace znaky
+      // Funkce pro čištění hodnoty - odstranit VŠECHNY whitespace a speciální znaky
       const cleanValue = (val: any): string => {
-        return String(val || '').replace(/[\s\r\n\t]+/g, '').trim()
+        const str = String(val || '')
+        // Odstranit všechny whitespace, newlines, tabs, carriage returns
+        const cleaned = str.replace(/[\s\r\n\t\u0000-\u001F\u007F-\u009F]+/g, '')
+        console.log(`cleanValue: "${str}" (len=${str.length}) -> "${cleaned}" (len=${cleaned.length})`)
+        return cleaned
       }
       
       // Parsovat parametry z URL nebo POST body - AGRESIVNĚ ČISTIT!
@@ -521,18 +525,19 @@ serve(async (req) => {
       case 'callback': {
         console.log('Received callback from GP WebPay:', data)
         
-        // Extrahovat a TRIMOVAT všechny hodnoty (GP WebPay může přidávat whitespace/newline)
-        const OPERATION = String(data.OPERATION || '').trim()
-        const ORDERNUMBER = String(data.ORDERNUMBER || '').trim()
-        const PRCODE = String(data.PRCODE || '').trim()
-        const SRCODE = String(data.SRCODE || '').trim()
-        const RESULTTEXT = String(data.RESULTTEXT || '').trim()
-        const DIGEST = String(data.DIGEST || '').trim()
-        const DIGEST1 = String(data.DIGEST1 || '').trim()
+        // Data už byla vyčištěna v parsování výše (cleanValue funkce)
+        // Pouze extrahovat hodnoty z data objektu
+        const OPERATION = data.OPERATION || ''
+        const ORDERNUMBER = data.ORDERNUMBER || ''
+        const PRCODE = data.PRCODE || ''
+        const SRCODE = data.SRCODE || ''
+        const RESULTTEXT = data.RESULTTEXT || ''
+        const DIGEST = data.DIGEST || ''
+        const DIGEST1 = data.DIGEST1 || ''
 
         // 1. Najít platbu podle ORDERNUMBER
         // ORDERNUMBER je unikátní a uložený v tabulce payments
-        console.log('Looking up payment by order_number:', ORDERNUMBER, 'length:', ORDERNUMBER.length)
+        console.log('Looking up payment by order_number:', ORDERNUMBER, 'length:', ORDERNUMBER.length, 'raw:', JSON.stringify(ORDERNUMBER))
 
         // 2. Ověřit podpis odpovědi
         // Data pro DIGEST: OPERATION|ORDERNUMBER|PRCODE|SRCODE|RESULTTEXT (pouze hodnoty které GP WebPay vrací)
@@ -581,15 +586,28 @@ serve(async (req) => {
           return Response.redirect(`${FAIL_URL}&error=invalid_signature`, 302)
         }
 
-        // 3. Získat payment záznam podle order_number
-        const { data: payment } = await supabaseAdmin
-          .from('payments')
-          .select('*, subscriptions(*)')
-          .eq('order_number', ORDERNUMBER)
-          .single()
+        // 3. Získat payment záznam podle order_number pomocí RPC (obchází RLS)
+        console.log('Looking up payment via RPC for order_number:', ORDERNUMBER)
+        const { data: paymentRows, error: paymentLookupError } = await supabaseAdmin
+          .rpc('find_payment_by_order_number', { p_order_number: ORDERNUMBER })
+
+        if (paymentLookupError) {
+          console.error('Payment RPC lookup error:', paymentLookupError.message, paymentLookupError.code, paymentLookupError.details)
+        }
+
+        const payment = paymentRows && paymentRows.length > 0 ? paymentRows[0] : null
+        console.log('RPC result:', payment ? `Found payment ${payment.id}` : 'No payment found', 'rows:', paymentRows?.length)
 
         if (!payment) {
           console.error('Payment not found for order_number:', ORDERNUMBER)
+          // Zkusit najít podobné platby pro debug
+          const { data: similarPayments } = await supabaseAdmin
+            .from('payments')
+            .select('order_number, created_at')
+            .order('created_at', { ascending: false })
+            .limit(5)
+          console.log('Recent payments in DB:', similarPayments?.map(p => p.order_number))
+          
           await logAudit(supabaseAdmin, null, 'payment_callback_not_found', 'payment', null, { ORDERNUMBER }, false, 'Payment not found', req)
           return Response.redirect(`${FAIL_URL}&error=payment_not_found`, 302)
         }
@@ -601,7 +619,7 @@ serve(async (req) => {
         const isSuccess = PRCODE === '0' && SRCODE === '0'
         console.log('Payment result - isSuccess:', isSuccess, 'PRCODE:', PRCODE, 'SRCODE:', SRCODE)
 
-        // 5. Aktualizovat payment
+        // 5. Aktualizovat payment (bez gateway_response - sloupec neexistuje)
         console.log('Updating payment status to:', isSuccess ? 'completed' : 'failed')
         const { error: paymentUpdateError } = await supabaseAdmin
           .from('payments')
@@ -610,8 +628,7 @@ serve(async (req) => {
             prcode: PRCODE,
             srcode: SRCODE,
             result_text: RESULTTEXT,
-            completed_at: isSuccess ? new Date().toISOString() : null,
-            gateway_response: data
+            completed_at: isSuccess ? new Date().toISOString() : null
           })
           .eq('id', payment.id)
 
@@ -664,42 +681,60 @@ serve(async (req) => {
             console.log('User updated successfully')
           }
 
-          // 8. Generovat fakturu a exportovat do iDoklad (asynchronně)
+          // 8. Generovat fakturu a exportovat do iDoklad (SYNCHRONNĚ - musí se dokončit před přesměrováním)
           const invoiceFunctionUrl = `${SUPABASE_URL}/functions/v1/invoice`
+          const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
           
-          fetch(invoiceFunctionUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
-            },
-            body: JSON.stringify({
-              action: 'generateAndSend',
-              data: { subscriptionId: payment.subscription_id }
+          console.log('Calling invoice function:')
+          console.log('  URL:', invoiceFunctionUrl)
+          console.log('  Subscription ID:', payment.subscription_id)
+          console.log('  Clerk ID:', payment.clerk_id)
+          try {
+            const invoiceResponse = await fetch(invoiceFunctionUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${serviceRoleKey}`,
+                'apikey': serviceRoleKey,
+              },
+              body: JSON.stringify({
+                action: 'generateAndSend',
+                data: { 
+                  subscriptionId: payment.subscription_id,
+                  clerkId: payment.clerk_id
+                }
+              })
             })
-          }).then(async (res) => {
-            const result = await res.json()
-            console.log('Invoice generation result:', result)
             
-            // Export do iDoklad
-            if (result.success && result.invoice?.id) {
+            const invoiceResult = await invoiceResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
+            console.log('Invoice generation result:', invoiceResult)
+            
+            // Export do iDoklad pokud faktura byla vytvořena
+            if (invoiceResult.success && invoiceResult.invoice?.id) {
+              console.log('Exporting to iDoklad, invoice ID:', invoiceResult.invoice.id)
               const idokladFunctionUrl = `${SUPABASE_URL}/functions/v1/idoklad`
-              fetch(idokladFunctionUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
-                },
-                body: JSON.stringify({
-                  action: 'export',
-                  data: { invoiceId: result.invoice.id }
+              try {
+                const idokladResponse = await fetch(idokladFunctionUrl, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${serviceRoleKey}`,
+                    'apikey': serviceRoleKey,
+                  },
+                  body: JSON.stringify({
+                    action: 'export',
+                    data: { invoiceId: invoiceResult.invoice.id }
+                  })
                 })
-              }).then(async (res) => {
-                const idokladResult = await res.json()
+                const idokladResult = await idokladResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
                 console.log('iDoklad export result:', idokladResult)
-              }).catch(err => console.error('iDoklad export error:', err))
+              } catch (idokladErr: any) {
+                console.error('iDoklad export error:', idokladErr.message)
+              }
             }
-          }).catch(err => console.error('Invoice generation error:', err))
+          } catch (invoiceErr: any) {
+            console.error('Invoice generation error:', invoiceErr.message)
+          }
 
           await logAudit(supabaseAdmin, payment.clerk_id, 'payment_completed', 'payment', payment.id, {
             orderNumber: ORDERNUMBER,

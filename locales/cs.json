@@ -502,7 +502,8 @@
     "pay_button_simple": "Zaplatit",
     "redirect_info": "Budete přesměrováni na platební bránu GP WebPay",
     "payment_success": "Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.",
-    "payment_failed": "Platba se nezdařila. Zkuste to prosím znovu."
+    "payment_failed": "Platba se nezdařila. Zkuste to prosím znovu.",
+    "payment_declined": "Platba byla zamítnuta vaší bankou. Zkuste jiný způsob platby."
   },
   "terms": {
     "title": "Obchodní podmínky",

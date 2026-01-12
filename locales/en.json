@@ -503,7 +503,10 @@
     "already_have_account": "Already have an account?",
     "logged_in_as": "You are signed in as:",
     "pay_button_simple": "Pay",
-    "redirect_info": "You will be redirected to GP WebPay payment gateway"
+    "redirect_info": "You will be redirected to GP WebPay payment gateway",
+    "payment_success": "Payment successful! Your subscription has been activated.",
+    "payment_failed": "Payment failed. Please try again.",
+    "payment_declined": "Payment was declined by your bank. Please try a different payment method."
   },
   "terms": {
     "title": "Terms and Conditions",
