@@ -132,9 +132,12 @@ serve(async (req) => {
           OrderNumber: orderNumber || '', // Číslo objednávky z platební brány
         }
 
-        // Přidat NumericSequenceId pokud máme
+        // Přidat NumericSequenceId a DocumentSerialNumber z default nastavení
         if (defaultSettings.NumericSequenceId) {
           invoiceData.NumericSequenceId = defaultSettings.NumericSequenceId
+        }
+        if (defaultSettings.DocumentSerialNumber) {
+          invoiceData.DocumentSerialNumber = defaultSettings.DocumentSerialNumber
         }
 
         console.log('Creating invoice with data:', JSON.stringify(invoiceData))
