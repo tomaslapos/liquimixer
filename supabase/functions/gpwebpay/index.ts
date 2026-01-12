@@ -225,23 +225,30 @@ serve(async (req) => {
     // GP WebPay callback přichází jako GET nebo POST s form data
     if (url.searchParams.has('PRCODE') || url.searchParams.has('OPERATION')) {
       action = 'callback'
-      // Parsovat parametry z URL nebo POST body
+      
+      // Funkce pro čištění hodnoty - odstranit VŠECHNY whitespace znaky
+      const cleanValue = (val: any): string => {
+        return String(val || '').replace(/[\s\r\n\t]+/g, '').trim()
+      }
+      
+      // Parsovat parametry z URL nebo POST body - AGRESIVNĚ ČISTIT!
       if (req.method === 'GET') {
         url.searchParams.forEach((value, key) => {
-          data[key] = value
+          data[key] = cleanValue(value)
         })
       } else {
         const formData = await req.formData().catch(() => null)
         if (formData) {
           formData.forEach((value, key) => {
-            data[key] = value
+            data[key] = cleanValue(value)
           })
         } else {
           url.searchParams.forEach((value, key) => {
-            data[key] = value
+            data[key] = cleanValue(value)
           })
         }
       }
+      console.log('Parsed callback data (cleaned):', JSON.stringify(data))
     } else {
       // Standardní JSON API volání
       const body = await req.json()
@@ -514,15 +521,18 @@ serve(async (req) => {
       case 'callback': {
         console.log('Received callback from GP WebPay:', data)
         
-        const { 
-          OPERATION, ORDERNUMBER,
-          PRCODE, SRCODE, RESULTTEXT, 
-          DIGEST, DIGEST1 
-        } = data
+        // Extrahovat a TRIMOVAT všechny hodnoty (GP WebPay může přidávat whitespace/newline)
+        const OPERATION = String(data.OPERATION || '').trim()
+        const ORDERNUMBER = String(data.ORDERNUMBER || '').trim()
+        const PRCODE = String(data.PRCODE || '').trim()
+        const SRCODE = String(data.SRCODE || '').trim()
+        const RESULTTEXT = String(data.RESULTTEXT || '').trim()
+        const DIGEST = String(data.DIGEST || '').trim()
+        const DIGEST1 = String(data.DIGEST1 || '').trim()
 
         // 1. Najít platbu podle ORDERNUMBER
         // ORDERNUMBER je unikátní a uložený v tabulce payments
-        console.log('Looking up payment by order_number:', ORDERNUMBER)
+        console.log('Looking up payment by order_number:', ORDERNUMBER, 'length:', ORDERNUMBER.length)
 
         // 2. Ověřit podpis odpovědi
         // Data pro DIGEST: OPERATION|ORDERNUMBER|PRCODE|SRCODE|RESULTTEXT (pouze hodnoty které GP WebPay vrací)
