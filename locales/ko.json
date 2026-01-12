@@ -496,7 +496,15 @@
     "promo_price_cz": "단 59 CZK / 년",
     "promo_price_eu": "단 2.40 € / 년",
     "promo_price_usd": "단 $2.90 / 년",
-    "feature_pro_multiflavor": "최대 4개 향료로 완벽한 설정"
+    "feature_pro_multiflavor": "최대 4개 향료로 완벽한 설정",
+    "register_and_pay": "등록 및 결제",
+    "already_have_account": "이미 계정이 있으신가요?",
+    "logged_in_as": "로그인 상태:",
+    "pay_button_simple": "결제",
+    "redirect_info": "GP WebPay 결제 게이트웨이로 리디렉션됩니다",
+    "payment_success": "결제가 성공적으로 완료되었습니다! 구독이 활성화되었습니다.",
+    "payment_failed": "결제가 실패했습니다. 다시 시도해 주세요.",
+    "payment_declined": "은행에서 결제가 거부되었습니다. 다른 결제 방법을 시도해 주세요."
   },
   "terms": {
     "title": "이용약관",

@@ -260,7 +260,7 @@ function handlePaymentReturn() {
         
         // Zobrazit úspěšnou notifikaci
         setTimeout(() => {
-            const message = window.i18n?.t('payment_success') || 'Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.';
+            const message = window.i18n?.t('subscription.payment_success') || 'Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.';
             showNotification(message, 'success');
         }, 1000);
         
@@ -286,7 +286,7 @@ function handlePaymentReturn() {
         
         // Zobrazit chybovou notifikaci
         setTimeout(() => {
-            const message = window.i18n?.t('payment_failed') || 'Platba se nezdařila. Zkuste to prosím znovu.';
+            const message = window.i18n?.t('subscription.payment_failed') || 'Platba se nezdařila. Zkuste to prosím znovu.';
             showNotification(message, 'error');
             
             // Zobrazit subscription modal pro opakování platby
