@@ -111,6 +111,18 @@
         .total-box {
             background: #f5f5f5;
             padding: 15px 30px;
+            min-width: 250px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+        .total-row.total-final {
+            border-top: 2px solid #333;
+            margin-top: 10px;
+            padding-top: 10px;
             font-size: 18px;
             font-weight: bold;
         }
@@ -220,7 +232,18 @@
                 </table>
                 <div class="total-section">
                     <div class="total-box">
-                        <span id="labelTotalToPay">Celkem k úhradě:</span> <span id="totalAmount"></span>
+                        <div class="total-row">
+                            <span id="labelSubtotal">Základ bez DPH:</span> 
+                            <span id="subtotalAmount"></span>
+                        </div>
+                        <div class="total-row">
+                            <span id="labelVatAmount">DPH (<span id="vatRateText">21</span>%):</span> 
+                            <span id="vatAmount"></span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span id="labelTotalToPay">Celkem k úhradě:</span> 
+                            <span id="totalAmount"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="status-section">
@@ -330,25 +353,36 @@
             }
 
             try {
+                console.log('Loading invoice with ID:', invoiceId);
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/invoice`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'apikey': SUPABASE_ANON_KEY,
                     },
                     body: JSON.stringify({
                         action: 'getInvoice',
-                        data: { invoiceId }
+                        data: { 
+                            invoiceId: invoiceId
+                        }
                     })
                 });
 
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
                     showError(tr);
                     return;
                 }
 
                 const result = await response.json();
+                console.log('Invoice result:', result);
+                
                 if (!result.success || !result.invoice) {
+                    console.error('Invalid response:', result);
                     showError(tr);
                     return;
                 }
@@ -390,6 +424,7 @@
             document.getElementById('labelItem').textContent = tr('invoice.item', 'Item');
             document.getElementById('labelQuantity').textContent = tr('invoice.quantity', 'Quantity');
             document.getElementById('labelTotal').textContent = tr('invoice.total', 'Total');
+            document.getElementById('labelSubtotal').textContent = tr('invoice.subtotal', 'Subtotal (excl. VAT)') + ':';
             document.getElementById('labelTotalToPay').textContent = tr('invoice.total_to_pay', 'Total to Pay') + ':';
             document.getElementById('labelStatus').textContent = tr('invoice.status', 'Status') + ':';
             document.getElementById('labelPaymentDate').textContent = tr('invoice.payment_date', 'Payment Date') + ':';
@@ -408,7 +443,18 @@
             document.getElementById('issueDate').textContent = formatDate(invoice.dateOfIssue, locale);
             document.getElementById('dueDate').textContent = formatDate(invoice.dateOfMaturity, locale);
             document.getElementById('paymentDate').textContent = formatDate(invoice.dateOfPayment, locale);
-            document.getElementById('totalAmount').textContent = Number(invoice.totalWithVat).toFixed(2) + ' ' + currency;
+            
+            // Výpočet DPH - pokud není v invoice, dopočítat
+            const totalWithVat = Number(invoice.totalWithVat) || 0;
+            const vatRate = Number(invoice.vatRate) || 21;
+            const subtotal = invoice.totalWithoutVat ? Number(invoice.totalWithoutVat) : Math.round((totalWithVat / (1 + vatRate / 100)) * 100) / 100;
+            const vatAmount = invoice.vatAmount ? Number(invoice.vatAmount) : Math.round((totalWithVat - subtotal) * 100) / 100;
+            
+            document.getElementById('subtotalAmount').textContent = subtotal.toFixed(2) + ' ' + currency;
+            document.getElementById('vatRateText').textContent = vatRate.toString();
+            document.getElementById('labelVatAmount').innerHTML = tr('invoice.vat', 'VAT') + ' (' + vatRate + '%)' + ':';
+            document.getElementById('vatAmount').textContent = vatAmount.toFixed(2) + ' ' + currency;
+            document.getElementById('totalAmount').textContent = totalWithVat.toFixed(2) + ' ' + currency;
 
             // Dodavatel
             const supplier = invoice.supplier || {};

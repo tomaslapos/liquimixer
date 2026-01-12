@@ -541,6 +541,7 @@
     "price": "Cena bez DPH",
     "vat": "DPH",
     "total": "Celkom s DPH",
+    "subtotal": "Základ bez DPH",
     "paid": "Uhradené",
     "subscription_item": "Ročné predplatné LiquiMixer (365 dní)",
     "status": "Stav",

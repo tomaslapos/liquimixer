@@ -691,10 +691,10 @@ serve(async (req) => {
             .eq('id', payment.subscription_id)
             .single()
           
-          // 8b. Získat uživatele pro email
+          // 8b. Získat uživatele pro email a jazyk
           const { data: user } = await supabaseAdmin
             .from('users')
-            .select('email, first_name, last_name')
+            .select('email, first_name, last_name, locale')
             .eq('clerk_id', payment.clerk_id)
             .single()
           
@@ -703,7 +703,13 @@ serve(async (req) => {
             ? `${user.first_name} ${user.last_name}` 
             : (user?.first_name || customerEmail)
           
+          // Jazyk pro fakturu a email:
+          // 1. Jazyk uživatele (users.locale) - pokud je nastavený
+          // 2. Jazyk z subscription (GP WebPay lokalizace) - fallback
+          const invoiceLocale = user?.locale || subscription?.user_locale || 'cs'
+          
           console.log('Customer:', customerName, customerEmail)
+          console.log('User locale:', user?.locale, 'Subscription locale:', subscription?.user_locale, '-> Invoice locale:', invoiceLocale)
           console.log('Subscription:', subscription?.id, 'Amount:', subscription?.total_amount, subscription?.currency)
           
           // 8c. Vytvořit fakturu v iDoklad (HLAVNÍ zdroj faktur)
@@ -728,8 +734,8 @@ serve(async (req) => {
                   customerName: customerName,
                   amount: subscription?.total_amount || payment.amount,
                   currency: subscription?.currency || payment.currency,
-                  locale: subscription?.user_locale || 'cs',
-                  country: subscription?.user_country || 'CZ',
+                  locale: invoiceLocale, // Jazyk uživatele pro fakturu (priorita: user.locale -> subscription.user_locale)
+                  country: subscription?.user_country || 'CZ', // Daňová lokalizace zůstává beze změny
                   orderNumber: ORDERNUMBER // Číslo objednávky z platební brány
                 }
               })
@@ -766,7 +772,7 @@ serve(async (req) => {
                     invoice: invoiceData,
                     customerEmail: customerEmail,
                     customerName: customerName,
-                    locale: subscription?.user_locale || 'cs'
+                    locale: invoiceLocale // Jazyk uživatele pro email (priorita: user.locale -> subscription.user_locale)
                   }
                 })
               })
