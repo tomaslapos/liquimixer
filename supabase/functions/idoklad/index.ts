@@ -90,6 +90,10 @@ serve(async (req) => {
         const defaultSettings = await getDefaultInvoiceSettings(token)
         console.log('Default settings:', JSON.stringify(defaultSettings))
 
+        // 3b. Získat správné PaymentOptionId pro platbu kartou
+        const paymentOptionId = await getCardPaymentOptionId(token)
+        console.log('Using PaymentOptionId:', paymentOptionId)
+
         // 4. Připravit data pro fakturu
         const today = new Date().toISOString().split('T')[0]
         const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -105,6 +109,16 @@ serve(async (req) => {
 
         // Určit DPH sazbu podle země
         const vatRate = getVatRateForCountry(country || 'CZ')
+        
+        // DŮLEŽITÉ: amount je konečná cena S DPH, kterou zákazník platí
+        // Musíme vypočítat cenu bez DPH pro iDoklad
+        // Cena s DPH = Cena bez DPH * (1 + DPH/100)
+        // Cena bez DPH = Cena s DPH / (1 + DPH/100)
+        const unitPriceWithoutVat = vatRate.rate > 0 
+          ? Math.round((amount / (1 + vatRate.rate / 100)) * 100) / 100
+          : amount
+        
+        console.log(`Price calculation: total=${amount}, vatRate=${vatRate.rate}%, unitPriceWithoutVat=${unitPriceWithoutVat}`)
 
         const invoiceData: any = {
           Description: invoiceDescription,
@@ -116,15 +130,15 @@ serve(async (req) => {
           PartnerId: partnerId,
           IsEet: false,
           IsIncomeTax: false,
-          PaymentOptionId: 3, // Kartou
+          PaymentOptionId: paymentOptionId, // Dynamicky získané ID pro platbu kartou
           IsPaid: true, // Již zaplaceno
           Items: [{
             Name: itemName,
             Amount: 1,
             Unit: unit,
-            UnitPrice: amount,
+            UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH
             VatRateType: vatRate.type,
-            PriceType: 1, // 1 = cena s DPH
+            PriceType: 0, // 0 = cena bez DPH
             DiscountPercentage: 0,
             IsTaxMovement: false,
           }],
@@ -166,6 +180,9 @@ serve(async (req) => {
         console.log('Invoice created:', JSON.stringify(invoice).substring(0, 500))
 
         // 6. Uložit referenci do naší DB
+        // Použijeme již vypočítanou cenu bez DPH
+        const vatAmount = amount - unitPriceWithoutVat
+        
         const { error: dbError } = await supabaseAdmin
           .from('invoices')
           .insert({
@@ -179,9 +196,9 @@ serve(async (req) => {
             customer_name: customerName,
             customer_country: country,
             currency: currency,
-            subtotal: amount / (1 + vatRate.rate / 100),
+            subtotal: unitPriceWithoutVat,
             vat_rate: vatRate.rate,
-            vat_amount: amount - (amount / (1 + vatRate.rate / 100)),
+            vat_amount: vatAmount,
             total_amount: amount,
             status: 'paid',
             paid_at: new Date().toISOString(),
@@ -386,6 +403,9 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
 
   // Vytvořit nový kontakt
   try {
+    // Získat název země pro zobrazení
+    const countryName = getCountryName(contact.country)
+    
     const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts`, {
       method: 'POST',
       headers: {
@@ -396,6 +416,8 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
         CompanyName: contact.name,
         Email: contact.email,
         CountryId: getCountryId(contact.country),
+        // Adresa - použít název země jako město, aby se nezobrazovala čárka
+        City: countryName,
       })
     })
 
@@ -430,12 +452,64 @@ async function getDefaultInvoiceSettings(token: string): Promise<any> {
   return {}
 }
 
+// Získat PaymentOptionId pro platbu kartou
+async function getCardPaymentOptionId(token: string): Promise<number> {
+  try {
+    const response = await fetch(`${IDOKLAD_CONFIG.apiUrl}/PaymentOptions`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      const options = result.Data || result.Items || []
+      console.log('Available payment options:', JSON.stringify(options))
+      
+      // Hledat platbu kartou (různé varianty názvu)
+      const cardOption = options.find((opt: any) => 
+        opt.Name?.toLowerCase().includes('kart') || 
+        opt.Name?.toLowerCase().includes('card') ||
+        opt.Name?.toLowerCase().includes('platební karta')
+      )
+      
+      if (cardOption) {
+        console.log('Found card payment option:', cardOption.Id, cardOption.Name)
+        return cardOption.Id
+      }
+      
+      // Fallback - pokud nenajdeme kartu, použijeme první dostupnou nebo výchozí 3
+      console.log('Card payment option not found, using default')
+    }
+  } catch (e) {
+    console.error('Payment options error:', e)
+  }
+  return 3 // Výchozí hodnota pro kartu
+}
+
 function getCountryId(countryCode: string): number {
   const countryMap: Record<string, number> = {
     'CZ': 1, 'SK': 2, 'DE': 4, 'AT': 5, 'PL': 6, 'HU': 7,
     'FR': 8, 'IT': 9, 'ES': 10, 'NL': 11, 'BE': 12, 'GB': 13, 'US': 14,
   }
   return countryMap[countryCode] || 1
+}
+
+function getCountryName(countryCode: string): string {
+  const countryNames: Record<string, string> = {
+    'CZ': 'Česká republika',
+    'SK': 'Slovensko',
+    'DE': 'Německo',
+    'AT': 'Rakousko',
+    'PL': 'Polsko',
+    'HU': 'Maďarsko',
+    'FR': 'Francie',
+    'IT': 'Itálie',
+    'ES': 'Španělsko',
+    'NL': 'Nizozemsko',
+    'BE': 'Belgie',
+    'GB': 'Velká Británie',
+    'US': 'USA',
+  }
+  return countryNames[countryCode] || countryCode
 }
 
 function getVatRateForCountry(countryCode: string): { rate: number, type: number } {
