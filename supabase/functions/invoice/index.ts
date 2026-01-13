@@ -174,6 +174,10 @@ serve(async (req) => {
         }
 
         // Vrátit data faktury
+        // Celková částka s DPH může být v: total, amount, nebo total_amount
+        const totalWithVat = invoice.total || invoice.amount || invoice.total_amount || 0
+        console.log('Invoice totals: total=', invoice.total, 'amount=', invoice.amount, 'total_amount=', invoice.total_amount, '=> using', totalWithVat)
+        
         return new Response(
           JSON.stringify({
             success: true,
@@ -183,7 +187,7 @@ serve(async (req) => {
               dateOfIssue: invoice.issue_date,
               dateOfMaturity: invoice.due_date,
               dateOfPayment: invoice.paid_at,
-              totalWithVat: invoice.total_amount,
+              totalWithVat: totalWithVat,
               totalWithoutVat: invoice.subtotal,
               vatAmount: invoice.vat_amount,
               vatRate: invoice.vat_rate,
@@ -195,8 +199,8 @@ serve(async (req) => {
               items: [{
                 name: 'Roční předplatné LiquiMixer',
                 amount: 1,
-                unitPrice: invoice.total_amount,
-                totalWithVat: invoice.total_amount
+                unitPrice: totalWithVat,
+                totalWithVat: totalWithVat
               }],
               supplier: COMPANY
             }
