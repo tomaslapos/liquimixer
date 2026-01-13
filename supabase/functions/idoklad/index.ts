@@ -554,7 +554,11 @@ function getCountryName(countryCode: string): string {
 
 function getVatRateForCountry(countryCode: string): { rate: number, type: number } {
   // REŽIM OSS do 10 000 EUR: české DPH 21% pro všechny EU země
-  // type: 0 = základní (21%), 1 = snížená, 2 = druhá snížená, 3 = nulová/osvobozeno
+  // iDoklad VatRateType hodnoty (dle API dokumentace):
+  // 0 = Reduced1 (snížená 1 - 12%)
+  // 1 = Reduced2 (snížená 2 - 0%)  
+  // 2 = Basic (základní - 21%)
+  // 3 = Zero (nulová/osvobozeno)
   
   // Země mimo EU - bez DPH
   const nonEuCountries = ['GB', 'US', 'CH', 'NO', 'UA', 'RU', 'JP', 'KR', 'CN', 'AU', 'CA']
@@ -564,5 +568,5 @@ function getVatRateForCountry(countryCode: string): { rate: number, type: number
   }
   
   // Všechny EU země - české DPH 21% (režim OSS do 10 000 EUR)
-  return { rate: 21, type: 0 }
+  return { rate: 21, type: 2 } // type: 2 = Basic (základní sazba 21%)
 }
