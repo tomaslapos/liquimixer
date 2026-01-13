@@ -83,37 +83,84 @@ serve(async (req) => {
           )
         }
 
-        // Načíst fakturu z DB - zkusit nejprve podle ID, pak podle iDoklad ID
+        // Načíst fakturu z DB - zkusit podle typu ID
         let invoice = null
         let invoiceError = null
+        const invoiceIdStr = String(invoiceId)
 
-        // Zkusit najít podle našeho ID
-        const { data: invoiceById, error: errorById } = await supabaseAdmin
-          .from('invoices')
-          .select('*')
-          .eq('id', invoiceId)
-          .single()
+        console.log('Looking for invoice with ID:', invoiceIdStr, 'type:', typeof invoiceId)
 
-        if (invoiceById) {
-          invoice = invoiceById
-        } else {
-          // Fallback: zkusit najít podle iDoklad ID
+        // Zjistit, zda je ID ve formátu UUID (naše DB) nebo číslo (iDoklad ID)
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(invoiceIdStr)
+        const isNumeric = /^\d+$/.test(invoiceIdStr)
+
+        console.log('ID format - isUUID:', isUUID, 'isNumeric:', isNumeric)
+
+        if (isUUID) {
+          // Hledat podle našeho DB ID (UUID)
+          const { data: invoiceById, error: errorById } = await supabaseAdmin
+            .from('invoices')
+            .select('*')
+            .eq('id', invoiceIdStr)
+            .single()
+
+          if (invoiceById) {
+            console.log('Found invoice by DB UUID:', invoiceById.id)
+            invoice = invoiceById
+          } else {
+            console.log('Not found by DB UUID. Error:', errorById?.message)
+            invoiceError = errorById
+          }
+        } else if (isNumeric) {
+          // Hledat podle iDoklad ID (číslo jako string)
           const { data: invoiceByIdoklad, error: errorByIdoklad } = await supabaseAdmin
             .from('invoices')
             .select('*')
-            .eq('idoklad_id', invoiceId)
+            .eq('idoklad_id', invoiceIdStr)
             .single()
 
           if (invoiceByIdoklad) {
+            console.log('Found invoice by iDoklad ID:', invoiceByIdoklad.id)
             invoice = invoiceByIdoklad
           } else {
-            invoiceError = errorById || errorByIdoklad
+            console.log('Not found by iDoklad ID. Error:', errorByIdoklad?.message)
+            invoiceError = errorByIdoklad
+          }
+        } else {
+          // Neznámý formát - zkusit oboje
+          console.log('Unknown ID format, trying both lookups...')
+          
+          // Zkusit DB ID
+          const { data: invoiceById } = await supabaseAdmin
+            .from('invoices')
+            .select('*')
+            .eq('id', invoiceIdStr)
+            .maybeSingle()
+
+          if (invoiceById) {
+            console.log('Found invoice by DB ID (fallback):', invoiceById.id)
+            invoice = invoiceById
+          } else {
+            // Zkusit iDoklad ID
+            const { data: invoiceByIdoklad, error: errorByIdoklad } = await supabaseAdmin
+              .from('invoices')
+              .select('*')
+              .eq('idoklad_id', invoiceIdStr)
+              .maybeSingle()
+
+            if (invoiceByIdoklad) {
+              console.log('Found invoice by iDoklad ID (fallback):', invoiceByIdoklad.id)
+              invoice = invoiceByIdoklad
+            } else {
+              invoiceError = errorByIdoklad
+            }
           }
         }
 
         if (invoiceError || !invoice) {
+          console.log('Invoice not found at all for ID:', invoiceId)
           return new Response(
-            JSON.stringify({ error: 'Faktura nenalezena' }),
+            JSON.stringify({ error: 'Faktura nenalezena', invoiceId: invoiceId }),
             { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }

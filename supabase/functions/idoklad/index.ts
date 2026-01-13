@@ -98,8 +98,9 @@ serve(async (req) => {
         const today = new Date().toISOString().split('T')[0]
         const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         
-        // Získat překlady podle locale
-        const t = getEmailTranslations(locale || 'en')
+        // DŮLEŽITÉ: Překlady pro iDoklad VŽDY v češtině (požadavek účetnictví)
+        // Jazyk zákazníka se použije pro email faktury, ne pro iDoklad
+        const t = getEmailTranslations('cs') // Vždy čeština pro iDoklad
         const itemName = t.idoklad_item_name
         const invoiceDescription = t.idoklad_description
         const invoiceNote = orderNumber 
@@ -109,7 +110,7 @@ serve(async (req) => {
 
         // Určit DPH sazbu podle země (OSS režim - české DPH 21% pro EU, 0% mimo EU)
         const vatRate = getVatRateForCountry(country || 'CZ')
-        console.log(`VAT calculation for country=${country || 'CZ'}: rate=${vatRate.rate}%, type=${vatRate.type} (2=Basic, 3=Zero)`)
+        console.log(`VAT calculation for country=${country || 'CZ'}: rate=${vatRate.rate}%, type=${vatRate.type} (0=Basic 21%, 3=Zero 0%)`)
         
         // amount je konečná cena S DPH (59 Kč, 2.40 EUR, 2.90 USD)
         // Pro iDoklad: PriceType=0 znamená, že UnitPrice je cena BEZ DPH
@@ -139,7 +140,7 @@ serve(async (req) => {
             Amount: 1,
             Unit: unit,
             UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH - iDoklad dopočítá DPH
-            VatRateType: vatRate.type, // 2 = Basic (základní 21%), 3 = Zero (osvobozeno 0%)
+            VatRateType: vatRate.type, // 0 = Basic (základní 21%), 3 = Zero (osvobozeno 0%)
             PriceType: 0, // 0 = cena BEZ DPH (iDoklad přidá DPH)
             DiscountPercentage: 0,
             IsTaxMovement: false,
@@ -526,10 +527,26 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
 }
 
 function getCountryId(countryCode: string): number {
+  // iDoklad CountryId - mapování ISO kódů na iDoklad ID
+  // DŮLEŽITÉ: Pokud země není v seznamu, vrátí 1 (CZ) - to je správné pro místo plnění
   const countryMap: Record<string, number> = {
+    // EU země
     'CZ': 1, 'SK': 2, 'DE': 4, 'AT': 5, 'PL': 6, 'HU': 7,
-    'FR': 8, 'IT': 9, 'ES': 10, 'NL': 11, 'BE': 12, 'GB': 13, 'US': 14,
+    'FR': 8, 'IT': 9, 'ES': 10, 'NL': 11, 'BE': 12,
+    'PT': 15, 'GR': 16, 'SE': 17, 'DK': 18, 'FI': 19,
+    'IE': 20, 'LU': 21, 'SI': 22, 'EE': 23, 'LV': 24,
+    'LT': 25, 'MT': 26, 'CY': 27, 'BG': 28, 'RO': 29,
+    'HR': 30,
+    // Mimo EU
+    'GB': 13, 'US': 14, 'CH': 31, 'NO': 32,
+    'UA': 33, 'RU': 34, 'JP': 35, 'KR': 36, 'CN': 37,
+    'AU': 38, 'CA': 39, 'TR': 40,
+    // Blízký východ
+    'SA': 41, 'AE': 42, 'IL': 43, 'QA': 44, 'KW': 45,
+    // Další
+    'TW': 46, 'SG': 47, 'HK': 48, 'NZ': 49,
   }
+  // Fallback na CZ (1) - místo plnění je vždy CZ pokud není specifikováno jinak
   return countryMap[countryCode] || 1
 }
 
@@ -555,17 +572,24 @@ function getCountryName(countryCode: string): string {
 function getVatRateForCountry(countryCode: string): { rate: number, type: number } {
   // REŽIM OSS do 10 000 EUR: české DPH 21% pro všechny EU země
   // iDoklad VatRateType hodnoty (dle API dokumentace):
-  // 1 = Basic (základní sazba - 21%)
-  // 2 = Reduced1 (snížená 1)
+  // 0 = Basic (základní sazba - 21%)
+  // 1 = Reduced1 (snížená 1 - 12%)
+  // 2 = Reduced2 (snížená 2 - 0%)
   // 3 = Zero (nulová/osvobozeno - 0%)
   
-  // Země mimo EU - bez DPH
-  const nonEuCountries = ['GB', 'US', 'CH', 'NO', 'UA', 'RU', 'JP', 'KR', 'CN', 'AU', 'CA']
+  // EU členské státy (platí české DPH 21%)
+  const euCountries = [
+    'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
+    'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
+    'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'
+  ]
   
-  if (nonEuCountries.includes(countryCode)) {
-    return { rate: 0, type: 3 } // Osvobozeno od DPH - export mimo EU
+  // Pokud je země v EU, použít české DPH 21%
+  if (euCountries.includes(countryCode)) {
+    return { rate: 21, type: 0 } // type: 0 = Basic (základní sazba 21%)
   }
   
-  // Všechny EU země - české DPH 21% (režim OSS do 10 000 EUR)
-  return { rate: 21, type: 1 } // type: 1 = Basic (základní sazba 21%)
+  // Všechny ostatní země (mimo EU) - bez DPH, osvobozeno
+  // Např: GB, US, CH, NO, UA, RU, JP, KR, CN, AU, CA, SA, AE, TR, etc.
+  return { rate: 0, type: 3 } // type: 3 = Zero (osvobozeno od DPH - export mimo EU)
 }
