@@ -199,7 +199,7 @@ serve(async (req) => {
             subtotal: unitPriceWithoutVat,
             vat_rate: vatRate.rate,
             vat_amount: vatAmount,
-            total_amount: amount,
+            amount: amount, // Celková částka s DPH
             status: 'paid',
             paid_at: new Date().toISOString(),
             issue_date: today,
