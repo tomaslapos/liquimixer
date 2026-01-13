@@ -406,7 +406,6 @@ serve(async (req) => {
             from: EMAIL_FROM,
             to: customerEmail,
             subject: emailSubject,
-            content: cleanHtml,
             html: cleanHtml,
           })
 
@@ -616,7 +615,6 @@ serve(async (req) => {
             from: EMAIL_FROM,
             to: invoice.customer_email,
             subject: emailSubject,
-            content: cleanHtml,
             html: cleanHtml,
           })
 
@@ -867,7 +865,11 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
   const invoiceUserLocale = generateSingleIdokladInvoiceHtml(locale, invoice, customerName, customerEmail)
   const invoiceEnglish = locale !== 'en' ? generateSingleIdokladInvoiceHtml('en', invoice, customerName, customerEmail) : ''
 
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>@media print{.no-print{display:none!important}body{font-size:12px}}</style></head><body style="font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px;color:#333;">
+  // RTL jazyky: arabština, hebrejština
+  const isRtl = locale === 'ar-SA' || locale === 'ar' || locale === 'he'
+  const direction = isRtl ? 'rtl' : 'ltr'
+  
+  return `<!DOCTYPE html><html lang="${locale}" dir="${direction}"><head><meta charset="UTF-8"><style>@media print{.no-print{display:none!important}body{font-size:12px}}</style></head><body style="font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px;color:#333;direction:${direction};">
 
 <div class="no-print" style="background:#e8f5e9;padding:15px;border-radius:8px;margin-bottom:20px;">
   <h2 style="margin:0 0 10px 0;color:#2e7d32;">&#10003; ${t.title}</h2>
@@ -1075,9 +1077,13 @@ function getEmailBody(locale: string, invoice: any): string {
   const invoiceUserLocale = generateSingleInvoiceHtml(locale, invoice, items)
   const invoiceEnglish = locale !== 'en' ? generateSingleInvoiceHtml('en', invoice, items) : ''
 
+  // RTL jazyky: arabština, hebrejština
+  const isRtl = locale === 'ar-SA' || locale === 'ar' || locale === 'he'
+  const direction = isRtl ? 'rtl' : 'ltr'
+
   return `
 <!DOCTYPE html>
-<html>
+<html lang="${locale}" dir="${direction}">
 <head>
   <meta charset="UTF-8">
   <style>
@@ -1087,7 +1093,7 @@ function getEmailBody(locale: string, invoice: any): string {
     }
   </style>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333;">
+<body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; direction: ${direction};">
   
   <div class="no-print" style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
     <h2 style="margin: 0 0 10px 0; color: #2e7d32;">✓ ${t.title}</h2>

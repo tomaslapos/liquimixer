@@ -193,8 +193,8 @@
         </div>
         <div id="invoiceContent" style="display: none;">
             <div class="actions">
-                <button class="print-btn" onclick="window.print()">🖨️ Vytisknout fakturu</button>
-                <a href="/" class="back-link">← Zpět do aplikace</a>
+                <button class="print-btn" onclick="window.print()" id="printButton">🖨️ Print Invoice</button>
+                <a href="/" class="back-link" id="backLink">← Back to App</a>
             </div>
             <div class="invoice-container">
                 <div class="invoice-header">
@@ -494,8 +494,8 @@
             document.getElementById('labelPaymentDate').textContent = tr('invoice.payment_date', 'Payment Date') + ':';
             document.getElementById('paidBadge').textContent = tr('invoice.paid', 'Paid').toUpperCase();
             document.getElementById('statusText').textContent = tr('invoice.paid', 'Paid');
-            document.querySelector('.print-btn').innerHTML = '🖨️ ' + tr('invoice.print', 'Print Invoice');
-            document.querySelector('.back-link').textContent = '← ' + tr('invoice.back', 'Back to App');
+            document.getElementById('printButton').innerHTML = '🖨️ ' + tr('invoice.print', 'Print Invoice');
+            document.getElementById('backLink').textContent = '← ' + tr('invoice.back', 'Back to App');
 
             // Aktualizovat chybové stavy
             document.querySelector('#errorState h2').textContent = tr('invoice.not_found', 'Invoice not found');

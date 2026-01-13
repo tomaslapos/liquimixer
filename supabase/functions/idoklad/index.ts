@@ -90,8 +90,9 @@ serve(async (req) => {
           )
         }
 
-        // 2.5 DEBUG: Zjistit správné CountryId z iDoklad API
+        // 2.5 DEBUG: Zjistit správné CountryId a VatRates z iDoklad API
         await logAvailableCountries(token)
+        await logAvailableVatRates(token)
 
         // 3. Získat nebo vytvořit kontakt
         // Pro EU země: kontakt MUSÍ mít CZ (OSS režim - české DPH 21%)
@@ -164,9 +165,9 @@ serve(async (req) => {
             Name: itemName,
             Amount: 1,
             Unit: unit,
-            UnitPrice: amount, // Cena S DPH (59 CZK) - iDoklad dopočítá cenu bez DPH
-            VatRateType: 0, // 0 = Basic (základní sazba - pro CZ je to 21%)
-            PriceType: 1, // 1 = cena S DPH (iDoklad dopočítá cenu bez DPH jako 59/1.21 = 48.76)
+            UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH (48.76 CZK)
+            VatRateId: 747, // ID pro "Základní sazba 21%" v CZ (zjištěno z /VatRates API)
+            PriceType: 0, // 0 = cena BEZ DPH
             DiscountPercentage: 0,
             IsTaxMovement: false,
           }],
@@ -590,6 +591,42 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
   // Fallback - vrátit ID 1 (typicky "Bank transfer" / "Převodem")
   console.warn('Using fallback payment option ID 1')
   return 1
+}
+
+// DEBUG: Zjistit dostupné sazby DPH z iDoklad API
+async function logAvailableVatRates(token: string): Promise<void> {
+  try {
+    console.log('=== FETCHING VAT RATES FROM IDOKLAD API ===')
+    const response = await fetch(`${IDOKLAD_CONFIG.apiUrl}/VatRates`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    
+    if (response.ok) {
+      const result = await response.json()
+      let vatRates: any[] = []
+      if (Array.isArray(result)) {
+        vatRates = result
+      } else if (Array.isArray(result.Data)) {
+        vatRates = result.Data
+      } else if (result.Data?.Items && Array.isArray(result.Data.Items)) {
+        vatRates = result.Data.Items
+      }
+      
+      console.log(`Found ${vatRates.length} VAT rates in iDoklad`)
+      // Logovat všechny sazby
+      vatRates.forEach((vr: any) => {
+        console.log(`VAT Rate: Id=${vr.Id}, Name="${vr.Name}", Rate=${vr.Rate}%, Type=${vr.VatRateType}, CountryId=${vr.CountryId}`)
+      })
+      
+      // Hledat české sazby (CountryId=2)
+      const czRates = vatRates.filter((vr: any) => vr.CountryId === 2)
+      console.log(`Czech VAT rates (CountryId=2): ${czRates.map((r: any) => `${r.Name}=${r.Rate}%`).join(', ')}`)
+    } else {
+      console.error('Failed to fetch VAT rates:', await response.text())
+    }
+  } catch (e) {
+    console.error('VAT rates fetch error:', e)
+  }
 }
 
 // DEBUG: Zjistit dostupné země z iDoklad API
