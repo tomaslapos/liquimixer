@@ -1,4 +1,4 @@
-﻿// =========================================
+// =========================================
 // LiquiMixer - E-liquid Calculator Logic
 // Výpočet dle metodiky: http://www.todmuller.com/ejuice/ejuice.php
 // =========================================
@@ -6114,6 +6114,15 @@ async function processPayment() {
     }
     
     try {
+        // DŮLEŽITÉ: Aktualizovat geolokaci před platbou (uživatel se mohl přestěhovat)
+        console.log('Refreshing user location before payment...');
+        try {
+            await detectUserLocation();
+            console.log('User location updated:', userLocation?.countryCode);
+        } catch (locError) {
+            console.warn('Location refresh failed, using cached location:', userLocation?.countryCode);
+        }
+        
         // Uživatel je již přihlášen (ověřeno v startPayment), získat token
         console.log('Getting Clerk session token...');
         
@@ -6140,7 +6149,7 @@ async function processPayment() {
                     planType: 'yearly',
                     // Jazyk uživatele z localStorage pro fakturu (priorita před lokalizací)
                     locale: localStorage.getItem('liquimixer_locale') || window.i18n?.currentLocale || 'cs',
-                    // Země pro DPH účely
+                    // Země pro DPH účely (aktualizováno z geolokace výše)
                     country: userLocation?.countryCode || 'CZ'
                 }
             })

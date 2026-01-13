@@ -141,6 +141,7 @@ serve(async (req) => {
             Unit: unit,
             UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH - iDoklad dopočítá DPH
             VatRateType: vatRate.type, // 0 = Basic (základní 21%), 3 = Zero (osvobozeno 0%)
+            VatRate: vatRate.rate, // EXPLICITNĚ zadat sazbu DPH (21 nebo 0) - přepíše sazbu země kontaktu
             PriceType: 0, // 0 = cena BEZ DPH (iDoklad přidá DPH)
             DiscountPercentage: 0,
             IsTaxMovement: false,
@@ -385,6 +386,9 @@ async function getAccessToken(): Promise<string | null> {
 }
 
 async function getOrCreateContact(token: string, contact: { name: string, email: string, country: string }): Promise<number> {
+  const targetCountryId = getCountryId(contact.country)
+  console.log(`Looking for contact: email=${contact.email}, targetCountry=${contact.country} (CountryId=${targetCountryId})`)
+  
   // Zkusit najít existující kontakt podle emailu
   try {
     const searchResponse = await fetch(
@@ -396,8 +400,38 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
       const result = await searchResponse.json()
       const contacts = result.Data || result.Items || []
       if (contacts.length > 0) {
-        console.log('Found existing contact:', contacts[0].Id)
-        return contacts[0].Id
+        const existingContact = contacts[0]
+        console.log(`Found existing contact: Id=${existingContact.Id}, CountryId=${existingContact.CountryId}`)
+        
+        // Zkontrolovat, zda se krajina shoduje
+        if (existingContact.CountryId !== targetCountryId) {
+          console.log(`Country mismatch! Existing=${existingContact.CountryId}, Target=${targetCountryId}. Updating contact...`)
+          
+          // Aktualizovat krajinu kontaktu
+          try {
+            const updateResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts/${existingContact.Id}`, {
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                CountryId: targetCountryId,
+              })
+            })
+            
+            if (updateResponse.ok) {
+              console.log(`Contact ${existingContact.Id} updated with new CountryId=${targetCountryId}`)
+            } else {
+              const errorText = await updateResponse.text()
+              console.error('Contact update error:', errorText)
+            }
+          } catch (e) {
+            console.error('Contact update error:', e)
+          }
+        }
+        
+        return existingContact.Id
       }
     }
   } catch (e) {
@@ -406,6 +440,7 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
 
   // Vytvořit nový kontakt
   try {
+    console.log(`Creating new contact: name=${contact.name}, email=${contact.email}, CountryId=${targetCountryId}`)
     const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts`, {
       method: 'POST',
       headers: {
@@ -415,7 +450,7 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
       body: JSON.stringify({
         CompanyName: contact.name,
         Email: contact.email,
-        CountryId: getCountryId(contact.country),
+        CountryId: targetCountryId,
         // Nechat City prázdné - iDoklad zobrazí pouze zemi
       })
     })
@@ -423,7 +458,7 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
     if (createResponse.ok) {
       const result = await createResponse.json()
       const newContact = result.Data || result
-      console.log('Created new contact:', newContact.Id)
+      console.log('Created new contact:', newContact.Id, 'with CountryId:', targetCountryId)
       return newContact.Id
     } else {
       console.error('Contact create error:', await createResponse.text())
