@@ -258,35 +258,44 @@ function handlePaymentReturn() {
         // Vyčistit URL parametry
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        // Zobrazit úspěšnou notifikaci po načtení překladů
-        const showSuccessMessage = () => {
-            // Zkontrolovat, že i18n je inicializováno A překlady byly načteny
-            const translatedMessage = window.i18n?.t?.('subscription.payment_success');
-            // Pokud překlad vrací klíč místo překladu, překlady ještě nejsou načteny
-            if (translatedMessage && translatedMessage !== 'subscription.payment_success') {
-                showNotification(translatedMessage, 'success');
-            } else {
-                // Čekat na načtení překladů
-                setTimeout(showSuccessMessage, 300);
-            }
-        };
-        // Počkat déle na inicializaci stránky a překladů
-        setTimeout(showSuccessMessage, 1000);
-        
-        // Počkat na Clerk a pak zkontrolovat subscription
-        // Omezit počet pokusů aby se nečekalo nekonečně
+        // Počkat na Clerk, načíst uživatelský jazyk, pak zobrazit notifikaci
         let clerkCheckAttempts = 0;
         const maxClerkCheckAttempts = 20; // Max 10 sekund čekání
         
-        const checkClerkAndSubscription = () => {
+        const checkClerkAndShowNotification = async () => {
             clerkCheckAttempts++;
+            
             if (window.Clerk?.user) {
-                console.log('User is signed in after payment, checking subscription...');
+                console.log('User is signed in after payment, loading user locale...');
                 // Vyčistit uložené clerk_id - už ho nepotřebujeme
                 localStorage.removeItem('liquimixer_pending_payment_clerk_id');
+                
+                // DŮLEŽITÉ: Načíst jazyk uživatele z databáze PŘED zobrazením notifikace
+                try {
+                    if (window.i18n?.loadUserLocale) {
+                        await window.i18n.loadUserLocale(window.Clerk.user.id);
+                        console.log('User locale loaded:', window.i18n.getLocale());
+                    }
+                } catch (e) {
+                    console.warn('Failed to load user locale:', e);
+                }
+                
+                // Teď zobrazit notifikaci ve správném jazyce
+                const showSuccessMessage = () => {
+                    const translatedMessage = window.i18n?.t?.('subscription.payment_success');
+                    if (translatedMessage && translatedMessage !== 'subscription.payment_success') {
+                        showNotification(translatedMessage, 'success');
+                    } else {
+                        setTimeout(showSuccessMessage, 300);
+                    }
+                };
+                showSuccessMessage();
+                
+                // Zkontrolovat stav předplatného
                 checkSubscriptionStatus();
+                
             } else if (clerkCheckAttempts < maxClerkCheckAttempts) {
-                setTimeout(checkClerkAndSubscription, 500);
+                setTimeout(checkClerkAndShowNotification, 500);
             } else {
                 console.log('User is not signed in after payment redirect - session may have expired');
                 // Vyčistit uložené clerk_id
@@ -312,7 +321,7 @@ function handlePaymentReturn() {
                 showLoginPrompt();
             }
         };
-        checkClerkAndSubscription();
+        checkClerkAndShowNotification();
         
     } else if (paymentStatus === 'failed') {
         // Neúspěšná platba

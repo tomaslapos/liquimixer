@@ -9,3 +9,8 @@ verify_jwt = false
 # Disable JWT verification for internal calls from gpwebpay
 # gpwebpay calls idoklad using service_role_key
 verify_jwt = false
+
+[functions.invoice]
+# Disable JWT verification for internal calls from gpwebpay
+# gpwebpay calls invoice using service_role_key for sending emails
+verify_jwt = false
