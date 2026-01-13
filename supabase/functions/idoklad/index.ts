@@ -452,11 +452,18 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
   
   try {
     console.log(`Creating NEW contact: name=${uniqueName}, email=${contact.email}, CountryId=${targetCountryId}`)
+    // DŮLEŽITÉ: iDoklad může ignorovat CountryId - zkusíme obě varianty
+    // Podle API dokumentace může být potřeba Country objekt nebo přímo CountryId
     const contactData = {
       CompanyName: uniqueName,
       Email: contact.email,
-      CountryId: targetCountryId,
-      Note: `Vytvořeno: ${timestamp}, Země pro DPH: ${contact.country}`,
+      CountryId: targetCountryId, // Primární - ID země (1=CZ, 2=SK, ...)
+      // Zkusit také Country objekt pro případ že API to vyžaduje
+      Country: {
+        Id: targetCountryId,
+        Code: contact.country, // ISO kód (CZ, SK, ...)
+      },
+      Note: `Vytvořeno: ${timestamp}, Země pro DPH: ${contact.country}, CountryId: ${targetCountryId}`,
     }
     console.log('Contact data to POST:', JSON.stringify(contactData))
     
