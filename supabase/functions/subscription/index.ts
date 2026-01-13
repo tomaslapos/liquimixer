@@ -135,15 +135,52 @@ serve(async (req) => {
       case 'create': {
         // Vytvořit nové předplatné (před platbou)
         const planType = data?.planType || 'yearly'
+        const userLocale = data?.locale || 'cs'
+        const userCountry = data?.country || 'CZ'
 
-        // Získat cenu
-        const { data: pricing } = await supabaseAdmin
+        // Získat cenu podle země (country), NE podle jazyka (locale)
+        // Jazyk je pro fakturu, země je pro DPH a měnu
+        // Mapování země na locale pro pricing tabulku
+        const countryToPricingLocale: Record<string, string> = {
+          'CZ': 'cs', 'SK': 'sk',
+          // EU země používají EUR
+          'DE': 'de', 'AT': 'de', 'FR': 'fr', 'IT': 'it', 'ES': 'es',
+          'NL': 'nl', 'BE': 'nl', 'PT': 'pt', 'PL': 'pl', 'HU': 'hu',
+          'GR': 'el', 'SE': 'sv', 'DK': 'da', 'FI': 'fi', 'IE': 'en',
+          'LU': 'de', 'SI': 'en', 'EE': 'et', 'LV': 'lv', 'LT': 'lt',
+          'MT': 'en', 'CY': 'el', 'BG': 'bg', 'RO': 'ro', 'HR': 'hr',
+          // Mimo EU - USD nebo EUR
+          'US': 'en', 'GB': 'en', 'JP': 'ja', 'KR': 'ko', 
+          'CN': 'zh-CN', 'TW': 'zh-TW', 'AU': 'en', 'CA': 'en',
+          'SA': 'ar-SA', 'AE': 'ar-SA',
+        }
+        const pricingLocale = countryToPricingLocale[userCountry] || 'en'
+        console.log(`Subscription create: userLocale=${userLocale}, userCountry=${userCountry}, pricingLocale=${pricingLocale}`)
+
+        // Získat cenu - zkusit podle pricingLocale, pak fallback na 'en'
+        let pricing = null
+        const { data: pricingData } = await supabaseAdmin
           .from('pricing')
           .select('*')
           .eq('plan_type', planType)
           .eq('is_active', true)
-          .eq('locale', data?.locale || 'cs')
+          .eq('locale', pricingLocale)
           .single()
+        
+        if (pricingData) {
+          pricing = pricingData
+        } else {
+          // Fallback na angličtinu (EUR)
+          console.log(`Pricing not found for locale ${pricingLocale}, trying 'en'`)
+          const { data: fallbackPricing } = await supabaseAdmin
+            .from('pricing')
+            .select('*')
+            .eq('plan_type', planType)
+            .eq('is_active', true)
+            .eq('locale', 'en')
+            .single()
+          pricing = fallbackPricing
+        }
 
         if (!pricing) {
           return new Response(
@@ -169,10 +206,11 @@ serve(async (req) => {
         }
         
         // Přidat volitelná pole pokud existují v databázi
-        // Tyto sloupce mohou chybět před aplikací migrace
+        // user_locale = jazyk pro fakturu (uživatelská volba)
+        // user_country = země pro DPH (místo plnění z IP geolokace)
         try {
-          subscriptionData.user_locale = data?.locale || 'cs'
-          subscriptionData.user_country = data?.country || 'CZ'
+          subscriptionData.user_locale = userLocale // Jazyk uživatele pro fakturu
+          subscriptionData.user_country = userCountry // Země pro DPH
         } catch (e) {
           console.log('Optional fields user_locale/user_country not added')
         }

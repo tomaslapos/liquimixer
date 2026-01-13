@@ -6003,8 +6003,19 @@ async function detectUserLocation() {
         
         // Použít měnu podle aktuálního jazyka
         const currency = currencyByLocale[currentLocale] || 'EUR';
+        // DŮLEŽITÉ: countryCode musí být platný ISO kód země, NE jazyk!
+        // Mapování jazyka na výchozí zemi (pro DPH účely - místo plnění)
+        const localeToCountry = {
+            'cs': 'CZ', 'sk': 'SK', 'de': 'DE', 'pl': 'PL', 'hu': 'HU',
+            'fr': 'FR', 'es': 'ES', 'it': 'IT', 'pt': 'PT', 'nl': 'NL',
+            'da': 'DK', 'sv': 'SE', 'no': 'NO', 'fi': 'FI', 'et': 'EE',
+            'lv': 'LV', 'lt': 'LT', 'ro': 'RO', 'bg': 'BG', 'hr': 'HR',
+            'sl': 'SI', 'el': 'GR', 'en': 'US', 'ja': 'JP', 'ko': 'KR',
+            'zh-CN': 'CN', 'zh-TW': 'TW', 'ar-SA': 'SA', 'tr': 'TR',
+            'ru': 'RU', 'uk': 'UA'
+        };
         userLocation = {
-            countryCode: currentLocale.toUpperCase(),
+            countryCode: localeToCountry[currentLocale] || 'CZ', // Fallback na CZ
             ...priceMap[currency]
         };
         
@@ -6012,10 +6023,19 @@ async function detectUserLocation() {
 
     } catch (error) {
         console.error('Error detecting location:', error);
-        // Fallback podle jazyka
+        // Fallback podle jazyka - mapování na skutečnou zemi
         const currency = currencyByLocale[currentLocale] || 'EUR';
+        const localeToCountry = {
+            'cs': 'CZ', 'sk': 'SK', 'de': 'DE', 'pl': 'PL', 'hu': 'HU',
+            'fr': 'FR', 'es': 'ES', 'it': 'IT', 'pt': 'PT', 'nl': 'NL',
+            'da': 'DK', 'sv': 'SE', 'no': 'NO', 'fi': 'FI', 'et': 'EE',
+            'lv': 'LV', 'lt': 'LT', 'ro': 'RO', 'bg': 'BG', 'hr': 'HR',
+            'sl': 'SI', 'el': 'GR', 'en': 'US', 'ja': 'JP', 'ko': 'KR',
+            'zh-CN': 'CN', 'zh-TW': 'TW', 'ar-SA': 'SA', 'tr': 'TR',
+            'ru': 'RU', 'uk': 'UA'
+        };
         userLocation = {
-            countryCode: currentLocale.toUpperCase(),
+            countryCode: localeToCountry[currentLocale] || 'CZ',
             ...priceMap[currency]
         };
         updatePricingUI(userLocation);
