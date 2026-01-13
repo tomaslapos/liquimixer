@@ -446,39 +446,52 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
   }
 
   // Vytvořit nový kontakt se správnou zemí
-  // Přidat timestamp k jménu pro unikátnost (iDoklad může mít problém s duplicitními emaily)
   const timestamp = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
-  const uniqueName = contact.name
+  // DŮLEŽITÉ: Přidat timestamp k názvu aby se vyhnulo duplicitním emailům v iDoklad
+  const uniqueName = `${contact.name} (${new Date().getTime()})`
   
   try {
     console.log(`Creating NEW contact: name=${uniqueName}, email=${contact.email}, CountryId=${targetCountryId}`)
+    const contactData = {
+      CompanyName: uniqueName,
+      Email: contact.email,
+      CountryId: targetCountryId,
+      Note: `Vytvořeno: ${timestamp}, Země pro DPH: ${contact.country}`,
+    }
+    console.log('Contact data to POST:', JSON.stringify(contactData))
+    
     const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        CompanyName: uniqueName,
-        Email: contact.email,
-        CountryId: targetCountryId,
-        // Poznámka pro identifikaci
-        Note: `Vytvořeno: ${timestamp}, Země pro DPH: ${contact.country}`,
-      })
+      body: JSON.stringify(contactData)
     })
 
+    const responseText = await createResponse.text()
+    console.log('Contact create response status:', createResponse.status)
+    console.log('Contact create response:', responseText.substring(0, 500))
+
     if (createResponse.ok) {
-      const result = await createResponse.json()
+      const result = JSON.parse(responseText)
       const newContact = result.Data || result
-      console.log('Created new contact:', newContact.Id, 'with CountryId:', targetCountryId)
+      console.log(`SUCCESS: Created new contact Id=${newContact.Id}, CountryId=${newContact.CountryId}`)
+      
+      // VERIFIKACE: Ověřit že kontakt má správnou zemi
+      if (newContact.CountryId !== targetCountryId) {
+        console.error(`WARNING: Contact created with wrong CountryId! Expected ${targetCountryId}, got ${newContact.CountryId}`)
+      }
+      
       return newContact.Id
     } else {
-      console.error('Contact create error:', await createResponse.text())
+      console.error('Contact create FAILED:', responseText)
     }
   } catch (e) {
     console.error('Contact create error:', e)
   }
 
+  console.error('CRITICAL: Failed to create contact, returning 0')
   return 0 // Fallback - bez partnera
 }
 
