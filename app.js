@@ -282,13 +282,34 @@ function handlePaymentReturn() {
             clerkCheckAttempts++;
             if (window.Clerk?.user) {
                 console.log('User is signed in after payment, checking subscription...');
+                // Vyčistit uložené clerk_id - už ho nepotřebujeme
+                localStorage.removeItem('liquimixer_pending_payment_clerk_id');
                 checkSubscriptionStatus();
             } else if (clerkCheckAttempts < maxClerkCheckAttempts) {
                 setTimeout(checkClerkAndSubscription, 500);
             } else {
                 console.log('User is not signed in after payment redirect - session may have expired');
-                // Uživatel není přihlášen - zobrazíme notifikaci a modal pro přihlášení
-                // Platba ale proběhla úspěšně, takže po přihlášení by měl mít předplatné
+                // Vyčistit uložené clerk_id
+                localStorage.removeItem('liquimixer_pending_payment_clerk_id');
+                
+                // Uživatel není přihlášen - platba ale proběhla úspěšně
+                // Zobrazíme informativní notifikaci a login modal
+                const showLoginPrompt = () => {
+                    const translatedMessage = window.i18n?.t?.('subscription.payment_success_login_required');
+                    if (translatedMessage && translatedMessage !== 'subscription.payment_success_login_required') {
+                        showNotification(translatedMessage, 'info');
+                    } else if (window.i18n) {
+                        showNotification('Payment successful! Please log in to access your subscription.', 'info');
+                    } else {
+                        setTimeout(showLoginPrompt, 300);
+                        return;
+                    }
+                    // Zobrazit login modal
+                    if (typeof showLoginModal === 'function') {
+                        setTimeout(() => showLoginModal('signIn'), 500);
+                    }
+                };
+                showLoginPrompt();
             }
         };
         checkClerkAndSubscription();
@@ -6141,6 +6162,10 @@ async function processPayment() {
 
         // 3. Přesměrovat na platební bránu
         if (payResult.redirectUrl) {
+            // Uložit clerk_id před redirectem - pro případ, že session vyprší
+            if (window.Clerk?.user?.id) {
+                localStorage.setItem('liquimixer_pending_payment_clerk_id', window.Clerk.user.id);
+            }
             window.location.href = payResult.redirectUrl;
         } else {
             throw new Error('No redirect URL');

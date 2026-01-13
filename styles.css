@@ -4751,9 +4751,10 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Apple Pay logo - bílá barva pro viditelnost na tmavém pozadí */
+/* Apple Pay logo - již obsahuje černé pozadí a bílý text, nepotřebuje filtry */
 .payment-logo.apple-pay-logo {
-    filter: brightness(0) invert(1) !important;
+    filter: none !important;
+    opacity: 1 !important;
 }
 
 .payment-logo:hover {
@@ -4762,7 +4763,7 @@ body {
 }
 
 .payment-logo.apple-pay-logo:hover {
-    filter: brightness(0) invert(1) !important;
+    filter: none !important;
     opacity: 1;
 }
 
