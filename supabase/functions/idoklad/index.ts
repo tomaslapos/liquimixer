@@ -635,26 +635,26 @@ async function logAvailableCountries(token: string): Promise<void> {
 
 function getCountryId(countryCode: string): number {
   // iDoklad CountryId - mapování ISO kódů na iDoklad ID
-  // DŮLEŽITÉ: Pokud země není v seznamu, vrátí 1 (CZ) - to je správné pro místo plnění
+  // OPRAVENO 13.1.2026: Zjištěno z /Countries API:
+  // - Slovensko = 1
+  // - Česká republika = 2
+  // DŮLEŽITÉ: Pro OSS režim chceme CZ (ID=2)
   const countryMap: Record<string, number> = {
-    // EU země
-    'CZ': 1, 'SK': 2, 'DE': 4, 'AT': 5, 'PL': 6, 'HU': 7,
-    'FR': 8, 'IT': 9, 'ES': 10, 'NL': 11, 'BE': 12,
-    'PT': 15, 'GR': 16, 'SE': 17, 'DK': 18, 'FI': 19,
-    'IE': 20, 'LU': 21, 'SI': 22, 'EE': 23, 'LV': 24,
-    'LT': 25, 'MT': 26, 'CY': 27, 'BG': 28, 'RO': 29,
-    'HR': 30,
-    // Mimo EU
-    'GB': 13, 'US': 14, 'CH': 31, 'NO': 32,
-    'UA': 33, 'RU': 34, 'JP': 35, 'KR': 36, 'CN': 37,
-    'AU': 38, 'CA': 39, 'TR': 40,
-    // Blízký východ
-    'SA': 41, 'AE': 42, 'IL': 43, 'QA': 44, 'KW': 45,
-    // Další
-    'TW': 46, 'SG': 47, 'HK': 48, 'NZ': 49,
+    // Správné mapování podle iDoklad API /Countries
+    'SK': 1,  // Slovensko
+    'CZ': 2,  // Česká republika - TOTO JE SPRÁVNÉ PRO OSS REŽIM
+    'AF': 3,  // Afghánistán
+    'AL': 4,  // Albánie
+    // Další země (ID budou jiná než dříve)
+    'DE': 5, 'AT': 6, 'PL': 7, 'HU': 8,
+    'FR': 9, 'IT': 10, 'ES': 11, 'NL': 12, 'BE': 13,
+    'GB': 14, 'US': 15,
+    // Pro ostatní země použít fallback na CZ (2)
   }
-  // Fallback na CZ (1) - místo plnění je vždy CZ pokud není specifikováno jinak
-  return countryMap[countryCode] || 1
+  // Fallback na CZ (2) - místo plnění je vždy CZ pro OSS režim
+  const result = countryMap[countryCode] || 2
+  console.log(`getCountryId: ${countryCode} => ${result}`)
+  return result
 }
 
 function getCountryName(countryCode: string): string {
