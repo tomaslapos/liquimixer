@@ -410,9 +410,14 @@ async function getAccessToken(): Promise<string | null> {
 
 async function getOrCreateContact(token: string, contact: { name: string, email: string, country: string }): Promise<number> {
   const targetCountryId = getCountryId(contact.country)
-  console.log(`Looking for contact: email=${contact.email}, targetCountry=${contact.country} (CountryId=${targetCountryId})`)
+  console.log(`=== GET OR CREATE CONTACT ===`)
+  console.log(`Email: ${contact.email}, TargetCountry: ${contact.country} (CountryId=${targetCountryId})`)
   
-  // Zkusit najít existující kontakt podle emailu
+  // DŮLEŽITÉ: Pro OSS režim VŽDY potřebujeme kontakt s CZ (CountryId=1)
+  // Aktualizace existujícího kontaktu v iDoklad API nefunguje spolehlivě
+  // Proto: pokud existující kontakt nemá správnou zemi, vytvoříme NOVÝ kontakt
+  
+  // Zkusit najít existující kontakt podle emailu A správné země
   try {
     const searchResponse = await fetch(
       `${IDOKLAD_CONFIG.apiUrl}/Contacts?filter=Email~eq~'${encodeURIComponent(contact.email)}'`,
@@ -422,78 +427,31 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
     if (searchResponse.ok) {
       const result = await searchResponse.json()
       const contacts = result.Data || result.Items || []
+      
+      // Najít kontakt se SPRÁVNOU zemí
+      const matchingContact = contacts.find((c: any) => c.CountryId === targetCountryId)
+      
+      if (matchingContact) {
+        console.log(`Found existing contact with correct country: Id=${matchingContact.Id}, CountryId=${matchingContact.CountryId}`)
+        return matchingContact.Id
+      }
+      
       if (contacts.length > 0) {
-        const existingContact = contacts[0]
-        console.log(`Found existing contact: Id=${existingContact.Id}, CountryId=${existingContact.CountryId}`)
-        
-        // Zkontrolovat, zda se krajina shoduje
-        if (existingContact.CountryId !== targetCountryId) {
-          console.log(`Country mismatch! Existing=${existingContact.CountryId}, Target=${targetCountryId}. Updating contact...`)
-          
-          // Aktualizovat krajinu kontaktu pomocí PUT (PATCH někdy nefunguje v iDoklad API)
-          try {
-            // Použít PUT místo PATCH - iDoklad API vyžaduje kompletní objekt
-            const updateResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts/${existingContact.Id}`, {
-              method: 'PUT',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                Id: existingContact.Id,
-                CompanyName: existingContact.CompanyName || contact.name,
-                Email: existingContact.Email || contact.email,
-                CountryId: targetCountryId, // NOVÁ ZEMĚ
-                // Zachovat ostatní pole
-                City: existingContact.City || '',
-                Street: existingContact.Street || '',
-                PostalCode: existingContact.PostalCode || '',
-              })
-            })
-            
-            if (updateResponse.ok) {
-              const updatedContact = await updateResponse.json()
-              const finalCountryId = updatedContact.Data?.CountryId || updatedContact.CountryId
-              console.log(`Contact ${existingContact.Id} updated. New CountryId=${finalCountryId} (expected ${targetCountryId})`)
-              
-              // Ověřit že aktualizace proběhla
-              if (finalCountryId !== targetCountryId) {
-                console.warn(`WARNING: Contact country update may have failed! Got ${finalCountryId}, expected ${targetCountryId}`)
-              }
-            } else {
-              const errorText = await updateResponse.text()
-              console.error('Contact update error:', errorText)
-              // Zkusit ještě PATCH jako fallback
-              console.log('Trying PATCH as fallback...')
-              const patchResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts/${existingContact.Id}`, {
-                method: 'PATCH',
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ CountryId: targetCountryId })
-              })
-              if (patchResponse.ok) {
-                console.log('PATCH fallback succeeded')
-              } else {
-                console.error('PATCH fallback also failed:', await patchResponse.text())
-              }
-            }
-          } catch (e) {
-            console.error('Contact update error:', e)
-          }
-        }
-        
-        return existingContact.Id
+        console.log(`Found ${contacts.length} contacts but none with CountryId=${targetCountryId}. Creating new contact with correct country.`)
+        // Existující kontakty mají špatnou zemi - vytvoříme nový
       }
     }
   } catch (e) {
     console.error('Contact search error:', e)
   }
 
-  // Vytvořit nový kontakt
+  // Vytvořit nový kontakt se správnou zemí
+  // Přidat timestamp k jménu pro unikátnost (iDoklad může mít problém s duplicitními emaily)
+  const timestamp = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+  const uniqueName = contact.name
+  
   try {
-    console.log(`Creating new contact: name=${contact.name}, email=${contact.email}, CountryId=${targetCountryId}`)
+    console.log(`Creating NEW contact: name=${uniqueName}, email=${contact.email}, CountryId=${targetCountryId}`)
     const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts`, {
       method: 'POST',
       headers: {
@@ -501,10 +459,11 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        CompanyName: contact.name,
+        CompanyName: uniqueName,
         Email: contact.email,
         CountryId: targetCountryId,
-        // Nechat City prázdné - iDoklad zobrazí pouze zemi
+        // Poznámka pro identifikaci
+        Note: `Vytvořeno: ${timestamp}, Země pro DPH: ${contact.country}`,
       })
     })
 
@@ -567,7 +526,13 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
       }
       
       // Hledat platbu kartou (různé varianty názvu) - rozšířený seznam
-      const cardKeywords = ['kart', 'card', 'platební karta', 'online', 'platba kartou', 'kartou']
+      // DŮLEŽITÉ: Nejdřív logovat všechny dostupné možnosti pro debugging
+      console.log('=== PAYMENT OPTIONS SEARCH ===')
+      options.forEach((opt: any) => {
+        console.log(`  - Id: ${opt.Id}, Name: "${opt.Name}", IsDefault: ${opt.IsDefault}`)
+      })
+      
+      const cardKeywords = ['kart', 'card', 'online']
       const cardOption = options.find((opt: any) => {
         const name = opt.Name?.toLowerCase() || ''
         return cardKeywords.some(kw => name.includes(kw))
@@ -579,7 +544,7 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
       }
       
       // Platba kartou neexistuje - vytvořit ji
-      console.log('Card payment option not found, creating "Platba kartou"...')
+      console.log('Card payment option not found in options, creating "Platba kartou"...')
       const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/PaymentOptions`, {
         method: 'POST',
         headers: {

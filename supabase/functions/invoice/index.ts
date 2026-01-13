@@ -871,7 +871,7 @@ ${invoiceUserLocale}
 ${invoiceEnglish ? `
 <!-- ODDĚLOVAČ -->
 <div style="text-align:center;margin:30px 0;padding:15px;background:#f0f0f0;border-radius:4px;">
-  <strong style="color:#666;">English version / Anglická verze</strong>
+  <strong style="color:#666;">English version</strong>
 </div>
 
 <!-- FAKTURA V ANGLIČTINĚ -->
@@ -1091,7 +1091,7 @@ function getEmailBody(locale: string, invoice: any): string {
   ${invoiceEnglish ? `
   <!-- ODDĚLOVAČ -->
   <div style="text-align: center; margin: 30px 0; padding: 15px; background: #f0f0f0; border-radius: 4px;">
-    <strong style="color: #666;">English version / Anglická verze</strong>
+    <strong style="color: #666;">English version</strong>
   </div>
 
   <!-- FAKTURA V ANGLIČTINĚ -->
