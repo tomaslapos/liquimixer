@@ -536,13 +536,14 @@
                 ${invoice.customerEmail || '-'}
             `;
 
-            // Položky
+            // Položky - VŽDY použít přeložený název z locale souboru
+            // DB může obsahovat české názvy, ale na online faktuře chceme překlad podle jazyka uživatele
             const itemName = tr('invoice.subscription_item', 'LiquiMixer Annual Subscription');
             const itemsBody = document.getElementById('itemsBody');
-            const items = invoice.items || [{ name: itemName, amount: 1, totalWithVat: invoice.totalWithVat }];
+            const items = invoice.items || [{ amount: 1, totalWithVat: invoice.totalWithVat }];
             itemsBody.innerHTML = items.map(item => `
                 <tr>
-                    <td>${item.name || itemName}</td>
+                    <td>${itemName}</td>
                     <td style="text-align: center;">${item.amount || 1}</td>
                     <td>${Number(item.totalWithVat || item.unitPrice || invoice.totalWithVat).toFixed(2)} ${currency}</td>
                 </tr>
@@ -607,12 +608,12 @@
                     ${invoice.customerEmail || '-'}
                 `;
 
-                // Anglické položky
+                // Anglické položky - VŽDY použít přeložený název
                 const itemNameEn = trEn('invoice.subscription_item', 'LiquiMixer Annual Subscription');
                 const itemsBodyEn = document.getElementById('itemsBodyEn');
                 itemsBodyEn.innerHTML = items.map(item => `
                     <tr>
-                        <td>${item.nameEn || itemNameEn}</td>
+                        <td>${itemNameEn}</td>
                         <td style="text-align: center;">${item.amount || 1}</td>
                         <td>${Number(item.totalWithVat || item.unitPrice || invoice.totalWithVat).toFixed(2)} ${currency}</td>
                     </tr>
