@@ -91,14 +91,17 @@ serve(async (req) => {
         }
 
         // 3. Získat nebo vytvořit kontakt
-        // Kontakt má SKUTEČNOU zemi zákazníka (pro adresu na faktuře)
-        // DPH sazba se určuje explicitně přes VatRateType, ne přes zemi kontaktu
-        console.log(`Creating contact with country: ${country || 'CZ'}`)
+        // Pro EU země: kontakt MUSÍ mít CZ (OSS režim - české DPH 21%)
+        // Pro mimo EU: kontakt má skutečnou zemi (DPH 0% - na zemi nezáleží)
+        const isEuCountry = vatRate.rate === 21 // EU země mají 21% DPH
+        const actualCountry = country || 'CZ'
+        const contactCountry = isEuCountry ? 'CZ' : actualCountry
+        console.log(`Creating contact: EU=${isEuCountry}, contactCountry=${contactCountry}, actualCountry=${actualCountry}`)
         
         const partnerId = await getOrCreateContact(token, {
           name: customerName || customerEmail,
           email: customerEmail,
-          country: country || 'CZ' // Skutečná země zákazníka pro adresu
+          country: contactCountry // CZ pro EU (OSS režim), skutečná země pro mimo EU
         })
         console.log('Partner ID:', partnerId)
 
@@ -119,9 +122,16 @@ serve(async (req) => {
         const t = getEmailTranslations('cs') // Vždy čeština pro iDoklad
         const itemName = t.idoklad_item_name
         const invoiceDescription = t.idoklad_description
-        const invoiceNote = orderNumber 
+        
+        // Základní poznámka
+        let invoiceNote = orderNumber 
           ? formatEmailText(t.idoklad_note_with_order, { orderNumber })
           : t.idoklad_note
+        
+        // Vždy přidat skutečnou zemi zákazníka do poznámky (pro analýzu a evidenci)
+        const countryName = getCountryName(actualCountry)
+        invoiceNote += `\n\nZemě zákazníka: ${countryName} (${actualCountry})`
+        
         const unit = t.idoklad_unit
 
         // amount je konečná cena S DPH (59 Kč, 2.40 EUR, 2.90 USD)
@@ -212,6 +222,7 @@ serve(async (req) => {
             vat_rate: vatRate.rate,
             vat_amount: vatAmount,
             amount: amount, // Celková částka s DPH
+            total: amount, // Alias pro amount - NOT NULL sloupec
             status: 'paid',
             paid_at: new Date().toISOString(),
             issue_date: today,

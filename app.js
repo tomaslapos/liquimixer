@@ -5995,27 +5995,22 @@ async function detectUserLocation() {
 
             if (response.ok) {
                 const result = await response.json();
+                console.log('Geolocation API success:', result.location?.countryCode, result.location);
                 userLocation = result.location;
                 updatePricingUI(userLocation);
                 return;
+            } else {
+                console.warn('Geolocation API failed:', response.status, await response.text().catch(() => ''));
             }
         }
         
         // Použít měnu podle aktuálního jazyka
         const currency = currencyByLocale[currentLocale] || 'EUR';
-        // DŮLEŽITÉ: countryCode musí být platný ISO kód země, NE jazyk!
-        // Mapování jazyka na výchozí zemi (pro DPH účely - místo plnění)
-        const localeToCountry = {
-            'cs': 'CZ', 'sk': 'SK', 'de': 'DE', 'pl': 'PL', 'hu': 'HU',
-            'fr': 'FR', 'es': 'ES', 'it': 'IT', 'pt': 'PT', 'nl': 'NL',
-            'da': 'DK', 'sv': 'SE', 'no': 'NO', 'fi': 'FI', 'et': 'EE',
-            'lv': 'LV', 'lt': 'LT', 'ro': 'RO', 'bg': 'BG', 'hr': 'HR',
-            'sl': 'SI', 'el': 'GR', 'en': 'US', 'ja': 'JP', 'ko': 'KR',
-            'zh-CN': 'CN', 'zh-TW': 'TW', 'ar-SA': 'SA', 'tr': 'TR',
-            'ru': 'RU', 'uk': 'UA'
-        };
+        // DŮLEŽITÉ: Fallback vždy na CZ - místo plnění je ČR (OSS režim)
+        // Jazyk uživatele != země pro DPH. IP geolokace se použije až bude dostupná.
+        console.log('Geolocation fallback: using CZ as default country (OSS regime)');
         userLocation = {
-            countryCode: localeToCountry[currentLocale] || 'CZ', // Fallback na CZ
+            countryCode: 'CZ', // VŽDY CZ - jazyk není indikátor země pro DPH
             ...priceMap[currency]
         };
         
@@ -6023,19 +6018,11 @@ async function detectUserLocation() {
 
     } catch (error) {
         console.error('Error detecting location:', error);
-        // Fallback podle jazyka - mapování na skutečnou zemi
+        // Fallback vždy na CZ - místo plnění je ČR (OSS režim)
         const currency = currencyByLocale[currentLocale] || 'EUR';
-        const localeToCountry = {
-            'cs': 'CZ', 'sk': 'SK', 'de': 'DE', 'pl': 'PL', 'hu': 'HU',
-            'fr': 'FR', 'es': 'ES', 'it': 'IT', 'pt': 'PT', 'nl': 'NL',
-            'da': 'DK', 'sv': 'SE', 'no': 'NO', 'fi': 'FI', 'et': 'EE',
-            'lv': 'LV', 'lt': 'LT', 'ro': 'RO', 'bg': 'BG', 'hr': 'HR',
-            'sl': 'SI', 'el': 'GR', 'en': 'US', 'ja': 'JP', 'ko': 'KR',
-            'zh-CN': 'CN', 'zh-TW': 'TW', 'ar-SA': 'SA', 'tr': 'TR',
-            'ru': 'RU', 'uk': 'UA'
-        };
+        console.log('Geolocation error fallback: using CZ as default country (OSS regime)');
         userLocation = {
-            countryCode: localeToCountry[currentLocale] || 'CZ',
+            countryCode: 'CZ', // VŽDY CZ - jazyk není indikátor země pro DPH
             ...priceMap[currency]
         };
         updatePricingUI(userLocation);
