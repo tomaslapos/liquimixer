@@ -28,6 +28,10 @@ let accessToken: string | null = null
 let tokenExpiry: number = 0
 
 serve(async (req) => {
+  console.log('=== iDoklad function called ===')
+  console.log('Method:', req.method)
+  console.log('URL:', req.url)
+  
   const origin = req.headers.get('origin')
   const corsHeaders = getCorsHeaders(origin)
 
@@ -495,8 +499,23 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
 
     if (response.ok) {
       const result = await response.json()
-      const options = result.Data || result.Items || []
-      console.log('Available payment options:', JSON.stringify(options.map((o: any) => ({ Id: o.Id, Name: o.Name }))))
+      // iDoklad API může vracet různé formáty - ošetřit všechny varianty
+      let options: any[] = []
+      if (Array.isArray(result)) {
+        options = result
+      } else if (Array.isArray(result.Data)) {
+        options = result.Data
+      } else if (Array.isArray(result.Items)) {
+        options = result.Items
+      } else {
+        console.warn('Unexpected PaymentOptions response format:', JSON.stringify(result).substring(0, 200))
+      }
+      
+      if (options.length > 0) {
+        console.log('Available payment options:', JSON.stringify(options.map((o: any) => ({ Id: o.Id, Name: o.Name }))))
+      } else {
+        console.log('No payment options found in response')
+      }
       
       // Hledat platbu kartou (různé varianty názvu) - rozšířený seznam
       const cardKeywords = ['kart', 'card', 'platební karta', 'online', 'platba kartou', 'kartou']
