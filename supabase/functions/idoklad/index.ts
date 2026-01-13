@@ -72,7 +72,15 @@ serve(async (req) => {
 
         console.log('Creating invoice in iDoklad for subscription:', subscriptionId)
 
-        // 1. Získat access token
+        // 1. Určit DPH sazbu podle země (OSS režim - české DPH 21% pro EU, 0% mimo EU)
+        // MUSÍ být PŘED vytvořením kontaktu, protože určuje zemi kontaktu
+        const vatRate = getVatRateForCountry(country || 'CZ')
+        console.log(`=== VAT CALCULATION ===`)
+        console.log(`Country: ${country || 'CZ'}`)
+        console.log(`VatRate: rate=${vatRate.rate}%, type=${vatRate.type}`)
+        console.log(`Type 0=Basic(21%), Type 3=Zero(0%)`)
+
+        // 2. Získat access token
         const token = await getAccessToken()
         if (!token) {
           console.error('Failed to get iDoklad access token')
@@ -82,23 +90,27 @@ serve(async (req) => {
           )
         }
 
-        // 2. Získat nebo vytvořit kontakt
+        // 3. Získat nebo vytvořit kontakt
+        // Kontakt má SKUTEČNOU zemi zákazníka (pro adresu na faktuře)
+        // DPH sazba se určuje explicitně přes VatRateType, ne přes zemi kontaktu
+        console.log(`Creating contact with country: ${country || 'CZ'}`)
+        
         const partnerId = await getOrCreateContact(token, {
           name: customerName || customerEmail,
           email: customerEmail,
-          country: country || 'CZ'
+          country: country || 'CZ' // Skutečná země zákazníka pro adresu
         })
         console.log('Partner ID:', partnerId)
 
-        // 3. Získat výchozí nastavení faktury (včetně NumericSequenceId)
+        // 4. Získat výchozí nastavení faktury (včetně NumericSequenceId)
         const defaultSettings = await getDefaultInvoiceSettings(token)
         console.log('Default settings:', JSON.stringify(defaultSettings))
 
-        // 3b. Získat správné PaymentOptionId pro platbu kartou
+        // 5. Získat správné PaymentOptionId pro platbu kartou
         const paymentOptionId = await getCardPaymentOptionId(token)
         console.log('Using PaymentOptionId:', paymentOptionId)
 
-        // 4. Připravit data pro fakturu
+        // 6. Připravit data pro fakturu
         const today = new Date().toISOString().split('T')[0]
         const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         
@@ -112,13 +124,6 @@ serve(async (req) => {
           : t.idoklad_note
         const unit = t.idoklad_unit
 
-        // Určit DPH sazbu podle země (OSS režim - české DPH 21% pro EU, 0% mimo EU)
-        const vatRate = getVatRateForCountry(country || 'CZ')
-        console.log(`=== VAT CALCULATION ===`)
-        console.log(`Country: ${country || 'CZ'}`)
-        console.log(`VatRate: rate=${vatRate.rate}%, type=${vatRate.type}`)
-        console.log(`Type 0=Basic(21%), Type 3=Zero(0%)`)
-        
         // amount je konečná cena S DPH (59 Kč, 2.40 EUR, 2.90 USD)
         // Pro iDoklad: PriceType=0 znamená, že UnitPrice je cena BEZ DPH
         // iDoklad pak správně dopočítá DPH a celkovou cenu S DPH
@@ -147,7 +152,7 @@ serve(async (req) => {
             Amount: 1,
             Unit: unit,
             UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH - iDoklad dopočítá DPH
-            VatRateType: vatRate.type, // 0 = Basic (21%), 3 = Zero (0%) - NEPOSÍLAT VatRate, iDoklad použije sazbu podle typu
+            VatRateType: vatRate.type, // 0 = Basic (21%), 3 = Zero (0%) - bez VatRate, iDoklad určí sazbu z typu
             PriceType: 0, // 0 = cena BEZ DPH (iDoklad přidá DPH)
             DiscountPercentage: 0,
             IsTaxMovement: false,
@@ -211,6 +216,7 @@ serve(async (req) => {
             paid_at: new Date().toISOString(),
             issue_date: today,
             due_date: dueDate,
+            taxable_supply_date: today, // DUZP - datum zdanitelného plnění
             locale: locale,
           })
           .select('id')
