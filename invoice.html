@@ -469,8 +469,9 @@
         }
 
         async function displayInvoice(invoice) {
-            // Priorita jazyka: 1. localStorage (uživatelské nastavení), 2. jazyk prohlížeče, 3. čeština
-            const locale = localStorage.getItem('liquimixer_locale') || detectBrowserLocale() || 'en';
+            // Priorita jazyka: 1. jazyk z faktury (uživatelské nastavení v DB), 2. localStorage, 3. prohlížeč, 4. angličtina
+            const locale = invoice.locale || localStorage.getItem('liquimixer_locale') || detectBrowserLocale() || 'en';
+            console.log('Using locale for invoice:', locale, '(invoice.locale:', invoice.locale, ')');
             const translations = await loadTranslations(locale);
             const currency = invoice.currency || 'CZK';
 

@@ -430,24 +430,54 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
         if (existingContact.CountryId !== targetCountryId) {
           console.log(`Country mismatch! Existing=${existingContact.CountryId}, Target=${targetCountryId}. Updating contact...`)
           
-          // Aktualizovat krajinu kontaktu
+          // Aktualizovat krajinu kontaktu pomocí PUT (PATCH někdy nefunguje v iDoklad API)
           try {
+            // Použít PUT místo PATCH - iDoklad API vyžaduje kompletní objekt
             const updateResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts/${existingContact.Id}`, {
-              method: 'PATCH',
+              method: 'PUT',
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                CountryId: targetCountryId,
+                Id: existingContact.Id,
+                CompanyName: existingContact.CompanyName || contact.name,
+                Email: existingContact.Email || contact.email,
+                CountryId: targetCountryId, // NOVÁ ZEMĚ
+                // Zachovat ostatní pole
+                City: existingContact.City || '',
+                Street: existingContact.Street || '',
+                PostalCode: existingContact.PostalCode || '',
               })
             })
             
             if (updateResponse.ok) {
-              console.log(`Contact ${existingContact.Id} updated with new CountryId=${targetCountryId}`)
+              const updatedContact = await updateResponse.json()
+              const finalCountryId = updatedContact.Data?.CountryId || updatedContact.CountryId
+              console.log(`Contact ${existingContact.Id} updated. New CountryId=${finalCountryId} (expected ${targetCountryId})`)
+              
+              // Ověřit že aktualizace proběhla
+              if (finalCountryId !== targetCountryId) {
+                console.warn(`WARNING: Contact country update may have failed! Got ${finalCountryId}, expected ${targetCountryId}`)
+              }
             } else {
               const errorText = await updateResponse.text()
               console.error('Contact update error:', errorText)
+              // Zkusit ještě PATCH jako fallback
+              console.log('Trying PATCH as fallback...')
+              const patchResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Contacts/${existingContact.Id}`, {
+                method: 'PATCH',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ CountryId: targetCountryId })
+              })
+              if (patchResponse.ok) {
+                console.log('PATCH fallback succeeded')
+              } else {
+                console.error('PATCH fallback also failed:', await patchResponse.text())
+              }
             }
           } catch (e) {
             console.error('Contact update error:', e)
