@@ -426,7 +426,18 @@ async function getOrCreateContact(token: string, contact: { name: string, email:
 
     if (searchResponse.ok) {
       const result = await searchResponse.json()
-      const contacts = result.Data || result.Items || []
+      // iDoklad API vrací různé formáty: Data jako pole, Data.Items, nebo Items
+      let contacts: any[] = []
+      if (Array.isArray(result.Data)) {
+        contacts = result.Data
+      } else if (result.Data?.Items && Array.isArray(result.Data.Items)) {
+        contacts = result.Data.Items
+      } else if (Array.isArray(result.Items)) {
+        contacts = result.Items
+      } else if (Array.isArray(result)) {
+        contacts = result
+      }
+      console.log(`Found ${contacts.length} contacts for email search`)
       
       // Najít kontakt se SPRÁVNOU zemí
       const matchingContact = contacts.find((c: any) => c.CountryId === targetCountryId)
@@ -527,32 +538,28 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
 
     if (response.ok) {
       const result = await response.json()
-      // iDoklad API může vracet různé formáty - ošetřit všechny varianty
+      // iDoklad API vrací různé formáty: Data jako pole, Data.Items, nebo Items
       let options: any[] = []
       if (Array.isArray(result)) {
         options = result
       } else if (Array.isArray(result.Data)) {
         options = result.Data
+      } else if (result.Data?.Items && Array.isArray(result.Data.Items)) {
+        options = result.Data.Items // Formát: {"Data":{"Items":[...]}}
       } else if (Array.isArray(result.Items)) {
         options = result.Items
       } else {
         console.warn('Unexpected PaymentOptions response format:', JSON.stringify(result).substring(0, 200))
       }
       
-      if (options.length > 0) {
-        console.log('Available payment options:', JSON.stringify(options.map((o: any) => ({ Id: o.Id, Name: o.Name }))))
-      } else {
-        console.log('No payment options found in response')
-      }
-      
-      // Hledat platbu kartou (různé varianty názvu) - rozšířený seznam
-      // DŮLEŽITÉ: Nejdřív logovat všechny dostupné možnosti pro debugging
       console.log('=== PAYMENT OPTIONS SEARCH ===')
+      console.log(`Found ${options.length} payment options`)
       options.forEach((opt: any) => {
-        console.log(`  - Id: ${opt.Id}, Name: "${opt.Name}", IsDefault: ${opt.IsDefault}`)
+        console.log(`  - Id: ${opt.Id}, Name: "${opt.Name}", Code: "${opt.Code}", IsDefault: ${opt.IsDefault}`)
       })
       
-      const cardKeywords = ['kart', 'card', 'online']
+      // Hledat platbu kartou - různé varianty názvu
+      const cardKeywords = ['kart', 'card', 'online', 'platba kartou']
       const cardOption = options.find((opt: any) => {
         const name = opt.Name?.toLowerCase() || ''
         return cardKeywords.some(kw => name.includes(kw))
@@ -563,44 +570,12 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
         return cardOption.Id
       }
       
-      // Platba kartou neexistuje - vytvořit ji
-      console.log('Card payment option not found in options, creating "Platba kartou"...')
-      const createResponse = await fetch(`${IDOKLAD_CONFIG.apiUrl}/PaymentOptions`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Name: 'Platba kartou',
-          IsDefault: false,
-        })
-      })
-      
-      if (createResponse.ok) {
-        const newOption = await createResponse.json()
-        const optionData = newOption.Data || newOption
-        console.log('Created card payment option:', optionData.Id, optionData.Name)
-        return optionData.Id
-      } else {
-        const errorText = await createResponse.text()
-        console.error('Failed to create payment option:', errorText)
-        
-        // Pokud vytvoření selhalo, zkusit najít existující nebo použít první dostupný
-        if (options.length > 0) {
-          // Preferovat "Hotovost" před "Převodným příkazem"
-          const cashOption = options.find((opt: any) => 
-            opt.Name?.toLowerCase().includes('hotov') || 
-            opt.Name?.toLowerCase().includes('cash')
-          )
-          if (cashOption) {
-            console.log('Using cash option as fallback:', cashOption.Id, cashOption.Name)
-            return cashOption.Id
-          }
-          // Jinak použít první
-          console.log('Using first available payment option:', options[0].Id, options[0].Name)
-          return options[0].Id
-        }
+      // Karta neexistuje - v iDoklad API v3 nelze vytvořit novou platební možnost přes API
+      // POZNÁMKA: Uživatel musí ručně vytvořit "Platba kartou" v iDoklad nastavení
+      console.log('Card payment option not found. Available options:', options.map((o: any) => o.Name).join(', '))
+      if (options.length > 0) {
+        console.log(`Using first available payment option: Id=${options[0].Id}, Name="${options[0].Name}"`)
+        return options[0].Id
       }
     } else {
       console.error('Failed to fetch payment options:', await response.text())
@@ -609,7 +584,7 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
     console.error('Payment options error:', e)
   }
   
-  // Fallback - vrátit ID pro "Hotově" (typicky 1) aby faktura prošla
+  // Fallback - vrátit ID 1 (typicky "Bank transfer" / "Převodem")
   console.warn('Using fallback payment option ID 1')
   return 1
 }
