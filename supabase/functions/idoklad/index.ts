@@ -114,7 +114,10 @@ serve(async (req) => {
 
         // Určit DPH sazbu podle země (OSS režim - české DPH 21% pro EU, 0% mimo EU)
         const vatRate = getVatRateForCountry(country || 'CZ')
-        console.log(`VAT calculation for country=${country || 'CZ'}: rate=${vatRate.rate}%, type=${vatRate.type} (0=Basic 21%, 3=Zero 0%)`)
+        console.log(`=== VAT CALCULATION ===`)
+        console.log(`Country: ${country || 'CZ'}`)
+        console.log(`VatRate: rate=${vatRate.rate}%, type=${vatRate.type}`)
+        console.log(`Type 0=Basic(21%), Type 3=Zero(0%)`)
         
         // amount je konečná cena S DPH (59 Kč, 2.40 EUR, 2.90 USD)
         // Pro iDoklad: PriceType=0 znamená, že UnitPrice je cena BEZ DPH
@@ -144,8 +147,7 @@ serve(async (req) => {
             Amount: 1,
             Unit: unit,
             UnitPrice: unitPriceWithoutVat, // Cena BEZ DPH - iDoklad dopočítá DPH
-            VatRateType: vatRate.type, // 0 = Basic (základní 21%), 3 = Zero (osvobozeno 0%)
-            VatRate: vatRate.rate, // EXPLICITNĚ zadat sazbu DPH (21 nebo 0) - přepíše sazbu země kontaktu
+            VatRateType: vatRate.type, // 0 = Basic (21%), 3 = Zero (0%) - NEPOSÍLAT VatRate, iDoklad použije sazbu podle typu
             PriceType: 0, // 0 = cena BEZ DPH (iDoklad přidá DPH)
             DiscountPercentage: 0,
             IsTaxMovement: false,
