@@ -29,6 +29,9 @@ const DELETION_RULES = {
   // Uživatel s historií předplatného - mazání 3 měsíce po vypršení
   withSubscriptionHistory: 90 * 24, // 90 dní v hodinách
   
+  // Pending subscriptions - mazání po 24 hodinách
+  pendingSubscription: 24, // 24 hodin
+  
   // Upozornění před mazáním (pro uživatele s historií)
   warnings: {
     oneMonth: 30 * 24,   // 30 dní před
@@ -229,7 +232,34 @@ serve(async (req) => {
       usersChecked: 0,
       warningsSent: 0,
       usersDeleted: 0,
+      pendingSubscriptionsCleaned: 0,
       errors: [] as string[]
+    }
+
+    // 0. Cleanup starých pending subscriptions (starší než 24 hodin)
+    const pendingCutoff = new Date(Date.now() - DELETION_RULES.pendingSubscription * 60 * 60 * 1000)
+    const { data: oldPendingSubscriptions, error: pendingError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('id, clerk_id, created_at')
+      .eq('status', 'pending')
+      .lt('created_at', pendingCutoff.toISOString())
+    
+    if (!pendingError && oldPendingSubscriptions) {
+      for (const sub of oldPendingSubscriptions) {
+        try {
+          const { error: deleteError } = await supabaseAdmin
+            .from('subscriptions')
+            .delete()
+            .eq('id', sub.id)
+          
+          if (!deleteError) {
+            results.pendingSubscriptionsCleaned++
+            console.log(`Deleted old pending subscription ${sub.id} (created: ${sub.created_at})`)
+          }
+        } catch (e) {
+          results.errors.push(`Failed to delete pending subscription ${sub.id}`)
+        }
+      }
     }
 
     // 1. Získat všechny uživatele
