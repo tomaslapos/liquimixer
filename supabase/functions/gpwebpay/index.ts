@@ -694,7 +694,7 @@ serve(async (req) => {
           // 8b. Získat uživatele pro email a jazyk
           const { data: user } = await supabaseAdmin
             .from('users')
-            .select('email, first_name, last_name, locale')
+            .select('email, first_name, last_name, preferred_locale')
             .eq('clerk_id', payment.clerk_id)
             .single()
           
@@ -704,12 +704,12 @@ serve(async (req) => {
             : (user?.first_name || customerEmail)
           
           // Jazyk pro fakturu a email:
-          // 1. Jazyk uživatele (users.locale) - pokud je nastavený
+          // 1. Jazyk uživatele (users.preferred_locale) - pokud je nastavený
           // 2. Jazyk z subscription (GP WebPay lokalizace) - fallback
-          const invoiceLocale = user?.locale || subscription?.user_locale || 'cs'
+          const invoiceLocale = user?.preferred_locale || subscription?.user_locale || 'cs'
           
           console.log('Customer:', customerName, customerEmail)
-          console.log('User locale:', user?.locale, 'Subscription locale:', subscription?.user_locale, '-> Invoice locale:', invoiceLocale)
+          console.log('User preferred_locale:', user?.preferred_locale, 'Subscription locale:', subscription?.user_locale, '-> Invoice locale:', invoiceLocale)
           console.log('Subscription:', subscription?.id, 'Amount:', subscription?.total_amount, subscription?.currency)
           
           // 8c. Vytvořit fakturu v iDoklad (HLAVNÍ zdroj faktur)

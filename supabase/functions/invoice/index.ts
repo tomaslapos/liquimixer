@@ -689,9 +689,12 @@ function generateSingleIdokladInvoiceHtml(locale: string, invoice: any, customer
     totalWithVat: totalAmount
   }]
 
+  // Použít přeložený název položky (trans.idoklad_item_name) místo item.name z iDoklad
+  // protože iDoklad vrací český název a my potřebujeme přeložený
   const itemsHtml = items.map((item: any) => {
     const itemTotal = item.totalWithVat || item.unitPrice || totalAmount
-    return `<tr><td style="padding:8px;border:1px solid #ddd;">${item.name}</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${item.amount || 1}</td><td style="padding:8px;border:1px solid #ddd;text-align:right;">${Number(itemTotal).toFixed(2)} ${currency}</td></tr>`
+    const itemName = trans.idoklad_item_name // Vždy použít přeložený název
+    return `<tr><td style="padding:8px;border:1px solid #ddd;">${itemName}</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${item.amount || 1}</td><td style="padding:8px;border:1px solid #ddd;text-align:right;">${Number(itemTotal).toFixed(2)} ${currency}</td></tr>`
   }).join('')
 
   const formatDate = (dateStr: string) => {
@@ -793,9 +796,11 @@ function getEmailBodyFromIdoklad(locale: string, invoice: any, customerName: str
     dic: trans.invoice_email_dic,
   }
 
-  // Link na online zobrazení faktury
+  // Link na online zobrazení faktury - prioritně použít dbId (naše DB), pak id jako fallback
+  console.log('Invoice IDs - dbId:', invoice.dbId, 'id:', invoice.id)
   const invoiceDbId = invoice.dbId || invoice.id
   const invoiceLink = invoiceDbId ? `https://www.liquimixer.com/invoice.html?id=${invoiceDbId}` : ''
+  console.log('Invoice link:', invoiceLink)
 
   // Generovat dvojjazyčnou fakturu: nahoře v jazyku uživatele, dole anglická verze
   const invoiceUserLocale = generateSingleIdokladInvoiceHtml(locale, invoice, customerName, customerEmail)
