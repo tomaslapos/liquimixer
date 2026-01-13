@@ -397,12 +397,17 @@ serve(async (req) => {
             },
           })
 
+          // Minifikovat HTML - odstranit trailing spaces které způsobují =20 v quoted-printable
+          const cleanHtml = emailBody
+            .replace(/[ \t]+$/gm, '') // Odstranit trailing whitespace na každém řádku
+            .replace(/\n\s*\n/g, '\n') // Odstranit prázdné řádky
+          
           await client.send({
             from: EMAIL_FROM,
             to: customerEmail,
             subject: emailSubject,
-            content: emailBody,
-            html: emailBody,
+            content: cleanHtml,
+            html: cleanHtml,
           })
 
           await client.close()
@@ -602,12 +607,17 @@ serve(async (req) => {
           })
 
           // Email BEZ přílohy - faktura je přímo v těle emailu jako HTML tabulka
+          // Minifikovat HTML - odstranit trailing spaces které způsobují =20 v quoted-printable
+          const cleanHtml = emailBody
+            .replace(/[ \t]+$/gm, '') // Odstranit trailing whitespace na každém řádku
+            .replace(/\n\s*\n/g, '\n') // Odstranit prázdné řádky
+          
           await client.send({
             from: EMAIL_FROM,
             to: invoice.customer_email,
             subject: emailSubject,
-            content: emailBody,
-            html: emailBody,
+            content: cleanHtml,
+            html: cleanHtml,
           })
 
           await client.close()

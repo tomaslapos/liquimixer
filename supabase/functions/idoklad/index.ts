@@ -90,6 +90,9 @@ serve(async (req) => {
           )
         }
 
+        // 2.5 DEBUG: Zjistit správné CountryId z iDoklad API
+        await logAvailableCountries(token)
+
         // 3. Získat nebo vytvořit kontakt
         // Pro EU země: kontakt MUSÍ mít CZ (OSS režim - české DPH 21%)
         // Pro mimo EU: kontakt má skutečnou zemi (DPH 0% - na zemi nezáleží)
@@ -587,6 +590,47 @@ async function getCardPaymentOptionId(token: string): Promise<number> {
   // Fallback - vrátit ID 1 (typicky "Bank transfer" / "Převodem")
   console.warn('Using fallback payment option ID 1')
   return 1
+}
+
+// DEBUG: Zjistit dostupné země z iDoklad API
+async function logAvailableCountries(token: string): Promise<void> {
+  try {
+    console.log('=== FETCHING COUNTRIES FROM IDOKLAD API ===')
+    const response = await fetch(`${IDOKLAD_CONFIG.apiUrl}/Countries`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    
+    if (response.ok) {
+      const result = await response.json()
+      let countries: any[] = []
+      if (Array.isArray(result)) {
+        countries = result
+      } else if (Array.isArray(result.Data)) {
+        countries = result.Data
+      } else if (result.Data?.Items && Array.isArray(result.Data.Items)) {
+        countries = result.Data.Items
+      }
+      
+      console.log(`Found ${countries.length} countries in iDoklad`)
+      // Logovat jen prvních 10 a hledat CZ a SK
+      const czCountry = countries.find((c: any) => c.Code === 'CZ' || c.Name?.includes('Česk') || c.Name?.includes('Czech'))
+      const skCountry = countries.find((c: any) => c.Code === 'SK' || c.Name?.includes('Sloven') || c.Name?.includes('Slovak'))
+      
+      if (czCountry) {
+        console.log(`CZECH REPUBLIC: Id=${czCountry.Id}, Code=${czCountry.Code}, Name=${czCountry.Name}`)
+      }
+      if (skCountry) {
+        console.log(`SLOVAKIA: Id=${skCountry.Id}, Code=${skCountry.Code}, Name=${skCountry.Name}`)
+      }
+      
+      // Logovat prvních 5 zemí pro kontext
+      console.log('First 5 countries:', countries.slice(0, 5).map((c: any) => `${c.Id}:${c.Code}:${c.Name}`).join(', '))
+    } else {
+      console.error('Failed to fetch countries:', await response.text())
+    }
+  } catch (e) {
+    console.error('Countries fetch error:', e)
+  }
 }
 
 function getCountryId(countryCode: string): number {
