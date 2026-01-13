@@ -164,9 +164,9 @@ serve(async (req) => {
             Name: itemName,
             Amount: 1,
             Unit: unit,
-            UnitPrice: amount, // Cena S DPH - iDoklad si určí sazbu podle země kontaktu
-            // NEUVEDENO VatRateType - iDoklad si sám určí sazbu podle země kontaktu (CZ = 21%)
-            PriceType: 1, // 1 = cena S DPH (iDoklad dopočítá cenu bez DPH)
+            UnitPrice: amount, // Cena S DPH (59 CZK) - iDoklad dopočítá cenu bez DPH
+            VatRateType: 0, // 0 = Basic (základní sazba - pro CZ je to 21%)
+            PriceType: 1, // 1 = cena S DPH (iDoklad dopočítá cenu bez DPH jako 59/1.21 = 48.76)
             DiscountPercentage: 0,
             IsTaxMovement: false,
           }],
