@@ -250,7 +250,9 @@
     "save_product": "お気に入りに保存",
     "products_copied": "コピー済み",
     "product_saved": "製品がお気に入りに保存されました！",
-    "from_shared": "共有から"
+    "from_shared": "共有から",
+    "view_recipe": "VIEW RECIPE",
+    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
   },
   "save_recipe": {
     "title": "レシピを保存",
@@ -279,7 +281,9 @@
     "reminder_calculated": "推奨熟成期間：{days} {daysUnit}。日付は調整できます。",
     "reminder_no_steeping": "このフレーバーは熟成不要です。",
     "select_product": "-- 製品を選択 --",
-    "search_product": "製品を検索..."
+    "search_product": "製品を検索...",
+    "products_linked": "Linked products",
+    "save_as_new": "SAVE AS NEW"
   },
   "share": {
     "copied": "リンクがクリップボードにコピーされました！",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "リキッドが熟成したら通知を受け取りますか？\n\n承認後、リキッドが準備できた日にリマインダーをお送りします。"
+  },
+  "calculator": {
+    "edit_values": "EDIT VALUES"
   }
 }

@@ -907,9 +907,9 @@
             <h2 class="page-title" data-i18n="results.dilute_title">Recept na ředění</h2>
             
             <div class="results-summary">
-                <div class="summary-item">
-                    <span class="summary-label" data-i18n="results.total_volume">Celkový objem:</span>
-                    <span class="summary-value" id="diluteResultTotal">100 ml</span>
+                <div class="summary-item total-volume-highlight">
+                    <span class="summary-label volume-label" data-i18n="results.total_volume">Celkový objem:</span>
+                    <span class="summary-value volume-value" id="diluteResultTotal">100 ml</span>
                 </div>
                 <div class="summary-item">
                     <span class="summary-label" data-i18n="results.ratio">Poměr VG/PG:</span>
@@ -1467,9 +1467,9 @@
             <h2 class="page-title" data-i18n="results.title">Tvůj recept</h2>
             
             <div class="results-summary">
-                <div class="summary-item">
-                    <span class="summary-label" data-i18n="results.total_volume">Celkový objem:</span>
-                    <span class="summary-value" id="resultTotal">100 ml</span>
+                <div class="summary-item total-volume-highlight">
+                    <span class="summary-label volume-label" data-i18n="results.total_volume">Celkový objem:</span>
+                    <span class="summary-value volume-value" id="resultTotal">100 ml</span>
                 </div>
                 <div class="summary-item">
                     <span class="summary-label" data-i18n="results.ratio">Poměr VG/PG:</span>
@@ -1506,12 +1506,26 @@
                 </ul>
             </div>
 
-            <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('form')">
+            <!-- Standardní tlačítka pro nový recept -->
+            <div class="button-group" id="resultsNewButtons">
+                <button class="neon-button secondary" onclick="goBackToCalculator()">
                     <span data-i18n="results.edit">◀ UPRAVIT</span>
                 </button>
                 <button class="neon-button" onclick="showSaveRecipeModal()" id="saveRecipeBtn">
                     <span data-i18n="results.save">ULOŽIT</span>
+                </button>
+            </div>
+            
+            <!-- Tlačítka pro editaci existujícího receptu -->
+            <div class="button-group hidden" id="resultsEditButtons">
+                <button class="neon-button secondary" onclick="goBackToCalculator()">
+                    <span data-i18n="calculator.edit_values">◀ UPRAVIT HODNOTY</span>
+                </button>
+                <button class="neon-button btn-cyan" onclick="showSaveAsNewModal()">
+                    <span data-i18n="save_recipe.save_as_new">ULOŽIT JAKO NOVÝ</span>
+                </button>
+                <button class="neon-button btn-green" onclick="showSaveChangesModal()">
+                    <span data-i18n="save_recipe.save_changes">ULOŽIT ZMĚNY</span>
                 </button>
             </div>
         </section>
@@ -1674,6 +1688,24 @@
                     <span data-i18n="recipe_detail.delete">SMAZAT</span>
                 </button>
             </div>
+        </section>
+
+        <!-- Disclaimer pro sdílený recept -->
+        <section id="shared-recipe-disclaimer" class="page">
+            <h1 class="main-title">
+                <span class="title-gradient" data-i18n="intro.title">LiquiMixer</span>
+            </h1>
+            <p class="subtitle" data-i18n="intro.subtitle">E-liquid Calculator</p>
+            
+            <div class="disclaimer-box">
+                <p class="disclaimer-text" data-i18n="shared_recipe.disclaimer_intro">
+                    Kliknutím na tlačítko Zobrazit recept uživatel potvrzuje, že je mu alespoň 18 let.
+                </p>
+            </div>
+            
+            <button class="neon-button start-button" id="viewSharedRecipeBtn" onclick="confirmAndShowSharedRecipe()">
+                <span data-i18n="shared_recipe.view_recipe">ZOBRAZIT RECEPT</span>
+            </button>
         </section>
 
         <!-- Sdílený recept stránka -->

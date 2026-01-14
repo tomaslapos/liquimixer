@@ -1455,6 +1455,144 @@ async function showSaveRecipeModal() {
     }
 }
 
+// Vrátit se zpět do kalkulátoru (podle typu formuláře)
+function goBackToCalculator() {
+    const recipeData = currentRecipeData || {};
+    const formType = recipeData.formType || 'liquid';
+    
+    if (formType === 'snv') {
+        showPage('calculator-snv');
+    } else if (formType === 'pro') {
+        showPage('calculator-pro');
+    } else {
+        showPage('calculator');
+    }
+}
+
+// Zobrazit modal "Uložit jako nový"
+async function showSaveAsNewModal() {
+    if (!requireSubscription()) return;
+    
+    const modal = document.getElementById('saveRecipeModal');
+    if (!modal) return;
+    
+    // Reset editingRecipeId - ukládáme jako nový
+    window.editingRecipeId = null;
+    
+    // Vyčistit název a popis (nový recept)
+    document.getElementById('recipeName').value = '';
+    document.getElementById('recipeDescription').value = '';
+    document.getElementById('recipeRating').value = '0';
+    selectedRating = 0;
+    updateStarDisplay(0);
+    initStarRating();
+    
+    // Načíst produkty
+    await loadProductsForRecipe();
+    
+    // Předvyplnit produkty z editovaného receptu
+    if (window.editingRecipeFromDetail) {
+        try {
+            const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(
+                window.Clerk.user.id, 
+                window.editingRecipeFromDetail.id
+            );
+            for (const product of linkedProducts) {
+                addProductRowWithValue(product.id, product.name);
+            }
+        } catch (error) {
+            console.error('Error loading linked products:', error);
+        }
+    }
+    
+    // Nastavit nadpis a tlačítko
+    const modalTitle = modal.querySelector('.menu-title');
+    if (modalTitle) {
+        modalTitle.textContent = t('save_recipe.save_as_new', 'Uložit jako nový');
+    }
+    const submitBtn = modal.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        const spanElement = submitBtn.querySelector('span[data-i18n]');
+        if (spanElement) {
+            spanElement.textContent = t('save_recipe.save_as_new', 'Uložit jako nový');
+        }
+    }
+    
+    initReminderFieldsEnabled();
+    if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+        window.i18n.applyTranslations();
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+// Zobrazit modal "Uložit změny"
+async function showSaveChangesModal() {
+    if (!requireSubscription()) return;
+    
+    const modal = document.getElementById('saveRecipeModal');
+    if (!modal) return;
+    
+    const editingRecipe = window.editingRecipeFromDetail;
+    if (!editingRecipe) {
+        // Pokud není editovaný recept, použít normální uložení
+        showSaveRecipeModal();
+        return;
+    }
+    
+    // Nastavit ID pro úpravu
+    window.editingRecipeId = editingRecipe.id;
+    
+    // Předvyplnit údaje z editovaného receptu
+    document.getElementById('recipeName').value = editingRecipe.name || '';
+    document.getElementById('recipeDescription').value = editingRecipe.description || '';
+    document.getElementById('recipeRating').value = editingRecipe.rating || '0';
+    selectedRating = parseInt(editingRecipe.rating) || 0;
+    updateStarDisplay(selectedRating);
+    initStarRating();
+    
+    // Načíst produkty
+    await loadProductsForRecipe();
+    
+    // Předvyplnit propojené produkty
+    try {
+        const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(
+            window.Clerk.user.id, 
+            editingRecipe.id
+        );
+        for (const product of linkedProducts) {
+            addProductRowWithValue(product.id, product.name);
+        }
+    } catch (error) {
+        console.error('Error loading linked products:', error);
+    }
+    
+    // Nastavit nadpis a tlačítko
+    const modalTitle = modal.querySelector('.menu-title');
+    if (modalTitle) {
+        modalTitle.textContent = t('save_recipe.save_changes', 'Uložit změny');
+    }
+    const submitBtn = modal.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        const spanElement = submitBtn.querySelector('span[data-i18n]');
+        if (spanElement) {
+            spanElement.textContent = t('save_recipe.save_changes', 'Uložit změny');
+        }
+    }
+    
+    // Skrýt pole pro připomínku při úpravě (už existuje)
+    const reminderSection = document.querySelector('.reminder-checkbox-container');
+    if (reminderSection) {
+        reminderSection.style.display = 'none';
+    }
+    
+    if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+        window.i18n.applyTranslations();
+    }
+    
+    modal.classList.remove('hidden');
+}
+
 // Produkty pro výběr v receptu
 let availableProductsForRecipe = [];
 let selectedProductRows = 0;
@@ -1604,16 +1742,28 @@ function hideSaveRecipeModal() {
         
         // Reset režimu úpravy
         window.editingRecipeId = null;
+        window.editingRecipeFromDetail = null;
         
         // Obnovit původní nadpis a tlačítko
         const modalTitle = modal.querySelector('.menu-title');
         if (modalTitle) {
-            modalTitle.textContent = 'Uložit recept';
+            modalTitle.textContent = t('save_recipe.title', 'Uložit recept');
         }
         
         const submitBtn = modal.querySelector('button[type="submit"]');
         if (submitBtn) {
-            submitBtn.textContent = 'Uložit recept';
+            const spanElement = submitBtn.querySelector('span[data-i18n]');
+            if (spanElement) {
+                spanElement.textContent = t('save_recipe.save_button', 'Uložit recept');
+            } else {
+                submitBtn.textContent = t('save_recipe.save_button', 'Uložit recept');
+            }
+        }
+        
+        // Obnovit sekci připomínek
+        const reminderSection = document.querySelector('.reminder-checkbox-container');
+        if (reminderSection) {
+            reminderSection.style.display = '';
         }
     }
 }
@@ -1716,15 +1866,26 @@ async function saveRecipe(event) {
                 try {
                     // Načíst propojené produkty z původního receptu
                     const originalProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(window.pendingSharedRecipeId);
-                    console.log('[saveRecipe] Original products from shared recipe:', originalProducts?.length || 0);
+                    console.log('[saveRecipe] Original products from shared recipe:', originalProducts);
                     
                     // Zkopírovat každý produkt do účtu aktuálního uživatele
-                    for (const product of originalProducts) {
-                        console.log('[saveRecipe] Copying product:', product.id, product.name);
-                        const copied = await window.LiquiMixerDB.copyProductToUser(product.id, window.Clerk.user.id);
-                        if (copied) {
-                            console.log('[saveRecipe] Copied product new ID:', copied.id);
-                            copiedProductIds.push(copied.id);
+                    if (originalProducts && originalProducts.length > 0) {
+                        for (const product of originalProducts) {
+                            // Ověřit, že produkt má ID
+                            const productId = product.id || product.product_id;
+                            if (!productId) {
+                                console.warn('[saveRecipe] Product missing ID:', product);
+                                continue;
+                            }
+                            
+                            console.log('[saveRecipe] Copying product:', productId, product.name);
+                            const copied = await window.LiquiMixerDB.copyProductToUser(productId, window.Clerk.user.id);
+                            if (copied && copied.id) {
+                                console.log('[saveRecipe] Copied product new ID:', copied.id);
+                                copiedProductIds.push(copied.id);
+                            } else {
+                                console.warn('[saveRecipe] Failed to copy product:', productId);
+                            }
                         }
                     }
                     
@@ -2158,9 +2319,9 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         </div>
         
         <div class="recipe-detail-info">
-            <div class="recipe-info-item">
-                <div class="recipe-info-label">${t('recipe_detail.total_volume', 'Celkový objem')}</div>
-                <div class="recipe-info-value">${safeTotal} ml</div>
+            <div class="recipe-info-item total-volume-highlight">
+                <div class="recipe-info-label volume-label">${t('recipe_detail.total_volume', 'Celkový objem')}</div>
+                <div class="recipe-info-value volume-value">${safeTotal} ml</div>
             </div>
             <div class="recipe-info-item">
                 <div class="recipe-info-label">${t('recipe_detail.ratio', 'Poměr VG/PG')}</div>
@@ -2199,7 +2360,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     }
 }
 
-// Upravit uložený recept
+// Upravit uložený recept - otevře kalkulátor s předvyplněnými hodnotami
 async function editSavedRecipe() {
     if (!currentViewingRecipe) return;
     
@@ -2208,16 +2369,112 @@ async function editSavedRecipe() {
         return;
     }
     
-    // Zobrazit modal pro úpravu
-    const modal = document.getElementById('editRecipeModal');
-    if (!modal) {
-        // Modal neexistuje, použít saveRecipeModal s úpravami
-        showEditRecipeForm();
-        return;
-    }
+    // Uložit ID editovaného receptu pro pozdější použití
+    window.editingRecipeFromDetail = currentViewingRecipe;
     
-    modal.classList.remove('hidden');
-    await loadEditRecipeForm();
+    const recipeData = currentViewingRecipe.recipe_data || {};
+    
+    // Určit typ formuláře
+    const formType = recipeData.formType || 'liquid';
+    
+    // Předvyplnit formulář podle typu
+    if (formType === 'snv') {
+        prefillSnvForm(recipeData);
+        showPage('calculator-snv');
+    } else if (formType === 'pro') {
+        prefillProForm(recipeData);
+        showPage('calculator-pro');
+    } else {
+        prefillLiquidForm(recipeData);
+        showPage('calculator');
+    }
+}
+
+// Předvyplnit Liquid formulář
+function prefillLiquidForm(data) {
+    if (data.totalAmount) {
+        document.getElementById('totalAmount').value = data.totalAmount;
+    }
+    if (data.vgPercent !== undefined) {
+        document.getElementById('vgPgRatio').value = data.vgPercent;
+        updateVgPgDisplay();
+    }
+    if (data.nicotine !== undefined && data.nicotine > 0) {
+        document.getElementById('nicotineType').value = 'booster';
+        document.getElementById('targetNicotine').value = data.nicotine;
+        updateNicotineFields();
+    }
+    if (data.flavorType && data.flavorType !== 'none') {
+        document.getElementById('flavorType').value = data.flavorType;
+        // Najít procento příchutě z ingredients
+        const flavorIng = (data.ingredients || []).find(ing => ing.ingredientKey === 'flavor');
+        if (flavorIng) {
+            document.getElementById('flavorStrength').value = flavorIng.percent || 10;
+        }
+        updateFlavorFields();
+    }
+    updateVgPgRatioLimits();
+}
+
+// Předvyplnit SNV formulář
+function prefillSnvForm(data) {
+    if (data.totalAmount) {
+        const el = document.getElementById('snvTotalAmount');
+        if (el) el.value = data.totalAmount;
+    }
+    if (data.vgPercent !== undefined) {
+        const el = document.getElementById('snvVgPgRatio');
+        if (el) {
+            el.value = data.vgPercent;
+            updateSnvVgPgDisplay();
+        }
+    }
+    if (data.nicotine !== undefined && data.nicotine > 0) {
+        const typeEl = document.getElementById('snvNicotineType');
+        if (typeEl) typeEl.value = 'booster';
+        const nicEl = document.getElementById('snvTargetNicotine');
+        if (nicEl) nicEl.value = data.nicotine;
+        updateSnvNicotineFields();
+    }
+    // Aroma procento
+    const aromaIng = (data.ingredients || []).find(ing => ing.ingredientKey === 'flavor');
+    if (aromaIng) {
+        const el = document.getElementById('snvAromaPercent');
+        if (el) el.value = aromaIng.percent || 10;
+    }
+}
+
+// Předvyplnit PRO formulář
+function prefillProForm(data) {
+    if (data.totalAmount) {
+        const el = document.getElementById('proTotalAmount');
+        if (el) el.value = data.totalAmount;
+    }
+    if (data.vgPercent !== undefined) {
+        const el = document.getElementById('proVgPgRatio');
+        if (el) {
+            el.value = data.vgPercent;
+            updateProVgPgDisplay();
+        }
+    }
+    if (data.nicotine !== undefined && data.nicotine > 0) {
+        const typeEl = document.getElementById('proNicotineType');
+        if (typeEl) typeEl.value = 'booster';
+        const nicEl = document.getElementById('proTargetNicotine');
+        if (nicEl) nicEl.value = data.nicotine;
+        updateProNicotineFields();
+    }
+    // Příchutě - TODO: složitější logika pro více příchutí
+    if (data.flavors && data.flavors.length > 0) {
+        // Reset příchutí a přidat nové
+        const container = document.getElementById('proFlavorsContainer');
+        if (container) {
+            container.innerHTML = '';
+            data.flavors.forEach((flavor, index) => {
+                addProFlavorRow(flavor.name, flavor.percent);
+            });
+        }
+    }
 }
 
 // Zobrazit formulář pro úpravu receptu
@@ -2454,8 +2711,33 @@ async function loadSharedRecipe() {
         return true;
     }
     
-    // Uživatel je přihlášen, načíst recept
-    return await loadSharedRecipeContent(shareId);
+    // Uživatel je přihlášen - zobrazit disclaimer stránku
+    showSharedRecipeDisclaimer(shareId);
+    return true;
+}
+
+// Zobrazit disclaimer pro sdílený recept
+function showSharedRecipeDisclaimer(shareId) {
+    // Uložit shareId pro pozdější načtení
+    window.pendingSharedRecipeId = shareId;
+    
+    // Aplikovat překlady
+    if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+        window.i18n.applyTranslations();
+    }
+    
+    showPage('shared-recipe-disclaimer');
+}
+
+// Potvrdit disclaimer a zobrazit sdílený recept
+async function confirmAndShowSharedRecipe() {
+    const shareId = window.pendingSharedRecipeId;
+    if (!shareId) {
+        showPage('intro');
+        return;
+    }
+    
+    await loadSharedRecipeContent(shareId);
 }
 
 // Zobrazit výzvu k přihlášení pro sdílený recept
@@ -4112,6 +4394,20 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     document.getElementById('resultTotal').textContent = `${total} ml`;
     document.getElementById('resultRatio').textContent = `${vg}:${pg}`;
     document.getElementById('resultNicotine').textContent = `${nicotine} mg/ml`;
+    
+    // Přepnout tlačítka podle režimu (editace vs nový recept)
+    const newButtons = document.getElementById('resultsNewButtons');
+    const editButtons = document.getElementById('resultsEditButtons');
+    
+    if (window.editingRecipeFromDetail) {
+        // Režim editace existujícího receptu
+        if (newButtons) newButtons.classList.add('hidden');
+        if (editButtons) editButtons.classList.remove('hidden');
+    } else {
+        // Nový recept
+        if (newButtons) newButtons.classList.remove('hidden');
+        if (editButtons) editButtons.classList.add('hidden');
+    }
 
     // Uložit data receptu pro možnost pozdějšího uložení
     // Ukládáme klíče a parametry pro dynamický překlad
@@ -7105,9 +7401,13 @@ window.goBack = goBack;
 window.calculateMixture = calculateMix;
 window.storeCurrentRecipe = storeCurrentRecipe;
 window.showSaveRecipeModal = showSaveRecipeModal;
+window.showSaveAsNewModal = showSaveAsNewModal;
+window.showSaveChangesModal = showSaveChangesModal;
+window.goBackToCalculator = goBackToCalculator;
 window.hideSaveRecipeModal = hideSaveRecipeModal;
 window.saveRecipe = saveRecipe;
 window.saveSharedRecipe = saveSharedRecipe;
+window.confirmAndShowSharedRecipe = confirmAndShowSharedRecipe;
 window.showMyRecipes = showMyRecipes;
 window.signOut = signOut;
 window.viewRecipeDetail = viewRecipeDetail;

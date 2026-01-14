@@ -250,7 +250,9 @@
     "save_product": "ENREGISTRER DANS MES FAVORIS",
     "products_copied": "copiés",
     "product_saved": "Le produit a été enregistré dans vos favoris !",
-    "from_shared": "du partagé"
+    "from_shared": "du partagé",
+    "view_recipe": "VOIR LA RECETTE",
+    "disclaimer_intro": "En cliquant sur le bouton Voir la recette, utilisateur confirme avoir au moins 18 ans."
   },
   "save_recipe": {
     "title": "Enregistrer la recette",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Temps de maturation recommandé : {days} {daysUnit}. Vous pouvez modifier la date.",
     "reminder_no_steeping": "Cet arôme ne nécessite pas de maturation.",
     "select_product": "-- Sélectionner un produit --",
-    "search_product": "Rechercher un produit..."
+    "search_product": "Rechercher un produit...",
+    "products_linked": "Produits lies",
+    "save_as_new": "ENREGISTRER COMME NOUVEAU"
   },
   "share": {
     "copied": "Lien copié dans le presse-papiers !",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Souhaitez-vous être averti lorsque votre liquide sera mûr ?\n\nAprès approbation, nous vous enverrons un rappel le jour où le liquide sera prêt."
+  },
+  "calculator": {
+    "edit_values": "MODIFIER LES VALEURS"
   }
 }

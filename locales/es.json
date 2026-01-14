@@ -250,7 +250,9 @@
     "save_product": "GUARDAR EN MIS FAVORITOS",
     "products_copied": "copiados",
     "product_saved": "¡El producto ha sido guardado en tus favoritos!",
-    "from_shared": "del compartido"
+    "from_shared": "del compartido",
+    "view_recipe": "VER RECETA",
+    "disclaimer_intro": "Al hacer clic en el boton Ver receta, el usuario confirma que tiene al menos 18 anos."
   },
   "save_recipe": {
     "title": "Guardar receta",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Tiempo de maceración recomendado: {days} {daysUnit}. Puedes ajustar la fecha.",
     "reminder_no_steeping": "Este aroma no requiere maceración.",
     "select_product": "-- Seleccionar producto --",
-    "search_product": "Buscar producto..."
+    "search_product": "Buscar producto...",
+    "products_linked": "Productos vinculados",
+    "save_as_new": "GUARDAR COMO NUEVO"
   },
   "share": {
     "copied": "¡Enlace copiado al portapapeles!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "¿Le gustaría recibir una notificación cuando su líquido esté madurado?\n\nDespués de la aprobación, le enviaremos un recordatorio el día en que el líquido esté listo."
+  },
+  "calculator": {
+    "edit_values": "EDITAR VALORES"
   }
 }

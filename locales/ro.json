@@ -250,7 +250,9 @@
     "save_product": "SALVAȚI ÎN FAVORITELE MELE",
     "products_copied": "copiate",
     "product_saved": "Produsul a fost salvat în favoritele dvs.!",
-    "from_shared": "din partajat"
+    "from_shared": "din partajat",
+    "view_recipe": "VIZUALIZARE RETETA",
+    "disclaimer_intro": "Facand clic pe butonul Vizualizare reteta, utilizatorul confirma ca are cel putin 18 ani."
   },
   "save_recipe": {
     "title": "Salvați rețeta",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Timp de maturare recomandat: {days} {daysUnit}. Puteți ajusta data.",
     "reminder_no_steeping": "Această aromă nu necesită maturare.",
     "select_product": "-- Selectați produsul --",
-    "search_product": "Căutare produs..."
+    "search_product": "Căutare produs...",
+    "products_linked": "Produse legate",
+    "save_as_new": "SALVARE CA NOU"
   },
   "share": {
     "copied": "Link copiat în clipboard!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Doriți să fiți notificat când lichidul dumneavoastră este maturat?\n\nDupă aprobare, vă vom trimite un memento în ziua în care lichidul este gata."
+  },
+  "calculator": {
+    "edit_values": "EDITARE VALORI"
   }
 }

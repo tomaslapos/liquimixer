@@ -250,7 +250,9 @@
     "save_product": "ΑΠΟΘΗΚΕΥΣΗ ΣΤΑ ΑΓΑΠΗΜΕΝΑ",
     "products_copied": "αντιγράφηκαν",
     "product_saved": "Το προϊόν αποθηκεύτηκε στα αγαπημένα σας!",
-    "from_shared": "από κοινόχρηστο"
+    "from_shared": "από κοινόχρηστο",
+    "view_recipe": "VIEW RECIPE",
+    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
   },
   "save_recipe": {
     "title": "Αποθήκευση συνταγής",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Προτεινόμενος χρόνος ωρίμανσης: {days} {daysUnit}. Μπορείτε να προσαρμόσετε την ημερομηνία.",
     "reminder_no_steeping": "Αυτό το άρωμα δεν απαιτεί ωρίμανση.",
     "select_product": "-- Επιλέξτε προϊόν --",
-    "search_product": "Αναζήτηση προϊόντος..."
+    "search_product": "Αναζήτηση προϊόντος...",
+    "products_linked": "Linked products",
+    "save_as_new": "SAVE AS NEW"
   },
   "share": {
     "copied": "Ο σύνδεσμος αντιγράφηκε στο πρόχειρο!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Θέλετε να ειδοποιηθείτε όταν το υγρό σας ωριμάσει;\n\nΜετά την έγκριση, θα σας στείλουμε μια υπενθύμιση την ημέρα που το υγρό θα είναι έτοιμο."
+  },
+  "calculator": {
+    "edit_values": "EDIT VALUES"
   }
 }

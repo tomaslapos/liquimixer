@@ -250,7 +250,9 @@
     "save_product": "ZAPISZ DO MOICH ULUBIONYCH",
     "products_copied": "skopiowane",
     "product_saved": "Produkt został zapisany w Twoich ulubionych!",
-    "from_shared": "z udostępnionego"
+    "from_shared": "z udostępnionego",
+    "view_recipe": "ZOBACZ PRZEPIS",
+    "disclaimer_intro": "Klikajac przycisk Zobacz przepis, uzytkownik potwierdza, ze ma co najmniej 18 lat."
   },
   "save_recipe": {
     "title": "Zapisz przepis",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Zalecany czas dojrzewania: {days} {daysUnit}. Możesz dostosować datę.",
     "reminder_no_steeping": "Ten aromat nie wymaga dojrzewania.",
     "select_product": "-- Wybierz produkt --",
-    "search_product": "Szukaj produktu..."
+    "search_product": "Szukaj produktu...",
+    "products_linked": "Powiazane produkty",
+    "save_as_new": "ZAPISZ JAKO NOWY"
   },
   "share": {
     "copied": "Link skopiowany do schowka!",
@@ -596,5 +600,8 @@
   },
   "notification": {
     "permission_prompt": "Czy chcesz otrzymać powiadomienie, gdy Twój liquid będzie dojrzały?\n\nPo zatwierdzeniu wyślemy Ci przypomnienie w dniu, gdy liquid będzie gotowy."
+  },
+  "calculator": {
+    "edit_values": "EDYTUJ WARTOSCI"
   }
 }

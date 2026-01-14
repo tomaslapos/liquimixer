@@ -251,7 +251,9 @@
     "save_product": "حفظ في المفضلة",
     "products_copied": "تم النسخ",
     "product_saved": "تم حفظ المنتج في المفضلة!",
-    "from_shared": "من المشترك"
+    "from_shared": "من المشترك",
+    "view_recipe": "VIEW RECIPE",
+    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
   },
   "save_recipe": {
     "title": "حفظ الوصفة",
@@ -280,7 +282,9 @@
     "reminder_calculated": "وقت النضج الموصى به: {days} {daysUnit}. يمكنك تعديل التاريخ.",
     "reminder_no_steeping": "هذه النكهة لا تحتاج إلى نضج.",
     "select_product": "-- اختر المنتج --",
-    "search_product": "البحث عن منتج..."
+    "search_product": "البحث عن منتج...",
+    "products_linked": "Linked products",
+    "save_as_new": "SAVE AS NEW"
   },
   "share": {
     "copied": "تم نسخ الرابط إلى الحافظة!",
@@ -600,5 +604,8 @@
   },
   "notification": {
     "permission_prompt": "هل تريد أن يتم إعلامك عندما ينضج السائل الخاص بك؟\n\nبعد الموافقة، سنرسل لك تذكيرًا في اليوم الذي يكون فيه السائل جاهزًا."
+  },
+  "calculator": {
+    "edit_values": "EDIT VALUES"
   }
 }

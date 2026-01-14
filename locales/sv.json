@@ -250,7 +250,9 @@
     "save_product": "SPARA TILL MINA FAVORITER",
     "products_copied": "kopierade",
     "product_saved": "Produkten har sparats i dina favoriter!",
-    "from_shared": "från delad"
+    "from_shared": "från delad",
+    "view_recipe": "VISA RECEPT",
+    "disclaimer_intro": "Genom att klicka pa knappen Visa recept bekraftar anvandaren att de ar minst 18 ar gamla."
   },
   "save_recipe": {
     "title": "Spara recept",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Rekommenderad mogningstid: {days} {daysUnit}. Du kan justera datumet.",
     "reminder_no_steeping": "Denna arom kräver ingen mognad.",
     "select_product": "-- Välj produkt --",
-    "search_product": "Sök produkt..."
+    "search_product": "Sök produkt...",
+    "products_linked": "Lankade produkter",
+    "save_as_new": "SPARA SOM NY"
   },
   "share": {
     "copied": "Länk kopierad till urklipp!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Vill du bli meddelad när din vätska har mognat?\n\nEfter godkännande skickar vi en påminnelse den dag vätskan är klar."
+  },
+  "calculator": {
+    "edit_values": "REDIGERA VARDEN"
   }
 }

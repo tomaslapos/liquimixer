@@ -250,7 +250,9 @@
     "save_product": "СОХРАНИТЬ В ИЗБРАННОЕ",
     "products_copied": "скопировано",
     "product_saved": "Продукт сохранен в избранное!",
-    "from_shared": "из общего"
+    "from_shared": "из общего",
+    "view_recipe": "POKAZAT RECEPT",
+    "disclaimer_intro": "Nazhimaya knopku Pokazat recept, polzovatel podtverzhdaet, chto emu ispolnilos 18 let."
   },
   "save_recipe": {
     "title": "Сохранить рецепт",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Рекомендуемое время созревания: {days} {daysUnit}. Вы можете изменить дату.",
     "reminder_no_steeping": "Этот ароматизатор не требует созревания.",
     "select_product": "-- Выберите продукт --",
-    "search_product": "Поиск продукта..."
+    "search_product": "Поиск продукта...",
+    "products_linked": "Svyazannye produkty",
+    "save_as_new": "SOHRANIT KAK NOVIY"
   },
   "share": {
     "copied": "Ссылка скопирована в буфер обмена!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Хотите получить уведомление, когда ваша жидкость созреет?\n\nПосле одобрения мы отправим вам напоминание в день, когда жидкость будет готова."
+  },
+  "calculator": {
+    "edit_values": "IZMENIT ZNACHENIYA"
   }
 }

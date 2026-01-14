@@ -250,7 +250,9 @@
     "save_product": "FAVORİLERİME KAYDET",
     "products_copied": "kopyalandı",
     "product_saved": "Ürün favorilerinize kaydedildi!",
-    "from_shared": "paylaşılandan"
+    "from_shared": "paylaşılandan",
+    "view_recipe": "TARIFI GORUNTULE",
+    "disclaimer_intro": "Tarifi Goruntule dugmesine tiklayarak, kullanici en az 18 yasinda oldugunu onaylar."
   },
   "save_recipe": {
     "title": "Tarifi Kaydet",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Önerilen olgunlaşma süresi: {days} {daysUnit}. Tarihi ayarlayabilirsiniz.",
     "reminder_no_steeping": "Bu aroma olgunlaşma gerektirmez.",
     "select_product": "-- Ürün seçin --",
-    "search_product": "Ürün ara..."
+    "search_product": "Ürün ara...",
+    "products_linked": "Bagli urunler",
+    "save_as_new": "YENI OLARAK KAYDET"
   },
   "share": {
     "copied": "Bağlantı panoya kopyalandı!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Sıvınız olgunlaştığında bildirim almak ister misiniz?\n\nOnaydan sonra, sıvı hazır olduğu gün size bir hatırlatma göndereceğiz."
+  },
+  "calculator": {
+    "edit_values": "DEGERLERI DUZENLE"
   }
 }

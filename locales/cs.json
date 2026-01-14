@@ -247,7 +247,9 @@
     "save_product": "ULOŽIT K SOBĚ",
     "products_copied": "zkopírováno",
     "product_saved": "Produkt byl uložen do vašich oblíbených!",
-    "from_shared": "ze sdíleného"
+    "from_shared": "ze sdíleného",
+    "view_recipe": "ZOBRAZIT RECEPT",
+    "disclaimer_intro": "Kliknutim na tlacitko Zobrazit recept uzivatel potvrzuje, ze je mu alespon 18 let. Uzivatel bere na vedomi, ze LiquiMixer slouzi jako kalkulator pro e-liquid a neprebira odpovednost za spravne michani, davkovani prisad a dodrzovani bezpecnostnich predpisu."
   },
   "notification": {
     "permission_prompt": "Chcete dostávat upozornění, když bude váš liquid vyzrálý?\n\nPo povolení vám pošleme připomínku v den, kdy bude liquid připraven."
@@ -452,7 +454,9 @@
     "reminder_info": "Datum připomínky bylo automaticky vypočteno na základě typu příchutě.",
     "reminder_info_short": "Datum připomínky bylo automaticky vypočteno na základě typu příchutě.",
     "reminder_calculated": "Doporučená doba zrání: {days} {daysUnit}. Datum můžete upravit.",
-    "reminder_no_steeping": "Tato příchuť nevyžaduje zrání."
+    "reminder_no_steeping": "Tato příchuť nevyžaduje zrání.",
+    "products_linked": "Propojene produkty",
+    "save_as_new": "ULOZIT JAKO NOVY"
   },
   "share": {
     "copied": "Odkaz zkopírován do schránky!",
@@ -598,5 +602,8 @@
     "day": "den",
     "days_2_4": "dny",
     "days_5_plus": "dní"
+  },
+  "calculator": {
+    "edit_values": "UPRAVIT HODNOTY"
   }
 }
