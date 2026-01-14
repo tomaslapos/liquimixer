@@ -249,7 +249,8 @@
     "product_readonly": "這是其他使用者的產品。您可以將其儲存到收藏夾。",
     "save_product": "儲存到收藏夾",
     "products_copied": "已複製",
-    "product_saved": "產品已儲存到您的收藏夾！"
+    "product_saved": "產品已儲存到您的收藏夾！",
+    "from_shared": "來自共享"
   },
   "save_recipe": {
     "title": "儲存配方",
@@ -276,7 +277,9 @@
     "reminder_info": "提醒日期已根據香精類型自動計算。",
     "reminder_info_short": "提醒日期已根據香精類型自動計算。",
     "reminder_calculated": "建議熟化時間：{days} {daysUnit}。您可以修改日期。",
-    "reminder_no_steeping": "此香精不需要熟化。"
+    "reminder_no_steeping": "此香精不需要熟化。",
+    "select_product": "-- 選擇產品 --",
+    "search_product": "搜尋產品..."
   },
   "share": {
     "copied": "連結已複製到剪貼簿！",
@@ -593,5 +596,8 @@
     "day": "天",
     "days_2_4": "天",
     "days_5_plus": "天"
+  },
+  "notification": {
+    "permission_prompt": "您想在液體成熟時收到通知嗎？\n\n批准後，我們將在液體準備好的當天向您發送提醒。"
   }
 }

@@ -249,7 +249,8 @@
     "product_readonly": "Dette produktet tilhører en annen bruker. Du kan lagre det i favorittene dine.",
     "save_product": "LAGRE TIL MINE FAVORITTER",
     "products_copied": "kopiert",
-    "product_saved": "Produktet er lagret i favorittene dine!"
+    "product_saved": "Produktet er lagret i favorittene dine!",
+    "from_shared": "fra delt"
   },
   "save_recipe": {
     "title": "Lagre oppskrift",
@@ -276,7 +277,9 @@
     "reminder_info": "Påminnelsesdatoen ble automatisk beregnet basert på aromtype.",
     "reminder_info_short": "Påminnelsesdatoen ble automatisk beregnet basert på aromtype.",
     "reminder_calculated": "Anbefalt modningstid: {days} {daysUnit}. Du kan justere datoen.",
-    "reminder_no_steeping": "Denne aromaen krever ikke modning."
+    "reminder_no_steeping": "Denne aromaen krever ikke modning.",
+    "select_product": "-- Velg produkt --",
+    "search_product": "Søk produkt..."
   },
   "share": {
     "copied": "Lenke kopiert til utklippstavlen!",
@@ -593,5 +596,8 @@
     "day": "dag",
     "days_2_4": "dager",
     "days_5_plus": "dager"
+  },
+  "notification": {
+    "permission_prompt": "Ønsker du å bli varslet når væsken din er modnet?\n\nEtter godkjenning sender vi deg en påminnelse den dagen væsken er klar."
   }
 }

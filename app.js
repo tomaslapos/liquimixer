@@ -1451,7 +1451,7 @@ async function showSaveRecipeModal() {
         }
         
         // Načíst oblíbené produkty pro výběr
-        loadProductsForRecipe();
+        await loadProductsForRecipe();
     }
 }
 
@@ -1469,7 +1469,18 @@ async function loadProductsForRecipe() {
     selectedProductRows = 0;
     
     try {
-        const products = await window.LiquiMixerDB.getProducts(window.Clerk.user.id);
+        // Získat ID aktuálně přihlášeného uživatele
+        const currentUserId = window.Clerk?.user?.id;
+        console.log('[loadProductsForRecipe] Loading products for clerk_id:', currentUserId);
+        
+        if (!currentUserId) {
+            console.warn('[loadProductsForRecipe] No user logged in!');
+            availableProductsForRecipe = [];
+            return;
+        }
+        
+        const products = await window.LiquiMixerDB.getProducts(currentUserId);
+        console.log('[loadProductsForRecipe] Loaded products count:', products?.length || 0);
         availableProductsForRecipe = products || [];
     } catch (error) {
         console.error('Error loading products for recipe:', error);
@@ -1499,16 +1510,17 @@ function addProductRow() {
     };
     
     // Vytvořit options pro select
-    let optionsHtml = '<option value="">-- Vyberte produkt --</option>';
+    let optionsHtml = `<option value="">${t('save_recipe.select_product', '-- Vyberte produkt --')}</option>`;
     availableProductsForRecipe.forEach(product => {
         const icon = typeIcons[product.product_type] || '📦';
         optionsHtml += `<option value="${escapeHtml(product.id)}" data-icon="${icon}">${escapeHtml(product.name)}</option>`;
     });
     
+    const searchPlaceholder = t('save_recipe.search_product', 'Hledat produkt...');
     const rowHtml = `
         <div class="product-select-row" id="${rowId}">
             <div class="product-select-wrapper">
-                <input type="text" class="product-search-input" placeholder="Hledat produkt..." oninput="filterProductOptions(this, '${rowId}')">
+                <input type="text" class="product-search-input" placeholder="${searchPlaceholder}" oninput="filterProductOptions(this, '${rowId}')">
                 <select class="product-select" name="linkedProducts" onchange="onProductSelected(this)">
                     ${optionsHtml}
                 </select>
@@ -1698,15 +1710,20 @@ async function saveRecipe(event) {
             
             // Pokud ukládáme sdílený recept, zkopírovat produkty
             let copiedProductIds = [];
+            console.log('[saveRecipe] pendingSharedRecipeId:', window.pendingSharedRecipeId, 'isEditing:', isEditing);
+            
             if (!isEditing && window.pendingSharedRecipeId) {
                 try {
                     // Načíst propojené produkty z původního receptu
                     const originalProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(window.pendingSharedRecipeId);
+                    console.log('[saveRecipe] Original products from shared recipe:', originalProducts?.length || 0);
                     
                     // Zkopírovat každý produkt do účtu aktuálního uživatele
                     for (const product of originalProducts) {
+                        console.log('[saveRecipe] Copying product:', product.id, product.name);
                         const copied = await window.LiquiMixerDB.copyProductToUser(product.id, window.Clerk.user.id);
                         if (copied) {
+                            console.log('[saveRecipe] Copied product new ID:', copied.id);
                             copiedProductIds.push(copied.id);
                         }
                     }
@@ -1720,13 +1737,17 @@ async function saveRecipe(event) {
             
             // Spojit zkopírované produkty s ručně vybranými
             const allProductIds = [...selectedProductIds, ...copiedProductIds];
+            console.log('[saveRecipe] All product IDs to link:', allProductIds);
             
-            // Aktualizovat propojené produkty (vždy - i prázdný seznam smaže staré)
-            await window.LiquiMixerDB.linkProductsToRecipe(
-                window.Clerk.user.id, 
-                recipeId, 
-                allProductIds
-            );
+            // Aktualizovat propojené produkty (pokud jsou nějaké)
+            if (allProductIds.length > 0) {
+                const linkResult = await window.LiquiMixerDB.linkProductsToRecipe(
+                    window.Clerk.user.id, 
+                    recipeId, 
+                    allProductIds
+                );
+                console.log('[saveRecipe] Link products result:', linkResult);
+            }
             
             // Uložit připomínku zrání (pouze pro nové recepty)
             let reminderInfo = '';
@@ -2274,17 +2295,18 @@ function addProductRowWithValue(productId, productName) {
     };
     
     // Vytvořit options pro select s předvybranou hodnotou
-    let optionsHtml = '<option value="">-- Vyberte produkt --</option>';
+    let optionsHtml = `<option value="">${t('save_recipe.select_product', '-- Vyberte produkt --')}</option>`;
     availableProductsForRecipe.forEach(product => {
         const icon = typeIcons[product.product_type] || '📦';
         const selected = product.id === productId ? 'selected' : '';
         optionsHtml += `<option value="${escapeHtml(product.id)}" data-icon="${icon}" ${selected}>${escapeHtml(product.name)}</option>`;
     });
     
+    const searchPlaceholder = t('save_recipe.search_product', 'Hledat produkt...');
     const rowHtml = `
         <div class="product-select-row" id="${rowId}">
             <div class="product-select-wrapper">
-                <input type="text" class="product-search-input" placeholder="Hledat produkt..." value="${escapeHtml(productName || '')}" oninput="filterProductOptions(this, '${rowId}')">
+                <input type="text" class="product-search-input" placeholder="${searchPlaceholder}" value="${escapeHtml(productName || '')}" oninput="filterProductOptions(this, '${rowId}')">
                 <select class="product-select" name="linkedProducts" onchange="onProductSelected(this)">
                     ${optionsHtml}
                 </select>

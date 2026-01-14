@@ -249,7 +249,8 @@
     "product_readonly": "See toode kuulub teisele kasutajale. Saate selle salvestada lemmikutesse.",
     "save_product": "SALVESTA LEMMIKUTESSE",
     "products_copied": "kopeeritud",
-    "product_saved": "Toode on salvestatud teie lemmikutesse!"
+    "product_saved": "Toode on salvestatud teie lemmikutesse!",
+    "from_shared": "jagatud"
   },
   "save_recipe": {
     "title": "Salvesta retsept",
@@ -276,7 +277,9 @@
     "reminder_info": "Meeldetuletuse kuupäev arvutati automaatselt maitse tüübi põhjal.",
     "reminder_info_short": "Meeldetuletuse kuupäev arvutati automaatselt maitse tüübi põhjal.",
     "reminder_calculated": "Soovitatav küpsemisaeg: {days} {daysUnit}. Saate kuupäeva muuta.",
-    "reminder_no_steeping": "See maitse ei vaja küpsemist."
+    "reminder_no_steeping": "See maitse ei vaja küpsemist.",
+    "select_product": "-- Valige toode --",
+    "search_product": "Otsi toodet..."
   },
   "share": {
     "copied": "Link kopeeritud lõikelauale!",
@@ -593,5 +596,8 @@
     "day": "päeva",
     "days_2_4": "päeva",
     "days_5_plus": "päeva"
+  },
+  "notification": {
+    "permission_prompt": "Kas soovite saada teavituse, kui teie vedelik on valmis?\n\nPärast heakskiitu saadame teile meeldetuletuse päeval, mil vedelik on valmis."
   }
 }

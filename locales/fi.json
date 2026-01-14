@@ -249,7 +249,8 @@
     "product_readonly": "Tämä tuote kuuluu toiselle käyttäjälle. Voit tallentaa sen suosikkeihisi.",
     "save_product": "TALLENNA SUOSIKKEIHINI",
     "products_copied": "kopioitu",
-    "product_saved": "Tuote on tallennettu suosikkeihisi!"
+    "product_saved": "Tuote on tallennettu suosikkeihisi!",
+    "from_shared": "jaetusta"
   },
   "save_recipe": {
     "title": "Tallenna resepti",
@@ -276,7 +277,9 @@
     "reminder_info": "Muistutuspäivä laskettiin automaattisesti makutyypin perusteella.",
     "reminder_info_short": "Muistutuspäivä laskettiin automaattisesti makutyypin perusteella.",
     "reminder_calculated": "Suositeltu kypsymisaika: {days} {daysUnit}. Voit muokata päivämäärää.",
-    "reminder_no_steeping": "Tämä maku ei vaadi kypsytystä."
+    "reminder_no_steeping": "Tämä maku ei vaadi kypsytystä.",
+    "select_product": "-- Valitse tuote --",
+    "search_product": "Etsi tuotetta..."
   },
   "share": {
     "copied": "Linkki kopioitu leikepöydälle!",
@@ -593,5 +596,8 @@
     "day": "päivän",
     "days_2_4": "päivän",
     "days_5_plus": "päivän"
+  },
+  "notification": {
+    "permission_prompt": "Haluatko saada ilmoituksen, kun nesteesi on kypsynyt?\n\nHyväksynnän jälkeen lähetämme sinulle muistutuksen sinä päivänä, kun neste on valmis."
   }
 }

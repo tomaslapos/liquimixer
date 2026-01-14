@@ -249,7 +249,8 @@
     "product_readonly": "Šis produktas priklauso kitam vartotojui. Galite jį išsaugoti mėgstamuose.",
     "save_product": "IŠSAUGOTI MĖGSTAMUOSE",
     "products_copied": "nukopijuota",
-    "product_saved": "Produktas išsaugotas jūsų mėgstamuose!"
+    "product_saved": "Produktas išsaugotas jūsų mėgstamuose!",
+    "from_shared": "iš bendrinamo"
   },
   "save_recipe": {
     "title": "Išsaugoti receptą",
@@ -276,7 +277,9 @@
     "reminder_info": "Priminimo data buvo automatiškai apskaičiuota pagal skonio tipą.",
     "reminder_info_short": "Priminimo data buvo automatiškai apskaičiuota pagal skonio tipą.",
     "reminder_calculated": "Rekomenduojamas brandinimo laikas: {days} {daysUnit}. Galite koreguoti datą.",
-    "reminder_no_steeping": "Šis skonis nereikalauja brandinimo."
+    "reminder_no_steeping": "Šis skonis nereikalauja brandinimo.",
+    "select_product": "-- Pasirinkite produktą --",
+    "search_product": "Ieškoti produkto..."
   },
   "share": {
     "copied": "Nuoroda nukopijuota į iškarpinę!",
@@ -593,5 +596,8 @@
     "day": "dieną",
     "days_2_4": "dienas",
     "days_5_plus": "dienų"
+  },
+  "notification": {
+    "permission_prompt": "Ar norėtumėte gauti pranešimą, kai jūsų skystis subręs?\n\nPo patvirtinimo atsiųsime jums priminimą tą dieną, kai skystis bus paruoštas."
   }
 }

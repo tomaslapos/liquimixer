@@ -249,7 +249,11 @@
     "product_readonly": "Dieses Produkt gehört einem anderen Benutzer. Sie können es zu Ihren Favoriten speichern.",
     "save_product": "ZU MEINEN FAVORITEN SPEICHERN",
     "products_copied": "kopiert",
-    "product_saved": "Produkt wurde zu Ihren Favoriten gespeichert!"
+    "product_saved": "Produkt wurde zu Ihren Favoriten gespeichert!",
+    "from_shared": "aus geteiltem"
+  },
+  "notification": {
+    "permission_prompt": "Möchten Sie benachrichtigt werden, wenn Ihr Liquid gereift ist?\n\nNach der Genehmigung senden wir Ihnen eine Erinnerung am Tag, an dem das Liquid fertig ist."
   },
   "save_recipe": {
     "title": "Rezept speichern",
@@ -269,6 +273,8 @@
     "error": "Fehler beim Speichern des Rezepts.",
     "login_required": "Bitte melden Sie sich an, um das Rezept zu speichern.",
     "no_products": "Sie haben keine Lieblingsprodukte. Fügen Sie diese zuerst im Bereich Lieblingsprodukte hinzu.",
+    "select_product": "-- Produkt auswählen --",
+    "search_product": "Produkt suchen...",
     "nothing_to_save": "Fehler: Nichts zu speichern. Bitte erstellen Sie ein Rezept.",
     "reminder_enable": "Erinnern, wenn das Liquid gereift ist",
     "mix_date": "Mischdatum",

@@ -249,7 +249,8 @@
     "product_readonly": "Este producto pertenece a otro usuario. Puedes guardarlo en tus favoritos.",
     "save_product": "GUARDAR EN MIS FAVORITOS",
     "products_copied": "copiados",
-    "product_saved": "¡El producto ha sido guardado en tus favoritos!"
+    "product_saved": "¡El producto ha sido guardado en tus favoritos!",
+    "from_shared": "del compartido"
   },
   "save_recipe": {
     "title": "Guardar receta",
@@ -276,7 +277,9 @@
     "reminder_info": "La fecha del recordatorio se calculó automáticamente según el tipo de aroma.",
     "reminder_info_short": "La fecha del recordatorio se calculó automáticamente según el tipo de aroma.",
     "reminder_calculated": "Tiempo de maceración recomendado: {days} {daysUnit}. Puedes ajustar la fecha.",
-    "reminder_no_steeping": "Este aroma no requiere maceración."
+    "reminder_no_steeping": "Este aroma no requiere maceración.",
+    "select_product": "-- Seleccionar producto --",
+    "search_product": "Buscar producto..."
   },
   "share": {
     "copied": "¡Enlace copiado al portapapeles!",
@@ -593,5 +596,8 @@
     "day": "día",
     "days_2_4": "días",
     "days_5_plus": "días"
+  },
+  "notification": {
+    "permission_prompt": "¿Le gustaría recibir una notificación cuando su líquido esté madurado?\n\nDespués de la aprobación, le enviaremos un recordatorio el día en que el líquido esté listo."
   }
 }

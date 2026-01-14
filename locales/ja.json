@@ -249,7 +249,8 @@
     "product_readonly": "これは他のユーザーの製品です。お気に入りに保存できます。",
     "save_product": "お気に入りに保存",
     "products_copied": "コピー済み",
-    "product_saved": "製品がお気に入りに保存されました！"
+    "product_saved": "製品がお気に入りに保存されました！",
+    "from_shared": "共有から"
   },
   "save_recipe": {
     "title": "レシピを保存",
@@ -276,7 +277,9 @@
     "reminder_info": "リマインド日はフレーバータイプに基づいて自動計算されました。",
     "reminder_info_short": "リマインド日はフレーバータイプに基づいて自動計算されました。",
     "reminder_calculated": "推奨熟成期間：{days} {daysUnit}。日付は調整できます。",
-    "reminder_no_steeping": "このフレーバーは熟成不要です。"
+    "reminder_no_steeping": "このフレーバーは熟成不要です。",
+    "select_product": "-- 製品を選択 --",
+    "search_product": "製品を検索..."
   },
   "share": {
     "copied": "リンクがクリップボードにコピーされました！",
@@ -593,5 +596,8 @@
     "day": "日",
     "days_2_4": "日",
     "days_5_plus": "日"
+  },
+  "notification": {
+    "permission_prompt": "リキッドが熟成したら通知を受け取りますか？\n\n承認後、リキッドが準備できた日にリマインダーをお送りします。"
   }
 }

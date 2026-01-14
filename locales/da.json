@@ -249,7 +249,8 @@
     "product_readonly": "Dette produkt tilhører en anden bruger. Du kan gemme det i dine favoritter.",
     "save_product": "GEM TIL MINE FAVORITTER",
     "products_copied": "kopieret",
-    "product_saved": "Produktet er gemt i dine favoritter!"
+    "product_saved": "Produktet er gemt i dine favoritter!",
+    "from_shared": "fra delt"
   },
   "save_recipe": {
     "title": "Gem opskrift",
@@ -276,7 +277,9 @@
     "reminder_info": "Påmindelsesdatoen blev automatisk beregnet baseret på aromatype.",
     "reminder_info_short": "Påmindelsesdatoen blev automatisk beregnet baseret på aromatype.",
     "reminder_calculated": "Anbefalet modningstid: {days} {daysUnit}. Du kan justere datoen.",
-    "reminder_no_steeping": "Denne aroma kræver ikke modning."
+    "reminder_no_steeping": "Denne aroma kræver ikke modning.",
+    "select_product": "-- Vælg produkt --",
+    "search_product": "Søg produkt..."
   },
   "share": {
     "copied": "Link kopieret til udklipsholder!",
@@ -593,5 +596,8 @@
     "day": "dag",
     "days_2_4": "dage",
     "days_5_plus": "dage"
+  },
+  "notification": {
+    "permission_prompt": "Vil du gerne have besked, når din væske er modnet?\n\nEfter godkendelse sender vi dig en påmindelse den dag, væsken er klar."
   }
 }

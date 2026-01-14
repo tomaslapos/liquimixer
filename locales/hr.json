@@ -249,7 +249,8 @@
     "product_readonly": "Ovaj proizvod pripada drugom korisniku. Možete ga spremiti u favorite.",
     "save_product": "SPREMI U FAVORITE",
     "products_copied": "kopirano",
-    "product_saved": "Proizvod je spremljen u vaše favorite!"
+    "product_saved": "Proizvod je spremljen u vaše favorite!",
+    "from_shared": "iz dijeljenog"
   },
   "save_recipe": {
     "title": "Spremi recept",
@@ -276,7 +277,9 @@
     "reminder_info": "Datum podsjetnika automatski je izračunat na temelju vrste arome.",
     "reminder_info_short": "Datum podsjetnika automatski je izračunat na temelju vrste arome.",
     "reminder_calculated": "Preporučeno vrijeme sazrijevanja: {days} {daysUnit}. Možete prilagoditi datum.",
-    "reminder_no_steeping": "Ova aroma ne zahtijeva sazrijevanje."
+    "reminder_no_steeping": "Ova aroma ne zahtijeva sazrijevanje.",
+    "select_product": "-- Odaberite proizvod --",
+    "search_product": "Pretraži proizvod..."
   },
   "share": {
     "copied": "Link kopiran u međuspremnik!",
@@ -593,5 +596,8 @@
     "day": "dan",
     "days_2_4": "dana",
     "days_5_plus": "dana"
+  },
+  "notification": {
+    "permission_prompt": "Želite li primiti obavijest kada vaša tekućina sazrije?\n\nNakon odobrenja, poslat ćemo vam podsjetnik na dan kada tekućina bude spremna."
   }
 }
