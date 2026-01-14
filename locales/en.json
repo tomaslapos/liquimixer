@@ -249,7 +249,8 @@
     "product_readonly": "This product belongs to another user. You can save it to your favorites.",
     "save_product": "SAVE TO MY FAVORITES",
     "products_copied": "copied",
-    "product_saved": "Product has been saved to your favorites!"
+    "product_saved": "Product has been saved to your favorites!",
+    "from_shared": "from shared"
   },
   "save_recipe": {
     "title": "Save Recipe",
