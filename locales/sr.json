@@ -251,8 +251,11 @@
     "products_copied": "копирано",
     "product_saved": "Производ је сачуван у ваше омиљене!",
     "from_shared": "из дељеног",
-    "view_recipe": "PRIKAZI RECEPT",
-    "disclaimer_intro": "Klikom na dugme Prikazi recept korisnik potvrdjuje da ima najmanje 18 godina."
+    "view_recipe": "ПРИКАЖИ РЕЦЕПТ",
+    "disclaimer_intro": "Кликом на дугме Прикажи рецепт корисник потврђује да има најмање 18 година.",
+    "pro_login_title": "Пријавите се да бисте видели рецепт",
+    "pro_login_text": "Рецепти направљени у Liquid PRO режиму доступни су само пријављеним корисницима.",
+    "login_button": "ПРИЈАВА"
   },
   "save_recipe": {
     "title": "Сачувај рецепт",

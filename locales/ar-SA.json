@@ -252,8 +252,11 @@
     "products_copied": "تم النسخ",
     "product_saved": "تم حفظ المنتج في المفضلة!",
     "from_shared": "من المشترك",
-    "view_recipe": "VIEW RECIPE",
-    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
+    "view_recipe": "عرض الوصفة",
+    "disclaimer_intro": "بالنقر على زر عرض الوصفة، يؤكد المستخدم أنه يبلغ من العمر 18 عامًا على الأقل.",
+    "pro_login_title": "يرجى تسجيل الدخول لعرض الوصفة",
+    "pro_login_text": "الوصفات المنشأة في وضع Liquid PRO متاحة فقط للمستخدمين المسجلين.",
+    "login_button": "تسجيل الدخول"
   },
   "save_recipe": {
     "title": "حفظ الوصفة",

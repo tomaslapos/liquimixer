@@ -251,8 +251,11 @@
     "products_copied": "コピー済み",
     "product_saved": "製品がお気に入りに保存されました！",
     "from_shared": "共有から",
-    "view_recipe": "VIEW RECIPE",
-    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
+    "view_recipe": "レシピを見る",
+    "disclaimer_intro": "「レシピを見る」ボタンをクリックすると、ユーザーは18歳以上であることを確認します。",
+    "pro_login_title": "レシピを見るにはログインしてください",
+    "pro_login_text": "Liquid PROモードで作成されたレシピは、ログインしたユーザーのみが利用できます。",
+    "login_button": "ログイン"
   },
   "save_recipe": {
     "title": "レシピを保存",

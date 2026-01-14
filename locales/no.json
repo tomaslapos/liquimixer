@@ -252,7 +252,10 @@
     "product_saved": "Produktet er lagret i favorittene dine!",
     "from_shared": "fra delt",
     "view_recipe": "VIS OPPSKRIFT",
-    "disclaimer_intro": "Ved a klikke pa knappen Vis oppskrift bekrefter brukeren at de er minst 18 ar gamle."
+    "disclaimer_intro": "Ved a klikke pa knappen Vis oppskrift bekrefter brukeren at de er minst 18 ar gamle.",
+    "pro_login_title": "Logg inn for å se oppskriften",
+    "pro_login_text": "Oppskrifter opprettet i Liquid PRO-modus er kun tilgjengelige for innloggede brukere.",
+    "login_button": "LOGG INN"
   },
   "save_recipe": {
     "title": "Lagre oppskrift",

@@ -249,7 +249,10 @@
     "product_saved": "Produkt byl uložen do vašich oblíbených!",
     "from_shared": "ze sdíleného",
     "view_recipe": "ZOBRAZIT RECEPT",
-    "disclaimer_intro": "Kliknutim na tlacitko Zobrazit recept uzivatel potvrzuje, ze je mu alespon 18 let. Uzivatel bere na vedomi, ze LiquiMixer slouzi jako kalkulator pro e-liquid a neprebira odpovednost za spravne michani, davkovani prisad a dodrzovani bezpecnostnich predpisu."
+    "disclaimer_intro": "Kliknutim na tlacitko Zobrazit recept uzivatel potvrzuje, ze je mu alespon 18 let. Uzivatel bere na vedomi, ze LiquiMixer slouzi jako kalkulator pro e-liquid a neprebira odpovednost za spravne michani, davkovani prisad a dodrzovani bezpecnostnich predpisu.",
+    "pro_login_title": "Pro zobrazení receptu se přihlaste",
+    "pro_login_text": "Recepty vytvářené v režimu Liquid PRO jsou dostupné jenom pro přihlášené uživatele.",
+    "login_button": "PŘIHLÁSIT SE"
   },
   "notification": {
     "permission_prompt": "Chcete dostávat upozornění, když bude váš liquid vyzrálý?\n\nPo povolení vám pošleme připomínku v den, kdy bude liquid připraven."

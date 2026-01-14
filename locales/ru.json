@@ -251,8 +251,11 @@
     "products_copied": "скопировано",
     "product_saved": "Продукт сохранен в избранное!",
     "from_shared": "из общего",
-    "view_recipe": "POKAZAT RECEPT",
-    "disclaimer_intro": "Nazhimaya knopku Pokazat recept, polzovatel podtverzhdaet, chto emu ispolnilos 18 let."
+    "view_recipe": "ПОКАЗАТЬ РЕЦЕПТ",
+    "disclaimer_intro": "Нажимая кнопку Показать рецепт, пользователь подтверждает, что ему исполнилось 18 лет.",
+    "pro_login_title": "Войдите, чтобы просмотреть рецепт",
+    "pro_login_text": "Рецепты, созданные в режиме Liquid PRO, доступны только зарегистрированным пользователям.",
+    "login_button": "ВОЙТИ"
   },
   "save_recipe": {
     "title": "Сохранить рецепт",

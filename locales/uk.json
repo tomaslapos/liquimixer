@@ -251,8 +251,11 @@
     "products_copied": "скопійовано",
     "product_saved": "Продукт збережено в обране!",
     "from_shared": "зі спільного",
-    "view_recipe": "PEREGLIANUTY RECEPT",
-    "disclaimer_intro": "Natyskayuchy knopku Pereglianuty recept, korystuvach pidtverdzhue, shcho yomu vypovnylosia 18 rokiv."
+    "view_recipe": "ПЕРЕГЛЯНУТИ РЕЦЕПТ",
+    "disclaimer_intro": "Натискаючи кнопку Переглянути рецепт, користувач підтверджує, що йому виповнилося 18 років.",
+    "pro_login_title": "Увійдіть, щоб переглянути рецепт",
+    "pro_login_text": "Рецепти, створені в режимі Liquid PRO, доступні лише зареєстрованим користувачам.",
+    "login_button": "УВІЙТИ"
   },
   "save_recipe": {
     "title": "Зберегти рецепт",

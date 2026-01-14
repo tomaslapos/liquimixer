@@ -252,7 +252,10 @@
     "product_saved": "Product has been saved to your favorites!",
     "from_shared": "from shared",
     "view_recipe": "VIEW RECIPE",
-    "disclaimer_intro": "By clicking the View Recipe button, the user confirms that they are at least 18 years old. The user acknowledges that LiquiMixer serves as an e-liquid calculator and does not assume responsibility for proper mixing, ingredient dosing, and compliance with safety regulations."
+    "disclaimer_intro": "By clicking the View Recipe button, the user confirms that they are at least 18 years old. The user acknowledges that LiquiMixer serves as an e-liquid calculator and does not assume responsibility for proper mixing, ingredient dosing, and compliance with safety regulations.",
+    "pro_login_title": "Please log in to view the recipe",
+    "pro_login_text": "Recipes created in Liquid PRO mode are only available to logged-in users.",
+    "login_button": "LOG IN"
   },
   "notification": {
     "permission_prompt": "Would you like to be notified when your liquid is steeped?\n\nAfter approval, we will send you a reminder on the day when the liquid is ready."

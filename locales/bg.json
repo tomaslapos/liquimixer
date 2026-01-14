@@ -251,8 +251,11 @@
     "products_copied": "копирани",
     "product_saved": "Продуктът е запазен в любими!",
     "from_shared": "от споделено",
-    "view_recipe": "PREGLED NA RECEPTATA",
-    "disclaimer_intro": "Kato shtraknete varhu butona Pregled na receptata, potrebiteliat potvarzhdava, che e na pone 18 godini."
+    "view_recipe": "ПРЕГЛЕД НА РЕЦЕПТАТА",
+    "disclaimer_intro": "Като щракнете върху бутона Преглед на рецептата, потребителят потвърждава, че е на поне 18 години.",
+    "pro_login_title": "Влезте, за да видите рецептата",
+    "pro_login_text": "Рецептите, създадени в режим Liquid PRO, са достъпни само за влезли потребители.",
+    "login_button": "ВХОД"
   },
   "save_recipe": {
     "title": "Запази рецепта",

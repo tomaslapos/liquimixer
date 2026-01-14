@@ -251,8 +251,11 @@
     "products_copied": "kopirano",
     "product_saved": "Proizvod je spremljen u vaše favorite!",
     "from_shared": "iz dijeljenog",
-    "view_recipe": "PRIKAZI RECEPT",
-    "disclaimer_intro": "Klikom na gumb Prikazi recept korisnik potvrdjuje da ima najmanje 18 godina."
+    "view_recipe": "PRIKAŽI RECEPT",
+    "disclaimer_intro": "Klikom na gumb Prikaži recept korisnik potvrđuje da ima najmanje 18 godina.",
+    "pro_login_title": "Prijavite se za prikaz recepta",
+    "pro_login_text": "Recepti izrađeni u Liquid PRO načinu dostupni su samo prijavljenim korisnicima.",
+    "login_button": "PRIJAVA"
   },
   "save_recipe": {
     "title": "Spremi recept",

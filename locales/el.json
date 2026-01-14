@@ -251,8 +251,11 @@
     "products_copied": "αντιγράφηκαν",
     "product_saved": "Το προϊόν αποθηκεύτηκε στα αγαπημένα σας!",
     "from_shared": "από κοινόχρηστο",
-    "view_recipe": "VIEW RECIPE",
-    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
+    "view_recipe": "ΠΡΟΒΟΛΗ ΣΥΝΤΑΓΗΣ",
+    "disclaimer_intro": "Κάνοντας κλικ στο κουμπί Προβολή συνταγής, ο χρήστης επιβεβαιώνει ότι είναι τουλάχιστον 18 ετών.",
+    "pro_login_title": "Συνδεθείτε για να δείτε τη συνταγή",
+    "pro_login_text": "Οι συνταγές που δημιουργήθηκαν σε λειτουργία Liquid PRO είναι διαθέσιμες μόνο για συνδεδεμένους χρήστες.",
+    "login_button": "ΣΥΝΔΕΣΗ"
   },
   "save_recipe": {
     "title": "Αποθήκευση συνταγής",

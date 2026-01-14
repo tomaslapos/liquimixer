@@ -252,7 +252,10 @@
     "product_saved": "Produkt wurde zu Ihren Favoriten gespeichert!",
     "from_shared": "aus geteiltem",
     "view_recipe": "REZEPT ANZEIGEN",
-    "disclaimer_intro": "Durch Klicken auf die Schaltflache Rezept anzeigen bestatigt der Benutzer, dass er mindestens 18 Jahre alt ist."
+    "disclaimer_intro": "Durch Klicken auf die Schaltflache Rezept anzeigen bestatigt der Benutzer, dass er mindestens 18 Jahre alt ist.",
+    "pro_login_title": "Bitte melden Sie sich an, um das Rezept anzuzeigen",
+    "pro_login_text": "Rezepte, die im Liquid PRO-Modus erstellt wurden, sind nur für angemeldete Benutzer verfügbar.",
+    "login_button": "ANMELDEN"
   },
   "notification": {
     "permission_prompt": "Möchten Sie benachrichtigt werden, wenn Ihr Liquid gereift ist?\n\nNach der Genehmigung senden wir Ihnen eine Erinnerung am Tag, an dem das Liquid fertig ist."

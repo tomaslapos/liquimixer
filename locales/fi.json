@@ -251,8 +251,11 @@
     "products_copied": "kopioitu",
     "product_saved": "Tuote on tallennettu suosikkeihisi!",
     "from_shared": "jaetusta",
-    "view_recipe": "NAYTA RESEPTI",
-    "disclaimer_intro": "Klikkaamalla Nayta resepti -painiketta kayttaja vahvistaa olevansa vahintaan 18-vuotias."
+    "view_recipe": "NÄYTÄ RESEPTI",
+    "disclaimer_intro": "Klikkaamalla Näytä resepti -painiketta käyttäjä vahvistaa olevansa vähintään 18-vuotias.",
+    "pro_login_title": "Kirjaudu sisään nähdäksesi reseptin",
+    "pro_login_text": "Liquid PRO -tilassa luodut reseptit ovat saatavilla vain kirjautuneille käyttäjille.",
+    "login_button": "KIRJAUDU SISÄÄN"
   },
   "save_recipe": {
     "title": "Tallenna resepti",

@@ -251,8 +251,11 @@
     "products_copied": "nukopijuota",
     "product_saved": "Produktas išsaugotas jūsų mėgstamuose!",
     "from_shared": "iš bendrinamo",
-    "view_recipe": "PERZIURETI RECEPTA",
-    "disclaimer_intro": "Spusteleje mygtuka Perziureti recepta, vartotojas patvirtina, kad jam yra bent 18 metu."
+    "view_recipe": "PERŽIŪRĖTI RECEPTĄ",
+    "disclaimer_intro": "Spustelėjęs mygtuką Peržiūrėti receptą, vartotojas patvirtina, kad jam yra bent 18 metų.",
+    "pro_login_title": "Prisijunkite, kad peržiūrėtumėte receptą",
+    "pro_login_text": "Liquid PRO režimu sukurti receptai pasiekiami tik prisijungusiems vartotojams.",
+    "login_button": "PRISIJUNGTI"
   },
   "save_recipe": {
     "title": "Išsaugoti receptą",
