@@ -249,7 +249,8 @@
     "product_readonly": "Šis produkts pieder citam lietotājam. Varat to saglabāt izlasē.",
     "save_product": "SAGLABĀT IZLASĒ",
     "products_copied": "kopēts",
-    "product_saved": "Produkts ir saglabāts jūsu izlasē!"
+    "product_saved": "Produkts ir saglabāts jūsu izlasē!",
+    "from_shared": "no kopīgotā"
   },
   "save_recipe": {
     "title": "Saglabāt recepti",
@@ -276,7 +277,9 @@
     "reminder_info": "Atgādinājuma datums tika automātiski aprēķināts, pamatojoties uz aromāta veidu.",
     "reminder_info_short": "Atgādinājuma datums tika automātiski aprēķināts, pamatojoties uz aromāta veidu.",
     "reminder_calculated": "Ieteicamais nogatavošanās laiks: {days} {daysUnit}. Jūs varat pielāgot datumu.",
-    "reminder_no_steeping": "Šis aromāts neprasa nogatavošanos."
+    "reminder_no_steeping": "Šis aromāts neprasa nogatavošanos.",
+    "select_product": "-- Izvēlieties produktu --",
+    "search_product": "Meklēt produktu..."
   },
   "share": {
     "copied": "Saite nokopēta starpliktuvē!",
@@ -593,5 +596,8 @@
     "day": "dienas",
     "days_2_4": "dienām",
     "days_5_plus": "dienām"
+  },
+  "notification": {
+    "permission_prompt": "Vai vēlaties saņemt paziņojumu, kad jūsu šķidrums būs nobriedis?\n\nPēc apstiprināšanas mēs nosūtīsim jums atgādinājumu dienā, kad šķidrums būs gatavs."
   }
 }

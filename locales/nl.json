@@ -249,7 +249,8 @@
     "product_readonly": "Dit product behoort tot een andere gebruiker. U kunt het opslaan in uw favorieten.",
     "save_product": "OPSLAAN IN MIJN FAVORIETEN",
     "products_copied": "gekopieerd",
-    "product_saved": "Product is opgeslagen in uw favorieten!"
+    "product_saved": "Product is opgeslagen in uw favorieten!",
+    "from_shared": "van gedeeld"
   },
   "save_recipe": {
     "title": "Recept Opslaan",
@@ -276,7 +277,9 @@
     "reminder_info": "De herinneringsdatum is automatisch berekend op basis van het smaaktype.",
     "reminder_info_short": "De herinneringsdatum is automatisch berekend op basis van het smaaktype.",
     "reminder_calculated": "Aanbevolen rijpingstijd: {days} {daysUnit}. Je kunt de datum aanpassen.",
-    "reminder_no_steeping": "Deze smaak vereist geen rijping."
+    "reminder_no_steeping": "Deze smaak vereist geen rijping.",
+    "select_product": "-- Selecteer product --",
+    "search_product": "Zoek product..."
   },
   "share": {
     "copied": "Link gekopieerd naar klembord!",
@@ -593,5 +596,8 @@
     "day": "dag",
     "days_2_4": "dagen",
     "days_5_plus": "dagen"
+  },
+  "notification": {
+    "permission_prompt": "Wilt u een melding ontvangen wanneer uw vloeistof gerijpt is?\n\nNa goedkeuring sturen we u een herinnering op de dag dat de vloeistof klaar is."
   }
 }

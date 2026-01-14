@@ -249,7 +249,11 @@
     "product_readonly": "Toto je produkt iného používateľa. Môžete si ho uložiť do svojich obľúbených.",
     "save_product": "ULOŽIŤ K SEBE",
     "products_copied": "skopírované",
-    "product_saved": "Produkt bol uložený do vašich obľúbených!"
+    "product_saved": "Produkt bol uložený do vašich obľúbených!",
+    "from_shared": "zo zdieľaného"
+  },
+  "notification": {
+    "permission_prompt": "Chcete dostávať upozornenia, keď bude váš liquid vyzretý?\n\nPo povolení vám pošleme pripomienku v deň, keď bude liquid pripravený."
   },
   "save_recipe": {
     "title": "Uložiť recept",
@@ -269,6 +273,8 @@
     "error": "Chyba pri ukladaní receptu.",
     "login_required": "Pre uloženie receptu sa prosím prihláste.",
     "no_products": "Nemáte žiadne obľúbené produkty. Najprv ich pridajte v sekcii Obľúbené produkty.",
+    "select_product": "-- Vyberte produkt --",
+    "search_product": "Hľadať produkt...",
     "nothing_to_save": "Chyba: Nie je čo uložiť. Prosím vytvorte recept.",
     "reminder_enable": "Pripomenúť, keď bude liquid vyzretý",
     "mix_date": "Dátum miešania",

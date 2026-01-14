@@ -249,7 +249,8 @@
     "product_readonly": "Ten produkt należy do innego użytkownika. Możesz go zapisać w swoich ulubionych.",
     "save_product": "ZAPISZ DO MOICH ULUBIONYCH",
     "products_copied": "skopiowane",
-    "product_saved": "Produkt został zapisany w Twoich ulubionych!"
+    "product_saved": "Produkt został zapisany w Twoich ulubionych!",
+    "from_shared": "z udostępnionego"
   },
   "save_recipe": {
     "title": "Zapisz przepis",
@@ -276,7 +277,9 @@
     "reminder_info": "Data przypomnienia została automatycznie obliczona na podstawie typu aromatu.",
     "reminder_info_short": "Data przypomnienia została automatycznie obliczona na podstawie typu aromatu.",
     "reminder_calculated": "Zalecany czas dojrzewania: {days} {daysUnit}. Możesz dostosować datę.",
-    "reminder_no_steeping": "Ten aromat nie wymaga dojrzewania."
+    "reminder_no_steeping": "Ten aromat nie wymaga dojrzewania.",
+    "select_product": "-- Wybierz produkt --",
+    "search_product": "Szukaj produktu..."
   },
   "share": {
     "copied": "Link skopiowany do schowka!",
@@ -590,5 +593,8 @@
     "day": "dzień",
     "days_2_4": "dni",
     "days_5_plus": "dni"
+  },
+  "notification": {
+    "permission_prompt": "Czy chcesz otrzymać powiadomienie, gdy Twój liquid będzie dojrzały?\n\nPo zatwierdzeniu wyślemy Ci przypomnienie w dniu, gdy liquid będzie gotowy."
   }
 }

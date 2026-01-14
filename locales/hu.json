@@ -249,7 +249,8 @@
     "product_readonly": "Ez a termék egy másik felhasználóé. Mentheted a kedvenceid közé.",
     "save_product": "MENTÉS A KEDVENCEIMHEZ",
     "products_copied": "másolva",
-    "product_saved": "A termék mentve lett a kedvenceid közé!"
+    "product_saved": "A termék mentve lett a kedvenceid közé!",
+    "from_shared": "megosztottból"
   },
   "save_recipe": {
     "title": "Recept mentése",
@@ -276,7 +277,9 @@
     "reminder_info": "Az emlékeztető dátuma automatikusan számítva az aroma típusa alapján.",
     "reminder_info_short": "Az emlékeztető dátuma automatikusan számítva az aroma típusa alapján.",
     "reminder_calculated": "Ajánlott érlelési idő: {days} {daysUnit}. A dátum módosítható.",
-    "reminder_no_steeping": "Ez az aroma nem igényel érlelést."
+    "reminder_no_steeping": "Ez az aroma nem igényel érlelést.",
+    "select_product": "-- Válasszon terméket --",
+    "search_product": "Termék keresése..."
   },
   "share": {
     "copied": "Link a vágólapra másolva!",
@@ -593,5 +596,8 @@
     "day": "nap",
     "days_2_4": "nap",
     "days_5_plus": "nap"
+  },
+  "notification": {
+    "permission_prompt": "Szeretne értesítést kapni, amikor a folyadék megérett?\n\nJóváhagyás után emlékeztetőt küldünk azon a napon, amikor a folyadék elkészült."
   }
 }

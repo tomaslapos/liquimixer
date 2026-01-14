@@ -249,7 +249,8 @@
     "product_readonly": "Denna produkt tillhör en annan användare. Du kan spara den i dina favoriter.",
     "save_product": "SPARA TILL MINA FAVORITER",
     "products_copied": "kopierade",
-    "product_saved": "Produkten har sparats i dina favoriter!"
+    "product_saved": "Produkten har sparats i dina favoriter!",
+    "from_shared": "från delad"
   },
   "save_recipe": {
     "title": "Spara recept",
@@ -276,7 +277,9 @@
     "reminder_info": "Påminnelsedatumet beräknades automatiskt baserat på aromtyp.",
     "reminder_info_short": "Påminnelsedatumet beräknades automatiskt baserat på aromtyp.",
     "reminder_calculated": "Rekommenderad mogningstid: {days} {daysUnit}. Du kan justera datumet.",
-    "reminder_no_steeping": "Denna arom kräver ingen mognad."
+    "reminder_no_steeping": "Denna arom kräver ingen mognad.",
+    "select_product": "-- Välj produkt --",
+    "search_product": "Sök produkt..."
   },
   "share": {
     "copied": "Länk kopierad till urklipp!",
@@ -593,5 +596,8 @@
     "day": "dag",
     "days_2_4": "dagar",
     "days_5_plus": "dagar"
+  },
+  "notification": {
+    "permission_prompt": "Vill du bli meddelad när din vätska har mognat?\n\nEfter godkännande skickar vi en påminnelse den dag vätskan är klar."
   }
 }
