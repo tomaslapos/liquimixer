@@ -246,7 +246,8 @@
     "product_readonly": "Toto je produkt jiného uživatele. Můžete si jej uložit do svých oblíbených.",
     "save_product": "ULOŽIT K SOBĚ",
     "products_copied": "zkopírováno",
-    "product_saved": "Produkt byl uložen do vašich oblíbených!"
+    "product_saved": "Produkt byl uložen do vašich oblíbených!",
+    "from_shared": "ze sdíleného"
   },
   "products": {
     "title": "Oblíbené produkty",

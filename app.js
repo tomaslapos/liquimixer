@@ -1769,6 +1769,23 @@ async function saveRecipe(event) {
                 // Obnovit detail receptu
                 await viewRecipeDetail(window.editingRecipeId);
             } else {
+                // Pokud ukládáme sdílený recept, přejít na detail nově uloženého
+                const wasSharedRecipe = copiedProductIds.length > 0 || window.currentSharedRecipe;
+                
+                if (wasSharedRecipe && saved.id) {
+                    // Vyčistit sdílený recept z paměti
+                    window.currentSharedRecipe = null;
+                    
+                    // Zobrazit krátkou notifikaci a přejít na detail
+                    showNotification(t('save_recipe.success', 'Recept byl úspěšně uložen!') + productInfo, 'success');
+                    hideSaveRecipeModal();
+                    resetReminderFields();
+                    
+                    // Přejít na detail nově uloženého receptu
+                    await viewRecipeDetail(saved.id);
+                    return false;
+                }
+                
                 const shareUrl = saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id;
                 const successMessage = t('save_recipe.success', 'Recept byl úspěšně uložen!') + '\n\n' +
                     t('save_recipe.share_link', 'Odkaz pro sdílení:') + '\n' + shareUrl + productInfo + reminderInfo;
@@ -2536,12 +2553,56 @@ async function saveSharedRecipe() {
             window.i18n.applyTranslations();
         }
         
-        // Načíst produkty pro případné přidání dalších
-        loadProductsForRecipe();
+        // Načíst produkty uživatele pro případné přidání dalších
+        await loadProductsForRecipe();
+        
+        // Načíst a zobrazit produkty ze sdíleného receptu
+        try {
+            const sharedProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(recipe.id);
+            if (sharedProducts && sharedProducts.length > 0) {
+                for (const product of sharedProducts) {
+                    // Přidat řádek s produktem ze sdíleného receptu (označený jako sdílený)
+                    addSharedProductRow(product.id, product.name, product.product_type);
+                }
+            }
+        } catch (err) {
+            console.error('Error loading shared recipe products:', err);
+        }
         
         // Uložit ID původního receptu pro zkopírování produktů po uložení
         window.pendingSharedRecipeId = recipe.id;
     }
+}
+
+// Přidat řádek se sdíleným produktem (read-only, označený jako cizí produkt)
+function addSharedProductRow(productId, productName, productType) {
+    const listContainer = document.getElementById('selectedProductsList');
+    if (!listContainer) return;
+    
+    selectedProductRows++;
+    const rowId = `shared-product-row-${selectedProductRows}`;
+    
+    const typeIcons = {
+        'vg': '💧',
+        'pg': '💧',
+        'flavor': '🍓',
+        'nicotine_booster': '⚗️',
+        'nicotine_salt': '🧪'
+    };
+    const icon = typeIcons[productType] || '📦';
+    
+    const row = document.createElement('div');
+    row.id = rowId;
+    row.className = 'product-select-row shared-product-row';
+    row.innerHTML = `
+        <div class="shared-product-display">
+            <span class="shared-product-icon">${icon}</span>
+            <span class="shared-product-name">${escapeHtml(productName)}</span>
+            <span class="shared-product-badge">${t('shared_recipe.from_shared', 'ze sdíleného')}</span>
+        </div>
+        <input type="hidden" name="sharedProducts" value="${escapeHtml(productId)}">
+    `;
+    listContainer.appendChild(row);
 }
 
 // ============================================
