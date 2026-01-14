@@ -223,7 +223,7 @@
     "edit": "REDIGER",
     "share": "DEL",
     "delete": "SLETT",
-    "home": "🏠 HJEM",
+    "home": "HJEM",
     "linked_products": "Brukte produkter",
     "ingredients_title": "Ingredienser",
     "table_component": "Komponent",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Vis alle",
     "show_less": "Vis mindre",
     "reminders_error": "Feil ved lasting av påminnelser."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "LAGRE TIL MINE OPPSKRIFTER",
+    "product_readonly": "Dette produktet tilhører en annen bruker. Du kan lagre det i favorittene dine.",
+    "save_product": "LAGRE TIL MINE FAVORITTER",
+    "products_copied": "kopiert",
+    "product_saved": "Produktet er lagret i favorittene dine!"
   },
   "save_recipe": {
     "title": "Lagre oppskrift",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Produktdetaljer",
+    "shared_title": "Produkt",
     "back": "TILBAKE",
     "edit": "REDIGER",
     "share": "DEL",

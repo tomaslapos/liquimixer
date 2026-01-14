@@ -223,7 +223,7 @@
     "edit": "EDITAR",
     "share": "PARTILHAR",
     "delete": "ELIMINAR",
-    "home": "🏠 INÍCIO",
+    "home": "INÍCIO",
     "linked_products": "Produtos utilizados",
     "ingredients_title": "Ingredientes",
     "table_component": "Componente",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Mostrar todos",
     "show_less": "Mostrar menos",
     "reminders_error": "Erro ao carregar lembretes."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "GUARDAR NAS MINHAS RECEITAS",
+    "product_readonly": "Este produto pertence a outro utilizador. Pode guardá-lo nos seus favoritos.",
+    "save_product": "GUARDAR NOS MEUS FAVORITOS",
+    "products_copied": "copiados",
+    "product_saved": "O produto foi guardado nos seus favoritos!"
   },
   "save_recipe": {
     "title": "Guardar receita",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Detalhes do produto",
+    "shared_title": "Produto",
     "back": "VOLTAR",
     "edit": "EDITAR",
     "share": "PARTILHAR",

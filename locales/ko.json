@@ -223,7 +223,7 @@
     "edit": "편집",
     "share": "공유",
     "delete": "삭제",
-    "home": "🏠 홈",
+    "home": "홈",
     "linked_products": "사용된 제품",
     "ingredients_title": "성분",
     "table_component": "성분",
@@ -243,6 +243,13 @@
     "show_all_reminders": "모두 보기",
     "show_less": "간략히 보기",
     "reminders_error": "알림 로딩 오류."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "내 레시피에 저장",
+    "product_readonly": "다른 사용자의 제품입니다. 즐겨찾기에 저장할 수 있습니다.",
+    "save_product": "즐겨찾기에 저장",
+    "products_copied": "복사됨",
+    "product_saved": "제품이 즐겨찾기에 저장되었습니다!"
   },
   "save_recipe": {
     "title": "레시피 저장",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "제품 상세",
+    "shared_title": "제품",
     "back": "뒤로",
     "edit": "편집",
     "share": "공유",

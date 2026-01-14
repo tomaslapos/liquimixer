@@ -223,7 +223,7 @@
     "edit": "REDIGERA",
     "share": "DELA",
     "delete": "RADERA",
-    "home": "🏠 HEM",
+    "home": "HEM",
     "linked_products": "Använda produkter",
     "ingredients_title": "Ingredienser",
     "table_component": "Komponent",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Visa alla",
     "show_less": "Visa mindre",
     "reminders_error": "Fel vid laddning av påminnelser."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "SPARA TILL MINA RECEPT",
+    "product_readonly": "Denna produkt tillhör en annan användare. Du kan spara den i dina favoriter.",
+    "save_product": "SPARA TILL MINA FAVORITER",
+    "products_copied": "kopierade",
+    "product_saved": "Produkten har sparats i dina favoriter!"
   },
   "save_recipe": {
     "title": "Spara recept",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Produktdetaljer",
+    "shared_title": "Produkt",
     "back": "TILLBAKA",
     "edit": "REDIGERA",
     "share": "DELA",

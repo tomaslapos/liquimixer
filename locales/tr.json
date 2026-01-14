@@ -223,7 +223,7 @@
     "edit": "DÜZENLE",
     "share": "PAYLAŞ",
     "delete": "SİL",
-    "home": "🏠 ANA SAYFA",
+    "home": "ANA SAYFA",
     "linked_products": "Kullanılan ürünler",
     "ingredients_title": "Malzemeler",
     "table_component": "Bileşen",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Tümünü göster",
     "show_less": "Daha az göster",
     "reminders_error": "Hatırlatıcılar yüklenirken hata."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "TARİFLERİME KAYDET",
+    "product_readonly": "Bu ürün başka bir kullanıcıya ait. Favorilerinize kaydedebilirsiniz.",
+    "save_product": "FAVORİLERİME KAYDET",
+    "products_copied": "kopyalandı",
+    "product_saved": "Ürün favorilerinize kaydedildi!"
   },
   "save_recipe": {
     "title": "Tarifi Kaydet",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Ürün Ayrıntıları",
+    "shared_title": "Ürün",
     "back": "GERİ",
     "edit": "DÜZENLE",
     "share": "PAYLAŞ",

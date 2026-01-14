@@ -223,7 +223,7 @@
     "edit": "UREDI",
     "share": "PODIJELI",
     "delete": "OBRIŠI",
-    "home": "🏠 POČETNA",
+    "home": "POČETNA",
     "linked_products": "Korišteni proizvodi",
     "ingredients_title": "Sastojci",
     "table_component": "Sastojak",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Prikaži sve",
     "show_less": "Prikaži manje",
     "reminders_error": "Greška pri učitavanju podsjetnika."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "SPREMI U MOJE RECEPTE",
+    "product_readonly": "Ovaj proizvod pripada drugom korisniku. Možete ga spremiti u favorite.",
+    "save_product": "SPREMI U FAVORITE",
+    "products_copied": "kopirano",
+    "product_saved": "Proizvod je spremljen u vaše favorite!"
   },
   "save_recipe": {
     "title": "Spremi recept",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Detalji proizvoda",
+    "shared_title": "Proizvod",
     "back": "NATRAG",
     "edit": "UREDI",
     "share": "PODIJELI",

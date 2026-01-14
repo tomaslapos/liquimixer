@@ -223,7 +223,7 @@
     "edit": "BEWERK",
     "share": "DEEL",
     "delete": "VERWIJDER",
-    "home": "🏠 HOME",
+    "home": "HOME",
     "linked_products": "Gebruikte producten",
     "ingredients_title": "Ingrediënten",
     "table_component": "Component",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Alles tonen",
     "show_less": "Minder tonen",
     "reminders_error": "Fout bij laden van herinneringen."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "OPSLAAN IN MIJN RECEPTEN",
+    "product_readonly": "Dit product behoort tot een andere gebruiker. U kunt het opslaan in uw favorieten.",
+    "save_product": "OPSLAAN IN MIJN FAVORIETEN",
+    "products_copied": "gekopieerd",
+    "product_saved": "Product is opgeslagen in uw favorieten!"
   },
   "save_recipe": {
     "title": "Recept Opslaan",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Productdetails",
+    "shared_title": "Product",
     "back": "TERUG",
     "edit": "BEWERK",
     "share": "DEEL",
