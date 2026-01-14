@@ -222,6 +222,7 @@ serve(async (req) => {
           }],
           Note: invoiceNote,
           OrderNumber: orderNumber || '',
+          VariableSymbol: orderNumber || '', // Číslo platby z GPWebPay pro párování v účetnictví
         }
 
         // Přidat NumericSequenceId a DocumentSerialNumber z default nastavení
