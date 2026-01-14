@@ -250,7 +250,9 @@
     "save_product": "즐겨찾기에 저장",
     "products_copied": "복사됨",
     "product_saved": "제품이 즐겨찾기에 저장되었습니다!",
-    "from_shared": "공유에서"
+    "from_shared": "공유에서",
+    "view_recipe": "VIEW RECIPE",
+    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
   },
   "save_recipe": {
     "title": "레시피 저장",
@@ -279,7 +281,9 @@
     "reminder_calculated": "권장 숙성 시간: {days} {daysUnit}. 날짜를 조정할 수 있습니다.",
     "reminder_no_steeping": "이 향료는 숙성이 필요하지 않습니다.",
     "select_product": "-- 제품 선택 --",
-    "search_product": "제품 검색..."
+    "search_product": "제품 검색...",
+    "products_linked": "Linked products",
+    "save_as_new": "SAVE AS NEW"
   },
   "share": {
     "copied": "링크가 클립보드에 복사되었습니다!",
@@ -597,5 +601,8 @@
   },
   "notification": {
     "permission_prompt": "리퀴드가 숙성되면 알림을 받으시겠습니까?\n\n승인 후 리퀴드가 준비된 날에 알림을 보내드립니다."
+  },
+  "calculator": {
+    "edit_values": "EDIT VALUES"
   }
 }

@@ -250,7 +250,9 @@
     "save_product": "САЧУВАЈ У ОМИЉЕНЕ",
     "products_copied": "копирано",
     "product_saved": "Производ је сачуван у ваше омиљене!",
-    "from_shared": "из дељеног"
+    "from_shared": "из дељеног",
+    "view_recipe": "PRIKAZI RECEPT",
+    "disclaimer_intro": "Klikom na dugme Prikazi recept korisnik potvrdjuje da ima najmanje 18 godina."
   },
   "save_recipe": {
     "title": "Сачувај рецепт",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Препоручено време зрења: {days} {daysUnit}. Можете прилагодити датум.",
     "reminder_no_steeping": "Ова арома не захтева зрење.",
     "select_product": "-- Изаберите производ --",
-    "search_product": "Претражи производ..."
+    "search_product": "Претражи производ...",
+    "products_linked": "Povezani proizvodi",
+    "save_as_new": "SACUVAJ KAO NOVI"
   },
   "share": {
     "copied": "Линк копиран у клипборд!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Да ли желите да будете обавештени када ваша течност сазри?\n\nНакон одобрења, послаћемо вам подсетник на дан када течност буде спремна."
+  },
+  "calculator": {
+    "edit_values": "UREDI VREDNOSTI"
   }
 }

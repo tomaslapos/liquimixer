@@ -250,7 +250,9 @@
     "save_product": "SAVE TO MY FAVORITES",
     "products_copied": "copied",
     "product_saved": "Product has been saved to your favorites!",
-    "from_shared": "from shared"
+    "from_shared": "from shared",
+    "view_recipe": "VIEW RECIPE",
+    "disclaimer_intro": "By clicking the View Recipe button, the user confirms that they are at least 18 years old. The user acknowledges that LiquiMixer serves as an e-liquid calculator and does not assume responsibility for proper mixing, ingredient dosing, and compliance with safety regulations."
   },
   "notification": {
     "permission_prompt": "Would you like to be notified when your liquid is steeped?\n\nAfter approval, we will send you a reminder on the day when the liquid is ready."
@@ -282,7 +284,9 @@
     "reminder_info": "The reminder date was automatically calculated based on the flavor type.",
     "reminder_info_short": "The reminder date was automatically calculated based on the flavor type.",
     "reminder_calculated": "Recommended steeping time: {days} {daysUnit}. You can adjust the date.",
-    "reminder_no_steeping": "This flavor does not require steeping."
+    "reminder_no_steeping": "This flavor does not require steeping.",
+    "products_linked": "Linked products",
+    "save_as_new": "SAVE AS NEW"
   },
   "share": {
     "copied": "Link copied to clipboard!",
@@ -601,5 +605,8 @@
     "day": "day",
     "days_2_4": "days",
     "days_5_plus": "days"
+  },
+  "calculator": {
+    "edit_values": "EDIT VALUES"
   }
 }

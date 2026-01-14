@@ -250,7 +250,9 @@
     "save_product": "ЗБЕРЕГТИ В ОБРАНЕ",
     "products_copied": "скопійовано",
     "product_saved": "Продукт збережено в обране!",
-    "from_shared": "зі спільного"
+    "from_shared": "зі спільного",
+    "view_recipe": "PEREGLIANUTY RECEPT",
+    "disclaimer_intro": "Natyskayuchy knopku Pereglianuty recept, korystuvach pidtverdzhue, shcho yomu vypovnylosia 18 rokiv."
   },
   "save_recipe": {
     "title": "Зберегти рецепт",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Рекомендований час дозрівання: {days} {daysUnit}. Ви можете змінити дату.",
     "reminder_no_steeping": "Цей ароматизатор не потребує дозрівання.",
     "select_product": "-- Виберіть продукт --",
-    "search_product": "Пошук продукту..."
+    "search_product": "Пошук продукту...",
+    "products_linked": "Poviazani produkty",
+    "save_as_new": "ZBEREGTY YAK NOVYY"
   },
   "share": {
     "copied": "Посилання скопійовано в буфер обміну!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Бажаєте отримати сповіщення, коли ваша рідина дозріє?\n\nПісля схвалення ми надішлемо вам нагадування в день, коли рідина буде готова."
+  },
+  "calculator": {
+    "edit_values": "REDAGUVATY ZNACHENNYA"
   }
 }

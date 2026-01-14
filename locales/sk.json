@@ -250,7 +250,9 @@
     "save_product": "ULOŽIŤ K SEBE",
     "products_copied": "skopírované",
     "product_saved": "Produkt bol uložený do vašich obľúbených!",
-    "from_shared": "zo zdieľaného"
+    "from_shared": "zo zdieľaného",
+    "view_recipe": "ZOBRAZIT RECEPT",
+    "disclaimer_intro": "Kliknutim na tlacidlo Zobrazit recept pouzivatel potvrdzuje, ze ma aspon 18 rokov."
   },
   "notification": {
     "permission_prompt": "Chcete dostávať upozornenia, keď bude váš liquid vyzretý?\n\nPo povolení vám pošleme pripomienku v deň, keď bude liquid pripravený."
@@ -282,7 +284,9 @@
     "reminder_info": "Dátum pripomienky bol automaticky vypočítaný na základe typu príchute.",
     "reminder_info_short": "Dátum pripomienky bol automaticky vypočítaný na základe typu príchute.",
     "reminder_calculated": "Odporúčaná doba zrenia: {days} {daysUnit}. Dátum môžete upraviť.",
-    "reminder_no_steeping": "Táto príchuť nevyžaduje zrenie."
+    "reminder_no_steeping": "Táto príchuť nevyžaduje zrenie.",
+    "products_linked": "Prepojene produkty",
+    "save_as_new": "ULOZIT AKO NOVY"
   },
   "share": {
     "copied": "Odkaz skopírovaný do schránky!",
@@ -600,5 +604,8 @@
     "day": "deň",
     "days_2_4": "dni",
     "days_5_plus": "dní"
+  },
+  "calculator": {
+    "edit_values": "UPRAVIT HODNOTY"
   }
 }

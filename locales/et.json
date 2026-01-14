@@ -250,7 +250,9 @@
     "save_product": "SALVESTA LEMMIKUTESSE",
     "products_copied": "kopeeritud",
     "product_saved": "Toode on salvestatud teie lemmikutesse!",
-    "from_shared": "jagatud"
+    "from_shared": "jagatud",
+    "view_recipe": "VAATA RETSEPTI",
+    "disclaimer_intro": "Klopsates nuppu Vaata retsepti, kinnitab kasutaja, et ta on vahemalt 18-aastane."
   },
   "save_recipe": {
     "title": "Salvesta retsept",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Soovitatav küpsemisaeg: {days} {daysUnit}. Saate kuupäeva muuta.",
     "reminder_no_steeping": "See maitse ei vaja küpsemist.",
     "select_product": "-- Valige toode --",
-    "search_product": "Otsi toodet..."
+    "search_product": "Otsi toodet...",
+    "products_linked": "Seotud tooted",
+    "save_as_new": "SALVESTA UUENA"
   },
   "share": {
     "copied": "Link kopeeritud lõikelauale!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Kas soovite saada teavituse, kui teie vedelik on valmis?\n\nPärast heakskiitu saadame teile meeldetuletuse päeval, mil vedelik on valmis."
+  },
+  "calculator": {
+    "edit_values": "MUUDA VAARTUSI"
   }
 }

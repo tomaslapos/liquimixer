@@ -250,7 +250,9 @@
     "save_product": "TALLENNA SUOSIKKEIHINI",
     "products_copied": "kopioitu",
     "product_saved": "Tuote on tallennettu suosikkeihisi!",
-    "from_shared": "jaetusta"
+    "from_shared": "jaetusta",
+    "view_recipe": "NAYTA RESEPTI",
+    "disclaimer_intro": "Klikkaamalla Nayta resepti -painiketta kayttaja vahvistaa olevansa vahintaan 18-vuotias."
   },
   "save_recipe": {
     "title": "Tallenna resepti",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Suositeltu kypsymisaika: {days} {daysUnit}. Voit muokata päivämäärää.",
     "reminder_no_steeping": "Tämä maku ei vaadi kypsytystä.",
     "select_product": "-- Valitse tuote --",
-    "search_product": "Etsi tuotetta..."
+    "search_product": "Etsi tuotetta...",
+    "products_linked": "Linkitetyt tuotteet",
+    "save_as_new": "TALLENNA UUTENA"
   },
   "share": {
     "copied": "Linkki kopioitu leikepöydälle!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Haluatko saada ilmoituksen, kun nesteesi on kypsynyt?\n\nHyväksynnän jälkeen lähetämme sinulle muistutuksen sinä päivänä, kun neste on valmis."
+  },
+  "calculator": {
+    "edit_values": "MUOKKAA ARVOJA"
   }
 }

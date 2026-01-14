@@ -250,7 +250,9 @@
     "save_product": "SPREMI U FAVORITE",
     "products_copied": "kopirano",
     "product_saved": "Proizvod je spremljen u vaše favorite!",
-    "from_shared": "iz dijeljenog"
+    "from_shared": "iz dijeljenog",
+    "view_recipe": "PRIKAZI RECEPT",
+    "disclaimer_intro": "Klikom na gumb Prikazi recept korisnik potvrdjuje da ima najmanje 18 godina."
   },
   "save_recipe": {
     "title": "Spremi recept",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Preporučeno vrijeme sazrijevanja: {days} {daysUnit}. Možete prilagoditi datum.",
     "reminder_no_steeping": "Ova aroma ne zahtijeva sazrijevanje.",
     "select_product": "-- Odaberite proizvod --",
-    "search_product": "Pretraži proizvod..."
+    "search_product": "Pretraži proizvod...",
+    "products_linked": "Povezani proizvodi",
+    "save_as_new": "SPREMI KAO NOVI"
   },
   "share": {
     "copied": "Link kopiran u međuspremnik!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Želite li primiti obavijest kada vaša tekućina sazrije?\n\nNakon odobrenja, poslat ćemo vam podsjetnik na dan kada tekućina bude spremna."
+  },
+  "calculator": {
+    "edit_values": "UREDI VRIJEDNOSTI"
   }
 }

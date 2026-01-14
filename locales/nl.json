@@ -250,7 +250,9 @@
     "save_product": "OPSLAAN IN MIJN FAVORIETEN",
     "products_copied": "gekopieerd",
     "product_saved": "Product is opgeslagen in uw favorieten!",
-    "from_shared": "van gedeeld"
+    "from_shared": "van gedeeld",
+    "view_recipe": "BEKIJK RECEPT",
+    "disclaimer_intro": "Door op de knop Bekijk recept te klikken, bevestigt de gebruiker dat hij minstens 18 jaar oud is."
   },
   "save_recipe": {
     "title": "Recept Opslaan",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Aanbevolen rijpingstijd: {days} {daysUnit}. Je kunt de datum aanpassen.",
     "reminder_no_steeping": "Deze smaak vereist geen rijping.",
     "select_product": "-- Selecteer product --",
-    "search_product": "Zoek product..."
+    "search_product": "Zoek product...",
+    "products_linked": "Gekoppelde producten",
+    "save_as_new": "OPSLAAN ALS NIEUW"
   },
   "share": {
     "copied": "Link gekopieerd naar klembord!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Wilt u een melding ontvangen wanneer uw vloeistof gerijpt is?\n\nNa goedkeuring sturen we u een herinnering op de dag dat de vloeistof klaar is."
+  },
+  "calculator": {
+    "edit_values": "WAARDEN BEWERKEN"
   }
 }

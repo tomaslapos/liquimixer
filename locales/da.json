@@ -250,7 +250,9 @@
     "save_product": "GEM TIL MINE FAVORITTER",
     "products_copied": "kopieret",
     "product_saved": "Produktet er gemt i dine favoritter!",
-    "from_shared": "fra delt"
+    "from_shared": "fra delt",
+    "view_recipe": "VIS OPSKRIFT",
+    "disclaimer_intro": "Ved at klikke pa knappen Vis opskrift bekraefter brugeren, at de er mindst 18 ar gamle."
   },
   "save_recipe": {
     "title": "Gem opskrift",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Anbefalet modningstid: {days} {daysUnit}. Du kan justere datoen.",
     "reminder_no_steeping": "Denne aroma kræver ikke modning.",
     "select_product": "-- Vælg produkt --",
-    "search_product": "Søg produkt..."
+    "search_product": "Søg produkt...",
+    "products_linked": "Linkede produkter",
+    "save_as_new": "GEM SOM NY"
   },
   "share": {
     "copied": "Link kopieret til udklipsholder!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Vil du gerne have besked, når din væske er modnet?\n\nEfter godkendelse sender vi dig en påmindelse den dag, væsken er klar."
+  },
+  "calculator": {
+    "edit_values": "REDIGER VAERDIER"
   }
 }

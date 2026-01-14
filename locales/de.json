@@ -250,7 +250,9 @@
     "save_product": "ZU MEINEN FAVORITEN SPEICHERN",
     "products_copied": "kopiert",
     "product_saved": "Produkt wurde zu Ihren Favoriten gespeichert!",
-    "from_shared": "aus geteiltem"
+    "from_shared": "aus geteiltem",
+    "view_recipe": "REZEPT ANZEIGEN",
+    "disclaimer_intro": "Durch Klicken auf die Schaltflache Rezept anzeigen bestatigt der Benutzer, dass er mindestens 18 Jahre alt ist."
   },
   "notification": {
     "permission_prompt": "Möchten Sie benachrichtigt werden, wenn Ihr Liquid gereift ist?\n\nNach der Genehmigung senden wir Ihnen eine Erinnerung am Tag, an dem das Liquid fertig ist."
@@ -282,7 +284,9 @@
     "reminder_info": "Das Erinnerungsdatum wurde automatisch basierend auf dem Aromaart berechnet.",
     "reminder_info_short": "Das Erinnerungsdatum wurde automatisch basierend auf dem Aromaart berechnet.",
     "reminder_calculated": "Empfohlene Reifezeit: {days} {daysUnit}. Sie können das Datum anpassen.",
-    "reminder_no_steeping": "Dieses Aroma erfordert keine Reifung."
+    "reminder_no_steeping": "Dieses Aroma erfordert keine Reifung.",
+    "products_linked": "Verknupfte Produkte",
+    "save_as_new": "ALS NEU SPEICHERN"
   },
   "share": {
     "copied": "Link in die Zwischenablage kopiert!",
@@ -596,5 +600,8 @@
     "day": "Tag",
     "days_2_4": "Tagen",
     "days_5_plus": "Tagen"
+  },
+  "calculator": {
+    "edit_values": "WERTE BEARBEITEN"
   }
 }

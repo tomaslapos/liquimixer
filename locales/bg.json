@@ -250,7 +250,9 @@
     "save_product": "ЗАПАЗИ В ЛЮБИМИ",
     "products_copied": "копирани",
     "product_saved": "Продуктът е запазен в любими!",
-    "from_shared": "от споделено"
+    "from_shared": "от споделено",
+    "view_recipe": "PREGLED NA RECEPTATA",
+    "disclaimer_intro": "Kato shtraknete varhu butona Pregled na receptata, potrebiteliat potvarzhdava, che e na pone 18 godini."
   },
   "save_recipe": {
     "title": "Запази рецепта",
@@ -279,7 +281,9 @@
     "reminder_calculated": "Препоръчително време за зреене: {days} {daysUnit}. Можете да промените датата.",
     "reminder_no_steeping": "Този аромат не изисква зреене.",
     "select_product": "-- Изберете продукт --",
-    "search_product": "Търсене на продукт..."
+    "search_product": "Търсене на продукт...",
+    "products_linked": "Svarzani produkti",
+    "save_as_new": "ZAPAZI KATO NOVA"
   },
   "share": {
     "copied": "Линкът е копиран в клипборда!",
@@ -599,5 +603,8 @@
   },
   "notification": {
     "permission_prompt": "Искате ли да бъдете уведомени, когато вашата течност узрее?\n\nСлед одобрение ще ви изпратим напомняне в деня, когато течността е готова."
+  },
+  "calculator": {
+    "edit_values": "REDAKTIRANE NA STOYNOSTI"
   }
 }
