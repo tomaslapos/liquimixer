@@ -223,7 +223,7 @@
     "edit": "MUOKKAA",
     "share": "JAA",
     "delete": "POISTA",
-    "home": "🏠 KOTI",
+    "home": "KOTI",
     "linked_products": "Käytetyt tuotteet",
     "ingredients_title": "Ainekset",
     "table_component": "Komponentti",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Näytä kaikki",
     "show_less": "Näytä vähemmän",
     "reminders_error": "Virhe muistutusten lataamisessa."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "TALLENNA RESEPTEIHINI",
+    "product_readonly": "Tämä tuote kuuluu toiselle käyttäjälle. Voit tallentaa sen suosikkeihisi.",
+    "save_product": "TALLENNA SUOSIKKEIHINI",
+    "products_copied": "kopioitu",
+    "product_saved": "Tuote on tallennettu suosikkeihisi!"
   },
   "save_recipe": {
     "title": "Tallenna resepti",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Tuotteen tiedot",
+    "shared_title": "Tuote",
     "back": "TAKAISIN",
     "edit": "MUOKKAA",
     "share": "JAA",

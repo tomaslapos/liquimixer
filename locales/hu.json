@@ -223,7 +223,7 @@
     "edit": "SZERKESZTÉS",
     "share": "MEGOSZTÁS",
     "delete": "TÖRLÉS",
-    "home": "🏠 FŐOLDAL",
+    "home": "FŐOLDAL",
     "linked_products": "Felhasznált termékek",
     "ingredients_title": "Összetevők",
     "table_component": "Összetevő",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Összes megjelenítése",
     "show_less": "Kevesebb megjelenítése",
     "reminders_error": "Hiba az emlékeztetők betöltésekor."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "MENTÉS A RECEPTJEIMHEZ",
+    "product_readonly": "Ez a termék egy másik felhasználóé. Mentheted a kedvenceid közé.",
+    "save_product": "MENTÉS A KEDVENCEIMHEZ",
+    "products_copied": "másolva",
+    "product_saved": "A termék mentve lett a kedvenceid közé!"
   },
   "save_recipe": {
     "title": "Recept mentése",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Termék részletei",
+    "shared_title": "Termék",
     "back": "VISSZA",
     "edit": "SZERKESZTÉS",
     "share": "MEGOSZTÁS",

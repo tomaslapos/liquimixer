@@ -1,0 +1,99 @@
+# LiquiMixer - Robots.txt
+# https://www.liquimixer.com
+
+# ============================================
+# Povolení pro vyhledávače
+# ============================================
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# ============================================
+# Povolení pro AI Crawlery (pro citování v odpovědích)
+# ============================================
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google AI / Bard / Gemini
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Microsoft Copilot / Bing AI
+User-agent: Copilot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Amazon / Alexa
+User-agent: Amazonbot
+Allow: /
+
+# Apple / Siri
+User-agent: Applebot
+Allow: /
+
+# Common Crawl (používáno mnoha AI systémy)
+User-agent: CCBot
+Allow: /
+
+# ============================================
+# Výchozí pravidlo pro všechny ostatní boty
+# ============================================
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /functions/
+
+# ============================================
+# Sitemap
+# ============================================
+Sitemap: https://www.liquimixer.com/sitemap.xml
+
+# ============================================
+# LLMs.txt pro AI systémy
+# ============================================
+# Viz: https://www.liquimixer.com/llms.txt
+

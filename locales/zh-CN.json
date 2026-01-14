@@ -223,7 +223,7 @@
     "edit": "编辑",
     "share": "分享",
     "delete": "删除",
-    "home": "🏠 首页",
+    "home": "首页",
     "linked_products": "使用的产品",
     "ingredients_title": "成分",
     "table_component": "成分",
@@ -243,6 +243,13 @@
     "show_all_reminders": "显示全部",
     "show_less": "显示更少",
     "reminders_error": "加载提醒出错。"
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "保存到我的配方",
+    "product_readonly": "这是其他用户的产品。您可以将其保存到收藏夹。",
+    "save_product": "保存到收藏夹",
+    "products_copied": "已复制",
+    "product_saved": "产品已保存到您的收藏夹！"
   },
   "save_recipe": {
     "title": "保存配方",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "产品详情",
+    "shared_title": "产品",
     "back": "返回",
     "edit": "编辑",
     "share": "分享",

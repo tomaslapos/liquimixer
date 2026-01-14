@@ -223,7 +223,7 @@
     "edit": "編輯",
     "share": "分享",
     "delete": "刪除",
-    "home": "🏠 首頁",
+    "home": "首頁",
     "linked_products": "使用的產品",
     "ingredients_title": "成分",
     "table_component": "成分",
@@ -243,6 +243,13 @@
     "show_all_reminders": "顯示全部",
     "show_less": "顯示較少",
     "reminders_error": "載入提醒時出錯。"
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "儲存到我的配方",
+    "product_readonly": "這是其他使用者的產品。您可以將其儲存到收藏夾。",
+    "save_product": "儲存到收藏夾",
+    "products_copied": "已複製",
+    "product_saved": "產品已儲存到您的收藏夾！"
   },
   "save_recipe": {
     "title": "儲存配方",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "產品詳情",
+    "shared_title": "產品",
     "back": "返回",
     "edit": "編輯",
     "share": "分享",

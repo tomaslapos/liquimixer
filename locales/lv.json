@@ -223,7 +223,7 @@
     "edit": "REDIĢĒT",
     "share": "KOPĪGOT",
     "delete": "DZĒST",
-    "home": "🏠 SĀKUMS",
+    "home": "SĀKUMS",
     "linked_products": "Izmantotie produkti",
     "ingredients_title": "Sastāvdaļas",
     "table_component": "Komponents",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Rādīt visus",
     "show_less": "Rādīt mazāk",
     "reminders_error": "Kļūda, ielādējot atgādinājumus."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "SAGLABĀT MANOS RECEPTES",
+    "product_readonly": "Šis produkts pieder citam lietotājam. Varat to saglabāt izlasē.",
+    "save_product": "SAGLABĀT IZLASĒ",
+    "products_copied": "kopēts",
+    "product_saved": "Produkts ir saglabāts jūsu izlasē!"
   },
   "save_recipe": {
     "title": "Saglabāt recepti",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Produkta detaļas",
+    "shared_title": "Produkts",
     "back": "ATPAKAĻ",
     "edit": "REDIĢĒT",
     "share": "KOPĪGOT",

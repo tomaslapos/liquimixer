@@ -223,7 +223,7 @@
     "edit": "MUUDA",
     "share": "JAGA",
     "delete": "KUSTUTA",
-    "home": "🏠 AVALEHT",
+    "home": "AVALEHT",
     "linked_products": "Kasutatud tooted",
     "ingredients_title": "Koostisosad",
     "table_component": "Komponent",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Näita kõiki",
     "show_less": "Näita vähem",
     "reminders_error": "Viga meeldetuletuste laadimisel."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "SALVESTA MINU RETSEPTIDESSE",
+    "product_readonly": "See toode kuulub teisele kasutajale. Saate selle salvestada lemmikutesse.",
+    "save_product": "SALVESTA LEMMIKUTESSE",
+    "products_copied": "kopeeritud",
+    "product_saved": "Toode on salvestatud teie lemmikutesse!"
   },
   "save_recipe": {
     "title": "Salvesta retsept",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Toote üksikasjad",
+    "shared_title": "Toode",
     "back": "TAGASI",
     "edit": "MUUDA",
     "share": "JAGA",

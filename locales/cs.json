@@ -220,7 +220,7 @@
     "edit": "UPRAVIT",
     "share": "SDÍLET",
     "delete": "SMAZAT",
-    "home": "🏠 DOMŮ",
+    "home": "DOMŮ",
     "linked_products": "Použité produkty",
     "ingredients_title": "Složky",
     "table_component": "Složka",
@@ -240,6 +240,13 @@
     "show_all_reminders": "Zobrazit všechny",
     "show_less": "Zobrazit méně",
     "reminders_error": "Chyba při načítání připomínek."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "ULOŽIT K SOBĚ",
+    "product_readonly": "Toto je produkt jiného uživatele. Můžete si jej uložit do svých oblíbených.",
+    "save_product": "ULOŽIT K SOBĚ",
+    "products_copied": "zkopírováno",
+    "product_saved": "Produkt byl uložen do vašich oblíbených!"
   },
   "products": {
     "title": "Oblíbené produkty",
@@ -265,6 +272,7 @@
   },
   "product_detail": {
     "title": "Detail produktu",
+    "shared_title": "Produkt",
     "back": "ZPĚT",
     "edit": "UPRAVIT",
     "share": "SDÍLET",

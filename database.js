@@ -931,6 +931,122 @@ async function getLinkedProducts(clerkId, recipeId) {
     }
 }
 
+// Získat produkty propojené s receptem (bez ověření vlastníka - pro sdílené recepty)
+async function getLinkedProductsByRecipeId(recipeId) {
+    if (!supabaseClient || !recipeId) return [];
+    
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_products')
+            .select(`
+                product_id,
+                favorite_products (
+                    id,
+                    name,
+                    product_type,
+                    rating,
+                    image_url,
+                    description,
+                    product_url
+                )
+            `)
+            .eq('recipe_id', recipeId);
+        
+        if (error) {
+            console.error('Error fetching linked products by recipe id:', error);
+            return [];
+        }
+        
+        // Extrahovat produkty z výsledku
+        return (data || [])
+            .map(item => item.favorite_products)
+            .filter(p => p !== null);
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Získat produkt podle ID (bez ověření vlastníka - pro sdílené recepty, read-only)
+async function getProductByIdPublic(productId) {
+    if (!supabaseClient || !productId) return null;
+    
+    if (!isValidUUID(productId)) {
+        console.error('Invalid product ID format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .select('*')
+            .eq('id', productId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching product by id (public):', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Zkopírovat produkt do účtu jiného uživatele
+async function copyProductToUser(productId, targetClerkId) {
+    if (!supabaseClient || !productId || !targetClerkId) return null;
+    
+    if (!isValidUUID(productId)) {
+        console.error('Invalid product ID format');
+        return null;
+    }
+    if (!isValidClerkId(targetClerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        // Načíst původní produkt
+        const original = await getProductByIdPublic(productId);
+        if (!original) return null;
+        
+        // Vytvořit kopii pro nového uživatele
+        const copyData = {
+            clerk_id: targetClerkId,
+            name: original.name,
+            product_type: original.product_type,
+            description: original.description || '',
+            rating: original.rating || 0,
+            product_url: original.product_url || '',
+            image_url: original.image_url || ''
+        };
+        
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .insert([copyData])
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error copying product:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
 // ============================================
 // INTEGRACE S CLERK
 // ============================================
@@ -1197,6 +1313,9 @@ window.LiquiMixerDB = {
     // Propojení produktů s recepty
     linkProductsToRecipe: linkProductsToRecipe,
     getLinkedProducts: getLinkedProducts,
+    getLinkedProductsByRecipeId: getLinkedProductsByRecipeId,
+    getProductByIdPublic: getProductByIdPublic,
+    copyProductToUser: copyProductToUser,
     // Připomínky
     saveReminder: saveReminder,
     getRecipeReminders: getRecipeReminders,

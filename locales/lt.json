@@ -223,7 +223,7 @@
     "edit": "REDAGUOTI",
     "share": "DALINTIS",
     "delete": "IŠTRINTI",
-    "home": "🏠 PRADŽIA",
+    "home": "PRADŽIA",
     "linked_products": "Naudoti produktai",
     "ingredients_title": "Ingredientai",
     "table_component": "Komponentas",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Rodyti visus",
     "show_less": "Rodyti mažiau",
     "reminders_error": "Klaida įkeliant priminimus."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "IŠSAUGOTI MANO RECEPTUOSE",
+    "product_readonly": "Šis produktas priklauso kitam vartotojui. Galite jį išsaugoti mėgstamuose.",
+    "save_product": "IŠSAUGOTI MĖGSTAMUOSE",
+    "products_copied": "nukopijuota",
+    "product_saved": "Produktas išsaugotas jūsų mėgstamuose!"
   },
   "save_recipe": {
     "title": "Išsaugoti receptą",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Produkto detalės",
+    "shared_title": "Produktas",
     "back": "ATGAL",
     "edit": "REDAGUOTI",
     "share": "DALINTIS",

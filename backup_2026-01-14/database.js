@@ -1,0 +1,1210 @@
+// ============================================
+// SUPABASE DATABASE INTEGRATION
+// Šifrovaná databáze uživatelů oddělená od aplikace
+// ============================================
+
+console.log('database.js: Loading...');
+
+// Povolené domény pro přístup k databázi
+const ALLOWED_DOMAINS = [
+    'liquimixer.com',
+    'www.liquimixer.com',
+    'localhost',
+    '127.0.0.1',
+    'zeabur.app'  // Zeabur preview/deployment URLs
+];
+
+// Kontrola povolené domény
+function isAllowedDomain() {
+    const hostname = window.location.hostname;
+    // V produkci striktní kontrola
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        return ALLOWED_DOMAINS.some(domain => 
+            hostname === domain || hostname.endsWith('.' + domain)
+        );
+    }
+    return true; // Localhost pro vývoj
+}
+
+// Supabase konfigurace
+const SUPABASE_URL = 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd2RmeG52aG54dGtodGtiYWRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0NzA1NDcsImV4cCI6MjA4MTA0NjU0N30.IKpOTRfPaOwyBSnIpqOK2utwIDnllLM3XcV9NH-tXrA';
+
+// Oficiální doména pro sdílené recepty
+const SHARE_BASE_URL = 'https://www.liquimixer.com';
+
+// Supabase klient (používáme supabaseClient aby nedošlo ke konfliktu s window.supabase SDK)
+let supabaseClient = null;
+
+// Inicializace Supabase
+function initSupabase() {
+    // Kontrola domény před inicializací
+    if (!isAllowedDomain()) {
+        console.error('Database access denied: unauthorized domain');
+        return false;
+    }
+    
+    if (typeof window.supabase !== 'undefined') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+        // Expose client globally for other modules (i18n.js)
+        window.supabaseClientInstance = supabaseClient;
+        return true;
+    }
+    console.warn('Supabase SDK not loaded');
+    return false;
+}
+
+// Nastavit Clerk JWT token pro supabaseClient (pro RLS)
+async function setSupabaseAuth() {
+    if (!supabaseClient || typeof Clerk === 'undefined' || !Clerk.user) return false;
+    
+    try {
+        // Získat JWT token z Clerk pro supabaseClient
+        const token = await Clerk.session?.getToken({ template: 'supabaseClient' });
+        if (token) {
+            // Nastavit token pro všechny následující požadavky
+            supabaseClient.realtime.setAuth(token);
+            // Alternativně pro REST API
+            supabaseClient.rest.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return true;
+    } catch (err) {
+        // Pokud Clerk nemá supabaseClient template, pokračujeme bez JWT
+        return false;
+    }
+}
+
+// ============================================
+// UŽIVATELSKÉ FUNKCE
+// ============================================
+
+// Uložit nebo aktualizovat uživatele po přihlášení přes Clerk
+async function saveUserToDatabase(clerkUser) {
+    if (!supabaseClient || !clerkUser) return null;
+    
+    const userData = {
+        clerk_id: clerkUser.id,
+        email: clerkUser.emailAddresses[0]?.emailAddress || null,
+        first_name: clerkUser.firstName || null,
+        last_name: clerkUser.lastName || null,
+        profile_image: clerkUser.imageUrl || null,
+        last_login: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    };
+    
+    try {
+        // Upsert - vloží nového uživatele nebo aktualizuje existujícího
+        const { data, error } = await supabaseClient
+            .from('users')
+            .upsert(userData, { 
+                onConflict: 'clerk_id',
+                returning: 'representation'
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving user:', error);
+            return null;
+        }
+        
+        // User saved successfully
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat uživatele z databáze
+async function getUserFromDatabase(clerkId) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching user:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Uložit uživatelská nastavení/preference
+async function saveUserPreferences(clerkId, preferences) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .update({ 
+                preferences: preferences,
+                updated_at: new Date().toISOString()
+            })
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving preferences:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Uložit preferovaný jazyk uživatele
+async function saveUserLocale(clerkId, locale) {
+    if (!supabaseClient || !clerkId || !locale) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace locale formátu (2-5 znaků, např. "cs", "en", "ar-SA")
+    if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(locale)) {
+        console.error('Invalid locale format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .update({ 
+                preferred_locale: locale,
+                updated_at: new Date().toISOString()
+            })
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving user locale:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat preferovaný jazyk uživatele
+async function getUserLocale(clerkId) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .select('preferred_locale')
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching user locale:', error);
+            return null;
+        }
+        
+        return data?.preferred_locale || null;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Generovat unikátní share ID
+function generateShareId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+// Sanitizace textového vstupu (ochrana proti XSS)
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return input;
+    return input
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;')
+        .trim()
+        .slice(0, 1000); // Max délka 1000 znaků
+}
+
+// Validace clerk_id formátu
+function isValidClerkId(clerkId) {
+    if (!clerkId || typeof clerkId !== 'string') return false;
+    
+    // Clerk ID formáty:
+    // - Standardní: user_XXXXXXXXXXXXXXXXXXXX
+    // - OAuth (Google, Facebook, Apple, TikTok): oauth_google_..., oauth_facebook_..., etc.
+    // - External accounts mohou mít různé formáty
+    
+    const isProduction = window.location.hostname === 'www.liquimixer.com' || 
+                         window.location.hostname === 'liquimixer.com';
+    
+    // Validní Clerk ID vzory
+    const validPatterns = [
+        /^user_[a-zA-Z0-9]{20,}$/,           // Standardní Clerk ID
+        /^oauth_[a-z]+_[a-zA-Z0-9]+$/,       // OAuth provider ID (google, facebook, apple, tiktok)
+        /^[a-zA-Z0-9_-]{10,50}$/             // Obecný vzor pro různé OAuth formáty
+    ];
+    
+    if (isProduction) {
+        // V produkci povolit standardní i OAuth formáty
+        return validPatterns.some(pattern => pattern.test(clerkId));
+    }
+    
+    // V development povolit i test_user
+    return validPatterns.some(pattern => pattern.test(clerkId)) || 
+           /^test_user_[a-zA-Z0-9_]+$/.test(clerkId);
+}
+
+// Validace UUID formátu
+function isValidUUID(str) {
+    if (!str) return false;
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+}
+
+// Rate limiting - ochrana proti spamu
+const rateLimiter = {
+    actions: {},
+    maxActions: 10, // Max 10 akcí
+    windowMs: 60000, // Za 60 sekund
+    
+    canProceed(action) {
+        const now = Date.now();
+        if (!this.actions[action]) {
+            this.actions[action] = [];
+        }
+        
+        // Odstranit staré záznamy
+        this.actions[action] = this.actions[action].filter(
+            time => now - time < this.windowMs
+        );
+        
+        if (this.actions[action].length >= this.maxActions) {
+            console.warn('Rate limit exceeded for:', action);
+            return false;
+        }
+        
+        this.actions[action].push(now);
+        return true;
+    }
+};
+
+// Uložit recept uživatele
+async function saveUserRecipe(clerkId, recipe) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Rate limiting
+    if (!rateLimiter.canProceed('saveRecipe')) {
+        console.error('Too many save attempts. Please wait.');
+        return null;
+    }
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    const shareId = generateShareId();
+    const shareUrl = `${SHARE_BASE_URL}/?recipe=${shareId}`;
+    
+    // Sanitizace vstupů
+    const recipeData = {
+        clerk_id: clerkId,
+        name: sanitizeInput(recipe.name) || 'Bez názvu',
+        description: sanitizeInput(recipe.description) || '',
+        rating: Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5), // 0-5
+        share_id: shareId,
+        share_url: shareUrl, // Kompletní URL pro sdílení
+        recipe_data: recipe.data, // JSONB - supabaseClient escapuje automaticky
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .insert(recipeData)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving recipe:', error);
+            return null;
+        }
+        
+        // Recipe saved successfully
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Aktualizovat recept
+async function updateUserRecipe(clerkId, recipeId, updates) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .update({
+                name: sanitizeInput(updates.name),
+                description: sanitizeInput(updates.description),
+                rating: Math.min(Math.max(parseInt(updates.rating) || 0, 0), 5),
+                recipe_data: updates.data,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', recipeId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error updating recipe:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Validace share_id formátu
+function isValidShareId(shareId) {
+    if (!shareId || typeof shareId !== 'string') return false;
+    return /^[A-Za-z0-9]{12}$/.test(shareId);
+}
+
+// Získat recept podle share_id (pro sdílení)
+async function getRecipeByShareId(shareId) {
+    if (!supabaseClient || !shareId) return null;
+    
+    // SECURITY: Validace formátu share_id
+    if (!isValidShareId(shareId)) {
+        console.error('Invalid share_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .select('*')
+            .eq('share_id', shareId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching shared recipe:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat recept podle ID
+async function getRecipeById(clerkId, recipeId) {
+    if (!supabaseClient) return null;
+    
+    // SECURITY: Validace vstupů
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .select('*')
+            .eq('id', recipeId)
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching recipe:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat recepty uživatele
+async function getUserRecipes(clerkId) {
+    if (!supabaseClient || !clerkId) return [];
+    
+    // SECURITY: Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .order('created_at', { ascending: false })
+            .limit(100); // SECURITY: Limit počtu receptů
+        
+        if (error) {
+            console.error('Error fetching recipes:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Smazat recept
+async function deleteUserRecipe(clerkId, recipeId) {
+    if (!supabaseClient || !clerkId) return false;
+    
+    // SECURITY: Validace vstupů
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return false;
+    }
+    
+    // Rate limiting pro mazání
+    if (!rateLimiter.canProceed('deleteRecipe')) {
+        console.error('Too many delete attempts. Please wait.');
+        return false;
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('recipes')
+            .delete()
+            .eq('id', recipeId)
+            .eq('clerk_id', clerkId); // Bezpečnostní kontrola - pouze vlastní recepty
+        
+        if (error) {
+            console.error('Error deleting recipe:', error);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// ============================================
+// OBLÍBENÉ PRODUKTY
+// ============================================
+
+// Uložit oblíbený produkt
+async function saveFavoriteProduct(clerkId, product) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Rate limiting
+    if (!rateLimiter.canProceed('saveProduct')) {
+        console.error('Too many save attempts. Please wait.');
+        return null;
+    }
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace typu produktu
+    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt'];
+    const productType = validTypes.includes(product.product_type) ? product.product_type : 'flavor';
+    
+    // Generování share_id a share_url pro sdílení
+    const shareId = generateShareId();
+    const shareUrl = `${SHARE_BASE_URL}/?product=${shareId}`;
+    
+    const productData = {
+        clerk_id: clerkId,
+        name: sanitizeInput(product.name) || 'Bez názvu',
+        product_type: productType,
+        description: sanitizeInput(product.description) || '',
+        rating: Math.min(Math.max(parseInt(product.rating) || 0, 0), 5),
+        image_url: product.image_url || '',
+        product_url: sanitizeInput(product.product_url) || '',
+        share_id: shareId,
+        share_url: shareUrl,
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .insert(productData)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving product:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Aktualizovat oblíbený produkt
+async function updateFavoriteProduct(clerkId, productId, updates) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    if (!isValidUUID(productId)) {
+        console.error('Invalid product ID format');
+        return null;
+    }
+    
+    // Validace typu produktu
+    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt'];
+    const productType = validTypes.includes(updates.product_type) ? updates.product_type : 'flavor';
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .update({
+                name: sanitizeInput(updates.name),
+                product_type: productType,
+                description: sanitizeInput(updates.description),
+                rating: Math.min(Math.max(parseInt(updates.rating) || 0, 0), 5),
+                image_url: updates.image_url || '',
+                product_url: sanitizeInput(updates.product_url) || '',
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', productId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error updating product:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat oblíbené produkty uživatele
+async function getFavoriteProducts(clerkId) {
+    if (!supabaseClient || !clerkId) return [];
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .order('created_at', { ascending: false })
+            .limit(100);
+        
+        if (error) {
+            console.error('Error fetching products:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Získat produkt podle ID
+async function getFavoriteProductById(clerkId, productId) {
+    if (!supabaseClient) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    if (!isValidUUID(productId)) {
+        console.error('Invalid product ID format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .select('*')
+            .eq('id', productId)
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching product:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat produkt podle share_id (pro sdílení)
+async function getProductByShareId(shareId) {
+    if (!supabaseClient || !shareId) return null;
+    
+    // SECURITY: Validace formátu share_id
+    if (!isValidShareId(shareId)) {
+        console.error('Invalid share_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .select('*')
+            .eq('share_id', shareId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching shared product:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Smazat oblíbený produkt
+async function deleteFavoriteProduct(clerkId, productId) {
+    if (!supabaseClient || !clerkId) return false;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    if (!isValidUUID(productId)) {
+        console.error('Invalid product ID format');
+        return false;
+    }
+    
+    if (!rateLimiter.canProceed('deleteProduct')) {
+        console.error('Too many delete attempts. Please wait.');
+        return false;
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('favorite_products')
+            .delete()
+            .eq('id', productId)
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error deleting product:', error);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// Upload obrázku produktu do supabaseClient Storage
+async function uploadProductImage(clerkId, file) {
+    if (!supabaseClient || !clerkId || !file) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace souboru
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+        console.error('Invalid file type. Allowed: JPEG, PNG, WebP, GIF');
+        return null;
+    }
+    
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        console.error('File too large. Max 5MB allowed.');
+        return null;
+    }
+    
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${clerkId}/${Date.now()}.${fileExt}`;
+    
+    try {
+        const { data, error } = await supabaseClient.storage
+            .from('product-images')
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+        
+        if (error) {
+            console.error('Error uploading image:', error);
+            return null;
+        }
+        
+        // Získat veřejnou URL
+        const { data: urlData } = supabaseClient.storage
+            .from('product-images')
+            .getPublicUrl(fileName);
+        
+        return urlData.publicUrl;
+    } catch (err) {
+        console.error('Upload error:', err);
+        return null;
+    }
+}
+
+// ============================================
+// PROPOJENÍ PRODUKTŮ S RECEPTY
+// ============================================
+
+// Propojit produkty s receptem
+async function linkProductsToRecipe(clerkId, recipeId, productIds) {
+    if (!supabaseClient || !clerkId || !recipeId || !productIds || productIds.length === 0) return false;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return false;
+    }
+    
+    try {
+        // Smazat existující propojení
+        await supabaseClient
+            .from('recipe_products')
+            .delete()
+            .eq('recipe_id', recipeId)
+            .eq('clerk_id', clerkId);
+        
+        // Vytvořit nová propojení
+        const links = productIds
+            .filter(id => isValidUUID(id))
+            .map(productId => ({
+                recipe_id: recipeId,
+                product_id: productId,
+                clerk_id: clerkId
+            }));
+        
+        if (links.length > 0) {
+            const { error } = await supabaseClient
+                .from('recipe_products')
+                .insert(links);
+            
+            if (error) {
+                console.error('Error linking products:', error);
+                return false;
+            }
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// Získat produkty propojené s receptem
+async function getLinkedProducts(clerkId, recipeId) {
+    if (!supabaseClient || !clerkId || !recipeId) return [];
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('Invalid recipe ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_products')
+            .select(`
+                product_id,
+                favorite_products (
+                    id,
+                    name,
+                    product_type,
+                    rating,
+                    image_url
+                )
+            `)
+            .eq('recipe_id', recipeId)
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error fetching linked products:', error);
+            return [];
+        }
+        
+        // Extrahovat produkty z výsledku
+        return (data || [])
+            .map(item => item.favorite_products)
+            .filter(p => p !== null);
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// ============================================
+// INTEGRACE S CLERK
+// ============================================
+
+// Volá se po úspěšném přihlášení přes Clerk
+async function onClerkSignIn(clerkUser) {
+    if (!clerkUser) return;
+    
+    // Inicializuj supabaseClient pokud ještě není
+    if (!supabaseClient) {
+        initSupabase();
+    }
+    
+    // Ulož uživatele do databáze
+    await saveUserToDatabase(clerkUser);
+    
+    // Načíst uložený jazyk uživatele a aplikovat ho
+    if (window.i18n?.loadUserLocale) {
+        await window.i18n.loadUserLocale(clerkUser.id);
+    }
+}
+
+// =============================================
+// REMINDER FUNCTIONS
+// =============================================
+
+// Uložit novou připomínku
+async function saveReminder(clerkId, reminderData) {
+    console.log('saveReminder called with:', { clerkId, reminderData });
+    
+    if (!supabaseClient || !clerkId) {
+        console.error('saveReminder: Missing supabaseClient or clerkId');
+        return null;
+    }
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('saveReminder: Invalid clerk_id format:', clerkId);
+        return null;
+    }
+    
+    // Validate recipe_id if provided
+    if (reminderData.recipe_id && !isValidUUID(reminderData.recipe_id)) {
+        console.error('saveReminder: Invalid recipe_id format:', reminderData.recipe_id);
+        return null;
+    }
+    
+    // Validate required fields
+    if (!reminderData.mixed_at || !reminderData.remind_at) {
+        console.error('saveReminder: Missing required date fields:', { mixed_at: reminderData.mixed_at, remind_at: reminderData.remind_at });
+        return null;
+    }
+    
+    try {
+        const insertData = {
+            clerk_id: clerkId,
+            recipe_id: reminderData.recipe_id || null,
+            mixed_at: reminderData.mixed_at,
+            remind_at: reminderData.remind_at,
+            remind_time: reminderData.remind_time || '16:30',
+            flavor_type: reminderData.flavor_type || null,
+            flavor_name: reminderData.flavor_name || null,
+            recipe_name: reminderData.recipe_name || null,
+            timezone: reminderData.timezone || 'Europe/Prague',
+            status: 'pending'
+        };
+        
+        console.log('saveReminder: Inserting data:', insertData);
+        
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .insert(insertData)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('saveReminder: Supabase error:', error);
+            return null;
+        }
+        
+        console.log('saveReminder: Success, saved reminder:', data);
+        return data;
+    } catch (err) {
+        console.error('saveReminder: Database error:', err);
+        return null;
+    }
+}
+
+// Získat připomínky pro recept
+async function getRecipeReminders(clerkId, recipeId) {
+    if (!supabaseClient || !clerkId || !recipeId) return [];
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .eq('recipe_id', recipeId)
+            .order('remind_at', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching reminders:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Získat všechny připomínky uživatele
+async function getUserReminders(clerkId) {
+    if (!supabaseClient || !clerkId) return [];
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .order('remind_at', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching user reminders:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
+// Aktualizovat připomínku
+async function updateReminder(clerkId, reminderId, updateData) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        // Sestavit objekt pro aktualizaci
+        const updateObj = {
+            updated_at: new Date().toISOString()
+        };
+        
+        // Přidat pouze definovaná pole
+        if (updateData.mixed_at !== undefined) updateObj.mixed_at = updateData.mixed_at;
+        if (updateData.remind_at !== undefined) updateObj.remind_at = updateData.remind_at;
+        if (updateData.note !== undefined) updateObj.note = updateData.note;
+        
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .update(updateObj)
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error updating reminder:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Smazat připomínku
+async function deleteReminder(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId || !reminderId) return false;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('recipe_reminders')
+            .delete()
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error deleting reminder:', error);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// Zrušit připomínku (změnit status na cancelled)
+async function cancelReminder(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId || !reminderId) return false;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return false;
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('recipe_reminders')
+            .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('Error cancelling reminder:', error);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('Database error:', err);
+        return false;
+    }
+}
+
+// Exportuj funkce pro použití v app.js
+console.log('database.js: Exporting LiquiMixerDB...');
+window.LiquiMixerDB = {
+    init: initSupabase,
+    saveUser: saveUserToDatabase,
+    getUser: getUserFromDatabase,
+    savePreferences: saveUserPreferences,
+    saveUserLocale: saveUserLocale,
+    getUserLocale: getUserLocale,
+    saveRecipe: saveUserRecipe,
+    updateRecipe: updateUserRecipe,
+    getRecipes: getUserRecipes,
+    getRecipeById: getRecipeById,
+    getRecipeByShareId: getRecipeByShareId,
+    deleteRecipe: deleteUserRecipe,
+    // Oblíbené produkty
+    saveProduct: saveFavoriteProduct,
+    updateProduct: updateFavoriteProduct,
+    getProducts: getFavoriteProducts,
+    getProductById: getFavoriteProductById,
+    getProductByShareId: getProductByShareId,
+    deleteProduct: deleteFavoriteProduct,
+    uploadProductImage: uploadProductImage,
+    // Propojení produktů s recepty
+    linkProductsToRecipe: linkProductsToRecipe,
+    getLinkedProducts: getLinkedProducts,
+    // Připomínky
+    saveReminder: saveReminder,
+    getRecipeReminders: getRecipeReminders,
+    getUserReminders: getUserReminders,
+    updateReminder: updateReminder,
+    deleteReminder: deleteReminder,
+    cancelReminder: cancelReminder,
+    onSignIn: onClerkSignIn
+};
+
+console.log('database.js: LiquiMixerDB exported successfully!', !!window.LiquiMixerDB);

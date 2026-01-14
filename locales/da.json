@@ -223,7 +223,7 @@
     "edit": "REDIGER",
     "share": "DEL",
     "delete": "SLET",
-    "home": "🏠 HJEM",
+    "home": "HJEM",
     "linked_products": "Brugte produkter",
     "ingredients_title": "Ingredienser",
     "table_component": "Komponent",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Vis alle",
     "show_less": "Vis mindre",
     "reminders_error": "Fejl ved indlæsning af påmindelser."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "GEM TIL MINE OPSKRIFTER",
+    "product_readonly": "Dette produkt tilhører en anden bruger. Du kan gemme det i dine favoritter.",
+    "save_product": "GEM TIL MINE FAVORITTER",
+    "products_copied": "kopieret",
+    "product_saved": "Produktet er gemt i dine favoritter!"
   },
   "save_recipe": {
     "title": "Gem opskrift",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Produktdetaljer",
+    "shared_title": "Produkt",
     "back": "TILBAGE",
     "edit": "REDIGER",
     "share": "DEL",

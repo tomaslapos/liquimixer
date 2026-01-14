@@ -1685,8 +1685,11 @@
             </div>
             
             <div class="button-group">
+                <button class="neon-button btn-green" onclick="saveSharedRecipe()">
+                    <span data-i18n="shared_recipe.save_to_my_recipes">ULOŽIT K SOBĚ</span>
+                </button>
                 <button class="neon-button" onclick="showPage('intro')">
-                    <span data-i18n="recipe_detail.home">🏠 DOMŮ</span>
+                    <span data-i18n="recipe_detail.home">DOMŮ</span>
                 </button>
             </div>
         </section>
@@ -1765,6 +1768,28 @@
                 </button>
                 <button class="neon-button btn-red" onclick="deleteProduct()">
                     <span data-i18n="product_detail.delete">SMAZAT</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Sdílený produkt - read-only -->
+        <section id="shared-product-detail" class="page">
+            <h2 class="page-title" id="sharedProductDetailTitle" data-i18n="product_detail.shared_title">Produkt</h2>
+            
+            <div class="product-detail-content" id="sharedProductDetailContent">
+                <!-- Naplní se JavaScriptem -->
+            </div>
+            
+            <div class="shared-product-info">
+                <p class="shared-product-notice" data-i18n="shared_recipe.product_readonly">Toto je produkt jiného uživatele. Můžete si jej uložit do svých oblíbených.</p>
+            </div>
+            
+            <div class="button-group">
+                <button class="neon-button btn-green" onclick="copySharedProductToUser()">
+                    <span data-i18n="shared_recipe.save_product">ULOŽIT K SOBĚ</span>
+                </button>
+                <button class="neon-button secondary" onclick="goBackFromSharedProduct()">
+                    <span data-i18n="product_detail.back">ZPĚT</span>
                 </button>
             </div>
         </section>

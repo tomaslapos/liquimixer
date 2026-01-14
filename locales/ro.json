@@ -223,7 +223,7 @@
     "edit": "EDITAȚI",
     "share": "PARTAJAȚI",
     "delete": "ȘTERGEȚI",
-    "home": "🏠 ACASĂ",
+    "home": "ACASĂ",
     "linked_products": "Produse utilizate",
     "ingredients_title": "Ingrediente",
     "table_component": "Component",
@@ -243,6 +243,13 @@
     "show_all_reminders": "Afișează toate",
     "show_less": "Afișează mai puțin",
     "reminders_error": "Eroare la încărcarea memento-urilor."
+  },
+  "shared_recipe": {
+    "save_to_my_recipes": "SALVAȚI ÎN REȚETELE MELE",
+    "product_readonly": "Acest produs aparține altui utilizator. Îl puteți salva în favorite.",
+    "save_product": "SALVAȚI ÎN FAVORITELE MELE",
+    "products_copied": "copiate",
+    "product_saved": "Produsul a fost salvat în favoritele dvs.!"
   },
   "save_recipe": {
     "title": "Salvați rețeta",
@@ -306,6 +313,7 @@
   },
   "product_detail": {
     "title": "Detalii produs",
+    "shared_title": "Produs",
     "back": "ÎNAPOI",
     "edit": "EDITAȚI",
     "share": "PARTAJAȚI",
