@@ -251,8 +251,11 @@
     "products_copied": "kopēts",
     "product_saved": "Produkts ir saglabāts jūsu izlasē!",
     "from_shared": "no kopīgotā",
-    "view_recipe": "SKATIT RECEPTI",
-    "disclaimer_intro": "Nokliksinot uz pogas Skatit recepti, lietotajs apstiprina, ka vinam ir vismaz 18 gadi."
+    "view_recipe": "SKATĪT RECEPTI",
+    "disclaimer_intro": "Noklikšķinot uz pogas Skatīt recepti, lietotājs apstiprina, ka viņam ir vismaz 18 gadi.",
+    "pro_login_title": "Piesakieties, lai skatītu recepti",
+    "pro_login_text": "Liquid PRO režīmā izveidotās receptes ir pieejamas tikai pieteiktajiem lietotājiem.",
+    "login_button": "PIETEIKTIES"
   },
   "save_recipe": {
     "title": "Saglabāt recepti",

@@ -252,7 +252,10 @@
     "product_saved": "Le produit a été enregistré dans vos favoris !",
     "from_shared": "du partagé",
     "view_recipe": "VOIR LA RECETTE",
-    "disclaimer_intro": "En cliquant sur le bouton Voir la recette, utilisateur confirme avoir au moins 18 ans."
+    "disclaimer_intro": "En cliquant sur le bouton Voir la recette, utilisateur confirme avoir au moins 18 ans.",
+    "pro_login_title": "Veuillez vous connecter pour voir la recette",
+    "pro_login_text": "Les recettes créées en mode Liquid PRO ne sont disponibles que pour les utilisateurs connectés.",
+    "login_button": "SE CONNECTER"
   },
   "save_recipe": {
     "title": "Enregistrer la recette",

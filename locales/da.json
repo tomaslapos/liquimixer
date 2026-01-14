@@ -252,7 +252,10 @@
     "product_saved": "Produktet er gemt i dine favoritter!",
     "from_shared": "fra delt",
     "view_recipe": "VIS OPSKRIFT",
-    "disclaimer_intro": "Ved at klikke pa knappen Vis opskrift bekraefter brugeren, at de er mindst 18 ar gamle."
+    "disclaimer_intro": "Ved at klikke pa knappen Vis opskrift bekraefter brugeren, at de er mindst 18 ar gamle.",
+    "pro_login_title": "Log ind for at se opskriften",
+    "pro_login_text": "Opskrifter oprettet i Liquid PRO-tilstand er kun tilgængelige for loggede brugere.",
+    "login_button": "LOG IND"
   },
   "save_recipe": {
     "title": "Gem opskrift",

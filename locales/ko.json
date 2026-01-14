@@ -251,8 +251,11 @@
     "products_copied": "복사됨",
     "product_saved": "제품이 즐겨찾기에 저장되었습니다!",
     "from_shared": "공유에서",
-    "view_recipe": "VIEW RECIPE",
-    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
+    "view_recipe": "레시피 보기",
+    "disclaimer_intro": "레시피 보기 버튼을 클릭하면 사용자는 18세 이상임을 확인합니다.",
+    "pro_login_title": "레시피를 보려면 로그인하세요",
+    "pro_login_text": "Liquid PRO 모드에서 생성된 레시피는 로그인한 사용자만 사용할 수 있습니다.",
+    "login_button": "로그인"
   },
   "save_recipe": {
     "title": "레시피 저장",

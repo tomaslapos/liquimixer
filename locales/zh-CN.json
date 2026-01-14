@@ -251,8 +251,11 @@
     "products_copied": "已复制",
     "product_saved": "产品已保存到您的收藏夹！",
     "from_shared": "来自共享",
-    "view_recipe": "VIEW RECIPE",
-    "disclaimer_intro": "By clicking View Recipe button, user confirms they are at least 18 years old."
+    "view_recipe": "查看配方",
+    "disclaimer_intro": "点击"查看配方"按钮，用户确认已年满18岁。",
+    "pro_login_title": "请登录以查看配方",
+    "pro_login_text": "在 Liquid PRO 模式下创建的配方仅供已登录用户使用。",
+    "login_button": "登录"
   },
   "save_recipe": {
     "title": "保存配方",

@@ -1860,12 +1860,14 @@ async function saveRecipe(event) {
             
             // Pokud ukládáme sdílený recept, zkopírovat produkty
             let copiedProductIds = [];
-            console.log('[saveRecipe] pendingSharedRecipeId:', window.pendingSharedRecipeId, 'isEditing:', isEditing);
+            // Použít UUID receptu (ne share_id) pro načtení produktů
+            const sharedRecipeUUID = window.pendingSharedRecipeUUID || (window.currentSharedRecipe ? window.currentSharedRecipe.id : null);
+            console.log('[saveRecipe] pendingSharedRecipeUUID:', sharedRecipeUUID, 'isEditing:', isEditing);
             
-            if (!isEditing && window.pendingSharedRecipeId) {
+            if (!isEditing && sharedRecipeUUID) {
                 try {
-                    // Načíst propojené produkty z původního receptu
-                    const originalProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(window.pendingSharedRecipeId);
+                    // Načíst propojené produkty z původního receptu pomocí UUID
+                    const originalProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(sharedRecipeUUID);
                     console.log('[saveRecipe] Original products from shared recipe:', originalProducts);
                     
                     // Zkopírovat každý produkt do účtu aktuálního uživatele
@@ -1890,6 +1892,7 @@ async function saveRecipe(event) {
                     }
                     
                     // Vyčistit pending ID
+                    window.pendingSharedRecipeUUID = null;
                     window.pendingSharedRecipeId = null;
                 } catch (err) {
                     console.error('Error copying products from shared recipe:', err);
@@ -2397,7 +2400,7 @@ function prefillLiquidForm(data) {
     }
     if (data.vgPercent !== undefined) {
         document.getElementById('vgPgRatio').value = data.vgPercent;
-        updateVgPgDisplay();
+        updateRatioDisplay();
     }
     if (data.nicotine !== undefined && data.nicotine > 0) {
         document.getElementById('nicotineType').value = 'booster';
@@ -2423,10 +2426,10 @@ function prefillSnvForm(data) {
         if (el) el.value = data.totalAmount;
     }
     if (data.vgPercent !== undefined) {
-        const el = document.getElementById('snvVgPgRatio');
+        const el = document.getElementById('svVgPgRatio');
         if (el) {
             el.value = data.vgPercent;
-            updateSnvVgPgDisplay();
+            updateSvRatioDisplay();
         }
     }
     if (data.nicotine !== undefined && data.nicotine > 0) {
@@ -2454,7 +2457,7 @@ function prefillProForm(data) {
         const el = document.getElementById('proVgPgRatio');
         if (el) {
             el.value = data.vgPercent;
-            updateProVgPgDisplay();
+            updateProRatioDisplay();
         }
     }
     if (data.nicotine !== undefined && data.nicotine > 0) {
@@ -2693,27 +2696,50 @@ async function loadSharedRecipe() {
     // SECURITY: Validace share_id formátu
     if (!shareId || !isValidShareId(shareId)) return false;
     
-    // Uložit shareId pro pozdější načtení po přihlášení
+    // Uložit shareId pro pozdější načtení
     window.pendingSharedRecipeId = shareId;
     
-    // Počkat na inicializaci Supabase a Clerk
+    // Počkat na inicializaci Supabase
     if (window.LiquiMixerDB) {
         window.LiquiMixerDB.init();
     }
     
-    // Počkat na Clerk
+    // Počkat na Clerk a Supabase
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Zkontrolovat přihlášení
-    if (!window.Clerk || !window.Clerk.user) {
-        // Zobrazit stránku s výzvou k přihlášení
-        showSharedRecipeLoginPrompt();
+    // Načíst recept z databáze pro zjištění typu
+    try {
+        const recipe = await window.LiquiMixerDB.getRecipeByShareId(shareId);
+        
+        if (!recipe) {
+            showNotification(t('recipes.not_found', 'Recept nebyl nalezen.'), 'error');
+            showPage('intro');
+            return false;
+        }
+        
+        // Uložit recept pro pozdější použití
+        window.pendingSharedRecipe = recipe;
+        window.pendingSharedRecipeUUID = recipe.id;
+        
+        // Zkontrolovat typ receptu
+        const formType = recipe.recipe_data?.formType || 'liquid';
+        
+        // Liquid PRO vyžaduje přihlášení
+        if (formType === 'liquidpro' && (!window.Clerk || !window.Clerk.user)) {
+            showSharedRecipeLoginPrompt();
+            return true;
+        }
+        
+        // Pro všechny typy receptů zobrazit disclaimer
+        showSharedRecipeDisclaimer(shareId);
         return true;
+        
+    } catch (error) {
+        console.error('Error loading shared recipe:', error);
+        showNotification(t('recipes.load_error', 'Chyba při načítání receptu.'), 'error');
+        showPage('intro');
+        return false;
     }
-    
-    // Uživatel je přihlášen - zobrazit disclaimer stránku
-    showSharedRecipeDisclaimer(shareId);
-    return true;
 }
 
 // Zobrazit disclaimer pro sdílený recept
@@ -2740,18 +2766,18 @@ async function confirmAndShowSharedRecipe() {
     await loadSharedRecipeContent(shareId);
 }
 
-// Zobrazit výzvu k přihlášení pro sdílený recept
+// Zobrazit výzvu k přihlášení pro sdílený recept (pouze pro Liquid PRO)
 function showSharedRecipeLoginPrompt() {
     const contentEl = document.getElementById('sharedRecipeContent');
     const titleEl = document.getElementById('sharedRecipeTitle');
     
-    titleEl.textContent = 'Sdílený recept';
+    titleEl.textContent = t('recipe_detail.shared_title', 'Sdílený recept');
     contentEl.innerHTML = `
         <div class="login-prompt">
             <div class="login-prompt-icon">🔒</div>
-            <h3 class="login-prompt-title">Pro zobrazení receptu se přihlaste</h3>
-            <p class="login-prompt-text">Tento recept je dostupný pouze pro přihlášené uživatele.</p>
-            <button class="neon-button" onclick="showLoginForSharedRecipe()">Přihlásit se</button>
+            <h3 class="login-prompt-title">${t('shared_recipe.pro_login_title', 'Pro zobrazení receptu se přihlaste')}</h3>
+            <p class="login-prompt-text">${t('shared_recipe.pro_login_text', 'Recepty vytvářené v režimu Liquid PRO jsou dostupné jenom pro přihlášené uživatele.')}</p>
+            <button class="neon-button" onclick="showLoginForSharedRecipe()">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
         </div>
     `;
     
@@ -2802,8 +2828,9 @@ async function loadSharedRecipeContent(shareId) {
 async function checkPendingSharedRecipe() {
     if (window.pendingSharedRecipeId && window.Clerk && window.Clerk.user) {
         const shareId = window.pendingSharedRecipeId;
-        window.pendingSharedRecipeId = null;
-        await loadSharedRecipeContent(shareId);
+        // Nezmazat pendingSharedRecipeId - bude potřeba po disclaimeru
+        // Zobrazit disclaimer stránku místo přímého načtení
+        showSharedRecipeDisclaimer(shareId);
     }
 }
 
@@ -2873,8 +2900,8 @@ async function saveSharedRecipe() {
             console.error('Error loading shared recipe products:', err);
         }
         
-        // Uložit ID původního receptu pro zkopírování produktů po uložení
-        window.pendingSharedRecipeId = recipe.id;
+        // Uložit UUID původního receptu pro zkopírování produktů po uložení
+        window.pendingSharedRecipeUUID = recipe.id;
     }
 }
 

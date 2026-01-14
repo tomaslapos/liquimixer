@@ -251,8 +251,11 @@
     "products_copied": "kopyalandı",
     "product_saved": "Ürün favorilerinize kaydedildi!",
     "from_shared": "paylaşılandan",
-    "view_recipe": "TARIFI GORUNTULE",
-    "disclaimer_intro": "Tarifi Goruntule dugmesine tiklayarak, kullanici en az 18 yasinda oldugunu onaylar."
+    "view_recipe": "TARİFİ GÖRÜNTÜLE",
+    "disclaimer_intro": "Tarifi Görüntüle düğmesine tıklayarak, kullanıcı en az 18 yaşında olduğunu onaylar.",
+    "pro_login_title": "Tarifi görmek için giriş yapın",
+    "pro_login_text": "Liquid PRO modunda oluşturulan tarifler yalnızca giriş yapmış kullanıcılar için kullanılabilir.",
+    "login_button": "GİRİŞ YAP"
   },
   "save_recipe": {
     "title": "Tarifi Kaydet",

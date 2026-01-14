@@ -251,8 +251,11 @@
     "products_copied": "copiate",
     "product_saved": "Produsul a fost salvat în favoritele dvs.!",
     "from_shared": "din partajat",
-    "view_recipe": "VIZUALIZARE RETETA",
-    "disclaimer_intro": "Facand clic pe butonul Vizualizare reteta, utilizatorul confirma ca are cel putin 18 ani."
+    "view_recipe": "VIZUALIZARE REȚETĂ",
+    "disclaimer_intro": "Făcând clic pe butonul Vizualizare rețetă, utilizatorul confirmă că are cel puțin 18 ani.",
+    "pro_login_title": "Conectați-vă pentru a vedea rețeta",
+    "pro_login_text": "Rețetele create în modul Liquid PRO sunt disponibile doar pentru utilizatorii conectați.",
+    "login_button": "CONECTARE"
   },
   "save_recipe": {
     "title": "Salvați rețeta",
