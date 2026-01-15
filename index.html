@@ -1692,12 +1692,32 @@
 
         <!-- Disclaimer pro sdílený recept -->
         <section id="shared-recipe-disclaimer" class="page">
-            <h1 class="main-title">
-                <span class="title-gradient" data-i18n="intro.title">LiquiMixer</span>
-            </h1>
-            <p class="subtitle" data-i18n="intro.subtitle">E-liquid Calculator</p>
+            <div class="logo-container">
+                <h1 class="neon-title">
+                    <span class="letter l1">L</span>
+                    <span class="letter l2">I</span>
+                    <span class="letter l3">Q</span>
+                    <span class="letter l4">U</span>
+                    <span class="letter l5">I</span>
+                    <span class="letter l6">M</span>
+                    <span class="letter l7">I</span>
+                    <span class="letter l8">X</span>
+                    <span class="letter l9">E</span>
+                    <span class="letter l10">R</span>
+                </h1>
+                <div class="subtitle" data-i18n="intro.subtitle">E-LIQUID KALKULÁTOR</div>
+            </div>
             
-            <div class="disclaimer-box">
+            <!-- Krátký popis aplikace -->
+            <div class="app-description-box">
+                <p class="app-description-text" data-i18n="intro.app_description">
+                    Kalkulátor pro bezpečné míchání e-liquidů s přesným výpočtem PG/VG poměru, příchutí a nikotinu. Nezačínejte vždy znova a ukládejte si oblíbené recepty a produkty nebo je sdílejte s přáteli. Funguje také jako offline aplikace ve 31 jazycích.
+                </p>
+            </div>
+            
+            <!-- Upozornění pro sdílený recept -->
+            <div class="disclaimer-section">
+                <h3 class="disclaimer-title" data-i18n="intro.disclaimer_title">Upozornění</h3>
                 <p class="disclaimer-text" data-i18n="shared_recipe.disclaimer_intro">
                     Kliknutím na tlačítko Zobrazit recept uživatel potvrzuje, že je mu alespoň 18 let.
                 </p>
@@ -1705,6 +1725,7 @@
             
             <button class="neon-button start-button" id="viewSharedRecipeBtn" onclick="confirmAndShowSharedRecipe()">
                 <span data-i18n="shared_recipe.view_recipe">ZOBRAZIT RECEPT</span>
+                <div class="button-glow"></div>
             </button>
         </section>
 
