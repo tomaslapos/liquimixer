@@ -2865,12 +2865,26 @@ async function handleSharedRecipeLogin() {
     console.log('handleSharedRecipeLogin called');
     try {
         console.log('showLoginModal: clerkLoaded=', clerkLoaded, 'Clerk=', !!window.Clerk);
+        
+        // Odstranit subscription-required třídu, aby loginModal nebyl CSS skrytý
+        document.body.classList.remove('subscription-required');
+        
+        // Reset inline stylů pro jistotu
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.style.display = '';
+            loginModal.style.visibility = '';
+            loginModal.style.opacity = '';
+        }
+        
         await showLoginModal();
     } catch (e) {
         console.error('Error in handleSharedRecipeLogin:', e);
         // Fallback - přímo zobrazit modal
         const loginModal = document.getElementById('loginModal');
         if (loginModal) {
+            document.body.classList.remove('subscription-required');
+            loginModal.style.display = '';
             loginModal.classList.remove('hidden');
         }
     }
