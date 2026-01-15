@@ -285,8 +285,8 @@
     "reminder_no_steeping": "此香精不需要熟化。",
     "select_product": "-- 選擇產品 --",
     "search_product": "搜尋產品...",
-    "products_linked": "Linked products",
-    "save_as_new": "SAVE AS NEW"
+    "products_linked": "已關聯產品",
+    "save_as_new": "另存為新配方"
   },
   "share": {
     "copied": "連結已複製到剪貼簿！",
@@ -609,6 +609,6 @@
     "permission_prompt": "您想在液體成熟時收到通知嗎？\n\n批准後，我們將在液體準備好的當天向您發送提醒。"
   },
   "calculator": {
-    "edit_values": "EDIT VALUES"
+    "edit_values": "編輯數值"
   }
 }

@@ -285,8 +285,8 @@
     "reminder_no_steeping": "Αυτό το άρωμα δεν απαιτεί ωρίμανση.",
     "select_product": "-- Επιλέξτε προϊόν --",
     "search_product": "Αναζήτηση προϊόντος...",
-    "products_linked": "Linked products",
-    "save_as_new": "SAVE AS NEW"
+    "products_linked": "Συνδεδεμένα προϊόντα",
+    "save_as_new": "ΑΠΟΘΗΚΕΥΣΗ ΩΣ ΝΕΑ"
   },
   "share": {
     "copied": "Ο σύνδεσμος αντιγράφηκε στο πρόχειρο!",
@@ -609,6 +609,6 @@
     "permission_prompt": "Θέλετε να ειδοποιηθείτε όταν το υγρό σας ωριμάσει;\n\nΜετά την έγκριση, θα σας στείλουμε μια υπενθύμιση την ημέρα που το υγρό θα είναι έτοιμο."
   },
   "calculator": {
-    "edit_values": "EDIT VALUES"
+    "edit_values": "ΕΠΕΞΕΡΓΑΣΙΑ ΤΙΜΩΝ"
   }
 }

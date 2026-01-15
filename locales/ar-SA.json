@@ -286,8 +286,8 @@
     "reminder_no_steeping": "هذه النكهة لا تحتاج إلى نضج.",
     "select_product": "-- اختر المنتج --",
     "search_product": "البحث عن منتج...",
-    "products_linked": "Linked products",
-    "save_as_new": "SAVE AS NEW"
+    "products_linked": "المنتجات المرتبطة",
+    "save_as_new": "حفظ كوصفة جديدة"
   },
   "share": {
     "copied": "تم نسخ الرابط إلى الحافظة!",
@@ -610,6 +610,6 @@
     "permission_prompt": "هل تريد أن يتم إعلامك عندما ينضج السائل الخاص بك؟\n\nبعد الموافقة، سنرسل لك تذكيرًا في اليوم الذي يكون فيه السائل جاهزًا."
   },
   "calculator": {
-    "edit_values": "EDIT VALUES"
+    "edit_values": "تعديل القيم"
   }
 }

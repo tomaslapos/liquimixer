@@ -1463,13 +1463,23 @@ function goBackToCalculator() {
     const recipeData = currentRecipeData || {};
     const formType = recipeData.formType || 'liquid';
     
-    if (formType === 'snv') {
-        showPage('calculator-snv');
-    } else if (formType === 'pro') {
-        showPage('calculator-pro');
-    } else {
-        showPage('calculator');
+    // Mapovat formType na tab name
+    let tabName = 'liquid';
+    if (formType === 'snv' || formType === 'shakevape') {
+        tabName = 'shakevape';
+    } else if (formType === 'pro' || formType === 'liquidpro') {
+        tabName = 'liquidpro';
     }
+    
+    // Povolit programovou změnu záložky
+    window.allowTabSwitch = true;
+    
+    // Přepnout na správnou záložku a zobrazit formulář
+    switchFormTab(tabName);
+    showPage('form');
+    
+    // Vizuálně označit záložky jako disabled v režimu editace
+    updateFormTabsState();
 }
 
 // Zobrazit modal "Uložit jako nový"
@@ -1536,9 +1546,22 @@ async function showSaveChangesModal() {
     const modal = document.getElementById('saveRecipeModal');
     if (!modal) return;
     
-    const editingRecipe = window.editingRecipeFromDetail;
+    let editingRecipe = window.editingRecipeFromDetail;
+    
+    // Diagnostika
+    console.log('[showSaveChangesModal] editingRecipeFromDetail:', editingRecipe);
+    console.log('[showSaveChangesModal] currentViewingRecipe:', currentViewingRecipe);
+    
+    // Fallback - pokud editingRecipeFromDetail není k dispozici, zkusit currentViewingRecipe
+    if (!editingRecipe && currentViewingRecipe) {
+        console.log('[showSaveChangesModal] Using currentViewingRecipe as fallback');
+        editingRecipe = currentViewingRecipe;
+        window.editingRecipeFromDetail = editingRecipe;
+    }
+    
     if (!editingRecipe) {
         // Pokud není editovaný recept, použít normální uložení
+        console.warn('[showSaveChangesModal] No editing recipe found, falling back to showSaveRecipeModal');
         showSaveRecipeModal();
         return;
     }
@@ -1547,6 +1570,12 @@ async function showSaveChangesModal() {
     window.editingRecipeId = editingRecipe.id;
     
     // Předvyplnit údaje z editovaného receptu
+    console.log('[showSaveChangesModal] Prefilling form with:', {
+        name: editingRecipe.name,
+        description: editingRecipe.description,
+        rating: editingRecipe.rating
+    });
+    
     document.getElementById('recipeName').value = editingRecipe.name || '';
     document.getElementById('recipeDescription').value = editingRecipe.description || '';
     document.getElementById('recipeRating').value = editingRecipe.rating || '0';
@@ -2382,6 +2411,9 @@ async function editSavedRecipe() {
     // Určit typ formuláře
     const formType = recipeData.formType || 'liquid';
     
+    // Povolit programovou změnu záložky
+    window.allowTabSwitch = true;
+    
     // Předvyplnit formulář podle typu a přepnout záložku
     if (formType === 'shakevape' || formType === 'snv') {
         prefillSnvForm(recipeData);
@@ -2396,6 +2428,9 @@ async function editSavedRecipe() {
     
     // Zobrazit stránku formuláře
     showPage('form');
+    
+    // Označit záložky jako disabled (kromě aktuální)
+    updateFormTabsState();
 }
 
 // Předvyplnit Liquid formulář
@@ -2818,16 +2853,33 @@ function showSharedRecipeLoginPrompt() {
             <div class="login-prompt-icon">🔒</div>
             <h3 class="login-prompt-title">${t('shared_recipe.pro_login_title', 'Pro zobrazení receptu se přihlaste')}</h3>
             <p class="login-prompt-text">${t('shared_recipe.pro_login_text', 'Recepty vytvářené v režimu Liquid PRO jsou dostupné jenom pro přihlášené uživatele.')}</p>
-            <button class="neon-button" onclick="if(typeof window.showLoginForSharedRecipe==='function'){window.showLoginForSharedRecipe();}else{console.error('showLoginForSharedRecipe not defined');window.showLoginModal&&window.showLoginModal();}">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
+            <button class="neon-button" onclick="window.handleSharedRecipeLogin()">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
         </div>
     `;
     
     showPage('shared-recipe');
 }
 
-// Přihlášení pro sdílený recept
+// Přihlášení pro sdílený recept - robustní handler
+function handleSharedRecipeLogin() {
+    console.log('handleSharedRecipeLogin called');
+    try {
+        showLoginModal();
+    } catch (e) {
+        console.error('Error in handleSharedRecipeLogin:', e);
+        // Fallback - přímo mountnout Clerk
+        if (window.Clerk) {
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.classList.remove('hidden');
+            }
+        }
+    }
+}
+
+// Legacy alias pro zpětnou kompatibilitu
 function showLoginForSharedRecipe() {
-    showLoginModal();
+    handleSharedRecipeLogin();
 }
 
 // Načíst obsah sdíleného receptu (po přihlášení)
@@ -5191,7 +5243,16 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
 let currentFormTab = 'liquid';
 
 function switchFormTab(tabName) {
-    // Liquid PRO - modál se zobrazí až při kliknutí na MIXUJ, ne při přepnutí záložky
+    // V režimu editace zamezit změně záložky (kromě programového volání z goBackToCalculator)
+    if (window.editingRecipeFromDetail && currentFormTab !== tabName) {
+        // Pokud je volání z onclick (uživatel klikl na záložku), ignorovat
+        // Povolíme pouze pokud je explicitně nastaveno window.allowTabSwitch
+        if (!window.allowTabSwitch) {
+            console.log('Tab switch blocked - editing mode active');
+            return;
+        }
+    }
+    window.allowTabSwitch = false; // Reset flagu
     
     currentFormTab = tabName;
     
@@ -5218,6 +5279,26 @@ function switchFormTab(tabName) {
         initShakeVapeForm();
     } else if (tabName === 'liquidpro') {
         initLiquidProForm();
+    }
+}
+
+// Aktualizovat stav záložek formuláře (disabled v režimu editace)
+function updateFormTabsState() {
+    const tabs = document.querySelectorAll('.form-tab');
+    if (window.editingRecipeFromDetail) {
+        // V režimu editace označit neaktivní záložky jako disabled
+        tabs.forEach(tab => {
+            if (tab.dataset.tab !== currentFormTab) {
+                tab.classList.add('tab-disabled');
+            } else {
+                tab.classList.remove('tab-disabled');
+            }
+        });
+    } else {
+        // Normální režim - všechny záložky aktivní
+        tabs.forEach(tab => {
+            tab.classList.remove('tab-disabled');
+        });
     }
 }
 
@@ -7549,6 +7630,7 @@ window.deleteRecipe = deleteRecipe;
 window.shareRecipe = shareRecipe;
 window.shareProduct = shareProduct;
 window.showLoginForSharedRecipe = showLoginForSharedRecipe;
+window.handleSharedRecipeLogin = handleSharedRecipeLogin;
 window.removeSharedProductRow = removeSharedProductRow;
 window.addProductRow = addProductRow;
 window.removeProductRow = removeProductRow;
@@ -7594,6 +7676,9 @@ window.handleLoginRequiredModalBackdropClick = handleLoginRequiredModalBackdropC
 window.requireLogin = requireLogin;
 window.requireSubscription = requireSubscription;
 window.isUserLoggedIn = isUserLoggedIn;
+// Form tabs
+window.switchFormTab = switchFormTab;
+window.updateFormTabsState = updateFormTabsState;
 // Multi-flavor PRO
 window.addProFlavor = addProFlavor;
 window.removeProFlavor = removeProFlavor;
