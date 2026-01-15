@@ -58,6 +58,9 @@ async function initI18n() {
     createLanguageSelector('profileLanguageSelector');
     
     console.log('i18n initialized with locale:', currentLocale);
+    
+    // Vyvolat localeChanged event pro aktualizaci dynamických textů (např. VG/PG popisy)
+    window.dispatchEvent(new Event('localeChanged'));
 }
 
 // Načíst seznam lokalizací
