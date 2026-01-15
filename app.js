@@ -385,6 +385,9 @@ window.addEventListener('localeChanged', () => {
     // Překreslit detail receptu pokud je zobrazen
     refreshRecipeDetail();
     
+    // Překreslit detail produktu pokud je zobrazen (pro sekci "Použito v receptech")
+    refreshProductDetail();
+    
     // Aktualizovat stav předplatného v profilu (pokud je zobrazen)
     if (subscriptionData) {
         updateSubscriptionStatusUI(subscriptionData);
@@ -2474,18 +2477,49 @@ function prefillProForm(data) {
     }
     // Příchutě - předvyplnit více příchutí
     if (data.flavors && data.flavors.length > 0) {
-        // Reset příchutí a přidat nové
-        const container = document.getElementById('proFlavorsContainer');
-        if (container) {
-            container.innerHTML = '';
-            data.flavors.forEach((flavor, index) => {
-                // Přidat řádek příchutě s typem a procentem
-                addProFlavorRow(flavor.type || 'fruit', flavor.percent || 10);
-            });
-        }
+        resetAndPrefillProFlavors(data.flavors);
     }
     // Aktualizovat limity
     updateProVgPgLimits();
+}
+
+// Resetovat a předvyplnit příchutě PRO formuláře
+function resetAndPrefillProFlavors(flavors) {
+    if (!flavors || flavors.length === 0) return;
+    
+    // 1. Resetovat stav - proFlavorCount je globální proměnná
+    proFlavorCount = 1;
+    const container = document.getElementById('proAdditionalFlavorsContainer');
+    if (container) container.innerHTML = '';
+    
+    // 2. Zobrazit tlačítko přidat (skryje se pokud bude max)
+    const addBtn = document.getElementById('proAddFlavorGroup');
+    if (addBtn) addBtn.classList.remove('hidden');
+    
+    // 3. Předvyplnit příchutě
+    flavors.forEach((flavor, idx) => {
+        const flavorIndex = idx + 1; // příchutě jsou indexovány od 1
+        
+        if (flavorIndex > 1) {
+            // Přidat nový řádek pro příchutě 2-4
+            addProFlavor();
+        }
+        
+        // Nastavit hodnoty
+        const typeEl = document.getElementById(`proFlavorType${flavorIndex}`);
+        const strengthEl = document.getElementById(`proFlavorStrength${flavorIndex}`);
+        const ratioEl = document.getElementById(`proFlavorRatioSlider${flavorIndex}`);
+        
+        if (typeEl) typeEl.value = flavor.type || 'fruit';
+        if (strengthEl) strengthEl.value = flavor.percent || 10;
+        if (ratioEl) ratioEl.value = flavor.vgRatio || 0;
+        
+        // Aktualizovat UI (zobrazit slider, aktualizovat hodnoty)
+        updateProFlavorType(flavorIndex);
+    });
+    
+    // 4. Aktualizovat celkové procento
+    updateProTotalFlavorPercent();
 }
 
 // Zobrazit formulář pro úpravu receptu
@@ -2785,7 +2819,7 @@ function showSharedRecipeLoginPrompt() {
             <div class="login-prompt-icon">🔒</div>
             <h3 class="login-prompt-title">${t('shared_recipe.pro_login_title', 'Pro zobrazení receptu se přihlaste')}</h3>
             <p class="login-prompt-text">${t('shared_recipe.pro_login_text', 'Recepty vytvářené v režimu Liquid PRO jsou dostupné jenom pro přihlášené uživatele.')}</p>
-            <button class="neon-button" onclick="showLoginForSharedRecipe()">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
+            <button class="neon-button" onclick="window.showLoginForSharedRecipe?.()">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
         </div>
     `;
     
@@ -4649,6 +4683,28 @@ function refreshRecipeDetail() {
                 console.error('Error refreshing recipe detail:', err);
                 displayRecipeDetail(window.currentViewingRecipe, 'recipeDetailTitle', 'recipeDetailContent', []);
             });
+    }
+}
+
+// Překreslit detail produktu při změně jazyka (pro sekci "Použito v receptech")
+async function refreshProductDetail() {
+    if (!currentViewingProduct) return;
+    
+    const productDetailPage = document.getElementById('product-detail');
+    if (!productDetailPage || productDetailPage.classList.contains('hidden')) return;
+    
+    // Znovu načíst recepty a překreslit detail
+    if (window.Clerk && window.Clerk.user && window.LiquiMixerDB) {
+        try {
+            const linkedRecipes = await window.LiquiMixerDB.getRecipesByProductId(
+                window.Clerk.user.id, 
+                currentViewingProduct.id
+            );
+            displayProductDetail(currentViewingProduct, linkedRecipes || []);
+        } catch (err) {
+            console.error('Error refreshing product detail:', err);
+            displayProductDetail(currentViewingProduct, []);
+        }
     }
 }
 
