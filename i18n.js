@@ -15,11 +15,22 @@ const SUPPORTED_LOCALES = ['cs', 'sk', 'en', 'de', 'pl', 'fr', 'it', 'es', 'pt',
 // Detekce jazyka prohlížeče
 function detectBrowserLocale() {
     const browserLang = navigator.language || navigator.userLanguage;
-    const langCode = browserLang.split('-')[0].toLowerCase();
     
-    // Vrátit jazyk pouze pokud je podporovaný, jinak angličtinu
-    if (SUPPORTED_LOCALES.includes(langCode)) {
-        return langCode;
+    // Nejdříve zkusit přesnou shodu (zh-CN, zh-TW, ar-SA)
+    if (SUPPORTED_LOCALES.includes(browserLang)) {
+        return browserLang;
+    }
+    
+    // Normalizovat (zh_CN -> zh-CN, cs_CZ -> cs-CZ)
+    const normalized = browserLang.replace('_', '-');
+    if (SUPPORTED_LOCALES.includes(normalized)) {
+        return normalized;
+    }
+    
+    // Zkusit základní kód jazyka (cs-CZ -> cs, de-AT -> de)
+    const baseLang = browserLang.split('-')[0].toLowerCase();
+    if (SUPPORTED_LOCALES.includes(baseLang)) {
+        return baseLang;
     }
     
     return 'en'; // Fallback na angličtinu
