@@ -335,7 +335,8 @@
     "added": "Hinzugefügt",
     "delete_confirm": "Sind Sie sicher, dass Sie dieses Produkt löschen möchten?",
     "delete_success": "Produkt wurde gelöscht.",
-    "delete_error": "Fehler beim Löschen des Produkts."
+    "delete_error": "Fehler beim Löschen des Produkts.",
+    "used_in_recipes": "Verwendet in Rezepten"
   },
   "product_form": {
     "add_title": "Produkt hinzufügen",

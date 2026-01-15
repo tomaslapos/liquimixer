@@ -332,7 +332,8 @@
     "added": "追加日",
     "delete_confirm": "この製品を削除してもよろしいですか？",
     "delete_success": "製品が削除されました。",
-    "delete_error": "製品削除エラー。"
+    "delete_error": "製品削除エラー。",
+    "used_in_recipes": "レシピで使用"
   },
   "product_form": {
     "add_title": "製品を追加",

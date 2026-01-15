@@ -332,7 +332,8 @@
     "added": "Dodano",
     "delete_confirm": "Jeste li sigurni da želite obrisati ovaj proizvod?",
     "delete_success": "Proizvod je obrisan.",
-    "delete_error": "Greška pri brisanju proizvoda."
+    "delete_error": "Greška pri brisanju proizvoda.",
+    "used_in_recipes": "Koristi se u receptima"
   },
   "product_form": {
     "add_title": "Dodaj proizvod",

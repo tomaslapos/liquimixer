@@ -290,7 +290,8 @@
     "added": "Přidáno",
     "delete_confirm": "Opravdu chcete smazat tento produkt?",
     "delete_success": "Produkt byl smazán.",
-    "delete_error": "Chyba při mazání produktu."
+    "delete_error": "Chyba při mazání produktu.",
+    "used_in_recipes": "Použito v receptech"
   },
   "product_form": {
     "add_title": "Přidat produkt",

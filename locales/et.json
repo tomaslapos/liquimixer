@@ -332,7 +332,8 @@
     "added": "Lisatud",
     "delete_confirm": "Kas oled kindel, et soovid selle toote kustutada?",
     "delete_success": "Toode kustutatud.",
-    "delete_error": "Viga toote kustutamisel."
+    "delete_error": "Viga toote kustutamisel.",
+    "used_in_recipes": "Kasutatakse retseptides"
   },
   "product_form": {
     "add_title": "Lisa toode",

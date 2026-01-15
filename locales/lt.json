@@ -332,7 +332,8 @@
     "added": "Pridėta",
     "delete_confirm": "Ar tikrai norite ištrinti šį produktą?",
     "delete_success": "Produktas ištrintas.",
-    "delete_error": "Klaida trinant produktą."
+    "delete_error": "Klaida trinant produktą.",
+    "used_in_recipes": "Naudojama receptuose"
   },
   "product_form": {
     "add_title": "Pridėti produktą",

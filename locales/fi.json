@@ -332,7 +332,8 @@
     "added": "Lisätty",
     "delete_confirm": "Haluatko varmasti poistaa tämän tuotteen?",
     "delete_success": "Tuote on poistettu.",
-    "delete_error": "Virhe tuotteen poistamisessa."
+    "delete_error": "Virhe tuotteen poistamisessa.",
+    "used_in_recipes": "Käytetään resepteissä"
   },
   "product_form": {
     "add_title": "Lisää tuote",

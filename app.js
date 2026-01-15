@@ -2380,17 +2380,20 @@ async function editSavedRecipe() {
     // Určit typ formuláře
     const formType = recipeData.formType || 'liquid';
     
-    // Předvyplnit formulář podle typu
-    if (formType === 'snv') {
+    // Předvyplnit formulář podle typu a přepnout záložku
+    if (formType === 'shakevape' || formType === 'snv') {
         prefillSnvForm(recipeData);
-        showPage('calculator-snv');
-    } else if (formType === 'pro') {
+        switchFormTab('shakevape');
+    } else if (formType === 'liquidpro' || formType === 'pro') {
         prefillProForm(recipeData);
-        showPage('calculator-pro');
+        switchFormTab('liquidpro');
     } else {
         prefillLiquidForm(recipeData);
-        showPage('calculator');
+        switchFormTab('liquid');
     }
+    
+    // Zobrazit stránku formuláře
+    showPage('form');
 }
 
 // Předvyplnit Liquid formulář
@@ -2419,10 +2422,10 @@ function prefillLiquidForm(data) {
     updateVgPgRatioLimits();
 }
 
-// Předvyplnit SNV formulář
+// Předvyplnit Shake & Vape formulář
 function prefillSnvForm(data) {
     if (data.totalAmount) {
-        const el = document.getElementById('snvTotalAmount');
+        const el = document.getElementById('svTotalAmount');
         if (el) el.value = data.totalAmount;
     }
     if (data.vgPercent !== undefined) {
@@ -2433,21 +2436,23 @@ function prefillSnvForm(data) {
         }
     }
     if (data.nicotine !== undefined && data.nicotine > 0) {
-        const typeEl = document.getElementById('snvNicotineType');
-        if (typeEl) typeEl.value = 'booster';
-        const nicEl = document.getElementById('snvTargetNicotine');
+        const typeEl = document.getElementById('svNicotineType');
+        if (typeEl) typeEl.value = 'freebase';
+        const nicEl = document.getElementById('svTargetNicotine');
         if (nicEl) nicEl.value = data.nicotine;
-        updateSnvNicotineFields();
+        updateSvNicotineType();
     }
-    // Aroma procento
+    // Aroma objem (Shake & Vape má objem příchutě, ne procento)
     const aromaIng = (data.ingredients || []).find(ing => ing.ingredientKey === 'flavor');
-    if (aromaIng) {
-        const el = document.getElementById('snvAromaPercent');
-        if (el) el.value = aromaIng.percent || 10;
+    if (aromaIng && aromaIng.volume) {
+        const el = document.getElementById('svFlavorVolume');
+        if (el) el.value = aromaIng.volume || 12;
     }
+    // Aktualizovat limity
+    updateSvVgPgLimits();
 }
 
-// Předvyplnit PRO formulář
+// Předvyplnit Liquid PRO formulář
 function prefillProForm(data) {
     if (data.totalAmount) {
         const el = document.getElementById('proTotalAmount');
@@ -2462,22 +2467,25 @@ function prefillProForm(data) {
     }
     if (data.nicotine !== undefined && data.nicotine > 0) {
         const typeEl = document.getElementById('proNicotineType');
-        if (typeEl) typeEl.value = 'booster';
+        if (typeEl) typeEl.value = 'freebase';
         const nicEl = document.getElementById('proTargetNicotine');
         if (nicEl) nicEl.value = data.nicotine;
-        updateProNicotineFields();
+        updateProNicotineType();
     }
-    // Příchutě - TODO: složitější logika pro více příchutí
+    // Příchutě - předvyplnit více příchutí
     if (data.flavors && data.flavors.length > 0) {
         // Reset příchutí a přidat nové
         const container = document.getElementById('proFlavorsContainer');
         if (container) {
             container.innerHTML = '';
             data.flavors.forEach((flavor, index) => {
-                addProFlavorRow(flavor.name, flavor.percent);
+                // Přidat řádek příchutě s typem a procentem
+                addProFlavorRow(flavor.type || 'fruit', flavor.percent || 10);
             });
         }
     }
+    // Aktualizovat limity
+    updateProVgPgLimits();
 }
 
 // Zobrazit formulář pro úpravu receptu
@@ -2905,7 +2913,7 @@ async function saveSharedRecipe() {
     }
 }
 
-// Přidat řádek se sdíleným produktem (read-only, označený jako cizí produkt)
+// Přidat řádek se sdíleným produktem (s tlačítkem pro odstranění)
 function addSharedProductRow(productId, productName, productType) {
     const listContainer = document.getElementById('selectedProductsList');
     if (!listContainer) return;
@@ -2932,8 +2940,17 @@ function addSharedProductRow(productId, productName, productType) {
             <span class="shared-product-badge">${t('shared_recipe.from_shared', 'ze sdíleného')}</span>
         </div>
         <input type="hidden" name="sharedProducts" value="${escapeHtml(productId)}">
+        <button type="button" class="remove-product-btn" onclick="removeSharedProductRow('${rowId}')" title="${t('common.remove', 'Odstranit')}">🗑️</button>
     `;
     listContainer.appendChild(row);
+}
+
+// Odstranit sdílený produkt z řádku (nepřevzít do svého receptu)
+function removeSharedProductRow(rowId) {
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.remove();
+    }
 }
 
 // ============================================
@@ -3164,7 +3181,16 @@ async function viewProductDetail(productId) {
         }
         
         currentViewingProduct = product;
-        displayProductDetail(product);
+        
+        // Načíst recepty, ve kterých je produkt použitý
+        let linkedRecipes = [];
+        try {
+            linkedRecipes = await window.LiquiMixerDB.getRecipesByProductId(window.Clerk.user.id, productId);
+        } catch (err) {
+            console.error('Error loading linked recipes:', err);
+        }
+        
+        displayProductDetail(product, linkedRecipes);
         showPage('product-detail');
         
     } catch (error) {
@@ -3174,7 +3200,7 @@ async function viewProductDetail(productId) {
 }
 
 // Zobrazit detail produktu v UI
-function displayProductDetail(product) {
+function displayProductDetail(product, linkedRecipes = []) {
     const titleEl = document.getElementById('productDetailTitle');
     const contentEl = document.getElementById('productDetailContent');
     
@@ -3210,6 +3236,30 @@ function displayProductDetail(product) {
         }
     }
     
+    // Seznam receptů, ve kterých je produkt použitý
+    let recipesHtml = '';
+    if (linkedRecipes && linkedRecipes.length > 0) {
+        const recipeItems = linkedRecipes.map(recipe => {
+            const recipeRating = Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5);
+            const recipeStars = '★'.repeat(recipeRating) + '☆'.repeat(5 - recipeRating);
+            return `
+                <div class="linked-recipe-item" onclick="viewRecipeDetail('${escapeHtml(recipe.id)}')">
+                    <span class="linked-recipe-name">${escapeHtml(recipe.name)}</span>
+                    <span class="linked-recipe-rating">${recipeStars}</span>
+                </div>
+            `;
+        }).join('');
+        
+        recipesHtml = `
+            <div class="product-linked-recipes">
+                <h4 class="product-section-title">${t('product_detail.used_in_recipes', 'Použito v receptech')}</h4>
+                <div class="linked-recipes-list">
+                    ${recipeItems}
+                </div>
+            </div>
+        `;
+    }
+    
     contentEl.innerHTML = `
         ${imageHtml}
         <div class="product-detail-header">
@@ -3220,6 +3270,7 @@ function displayProductDetail(product) {
             ${safeDescription ? `<p class="product-detail-description">${safeDescription}</p>` : ''}
         </div>
         ${urlHtml}
+        ${recipesHtml}
         <div class="product-meta-info">
             <p class="product-date">${t('product_detail.added', 'Přidáno')}: ${date}</p>
         </div>
@@ -7442,6 +7493,8 @@ window.editSavedRecipe = editSavedRecipe;
 window.deleteRecipe = deleteRecipe;
 window.shareRecipe = shareRecipe;
 window.shareProduct = shareProduct;
+window.showLoginForSharedRecipe = showLoginForSharedRecipe;
+window.removeSharedProductRow = removeSharedProductRow;
 window.addProductRow = addProductRow;
 window.removeProductRow = removeProductRow;
 window.filterProductOptions = filterProductOptions;
