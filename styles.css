@@ -4255,6 +4255,18 @@ body {
     box-shadow: 0 0 20px rgba(255, 0, 68, 0.5);
 }
 
+/* Disabled tab - v režimu editace nelze přepnout záložku */
+.form-tab.tab-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.form-tab.tab-disabled:hover {
+    background: var(--bg-input);
+    box-shadow: none;
+}
+
 /* Form content areas */
 .form-content {
     display: none;

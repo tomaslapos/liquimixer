@@ -285,8 +285,8 @@
     "reminder_no_steeping": "このフレーバーは熟成不要です。",
     "select_product": "-- 製品を選択 --",
     "search_product": "製品を検索...",
-    "products_linked": "Linked products",
-    "save_as_new": "SAVE AS NEW"
+    "products_linked": "リンクされた製品",
+    "save_as_new": "新規として保存"
   },
   "share": {
     "copied": "リンクがクリップボードにコピーされました！",
@@ -609,6 +609,6 @@
     "permission_prompt": "リキッドが熟成したら通知を受け取りますか？\n\n承認後、リキッドが準備できた日にリマインダーをお送りします。"
   },
   "calculator": {
-    "edit_values": "EDIT VALUES"
+    "edit_values": "値を編集"
   }
 }
