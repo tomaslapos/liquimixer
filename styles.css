@@ -3063,11 +3063,13 @@ body {
 /* Extra spacing for recipe pages */
 #recipe-detail .button-group,
 #shared-recipe .button-group,
+#shared-recipe-disclaimer .button-group,
 #shared-product-detail .button-group {
     margin-top: 40px;
 }
 
-#intro {
+#intro,
+#shared-recipe-disclaimer {
     text-align: center;
 }
 

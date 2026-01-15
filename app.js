@@ -2405,7 +2405,7 @@ function prefillLiquidForm(data) {
     if (data.nicotine !== undefined && data.nicotine > 0) {
         document.getElementById('nicotineType').value = 'booster';
         document.getElementById('targetNicotine').value = data.nicotine;
-        updateNicotineFields();
+        updateNicotineType();
     }
     if (data.flavorType && data.flavorType !== 'none') {
         document.getElementById('flavorType').value = data.flavorType;
@@ -2414,7 +2414,7 @@ function prefillLiquidForm(data) {
         if (flavorIng) {
             document.getElementById('flavorStrength').value = flavorIng.percent || 10;
         }
-        updateFlavorFields();
+        updateFlavorType();
     }
     updateVgPgRatioLimits();
 }
