@@ -2861,18 +2861,17 @@ function showSharedRecipeLoginPrompt() {
 }
 
 // Přihlášení pro sdílený recept - robustní handler
-function handleSharedRecipeLogin() {
+async function handleSharedRecipeLogin() {
     console.log('handleSharedRecipeLogin called');
     try {
-        showLoginModal();
+        console.log('showLoginModal: clerkLoaded=', clerkLoaded, 'Clerk=', !!window.Clerk);
+        await showLoginModal();
     } catch (e) {
         console.error('Error in handleSharedRecipeLogin:', e);
-        // Fallback - přímo mountnout Clerk
-        if (window.Clerk) {
-            const loginModal = document.getElementById('loginModal');
-            if (loginModal) {
-                loginModal.classList.remove('hidden');
-            }
+        // Fallback - přímo zobrazit modal
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.classList.remove('hidden');
         }
     }
 }
