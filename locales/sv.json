@@ -332,7 +332,8 @@
     "added": "Tillagd",
     "delete_confirm": "Är du säker på att du vill radera denna produkt?",
     "delete_success": "Produkten har raderats.",
-    "delete_error": "Fel vid radering av produkt."
+    "delete_error": "Fel vid radering av produkt.",
+    "used_in_recipes": "Används i recept"
   },
   "product_form": {
     "add_title": "Lägg till produkt",

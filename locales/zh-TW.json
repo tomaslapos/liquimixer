@@ -332,7 +332,8 @@
     "added": "新增時間",
     "delete_confirm": "您確定要刪除此產品嗎？",
     "delete_success": "產品已刪除。",
-    "delete_error": "刪除產品時出錯。"
+    "delete_error": "刪除產品時出錯。",
+    "used_in_recipes": "用於配方"
   },
   "product_form": {
     "add_title": "新增產品",

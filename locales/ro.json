@@ -332,7 +332,8 @@
     "added": "Adăugat",
     "delete_confirm": "Sigur doriți să ștergeți acest produs?",
     "delete_success": "Produsul a fost șters.",
-    "delete_error": "Eroare la ștergerea produsului."
+    "delete_error": "Eroare la ștergerea produsului.",
+    "used_in_recipes": "Folosit în rețete"
   },
   "product_form": {
     "add_title": "Adăugați produs",

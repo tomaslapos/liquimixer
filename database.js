@@ -972,6 +972,45 @@ async function getLinkedProductsByRecipeId(recipeId) {
     }
 }
 
+// Získat recepty, ve kterých je produkt použitý
+async function getRecipesByProductId(clerkId, productId) {
+    if (!supabaseClient || !clerkId || !productId) return [];
+    
+    if (!isValidUUID(productId)) {
+        console.error('Invalid product ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_products')
+            .select(`
+                recipe_id,
+                recipes (
+                    id,
+                    clerk_id,
+                    name,
+                    rating,
+                    created_at
+                )
+            `)
+            .eq('product_id', productId);
+        
+        if (error) {
+            console.error('Error fetching recipes by product id:', error);
+            return [];
+        }
+        
+        // Extrahovat recepty z výsledku a filtrovat pouze recepty vlastníka
+        return (data || [])
+            .map(item => item.recipes)
+            .filter(r => r !== null && r.clerk_id === clerkId);
+    } catch (err) {
+        console.error('Database error:', err);
+        return [];
+    }
+}
+
 // Získat produkt podle ID (bez ověření vlastníka - pro sdílené recepty, read-only)
 async function getProductByIdPublic(productId) {
     if (!supabaseClient || !productId) return null;
@@ -1314,6 +1353,7 @@ window.LiquiMixerDB = {
     linkProductsToRecipe: linkProductsToRecipe,
     getLinkedProducts: getLinkedProducts,
     getLinkedProductsByRecipeId: getLinkedProductsByRecipeId,
+    getRecipesByProductId: getRecipesByProductId,
     getProductByIdPublic: getProductByIdPublic,
     copyProductToUser: copyProductToUser,
     // Připomínky

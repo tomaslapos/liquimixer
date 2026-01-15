@@ -332,7 +332,8 @@
     "added": "추가됨",
     "delete_confirm": "이 제품을 삭제하시겠습니까?",
     "delete_success": "제품이 삭제되었습니다.",
-    "delete_error": "제품 삭제 오류."
+    "delete_error": "제품 삭제 오류.",
+    "used_in_recipes": "레시피에서 사용"
   },
   "product_form": {
     "add_title": "제품 추가",

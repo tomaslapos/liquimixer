@@ -332,7 +332,8 @@
     "added": "Dodano",
     "delete_confirm": "Czy na pewno chcesz usunąć ten produkt?",
     "delete_success": "Produkt został usunięty.",
-    "delete_error": "Błąd podczas usuwania produktu."
+    "delete_error": "Błąd podczas usuwania produktu.",
+    "used_in_recipes": "Używane w przepisach"
   },
   "product_form": {
     "add_title": "Dodaj produkt",

@@ -332,7 +332,8 @@
     "added": "Pievienots",
     "delete_confirm": "Vai tiešām vēlaties dzēst šo produktu?",
     "delete_success": "Produkts ir dzēsts.",
-    "delete_error": "Kļūda, dzēšot produktu."
+    "delete_error": "Kļūda, dzēšot produktu.",
+    "used_in_recipes": "Izmantots receptēs"
   },
   "product_form": {
     "add_title": "Pievienot produktu",

@@ -332,7 +332,8 @@
     "added": "Eklendi",
     "delete_confirm": "Bu ürünü silmek istediğinizden emin misiniz?",
     "delete_success": "Ürün silindi.",
-    "delete_error": "Ürün silinirken hata."
+    "delete_error": "Ürün silinirken hata.",
+    "used_in_recipes": "Tariflerde kullanılıyor"
   },
   "product_form": {
     "add_title": "Ürün Ekle",

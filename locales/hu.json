@@ -332,7 +332,8 @@
     "added": "Hozzáadva",
     "delete_confirm": "Biztosan törölni szeretnéd ezt a terméket?",
     "delete_success": "A termék törölve lett.",
-    "delete_error": "Hiba a termék törlésekor."
+    "delete_error": "Hiba a termék törlésekor.",
+    "used_in_recipes": "Receptekben használva"
   },
   "product_form": {
     "add_title": "Termék hozzáadása",

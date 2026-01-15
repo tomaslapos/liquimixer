@@ -332,7 +332,8 @@
     "added": "Lagt til",
     "delete_confirm": "Er du sikker på at du vil slette dette produktet?",
     "delete_success": "Produktet er slettet.",
-    "delete_error": "Feil ved sletting av produkt."
+    "delete_error": "Feil ved sletting av produkt.",
+    "used_in_recipes": "Brukt i oppskrifter"
   },
   "product_form": {
     "add_title": "Legg til produkt",

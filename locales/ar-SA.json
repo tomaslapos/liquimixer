@@ -333,7 +333,8 @@
     "added": "تمت الإضافة",
     "delete_confirm": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
     "delete_success": "تم حذف المنتج.",
-    "delete_error": "خطأ في حذف المنتج."
+    "delete_error": "خطأ في حذف المنتج.",
+    "used_in_recipes": "مستخدم في الوصفات"
   },
   "product_form": {
     "add_title": "إضافة منتج",

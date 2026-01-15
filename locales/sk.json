@@ -335,7 +335,8 @@
     "added": "Pridané",
     "delete_confirm": "Naozaj chcete zmazať tento produkt?",
     "delete_success": "Produkt bol zmazaný.",
-    "delete_error": "Chyba pri mazaní produktu."
+    "delete_error": "Chyba pri mazaní produktu.",
+    "used_in_recipes": "Použité v receptoch"
   },
   "product_form": {
     "add_title": "Pridať produkt",
