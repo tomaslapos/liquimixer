@@ -252,7 +252,7 @@
     "product_saved": "A termék mentve lett a kedvenceid közé!",
     "from_shared": "megosztottból",
     "view_recipe": "RECEPT MEGTEKINTÉSE",
-    "disclaimer_intro": "A Recept megtekintése gombra kattintva a felhasználó megerősíti, hogy legalább 18 éves.",
+    "disclaimer_intro": "A Recept megtekintése gombra kattintva a felhasználó megerősíti, hogy legalább 18 éves. A felhasználó elismeri, hogy a LiquiMixer e-liquid kalkulátorként működik, és nem vállal felelősséget a helyes keverésért, az összetevők adagolásáért és a biztonsági előírások betartásáért.",
     "pro_login_title": "Jelentkezz be a recept megtekintéséhez",
     "pro_login_text": "A Liquid PRO módban készített receptek csak bejelentkezett felhasználók számára érhetők el.",
     "login_button": "BEJELENTKEZÉS"

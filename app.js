@@ -1869,21 +1869,20 @@ async function saveRecipe(event) {
             
             if (!isEditing && sharedRecipeUUID) {
                 try {
-                    // Načíst propojené produkty z původního receptu pomocí UUID
-                    const originalProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(sharedRecipeUUID);
-                    console.log('[saveRecipe] Original products from shared recipe:', originalProducts);
+                    // Načíst produkty které zůstaly v DOM (uživatel je neodstranil)
+                    const sharedProductInputs = document.querySelectorAll('input[name="sharedProducts"]');
+                    const sharedProductIdsFromDOM = Array.from(sharedProductInputs).map(input => input.value);
+                    console.log('[saveRecipe] Shared products from DOM:', sharedProductIdsFromDOM);
                     
-                    // Zkopírovat každý produkt do účtu aktuálního uživatele
-                    if (originalProducts && originalProducts.length > 0) {
-                        for (const product of originalProducts) {
-                            // Ověřit, že produkt má ID
-                            const productId = product.id || product.product_id;
+                    // Zkopírovat pouze produkty které zůstaly v DOM
+                    if (sharedProductIdsFromDOM && sharedProductIdsFromDOM.length > 0) {
+                        for (const productId of sharedProductIdsFromDOM) {
                             if (!productId) {
-                                console.warn('[saveRecipe] Product missing ID:', product);
+                                console.warn('[saveRecipe] Product missing ID');
                                 continue;
                             }
                             
-                            console.log('[saveRecipe] Copying product:', productId, product.name);
+                            console.log('[saveRecipe] Copying product:', productId);
                             const copied = await window.LiquiMixerDB.copyProductToUser(productId, window.Clerk.user.id);
                             if (copied && copied.id) {
                                 console.log('[saveRecipe] Copied product new ID:', copied.id);
@@ -2819,7 +2818,7 @@ function showSharedRecipeLoginPrompt() {
             <div class="login-prompt-icon">🔒</div>
             <h3 class="login-prompt-title">${t('shared_recipe.pro_login_title', 'Pro zobrazení receptu se přihlaste')}</h3>
             <p class="login-prompt-text">${t('shared_recipe.pro_login_text', 'Recepty vytvářené v režimu Liquid PRO jsou dostupné jenom pro přihlášené uživatele.')}</p>
-            <button class="neon-button" onclick="window.showLoginForSharedRecipe?.()">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
+            <button class="neon-button" onclick="if(typeof window.showLoginForSharedRecipe==='function'){window.showLoginForSharedRecipe();}else{console.error('showLoginForSharedRecipe not defined');window.showLoginModal&&window.showLoginModal();}">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
         </div>
     `;
     
@@ -2974,7 +2973,7 @@ function addSharedProductRow(productId, productName, productType) {
             <span class="shared-product-badge">${t('shared_recipe.from_shared', 'ze sdíleného')}</span>
         </div>
         <input type="hidden" name="sharedProducts" value="${escapeHtml(productId)}">
-        <button type="button" class="remove-product-btn" onclick="removeSharedProductRow('${rowId}')" title="${t('common.remove', 'Odstranit')}">🗑️</button>
+        <button type="button" class="reminder-btn delete" onclick="removeSharedProductRow('${rowId}')" title="${t('common.remove', 'Odstranit')}">${reminderDeleteIcon}</button>
     `;
     listContainer.appendChild(row);
 }

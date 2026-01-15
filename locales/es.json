@@ -252,7 +252,7 @@
     "product_saved": "¡El producto ha sido guardado en tus favoritos!",
     "from_shared": "del compartido",
     "view_recipe": "VER RECETA",
-    "disclaimer_intro": "Al hacer clic en el boton Ver receta, el usuario confirma que tiene al menos 18 anos.",
+    "disclaimer_intro": "Al hacer clic en el botón Ver receta, el usuario confirma que tiene al menos 18 años. El usuario reconoce que LiquiMixer sirve como calculadora de e-liquid y no asume responsabilidad por la mezcla correcta, la dosificación de ingredientes y el cumplimiento de las normas de seguridad.",
     "pro_login_title": "Inicia sesión para ver la receta",
     "pro_login_text": "Las recetas creadas en modo Liquid PRO solo están disponibles para usuarios registrados.",
     "login_button": "INICIAR SESIÓN"

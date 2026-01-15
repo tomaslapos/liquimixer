@@ -252,7 +252,7 @@
     "product_saved": "Tuote on tallennettu suosikkeihisi!",
     "from_shared": "jaetusta",
     "view_recipe": "NÄYTÄ RESEPTI",
-    "disclaimer_intro": "Klikkaamalla Näytä resepti -painiketta käyttäjä vahvistaa olevansa vähintään 18-vuotias.",
+    "disclaimer_intro": "Klikkaamalla Näytä resepti -painiketta käyttäjä vahvistaa olevansa vähintään 18-vuotias. Käyttäjä hyväksyy, että LiquiMixer toimii e-nestelaskurina eikä ota vastuuta oikeasta sekoituksesta, ainesosien annostelusta ja turvallisuusmääräysten noudattamisesta.",
     "pro_login_title": "Kirjaudu sisään nähdäksesi reseptin",
     "pro_login_text": "Liquid PRO -tilassa luodut reseptit ovat saatavilla vain kirjautuneille käyttäjille.",
     "login_button": "KIRJAUDU SISÄÄN"
