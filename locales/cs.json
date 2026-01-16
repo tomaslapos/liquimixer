@@ -316,6 +316,7 @@
     "login_required": "Pro uložení produktu se prosím přihlaste.",
     "name_required": "Název produktu je povinný.",
     "type_required": "Vyberte typ produktu.",
+    "type_locked": "Typ produktu nelze změnit po vytvoření",
     "image_format": "Povolené formáty: JPEG, PNG, WebP, GIF",
     "image_size": "Maximální velikost obrázku je 5MB.",
     "camera_error": "Váš prohlížeč nepodporuje přístup ke kameře."

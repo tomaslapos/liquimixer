@@ -361,6 +361,7 @@
     "login_required": "Please sign in to save the product.",
     "name_required": "Product name is required.",
     "type_required": "Please select a product type.",
+    "type_locked": "Product type cannot be changed after creation",
     "image_format": "Allowed formats: JPEG, PNG, WebP, GIF",
     "image_size": "Maximum image size is 5MB.",
     "camera_error": "Your browser does not support camera access."

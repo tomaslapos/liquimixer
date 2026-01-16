@@ -361,6 +361,7 @@
     "login_required": "Bitte melden Sie sich an, um das Produkt zu speichern.",
     "name_required": "Produktname ist erforderlich.",
     "type_required": "Bitte wählen Sie einen Produkttyp.",
+    "type_locked": "Der Produkttyp kann nach der Erstellung nicht geändert werden",
     "image_format": "Erlaubte Formate: JPEG, PNG, WebP, GIF",
     "image_size": "Maximale Bildgröße ist 5MB.",
     "camera_error": "Ihr Browser unterstützt keinen Kamerazugriff."

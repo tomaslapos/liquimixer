@@ -1,0 +1,45 @@
+{
+  "$schema": "https://zeabur.com/schema.json",
+  "build_type": "static",
+  "output_dir": "./",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "geolocation=(), microphone=(), camera=(), payment=()",
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
+      "src": "/sw.js",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Service-Worker-Allowed": "/"
+      }
+    },
+    {
+      "src": "/(.*\\.js)",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
+      "src": "/(.*\\.css)",
+      "headers": {
+        "Cache-Control": "public, max-age=604800"
+      }
+    },
+    {
+      "src": "/icons/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=2592000"
+      }
+    }
+  ]
+}
+

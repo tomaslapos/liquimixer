@@ -5608,6 +5608,14 @@ body.subscription-required #loginRequiredModal {
     pointer-events: none !important;
 }
 
+/* VÝJIMKA: Při přihlášení ze sdíleného receptu zobrazit loginModal */
+body.login-for-shared-recipe #loginModal {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
 /* Subscription modal MUSÍ být viditelný když je body.subscription-required */
 body.subscription-required #subscriptionModal {
     display: flex !important;

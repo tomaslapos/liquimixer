@@ -249,6 +249,18 @@ function generateShareId() {
     return result;
 }
 
+// Generovat unikátní product_code
+// Tento kód se používá pro deduplikaci produktů při sdílení receptů
+// Kód zůstává stejný i po zkopírování produktu jinému uživateli
+function generateProductCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
 // Sanitizace textového vstupu (ochrana proti XSS)
 function sanitizeInput(input) {
     if (typeof input !== 'string') return input;
@@ -579,6 +591,10 @@ async function saveFavoriteProduct(clerkId, product) {
     const shareId = generateShareId();
     const shareUrl = `${SHARE_BASE_URL}/?product=${shareId}`;
     
+    // Generování product_code pro deduplikaci při sdílení
+    // Pokud produkt již má product_code (kopírovaný produkt), použít ho
+    const productCode = product.product_code || generateProductCode();
+    
     const productData = {
         clerk_id: clerkId,
         name: sanitizeInput(product.name) || 'Bez názvu',
@@ -589,6 +605,7 @@ async function saveFavoriteProduct(clerkId, product) {
         product_url: sanitizeInput(product.product_url) || '',
         share_id: shareId,
         share_url: shareUrl,
+        product_code: productCode,
         created_at: new Date().toISOString()
     };
     
@@ -713,6 +730,42 @@ async function getFavoriteProductById(clerkId, productId) {
         }
         
         return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
+// Získat produkt podle product_code (pro deduplikaci při sdílení)
+// Vrací produkt pokud uživatel již má produkt se stejným kódem
+async function getProductByCode(clerkId, productCode) {
+    if (!supabaseClient || !clerkId || !productCode) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace product_code formátu (12 znaků, alfanumerické)
+    if (!/^[A-Z0-9]{12}$/.test(productCode)) {
+        console.error('Invalid product_code format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .eq('product_code', productCode)
+            .single();
+        
+        if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+            console.error('Error fetching product by code:', error);
+            return null;
+        }
+        
+        return data || null;
     } catch (err) {
         console.error('Database error:', err);
         return null;
@@ -1057,7 +1110,21 @@ async function copyProductToUser(productId, targetClerkId) {
         const original = await getProductByIdPublic(productId);
         if (!original) return null;
         
+        // DEDUPLIKACE: Zkontrolovat zda cílový uživatel již nemá produkt se stejným product_code
+        if (original.product_code) {
+            const existingProduct = await getProductByCode(targetClerkId, original.product_code);
+            if (existingProduct) {
+                console.log(`[copyProductToUser] Produkt se stejným kódem ${original.product_code} již existuje, použiji existující ID: ${existingProduct.id}`);
+                return existingProduct; // Vrátit existující produkt místo vytvoření nového
+            }
+        }
+        
+        // Generovat nový share_id a share_url pro kopii
+        const newShareId = generateShareId();
+        const newShareUrl = `${SHARE_BASE_URL}/?product=${newShareId}`;
+        
         // Vytvořit kopii pro nového uživatele
+        // DŮLEŽITÉ: Zachovat product_code z originálu pro budoucí deduplikaci
         const copyData = {
             clerk_id: targetClerkId,
             name: original.name,
@@ -1065,7 +1132,11 @@ async function copyProductToUser(productId, targetClerkId) {
             description: original.description || '',
             rating: original.rating || 0,
             product_url: original.product_url || '',
-            image_url: original.image_url || ''
+            image_url: original.image_url || '',
+            product_code: original.product_code || generateProductCode(), // Zachovat nebo vygenerovat nový
+            share_id: newShareId,
+            share_url: newShareUrl,
+            created_at: new Date().toISOString()
         };
         
         const { data, error } = await supabaseClient
@@ -1079,6 +1150,7 @@ async function copyProductToUser(productId, targetClerkId) {
             return null;
         }
         
+        console.log(`[copyProductToUser] Nový produkt vytvořen s ID: ${data.id}, product_code: ${data.product_code}`);
         return data;
     } catch (err) {
         console.error('Database error:', err);
@@ -1347,6 +1419,7 @@ window.LiquiMixerDB = {
     getProducts: getFavoriteProducts,
     getProductById: getFavoriteProductById,
     getProductByShareId: getProductByShareId,
+    getProductByCode: getProductByCode,
     deleteProduct: deleteFavoriteProduct,
     uploadProductImage: uploadProductImage,
     // Propojení produktů s recepty
