@@ -191,6 +191,10 @@ serve(async (req) => {
         // Získat směnný kurz z ČNB pro cizí měny
         const exchangeRate = currency !== 'CZK' ? await getCnbExchangeRate(currency) : 1
 
+        // VariableSymbol pro iDoklad - max 10 číslic
+        // orderNumber z GP WebPay má 15 číslic, použijeme posledních 10 pro párování v účetnictví
+        const variableSymbol = orderNumber ? orderNumber.slice(-10) : ''
+
         const invoiceData: any = {
           Description: invoiceDescription,
           DateOfIssue: today,
@@ -221,8 +225,8 @@ serve(async (req) => {
             IsTaxMovement: false,
           }],
           Note: invoiceNote,
-          OrderNumber: orderNumber || '',
-          VariableSymbol: orderNumber || '', // Číslo platby z GPWebPay pro párování v účetnictví
+          OrderNumber: orderNumber || '',           // Celých 15 číslic pro interní evidenci
+          VariableSymbol: variableSymbol,           // Posledních 10 číslic pro párování v účetnictví
         }
 
         // Přidat NumericSequenceId a DocumentSerialNumber z default nastavení
