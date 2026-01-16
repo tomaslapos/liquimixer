@@ -8,15 +8,15 @@
     <!-- ============================================ -->
     <url>
         <loc>https://www.liquimixer.com/</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
         
         <!-- Obrázky pro image search -->
         <image:image>
             <image:loc>https://www.liquimixer.com/icons/og-image.png</image:loc>
-            <image:title>LiquiMixer - E-liquid Kalkulátor</image:title>
-            <image:caption>Profesionální kalkulátor pro míchání e-liquidů s výpočtem nikotinu, PG/VG a příchutí</image:caption>
+            <image:title>LiquiMixer - E-liquid Kalkulátor s Liquid PRO režimem</image:title>
+            <image:caption>Profesionální kalkulátor pro míchání e-liquidů s výpočtem nikotinu, PG/VG a příchutí. Sdílení receptů, oblíbené produkty, připomínky zrání.</image:caption>
         </image:image>
         <image:image>
             <image:loc>https://www.liquimixer.com/icons/icon-512.png</image:loc>
@@ -79,7 +79,7 @@
     <!-- Česká verze - domácí trh -->
     <url>
         <loc>https://www.liquimixer.com/?lang=cs</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -87,7 +87,7 @@
     <!-- Slovenská verze - domácí trh -->
     <url>
         <loc>https://www.liquimixer.com/?lang=sk</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -95,7 +95,7 @@
     <!-- Anglická verze - globální dosah -->
     <url>
         <loc>https://www.liquimixer.com/?lang=en</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -103,7 +103,7 @@
     <!-- Německá verze - 83M populace, silný vape trh -->
     <url>
         <loc>https://www.liquimixer.com/?lang=de</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -111,7 +111,7 @@
     <!-- Francouzská verze - 67M populace, velký EU trh -->
     <url>
         <loc>https://www.liquimixer.com/?lang=fr</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -119,7 +119,7 @@
     <!-- Portugalská verze - PT (10M) + Brazílie (215M) + africké země -->
     <url>
         <loc>https://www.liquimixer.com/?lang=pt</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -132,7 +132,7 @@
     <!-- Španělská verze - ES (47M) + Latinská Amerika (400M+) -->
     <url>
         <loc>https://www.liquimixer.com/?lang=es</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
     </url>
@@ -140,7 +140,7 @@
     <!-- Polská verze - 38M, sousední trh -->
     <url>
         <loc>https://www.liquimixer.com/?lang=pl</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
     </url>
@@ -148,7 +148,7 @@
     <!-- Italská verze - 60M populace -->
     <url>
         <loc>https://www.liquimixer.com/?lang=it</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
     </url>
@@ -156,7 +156,7 @@
     <!-- Holandská verze - NL (17M) + Belgie (část) -->
     <url>
         <loc>https://www.liquimixer.com/?lang=nl</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
     </url>
@@ -169,7 +169,7 @@
     <!-- Ruská verze - velký trh, ale omezený přístup -->
     <url>
         <loc>https://www.liquimixer.com/?lang=ru</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -177,7 +177,7 @@
     <!-- Ukrajinská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=uk</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -185,7 +185,7 @@
     <!-- Maďarská verze - sousední trh -->
     <url>
         <loc>https://www.liquimixer.com/?lang=hu</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -193,7 +193,7 @@
     <!-- Rumunská verze - 19M -->
     <url>
         <loc>https://www.liquimixer.com/?lang=ro</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -201,7 +201,7 @@
     <!-- Turecká verze - 85M populace -->
     <url>
         <loc>https://www.liquimixer.com/?lang=tr</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -209,7 +209,7 @@
     <!-- Řecká verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=el</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -222,7 +222,7 @@
     <!-- Bulharská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=bg</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -230,7 +230,7 @@
     <!-- Chorvatská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=hr</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -238,7 +238,7 @@
     <!-- Srbská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=sr</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -246,7 +246,7 @@
     <!-- Švédská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=sv</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -254,7 +254,7 @@
     <!-- Norská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=no</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -262,7 +262,7 @@
     <!-- Dánská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=da</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -270,7 +270,7 @@
     <!-- Finská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=fi</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.65</priority>
     </url>
@@ -283,7 +283,7 @@
     <!-- Estonská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=et</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -291,7 +291,7 @@
     <!-- Lotyšská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=lv</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -299,7 +299,7 @@
     <!-- Litevská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=lt</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -307,7 +307,7 @@
     <!-- Arabská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=ar</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -315,7 +315,7 @@
     <!-- Japonská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=ja</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -323,7 +323,7 @@
     <!-- Korejská verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=ko</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -331,7 +331,7 @@
     <!-- Čínská (zjednodušená) verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=zh-CN</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -339,7 +339,7 @@
     <!-- Čínská (tradiční) verze -->
     <url>
         <loc>https://www.liquimixer.com/?lang=zh-TW</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -349,7 +349,7 @@
     <!-- ============================================ -->
     <url>
         <loc>https://www.liquimixer.com/llms.txt</loc>
-        <lastmod>2026-01-05</lastmod>
+        <lastmod>2026-01-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
     </url>

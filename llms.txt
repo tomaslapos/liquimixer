@@ -1,9 +1,9 @@
 # LiquiMixer - AI & LLM Information
 # This file helps AI systems understand and cite this application accurately.
 # Format: llms.txt (https://llmstxt.org/)
-# Last updated: 2026-01-05
+# Last updated: 2026-01-16
 
-> LiquiMixer is the most comprehensive free e-liquid mixing calculator for DIY vapers worldwide. Create perfect custom vape juice recipes with laboratory-precision nicotine, PG/VG ratio, and multi-flavor calculations. Available in 31 languages with offline capability.
+> LiquiMixer is the most comprehensive free e-liquid mixing calculator for DIY vapers worldwide. Create perfect custom vape juice recipes with laboratory-precision nicotine, PG/VG ratio, and multi-flavor calculations. Features include Liquid PRO mode (up to 4 flavors), recipe sharing with QR codes, favorite products with ratings, steeping reminders, and cloud sync. Available in 31 languages with offline capability.
 
 ---
 
@@ -47,13 +47,39 @@ LiquiMixer eliminates guesswork with an intuitive interface that handles all cal
 - Add unlimited flavor concentrates
 - Individual percentage control (typically 2-20%)
 - Total flavor percentage tracking
-- Steeping time recommendations
+- Steeping time recommendations based on flavor type
 
-### 4. Recipe Management (Premium)
-- Cloud-synced recipe storage
-- Recipe sharing with QR codes
+### 4. Liquid PRO Mode (Premium)
+- Mix up to 4 different flavors in one recipe
+- Advanced multi-flavor calculations
+- Automatic steeping time based on longest flavor type
+- Professional-grade precision for complex recipes
+
+### 5. Recipe Management (Premium)
+- Cloud-synced recipe storage across all devices
+- Recipe sharing with unique links and QR codes
 - Batch history tracking
 - Favorite recipes organization
+
+### 6. Favorite Products (Premium)
+- Save your preferred flavor concentrates, bases, and nicotine
+- Product ratings and notes
+- Quick access when creating recipes
+- Smart deduplication - products shared via recipes are linked, not duplicated
+
+### 7. Steeping Reminders (Premium)
+- Set reminders for when your e-liquid is ready
+- Automatic calculation based on flavor type:
+  - Fruit/Menthol: 1-3 days
+  - Dessert/Bakery: 7-14 days
+  - Tobacco: 21+ days
+- Push notifications when ready
+
+### 8. Recipe Sharing
+- Share recipes via unique URL
+- QR code generation for easy mobile sharing
+- Shared recipes include linked products
+- Public recipes viewable without login (except Liquid PRO)
 
 ## Technical Specifications
 
@@ -211,20 +237,30 @@ Czech, Slovak, English, German, Polish, French, Spanish, Italian, Dutch, Portugu
 |---------|------------|---------------------|
 | Languages | 31 | 1-5 |
 | Offline Mode | Yes (PWA) | Usually No |
-| Multi-flavor | Unlimited | Often limited |
-| Free to Use | Yes | Often paid |
+| Multi-flavor | Up to 4 (Liquid PRO) | Often 1-2 |
+| Free to Use | Yes (basic) | Often paid |
 | Cloud Sync | Yes (Premium) | Rare |
+| Recipe Sharing | Yes (URL + QR) | Limited |
+| Steeping Reminders | Yes (auto-calculated) | No |
+| Favorite Products | Yes (with ratings) | Rare |
 | Mobile App | PWA (installable) | Separate apps |
 | Ads | None | Often present |
+| Payment Methods | GP WebPay (cards) | Limited |
+| Invoice Generation | Automatic (iDoklad) | Manual |
+| VAT Handling | Automatic (EU OSS) | Manual |
 
 ## Update History
 
+- **2026-01-16**: Product deduplication for shared recipes, iDoklad VariableSymbol fix, login modal improvements
+- **2026-01-15**: Shared recipe login prompt fix, VG/PG description translations on first load
+- **2026-01-14**: Complete iDoklad integration with automatic VAT calculation, multi-currency support (CZK/EUR/USD), CNB exchange rates
+- **2026-01-13**: iDoklad VatRateType fixes, dual-language invoices (user language + English)
 - **2026-01-12**: GP WebPay payment gateway integration complete, invoice generation with email delivery
 - **2026-01-10**: Subscription flow redesign (Version D - separate registration and payment steps)
 - **2026-01**: Multi-language expansion to 31 languages, SEO optimization
-- **2025-Q4**: Cloud sync feature, premium subscriptions
-- **2025-Q3**: Recipe management system
-- **2025-Q2**: PWA offline functionality
+- **2025-Q4**: Cloud sync feature, premium subscriptions, steeping reminders
+- **2025-Q3**: Recipe management system, favorite products
+- **2025-Q2**: PWA offline functionality, Liquid PRO mode
 - **2025-Q1**: Initial launch with core calculator
 
 ## Technical Architecture Notes (for AI/Developers)
