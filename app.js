@@ -1034,6 +1034,8 @@ function hideLoginModal() {
             signInDiv._clerkMode = null;
         }
     }
+    // Odstranit speciální třídu pro přihlášení ze sdíleného receptu
+    document.body.classList.remove('login-for-shared-recipe');
 }
 
 // Zavřít modal tlačítkem X
@@ -2865,26 +2867,35 @@ async function handleSharedRecipeLogin() {
     console.log('handleSharedRecipeLogin called');
     try {
         console.log('showLoginModal: clerkLoaded=', clerkLoaded, 'Clerk=', !!window.Clerk);
+        console.log('body classes before:', document.body.className);
         
         // Odstranit subscription-required třídu, aby loginModal nebyl CSS skrytý
         document.body.classList.remove('subscription-required');
         
+        // Přidat speciální třídu pro přihlášení ze sdíleného receptu
+        // Tato třída přebije CSS pravidla která skrývají loginModal
+        document.body.classList.add('login-for-shared-recipe');
+        
+        console.log('body classes after:', document.body.className);
+        
         // Reset inline stylů pro jistotu
         const loginModal = document.getElementById('loginModal');
         if (loginModal) {
-            loginModal.style.display = '';
-            loginModal.style.visibility = '';
-            loginModal.style.opacity = '';
+            console.log('loginModal found, removing hidden class');
+            loginModal.style.cssText = ''; // Vymazat všechny inline styly
+            loginModal.classList.remove('hidden');
         }
         
         await showLoginModal();
+        console.log('showLoginModal completed');
     } catch (e) {
         console.error('Error in handleSharedRecipeLogin:', e);
         // Fallback - přímo zobrazit modal
         const loginModal = document.getElementById('loginModal');
         if (loginModal) {
             document.body.classList.remove('subscription-required');
-            loginModal.style.display = '';
+            document.body.classList.add('login-for-shared-recipe');
+            loginModal.style.cssText = '';
             loginModal.classList.remove('hidden');
         }
     }
@@ -3534,7 +3545,7 @@ function showAddProductForm() {
         return;
     }
     
-    document.getElementById('productFormTitle').textContent = 'Přidat produkt';
+    document.getElementById('productFormTitle').textContent = t('product_form.add_title', 'Přidat produkt');
     document.getElementById('editingProductId').value = '';
     document.getElementById('productName').value = '';
     document.getElementById('productType').value = '';
@@ -3543,6 +3554,13 @@ function showAddProductForm() {
     document.getElementById('productUrl').value = '';
     document.getElementById('productImageUrl').value = '';
     document.getElementById('productImagePreview').innerHTML = '<span class="image-placeholder">📷</span>';
+    
+    // Povolit výběr typu produktu při přidávání nového
+    const productTypeSelect = document.getElementById('productType');
+    if (productTypeSelect) {
+        productTypeSelect.disabled = false;
+        productTypeSelect.title = '';
+    }
     
     selectedProductRating = 0;
     updateProductStarDisplay(0);
@@ -3555,7 +3573,7 @@ function showAddProductForm() {
 function editProduct() {
     if (!currentViewingProduct) return;
     
-    document.getElementById('productFormTitle').textContent = 'Upravit produkt';
+    document.getElementById('productFormTitle').textContent = t('product_form.edit_title', 'Upravit produkt');
     document.getElementById('editingProductId').value = currentViewingProduct.id;
     document.getElementById('productName').value = currentViewingProduct.name || '';
     document.getElementById('productType').value = currentViewingProduct.product_type || 'flavor';
@@ -3568,6 +3586,14 @@ function editProduct() {
         document.getElementById('productImagePreview').innerHTML = `<img src="${escapeHtml(currentViewingProduct.image_url)}" alt="Preview">`;
     } else {
         document.getElementById('productImagePreview').innerHTML = '<span class="image-placeholder">📷</span>';
+    }
+    
+    // Zakázat změnu typu produktu při editaci
+    // Typ produktu se nesmí měnit, aby zůstal konzistentní s product_code při sdílení
+    const productTypeSelect = document.getElementById('productType');
+    if (productTypeSelect) {
+        productTypeSelect.disabled = true;
+        productTypeSelect.title = t('product_form.type_locked', 'Typ produktu nelze změnit po vytvoření');
     }
     
     selectedProductRating = currentViewingProduct.rating || 0;
