@@ -746,9 +746,10 @@ async function getProductByCode(clerkId, productCode) {
         return null;
     }
     
-    // Validace product_code formátu (12 znaků, alfanumerické)
-    if (!/^[A-Z0-9]{12}$/.test(productCode)) {
-        console.error('Invalid product_code format');
+    // Validace product_code formátu (12 znaků, alfanumerické - velká i malá písmena)
+    // SQL migrace používá UPPER(SUBSTRING(REPLACE(id::text, '-', ''), 1, 12)) což jsou HEX znaky
+    if (!/^[A-Za-z0-9]{12}$/.test(productCode)) {
+        console.error('Invalid product_code format:', productCode);
         return null;
     }
     

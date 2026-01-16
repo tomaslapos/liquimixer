@@ -2862,43 +2862,11 @@ function showSharedRecipeLoginPrompt() {
     showPage('shared-recipe');
 }
 
-// Přihlášení pro sdílený recept - robustní handler
-async function handleSharedRecipeLogin() {
+// Přihlášení pro sdílený recept - používá stejný modal jako "Uložit k sobě"
+function handleSharedRecipeLogin() {
     console.log('handleSharedRecipeLogin called');
-    try {
-        console.log('showLoginModal: clerkLoaded=', clerkLoaded, 'Clerk=', !!window.Clerk);
-        console.log('body classes before:', document.body.className);
-        
-        // Odstranit subscription-required třídu, aby loginModal nebyl CSS skrytý
-        document.body.classList.remove('subscription-required');
-        
-        // Přidat speciální třídu pro přihlášení ze sdíleného receptu
-        // Tato třída přebije CSS pravidla která skrývají loginModal
-        document.body.classList.add('login-for-shared-recipe');
-        
-        console.log('body classes after:', document.body.className);
-        
-        // Reset inline stylů pro jistotu
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) {
-            console.log('loginModal found, removing hidden class');
-            loginModal.style.cssText = ''; // Vymazat všechny inline styly
-            loginModal.classList.remove('hidden');
-        }
-        
-        await showLoginModal();
-        console.log('showLoginModal completed');
-    } catch (e) {
-        console.error('Error in handleSharedRecipeLogin:', e);
-        // Fallback - přímo zobrazit modal
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) {
-            document.body.classList.remove('subscription-required');
-            document.body.classList.add('login-for-shared-recipe');
-            loginModal.style.cssText = '';
-            loginModal.classList.remove('hidden');
-        }
-    }
+    // Použít showLoginRequiredModal - stejný jako tlačítko "Uložit k sobě" které funguje
+    showLoginRequiredModal();
 }
 
 // Legacy alias pro zpětnou kompatibilitu
