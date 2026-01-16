@@ -419,8 +419,8 @@ body {
 .page {
     display: none;
     animation: fadeIn 0.5s ease-out;
-    /* Odskok od fixed navigace - tlačítka mají výšku cca 44px + 15px top + 15px mezera */
-    padding-top: 75px;
+    /* Odskok od fixed navigace */
+    padding-top: 68px;
 }
 
 .page.active {
