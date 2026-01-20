@@ -607,7 +607,7 @@ body {
     gap: 8px;
     padding: 10px 16px;
     background: rgba(0, 0, 0, 0.7);
-    border: 1px solid var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
     border-radius: var(--border-radius-small);
     color: var(--text-color);
     font-family: var(--font-primary);
@@ -1213,7 +1213,7 @@ body {
     justify-content: center;
     padding: 14px 20px;
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    border: 2px solid rgba(0, 255, 255, 0.3);
     border-radius: var(--border-radius-small);
     color: var(--neon-cyan);
     font-size: 0.95rem;
@@ -2811,7 +2811,7 @@ body {
     font-weight: 700;
     color: var(--neon-cyan);
     background: transparent;
-    border: 3px solid var(--neon-cyan);
+    border: 6px solid var(--neon-cyan);
     border-radius: 50px;
     padding: 15px 30px;
     text-transform: uppercase;
@@ -3078,7 +3078,7 @@ body {
     font-weight: 700;
     color: var(--neon-pink);
     background: transparent;
-    border: 3px solid var(--neon-pink);
+    border: 6px solid var(--neon-pink);
     border-radius: 50px;
     cursor: pointer;
     position: relative;
@@ -4028,7 +4028,7 @@ body {
     align-items: center;
     padding: 35px 30px;
     background: var(--bg-card);
-    border: 3px solid;
+    border: 6px solid;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -5534,7 +5534,7 @@ body {
 
 .auth-choice-btn.login-existing-btn {
     background: transparent;
-    border: 2px solid var(--neon-cyan);
+    border: 4px solid var(--neon-cyan);
     color: var(--neon-cyan);
 }
 
