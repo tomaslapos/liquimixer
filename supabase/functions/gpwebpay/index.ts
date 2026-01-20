@@ -53,7 +53,6 @@ const BASE_URL = Deno.env.get('APP_BASE_URL') || 'https://www.liquimixer.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 
 // URL pro callback od GP WebPay (GET/POST zpět na naši funkci)
-// Edge Function je nasazena s --no-verify-jwt, takže nepotřebuje apikey
 const CALLBACK_URL = `${SUPABASE_URL}/functions/v1/gpwebpay`
 
 // URL pro přesměrování uživatele po platbě
@@ -67,43 +66,50 @@ const SUBSCRIPTION_DURATION_DAYS = 365
 // RSA PODPIS A OVĚŘENÍ (Node.js crypto)
 // ============================================
 
-// Podepsat data pomocí RSA-SHA1 s nešifrovaným PKCS#8 klíčem
-async function signData(data: string, privateKeyPem: string): Promise<string> {
-  console.log('Signing data:', data.substring(0, 100) + '...')
-  console.log('Private key length:', privateKeyPem.length)
-  console.log('Private key starts with:', privateKeyPem.substring(0, 50))
-  
+// Podepsat data pomocí RSA-SHA1 (podporuje šifrované i nešifrované klíče)
+async function signData(data: string, privateKeyPem: string, passphrase?: string): Promise<string> {
   try {
-    // Použít Node.js crypto modul (podporovaný v Deno)
-    const { createSign } = await import('node:crypto')
+    const { createSign, createPrivateKey } = await import('node:crypto')
+    
+    let privateKey: any
+    
+    // Podpora pro šifrované klíče - nejprve dešifrovat pomocí createPrivateKey
+    if (passphrase && privateKeyPem.includes('ENCRYPTED')) {
+      try {
+        privateKey = createPrivateKey({
+          key: privateKeyPem,
+          passphrase: passphrase,
+          format: 'pem'
+        })
+      } catch (decryptError: any) {
+        console.error('Failed to decrypt private key:', decryptError.message)
+        throw new Error(`Failed to decrypt private key: ${decryptError.message}`)
+      }
+    } else {
+      privateKey = privateKeyPem
+    }
     
     const sign = createSign('RSA-SHA1')
     sign.update(data)
-    const signature = sign.sign(privateKeyPem, 'base64')
+    const signature = sign.sign(privateKey, 'base64')
     
-    console.log('Signature generated successfully, length:', signature.length)
     return signature
     
   } catch (error: any) {
-    console.error('Signing error:', error.message, error.stack)
+    console.error('Signing error:', error.message)
     throw new Error(`Failed to sign data: ${error.message}`)
   }
 }
 
 // Ověřit podpis odpovědi od GP WebPay
 async function verifySignature(data: string, signatureBase64: string, publicKeyPem: string): Promise<boolean> {
-  console.log('Verifying signature for data:', data.substring(0, 100) + '...')
-  
   try {
     const { createVerify } = await import('node:crypto')
     
     const verify = createVerify('RSA-SHA1')
     verify.update(data)
     
-    const isValid = verify.verify(publicKeyPem, signatureBase64, 'base64')
-    
-    console.log('Signature verification result:', isValid)
-    return isValid
+    return verify.verify(publicKeyPem, signatureBase64, 'base64')
     
   } catch (error) {
     console.error('Signature verification error:', error)
@@ -229,13 +235,10 @@ serve(async (req) => {
       // Funkce pro čištění hodnoty - odstranit VŠECHNY whitespace a speciální znaky
       const cleanValue = (val: any): string => {
         const str = String(val || '')
-        // Odstranit všechny whitespace, newlines, tabs, carriage returns
-        const cleaned = str.replace(/[\s\r\n\t\u0000-\u001F\u007F-\u009F]+/g, '')
-        console.log(`cleanValue: "${str}" (len=${str.length}) -> "${cleaned}" (len=${cleaned.length})`)
-        return cleaned
+        return str.replace(/[\s\r\n\t\u0000-\u001F\u007F-\u009F]+/g, '')
       }
       
-      // Parsovat parametry z URL nebo POST body - AGRESIVNĚ ČISTIT!
+      // Parsovat parametry z URL nebo POST body
       if (req.method === 'GET') {
         url.searchParams.forEach((value, key) => {
           data[key] = cleanValue(value)
@@ -252,7 +255,6 @@ serve(async (req) => {
           })
         }
       }
-      console.log('Parsed callback data (cleaned):', JSON.stringify(data))
     } else {
       // Standardní JSON API volání
       const body = await req.json()
@@ -312,18 +314,15 @@ serve(async (req) => {
           .single()
 
         if (subError || !subscription) {
-          console.error('Subscription lookup error:', subError, 'subscriptionId:', data.subscriptionId, 'clerkId:', clerkId)
+          console.error('Subscription lookup error:', subError?.message)
           await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { subscriptionId: data.subscriptionId }, false, 'Subscription not found', req)
           return new Response(
             JSON.stringify({ error: 'Subscription not found or already paid', details: subError?.message, subscriptionId: data.subscriptionId }),
             { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
-        
-        console.log('Found subscription:', subscription.id, 'amount:', subscription.total_amount, 'currency:', subscription.currency)
 
         // 5. Hledat existující pending platbu pro tuto subscription
-        // Tím zabráníme vytváření duplicitních plateb při opakovaných pokusech
         const { data: existingPayment } = await supabaseAdmin
           .from('payments')
           .select('*')
@@ -337,19 +336,14 @@ serve(async (req) => {
         let orderNumber: string
 
         if (existingPayment) {
-          // Použít existující pending platbu
-          console.log('Using existing pending payment:', existingPayment.id, 'order_number:', existingPayment.order_number)
           payment = existingPayment
           orderNumber = existingPayment.order_number
         } else {
           // Vytvořit novou platbu
-          // Generovat číslo objednávky (max 15 znaků pro GP WebPay)
-          // DŮLEŽITÉ: ORDERNUMBER musí být POUZE NUMERICKÝ (čísla), max 15 znaků!
-          const timestamp = Date.now().toString().slice(-10) // 10 číslic z timestampu
-          const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0') // 5 náhodných číslic
-          orderNumber = `${timestamp}${random}`.substring(0, 15) // max 15 číslic
-          
-          console.log('Creating new payment with order_number:', orderNumber)
+          // ORDERNUMBER musí být POUZE NUMERICKÝ (čísla), max 15 znaků!
+          const timestamp = Date.now().toString().slice(-10)
+          const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0')
+          orderNumber = `${timestamp}${random}`.substring(0, 15)
 
           const { data: newPayment, error: payError } = await supabaseAdmin
             .from('payments')
@@ -367,7 +361,7 @@ serve(async (req) => {
             .single()
 
           if (payError) {
-            console.error('Payment insert error:', payError)
+            console.error('Payment insert error:', payError.message)
             await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { error: payError.message }, false, payError.message, req)
             return new Response(
               JSON.stringify({ error: 'Failed to create payment', details: payError.message, code: payError.code }),
@@ -385,11 +379,9 @@ serve(async (req) => {
           .eq('clerk_id', clerkId)
           .single()
 
-        // 8. Připravit parametry pro GP WebPay
-        // Částka v haléřích/centech (nejmenší jednotka měny)
+        // 7. Připravit parametry pro GP WebPay
         const amountInSmallestUnit = Math.round(subscription.total_amount * 100)
         
-        // ISO 4217 číselné kódy měn
         const currencyCodes: Record<string, string> = {
           'CZK': '203',
           'EUR': '978',
@@ -397,18 +389,10 @@ serve(async (req) => {
         }
         const currencyCode = currencyCodes[subscription.currency] || '978'
 
-        // Sestavit data pro podpis
-        // Pořadí dle dokumentace: MERCHANTNUMBER|OPERATION|ORDERNUMBER|AMOUNT|CURRENCY|DEPOSITFLAG|URL
-        // Volitelné parametry (MERORDERNUM, DESCRIPTION, MD) se přidávají na konec pouze pokud jsou použity
         const operation = 'CREATE_ORDER'
-        const depositFlag = '1' // 1 = okamžitá platba
+        const depositFlag = '1'
         
-        // MERORDERNUM a MD jsou volitelné - pro jednoduchost je nepoužíváme v podpisu
-        // Pokud bychom je chtěli použít, musí být v podpisu ve správném pořadí
-        
-        // Data pro podpis (pipe-delimited) - ZÁKLADNÍ parametry
-        // Dle PHP příkladu: MERCHANTNUMBER|OPERATION|ORDERNUMBER|AMOUNT|CURRENCY|DEPOSITFLAG|URL
-        // DŮLEŽITÉ: Pořadí musí být PŘESNĚ dle dokumentace!
+        // Data pro podpis (pipe-delimited)
         const dataToSign = [
           GPWEBPAY_CONFIG.merchantNumber,
           operation,
@@ -419,41 +403,16 @@ serve(async (req) => {
           CALLBACK_URL
         ].join('|')
 
-        console.log('=== GP WEBPAY PAYMENT REQUEST ===')
-        console.log('Data to sign:', dataToSign)
-        console.log('Data to sign (escaped):', JSON.stringify(dataToSign))
-        console.log('Data to sign length:', dataToSign.length)
-        console.log('Individual values:')
-        console.log('  MERCHANTNUMBER:', GPWEBPAY_CONFIG.merchantNumber)
-        console.log('  OPERATION:', operation)
-        console.log('  ORDERNUMBER:', orderNumber)
-        console.log('  AMOUNT:', amountInSmallestUnit.toString())
-        console.log('  CURRENCY:', currencyCode)
-        console.log('  DEPOSITFLAG:', depositFlag)
-        console.log('  URL:', CALLBACK_URL)
-        console.log('Test mode:', IS_TEST_MODE)
-        console.log('Merchant number:', GPWEBPAY_CONFIG.merchantNumber)
-
-        // 9. Získat privátní klíč a podepsat
+        // 8. Získat privátní klíč a podepsat
         let privateKeyPem: string
         
-        console.log('Private key from env length:', GPWEBPAY_CONFIG.privateKey?.length || 0)
-        console.log('Private key from env first 50 chars:', GPWEBPAY_CONFIG.privateKey?.substring(0, 50))
-        
         if (GPWEBPAY_CONFIG.privateKey) {
-          // Dekódovat z Base64 pokud je v env
           try {
-            const decoded = new TextDecoder().decode(base64Decode(GPWEBPAY_CONFIG.privateKey))
-            console.log('Decoded key length:', decoded.length)
-            console.log('Decoded key first 100 chars:', decoded.substring(0, 100))
-            console.log('Decoded key starts with BEGIN:', decoded.includes('-----BEGIN'))
-            privateKeyPem = decoded
-          } catch (decodeErr: any) {
-            console.log('Base64 decode failed:', decodeErr.message, '- using raw value')
+            privateKeyPem = new TextDecoder().decode(base64Decode(GPWEBPAY_CONFIG.privateKey))
+          } catch {
             privateKeyPem = GPWEBPAY_CONFIG.privateKey
           }
         } else {
-          // Použít testovací klíč (pro vývoj)
           await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', payment.id, {}, false, 'Private key not configured', req)
           return new Response(
             JSON.stringify({ error: 'Payment gateway not configured' }),
@@ -464,8 +423,7 @@ serve(async (req) => {
         // Podepsat data
         let signature: string
         try {
-          console.log('Private key to sign with starts with:', privateKeyPem.substring(0, 100))
-          signature = await signData(dataToSign, privateKeyPem)
+          signature = await signData(dataToSign, privateKeyPem, GPWEBPAY_CONFIG.privateKeyPassword)
         } catch (signError: any) {
           console.error('Signing failed:', signError.message)
           await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', payment.id, { error: signError.message }, false, signError.message, req)
@@ -475,8 +433,7 @@ serve(async (req) => {
           )
         }
 
-        // 10. Sestavit URL pro přesměrování
-        // Parametry MUSÍ být ve stejném pořadí jako v podpisu!
+        // 9. Sestavit URL pro přesměrování
         const gatewayParams = new URLSearchParams({
           MERCHANTNUMBER: GPWEBPAY_CONFIG.merchantNumber,
           OPERATION: operation,
@@ -490,7 +447,7 @@ serve(async (req) => {
 
         const redirectUrl = `${GPWEBPAY_CONFIG.gatewayUrl}?${gatewayParams.toString()}`
 
-        // 11. Aktualizovat subscription s payment ID
+        // 10. Aktualizovat subscription s payment ID
         await supabaseAdmin
           .from('subscriptions')
           .update({
@@ -499,7 +456,7 @@ serve(async (req) => {
           })
           .eq('id', subscription.id)
 
-        // 12. Audit log
+        // 11. Audit log
         await logAudit(supabaseAdmin, clerkId, 'payment_created', 'payment', payment.id, {
           orderNumber,
           amount: subscription.total_amount,
@@ -523,10 +480,6 @@ serve(async (req) => {
       // CALLBACK - Zpracování odpovědi od GP WebPay
       // ============================================
       case 'callback': {
-        console.log('Received callback from GP WebPay:', data)
-        
-        // Data už byla vyčištěna v parsování výše (cleanValue funkce)
-        // Pouze extrahovat hodnoty z data objektu
         const OPERATION = data.OPERATION || ''
         const ORDERNUMBER = data.ORDERNUMBER || ''
         const PRCODE = data.PRCODE || ''
@@ -535,17 +488,11 @@ serve(async (req) => {
         const DIGEST = data.DIGEST || ''
         const DIGEST1 = data.DIGEST1 || ''
 
-        // 1. Najít platbu podle ORDERNUMBER
-        // ORDERNUMBER je unikátní a uložený v tabulce payments
-        console.log('Looking up payment by order_number:', ORDERNUMBER, 'length:', ORDERNUMBER.length, 'raw:', JSON.stringify(ORDERNUMBER))
-
-        // 2. Ověřit podpis odpovědi
-        // Data pro DIGEST: OPERATION|ORDERNUMBER|PRCODE|SRCODE|RESULTTEXT (pouze hodnoty které GP WebPay vrací)
+        // 1. Ověřit podpis odpovědi
         const digestData = [OPERATION, ORDERNUMBER, PRCODE, SRCODE, RESULTTEXT]
           .filter(v => v !== undefined && v !== null && v !== '')
           .join('|')
 
-        // Data pro DIGEST1: DIGEST data + |MERCHANTNUMBER
         const digest1Data = `${digestData}|${GPWEBPAY_CONFIG.merchantNumber}`
 
         // Získat veřejný klíč GPE
@@ -557,8 +504,6 @@ serve(async (req) => {
           } catch {
             gpePublicKeyPem = GPWEBPAY_CONFIG.gpePublicKey
           }
-        } else {
-          console.warn('GPE public key not configured - skipping signature verification')
         }
 
         // Ověřit podpisy (pokud máme klíč)
@@ -567,12 +512,10 @@ serve(async (req) => {
         
         if (gpePublicKeyPem && DIGEST) {
           digestValid = await verifySignature(digestData, DIGEST, gpePublicKeyPem)
-          console.log('DIGEST verification:', digestValid)
         }
         
         if (gpePublicKeyPem && DIGEST1) {
           digest1Valid = await verifySignature(digest1Data, DIGEST1, gpePublicKeyPem)
-          console.log('DIGEST1 verification:', digest1Valid)
         }
 
         if (!digestValid || !digest1Valid) {
@@ -582,45 +525,29 @@ serve(async (req) => {
             digest1Valid 
           }, false, 'Invalid signature', req)
           
-          // Přesměrovat na error stránku
           return Response.redirect(`${FAIL_URL}&error=invalid_signature`, 302)
         }
 
-        // 3. Získat payment záznam podle order_number pomocí RPC (obchází RLS)
-        console.log('Looking up payment via RPC for order_number:', ORDERNUMBER)
+        // 2. Získat payment záznam podle order_number pomocí RPC
         const { data: paymentRows, error: paymentLookupError } = await supabaseAdmin
           .rpc('find_payment_by_order_number', { p_order_number: ORDERNUMBER })
 
         if (paymentLookupError) {
-          console.error('Payment RPC lookup error:', paymentLookupError.message, paymentLookupError.code, paymentLookupError.details)
+          console.error('Payment RPC lookup error:', paymentLookupError.message)
         }
 
         const payment = paymentRows && paymentRows.length > 0 ? paymentRows[0] : null
-        console.log('RPC result:', payment ? `Found payment ${payment.id}` : 'No payment found', 'rows:', paymentRows?.length)
 
         if (!payment) {
           console.error('Payment not found for order_number:', ORDERNUMBER)
-          // Zkusit najít podobné platby pro debug
-          const { data: similarPayments } = await supabaseAdmin
-            .from('payments')
-            .select('order_number, created_at')
-            .order('created_at', { ascending: false })
-            .limit(5)
-          console.log('Recent payments in DB:', similarPayments?.map(p => p.order_number))
-          
           await logAudit(supabaseAdmin, null, 'payment_callback_not_found', 'payment', null, { ORDERNUMBER }, false, 'Payment not found', req)
           return Response.redirect(`${FAIL_URL}&error=payment_not_found`, 302)
         }
-        
-        console.log('Payment found:', payment.id, 'subscription_id:', payment.subscription_id, 'clerk_id:', payment.clerk_id)
-        const isTestMode = payment.test_mode || false
 
-        // 4. Zkontrolovat výsledek (PRCODE = 0 znamená úspěch)
+        // 3. Zkontrolovat výsledek (PRCODE = 0 znamená úspěch)
         const isSuccess = PRCODE === '0' && SRCODE === '0'
-        console.log('Payment result - isSuccess:', isSuccess, 'PRCODE:', PRCODE, 'SRCODE:', SRCODE)
 
-        // 5. Aktualizovat payment (bez gateway_response - sloupec neexistuje)
-        console.log('Updating payment status to:', isSuccess ? 'completed' : 'failed')
+        // 4. Aktualizovat payment
         const { error: paymentUpdateError } = await supabaseAdmin
           .from('payments')
           .update({
@@ -633,18 +560,15 @@ serve(async (req) => {
           .eq('id', payment.id)
 
         if (paymentUpdateError) {
-          console.error('Payment update error:', paymentUpdateError)
-        } else {
-          console.log('Payment updated successfully')
+          console.error('Payment update error:', paymentUpdateError.message)
         }
 
         if (isSuccess) {
-          // 6. Aktivovat subscription
+          // 5. Aktivovat subscription
           const now = new Date()
           const validTo = new Date(now)
           validTo.setDate(validTo.getDate() + SUBSCRIPTION_DURATION_DAYS)
 
-          console.log('Activating subscription:', payment.subscription_id, 'valid_to:', validTo.toISOString())
           const { error: subUpdateError } = await supabaseAdmin
             .from('subscriptions')
             .update({
@@ -658,13 +582,10 @@ serve(async (req) => {
             .eq('id', payment.subscription_id)
 
           if (subUpdateError) {
-            console.error('Subscription update error:', subUpdateError)
-          } else {
-            console.log('Subscription activated successfully')
+            console.error('Subscription update error:', subUpdateError.message)
           }
 
-          // 7. Aktualizovat uživatele
-          console.log('Updating user:', payment.clerk_id)
+          // 6. Aktualizovat uživatele
           const { error: userUpdateError } = await supabaseAdmin
             .from('users')
             .update({
@@ -676,22 +597,18 @@ serve(async (req) => {
             .eq('clerk_id', payment.clerk_id)
 
           if (userUpdateError) {
-            console.error('User update error:', userUpdateError)
-          } else {
-            console.log('User updated successfully')
+            console.error('User update error:', userUpdateError.message)
           }
 
-          // 8. NOVÝ TOK: iDoklad vytvoří fakturu, pak pošleme email
+          // 7. Vytvořit fakturu a odeslat email
           const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
           
-          // 8a. Získat subscription data pro fakturu
           const { data: subscription } = await supabaseAdmin
             .from('subscriptions')
             .select('*')
             .eq('id', payment.subscription_id)
             .single()
           
-          // 8b. Získat uživatele pro email a jazyk
           const { data: user } = await supabaseAdmin
             .from('users')
             .select('email, first_name, last_name, preferred_locale')
@@ -703,21 +620,13 @@ serve(async (req) => {
             ? `${user.first_name} ${user.last_name}` 
             : (user?.first_name || customerEmail)
           
-          // Jazyk pro fakturu a email:
-          // 1. Jazyk uživatele (users.preferred_locale) - pokud je nastavený
-          // 2. Jazyk z subscription (GP WebPay lokalizace) - fallback
           const invoiceLocale = user?.preferred_locale || subscription?.user_locale || 'cs'
           
-          console.log('Customer:', customerName, customerEmail)
-          console.log('User preferred_locale:', user?.preferred_locale, 'Subscription locale:', subscription?.user_locale, '-> Invoice locale:', invoiceLocale)
-          console.log('Subscription:', subscription?.id, 'Amount:', subscription?.total_amount, subscription?.currency)
-          
-          // 8c. Vytvořit fakturu v iDoklad (HLAVNÍ zdroj faktur)
+          // Vytvořit fakturu v iDoklad
           const idokladFunctionUrl = `${SUPABASE_URL}/functions/v1/idoklad`
           let invoiceData = null
           
           try {
-            console.log('Creating invoice in iDoklad...')
             const idokladResponse = await fetch(idokladFunctionUrl, {
               method: 'POST',
               headers: {
@@ -734,19 +643,17 @@ serve(async (req) => {
                   customerName: customerName,
                   amount: subscription?.total_amount || payment.amount,
                   currency: subscription?.currency || payment.currency,
-                  locale: invoiceLocale, // Jazyk uživatele pro fakturu (priorita: user.locale -> subscription.user_locale)
-                  country: subscription?.user_country || 'CZ', // Daňová lokalizace zůstává beze změny
-                  orderNumber: ORDERNUMBER // Číslo objednávky z platební brány
+                  locale: invoiceLocale,
+                  country: subscription?.user_country || 'CZ',
+                  orderNumber: ORDERNUMBER
                 }
               })
             })
             
             const idokladResult = await idokladResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
-            console.log('iDoklad result:', JSON.stringify(idokladResult).substring(0, 500))
             
             if (idokladResult.success && idokladResult.invoice) {
               invoiceData = idokladResult.invoice
-              console.log('Invoice created in iDoklad:', invoiceData.number)
             } else {
               console.error('iDoklad invoice creation failed:', idokladResult.error)
             }
@@ -754,11 +661,10 @@ serve(async (req) => {
             console.error('iDoklad error:', idokladErr.message)
           }
           
-          // 8d. Odeslat email s fakturou (používá data z iDoklad)
+          // Odeslat email s fakturou
           if (invoiceData && customerEmail) {
             const invoiceFunctionUrl = `${SUPABASE_URL}/functions/v1/invoice`
             try {
-              console.log('Sending invoice email to:', customerEmail)
               const emailResponse = await fetch(invoiceFunctionUrl, {
                 method: 'POST',
                 headers: {
@@ -772,28 +678,24 @@ serve(async (req) => {
                     invoice: invoiceData,
                     customerEmail: customerEmail,
                     customerName: customerName,
-                    locale: invoiceLocale // Jazyk uživatele pro email (priorita: user.locale -> subscription.user_locale)
+                    locale: invoiceLocale
                   }
                 })
               })
               
-              const emailResult = await emailResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
-              console.log('Email send result:', emailResult)
+              await emailResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
             } catch (emailErr: any) {
               console.error('Email send error:', emailErr.message)
             }
-          } else {
-            console.log('Skipping email - no invoice data or no customer email')
           }
 
           await logAudit(supabaseAdmin, payment.clerk_id, 'payment_completed', 'payment', payment.id, {
             orderNumber: ORDERNUMBER,
             amount: payment.amount,
             currency: payment.currency,
-            testMode: isTestMode
+            testMode: payment.test_mode || false
           }, true, undefined, req)
 
-          // Přesměrovat na success stránku
           return Response.redirect(SUCCESS_URL, 302)
           
         } else {
@@ -804,7 +706,6 @@ serve(async (req) => {
             resultText: RESULTTEXT
           }, false, RESULTTEXT, req)
 
-          // Přesměrovat na error stránku
           return Response.redirect(`${FAIL_URL}&prcode=${PRCODE}&srcode=${SRCODE}`, 302)
         }
       }
@@ -859,7 +760,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({
             testMode: IS_TEST_MODE,
-            merchantNumber: IS_TEST_MODE ? TEST_MERCHANT_NUMBER : '***hidden***',
+            merchantNumber: IS_TEST_MODE ? GPWEBPAY_CONFIG.merchantNumber : '***hidden***',
             gatewayUrl: GPWEBPAY_CONFIG.gatewayUrl,
             callbackUrl: CALLBACK_URL,
             privateKeyConfigured: !!GPWEBPAY_CONFIG.privateKey,
