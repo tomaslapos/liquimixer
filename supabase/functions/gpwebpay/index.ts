@@ -335,8 +335,11 @@ serve(async (req) => {
         } else {
           // Vytvořit novou platbu
           // ORDERNUMBER musí být POUZE NUMERICKÝ (čísla), max 15 znaků!
+          // SECURITY: Použití crypto.getRandomValues() místo Math.random()
           const timestamp = Date.now().toString().slice(-10)
-          const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0')
+          const randomArray = new Uint32Array(1)
+          crypto.getRandomValues(randomArray)
+          const random = (randomArray[0] % 100000).toString().padStart(5, '0')
           orderNumber = `${timestamp}${random}`.substring(0, 15)
 
           const { data: newPayment, error: payError } = await supabaseAdmin

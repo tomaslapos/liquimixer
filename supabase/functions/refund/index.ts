@@ -12,6 +12,7 @@ import {
   getRateLimitIdentifier,
   rateLimitResponse 
 } from '../_shared/cors.ts'
+import { verifyClerkToken } from '../_shared/clerk-jwt.ts'
 
 // GP webpay konfigurace pro refund
 const GPWEBPAY_CONFIG = {
@@ -44,14 +45,13 @@ async function logAudit(supabase: any, clerkId: string | null, action: string, r
   }
 }
 
-// Generate secure approval token
+// Generate cryptographically secure approval token
 function generateApprovalToken(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < 64; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return result
+  // Použití crypto.randomUUID() pro kryptograficky bezpečný token
+  // Kombinace dvou UUID bez pomlček = 64 znaků
+  const uuid1 = crypto.randomUUID().replace(/-/g, '')
+  const uuid2 = crypto.randomUUID().replace(/-/g, '')
+  return `${uuid1}${uuid2}`
 }
 
 serve(async (req) => {
@@ -328,17 +328,28 @@ serve(async (req) => {
       // GET REFUND STATUS (for user)
       // ============================================
       case 'status': {
-        const authHeader = req.headers.get('Authorization')
-        if (!authHeader) {
+        // SECURITY FIX: Plná JWT verifikace včetně podpisu pomocí JWKS
+        const clerkToken = req.headers.get('x-clerk-token')
+        if (!clerkToken) {
           return new Response(
-            JSON.stringify({ error: 'Unauthorized' }),
+            JSON.stringify({ error: 'Unauthorized - missing token' }),
             { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
 
-        const token = authHeader.replace('Bearer ', '')
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        const clerkId = payload.sub
+        // Plná verifikace JWT tokenu včetně kryptografického podpisu
+        const tokenPayload = await verifyClerkToken(clerkToken, {
+          authorizedParties: ['https://www.liquimixer.com', 'https://liquimixer.com']
+        })
+        
+        if (!tokenPayload) {
+          return new Response(
+            JSON.stringify({ error: 'Unauthorized - invalid or expired token' }),
+            { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+        
+        const clerkId = tokenPayload.sub
 
         const { data: refunds } = await supabaseAdmin
           .from('refund_requests')
