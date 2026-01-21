@@ -12,6 +12,7 @@ import {
   getRateLimitIdentifier,
   rateLimitResponse 
 } from '../_shared/cors.ts'
+import { verifyClerkToken } from '../_shared/clerk-jwt.ts'
 
 // Konstanty
 const SUBSCRIPTION_DURATION_DAYS = 365 // 1 rok
@@ -47,7 +48,7 @@ serve(async (req) => {
     )
 
     // Ověřit Clerk token (přijatý v custom headeru x-clerk-token)
-    // Authorization header obsahuje Supabase anon key pro přístup k Edge Function
+    // Plná verifikace podpisu pomocí JWKS
     const clerkToken = req.headers.get('x-clerk-token')
     if (!clerkToken) {
       return new Response(
@@ -56,19 +57,19 @@ serve(async (req) => {
       )
     }
 
-    let clerkId: string
-    try {
-      const payload = JSON.parse(atob(clerkToken.split('.')[1]))
-      clerkId = payload.sub
-      if (!clerkId) {
-        throw new Error('Missing sub claim')
-      }
-    } catch (e) {
+    // Plná JWT verifikace včetně podpisu
+    const tokenPayload = await verifyClerkToken(clerkToken, {
+      authorizedParties: ['https://www.liquimixer.com', 'https://liquimixer.com']
+    })
+    
+    if (!tokenPayload) {
       return new Response(
-        JSON.stringify({ error: 'Neplatný Clerk token' }),
+        JSON.stringify({ error: 'Neplatný nebo expirovaný token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+    
+    const clerkId = tokenPayload.sub
 
     const { action, data } = await req.json()
 
