@@ -605,7 +605,7 @@ serve(async (req) => {
           
           const { data: user } = await supabaseAdmin
             .from('users')
-            .select('email, first_name, last_name, preferred_locale')
+            .select('email, first_name, last_name, locale')
             .eq('clerk_id', payment.clerk_id)
             .single()
           
@@ -614,7 +614,8 @@ serve(async (req) => {
             ? `${user.first_name} ${user.last_name}` 
             : (user?.first_name || customerEmail)
           
-          const invoiceLocale = user?.preferred_locale || subscription?.user_locale || 'cs'
+          // Jazyk faktury: 1) user.locale, 2) subscription.user_locale, 3) 'en' jako fallback
+          const invoiceLocale = user?.locale || subscription?.user_locale || 'en'
           
           // Vytvořit fakturu v iDoklad
           const idokladFunctionUrl = `${SUPABASE_URL}/functions/v1/idoklad`

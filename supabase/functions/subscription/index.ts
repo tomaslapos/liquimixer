@@ -230,6 +230,23 @@ serve(async (req) => {
           )
         }
 
+        // Aktualizovat locale u uživatele pro budoucí faktury
+        // Toto zajistí, že jazyk je uložen v users tabulce
+        if (userLocale && userLocale !== 'cs') {
+          try {
+            await supabaseAdmin
+              .from('users')
+              .update({ 
+                locale: userLocale,
+                updated_at: new Date().toISOString()
+              })
+              .eq('clerk_id', clerkId)
+            console.log(`Updated user locale to: ${userLocale}`)
+          } catch (e) {
+            console.warn('Could not update user locale:', e)
+          }
+        }
+
         return new Response(
           JSON.stringify({ success: true, subscription: newSubscription }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
