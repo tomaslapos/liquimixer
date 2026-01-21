@@ -6,11 +6,16 @@
 // Povolené domény pro CORS
 // PRODUKCE: Pouze liquimixer.com a N8N webhook
 // DEV: Přidány localhost a 127.0.0.1 pro lokální vývoj
+// Povolené domény pro CORS
+// PRODUKCE: Pouze liquimixer.com
+// Localhost je povolen pouze pokud je nastavena env variable ALLOW_LOCALHOST=true
+const IS_DEVELOPMENT = Deno.env.get('ALLOW_LOCALHOST') === 'true';
+
 const ALLOWED_ORIGINS = [
   'https://www.liquimixer.com',
   'https://liquimixer.com',
-  'http://localhost:5500',
-  'http://127.0.0.1:5500',
+  // Localhost pouze pro vývoj - v produkci ALLOW_LOCALHOST není nastavena
+  ...(IS_DEVELOPMENT ? ['http://localhost:5500', 'http://127.0.0.1:5500'] : []),
 ];
 
 // N8N webhook domény (server-to-server, bez origin header)

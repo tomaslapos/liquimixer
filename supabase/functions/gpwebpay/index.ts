@@ -41,8 +41,8 @@ const GPWEBPAY_CONFIG = {
   // Privátní klíč obchodníka (PEM formát, Base64 encoded v env)
   privateKey: Deno.env.get('GPWEBPAY_PRIVATE_KEY') || '',
   
-  // Heslo k privátnímu klíči
-  privateKeyPassword: Deno.env.get('GPWEBPAY_PRIVATE_KEY_PASSWORD') || '111111',
+  // Heslo k privátnímu klíči (povinné v produkci)
+  privateKeyPassword: Deno.env.get('GPWEBPAY_PRIVATE_KEY_PASSWORD') || '',
   
   // Veřejný klíč GPE pro ověření odpovědí (PEM formát, Base64 encoded v env)
   gpePublicKey: Deno.env.get('GPWEBPAY_GPE_PUBLIC_KEY') || '',
