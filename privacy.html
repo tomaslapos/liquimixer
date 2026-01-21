@@ -153,10 +153,33 @@
         a {
             color: var(--neon-cyan);
         }
+        
+        .lang-switch {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .lang-switch a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .lang-switch a:hover {
+            background: var(--neon-cyan);
+            color: var(--bg-dark);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="lang-switch">
+            <a href="/privacy-en.html">🇬🇧 English</a>
+        </div>
+        
         <header class="header">
             <div class="logo">LIQUIMIXER</div>
             <h1>Ochrana osobních údajů</h1>
