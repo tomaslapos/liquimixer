@@ -1,7 +1,7 @@
 {
   "name": "LiquiMixer - Profesionální E-liquid Kalkulátor",
   "short_name": "LiquiMixer",
-  "description": "Profesionální kalkulátor pro míchání e-liquidů. Přesné výpočty nikotinu, PG/VG poměru a až 4 příchutí v Liquid PRO režimu. Sdílení receptů, oblíbené produkty, připomínky zrání. Bezplatný online nástroj ve 31 jazycích.",
+  "description": "Profesionální kalkulátor pro míchání e-liquidů. Přesné výpočty nikotinu, PG/VG poměru a až 4 příchutí v Liquid PRO režimu. Sdílení receptů, oblíbené produkty, připomínky zrání. Online nástroj ve 31 jazycích.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",

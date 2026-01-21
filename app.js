@@ -6783,9 +6783,9 @@ function handleSubscriptionModalBackdropClick(event) {
     }
 }
 
-// Detekovat lokaci uživatele - prioritně z i18n, pak geolokace, pak fallback
+// Detekovat lokaci uživatele - VŽDY použít IP geolokaci, pak fallback
 async function detectUserLocation() {
-    // Získat aktuální jazyk z i18n
+    // Získat aktuální jazyk z i18n (pouze pro fallback)
     const currentLocale = window.i18n?.getLocale() || 'cs';
     
     // Cenové mapy - pouze CZK, EUR, USD
@@ -6795,7 +6795,7 @@ async function detectUserLocation() {
         'USD': { grossAmount: 2.9, currency: 'USD', vatRate: 0 }
     };
     
-    // Mapování jazyků na měny (pouze CZK, EUR, USD)
+    // Mapování jazyků na měny (pouze CZK, EUR, USD) - pouze pro fallback
     // CZK: cs
     // USD: en, ko, ja, zh-CN, zh-TW, ar-SA
     // EUR: všechny ostatní
@@ -6811,34 +6811,34 @@ async function detectUserLocation() {
     };
     
     try {
-        // Zkusit geolokaci pouze pokud je uživatel přihlášen
-        if (window.Clerk?.user) {
-            const clerkToken = await getClerkToken();
-            const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getSupabaseAnonKey()}`,
-                    'x-clerk-token': clerkToken || '',
-                },
-                body: JSON.stringify({ 
-                    action: 'detect',
-                    data: { clerkId: window.Clerk?.user?.id }
-                })
-            });
+        // VŽDY zkusit IP geolokaci - i pro nepřihlášené uživatele
+        // Pro přihlášené použít Clerk token, pro nepřihlášené bez tokenu
+        const clerkToken = window.Clerk?.user ? await getClerkToken() : null;
+        
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getSupabaseAnonKey()}`,
+                ...(clerkToken ? { 'x-clerk-token': clerkToken } : {}),
+            },
+            body: JSON.stringify({ 
+                action: 'detect',
+                data: { clerkId: window.Clerk?.user?.id || null }
+            })
+        });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Geolocation API success:', result.location?.countryCode, result.location);
-                userLocation = result.location;
-                updatePricingUI(userLocation);
-                return;
-            } else {
-                console.warn('Geolocation API failed:', response.status, await response.text().catch(() => ''));
-            }
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Geolocation API success:', result.location?.countryCode, result.location);
+            userLocation = result.location;
+            updatePricingUI(userLocation);
+            return;
+        } else {
+            console.warn('Geolocation API failed:', response.status, await response.text().catch(() => ''));
         }
         
-        // Použít měnu podle aktuálního jazyka
+        // Fallback: Použít měnu podle aktuálního jazyka
         const currency = currencyByLocale[currentLocale] || 'EUR';
         // DŮLEŽITÉ: Fallback vždy na CZ - místo plnění je ČR (OSS režim)
         // Jazyk uživatele != země pro DPH. IP geolokace se použije až bude dostupná.
