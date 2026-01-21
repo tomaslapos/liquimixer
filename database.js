@@ -191,7 +191,7 @@ async function saveUserLocale(clerkId, locale) {
         const { data, error } = await supabaseClient
             .from('users')
             .update({ 
-                preferred_locale: locale,
+                locale: locale,
                 updated_at: new Date().toISOString()
             })
             .eq('clerk_id', clerkId)
@@ -223,7 +223,7 @@ async function getUserLocale(clerkId) {
     try {
         const { data, error } = await supabaseClient
             .from('users')
-            .select('preferred_locale')
+            .select('locale')
             .eq('clerk_id', clerkId)
             .single();
         
@@ -232,7 +232,7 @@ async function getUserLocale(clerkId) {
             return null;
         }
         
-        return data?.preferred_locale || null;
+        return data?.locale || null;
     } catch (err) {
         console.error('Database error:', err);
         return null;

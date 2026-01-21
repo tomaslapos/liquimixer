@@ -6968,8 +6968,8 @@ async function processPayment() {
                 action: 'create',
                 data: {
                     planType: 'yearly',
-                    // Jazyk uživatele z localStorage pro fakturu (priorita před lokalizací)
-                    locale: localStorage.getItem('liquimixer_locale') || window.i18n?.currentLocale || 'cs',
+                    // Jazyk uživatele pro fakturu - použít getLocale() funkci z i18n modulu
+                    locale: window.i18n?.getLocale?.() || 'en',
                     // Země pro DPH účely (aktualizováno z geolokace výše)
                     country: userLocation?.countryCode || 'CZ'
                 }
