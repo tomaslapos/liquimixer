@@ -13,6 +13,7 @@ import {
   rateLimitResponse,
   addRateLimitHeaders 
 } from '../_shared/cors.ts'
+import { verifyClerkToken } from '../_shared/clerk-jwt.ts'
 
 const N8N_WEBHOOK_URL = Deno.env.get('N8N_CONTACT_WEBHOOK_URL') || ''
 const N8N_WEBHOOK_SECRET = Deno.env.get('N8N_WEBHOOK_SECRET') || ''
@@ -129,16 +130,20 @@ serve(async (req) => {
           )
         }
 
-        // 6. Check for logged in user
+        // 6. Check for logged in user (optional - contact form works without login)
         let clerkId = null
-        const authHeader = req.headers.get('Authorization')
-        if (authHeader) {
+        const clerkToken = req.headers.get('x-clerk-token')
+        if (clerkToken) {
           try {
-            const token = authHeader.replace('Bearer ', '')
-            const payload = JSON.parse(atob(token.split('.')[1]))
-            clerkId = payload.sub
+            // Plná verifikace JWT pokud je token přítomen
+            const tokenPayload = await verifyClerkToken(clerkToken, {
+              authorizedParties: ['https://www.liquimixer.com', 'https://liquimixer.com']
+            })
+            if (tokenPayload) {
+              clerkId = tokenPayload.sub
+            }
           } catch {
-            // Not logged in, continue without clerk_id
+            // Token verification failed, continue without clerk_id
           }
         }
 

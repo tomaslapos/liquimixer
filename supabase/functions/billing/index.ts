@@ -12,6 +12,7 @@ import {
   getRateLimitIdentifier,
   rateLimitResponse 
 } from '../_shared/cors.ts'
+import { verifyClerkToken } from '../_shared/clerk-jwt.ts'
 
 // Validace fakturačních údajů
 function validateBillingData(data: any): { valid: boolean; errors: string[] } {
@@ -108,29 +109,28 @@ serve(async (req) => {
       }
     )
 
-    // Ověřit JWT token z hlavičky
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
+    // Ověřit Clerk token - plná verifikace podpisu pomocí JWKS
+    const clerkToken = req.headers.get('x-clerk-token')
+    if (!clerkToken) {
       return new Response(
         JSON.stringify({ error: 'Chybí autorizační token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // Získat uživatele z tokenu (Clerk JWT)
-    const token = authHeader.replace('Bearer ', '')
+    // Plná JWT verifikace včetně podpisu
+    const tokenPayload = await verifyClerkToken(clerkToken, {
+      authorizedParties: ['https://www.liquimixer.com', 'https://liquimixer.com']
+    })
     
-    // Dekódovat Clerk JWT a získat user ID
-    // V produkci použijte Clerk SDK pro ověření tokenu
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    const clerkId = payload.sub
-    
-    if (!clerkId) {
+    if (!tokenPayload) {
       return new Response(
-        JSON.stringify({ error: 'Neplatný token' }),
+        JSON.stringify({ error: 'Neplatný nebo expirovaný token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+    
+    const clerkId = tokenPayload.sub
 
     const { action, data } = await req.json()
 

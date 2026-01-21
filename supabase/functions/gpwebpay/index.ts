@@ -14,6 +14,7 @@ import {
   getRateLimitIdentifier,
   rateLimitResponse 
 } from '../_shared/cors.ts'
+import { verifyClerkToken as verifyClerkTokenFull } from '../_shared/clerk-jwt.ts'
 
 // ============================================
 // GP WEBPAY KONFIGURACE
@@ -119,24 +120,17 @@ async function verifySignature(data: string, signatureBase64: string, publicKeyP
 
 // ============================================
 // CLERK JWT VERIFIKACE
+// Používá sdílenou funkci s plnou verifikací podpisu
 // ============================================
 
 async function verifyClerkToken(token: string): Promise<{ sub: string; email?: string } | null> {
-  try {
-    const parts = token.split('.')
-    if (parts.length !== 3) return null
-    
-    const payload = JSON.parse(atob(parts[1]))
-    
-    // Kontrola expirace
-    if (payload.exp && payload.exp * 1000 < Date.now()) {
-      return null
-    }
-    
-    return { sub: payload.sub, email: payload.email }
-  } catch {
-    return null
-  }
+  const payload = await verifyClerkTokenFull(token, {
+    authorizedParties: ['https://www.liquimixer.com', 'https://liquimixer.com']
+  })
+  
+  if (!payload) return null
+  
+  return { sub: payload.sub, email: payload.email }
 }
 
 // ============================================
