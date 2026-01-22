@@ -3131,6 +3131,7 @@ body {
     gap: 20px;
     flex-wrap: wrap;
     margin-top: 30px;
+    margin-bottom: 70px; /* Space for fixed footer */
 }
 
 /* Extra spacing for recipe pages */
@@ -3139,6 +3140,7 @@ body {
 #shared-recipe-disclaimer .button-group,
 #shared-product-detail .button-group {
     margin-top: 40px;
+    margin-bottom: 80px; /* Extra space for pages with multiple button rows */
 }
 
 #intro,
