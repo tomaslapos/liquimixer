@@ -8,6 +8,29 @@
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://www.liquimixer.com/terms.html">
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+    <script>
+        // Redirect to correct language version based on app settings
+        (function() {
+            // Check URL parameter first (passed from main app)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            
+            // Get stored locale from localStorage (same key as main app uses)
+            const storedLocale = localStorage.getItem('liquimixer_locale');
+            
+            // Determine language: URL param > stored locale > browser language
+            const lang = urlLang || storedLocale || navigator.language.split('-')[0];
+            
+            // If English, redirect to English version
+            if (lang === 'en' && !window.location.pathname.includes('-en.html')) {
+                window.location.replace('/terms-en.html' + window.location.search);
+            }
+            // If on English page but language is not English, redirect to Czech version
+            else if (lang !== 'en' && window.location.pathname.includes('-en.html')) {
+                window.location.replace('/terms.html' + window.location.search);
+            }
+        })();
+    </script>
     <style>
         :root {
             --bg-dark: #0a0a0a;

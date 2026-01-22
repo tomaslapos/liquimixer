@@ -43,7 +43,15 @@ async function initI18n() {
     // 2. Angličtina jako fallback
     // Po přihlášení se načte uložený jazyk uživatele z databáze
     
-    currentLocale = detectBrowserLocale();
+    // Priorita: 1. localStorage (uložený jazyk), 2. jazyk prohlížeče, 3. angličtina
+    const savedLocale = localStorage.getItem('liquimixer_locale');
+    if (savedLocale && SUPPORTED_LOCALES.includes(savedLocale)) {
+        currentLocale = savedLocale;
+    } else {
+        currentLocale = detectBrowserLocale();
+        // Uložit detekovaný jazyk do localStorage
+        localStorage.setItem('liquimixer_locale', currentLocale);
+    }
     
     // Načíst dostupné lokalizace
     await loadLocales();
@@ -221,6 +229,9 @@ async function setLocale(locale, saveToDb = true) {
     }
     
     currentLocale = locale;
+    
+    // Uložit do localStorage pro ostatní stránky (privacy, terms, invoice)
+    localStorage.setItem('liquimixer_locale', locale);
     
     await loadTranslations(locale);
     applyTranslations();
