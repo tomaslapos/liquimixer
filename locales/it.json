@@ -406,7 +406,9 @@
     "sent": "Inviato",
     "cancelled": "Annullato",
     "note_label": "Nota",
-    "note_placeholder": "Nota opzionale..."
+    "note_placeholder": "Nota opzionale...",
+    "view_title": "Dettagli promemoria",
+    "no_note": "Nessuna nota"
   },
   "alert": {
     "login_required": "Accedi per questa azione.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "MODIFICA VALORI"
+  },
+  "footer": {
+    "privacy_policy": "Informativa sulla privacy",
+    "terms_of_service": "Termini di servizio"
   }
 }

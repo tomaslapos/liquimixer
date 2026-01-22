@@ -1,8 +1,7 @@
 # 🔒 Bezpečnostní Audit - LiquiMixer
 **Datum:** 21. ledna 2026  
 **Auditor:** AI Assistant  
-**Verze:** Aktuální (po implementaci bezpečnostních oprav)
-**Poslední aktualizace:** 21. ledna 2026 - opravy provedeny
+**Verze:** Aktuální (po implementaci GP WebPay produkce, social logins)
 
 ---
 
@@ -14,71 +13,12 @@
 | **Rate Limiting** | ✅ Implementováno | Výborná |
 | **XSS Ochrana** | ✅ escapeHtml() + sanitize | Výborná |
 | **Input Validace** | ✅ Backend validace | Výborná |
-| **Autentizace** | ✅ Clerk JWT + JWKS verifikace | Výborná |
+| **Autentizace** | ✅ Clerk JWT + ověření | Výborná |
 | **Secrets** | ✅ Env variables | Výborná |
-| **JWT Verification** | ✅ JWKS podpis ověřen | Výborná |
+| **JWT Verification** | ⚠️ 4 funkce bez JWT | Vysvětleno níže |
 | **Audit Logging** | ✅ Implementováno | Výborná |
-| **Kryptografická náhodnost** | ✅ crypto.getRandomValues() | Výborná |
 
 **Celkové hodnocení: 🟢 VÝBORNÉ**
-
----
-
-## ✅ OPRAVENÉ BEZPEČNOSTNÍ PROBLÉMY (21.1.2026)
-
-### 1. ✅ JWT Verifikace v refund/status (KRITICKÉ - OPRAVENO)
-
-**Předtím (zranitelné):**
-```typescript
-// JWT byl pouze dekódován bez ověření podpisu!
-const token = authHeader.replace('Bearer ', '')
-const payload = JSON.parse(atob(token.split('.')[1]))
-const clerkId = payload.sub
-```
-
-**Nyní (bezpečné):**
-```typescript
-// Plná JWT verifikace včetně kryptografického podpisu pomocí JWKS
-const tokenPayload = await verifyClerkToken(clerkToken, {
-  authorizedParties: ['https://www.liquimixer.com', 'https://liquimixer.com']
-})
-```
-
-**Soubor:** `supabase/functions/refund/index.ts`
-
-### 2. ✅ Kryptograficky bezpečné approval tokeny (STŘEDNÍ - OPRAVENO)
-
-**Předtím (slabé):**
-```typescript
-// Math.random() není kryptograficky bezpečný
-result += chars.charAt(Math.floor(Math.random() * chars.length))
-```
-
-**Nyní (bezpečné):**
-```typescript
-// crypto.randomUUID() je kryptograficky bezpečný
-const uuid1 = crypto.randomUUID().replace(/-/g, '')
-const uuid2 = crypto.randomUUID().replace(/-/g, '')
-return `${uuid1}${uuid2}`
-```
-
-**Soubor:** `supabase/functions/refund/index.ts`
-
-### 3. ✅ Kryptograficky bezpečné order number (STŘEDNÍ - OPRAVENO)
-
-**Předtím (slabé):**
-```typescript
-const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0')
-```
-
-**Nyní (bezpečné):**
-```typescript
-const randomArray = new Uint32Array(1)
-crypto.getRandomValues(randomArray)
-const random = (randomArray[0] % 100000).toString().padStart(5, '0')
-```
-
-**Soubor:** `supabase/functions/gpwebpay/index.ts`
 
 ---
 
@@ -87,35 +27,17 @@ const random = (randomArray[0] % 100000).toString().padStart(5, '0')
 ### 1. CORS Konfigurace (`_shared/cors.ts`)
 
 ```typescript
-// Localhost povolen pouze pokud ALLOW_LOCALHOST=true
-const IS_DEVELOPMENT = Deno.env.get('ALLOW_LOCALHOST') === 'true';
-
 const ALLOWED_ORIGINS = [
   'https://www.liquimixer.com',
   'https://liquimixer.com',
-  ...(IS_DEVELOPMENT ? ['http://localhost:5500', 'http://127.0.0.1:5500'] : []),
+  'http://localhost:5500',  // Pouze pro vývoj
+  'http://127.0.0.1:5500',
 ];
 ```
 
-✅ **Správně:** Localhost podmíněn env variable, v produkci není povolen
+✅ **Správně:** Povoleny pouze konkrétní domény, ne wildcard `*`
 
-### 2. Plná JWT Verifikace (`_shared/clerk-jwt.ts`)
-
-```typescript
-// Kompletní JWKS verifikace
-export async function verifyClerkToken(token: string, options?: {...}): Promise<ClerkTokenPayload | null> {
-  // 1. Kontrola formátu JWT
-  // 2. Kontrola expirace (exp)
-  // 3. Kontrola not-before (nbf)
-  // 4. Kontrola sub claim
-  // 5. Kontrola authorized parties (azp)
-  // 6. Kryptografická verifikace podpisu pomocí JWKS
-}
-```
-
-✅ **Správně:** Používáno ve všech funkcích vyžadujících autentizaci
-
-### 3. Rate Limiting
+### 2. Rate Limiting
 
 Implementováno pro všechny Edge Functions:
 
@@ -129,13 +51,14 @@ Implementováno pro všechny Edge Functions:
 
 ✅ **Správně:** In-memory rate limiter s automatickým cleanup každých 5 minut
 
-### 4. XSS Ochrana
+### 3. XSS Ochrana
 
-- `escapeHtml()` - použito v `app.js` pro všechny uživatelské vstupy
+- `escapeHtml()` - 50+ použití v `app.js` pro všechny uživatelské vstupy
 - `sanitizeInput()` - použito v Edge Functions pro backend validaci
+- `sanitizeUrl()` - validace URL protokolů (pouze http, https, mailto)
 - CSP headers v `index.html` - omezení zdrojů skriptů a stylů
 
-### 5. Secrets Management
+### 4. Secrets Management
 
 Všechny citlivé klíče jsou uloženy v **Supabase Secrets** (env variables):
 
@@ -152,6 +75,15 @@ Všechny citlivé klíče jsou uloženy v **Supabase Secrets** (env variables):
 
 ✅ **Správně:** Žádné hardcoded secrets v kódu
 
+### 5. Supabase Anon Key
+
+```javascript
+// app.js - veřejný klíč (očekávané chování)
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIs...';
+```
+
+✅ **Správně:** Anon key je navržen jako veřejný klíč pro frontend. Bezpečnost dat je zajištěna RLS (Row Level Security) policies v databázi.
+
 ### 6. Input Validace na Backendu
 
 ```typescript
@@ -164,12 +96,12 @@ function validateBillingData(data: any): { valid: boolean; errors: string[] }
 - Detekce nebezpečných znaků (<script>, javascript:, onclick, atd.)
 ```
 
-### 7. Audit Logging
-
-Všechny citlivé operace jsou logovány do `audit_logs` tabulky:
-- `gpwebpay/index.ts` - platební operace
-- `refund/index.ts` - refund operace
-- `contact/index.ts` - kontaktní zprávy
+```typescript
+// contact/index.ts
+function sanitizeInput(input: string, maxLength: number = 5000): string
+function isValidEmail(email: string): boolean
+const VALID_CATEGORIES = ['technical', 'payment', 'recipe', ...]
+```
 
 ---
 
@@ -188,53 +120,101 @@ V `config.toml` jsou 4 funkce s `verify_jwt = false`:
 
 ---
 
-## ℹ️ NÍZKÁ RIZIKA / POZNÁMKY
+## 🔴 RIZIKA K ODSTRANĚNÍ
 
-### 1. `unsafe-inline` a `unsafe-eval` v CSP
-Nutné pro Clerk SDK, ale oslabuje ochranu proti XSS. Clerk vyžaduje tyto direktivy.
+### 1. Localhost v CORS (Nízké riziko)
 
-### 2. Supabase ANON_KEY viditelný ve frontendu
-Toto je designově správné (anon key je veřejný). Bezpečnost dat je zajištěna RLS policies.
+**Soubor:** `supabase/functions/_shared/cors.ts` řádky 12-13
+
+```typescript
+// ODSTRANIT nebo podmínit:
+'http://localhost:5500',
+'http://127.0.0.1:5500',
+```
+
+**Riziko:** Útočník běžící na localhost by mohl obejít CORS
+**Dopad:** Nízký - vyžaduje fyzický přístup k počítači uživatele
+**Řešení:** Odstranit nebo použít env variable `IS_DEVELOPMENT`
+
+### 2. Fallback heslo v gpwebpay (Nízké riziko)
+
+**Soubor:** `supabase/functions/gpwebpay/index.ts` řádek 45
+
+```typescript
+privateKeyPassword: Deno.env.get('GPWEBPAY_PRIVATE_KEY_PASSWORD') || '111111',
+```
+
+**Riziko:** Pokud env variable chybí, použije se testovací heslo
+**Dopad:** Nízký - v produkci je env nastavená, `111111` je pouze GP WebPay test default
+**Řešení:** Odstranit fallback, vyhodit chybu pokud env chybí
+
+### 3. JWT pouze dekódování, ne verifikace (Střední riziko)
+
+**Soubory:** Všechny Edge Functions s Clerk autentizací
+
+```typescript
+// Aktuální implementace - pouze dekóduje, neověřuje podpis
+const payload = JSON.parse(atob(token.split('.')[1]))
+const clerkId = payload.sub
+```
+
+**Riziko:** Teoreticky by útočník mohl vytvořit falešný JWT
+**Dopad:** Střední - vyžaduje znalost struktury JWT a clerk_id existujícího uživatele
+**Řešení:** Použít Clerk Backend SDK pro plnou verifikaci podpisu
+
+---
+
+## 📋 AKČNÍ PLÁN PRO ODSTRANĚNÍ RIZIK
+
+### Priorita 1 (Doporučeno brzy):
+
+1. **Odstranit localhost z CORS v produkci**
+   - Upravit `_shared/cors.ts`
+   - Podmínit na env variable nebo zcela odstranit
+
+2. **Odstranit fallback heslo**
+   - Upravit `gpwebpay/index.ts`
+   - Vyhodit chybu pokud `GPWEBPAY_PRIVATE_KEY_PASSWORD` není nastavena
+
+### Priorita 2 (Při příležitosti):
+
+3. **Implementovat plnou JWT verifikaci**
+   - Nainstalovat Clerk Backend SDK
+   - Ověřovat podpis JWT, ne pouze dekódovat
+   - Vyžaduje úpravu všech Edge Functions
 
 ---
 
 ## ✅ CO JE SPRÁVNĚ IMPLEMENTOVÁNO
 
-1. ✅ **JWT Verifikace** - plná JWKS verifikace podpisu ve všech funkcích
-2. ✅ **Kryptografická náhodnost** - crypto.getRandomValues() a crypto.randomUUID()
-3. ✅ **Audit logging** - všechny citlivé operace jsou logovány
-4. ✅ **Input validace** - `validateBillingData()`, `isValidEmail()`, `sanitizeInput()`
-5. ✅ **Error handling** - chybové zprávy nevystavují interní detaily systému
-6. ✅ **HTTPS only** - `upgrade-insecure-requests` v CSP vynucuje HTTPS
-7. ✅ **Rate limiting** - ochrana proti brute force a DDoS útokům
-8. ✅ **RLS policies** - databáze má Row Level Security
-9. ✅ **CORS** - správně omezeno na konkrétní domény s podmíněným localhost
-10. ✅ **CSP headers** - omezení zdrojů skriptů, stylů, fontů, obrázků
-11. ✅ **XSS ochrana** - escapeHtml() pro všechny uživatelské vstupy
-12. ✅ **Platební gateway** - RSA-SHA1 podpisy pro GP WebPay komunikaci
+1. **Audit logging** - všechny citlivé operace (platby, refundy, přihlášení) jsou logovány do `audit_logs` tabulky
+2. **Input validace** - `validateBillingData()`, `isValidEmail()`, `isValidUUID()`, `sanitizeInput()`
+3. **Error handling** - chybové zprávy nevystavují interní detaily systému
+4. **HTTPS only** - `upgrade-insecure-requests` v CSP vynucuje HTTPS
+5. **Rate limiting** - ochrana proti brute force a DDoS útokům
+6. **RLS policies** - databáze má Row Level Security, uživatelé vidí pouze svá data
+7. **CORS** - správně omezeno na konkrétní domény
+8. **CSP headers** - omezení zdrojů skriptů, stylů, fontů, obrázků
+9. **XSS ochrana** - escapeHtml() pro všechny uživatelské vstupy
+10. **Platební gateway** - RSA-SHA1 podpisy pro GP WebPay komunikaci
 
 ---
 
 ## 🎯 ZÁVĚR
 
-Aplikace LiquiMixer má **vynikající bezpečnostní úroveň**.
+Aplikace LiquiMixer má **velmi dobrou bezpečnostní úroveň**. 
 
-**Kritické zranitelnosti: 0** ✅
-**Střední rizika: 0** ✅
-**Nízká rizika: 1** (unsafe-inline v CSP kvůli Clerk SDK)
+**Kritické zranitelnosti: 0**
+**Střední rizika: 1** (JWT verifikace)
+**Nízká rizika: 2** (localhost CORS, fallback heslo)
 
-Všechny dříve identifikované bezpečnostní problémy byly opraveny:
-- ✅ JWT verifikace nyní používá plnou JWKS verifikaci podpisu
-- ✅ Approval tokeny používají `crypto.randomUUID()` 
-- ✅ Order numbers používají `crypto.getRandomValues()`
-- ✅ Localhost CORS podmíněn env variable
+Všechna identifikovaná rizika jsou relativně nízká a nevyžadují okamžitou akci. Doporučuji je odstranit při nejbližší příležitosti pro maximální bezpečnost.
 
 ---
 
 ## 📁 AUDITOVANÉ SOUBORY
 
 - `supabase/functions/_shared/cors.ts` - CORS a rate limiting
-- `supabase/functions/_shared/clerk-jwt.ts` - JWT verifikace
 - `supabase/functions/gpwebpay/index.ts` - Platební brána
 - `supabase/functions/subscription/index.ts` - Předplatné
 - `supabase/functions/billing/index.ts` - Fakturační údaje
@@ -250,4 +230,3 @@ Všechny dříve identifikované bezpečnostní problémy byly opraveny:
 ---
 
 *Audit proveden: 21. ledna 2026*
-*Bezpečnostní opravy aplikovány: 21. ledna 2026*

@@ -5701,3 +5701,86 @@ body.subscription-required #subscriptionModal {
         max-width: none;
     }
 }
+
+/* =========================================
+   Global App Footer
+   ========================================= */
+
+.app-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 21, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: var(--neon-cyan);
+}
+
+.footer-divider {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.footer-copyright {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Add padding to bottom of app-container to prevent content being hidden by footer */
+.app-container {
+    padding-bottom: 60px;
+}
+
+/* =========================================
+   Read-only Fields for View Reminder Modal
+   ========================================= */
+
+.readonly-field {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    background: rgba(30, 30, 60, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: default;
+    color: var(--text-primary);
+}
+
+.readonly-field.note-field {
+    min-height: 80px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    align-items: flex-start;
+    padding-top: 12px;
+}
+
+/* Clickable reminder dates for view detail */
+.reminder-dates.clickable {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.reminder-dates.clickable:hover {
+    opacity: 0.8;
+}

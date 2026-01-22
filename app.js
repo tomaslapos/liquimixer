@@ -7220,10 +7220,12 @@ function resetReminderFields() {
     const fields = document.getElementById('reminderFields');
     const mixDateInput = document.getElementById('mixDate');
     const reminderDateInput = document.getElementById('reminderDate');
+    const noteInput = document.getElementById('saveRecipeReminderNote');
     if (checkbox) checkbox.checked = false;
     if (fields) fields.classList.add('hidden');
     if (mixDateInput) mixDateInput.value = '';
     if (reminderDateInput) reminderDateInput.value = '';
+    if (noteInput) noteInput.value = '';
 }
 
 // Inicializovat připomínku jako zapnutou s dnešním datem
@@ -7288,13 +7290,17 @@ function getReminderDataFromForm() {
         }
     }
 
+    const noteInput = document.getElementById('saveRecipeReminderNote');
+    const note = noteInput ? noteInput.value.trim() : '';
+
     return {
         mixed_at: mixDateInput.value,
         remind_at: reminderDateInput.value,
         remind_time: '16:30',
         flavor_type: flavorType,
         flavor_name: flavorName,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague'
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague',
+        note: note || null
     };
 }
 
@@ -7388,14 +7394,14 @@ function renderReminderItem(reminder, recipeId) {
 
     return `
         <div class="reminder-item ${statusClass}" data-reminder-id="${reminder.id}">
-            <div class="reminder-dates">
+            <div class="reminder-dates clickable" onclick="showViewReminderModal('${reminder.id}')">
                 <div class="reminder-mixed-date">${t('reminder.mixed_on', 'Namícháno')}: ${mixedDate}</div>
                 <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
             </div>
             ${reminder.status === 'pending' ? `
                 <div class="reminder-actions">
-                    <button type="button" class="reminder-btn edit" onclick="showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
-                    <button type="button" class="reminder-btn delete" onclick="deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+                    <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
+                    <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
                 </div>
             ` : ''}
         </div>
@@ -7464,6 +7470,10 @@ function showAddReminderModal(recipeId) {
     const remindDateInput = document.getElementById('reminderRemindDate');
     if (remindDateInput) initDatePickerElement(remindDateInput);
 
+    // Vyčistit poznámku pro novou připomínku
+    const noteInput = document.getElementById('reminderNote');
+    if (noteInput) noteInput.value = '';
+
     updateReminderModalDate();
     modal.classList.remove('hidden');
 }
@@ -7483,8 +7493,10 @@ function showEditReminderModal(reminderId, recipeId) {
 
     const mixDateInput = document.getElementById('reminderMixDate');
     const remindDateInput = document.getElementById('reminderRemindDate');
+    const noteInput = document.getElementById('reminderNote');
     if (mixDateInput) { mixDateInput.value = reminder.mixed_at; initDatePickerElement(mixDateInput); }
     if (remindDateInput) { remindDateInput.value = reminder.remind_at; initDatePickerElement(remindDateInput); }
+    if (noteInput) noteInput.value = reminder.note || '';
 
     modal.classList.remove('hidden');
 }
@@ -7529,6 +7541,8 @@ async function saveReminderFromModal(event) {
 
     const mixDate = mixDateInput.value;
     const remindDate = remindDateInput.value;
+    const noteInput = document.getElementById('reminderNote');
+    const note = noteInput ? noteInput.value.trim() : '';
 
     if (isNaN(new Date(mixDate).getTime()) || isNaN(new Date(remindDate).getTime())) {
         alert(t('reminder.invalid_date', 'Neplatný formát data.'));
@@ -7537,12 +7551,12 @@ async function saveReminderFromModal(event) {
 
     try {
         if (editingReminderId) {
-            const updated = await window.LiquiMixerDB.updateReminder(window.Clerk.user.id, editingReminderId, { mixed_at: mixDate, remind_at: remindDate });
+            const updated = await window.LiquiMixerDB.updateReminder(window.Clerk.user.id, editingReminderId, { mixed_at: mixDate, remind_at: remindDate, note: note });
             if (updated) { alert(t('reminder.updated', 'Připomínka byla upravena!')); }
             else { alert(t('reminder.update_error', 'Chyba při úpravě připomínky.')); return false; }
         } else {
             const recipe = window.currentViewingRecipe;
-            await saveNewReminder(currentReminderRecipeId, mixDate, remindDate, currentReminderFlavorType, currentReminderFlavorName, recipe?.name || '');
+            await saveNewReminder(currentReminderRecipeId, mixDate, remindDate, currentReminderFlavorType, currentReminderFlavorName, recipe?.name || '', note);
         }
         hideAddReminderModal();
         if (currentReminderRecipeId) loadRecipeReminders(currentReminderRecipeId);
@@ -7554,7 +7568,7 @@ async function saveReminderFromModal(event) {
     return false;
 }
 
-async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavorName, recipeName) {
+async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavorName, recipeName, note = '') {
     if (!window.Clerk || !window.Clerk.user) return false;
     const reminderData = {
         recipe_id: recipeId,
@@ -7564,7 +7578,8 @@ async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavor
         flavor_type: flavorType,
         flavor_name: flavorName,
         recipe_name: recipeName,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague'
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague',
+        note: note || null
     };
     try {
         const saved = await window.LiquiMixerDB.saveReminder(window.Clerk.user.id, reminderData);
@@ -7589,6 +7604,37 @@ async function deleteReminderConfirm(reminderId, recipeId) {
     }
 }
 
+// Zobrazit detail připomínky (read-only)
+function showViewReminderModal(reminderId) {
+    const reminder = allRecipeReminders.find(r => r.id === reminderId);
+    if (!reminder) { console.error('Reminder not found:', reminderId); return; }
+
+    const modal = document.getElementById('viewReminderModal');
+    if (!modal) return;
+
+    // Formátovat datumy pro zobrazení
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '-';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString();
+    };
+
+    const mixDateEl = document.getElementById('viewReminderMixDate');
+    const remindDateEl = document.getElementById('viewReminderRemindDate');
+    const noteEl = document.getElementById('viewReminderNote');
+
+    if (mixDateEl) mixDateEl.textContent = formatDate(reminder.mixed_at);
+    if (remindDateEl) remindDateEl.textContent = formatDate(reminder.remind_at);
+    if (noteEl) noteEl.textContent = reminder.note || t('reminder.no_note', 'Bez poznámky');
+
+    modal.classList.remove('hidden');
+}
+
+function hideViewReminderModal() {
+    const modal = document.getElementById('viewReminderModal');
+    if (modal) modal.classList.add('hidden');
+}
+
 // Export funkcí pro připomínky
 window.toggleReminderFields = toggleReminderFields;
 window.updateReminderDate = updateReminderDate;
@@ -7597,6 +7643,8 @@ window.loadRecipeReminders = loadRecipeReminders;
 window.showAddReminderModal = showAddReminderModal;
 window.showEditReminderModal = showEditReminderModal;
 window.hideAddReminderModal = hideAddReminderModal;
+window.showViewReminderModal = showViewReminderModal;
+window.hideViewReminderModal = hideViewReminderModal;
 window.updateReminderModalDate = updateReminderModalDate;
 window.saveReminderFromModal = saveReminderFromModal;
 window.deleteReminderConfirm = deleteReminderConfirm;

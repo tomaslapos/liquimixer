@@ -406,7 +406,9 @@
     "sent": "已发送",
     "cancelled": "已取消",
     "note_label": "备注",
-    "note_placeholder": "可选备注..."
+    "note_placeholder": "可选备注...",
+    "view_title": "提醒详情",
+    "no_note": "无备注"
   },
   "alert": {
     "login_required": "请登录以执行此操作。",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "编辑数值"
+  },
+  "footer": {
+    "privacy_policy": "隐私政策",
+    "terms_of_service": "服务条款"
   }
 }

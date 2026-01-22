@@ -1222,7 +1222,8 @@ async function saveReminder(clerkId, reminderData) {
             flavor_name: reminderData.flavor_name || null,
             recipe_name: reminderData.recipe_name || null,
             timezone: reminderData.timezone || 'Europe/Prague',
-            status: 'pending'
+            status: 'pending',
+            note: reminderData.note || null
         };
         
         console.log('saveReminder: Inserting data:', insertData);

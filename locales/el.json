@@ -406,7 +406,9 @@
     "sent": "Εστάλη",
     "cancelled": "Ακυρώθηκε",
     "note_label": "Σημείωση",
-    "note_placeholder": "Προαιρετική σημείωση..."
+    "note_placeholder": "Προαιρετική σημείωση...",
+    "view_title": "Λεπτομέρειες υπενθύμισης",
+    "no_note": "Χωρίς σημείωση"
   },
   "alert": {
     "login_required": "Συνδεθείτε για αυτή την ενέργεια.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "ΕΠΕΞΕΡΓΑΣΙΑ ΤΙΜΩΝ"
+  },
+  "footer": {
+    "privacy_policy": "Πολιτική απορρήτου",
+    "terms_of_service": "Όροι χρήσης"
   }
 }

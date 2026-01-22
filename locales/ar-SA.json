@@ -407,7 +407,9 @@
     "sent": "مُرسَل",
     "cancelled": "ملغى",
     "note_label": "ملاحظة",
-    "note_placeholder": "ملاحظة اختيارية..."
+    "note_placeholder": "ملاحظة اختيارية...",
+    "view_title": "تفاصيل التذكير",
+    "no_note": "لا توجد ملاحظة"
   },
   "alert": {
     "login_required": "سجّل الدخول لهذا الإجراء.",
@@ -611,5 +613,9 @@
   },
   "calculator": {
     "edit_values": "تعديل القيم"
+  },
+  "footer": {
+    "privacy_policy": "سياسة الخصوصية",
+    "terms_of_service": "شروط الخدمة"
   }
 }

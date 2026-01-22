@@ -406,7 +406,9 @@
     "sent": "Gönderildi",
     "cancelled": "İptal edildi",
     "note_label": "Not",
-    "note_placeholder": "İsteğe bağlı not..."
+    "note_placeholder": "İsteğe bağlı not...",
+    "view_title": "Hatırlatma Detayları",
+    "no_note": "Not yok"
   },
   "alert": {
     "login_required": "Bu işlem için lütfen giriş yapın.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "DEGERLERI DUZENLE"
+  },
+  "footer": {
+    "privacy_policy": "Gizlilik Politikası",
+    "terms_of_service": "Hizmet Şartları"
   }
 }

@@ -406,7 +406,9 @@
     "sent": "Elküldve",
     "cancelled": "Lemondva",
     "note_label": "Jegyzet",
-    "note_placeholder": "Opcionális jegyzet..."
+    "note_placeholder": "Opcionális jegyzet...",
+    "view_title": "Emlékeztető részletei",
+    "no_note": "Nincs jegyzet"
   },
   "alert": {
     "login_required": "Kérjük, jelentkezz be ehhez a művelethez.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "ERTEKEK SZERKESZTESE"
+  },
+  "footer": {
+    "privacy_policy": "Adatvédelmi szabályzat",
+    "terms_of_service": "Felhasználási feltételek"
   }
 }

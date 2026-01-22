@@ -335,11 +335,8 @@ serve(async (req) => {
         } else {
           // Vytvořit novou platbu
           // ORDERNUMBER musí být POUZE NUMERICKÝ (čísla), max 15 znaků!
-          // SECURITY: Použití crypto.getRandomValues() místo Math.random()
           const timestamp = Date.now().toString().slice(-10)
-          const randomArray = new Uint32Array(1)
-          crypto.getRandomValues(randomArray)
-          const random = (randomArray[0] % 100000).toString().padStart(5, '0')
+          const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0')
           orderNumber = `${timestamp}${random}`.substring(0, 15)
 
           const { data: newPayment, error: payError } = await supabaseAdmin
@@ -608,7 +605,7 @@ serve(async (req) => {
           
           const { data: user } = await supabaseAdmin
             .from('users')
-            .select('email, first_name, last_name, locale')
+            .select('email, first_name, last_name, preferred_locale')
             .eq('clerk_id', payment.clerk_id)
             .single()
           
@@ -617,8 +614,8 @@ serve(async (req) => {
             ? `${user.first_name} ${user.last_name}` 
             : (user?.first_name || customerEmail)
           
-          // Jazyk faktury: 1) user.locale, 2) subscription.user_locale, 3) 'en' jako fallback
-          const invoiceLocale = user?.locale || subscription?.user_locale || 'en'
+          // Jazyk faktury: 1) user.preferred_locale, 2) subscription.user_locale, 3) 'en' jako fallback
+          const invoiceLocale = user?.preferred_locale || subscription?.user_locale || 'en'
           
           // Vytvořit fakturu v iDoklad
           const idokladFunctionUrl = `${SUPABASE_URL}/functions/v1/idoklad`

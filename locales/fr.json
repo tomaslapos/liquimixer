@@ -406,7 +406,9 @@
     "sent": "Envoyé",
     "cancelled": "Annulé",
     "note_label": "Note",
-    "note_placeholder": "Note optionnelle..."
+    "note_placeholder": "Note optionnelle...",
+    "view_title": "Détails du rappel",
+    "no_note": "Aucune note"
   },
   "alert": {
     "login_required": "Veuillez vous connecter pour cette action.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "MODIFIER LES VALEURS"
+  },
+  "footer": {
+    "privacy_policy": "Politique de confidentialité",
+    "terms_of_service": "Conditions d'utilisation"
   }
 }

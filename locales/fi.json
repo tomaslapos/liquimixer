@@ -406,7 +406,9 @@
     "sent": "Lähetetty",
     "cancelled": "Peruutettu",
     "note_label": "Muistiinpano",
-    "note_placeholder": "Valinnainen muistiinpano..."
+    "note_placeholder": "Valinnainen muistiinpano...",
+    "view_title": "Muistutuksen tiedot",
+    "no_note": "Ei muistiinpanoa"
   },
   "alert": {
     "login_required": "Kirjaudu sisään tähän toimintoon.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "MUOKKAA ARVOJA"
+  },
+  "footer": {
+    "privacy_policy": "Tietosuojakäytäntö",
+    "terms_of_service": "Käyttöehdot"
   }
 }

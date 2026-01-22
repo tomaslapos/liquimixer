@@ -410,7 +410,9 @@
     "sent": "Gesendet",
     "cancelled": "Abgebrochen",
     "note_label": "Notiz",
-    "note_placeholder": "Optionale Notiz..."
+    "note_placeholder": "Optionale Notiz...",
+    "view_title": "Erinnerungsdetails",
+    "no_note": "Keine Notiz"
   },
   "alert": {
     "login_required": "Bitte melden Sie sich für diese Aktion an.",
@@ -608,5 +610,9 @@
   },
   "calculator": {
     "edit_values": "WERTE BEARBEITEN"
+  },
+  "footer": {
+    "privacy_policy": "Datenschutzrichtlinie",
+    "terms_of_service": "Nutzungsbedingungen"
   }
 }

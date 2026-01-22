@@ -406,7 +406,9 @@
     "sent": "送信済み",
     "cancelled": "キャンセル",
     "note_label": "メモ",
-    "note_placeholder": "オプションのメモ..."
+    "note_placeholder": "オプションのメモ...",
+    "view_title": "リマインダー詳細",
+    "no_note": "メモなし"
   },
   "alert": {
     "login_required": "この操作にはログインしてください。",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "値を編集"
+  },
+  "footer": {
+    "privacy_policy": "プライバシーポリシー",
+    "terms_of_service": "利用規約"
   }
 }

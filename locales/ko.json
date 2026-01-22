@@ -406,7 +406,9 @@
     "sent": "전송됨",
     "cancelled": "취소됨",
     "note_label": "메모",
-    "note_placeholder": "선택적 메모..."
+    "note_placeholder": "선택적 메모...",
+    "view_title": "알림 상세정보",
+    "no_note": "메모 없음"
   },
   "alert": {
     "login_required": "이 작업을 수행하려면 로그인하세요.",
@@ -608,5 +610,9 @@
   },
   "calculator": {
     "edit_values": "◀ 값 편집"
+  },
+  "footer": {
+    "privacy_policy": "개인정보 처리방침",
+    "terms_of_service": "이용약관"
   }
 }

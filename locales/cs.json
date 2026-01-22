@@ -365,7 +365,9 @@
     "sent": "Odesláno",
     "cancelled": "Zrušeno",
     "note_label": "Poznámka",
-    "note_placeholder": "Volitelná poznámka..."
+    "note_placeholder": "Volitelná poznámka...",
+    "view_title": "Detail připomínky",
+    "no_note": "Bez poznámky"
   },
   "alert": {
     "login_required": "Pro tuto akci se prosím přihlaste.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "UPRAVIT HODNOTY"
+  },
+  "footer": {
+    "privacy_policy": "Ochrana osobních údajů",
+    "terms_of_service": "Obchodní podmínky"
   }
 }

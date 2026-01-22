@@ -406,7 +406,9 @@
     "sent": "Відправлено",
     "cancelled": "Скасовано",
     "note_label": "Примітка",
-    "note_placeholder": "Необов'язкова примітка..."
+    "note_placeholder": "Необов'язкова примітка...",
+    "view_title": "Деталі нагадування",
+    "no_note": "Немає примітки"
   },
   "alert": {
     "login_required": "Увійдіть для виконання цієї дії.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDAGUVATY ZNACHENNYA"
+  },
+  "footer": {
+    "privacy_policy": "Політика конфіденційності",
+    "terms_of_service": "Умови використання"
   }
 }

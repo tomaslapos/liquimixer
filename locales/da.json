@@ -406,7 +406,9 @@
     "sent": "Sendt",
     "cancelled": "Annulleret",
     "note_label": "Note",
-    "note_placeholder": "Valgfri note..."
+    "note_placeholder": "Valgfri note...",
+    "view_title": "Påmindelsesdetaljer",
+    "no_note": "Ingen note"
   },
   "alert": {
     "login_required": "Log venligst ind for denne handling.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDIGER VAERDIER"
+  },
+  "footer": {
+    "privacy_policy": "Privatlivspolitik",
+    "terms_of_service": "Servicevilkår"
   }
 }

@@ -406,7 +406,9 @@
     "sent": "Nosūtīts",
     "cancelled": "Atcelts",
     "note_label": "Piezīme",
-    "note_placeholder": "Papildu piezīme..."
+    "note_placeholder": "Papildu piezīme...",
+    "view_title": "Atgādinājuma detaļas",
+    "no_note": "Nav piezīmes"
   },
   "alert": {
     "login_required": "Lūdzu, pieslēdzieties šai darbībai.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDIGET VERTIBAS"
+  },
+  "footer": {
+    "privacy_policy": "Privātuma politika",
+    "terms_of_service": "Pakalpojumu noteikumi"
   }
 }

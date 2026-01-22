@@ -410,7 +410,9 @@
     "sent": "Odoslané",
     "cancelled": "Zrušené",
     "note_label": "Poznámka",
-    "note_placeholder": "Voliteľná poznámka..."
+    "note_placeholder": "Voliteľná poznámka...",
+    "view_title": "Detail pripomienky",
+    "no_note": "Bez poznámky"
   },
   "alert": {
     "login_required": "Pre túto akciu sa prosím prihláste.",
@@ -612,5 +614,9 @@
   },
   "calculator": {
     "edit_values": "UPRAVIT HODNOTY"
+  },
+  "footer": {
+    "privacy_policy": "Ochrana osobných údajov",
+    "terms_of_service": "Obchodné podmienky"
   }
 }
