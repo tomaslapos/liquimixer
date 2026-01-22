@@ -1562,6 +1562,29 @@
             </div>
         </div>
 
+        <!-- Detail připomínky modal (read-only) -->
+        <div id="viewReminderModal" class="modal hidden">
+            <div class="modal-content">
+                <button class="menu-close" onclick="hideViewReminderModal()">✕</button>
+                <h3 class="menu-title" data-i18n="reminder.view_title">Detail připomínky</h3>
+                <div class="save-recipe-form">
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="save_recipe.mix_date">Datum míchání</label>
+                        <div id="viewReminderMixDate" class="login-input readonly-field"></div>
+                    </div>
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="save_recipe.reminder_date">Datum připomínky</label>
+                        <div id="viewReminderRemindDate" class="login-input readonly-field"></div>
+                    </div>
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="reminder.note_label">Poznámka</label>
+                        <div id="viewReminderNote" class="login-input readonly-field note-field"></div>
+                    </div>
+                    <button type="button" class="neon-button secondary" onclick="hideViewReminderModal()" data-i18n="recipe_detail.back">Zpět</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Uložení receptu modal -->
         <div id="saveRecipeModal" class="modal hidden">
             <div class="modal-content">
@@ -1929,6 +1952,16 @@
         </section>
     </div>
 
+    <!-- Global Footer with Privacy and Terms links -->
+    <footer class="app-footer">
+        <div class="footer-links">
+            <a href="/privacy.html" class="footer-link" data-i18n="footer.privacy_policy">Ochrana osobních údajů</a>
+            <span class="footer-divider">|</span>
+            <a href="/terms.html" class="footer-link" data-i18n="footer.terms_of_service">Obchodní podmínky</a>
+        </div>
+        <div class="footer-copyright">© 2026 LiquiMixer</div>
+    </footer>
+
     <script src="/app.js?v=20260112c"></script>
     
     <!-- Firebase Cloud Messaging -->
@@ -1944,7 +1977,7 @@
                     .then((registration) => {
                         console.log('LiquiMixer SW registered:', registration.scope);
                         
-                        // Kontrola aktualizací
+                        // Kontrola aktualizací s debounce - nezobrazovat prompt příliš často
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
                             console.log('LiquiMixer SW: Update found');
@@ -1953,6 +1986,20 @@
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // Nová verze je připravena
                                     console.log('LiquiMixer SW: New version ready');
+                                    
+                                    // Debounce: nezobrazovat prompt častěji než každých 5 minut
+                                    const lastPromptTime = localStorage.getItem('sw_update_prompt_time');
+                                    const now = Date.now();
+                                    const DEBOUNCE_MS = 5 * 60 * 1000; // 5 minut
+                                    
+                                    if (lastPromptTime && (now - parseInt(lastPromptTime)) < DEBOUNCE_MS) {
+                                        console.log('LiquiMixer SW: Update prompt suppressed (debounce)');
+                                        return;
+                                    }
+                                    
+                                    // Uložit čas promptu
+                                    localStorage.setItem('sw_update_prompt_time', now.toString());
+                                    
                                     if (confirm('Je dostupná nová verze aplikace. Chcete ji načíst?')) {
                                         newWorker.postMessage('skipWaiting');
                                         window.location.reload();

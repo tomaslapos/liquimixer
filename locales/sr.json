@@ -406,7 +406,9 @@
     "sent": "Послато",
     "cancelled": "Отказано",
     "note_label": "Белешка",
-    "note_placeholder": "Опциона белешка..."
+    "note_placeholder": "Опциона белешка...",
+    "view_title": "Детаљи подсетника",
+    "no_note": "Без белешке"
   },
   "alert": {
     "login_required": "Пријавите се за ову радњу.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "UREDI VREDNOSTI"
+  },
+  "footer": {
+    "privacy_policy": "Политика приватности",
+    "terms_of_service": "Услови коришћења"
   }
 }

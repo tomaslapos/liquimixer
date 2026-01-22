@@ -406,7 +406,9 @@
     "sent": "Saadetud",
     "cancelled": "Tühistatud",
     "note_label": "Märge",
-    "note_placeholder": "Valikuline märge..."
+    "note_placeholder": "Valikuline märge...",
+    "view_title": "Meeldetuletuse üksikasjad",
+    "no_note": "Märge puudub"
   },
   "alert": {
     "login_required": "Selle toimingu jaoks palun logi sisse.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "MUUDA VAARTUSI"
+  },
+  "footer": {
+    "privacy_policy": "Privaatsuspoliitika",
+    "terms_of_service": "Kasutustingimused"
   }
 }

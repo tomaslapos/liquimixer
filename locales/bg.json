@@ -406,7 +406,9 @@
     "sent": "Изпратено",
     "cancelled": "Отменено",
     "note_label": "Бележка",
-    "note_placeholder": "Незадължителна бележка..."
+    "note_placeholder": "Незадължителна бележка...",
+    "view_title": "Детайли на напомнянето",
+    "no_note": "Без бележка"
   },
   "alert": {
     "login_required": "Влезте за това действие.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDAKTIRANE NA STOYNOSTI"
+  },
+  "footer": {
+    "privacy_policy": "Политика за поверителност",
+    "terms_of_service": "Условия за ползване"
   }
 }

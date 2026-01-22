@@ -410,7 +410,9 @@
     "sent": "Sent",
     "cancelled": "Cancelled",
     "note_label": "Note",
-    "note_placeholder": "Optional note..."
+    "note_placeholder": "Optional note...",
+    "view_title": "Reminder Details",
+    "no_note": "No note"
   },
   "alert": {
     "login_required": "Please sign in for this action.",
@@ -613,5 +615,9 @@
   },
   "calculator": {
     "edit_values": "EDIT VALUES"
+  },
+  "footer": {
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service"
   }
 }

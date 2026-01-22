@@ -406,7 +406,9 @@
     "sent": "Išsiųsta",
     "cancelled": "Atšaukta",
     "note_label": "Pastaba",
-    "note_placeholder": "Pasirinktinė pastaba..."
+    "note_placeholder": "Pasirinktinė pastaba...",
+    "view_title": "Priminimo informacija",
+    "no_note": "Be pastabos"
   },
   "alert": {
     "login_required": "Prisijunkite šiam veiksmui.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDAGUOTI REIKSMES"
+  },
+  "footer": {
+    "privacy_policy": "Privatumo politika",
+    "terms_of_service": "Paslaugų teikimo sąlygos"
   }
 }

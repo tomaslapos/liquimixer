@@ -406,7 +406,9 @@
     "sent": "Enviado",
     "cancelled": "Cancelado",
     "note_label": "Nota",
-    "note_placeholder": "Nota opcional..."
+    "note_placeholder": "Nota opcional...",
+    "view_title": "Detalles del recordatorio",
+    "no_note": "Sin nota"
   },
   "alert": {
     "login_required": "Por favor, inicia sesión para esta acción.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "EDITAR VALORES"
+  },
+  "footer": {
+    "privacy_policy": "Política de privacidad",
+    "terms_of_service": "Términos de servicio"
   }
 }

@@ -406,7 +406,9 @@
     "sent": "Отправлено",
     "cancelled": "Отменено",
     "note_label": "Заметка",
-    "note_placeholder": "Необязательная заметка..."
+    "note_placeholder": "Необязательная заметка...",
+    "view_title": "Детали напоминания",
+    "no_note": "Нет заметки"
   },
   "alert": {
     "login_required": "Войдите для выполнения этого действия.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "IZMENIT ZNACHENIYA"
+  },
+  "footer": {
+    "privacy_policy": "Политика конфиденциальности",
+    "terms_of_service": "Условия использования"
   }
 }

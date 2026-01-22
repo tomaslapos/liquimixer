@@ -406,7 +406,9 @@
     "sent": "Sendt",
     "cancelled": "Avbrutt",
     "note_label": "Notat",
-    "note_placeholder": "Valgfritt notat..."
+    "note_placeholder": "Valgfritt notat...",
+    "view_title": "Påminnelsesdetaljer",
+    "no_note": "Ingen notat"
   },
   "alert": {
     "login_required": "Vennligst logg inn for denne handlingen.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDIGER VERDIER"
+  },
+  "footer": {
+    "privacy_policy": "Personvernerklæring",
+    "terms_of_service": "Tjenestevilkår"
   }
 }

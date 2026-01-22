@@ -406,7 +406,9 @@
     "sent": "Skickad",
     "cancelled": "Avbruten",
     "note_label": "Anteckning",
-    "note_placeholder": "Valfri anteckning..."
+    "note_placeholder": "Valfri anteckning...",
+    "view_title": "Påminnelsedetaljer",
+    "no_note": "Ingen anteckning"
   },
   "alert": {
     "login_required": "Vänligen logga in för denna åtgärd.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "REDIGERA VARDEN"
+  },
+  "footer": {
+    "privacy_policy": "Integritetspolicy",
+    "terms_of_service": "Användarvillkor"
   }
 }

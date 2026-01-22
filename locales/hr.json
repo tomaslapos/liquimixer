@@ -406,7 +406,9 @@
     "sent": "Poslano",
     "cancelled": "Otkazano",
     "note_label": "Bilješka",
-    "note_placeholder": "Opcionalna bilješka..."
+    "note_placeholder": "Opcionalna bilješka...",
+    "view_title": "Detalji podsjetnika",
+    "no_note": "Bez bilješke"
   },
   "alert": {
     "login_required": "Prijavite se za ovu radnju.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "UREDI VRIJEDNOSTI"
+  },
+  "footer": {
+    "privacy_policy": "Politika privatnosti",
+    "terms_of_service": "Uvjeti korištenja"
   }
 }

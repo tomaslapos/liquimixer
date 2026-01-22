@@ -406,7 +406,9 @@
     "sent": "Verzonden",
     "cancelled": "Geannuleerd",
     "note_label": "Notitie",
-    "note_placeholder": "Optionele notitie..."
+    "note_placeholder": "Optionele notitie...",
+    "view_title": "Herinneringsdetails",
+    "no_note": "Geen notitie"
   },
   "alert": {
     "login_required": "Log in voor deze actie.",
@@ -610,5 +612,9 @@
   },
   "calculator": {
     "edit_values": "WAARDEN BEWERKEN"
+  },
+  "footer": {
+    "privacy_policy": "Privacybeleid",
+    "terms_of_service": "Servicevoorwaarden"
   }
 }

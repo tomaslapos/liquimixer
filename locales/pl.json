@@ -406,7 +406,9 @@
     "sent": "Wysłane",
     "cancelled": "Anulowane",
     "note_label": "Notatka",
-    "note_placeholder": "Opcjonalna notatka..."
+    "note_placeholder": "Opcjonalna notatka...",
+    "view_title": "Szczegóły przypomnienia",
+    "no_note": "Brak notatki"
   },
   "alert": {
     "login_required": "Proszę się zalogować, aby wykonać tę akcję.",
@@ -607,5 +609,9 @@
   },
   "calculator": {
     "edit_values": "EDYTUJ WARTOSCI"
+  },
+  "footer": {
+    "privacy_policy": "Polityka prywatności",
+    "terms_of_service": "Regulamin"
   }
 }
