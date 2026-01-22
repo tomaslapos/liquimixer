@@ -1953,7 +1953,8 @@
     </div>
 
     <!-- Global Footer with Privacy and Terms links -->
-    <footer class="app-footer">
+    <!-- visibility:hidden prevents FOUC, CSS will override with visible -->
+    <footer class="app-footer" style="visibility: hidden;">
         <div class="footer-links">
             <a href="/privacy.html" class="footer-link" data-i18n="footer.privacy_policy">Ochrana osobních údajů</a>
             <span class="footer-divider">|</span>

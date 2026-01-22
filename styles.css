@@ -1338,6 +1338,7 @@ body {
     justify-content: center;
     z-index: 2000;
     padding: 20px;
+    padding-bottom: 70px; /* Space for footer */
 }
 
 .modal.hidden {
@@ -1349,9 +1350,10 @@ body {
     border: 1px solid var(--neon-pink);
     border-radius: var(--border-radius);
     padding: 30px;
+    padding-bottom: 40px; /* Extra bottom padding */
     max-width: 500px;
     width: 100%;
-    max-height: 90vh;
+    max-height: calc(90vh - 60px); /* Account for footer */
     overflow-y: auto;
     position: relative;
     animation: slideDown 0.3s ease;
@@ -5721,6 +5723,7 @@ body.subscription-required #subscriptionModal {
     color: var(--text-secondary);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 50; /* Lower z-index so buttons can be above */
+    visibility: visible !important; /* Override inline hidden style once CSS loads */
 }
 
 .footer-links {
@@ -5761,7 +5764,11 @@ body.subscription-required #subscriptionModal {
 .results-section,
 .products-catalog,
 .recipes-catalog,
-.flavor-detail-view {
+.flavor-detail-view,
+#intro,
+#mode-select,
+#calculator,
+.page {
     padding-bottom: 80px;
 }
 
