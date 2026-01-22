@@ -33,23 +33,25 @@ function detectBrowserLocale() {
         return baseLang;
     }
     
-    return 'en'; // Fallback na angličtinu
+    return 'cs'; // Fallback na češtinu
 }
 
 // Inicializace i18n
 async function initI18n() {
     // Priorita při inicializaci (před přihlášením):
-    // 1. Jazyk prohlížeče (pokud podporovaný)
-    // 2. Angličtina jako fallback
-    // Po přihlášení se načte uložený jazyk uživatele z databáze
+    // 1. localStorage (uložený jazyk z minulé session - synchronizován s DB po přihlášení)
+    // 2. Jazyk prohlížeče (navigator.language)
+    // 3. Fallback: čeština (cs)
+    // Po přihlášení se načte jazyk z databáze (users.locale) a synchronizuje do localStorage
     
-    // Priorita: 1. localStorage (uložený jazyk), 2. jazyk prohlížeče, 3. angličtina
     const savedLocale = localStorage.getItem('liquimixer_locale');
     if (savedLocale && SUPPORTED_LOCALES.includes(savedLocale)) {
+        // Použít uložený jazyk z localStorage (byl synchronizován z DB po minulém přihlášení)
         currentLocale = savedLocale;
     } else {
+        // Detekovat z prohlížeče, fallback na čeština
         currentLocale = detectBrowserLocale();
-        // Uložit detekovaný jazyk do localStorage
+        // Uložit detekovaný jazyk do localStorage pro konzistenci
         localStorage.setItem('liquimixer_locale', currentLocale);
     }
     
@@ -224,8 +226,8 @@ function t(key, fallback = null) {
 async function setLocale(locale, saveToDb = true) {
     // Validovat, že jazyk je podporovaný
     if (!SUPPORTED_LOCALES.includes(locale)) {
-        console.warn(`Locale ${locale} not supported, falling back to English`);
-        locale = 'en';
+        console.warn(`Locale ${locale} not supported, falling back to Czech`);
+        locale = 'cs';
     }
     
     currentLocale = locale;
