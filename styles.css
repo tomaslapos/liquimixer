@@ -5711,14 +5711,14 @@ body.subscription-required #subscriptionModal {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(10, 10, 21, 0.95);
+    background: rgba(10, 10, 21, 0.98);
     backdrop-filter: blur(10px);
-    padding: 10px 20px;
+    padding: 8px 20px;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 100;
+    z-index: 50; /* Lower z-index so buttons can be above */
 }
 
 .footer-links {
@@ -5750,7 +5750,7 @@ body.subscription-required #subscriptionModal {
 
 /* Add padding to bottom of page content to prevent content being hidden by fixed footer */
 .app-container {
-    padding-bottom: 100px !important;
+    padding-bottom: 80px !important;
 }
 
 /* Ensure all page sections have enough bottom margin for footer */
@@ -5759,9 +5759,30 @@ body.subscription-required #subscriptionModal {
 .results-section,
 .products-catalog,
 .recipes-catalog,
-.flavor-detail-view,
+.flavor-detail-view {
+    padding-bottom: 80px;
+}
+
+/* Recipe detail view needs extra padding for multiple buttons */
 .recipe-detail-view {
-    padding-bottom: 120px;
+    padding-bottom: 160px;
+}
+
+/* Calculator results section needs extra padding for buttons */
+.calculator-results,
+.action-buttons,
+.calculator-actions {
+    margin-bottom: 80px;
+}
+
+/* Ensure action buttons are above the footer */
+.neon-button,
+.button-row,
+.action-buttons button,
+.recipe-detail-view button,
+.calculator-actions button {
+    position: relative;
+    z-index: 60; /* Above footer z-index of 50 */
 }
 
 /* =========================================
