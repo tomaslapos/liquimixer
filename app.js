@@ -614,7 +614,24 @@ window.addEventListener('load', async function() {
                     hideLoginModal();
                     updateAuthUI();
                     
-                    // Zkontrolovat zda uživatel přišel ze subscription modalu
+                    // DETEKCE NOVÉHO UŽIVATELE: Pokud byl účet vytvořen v posledních 60 sekundách
+                    // Toto zachytí OAuth registrace (Continue with Google) které obcházejí subscription modal
+                    const userCreatedAt = new Date(window.Clerk.user.createdAt);
+                    const now = new Date();
+                    const secondsSinceCreation = (now - userCreatedAt) / 1000;
+                    const isNewUser = secondsSinceCreation < 60; // Účet vytvořen před méně než 60s
+                    
+                    console.log('User created at:', userCreatedAt, 'seconds since creation:', secondsSinceCreation, 'isNewUser:', isNewUser);
+                    
+                    // Pro nové uživatele - zobrazit subscription modal (musí souhlasit s OP a zaplatit)
+                    if (isNewUser) {
+                        console.log('New user detected via OAuth - showing subscription modal for terms acceptance...');
+                        await new Promise(r => setTimeout(r, 500));
+                        showSubscriptionModal();
+                        return; // Nepokračovat - uživatel musí souhlasit s OP a zaplatit
+                    }
+                    
+                    // Zkontrolovat zda existující uživatel přišel ze subscription modalu
                     // Pokud ano, zobrazit subscription modal (teď už jako přihlášený - Stav B)
                     const fromSubscription = localStorage.getItem('liquimixer_from_subscription') === 'true';
                     if (fromSubscription) {
@@ -626,7 +643,7 @@ window.addEventListener('load', async function() {
                         return; // Nepokračovat dál - uživatel musí zaplatit
                     }
                     
-                    // Kontrola předplatného (pouze pokud nepřišel ze subscription flow)
+                    // Kontrola předplatného pro existující uživatele (pouze pokud nepřišel ze subscription flow)
                     await checkSubscriptionStatus();
                     
                     // Zkontrolovat pending sdílený recept (až po ověření předplatného)
