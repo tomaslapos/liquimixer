@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v120';
+const CACHE_NAME = 'liquimixer-v121';
 
 // Soubory pro precaching
 const urlsToCache = [
