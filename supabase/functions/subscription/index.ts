@@ -139,48 +139,33 @@ serve(async (req) => {
         const userLocale = data?.locale || 'cs'
         const userCountry = data?.country || 'CZ'
 
-        // Získat cenu podle země (country), NE podle jazyka (locale)
-        // Jazyk je pro fakturu, země je pro DPH a měnu
-        // Mapování země na locale pro pricing tabulku
-        const countryToPricingLocale: Record<string, string> = {
-          'CZ': 'cs', 'SK': 'sk',
-          // EU země používají EUR
-          'DE': 'de', 'AT': 'de', 'FR': 'fr', 'IT': 'it', 'ES': 'es',
-          'NL': 'nl', 'BE': 'nl', 'PT': 'pt', 'PL': 'pl', 'HU': 'hu',
-          'GR': 'el', 'SE': 'sv', 'DK': 'da', 'FI': 'fi', 'IE': 'en',
-          'LU': 'de', 'SI': 'en', 'EE': 'et', 'LV': 'lv', 'LT': 'lt',
-          'MT': 'en', 'CY': 'el', 'BG': 'bg', 'RO': 'ro', 'HR': 'hr',
-          // Mimo EU - USD nebo EUR
-          'US': 'en', 'GB': 'en', 'JP': 'ja', 'KR': 'ko', 
-          'CN': 'zh-CN', 'TW': 'zh-TW', 'AU': 'en', 'CA': 'en',
-          'SA': 'ar-SA', 'AE': 'ar-SA',
-        }
-        const pricingLocale = countryToPricingLocale[userCountry] || 'en'
-        console.log(`Subscription create: userLocale=${userLocale}, userCountry=${userCountry}, pricingLocale=${pricingLocale}`)
+        console.log(`Subscription create: userLocale=${userLocale}, userCountry=${userCountry}`)
 
-        // Získat cenu - zkusit podle pricingLocale, pak fallback na 'en'
+        // Získat cenu podle země (country_code) z tabulky pricing
+        // Tabulka pricing nyní obsahuje záznamy pro všechny země světa
         let pricing = null
         const { data: pricingData } = await supabaseAdmin
           .from('pricing')
           .select('*')
           .eq('plan_type', planType)
           .eq('is_active', true)
-          .eq('locale', pricingLocale)
+          .eq('country_code', userCountry)
           .single()
         
         if (pricingData) {
           pricing = pricingData
+          console.log(`Pricing found for country ${userCountry}: ${pricing.currency} ${pricing.price}`)
         } else {
-          // Fallback na angličtinu (EUR)
-          console.log(`Pricing not found for locale ${pricingLocale}, trying 'en'`)
-          const { data: fallbackPricing } = await supabaseAdmin
-            .from('pricing')
-            .select('*')
-            .eq('plan_type', planType)
-            .eq('is_active', true)
-            .eq('locale', 'en')
-            .single()
-          pricing = fallbackPricing
+          // Fallback pro neznámé země: EUR, 2.40, 0% DPH
+          console.log(`Pricing not found for country ${userCountry}, using fallback (EUR, 2.40, 0%)`)
+          pricing = {
+            price: 2.40,
+            vat_rate: 0,
+            currency: 'EUR',
+            name: 'Annual subscription LiquiMixer PRO',
+            description: 'Access to all features for 365 days',
+            duration_days: 365
+          }
         }
 
         if (!pricing) {
@@ -338,19 +323,32 @@ serve(async (req) => {
         }
 
         // Vytvořit nové předplatné pro obnovu
-        const { data: pricing } = await supabaseAdmin
+        // Použít zemi z existujícího předplatného nebo fallback na CZ
+        const renewCountry = currentSub.user_country || 'CZ'
+        console.log(`Renewal: using country ${renewCountry} from existing subscription`)
+        
+        let pricing = null
+        const { data: pricingData } = await supabaseAdmin
           .from('pricing')
           .select('*')
           .eq('plan_type', 'yearly')
           .eq('is_active', true)
-          .eq('locale', 'cs')
+          .eq('country_code', renewCountry)
           .single()
 
-        if (!pricing) {
-          return new Response(
-            JSON.stringify({ error: 'Cenový plán nenalezen' }),
-            { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          )
+        if (pricingData) {
+          pricing = pricingData
+        } else {
+          // Fallback pro neznámé země: EUR, 2.40, 0% DPH
+          console.log(`Pricing not found for country ${renewCountry}, using fallback`)
+          pricing = {
+            price: 2.40,
+            vat_rate: 0,
+            currency: 'EUR',
+            name: 'Annual subscription LiquiMixer PRO',
+            description: 'Access to all features for 365 days',
+            duration_days: 365
+          }
         }
 
         const vatAmount = pricing.price * (pricing.vat_rate / 100)

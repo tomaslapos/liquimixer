@@ -2,6 +2,25 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
+    <!-- Okamžitá detekce jazyka prohlížeče pro PWA instalaci -->
+    <script>
+    (function() {
+        var SUPPORTED = ['cs','en','de','fr','es','it','pl','ru','pt','nl','ja','ko','zh-CN','zh-TW','ar-SA','sv','da','fi','no','hr','sr','bg','ro','lt','lv','et','hu','el','uk','sk','tr'];
+        var saved = localStorage.getItem('liquimixer_locale');
+        var lang = saved || navigator.language || navigator.userLanguage || 'cs';
+        // Přesná shoda (zh-CN, ar-SA)
+        if (SUPPORTED.indexOf(lang) !== -1) {
+            document.documentElement.lang = lang.split('-')[0];
+        } else {
+            // Základní kód jazyka (en-US -> en, cs-CZ -> cs)
+            var base = lang.split('-')[0].toLowerCase();
+            if (SUPPORTED.indexOf(base) !== -1) {
+                document.documentElement.lang = base;
+            }
+            // Jinak zůstane 'cs' z HTML
+        }
+    })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LiquiMixer - Nejlepší Kalkulátor E-liquidů | Míchání Nikotinu, PG/VG, Příchutí</title>
     
@@ -779,7 +798,7 @@
                 </button>
             </div>
             
-            <button class="neon-button secondary" onclick="showPage('intro')">
+            <button class="neon-button secondary" onclick="goBack()">
                 <span data-i18n="mode_select.back">◀ ZPĚT</span>
             </button>
         </section>
@@ -951,7 +970,7 @@
             </div>
 
             <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('dilute-form')">
+                <button class="neon-button secondary" onclick="goBack()">
                     <span data-i18n="results.edit">◀ UPRAVIT</span>
                 </button>
             </div>
@@ -1125,7 +1144,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="neon-button secondary" onclick="showPage('mode-select')">
+                    <button class="neon-button secondary" onclick="goBack()">
                         <span data-i18n="form.back">◀ ZPĚT</span>
                     </button>
                     <button class="neon-button" onclick="calculateMix()">
@@ -1257,7 +1276,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="neon-button secondary" onclick="showPage('mode-select')">
+                    <button class="neon-button secondary" onclick="goBack()">
                         <span data-i18n="form.back">◀ ZPĚT</span>
                     </button>
                     <button class="neon-button btn-green" onclick="calculateShakeVape()">
@@ -1456,7 +1475,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="neon-button secondary" onclick="showPage('mode-select')">
+                    <button class="neon-button secondary" onclick="goBack()">
                         <span data-i18n="form.back">◀ ZPĚT</span>
                     </button>
                     <button class="neon-button btn-red" onclick="calculateProMix()">
@@ -1688,7 +1707,7 @@
                 <p class="no-recipes-text" data-i18n="recipes.no_recipes">Zatím nemáte žádné uložené recepty.</p>
             </div>
             <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('intro')">
+                <button class="neon-button secondary" onclick="goBack()">
                     <span data-i18n="recipes.back">◀ ZPĚT</span>
                 </button>
             </div>
@@ -1703,7 +1722,7 @@
             </div>
             
             <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('my-recipes')">
+                <button class="neon-button secondary" onclick="goBack()">
                     <span data-i18n="recipe_detail.back">ZPĚT</span>
                 </button>
                 <button class="neon-button" onclick="editSavedRecipe()">
@@ -1823,7 +1842,7 @@
             </div>
             
             <div class="button-group">
-                <button class="neon-button secondary" onclick="showPage('intro')">
+                <button class="neon-button secondary" onclick="goBack()">
                     <span data-i18n="products.back">◀ ZPĚT</span>
                 </button>
             </div>

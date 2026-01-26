@@ -236,6 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearchStarsHover();
     initRecipeSearchStarsHover();
     
+    // Inicializovat navigační historii pro tlačítka Zpět
+    initHistoryNavigation();
+    
     // Event listener pro kontaktní formulář (bezpečnější než inline onclick)
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
@@ -3800,12 +3803,28 @@ function togglePrepDetail(button) {
     }
 }
 
-function showPage(pageId) {
+// Aktuální stránka pro sledování navigace
+let currentPageId = 'intro';
+
+function showPage(pageId, pushToHistory = true) {
+    // Nepushovat do historie pokud jsme už na stejné stránce
+    if (pageId === currentPageId && pushToHistory) {
+        return;
+    }
+    
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
     document.getElementById(pageId).classList.add('active');
     window.scrollTo(0, 0);
+    
+    // Přidat do browser historie (pokud není navigace zpět)
+    if (pushToHistory) {
+        history.pushState({ pageId: pageId }, '', '');
+    }
+    
+    // Aktualizovat aktuální stránku
+    currentPageId = pageId;
 
     // Initialize dilute form sliders when shown
     if (pageId === 'dilute-form') {
@@ -3820,6 +3839,23 @@ function showPage(pageId) {
     
     // Zobrazit/skrýt tlačítko Domů
     updateHomeButtonVisibility(pageId);
+}
+
+// Inicializovat historii při načtení stránky
+function initHistoryNavigation() {
+    // Nastavit počáteční stav historie
+    history.replaceState({ pageId: 'intro' }, '', '');
+    
+    // Listener pro tlačítko zpět v prohlížeči
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.pageId) {
+            // Navigovat na předchozí stránku bez přidání do historie
+            showPage(event.state.pageId, false);
+        } else {
+            // Fallback na intro
+            showPage('intro', false);
+        }
+    });
 }
 
 // Aktualizovat viditelnost tlačítka Domů
@@ -3842,13 +3878,13 @@ function goHome() {
     showPage('intro');
 }
 
-// Navigace zpět v historii
+// Navigace zpět v historii pomocí Browser History API
 function goBack() {
-    if (pageHistory.length > 1) {
-        pageHistory.pop(); // Odstranit aktuální stránku
-        const previousPage = pageHistory.pop(); // Získat předchozí stránku
-        showPage(previousPage);
+    // Použít nativní history.back() pro navigaci zpět
+    if (history.length > 1) {
+        history.back();
     } else {
+        // Fallback na úvodní stránku pokud není historie
         showPage('intro');
     }
 }
