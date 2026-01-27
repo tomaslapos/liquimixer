@@ -38,6 +38,12 @@
     "or_divider": "или",
     "have_account": "Вече имам акаунт"
   },
+  "auth_choice": {
+    "title": "Вход",
+    "question": "Имате ли LiquiMixer акаунт?",
+    "have_account": "Имам акаунт, влез",
+    "want_register": "Искам да се регистрирам"
+  },
   "menu": {
     "title": "Меню",
     "cookies_title": "Бисквитки",

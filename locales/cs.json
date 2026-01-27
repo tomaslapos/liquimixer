@@ -35,6 +35,12 @@
     "or_divider": "nebo",
     "have_account": "Již mám účet"
   },
+  "auth_choice": {
+    "title": "Přihlášení",
+    "question": "Máte již účet v LiquiMixer?",
+    "have_account": "Mám účet, přihlásit se",
+    "want_register": "Chci se registrovat"
+  },
   "menu": {
     "title": "Menu",
     "cookies_title": "Cookies",

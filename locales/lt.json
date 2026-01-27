@@ -38,6 +38,12 @@
     "or_divider": "arba",
     "have_account": "Jau turiu paskyrą"
   },
+  "auth_choice": {
+    "title": "Prisijungti",
+    "question": "Ar turite LiquiMixer paskyrą?",
+    "have_account": "Turiu paskyrą, prisijungti",
+    "want_register": "Noriu užsiregistruoti"
+  },
   "menu": {
     "title": "Meniu",
     "cookies_title": "Slapukai",

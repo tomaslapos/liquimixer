@@ -38,6 +38,12 @@
     "or_divider": "alebo",
     "have_account": "Už mám účet"
   },
+  "auth_choice": {
+    "title": "Prihlásenie",
+    "question": "Máte už účet v LiquiMixer?",
+    "have_account": "Mám účet, prihlásiť sa",
+    "want_register": "Chcem sa zaregistrovať"
+  },
   "menu": {
     "title": "Menu",
     "cookies_title": "Cookies",

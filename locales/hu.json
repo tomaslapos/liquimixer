@@ -38,6 +38,12 @@
     "or_divider": "vagy",
     "have_account": "Már van fiókom"
   },
+  "auth_choice": {
+    "title": "Bejelentkezés",
+    "question": "Van már LiquiMixer fiókod?",
+    "have_account": "Van fiókom, bejelentkezés",
+    "want_register": "Regisztrálni szeretnék"
+  },
   "menu": {
     "title": "Menü",
     "cookies_title": "Sütik",
