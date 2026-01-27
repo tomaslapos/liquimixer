@@ -38,6 +38,12 @@
     "or_divider": "ή",
     "have_account": "Έχω ήδη λογαριασμό"
   },
+  "auth_choice": {
+    "title": "Σύνδεση",
+    "question": "Έχετε λογαριασμό LiquiMixer;",
+    "have_account": "Έχω λογαριασμό, σύνδεση",
+    "want_register": "Θέλω να εγγραφώ"
+  },
   "menu": {
     "title": "Μενού",
     "cookies_title": "Cookies",

@@ -447,6 +447,26 @@
             </div>
         </div>
 
+        <!-- Auth Choice Modal (rozhodovací modal: Mám účet / Chci se registrovat) -->
+        <div id="authChoiceModal" class="login-modal hidden" onclick="handleAuthChoiceModalBackdropClick(event)">
+            <div class="login-content auth-choice-content">
+                <button class="menu-close" onclick="hideAuthChoiceModal()">✕</button>
+                <h3 class="menu-title" data-i18n="auth_choice.title">Přihlášení</h3>
+                <p class="login-subtitle" data-i18n="auth_choice.question">Máte již účet v LiquiMixer?</p>
+                
+                <div class="auth-choice-buttons">
+                    <button class="neon-button" onclick="handleHaveAccount()">
+                        <span data-i18n="auth_choice.have_account">Mám účet, přihlásit se</span>
+                        <div class="button-glow"></div>
+                    </button>
+                    <button class="neon-button secondary" onclick="handleWantRegister()">
+                        <span data-i18n="auth_choice.want_register">Chci se registrovat</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Subscription Payment Modal -->
         <div id="subscriptionModal" class="login-modal hidden" style="background: #000000 !important; backdrop-filter: none !important;" onclick="handleSubscriptionModalBackdropClick(event)">
             <div class="login-content subscription-modal-content">

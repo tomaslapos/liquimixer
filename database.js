@@ -144,6 +144,40 @@ async function getUserFromDatabase(clerkId) {
     }
 }
 
+// Uložit souhlas s obchodními podmínkami
+async function saveTermsAcceptance(clerkId) {
+    if (!supabaseClient || !clerkId) return null;
+    
+    // Validace clerk_id
+    if (!isValidClerkId(clerkId)) {
+        console.error('Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .update({ 
+                terms_accepted_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            })
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('Error saving terms acceptance:', error);
+            return null;
+        }
+        
+        console.log('Terms acceptance saved for user:', clerkId);
+        return data;
+    } catch (err) {
+        console.error('Database error:', err);
+        return null;
+    }
+}
+
 // Uložit uživatelská nastavení/preference
 async function saveUserPreferences(clerkId, preferences) {
     if (!supabaseClient || !clerkId) return null;
@@ -1406,6 +1440,7 @@ window.LiquiMixerDB = {
     init: initSupabase,
     saveUser: saveUserToDatabase,
     getUser: getUserFromDatabase,
+    saveTermsAcceptance: saveTermsAcceptance,
     savePreferences: saveUserPreferences,
     saveUserLocale: saveUserLocale,
     getUserLocale: getUserLocale,

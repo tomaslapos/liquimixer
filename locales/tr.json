@@ -38,6 +38,12 @@
     "or_divider": "veya",
     "have_account": "Zaten bir hesabım var"
   },
+  "auth_choice": {
+    "title": "Giriş Yap",
+    "question": "LiquiMixer hesabınız var mı?",
+    "have_account": "Hesabım var, giriş yap",
+    "want_register": "Kayıt olmak istiyorum"
+  },
   "menu": {
     "title": "Menü",
     "cookies_title": "Çerezler",

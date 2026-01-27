@@ -38,6 +38,12 @@
     "or_divider": "eller",
     "have_account": "Jag har redan ett konto"
   },
+  "auth_choice": {
+    "title": "Logga in",
+    "question": "Har du ett LiquiMixer-konto?",
+    "have_account": "Jag har ett konto, logga in",
+    "want_register": "Jag vill registrera mig"
+  },
   "menu": {
     "title": "Meny",
     "cookies_title": "Cookies",

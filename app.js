@@ -632,10 +632,20 @@ window.addEventListener('load', async function() {
                     }
                     
                     // Zkontrolovat zda existující uživatel přišel ze subscription modalu
-                    // Pokud ano, zobrazit subscription modal (teď už jako přihlášený - Stav B)
+                    // Pokud ano, uložit souhlas s OP do DB a zobrazit platbu
                     const fromSubscription = localStorage.getItem('liquimixer_from_subscription') === 'true';
+                    const termsAccepted = localStorage.getItem('liquimixer_terms_accepted') === 'true';
                     if (fromSubscription) {
                         localStorage.removeItem('liquimixer_from_subscription');
+                        
+                        // Pokud souhlasil s OP při registraci, uložit do DB
+                        if (termsAccepted && window.LiquiMixerDB) {
+                            localStorage.removeItem('liquimixer_terms_accepted');
+                            localStorage.removeItem('liquimixer_terms_accepted_at');
+                            console.log('Saving terms acceptance to database...');
+                            await window.LiquiMixerDB.saveTermsAcceptance(window.Clerk.user.id);
+                        }
+                        
                         console.log('User came from subscription modal - showing payment step (State B)...');
                         // Krátká pauza pro stabilizaci UI a Clerk session
                         await new Promise(r => setTimeout(r, 500));
@@ -708,7 +718,8 @@ function updateAuthUI() {
         console.log('User signed out');
         const loginText = t('nav.login', 'Přihlášení');
         loginBtn.innerHTML = `<span class="nav-icon">👤</span><span class="nav-text" data-i18n="nav.login">${loginText}</span>`;
-        loginBtn.onclick = showLoginModal;
+        // Zobrazit rozhodovací modal (Mám účet / Chci se registrovat) místo přímého Clerk SignIn
+        loginBtn.onclick = showAuthChoiceModal;
         loginBtn.classList.remove('logged-in');
     }
 }
@@ -733,7 +744,54 @@ function toggleMenu() {
     }
 }
 
+// ============================================
+// AUTH CHOICE MODAL - Rozhodovací modal
+// Zobrazí se při kliknutí na "Přihlášení" pro nepřihlášené uživatele
+// ============================================
+
 // Zobrazit Auth Choice modal (výběr mezi přihlášením a registrací)
+function showAuthChoiceModal() {
+    const modal = document.getElementById('authChoiceModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        // Aplikovat překlady
+        if (window.i18n && window.i18n.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+    }
+}
+
+// Skrýt Auth Choice modal
+function hideAuthChoiceModal() {
+    const modal = document.getElementById('authChoiceModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Klik na pozadí zavře modal
+function handleAuthChoiceModalBackdropClick(event) {
+    if (event.target.id === 'authChoiceModal') {
+        hideAuthChoiceModal();
+    }
+}
+
+// Uživatel má účet → zobrazit Clerk SignIn
+function handleHaveAccount() {
+    hideAuthChoiceModal();
+    setTimeout(() => {
+        showLoginModal('signIn');
+    }, 50);
+}
+
+// Uživatel se chce registrovat → zobrazit subscriptionModal (vidí cenu, souhlasí s OP)
+function handleWantRegister() {
+    hideAuthChoiceModal();
+    setTimeout(() => {
+        showSubscriptionModal();
+    }, 50);
+}
+
 // Handler pro přihlášení z loginRequiredModal
 function handleLoginFromRequired() {
     hideLoginRequiredModal();
@@ -6710,9 +6768,22 @@ async function showSubscriptionModal() {
     const isLoggedIn = !!window.Clerk?.user;
     console.log('showSubscriptionModal: isLoggedIn =', isLoggedIn, 'email =', window.Clerk?.user?.primaryEmailAddress?.emailAddress);
     
-    // VŽDY zobrazit správný stav podle přihlášení
-    if (isLoggedIn && loggedInState) {
-        // STAV B: Uživatel je přihlášen → zobrazit potvrzení a tlačítko Zaplatit
+    // Zkontrolovat zda uživatel již souhlasil s OP (terms_accepted_at v DB)
+    let hasAcceptedTerms = false;
+    if (isLoggedIn && window.LiquiMixerDB) {
+        try {
+            const userData = await window.LiquiMixerDB.getUser(window.Clerk.user.id);
+            hasAcceptedTerms = !!userData?.terms_accepted_at;
+            console.log('showSubscriptionModal: hasAcceptedTerms =', hasAcceptedTerms, 'terms_accepted_at =', userData?.terms_accepted_at);
+        } catch (e) {
+            console.warn('showSubscriptionModal: Failed to check terms acceptance:', e);
+        }
+    }
+    
+    // Zobrazit správný stav podle přihlášení A souhlasu s OP
+    // Přihlášený uživatel bez souhlasu s OP musí nejprve souhlasit (Stav A)
+    if (isLoggedIn && hasAcceptedTerms && loggedInState) {
+        // STAV B: Uživatel je přihlášen A již souhlasil s OP → zobrazit potvrzení a tlačítko Zaplatit
         loggedInState.classList.remove('hidden');
         if (guestState) guestState.classList.add('hidden');
         
@@ -6777,12 +6848,27 @@ function updateGuestPayButton() {
 }
 
 // Spustit registraci a pak platbu (pro nepřihlášené)
-function startRegistrationAndPayment() {
+async function startRegistrationAndPayment() {
     const termsCheckbox = document.getElementById('termsCheckboxGuest');
     if (!termsCheckbox?.checked) {
         return;
     }
     
+    // Zkontrolovat zda je uživatel přihlášen (OAuth uživatel bez souhlasu s OP)
+    if (window.Clerk?.user) {
+        // Přihlášený uživatel - uložit souhlas s OP do DB a rovnou přejít na platbu
+        console.log('startRegistrationAndPayment: User is logged in, saving terms acceptance and proceeding to payment...');
+        
+        if (window.LiquiMixerDB) {
+            await window.LiquiMixerDB.saveTermsAcceptance(window.Clerk.user.id);
+        }
+        
+        // Přejít přímo na platbu
+        startPayment();
+        return;
+    }
+    
+    // Nepřihlášený uživatel - standardní flow: uložit flag a přejít na registraci
     // Uložit flag, že uživatel přišel ze subscription modalu a souhlasil s OP
     localStorage.setItem('liquimixer_from_subscription', 'true');
     localStorage.setItem('liquimixer_terms_accepted', 'true');
@@ -7708,6 +7794,12 @@ window.deleteReminderConfirm = deleteReminderConfirm;
 window.toggleMenu = toggleMenu;
 window.handleLoginFromRequired = handleLoginFromRequired;
 window.handleRegisterFromRequired = handleRegisterFromRequired;
+// Auth Choice Modal
+window.showAuthChoiceModal = showAuthChoiceModal;
+window.hideAuthChoiceModal = hideAuthChoiceModal;
+window.handleAuthChoiceModalBackdropClick = handleAuthChoiceModalBackdropClick;
+window.handleHaveAccount = handleHaveAccount;
+window.handleWantRegister = handleWantRegister;
 window.showLoginModal = showLoginModal;
 window.hideLoginModal = hideLoginModal;
 window.handleLoginModalClose = handleLoginModalClose;

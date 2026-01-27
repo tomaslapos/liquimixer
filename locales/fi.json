@@ -38,6 +38,12 @@
     "or_divider": "tai",
     "have_account": "Minulla on jo tili"
   },
+  "auth_choice": {
+    "title": "Kirjaudu",
+    "question": "Onko sinulla LiquiMixer-tili?",
+    "have_account": "Minulla on tili, kirjaudu",
+    "want_register": "Haluan rekisteröityä"
+  },
   "menu": {
     "title": "Valikko",
     "cookies_title": "Evästeet",

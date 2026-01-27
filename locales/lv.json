@@ -38,6 +38,12 @@
     "or_divider": "vai",
     "have_account": "Man jau ir konts"
   },
+  "auth_choice": {
+    "title": "Pieteikšanās",
+    "question": "Vai jums ir LiquiMixer konts?",
+    "have_account": "Man ir konts, pieteikties",
+    "want_register": "Vēlos reģistrēties"
+  },
   "menu": {
     "title": "Izvēlne",
     "cookies_title": "Sīkdatnes",

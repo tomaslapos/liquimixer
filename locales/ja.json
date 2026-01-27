@@ -38,6 +38,12 @@
     "or_divider": "または",
     "have_account": "すでにアカウントをお持ちです"
   },
+  "auth_choice": {
+    "title": "ログイン",
+    "question": "LiquiMixerアカウントをお持ちですか？",
+    "have_account": "アカウントあり、ログイン",
+    "want_register": "登録したい"
+  },
   "menu": {
     "title": "メニュー",
     "cookies_title": "クッキー",

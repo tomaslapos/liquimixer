@@ -38,6 +38,12 @@
     "or_divider": "või",
     "have_account": "Mul on juba konto"
   },
+  "auth_choice": {
+    "title": "Sisselogimine",
+    "question": "Kas teil on LiquiMixer konto?",
+    "have_account": "Mul on konto, logi sisse",
+    "want_register": "Tahan registreeruda"
+  },
   "menu": {
     "title": "Menüü",
     "cookies_title": "Küpsised",

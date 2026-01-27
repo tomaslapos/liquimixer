@@ -38,6 +38,12 @@
     "or_divider": "lub",
     "have_account": "Mam już konto"
   },
+  "auth_choice": {
+    "title": "Logowanie",
+    "question": "Masz już konto w LiquiMixer?",
+    "have_account": "Mam konto, zaloguj się",
+    "want_register": "Chcę się zarejestrować"
+  },
   "menu": {
     "title": "Menu",
     "cookies_title": "Pliki cookie",

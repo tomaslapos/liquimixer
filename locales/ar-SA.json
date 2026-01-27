@@ -39,6 +39,12 @@
     "or_divider": "أو",
     "have_account": "لدي حساب بالفعل"
   },
+  "auth_choice": {
+    "title": "تسجيل الدخول",
+    "question": "هل لديك حساب LiquiMixer؟",
+    "have_account": "لدي حساب، تسجيل الدخول",
+    "want_register": "أريد التسجيل"
+  },
   "menu": {
     "title": "القائمة",
     "cookies_title": "ملفات تعريف الارتباط",
