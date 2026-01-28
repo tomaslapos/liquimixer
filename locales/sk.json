@@ -397,7 +397,8 @@
     "no": "Nie",
     "day": "deň",
     "days": "dní",
-    "days_few": "dni"
+    "days_few": "dni",
+    "dismiss": "Zavrieť"
   },
   "reminder": {
     "add_title": "Pridať miešanie",
@@ -418,7 +419,12 @@
     "note_label": "Poznámka",
     "note_placeholder": "Voliteľná poznámka...",
     "view_title": "Detail pripomienky",
-    "no_note": "Bez poznámky"
+    "no_note": "Bez poznámky",
+    "matured": "Vyzreté",
+    "matured_title": "Vaše liquidy sú vyzreté!",
+    "matured_single": "Váš liquid \"{name}\" je vyzretý a pripravený na použitie.",
+    "matured_multiple": "{count} liquidov je vyzretých a pripravených na použitie.",
+    "view_recipes": "Zobraziť recepty"
   },
   "alert": {
     "login_required": "Pre túto akciu sa prosím prihláste.",

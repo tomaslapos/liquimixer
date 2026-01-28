@@ -393,7 +393,8 @@
     "no": "Nē",
     "day": "diena",
     "days": "dienas",
-    "days_few": "dienas"
+    "days_few": "dienas",
+    "dismiss": "Aizvērt"
   },
   "reminder": {
     "add_title": "Pievienot sajaukšanu",
@@ -414,7 +415,12 @@
     "note_label": "Piezīme",
     "note_placeholder": "Papildu piezīme...",
     "view_title": "Atgādinājuma detaļas",
-    "no_note": "Nav piezīmes"
+    "no_note": "Nav piezīmes",
+    "matured": "Nogatavināts",
+    "matured_title": "Jūsu šķidrumi ir gatavi!",
+    "matured_single": "Jūsu šķidrums \"{name}\" ir nogatavināts un gatavs lietošanai.",
+    "matured_multiple": "{count} šķidrumi ir nogatavināti un gatavi lietošanai.",
+    "view_recipes": "Skatīt receptes"
   },
   "alert": {
     "login_required": "Lūdzu, pieslēdzieties šai darbībai.",

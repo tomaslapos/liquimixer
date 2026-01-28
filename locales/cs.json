@@ -352,7 +352,8 @@
     "no": "Ne",
     "day": "den",
     "days": "dní",
-    "days_few": "dny"
+    "days_few": "dny",
+    "dismiss": "Zavřít"
   },
   "reminder": {
     "add_title": "Přidat míchání",
@@ -373,7 +374,12 @@
     "note_label": "Poznámka",
     "note_placeholder": "Volitelná poznámka...",
     "view_title": "Detail připomínky",
-    "no_note": "Bez poznámky"
+    "no_note": "Bez poznámky",
+    "matured": "Vyzrálo",
+    "matured_title": "Vaše liquidy jsou vyzrálé!",
+    "matured_single": "Váš liquid \"{name}\" je vyzrálý a připraven k použití.",
+    "matured_multiple": "{count} liquidů je vyzrálých a připravených k použití.",
+    "view_recipes": "Zobrazit recepty"
   },
   "alert": {
     "login_required": "Pro tuto akci se prosím přihlaste.",

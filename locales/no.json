@@ -393,7 +393,8 @@
     "no": "Nei",
     "day": "dag",
     "days": "dager",
-    "days_few": "dager"
+    "days_few": "dager",
+    "dismiss": "Lukk"
   },
   "reminder": {
     "add_title": "Legg til blanding",
@@ -414,7 +415,12 @@
     "note_label": "Notat",
     "note_placeholder": "Valgfritt notat...",
     "view_title": "Påminnelsesdetaljer",
-    "no_note": "Ingen notat"
+    "no_note": "Ingen notat",
+    "matured": "Modnet",
+    "matured_title": "Væskene dine er klare!",
+    "matured_single": "Væsken din \"{name}\" har modnet og er klar til bruk.",
+    "matured_multiple": "{count} væsker har modnet og er klare til bruk.",
+    "view_recipes": "Vis oppskrifter"
   },
   "alert": {
     "login_required": "Vennligst logg inn for denne handlingen.",

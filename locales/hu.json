@@ -393,7 +393,8 @@
     "no": "Nem",
     "day": "nap",
     "days": "nap",
-    "days_few": "nap"
+    "days_few": "nap",
+    "dismiss": "Bezárás"
   },
   "reminder": {
     "add_title": "Keverés hozzáadása",
@@ -414,7 +415,12 @@
     "note_label": "Jegyzet",
     "note_placeholder": "Opcionális jegyzet...",
     "view_title": "Emlékeztető részletei",
-    "no_note": "Nincs jegyzet"
+    "no_note": "Nincs jegyzet",
+    "matured": "Érlelt",
+    "matured_title": "A liquidjeid készek!",
+    "matured_single": "A \"{name}\" liquidod beérett és használatra kész.",
+    "matured_multiple": "{count} liquid beérett és használatra kész.",
+    "view_recipes": "Receptek megtekintése"
   },
   "alert": {
     "login_required": "Kérjük, jelentkezz be ehhez a művelethez.",

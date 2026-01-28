@@ -393,7 +393,8 @@
     "no": "Nu",
     "day": "zi",
     "days": "zile",
-    "days_few": "zile"
+    "days_few": "zile",
+    "dismiss": "Închide"
   },
   "reminder": {
     "add_title": "Adaugă amestecare",
@@ -414,7 +415,12 @@
     "note_label": "Notă",
     "note_placeholder": "Notă opțională...",
     "view_title": "Detalii memento",
-    "no_note": "Fără notă"
+    "no_note": "Fără notă",
+    "matured": "Maturat",
+    "matured_title": "Lichidele tale sunt gata!",
+    "matured_single": "Lichidul tău \"{name}\" s-a maturat și este gata de utilizare.",
+    "matured_multiple": "{count} lichide s-au maturat și sunt gata de utilizare.",
+    "view_recipes": "Vezi rețetele"
   },
   "alert": {
     "login_required": "Autentificați-vă pentru această acțiune.",

@@ -393,7 +393,8 @@
     "no": "Ei",
     "day": "päivä",
     "days": "päivää",
-    "days_few": "päivää"
+    "days_few": "päivää",
+    "dismiss": "Sulje"
   },
   "reminder": {
     "add_title": "Lisää sekoitus",
@@ -414,7 +415,12 @@
     "note_label": "Muistiinpano",
     "note_placeholder": "Valinnainen muistiinpano...",
     "view_title": "Muistutuksen tiedot",
-    "no_note": "Ei muistiinpanoa"
+    "no_note": "Ei muistiinpanoa",
+    "matured": "Kypsynyt",
+    "matured_title": "Nesteesi ovat valmiita!",
+    "matured_single": "Nesteesi \"{name}\" on kypsynyt ja valmis käytettäväksi.",
+    "matured_multiple": "{count} nestettä on kypsynyt ja valmis käytettäväksi.",
+    "view_recipes": "Näytä reseptit"
   },
   "alert": {
     "login_required": "Kirjaudu sisään tähän toimintoon.",

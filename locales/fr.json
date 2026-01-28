@@ -393,7 +393,8 @@
     "no": "Non",
     "day": "jour",
     "days": "jours",
-    "days_few": "jours"
+    "days_few": "jours",
+    "dismiss": "Fermer"
   },
   "reminder": {
     "add_title": "Ajouter un mélange",
@@ -414,7 +415,12 @@
     "note_label": "Note",
     "note_placeholder": "Note optionnelle...",
     "view_title": "Détails du rappel",
-    "no_note": "Aucune note"
+    "no_note": "Aucune note",
+    "matured": "Mûri",
+    "matured_title": "Vos liquides sont prêts !",
+    "matured_single": "Votre liquide \"{name}\" est mûri et prêt à l'emploi.",
+    "matured_multiple": "{count} liquides sont mûris et prêts à l'emploi.",
+    "view_recipes": "Voir les recettes"
   },
   "alert": {
     "login_required": "Veuillez vous connecter pour cette action.",

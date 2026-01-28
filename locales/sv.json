@@ -393,7 +393,8 @@
     "no": "Nej",
     "day": "dag",
     "days": "dagar",
-    "days_few": "dagar"
+    "days_few": "dagar",
+    "dismiss": "Stäng"
   },
   "reminder": {
     "add_title": "Lägg till blandning",
@@ -414,7 +415,12 @@
     "note_label": "Anteckning",
     "note_placeholder": "Valfri anteckning...",
     "view_title": "Påminnelsedetaljer",
-    "no_note": "Ingen anteckning"
+    "no_note": "Ingen anteckning",
+    "matured": "Mognad",
+    "matured_title": "Dina vätskor är redo!",
+    "matured_single": "Din vätska \"{name}\" har mognat och är redo att användas.",
+    "matured_multiple": "{count} vätskor har mognat och är redo att användas.",
+    "view_recipes": "Visa recept"
   },
   "alert": {
     "login_required": "Vänligen logga in för denna åtgärd.",

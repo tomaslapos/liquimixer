@@ -1434,6 +1434,109 @@ async function cancelReminder(clerkId, reminderId) {
     }
 }
 
+// =============================================
+// FCM TOKEN FUNCTIONS
+// =============================================
+
+// Uložit FCM token pro push notifikace
+async function saveFcmToken(clerkId, token, deviceInfo) {
+    if (!supabaseClient || !clerkId || !token) {
+        console.error('saveFcmToken: Missing required parameters');
+        return { data: null, error: new Error('Missing required parameters') };
+    }
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('saveFcmToken: Invalid clerk_id format');
+        return { data: null, error: new Error('Invalid clerk_id format') };
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('fcm_tokens')
+            .upsert({
+                clerk_id: clerkId,
+                token: token,
+                device_info: deviceInfo || {},
+                updated_at: new Date().toISOString(),
+                last_used_at: new Date().toISOString()
+            }, { 
+                onConflict: 'clerk_id,token'
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('saveFcmToken: Supabase error:', error);
+            return { data: null, error };
+        }
+        
+        console.log('saveFcmToken: Token saved successfully');
+        return { data, error: null };
+    } catch (err) {
+        console.error('saveFcmToken: Database error:', err);
+        return { data: null, error: err };
+    }
+}
+
+// Smazat FCM token (při odhlášení nebo zneplatnění)
+async function deleteFcmToken(clerkId, token) {
+    if (!supabaseClient || !clerkId || !token) {
+        console.error('deleteFcmToken: Missing required parameters');
+        return { error: new Error('Missing required parameters') };
+    }
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('deleteFcmToken: Invalid clerk_id format');
+        return { error: new Error('Invalid clerk_id format') };
+    }
+    
+    try {
+        const { error } = await supabaseClient
+            .from('fcm_tokens')
+            .delete()
+            .eq('clerk_id', clerkId)
+            .eq('token', token);
+        
+        if (error) {
+            console.error('deleteFcmToken: Supabase error:', error);
+            return { error };
+        }
+        
+        console.log('deleteFcmToken: Token deleted successfully');
+        return { error: null };
+    } catch (err) {
+        console.error('deleteFcmToken: Database error:', err);
+        return { error: err };
+    }
+}
+
+// Získat všechny FCM tokeny uživatele
+async function getFcmTokens(clerkId) {
+    if (!supabaseClient || !clerkId) return [];
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('getFcmTokens: Invalid clerk_id format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('fcm_tokens')
+            .select('*')
+            .eq('clerk_id', clerkId);
+        
+        if (error) {
+            console.error('getFcmTokens: Supabase error:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('getFcmTokens: Database error:', err);
+        return [];
+    }
+}
+
 // Exportuj funkce pro použití v app.js
 console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
@@ -1473,7 +1576,17 @@ window.LiquiMixerDB = {
     updateReminder: updateReminder,
     deleteReminder: deleteReminder,
     cancelReminder: cancelReminder,
+    // FCM tokeny
+    saveFcmToken: saveFcmToken,
+    deleteFcmToken: deleteFcmToken,
+    getFcmTokens: getFcmTokens,
     onSignIn: onClerkSignIn
+};
+
+// Export pro fcm.js kompatibilitu (volá window.database.saveFcmToken)
+window.database = {
+    saveFcmToken: saveFcmToken,
+    deleteFcmToken: deleteFcmToken
 };
 
 console.log('database.js: LiquiMixerDB exported successfully!', !!window.LiquiMixerDB);

@@ -393,7 +393,8 @@
     "no": "Nie",
     "day": "dzień",
     "days": "dni",
-    "days_few": "dni"
+    "days_few": "dni",
+    "dismiss": "Zamknij"
   },
   "reminder": {
     "add_title": "Dodaj mieszanie",
@@ -414,7 +415,12 @@
     "note_label": "Notatka",
     "note_placeholder": "Opcjonalna notatka...",
     "view_title": "Szczegóły przypomnienia",
-    "no_note": "Brak notatki"
+    "no_note": "Brak notatki",
+    "matured": "Dojrzały",
+    "matured_title": "Twoje liquidy są gotowe!",
+    "matured_single": "Twój liquid \"{name}\" jest dojrzały i gotowy do użycia.",
+    "matured_multiple": "{count} liquidów jest dojrzałych i gotowych do użycia.",
+    "view_recipes": "Zobacz przepisy"
   },
   "alert": {
     "login_required": "Proszę się zalogować, aby wykonać tę akcję.",

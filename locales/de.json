@@ -397,7 +397,8 @@
     "no": "Nein",
     "day": "Tag",
     "days": "Tage",
-    "days_few": "Tage"
+    "days_few": "Tage",
+    "dismiss": "Schließen"
   },
   "reminder": {
     "add_title": "Mischung hinzufügen",
@@ -418,7 +419,12 @@
     "note_label": "Notiz",
     "note_placeholder": "Optionale Notiz...",
     "view_title": "Erinnerungsdetails",
-    "no_note": "Keine Notiz"
+    "no_note": "Keine Notiz",
+    "matured": "Gereift",
+    "matured_title": "Ihre Liquids sind fertig!",
+    "matured_single": "Ihr Liquid \"{name}\" ist gereift und einsatzbereit.",
+    "matured_multiple": "{count} Liquids sind gereift und einsatzbereit.",
+    "view_recipes": "Rezepte anzeigen"
   },
   "alert": {
     "login_required": "Bitte melden Sie sich für diese Aktion an.",

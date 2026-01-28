@@ -658,6 +658,9 @@ window.addEventListener('load', async function() {
                     
                     // Zkontrolovat pending sdílený recept (až po ověření předplatného)
                     await checkPendingSharedRecipe();
+                    
+                    // Zkontrolovat vyzrálé liquidy a zobrazit in-app notifikaci
+                    await checkMaturedReminders();
                 }
                 
                 // Pokud se uživatel odhlásil, aktualizovat UI
@@ -7522,13 +7525,31 @@ async function loadRecipeReminders(recipeId, showAll = false) {
 function renderReminderItem(reminder, recipeId) {
     const mixedDate = new Date(reminder.mixed_at).toLocaleDateString();
     const remindDate = new Date(reminder.remind_at).toLocaleDateString();
-    const statusClass = reminder.status === 'sent' ? 'sent' : reminder.status === 'cancelled' ? 'cancelled' : '';
+    
+    // Kontrola vyzrálosti - remind_at <= dnes a status je pending
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reminderDate = new Date(reminder.remind_at);
+    reminderDate.setHours(0, 0, 0, 0);
+    const isMatured = reminder.status === 'pending' && reminderDate <= today;
+    
+    // Sestavit CSS třídy
+    let statusClass = '';
+    if (reminder.status === 'sent') {
+        statusClass = 'sent';
+    } else if (reminder.status === 'cancelled') {
+        statusClass = 'cancelled';
+    } else if (isMatured) {
+        statusClass = 'matured';
+    }
 
     let statusBadge = '';
     if (reminder.status === 'sent') {
         statusBadge = `<span class="reminder-status-badge sent">✓ ${t('reminder.sent', 'Odesláno')}</span>`;
     } else if (reminder.status === 'cancelled') {
         statusBadge = `<span class="reminder-status-badge cancelled">✕ ${t('reminder.cancelled', 'Zrušeno')}</span>`;
+    } else if (isMatured) {
+        statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Vyzrálo')}</span>`;
     }
 
     return `
@@ -7545,6 +7566,100 @@ function renderReminderItem(reminder, recipeId) {
             ` : ''}
         </div>
     `;
+}
+
+// =============================================
+// KONTROLA VYZRÁLÝCH LIQUIDŮ (IN-APP NOTIFIKACE)
+// =============================================
+
+// Zkontrolovat vyzrálé liquidy a zobrazit in-app notifikaci
+async function checkMaturedReminders() {
+    if (!window.Clerk?.user || !window.LiquiMixerDB) return;
+    
+    try {
+        const clerkId = window.Clerk.user.id;
+        const reminders = await window.LiquiMixerDB.getUserReminders(clerkId);
+        
+        if (!reminders || reminders.length === 0) return;
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStr = today.toISOString().split('T')[0];
+        
+        // Najít vyzrálé liquidy (pending a remind_at <= dnes)
+        const maturedReminders = reminders.filter(r => {
+            if (r.status !== 'pending') return false;
+            const remindDate = new Date(r.remind_at);
+            remindDate.setHours(0, 0, 0, 0);
+            return remindDate <= today;
+        });
+        
+        if (maturedReminders.length > 0) {
+            console.log('Found matured reminders:', maturedReminders.length);
+            showMaturedLiquidsNotification(maturedReminders);
+        }
+    } catch (error) {
+        console.error('Error checking matured reminders:', error);
+    }
+}
+
+// Zobrazit notifikaci o vyzrálých liquidech
+function showMaturedLiquidsNotification(maturedReminders) {
+    if (!maturedReminders || maturedReminders.length === 0) return;
+    
+    // Získat překlady
+    const title = t('reminder.matured_title', 'Vaše liquidy jsou vyzrálé!');
+    const singleLiquid = t('reminder.matured_single', 'Váš liquid "{name}" je vyzrálý a připraven k použití.');
+    const multipleLiquids = t('reminder.matured_multiple', '{count} liquidů je vyzrálých a připravených k použití.');
+    const viewButton = t('reminder.view_recipes', 'Zobrazit recepty');
+    const dismissButton = t('common.dismiss', 'Zavřít');
+    
+    // Sestavit zprávu
+    let message;
+    if (maturedReminders.length === 1) {
+        const name = maturedReminders[0].recipe_name || maturedReminders[0].flavor_name || 'Liquid';
+        message = singleLiquid.replace('{name}', name);
+    } else {
+        message = multipleLiquids.replace('{count}', maturedReminders.length.toString());
+    }
+    
+    // Vytvořit toast notifikaci s akcemi
+    const existing = document.querySelector('.matured-notification');
+    if (existing) existing.remove();
+    
+    const notification = document.createElement('div');
+    notification.className = 'toast-notification toast-success matured-notification';
+    notification.innerHTML = `
+        <div class="matured-notification-content">
+            <div class="matured-notification-icon">🧪</div>
+            <div class="matured-notification-text">
+                <strong>${title}</strong>
+                <p>${message}</p>
+            </div>
+        </div>
+        <div class="matured-notification-actions">
+            <button class="matured-btn-view" onclick="goToSavedRecipes(); this.closest('.matured-notification').remove();">${viewButton}</button>
+            <button class="matured-btn-dismiss" onclick="this.closest('.matured-notification').remove();">${dismissButton}</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animace
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Auto-dismiss po 15 sekundách
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 15000);
+}
+
+// Přejít na uložené recepty
+function goToSavedRecipes() {
+    showPage('savedRecipes');
 }
 
 // Aktuální recept pro přidání připomínky

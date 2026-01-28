@@ -393,7 +393,8 @@
     "no": "Ei",
     "day": "päev",
     "days": "päeva",
-    "days_few": "päeva"
+    "days_few": "päeva",
+    "dismiss": "Sulge"
   },
   "reminder": {
     "add_title": "Lisa segamine",
@@ -414,7 +415,12 @@
     "note_label": "Märge",
     "note_placeholder": "Valikuline märge...",
     "view_title": "Meeldetuletuse üksikasjad",
-    "no_note": "Märge puudub"
+    "no_note": "Märge puudub",
+    "matured": "Küpsenud",
+    "matured_title": "Teie vedelikud on valmis!",
+    "matured_single": "Teie vedelik \"{name}\" on küpsenud ja kasutamiseks valmis.",
+    "matured_multiple": "{count} vedelikku on küpsenud ja kasutamiseks valmis.",
+    "view_recipes": "Vaata retsepte"
   },
   "alert": {
     "login_required": "Selle toimingu jaoks palun logi sisse.",
