@@ -7627,19 +7627,25 @@ function renderReminderItem(reminder, recipeId) {
 // =============================================
 
 // Konstanty pro localStorage klíče
-const MATURED_DISMISSED_DATE_KEY = 'liquimixer_matured_dismissed_date';
 const MATURED_DISMISS_COUNT_PREFIX = 'liquimixer_matured_dismiss_count_';
+const MATURED_DISMISSED_TODAY_PREFIX = 'liquimixer_matured_dismissed_today_';
 
-// Zkontrolovat zda byla notifikace dnes již zavřena
-function wasMaturedNotificationDismissedToday() {
-    const dismissedDate = localStorage.getItem(MATURED_DISMISSED_DATE_KEY);
+// Zkontrolovat zda byla konkrétní připomínka dnes již zavřena
+function wasReminderDismissedToday(reminderId) {
+    const dismissedDate = localStorage.getItem(MATURED_DISMISSED_TODAY_PREFIX + reminderId);
     if (!dismissedDate) return false;
     
     const today = new Date().toISOString().split('T')[0];
     return dismissedDate === today;
 }
 
-// Získat počet zavření pro konkrétní připomínku
+// Označit připomínku jako zavřenou dnes
+function setReminderDismissedToday(reminderId) {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem(MATURED_DISMISSED_TODAY_PREFIX + reminderId, today);
+}
+
+// Získat počet zavření pro konkrétní připomínku (celkový - pro permanentní skrytí po 3x)
 function getMaturedDismissCount(reminderId) {
     const count = localStorage.getItem(MATURED_DISMISS_COUNT_PREFIX + reminderId);
     return count ? parseInt(count, 10) : 0;
@@ -7651,20 +7657,16 @@ function incrementMaturedDismissCount(reminderId) {
     localStorage.setItem(MATURED_DISMISS_COUNT_PREFIX + reminderId, (count + 1).toString());
 }
 
-// Uložit datum zavření notifikace
-function setMaturedDismissedToday() {
-    const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem(MATURED_DISMISSED_DATE_KEY, today);
-}
-
 // Zavřít notifikaci a uložit stav do localStorage
 function dismissMaturedNotification(reminderIds) {
-    // Uložit dnešní datum - nezobrazovat do dalšího dne
-    setMaturedDismissedToday();
-    
-    // Inkrementovat počítadlo pro každou připomínku
+    // Pro každou připomínku:
+    // 1. Označit jako zavřenou dnes (nezobrazí se znovu dnes)
+    // 2. Inkrementovat celkové počítadlo (po 3x se nezobrazí vůbec)
     if (reminderIds && Array.isArray(reminderIds)) {
-        reminderIds.forEach(id => incrementMaturedDismissCount(id));
+        reminderIds.forEach(id => {
+            setReminderDismissedToday(id);
+            incrementMaturedDismissCount(id);
+        });
     }
     
     // Odstranit notifikaci z DOM
@@ -7679,12 +7681,6 @@ function dismissMaturedNotification(reminderIds) {
 async function checkMaturedReminders() {
     if (!window.Clerk?.user || !window.LiquiMixerDB) return;
     
-    // Pokud byla notifikace dnes již zavřena, nezobrazovat
-    if (wasMaturedNotificationDismissedToday()) {
-        console.log('Matured notification was dismissed today, skipping');
-        return;
-    }
-    
     try {
         const clerkId = window.Clerk.user.id;
         const reminders = await window.LiquiMixerDB.getUserReminders(clerkId);
@@ -7695,17 +7691,25 @@ async function checkMaturedReminders() {
         today.setHours(0, 0, 0, 0);
         
         // Najít vyzrálé liquidy (pending a remind_at <= dnes)
-        // Filtrovat ty, které byly zavřeny 3x nebo více
+        // Filtrovat ty, které:
+        // 1. Byly dnes již zavřeny (nezobrazí se znovu dnes)
+        // 2. Byly zavřeny 3x nebo více (nezobrazí se vůbec)
         const maturedReminders = reminders.filter(r => {
             if (r.status !== 'pending') return false;
             const remindDate = new Date(r.remind_at);
             remindDate.setHours(0, 0, 0, 0);
             if (remindDate > today) return false;
             
-            // Přeskočit pokud má připomínka 3+ zavření
+            // Přeskočit pokud byla připomínka dnes již zavřena
+            if (wasReminderDismissedToday(r.id)) {
+                console.log(`Reminder ${r.id} was dismissed today, skipping`);
+                return false;
+            }
+            
+            // Přeskočit pokud má připomínka 3+ celkových zavření
             const dismissCount = getMaturedDismissCount(r.id);
             if (dismissCount >= 3) {
-                console.log(`Reminder ${r.id} dismissed ${dismissCount} times, skipping`);
+                console.log(`Reminder ${r.id} dismissed ${dismissCount} times total, skipping permanently`);
                 return false;
             }
             
@@ -7937,6 +7941,11 @@ async function saveReminderFromModal(event) {
         }
         hideAddReminderModal();
         if (currentReminderRecipeId) loadRecipeReminders(currentReminderRecipeId);
+        
+        // Po uložení připomínky aktualizovat maturedRecipeIds a zkontrolovat notifikace
+        await loadMaturedRecipeIds();
+        // Zkontrolovat zda nová připomínka je vyzrálá a zobrazit notifikaci
+        checkMaturedReminders();
     } catch (error) {
         console.error('Error saving reminder:', error);
         alert(t('reminder.save_error', 'Chyba při ukládání připomínky.'));
