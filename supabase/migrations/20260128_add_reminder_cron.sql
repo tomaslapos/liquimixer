@@ -20,6 +20,33 @@ WHERE EXISTS (
 
 -- Vytvořit nový CRON job
 -- Volá reminder-notify edge function každý den v 09:00 UTC
+-- 
+-- DŮLEŽITÉ: Service role key musí být uložen v Vault a načten pomocí:
+-- SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key'
+--
+-- POSTUP NASTAVENÍ:
+-- 1. V Supabase Dashboard → Settings → Vault → New Secret
+-- 2. Name: service_role_key
+-- 3. Value: [váš nový service_role_key z Settings → API]
+-- 4. Pak spusťte tento SQL s vault referencí:
+--
+-- SELECT cron.schedule(
+--     'send-maturity-reminders',
+--     '0 9 * * *',
+--     $$
+--     SELECT net.http_post(
+--         url := 'https://krwdfxnvhnxtkhtkbadi.supabase.co/functions/v1/reminder-notify',
+--         headers := jsonb_build_object(
+--             'Content-Type', 'application/json',
+--             'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key' LIMIT 1)
+--         ),
+--         body := '{}'::jsonb
+--     ) AS request_id;
+--     $$
+-- );
+--
+-- ALTERNATIVA: Použít ANON key pokud reminder-notify má verify_jwt = false
+
 SELECT cron.schedule(
     'send-maturity-reminders',           -- název jobu
     '0 9 * * *',                          -- každý den v 09:00 UTC
@@ -28,7 +55,7 @@ SELECT cron.schedule(
         url := 'https://krwdfxnvhnxtkhtkbadi.supabase.co/functions/v1/reminder-notify',
         headers := jsonb_build_object(
             'Content-Type', 'application/json',
-            'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd2RmeG52aG54dGtodGtiYWRpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTQ3MDU0NywiZXhwIjoyMDgxMDQ2NTQ3fQ.Nf8H0JXO5vLXKzEJ5uEeVKMJMhW8HYlx5K4sNdtHDPI'
+            'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key' LIMIT 1)
         ),
         body := '{}'::jsonb
     ) AS request_id;
