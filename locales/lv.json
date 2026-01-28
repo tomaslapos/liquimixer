@@ -220,7 +220,13 @@
     "not_found": "Recepte nav atrasta.",
     "share_copied": "Saite nokopēta starpliktuvē!",
     "nothing_to_save": "Kļūda: Nav ko saglabāt. Izveidojiet recepti.",
-    "save_error": "Kļūda, saglabājot recepti."
+    "save_error": "Kļūda, saglabājot recepti.",
+    "show_matured": "🧪 Rādīt tikai gatavos",
+    "no_matured": "Nav gatavu šķidrumu.",
+    "no_filter_results": "Neviena recepte neatbilst filtriem.",
+    "found": "Atrasts",
+    "of": "no",
+    "recipes_count": "receptes"
   },
   "recipe_detail": {
     "title": "Receptes detaļas",

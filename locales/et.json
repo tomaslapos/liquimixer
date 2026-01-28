@@ -220,7 +220,13 @@
     "not_found": "Retsepti ei leitud.",
     "share_copied": "Link kopeeritud lõikelauale!",
     "nothing_to_save": "Viga: Pole midagi salvestada. Loo retsept.",
-    "save_error": "Viga retsepti salvestamisel."
+    "save_error": "Viga retsepti salvestamisel.",
+    "show_matured": "🧪 Kuva ainult küpsenud",
+    "no_matured": "Küpsenud vedelikke pole.",
+    "no_filter_results": "Ükski retsept ei vasta filtritele.",
+    "found": "Leitud",
+    "of": "/",
+    "recipes_count": "retsepti"
   },
   "recipe_detail": {
     "title": "Retsepti üksikasjad",

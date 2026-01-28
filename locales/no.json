@@ -220,7 +220,13 @@
     "not_found": "Oppskrift ikke funnet.",
     "share_copied": "Lenke kopiert til utklippstavlen!",
     "nothing_to_save": "Feil: Ingenting å lagre. Vennligst opprett en oppskrift.",
-    "save_error": "Feil ved lagring av oppskrift."
+    "save_error": "Feil ved lagring av oppskrift.",
+    "show_matured": "🧪 Vis kun modnede",
+    "no_matured": "Ingen modnede væsker.",
+    "no_filter_results": "Ingen oppskrifter samsvarer med filtrene.",
+    "found": "Funnet",
+    "of": "av",
+    "recipes_count": "oppskrifter"
   },
   "recipe_detail": {
     "title": "Oppskriftsdetaljer",

@@ -220,7 +220,13 @@
     "not_found": "Recept hittades inte.",
     "share_copied": "Länk kopierad till urklipp!",
     "nothing_to_save": "Fel: Inget att spara. Vänligen skapa ett recept.",
-    "save_error": "Fel vid sparande av recept."
+    "save_error": "Fel vid sparande av recept.",
+    "show_matured": "🧪 Visa endast mognade",
+    "no_matured": "Inga mognade vätskor.",
+    "no_filter_results": "Inga recept matchar filtren.",
+    "found": "Hittade",
+    "of": "av",
+    "recipes_count": "recept"
   },
   "recipe_detail": {
     "title": "Receptdetaljer",

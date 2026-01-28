@@ -220,7 +220,13 @@
     "not_found": "Recept nije pronađen.",
     "share_copied": "Link kopiran u međuspremnik!",
     "nothing_to_save": "Greška: Nema ništa za spremiti. Stvorite recept.",
-    "save_error": "Greška pri spremanju recepta."
+    "save_error": "Greška pri spremanju recepta.",
+    "show_matured": "🧪 Prikaži samo zrele",
+    "no_matured": "Nema zrelih tekućina.",
+    "no_filter_results": "Nijedan recept ne odgovara filterima.",
+    "found": "Pronađeno",
+    "of": "od",
+    "recipes_count": "recepata"
   },
   "recipe_detail": {
     "title": "Detalji recepta",

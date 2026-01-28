@@ -2138,6 +2138,9 @@ async function showMyRecipes() {
         const recipes = await window.LiquiMixerDB.getRecipes(window.Clerk.user.id);
         allUserRecipes = recipes || []; // Uložit pro filtrování
         
+        // Načíst vyzrálé připomínky pro filtr
+        await loadMaturedRecipeIds();
+        
         renderRecipesList(allUserRecipes);
     } catch (error) {
         console.error('Error loading recipes:', error);
@@ -2145,12 +2148,45 @@ async function showMyRecipes() {
     }
 }
 
+// Načíst ID receptů s vyzrálými připomínkami
+async function loadMaturedRecipeIds() {
+    maturedRecipeIds.clear();
+    
+    if (!window.Clerk?.user || !window.LiquiMixerDB) return;
+    
+    try {
+        const clerkId = window.Clerk.user.id;
+        const reminders = await window.LiquiMixerDB.getUserReminders(clerkId);
+        
+        if (!reminders || reminders.length === 0) return;
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Najít vyzrálé připomínky a uložit jejich recipe_id
+        reminders.forEach(r => {
+            if (r.status !== 'pending' || !r.recipe_id) return;
+            const remindDate = new Date(r.remind_at);
+            remindDate.setHours(0, 0, 0, 0);
+            if (remindDate <= today) {
+                maturedRecipeIds.add(r.recipe_id);
+            }
+        });
+        
+        console.log('Loaded matured recipe IDs:', maturedRecipeIds.size);
+    } catch (error) {
+        console.error('Error loading matured recipe IDs:', error);
+    }
+}
+
 // Reset filtrů vyhledávání receptů
 function resetRecipeFilters() {
     const textInput = document.getElementById('recipeSearchText');
     const resultsInfo = document.getElementById('recipeSearchResultsInfo');
+    const maturedCheckbox = document.getElementById('recipeShowMatured');
     
     if (textInput) textInput.value = '';
+    if (maturedCheckbox) maturedCheckbox.checked = false;
     recipeSearchRatingFilter = 0;
     updateRecipeSearchStarsDisplay(0);
     if (resultsInfo) resultsInfo.textContent = '';
@@ -2216,6 +2252,7 @@ function initRecipeSearchStarsHover() {
 // Filtrovat recepty
 function filterRecipes() {
     const searchText = (document.getElementById('recipeSearchText')?.value || '').toLowerCase().trim();
+    const showMaturedOnly = document.getElementById('recipeShowMatured')?.checked || false;
     
     let filtered = allUserRecipes.filter(recipe => {
         // Textový filtr (název a popis)
@@ -2235,18 +2272,29 @@ function filterRecipes() {
             }
         }
         
+        // Filtr vyzrálých - zobrazit pouze recepty s vyzrálou připomínkou
+        if (showMaturedOnly) {
+            if (!maturedRecipeIds.has(recipe.id)) {
+                return false;
+            }
+        }
+        
         return true;
     });
     
     // Zobrazit info o výsledcích
     const resultsInfo = document.getElementById('recipeSearchResultsInfo');
     if (resultsInfo) {
-        if (searchText || recipeSearchRatingFilter > 0) {
+        const hasFilters = searchText || recipeSearchRatingFilter > 0 || showMaturedOnly;
+        if (hasFilters) {
             if (filtered.length === 0) {
-                resultsInfo.textContent = 'Žádné recepty neodpovídají filtrům.';
+                const noResultsText = showMaturedOnly 
+                    ? t('recipes.no_matured', 'Žádné vyzrálé liquidy.')
+                    : t('recipes.no_filter_results', 'Žádné recepty neodpovídají filtrům.');
+                resultsInfo.textContent = noResultsText;
                 resultsInfo.className = 'search-results-info no-results';
             } else {
-                resultsInfo.textContent = `Nalezeno ${filtered.length} z ${allUserRecipes.length} receptů.`;
+                resultsInfo.textContent = `${t('recipes.found', 'Nalezeno')} ${filtered.length} ${t('recipes.of', 'z')} ${allUserRecipes.length} ${t('recipes.recipes_count', 'receptů')}.`;
                 resultsInfo.className = 'search-results-info has-results';
             }
         } else {
@@ -2278,6 +2326,10 @@ function renderRecipesList(recipes) {
         const date = new Date(recipe.created_at).toLocaleDateString('cs-CZ');
         const data = recipe.recipe_data || {};
         
+        // Zkontrolovat zda je recept vyzrálý
+        const isMatured = maturedRecipeIds.has(recipe.id);
+        const maturedBadge = isMatured ? `<span class="recipe-matured-badge">${t('reminder.matured', 'Vyzrálo')}</span>` : '';
+        
         // SECURITY: Escapování všech uživatelských dat
         const safeName = escapeHtml(recipe.name);
         const safeDescription = escapeHtml(recipe.description);
@@ -2286,9 +2338,10 @@ function renderRecipesList(recipes) {
         const safePg = escapeHtml(data.pgPercent || '?');
         
         html += `
-            <div class="recipe-card rating-${rating}" onclick="viewRecipeDetail('${recipe.id}')">
+            <div class="recipe-card rating-${rating}${isMatured ? ' matured' : ''}" onclick="viewRecipeDetail('${recipe.id}')">
                 <div class="recipe-card-header">
                     <h3 class="recipe-card-title">${safeName}</h3>
+                    ${maturedBadge}
                     <span class="recipe-card-rating">${stars}</span>
                 </div>
                 ${safeDescription ? `<p class="recipe-card-description">${safeDescription}</p>` : ''}
@@ -3123,6 +3176,7 @@ let searchRatingFilter = 0; // Aktuální filtr hodnocení produktů
 // Stav pro filtrování receptů
 let allUserRecipes = []; // Všechny načtené recepty pro filtrování
 let recipeSearchRatingFilter = 0; // Aktuální filtr hodnocení receptů
+let maturedRecipeIds = new Set(); // ID receptů s vyzrálými připomínkami
 
 // Zobrazit seznam oblíbených produktů
 async function showFavoriteProducts() {
@@ -7572,9 +7626,64 @@ function renderReminderItem(reminder, recipeId) {
 // KONTROLA VYZRÁLÝCH LIQUIDŮ (IN-APP NOTIFIKACE)
 // =============================================
 
+// Konstanty pro localStorage klíče
+const MATURED_DISMISSED_DATE_KEY = 'liquimixer_matured_dismissed_date';
+const MATURED_DISMISS_COUNT_PREFIX = 'liquimixer_matured_dismiss_count_';
+
+// Zkontrolovat zda byla notifikace dnes již zavřena
+function wasMaturedNotificationDismissedToday() {
+    const dismissedDate = localStorage.getItem(MATURED_DISMISSED_DATE_KEY);
+    if (!dismissedDate) return false;
+    
+    const today = new Date().toISOString().split('T')[0];
+    return dismissedDate === today;
+}
+
+// Získat počet zavření pro konkrétní připomínku
+function getMaturedDismissCount(reminderId) {
+    const count = localStorage.getItem(MATURED_DISMISS_COUNT_PREFIX + reminderId);
+    return count ? parseInt(count, 10) : 0;
+}
+
+// Inkrementovat počet zavření pro připomínku
+function incrementMaturedDismissCount(reminderId) {
+    const count = getMaturedDismissCount(reminderId);
+    localStorage.setItem(MATURED_DISMISS_COUNT_PREFIX + reminderId, (count + 1).toString());
+}
+
+// Uložit datum zavření notifikace
+function setMaturedDismissedToday() {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem(MATURED_DISMISSED_DATE_KEY, today);
+}
+
+// Zavřít notifikaci a uložit stav do localStorage
+function dismissMaturedNotification(reminderIds) {
+    // Uložit dnešní datum - nezobrazovat do dalšího dne
+    setMaturedDismissedToday();
+    
+    // Inkrementovat počítadlo pro každou připomínku
+    if (reminderIds && Array.isArray(reminderIds)) {
+        reminderIds.forEach(id => incrementMaturedDismissCount(id));
+    }
+    
+    // Odstranit notifikaci z DOM
+    const notification = document.querySelector('.matured-notification');
+    if (notification) {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }
+}
+
 // Zkontrolovat vyzrálé liquidy a zobrazit in-app notifikaci
 async function checkMaturedReminders() {
     if (!window.Clerk?.user || !window.LiquiMixerDB) return;
+    
+    // Pokud byla notifikace dnes již zavřena, nezobrazovat
+    if (wasMaturedNotificationDismissedToday()) {
+        console.log('Matured notification was dismissed today, skipping');
+        return;
+    }
     
     try {
         const clerkId = window.Clerk.user.id;
@@ -7584,14 +7693,23 @@ async function checkMaturedReminders() {
         
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const todayStr = today.toISOString().split('T')[0];
         
         // Najít vyzrálé liquidy (pending a remind_at <= dnes)
+        // Filtrovat ty, které byly zavřeny 3x nebo více
         const maturedReminders = reminders.filter(r => {
             if (r.status !== 'pending') return false;
             const remindDate = new Date(r.remind_at);
             remindDate.setHours(0, 0, 0, 0);
-            return remindDate <= today;
+            if (remindDate > today) return false;
+            
+            // Přeskočit pokud má připomínka 3+ zavření
+            const dismissCount = getMaturedDismissCount(r.id);
+            if (dismissCount >= 3) {
+                console.log(`Reminder ${r.id} dismissed ${dismissCount} times, skipping`);
+                return false;
+            }
+            
+            return true;
         });
         
         if (maturedReminders.length > 0) {
@@ -7623,6 +7741,10 @@ function showMaturedLiquidsNotification(maturedReminders) {
         message = multipleLiquids.replace('{count}', maturedReminders.length.toString());
     }
     
+    // Uložit ID připomínek pro dismiss handler
+    const reminderIds = maturedReminders.map(r => r.id);
+    window._currentMaturedReminderIds = reminderIds;
+    
     // Vytvořit toast notifikaci s akcemi
     const existing = document.querySelector('.matured-notification');
     if (existing) existing.remove();
@@ -7639,7 +7761,7 @@ function showMaturedLiquidsNotification(maturedReminders) {
         </div>
         <div class="matured-notification-actions">
             <button class="matured-btn-view" onclick="goToSavedRecipes(); this.closest('.matured-notification').remove();">${viewButton}</button>
-            <button class="matured-btn-dismiss" onclick="this.closest('.matured-notification').remove();">${dismissButton}</button>
+            <button class="matured-btn-dismiss" onclick="dismissMaturedNotification(window._currentMaturedReminderIds);">${dismissButton}</button>
         </div>
     `;
     
@@ -7648,18 +7770,18 @@ function showMaturedLiquidsNotification(maturedReminders) {
     // Animace
     setTimeout(() => notification.classList.add('show'), 10);
     
-    // Auto-dismiss po 15 sekundách
+    // Auto-dismiss po 30 sekundách (bez inkrementace počítadla - pouze skrytí)
     setTimeout(() => {
         if (notification.parentNode) {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
         }
-    }, 15000);
+    }, 30000);
 }
 
 // Přejít na uložené recepty
 function goToSavedRecipes() {
-    showPage('savedRecipes');
+    showPage('my-recipes');
 }
 
 // Aktuální recept pro přidání připomínky

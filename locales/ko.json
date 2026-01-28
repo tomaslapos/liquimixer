@@ -220,7 +220,13 @@
     "not_found": "레시피를 찾을 수 없습니다.",
     "share_copied": "링크가 클립보드에 복사되었습니다!",
     "nothing_to_save": "오류: 저장할 것이 없습니다. 레시피를 만드세요.",
-    "save_error": "레시피 저장 오류."
+    "save_error": "레시피 저장 오류.",
+    "show_matured": "🧪 숙성된 것만 표시",
+    "no_matured": "숙성된 액상이 없습니다.",
+    "no_filter_results": "필터와 일치하는 레시피가 없습니다.",
+    "found": "발견됨",
+    "of": "/",
+    "recipes_count": "레시피"
   },
   "recipe_detail": {
     "title": "레시피 상세",

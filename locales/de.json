@@ -220,7 +220,13 @@
     "not_found": "Rezept nicht gefunden.",
     "share_copied": "Link in die Zwischenablage kopiert!",
     "nothing_to_save": "Fehler: Nichts zu speichern. Bitte erstellen Sie ein Rezept.",
-    "save_error": "Fehler beim Speichern des Rezepts."
+    "save_error": "Fehler beim Speichern des Rezepts.",
+    "show_matured": "🧪 Nur gereifte anzeigen",
+    "no_matured": "Keine gereiften Liquids.",
+    "no_filter_results": "Keine Rezepte entsprechen den Filtern.",
+    "found": "Gefunden",
+    "of": "von",
+    "recipes_count": "Rezepte"
   },
   "recipe_detail": {
     "title": "Rezeptdetails",

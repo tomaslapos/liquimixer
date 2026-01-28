@@ -220,7 +220,13 @@
     "not_found": "Reseptiä ei löytynyt.",
     "share_copied": "Linkki kopioitu leikepöydälle!",
     "nothing_to_save": "Virhe: Ei mitään tallennettavaa. Luo resepti.",
-    "save_error": "Virhe reseptin tallentamisessa."
+    "save_error": "Virhe reseptin tallentamisessa.",
+    "show_matured": "🧪 Näytä vain kypsät",
+    "no_matured": "Ei kypsiä nesteitä.",
+    "no_filter_results": "Mikään resepti ei vastaa suodattimia.",
+    "found": "Löytyi",
+    "of": "/",
+    "recipes_count": "reseptiä"
   },
   "recipe_detail": {
     "title": "Reseptin tiedot",

@@ -220,7 +220,13 @@
     "not_found": "Tarif bulunamadı.",
     "share_copied": "Bağlantı panoya kopyalandı!",
     "nothing_to_save": "Hata: Kaydedilecek bir şey yok. Lütfen bir tarif oluşturun.",
-    "save_error": "Tarif kaydedilirken hata."
+    "save_error": "Tarif kaydedilirken hata.",
+    "show_matured": "🧪 Sadece olgunlaşmış olanları göster",
+    "no_matured": "Olgunlaşmış sıvı yok.",
+    "no_filter_results": "Filtrelere uyan tarif yok.",
+    "found": "Bulundu",
+    "of": "/",
+    "recipes_count": "tarif"
   },
   "recipe_detail": {
     "title": "Tarif Ayrıntıları",

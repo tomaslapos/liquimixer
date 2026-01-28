@@ -220,7 +220,13 @@
     "not_found": "Recept nem található.",
     "share_copied": "Link a vágólapra másolva!",
     "nothing_to_save": "Hiba: Nincs mit menteni. Kérjük, hozz létre receptet.",
-    "save_error": "Hiba a recept mentésekor."
+    "save_error": "Hiba a recept mentésekor.",
+    "show_matured": "🧪 Csak érlelt megjelenítése",
+    "no_matured": "Nincsenek érlelt folyadékok.",
+    "no_filter_results": "Egyetlen recept sem felel meg a szűrőknek.",
+    "found": "Találat",
+    "of": "/",
+    "recipes_count": "recept"
   },
   "recipe_detail": {
     "title": "Recept részletei",

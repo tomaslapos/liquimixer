@@ -220,7 +220,13 @@
     "not_found": "Ricetta non trovata.",
     "share_copied": "Link copiato negli appunti!",
     "nothing_to_save": "Errore: Niente da salvare. Crea una ricetta.",
-    "save_error": "Errore nel salvataggio della ricetta."
+    "save_error": "Errore nel salvataggio della ricetta.",
+    "show_matured": "🧪 Mostra solo maturati",
+    "no_matured": "Nessun liquido maturato.",
+    "no_filter_results": "Nessuna ricetta corrisponde ai filtri.",
+    "found": "Trovato",
+    "of": "di",
+    "recipes_count": "ricette"
   },
   "recipe_detail": {
     "title": "Dettagli ricetta",

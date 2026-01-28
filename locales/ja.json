@@ -220,7 +220,13 @@
     "not_found": "レシピが見つかりません。",
     "share_copied": "リンクがクリップボードにコピーされました！",
     "nothing_to_save": "エラー：保存するものがありません。レシピを作成してください。",
-    "save_error": "レシピの保存エラー。"
+    "save_error": "レシピの保存エラー。",
+    "show_matured": "🧪 熟成済みのみ表示",
+    "no_matured": "熟成したリキッドはありません。",
+    "no_filter_results": "フィルターに一致するレシピがありません。",
+    "found": "見つかりました",
+    "of": "/",
+    "recipes_count": "レシピ"
   },
   "recipe_detail": {
     "title": "レシピ詳細",
