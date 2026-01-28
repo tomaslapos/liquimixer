@@ -220,7 +220,13 @@
     "not_found": "Recept niet gevonden.",
     "share_copied": "Link gekopieerd naar klembord!",
     "nothing_to_save": "Fout: Niets om op te slaan. Maak een recept.",
-    "save_error": "Fout bij opslaan van recept."
+    "save_error": "Fout bij opslaan van recept.",
+    "show_matured": "🧪 Alleen gerijpte tonen",
+    "no_matured": "Geen gerijpte vloeistoffen.",
+    "no_filter_results": "Geen recepten voldoen aan de filters.",
+    "found": "Gevonden",
+    "of": "van",
+    "recipes_count": "recepten"
   },
   "recipe_detail": {
     "title": "Receptdetails",

@@ -220,7 +220,13 @@
     "not_found": "Recipe not found.",
     "share_copied": "Link copied to clipboard!",
     "nothing_to_save": "Error: Nothing to save. Please create a recipe.",
-    "save_error": "Error saving recipe."
+    "save_error": "Error saving recipe.",
+    "show_matured": "🧪 Show matured only",
+    "no_matured": "No matured liquids.",
+    "no_filter_results": "No recipes match the filters.",
+    "found": "Found",
+    "of": "of",
+    "recipes_count": "recipes"
   },
   "recipe_detail": {
     "title": "Recipe Detail",

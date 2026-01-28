@@ -217,7 +217,13 @@
     "not_found": "Recept nenalezen.",
     "share_copied": "Odkaz byl zkopírován do schránky!",
     "nothing_to_save": "Chyba: Není co uložit. Prosím vytvořte recept.",
-    "save_error": "Chyba při ukládání receptu."
+    "save_error": "Chyba při ukládání receptu.",
+    "show_matured": "🧪 Zobrazit pouze vyzrálé",
+    "no_matured": "Žádné vyzrálé liquidy.",
+    "no_filter_results": "Žádné recepty neodpovídají filtrům.",
+    "found": "Nalezeno",
+    "of": "z",
+    "recipes_count": "receptů"
   },
   "recipe_detail": {
     "title": "Detail receptu",

@@ -220,7 +220,13 @@
     "not_found": "Opskrift ikke fundet.",
     "share_copied": "Link kopieret til udklipsholder!",
     "nothing_to_save": "Fejl: Intet at gemme. Opret venligst en opskrift.",
-    "save_error": "Fejl ved gemning af opskrift."
+    "save_error": "Fejl ved gemning af opskrift.",
+    "show_matured": "🧪 Vis kun modne",
+    "no_matured": "Ingen modne væsker.",
+    "no_filter_results": "Ingen opskrifter matcher filtrene.",
+    "found": "Fundet",
+    "of": "af",
+    "recipes_count": "opskrifter"
   },
   "recipe_detail": {
     "title": "Opskriftsdetaljer",

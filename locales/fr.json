@@ -220,7 +220,13 @@
     "not_found": "Recette non trouvée.",
     "share_copied": "Lien copié dans le presse-papiers !",
     "nothing_to_save": "Erreur : Rien à enregistrer. Veuillez créer une recette.",
-    "save_error": "Erreur lors de l'enregistrement de la recette."
+    "save_error": "Erreur lors de l'enregistrement de la recette.",
+    "show_matured": "🧪 Afficher uniquement les mûris",
+    "no_matured": "Aucun liquide mûri.",
+    "no_filter_results": "Aucune recette ne correspond aux filtres.",
+    "found": "Trouvé",
+    "of": "sur",
+    "recipes_count": "recettes"
   },
   "recipe_detail": {
     "title": "Détails de la recette",

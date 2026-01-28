@@ -220,7 +220,13 @@
     "not_found": "Receta no encontrada.",
     "share_copied": "¡Enlace copiado al portapapeles!",
     "nothing_to_save": "Error: Nada que guardar. Por favor, crea una receta.",
-    "save_error": "Error al guardar la receta."
+    "save_error": "Error al guardar la receta.",
+    "show_matured": "🧪 Mostrar solo madurados",
+    "no_matured": "No hay líquidos madurados.",
+    "no_filter_results": "Ninguna receta coincide con los filtros.",
+    "found": "Encontrado",
+    "of": "de",
+    "recipes_count": "recetas"
   },
   "recipe_detail": {
     "title": "Detalles de la receta",

@@ -1615,11 +1615,15 @@ body {
 .recipe-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .recipe-card-title {
+    flex: 1;
+    min-width: 0;
     font-family: var(--font-primary);
     font-size: 1.1rem;
     color: var(--neon-cyan);
@@ -1629,6 +1633,34 @@ body {
 .recipe-card-rating {
     color: #ffd700;
     font-size: 0.9rem;
+}
+
+/* Badge "Vyzrálo" pro recepty s vyzrálou připomínkou */
+.recipe-matured-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.3), rgba(0, 200, 0, 0.2));
+    color: var(--neon-green);
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--neon-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+    animation: maturedPulse 2s ease-in-out infinite;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+@keyframes maturedPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(0, 255, 0, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); }
+}
+
+.recipe-card.matured {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
 }
 
 .recipe-card-description {
@@ -2279,6 +2311,51 @@ body {
     outline: none;
     border-color: var(--neon-cyan);
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.search-row-matured {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-matured {
+    display: flex;
+    align-items: center;
+}
+
+.search-matured .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    border-radius: var(--border-radius-small);
+    transition: all 0.3s ease;
+}
+
+.search-matured .checkbox-label:hover {
+    background: rgba(0, 255, 0, 0.2);
+    border-color: rgba(0, 255, 0, 0.5);
+}
+
+.search-matured input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--neon-green);
+    cursor: pointer;
+}
+
+.search-matured .checkbox-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+}
+
+.search-matured input[type="checkbox"]:checked + .checkbox-text {
+    color: var(--neon-green);
 }
 
 /* ============================================

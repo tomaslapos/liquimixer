@@ -220,7 +220,13 @@
     "not_found": "Rețeta nu a fost găsită.",
     "share_copied": "Link copiat în clipboard!",
     "nothing_to_save": "Eroare: Nimic de salvat. Creați o rețetă.",
-    "save_error": "Eroare la salvarea rețetei."
+    "save_error": "Eroare la salvarea rețetei.",
+    "show_matured": "🧪 Afișați doar maturate",
+    "no_matured": "Nu există lichide maturate.",
+    "no_filter_results": "Nicio rețetă nu corespunde filtrelor.",
+    "found": "Găsite",
+    "of": "din",
+    "recipes_count": "rețete"
   },
   "recipe_detail": {
     "title": "Detalii rețetă",

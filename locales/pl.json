@@ -220,7 +220,13 @@
     "not_found": "Nie znaleziono przepisu.",
     "share_copied": "Link skopiowany do schowka!",
     "nothing_to_save": "Błąd: Nie ma nic do zapisania. Proszę utworzyć przepis.",
-    "save_error": "Błąd podczas zapisywania przepisu."
+    "save_error": "Błąd podczas zapisywania przepisu.",
+    "show_matured": "🧪 Pokaż tylko dojrzałe",
+    "no_matured": "Brak dojrzałych liquidów.",
+    "no_filter_results": "Żadne przepisy nie pasują do filtrów.",
+    "found": "Znaleziono",
+    "of": "z",
+    "recipes_count": "przepisów"
   },
   "recipe_detail": {
     "title": "Szczegóły przepisu",

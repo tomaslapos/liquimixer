@@ -220,7 +220,13 @@
     "not_found": "Receptas nerastas.",
     "share_copied": "Nuoroda nukopijuota į iškarpinę!",
     "nothing_to_save": "Klaida: Nėra ką išsaugoti. Sukurkite receptą.",
-    "save_error": "Klaida išsaugant receptą."
+    "save_error": "Klaida išsaugant receptą.",
+    "show_matured": "🧪 Rodyti tik subrendusius",
+    "no_matured": "Nėra subrendusių skysčių.",
+    "no_filter_results": "Jokie receptai neatitinka filtrų.",
+    "found": "Rasta",
+    "of": "iš",
+    "recipes_count": "receptų"
   },
   "recipe_detail": {
     "title": "Recepto detalės",
