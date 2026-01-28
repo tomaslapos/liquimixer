@@ -393,7 +393,8 @@
     "no": "Nee",
     "day": "dag",
     "days": "dagen",
-    "days_few": "dagen"
+    "days_few": "dagen",
+    "dismiss": "Sluiten"
   },
   "reminder": {
     "add_title": "Mengsel toevoegen",
@@ -414,7 +415,12 @@
     "note_label": "Notitie",
     "note_placeholder": "Optionele notitie...",
     "view_title": "Herinneringsdetails",
-    "no_note": "Geen notitie"
+    "no_note": "Geen notitie",
+    "matured": "Gerijpt",
+    "matured_title": "Uw vloeistoffen zijn klaar!",
+    "matured_single": "Uw vloeistof \"{name}\" is gerijpt en klaar voor gebruik.",
+    "matured_multiple": "{count} vloeistoffen zijn gerijpt en klaar voor gebruik.",
+    "view_recipes": "Recepten bekijken"
   },
   "alert": {
     "login_required": "Log in voor deze actie.",

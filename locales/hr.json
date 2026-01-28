@@ -393,7 +393,8 @@
     "no": "Ne",
     "day": "dan",
     "days": "dana",
-    "days_few": "dana"
+    "days_few": "dana",
+    "dismiss": "Zatvori"
   },
   "reminder": {
     "add_title": "Dodaj miješanje",
@@ -414,7 +415,12 @@
     "note_label": "Bilješka",
     "note_placeholder": "Opcionalna bilješka...",
     "view_title": "Detalji podsjetnika",
-    "no_note": "Bez bilješke"
+    "no_note": "Bez bilješke",
+    "matured": "Dozrelo",
+    "matured_title": "Vaše tekućine su spremne!",
+    "matured_single": "Vaša tekućina \"{name}\" je dozrela i spremna za upotrebu.",
+    "matured_multiple": "{count} tekućina je dozrelo i spremno za upotrebu.",
+    "view_recipes": "Prikaži recepte"
   },
   "alert": {
     "login_required": "Prijavite se za ovu radnju.",

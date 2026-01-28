@@ -393,7 +393,8 @@
     "no": "否",
     "day": "天",
     "days": "天",
-    "days_few": "天"
+    "days_few": "天",
+    "dismiss": "關閉"
   },
   "reminder": {
     "add_title": "新增調配",
@@ -414,7 +415,12 @@
     "note_label": "備註",
     "note_placeholder": "選填備註...",
     "view_title": "提醒詳情",
-    "no_note": "無備註"
+    "no_note": "無備註",
+    "matured": "已醒發",
+    "matured_title": "您的煙油已準備好！",
+    "matured_single": "您的煙油「{name}」已醒發完成，可以使用了。",
+    "matured_multiple": "{count}款煙油已醒發完成，可以使用了。",
+    "view_recipes": "查看配方"
   },
   "alert": {
     "login_required": "請登入以執行此操作。",

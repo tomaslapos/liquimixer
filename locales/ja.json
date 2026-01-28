@@ -393,7 +393,8 @@
     "no": "いいえ",
     "day": "日",
     "days": "日間",
-    "days_few": "日間"
+    "days_few": "日間",
+    "dismiss": "閉じる"
   },
   "reminder": {
     "add_title": "調合を追加",
@@ -414,7 +415,12 @@
     "note_label": "メモ",
     "note_placeholder": "オプションのメモ...",
     "view_title": "リマインダー詳細",
-    "no_note": "メモなし"
+    "no_note": "メモなし",
+    "matured": "熟成完了",
+    "matured_title": "リキッドが完成しました！",
+    "matured_single": "リキッド「{name}」が熟成し、使用準備ができました。",
+    "matured_multiple": "{count}本のリキッドが熟成し、使用準備ができました。",
+    "view_recipes": "レシピを見る"
   },
   "alert": {
     "login_required": "この操作にはログインしてください。",

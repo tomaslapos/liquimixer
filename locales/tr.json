@@ -393,7 +393,8 @@
     "no": "Hayır",
     "day": "gün",
     "days": "gün",
-    "days_few": "gün"
+    "days_few": "gün",
+    "dismiss": "Kapat"
   },
   "reminder": {
     "add_title": "Karışım ekle",
@@ -414,7 +415,12 @@
     "note_label": "Not",
     "note_placeholder": "İsteğe bağlı not...",
     "view_title": "Hatırlatma Detayları",
-    "no_note": "Not yok"
+    "no_note": "Not yok",
+    "matured": "Olgunlaştı",
+    "matured_title": "Sıvılarınız hazır!",
+    "matured_single": "\"{name}\" sıvınız olgunlaştı ve kullanıma hazır.",
+    "matured_multiple": "{count} sıvı olgunlaştı ve kullanıma hazır.",
+    "view_recipes": "Tarifleri görüntüle"
   },
   "alert": {
     "login_required": "Bu işlem için lütfen giriş yapın.",

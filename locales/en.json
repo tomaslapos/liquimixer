@@ -397,7 +397,8 @@
     "no": "No",
     "day": "day",
     "days": "days",
-    "days_few": "days"
+    "days_few": "days",
+    "dismiss": "Dismiss"
   },
   "reminder": {
     "add_title": "Add mixing",
@@ -418,7 +419,12 @@
     "note_label": "Note",
     "note_placeholder": "Optional note...",
     "view_title": "Reminder Details",
-    "no_note": "No note"
+    "no_note": "No note",
+    "matured": "Matured",
+    "matured_title": "Your liquids are ready!",
+    "matured_single": "Your liquid \"{name}\" is matured and ready to use.",
+    "matured_multiple": "{count} liquids are matured and ready to use.",
+    "view_recipes": "View recipes"
   },
   "alert": {
     "login_required": "Please sign in for this action.",

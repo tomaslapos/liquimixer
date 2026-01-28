@@ -393,7 +393,8 @@
     "no": "아니오",
     "day": "일",
     "days": "일",
-    "days_few": "일"
+    "days_few": "일",
+    "dismiss": "닫기"
   },
   "reminder": {
     "add_title": "조합 추가",
@@ -414,7 +415,12 @@
     "note_label": "메모",
     "note_placeholder": "선택적 메모...",
     "view_title": "알림 상세정보",
-    "no_note": "메모 없음"
+    "no_note": "메모 없음",
+    "matured": "숙성 완료",
+    "matured_title": "리퀴드가 준비되었습니다!",
+    "matured_single": "리퀴드 \"{name}\"이(가) 숙성되어 사용할 준비가 되었습니다.",
+    "matured_multiple": "{count}개의 리퀴드가 숙성되어 사용할 준비가 되었습니다.",
+    "view_recipes": "레시피 보기"
   },
   "alert": {
     "login_required": "이 작업을 수행하려면 로그인하세요.",

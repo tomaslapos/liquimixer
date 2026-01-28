@@ -1773,6 +1773,21 @@ body {
     border-color: rgba(255, 0, 0, 0.3);
 }
 
+.reminder-item.matured {
+    background: rgba(0, 255, 0, 0.1) !important;
+    border-color: rgba(0, 255, 0, 0.4) !important;
+}
+
+.reminder-item.matured:hover {
+    background: rgba(0, 255, 0, 0.15) !important;
+    border-color: rgba(0, 255, 0, 0.6) !important;
+}
+
+.reminder-status-badge.matured {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
 .reminder-dates {
     flex: 1;
 }
@@ -5703,6 +5718,106 @@ body.subscription-required #subscriptionModal {
         right: 10px;
         left: 10px;
         max-width: none;
+    }
+}
+
+/* =========================================
+   Matured Liquid Notification
+   ========================================= */
+
+.matured-notification {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    max-width: 380px;
+    padding: 16px !important;
+}
+
+.matured-notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.matured-notification-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.matured-notification-text {
+    flex: 1;
+}
+
+.matured-notification-text strong {
+    display: block;
+    color: var(--neon-green);
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.matured-notification-text p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.matured-notification-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.matured-btn-view {
+    background: var(--neon-green);
+    color: var(--bg-dark);
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.matured-btn-view:hover {
+    background: #00cc00;
+    transform: scale(1.02);
+}
+
+.matured-btn-dismiss {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.matured-btn-dismiss:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+    .matured-notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .matured-notification-actions {
+        flex-direction: column;
+    }
+    
+    .matured-btn-view,
+    .matured-btn-dismiss {
+        width: 100%;
+        text-align: center;
     }
 }
 

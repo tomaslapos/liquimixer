@@ -394,7 +394,8 @@
     "no": "لا",
     "day": "يوم",
     "days": "أيام",
-    "days_few": "أيام"
+    "days_few": "أيام",
+    "dismiss": "إغلاق"
   },
   "reminder": {
     "add_title": "إضافة خلط",
@@ -415,7 +416,12 @@
     "note_label": "ملاحظة",
     "note_placeholder": "ملاحظة اختيارية...",
     "view_title": "تفاصيل التذكير",
-    "no_note": "لا توجد ملاحظة"
+    "no_note": "لا توجد ملاحظة",
+    "matured": "نضج",
+    "matured_title": "سوائلك جاهزة!",
+    "matured_single": "سائلك \"{name}\" نضج وجاهز للاستخدام.",
+    "matured_multiple": "{count} سوائل نضجت وجاهزة للاستخدام.",
+    "view_recipes": "عرض الوصفات"
   },
   "alert": {
     "login_required": "سجّل الدخول لهذا الإجراء.",

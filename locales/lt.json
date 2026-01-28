@@ -393,7 +393,8 @@
     "no": "Ne",
     "day": "diena",
     "days": "dienų",
-    "days_few": "dienos"
+    "days_few": "dienos",
+    "dismiss": "Uždaryti"
   },
   "reminder": {
     "add_title": "Pridėti maišymą",
@@ -414,7 +415,12 @@
     "note_label": "Pastaba",
     "note_placeholder": "Pasirinktinė pastaba...",
     "view_title": "Priminimo informacija",
-    "no_note": "Be pastabos"
+    "no_note": "Be pastabos",
+    "matured": "Subrandinta",
+    "matured_title": "Jūsų skysčiai paruošti!",
+    "matured_single": "Jūsų skystis \"{name}\" subrandintas ir paruoštas naudojimui.",
+    "matured_multiple": "{count} skysčių subrandinta ir paruošta naudojimui.",
+    "view_recipes": "Žiūrėti receptus"
   },
   "alert": {
     "login_required": "Prisijunkite šiam veiksmui.",
