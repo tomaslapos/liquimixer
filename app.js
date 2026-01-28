@@ -7779,9 +7779,10 @@ function showMaturedLiquidsNotification(maturedReminders) {
     }, 30000);
 }
 
-// Přejít na uložené recepty
+// Přejít na uložené recepty (z notifikace o vyzrálých liquidech)
 function goToSavedRecipes() {
-    showPage('my-recipes');
+    // Volat showMyRecipes() pro správné načtení receptů
+    showMyRecipes();
 }
 
 // Aktuální recept pro přidání připomínky
