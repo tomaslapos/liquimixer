@@ -667,12 +667,11 @@ function updateBaseType(type) {
         premixedBtn.classList.add('active');
         if (premixedContainer) premixedContainer.classList.remove('hidden');
         
-        // Automaticky nastavit VG/PG slider na hodnotu předmíchané báze
-        const premixedRatio = document.getElementById('premixedRatio')?.value || '50/50';
-        const premixedVg = parseInt(premixedRatio.split('/')[0]) || 50;
+        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+        const actualVg = calculateActualVgPgRatio('liquid');
         const slider = document.getElementById('vgPgRatio');
         if (slider) {
-            slider.value = premixedVg;
+            slider.value = actualVg;
             updateRatioDisplay();
         }
     } else {
@@ -699,11 +698,11 @@ function updatePremixedRatio(ratio) {
         }
     });
     
-    // Automaticky nastavit VG/PG slider na hodnotu předmíchané báze
-    const premixedVg = parseInt(ratio.split('/')[0]) || 50;
+    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+    const actualVg = calculateActualVgPgRatio('liquid');
     const slider = document.getElementById('vgPgRatio');
     if (slider) {
-        slider.value = premixedVg;
+        slider.value = actualVg;
         updateRatioDisplay();
     }
     
@@ -721,6 +720,76 @@ function getPremixedVgPercent() {
 // LIQUID PRO PREMIXED BASE FUNCTIONS
 // ============================================
 
+// Calculate actual VG/PG ratio from all components (for premixed mode)
+function calculateActualVgPgRatio(formType) {
+    let totalAmount, nicotineType, targetNicotine, baseNicotine, nicVgPercent;
+    let flavorVolume = 0, flavorVgPercent = 0;
+    let premixedVgPercent = 50;
+    
+    if (formType === 'pro') {
+        totalAmount = parseFloat(document.getElementById('proTotalAmount')?.value) || 100;
+        nicotineType = document.getElementById('proNicotineType')?.value || 'none';
+        targetNicotine = parseFloat(document.getElementById('proTargetNicotine')?.value) || 0;
+        baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength')?.value) || 0;
+        nicVgPercent = parseInt(document.getElementById('proNicotineRatioSlider')?.value) || 50;
+        
+        // Get flavors data
+        const flavorsData = typeof getProFlavorsData === 'function' ? getProFlavorsData() : [];
+        flavorsData.forEach(flavor => {
+            const vol = (flavor.percent / 100) * totalAmount;
+            flavorVolume += vol;
+            // Weighted average for VG
+        });
+        // Simplified: use average VG from all flavors
+        if (flavorsData.length > 0) {
+            const totalFlavorVg = flavorsData.reduce((sum, f) => sum + (f.vgRatio * f.percent), 0);
+            const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
+            flavorVgPercent = totalFlavorPercent > 0 ? totalFlavorVg / totalFlavorPercent : 0;
+            flavorVolume = (totalFlavorPercent / 100) * totalAmount;
+        }
+        
+        const premixedRatio = document.getElementById('proPremixedRatio')?.value || '50/50';
+        premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
+    } else {
+        // Standard Liquid form
+        totalAmount = parseFloat(document.getElementById('totalAmount')?.value) || 100;
+        nicotineType = document.getElementById('nicotineType')?.value || 'none';
+        targetNicotine = parseFloat(document.getElementById('targetNicotine')?.value) || 0;
+        baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength')?.value) || 0;
+        const nicRatio = document.getElementById('nicotineRatio')?.value || '50/50';
+        nicVgPercent = nicRatio === '70/30' ? 70 : 50;
+        
+        const flavorType = document.getElementById('flavorType')?.value || 'none';
+        const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('flavorStrength')?.value) || 0 : 0;
+        const flavorRatio = document.getElementById('flavorRatio')?.value || '0/100';
+        flavorVgPercent = flavorRatio === '80/20' ? 80 : (flavorRatio === '70/30' ? 70 : 0);
+        flavorVolume = (flavorPercent / 100) * totalAmount;
+        
+        const premixedRatio = document.getElementById('premixedRatio')?.value || '50/50';
+        premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
+    }
+    
+    // Calculate nicotine volume
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    // Remaining volume for carrier (premixed base)
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    
+    // Calculate VG from each component
+    const vgFromNicotine = nicotineVolume * (nicVgPercent / 100);
+    const vgFromFlavor = flavorVolume * (flavorVgPercent / 100);
+    const vgFromBase = remainingVolume * (premixedVgPercent / 100);
+    
+    // Total VG
+    const totalVg = vgFromNicotine + vgFromFlavor + vgFromBase;
+    const actualVgPercent = Math.round((totalVg / totalAmount) * 100);
+    
+    return Math.max(0, Math.min(100, actualVgPercent));
+}
+
 // Update PRO base type (separate or premixed)
 function updateProBaseType(type) {
     const baseTypeInput = document.getElementById('proBaseType');
@@ -734,6 +803,14 @@ function updateProBaseType(type) {
         separateBtn.classList.remove('active');
         premixedBtn.classList.add('active');
         if (premixedContainer) premixedContainer.classList.remove('hidden');
+        
+        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+        const actualVg = calculateActualVgPgRatio('pro');
+        const slider = document.getElementById('proVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateProRatioDisplay();
+        }
     } else {
         separateBtn.classList.add('active');
         premixedBtn.classList.remove('active');
@@ -766,6 +843,14 @@ function updateProPremixedRatio(ratio) {
     } else {
         if (customContainer) customContainer.classList.add('hidden');
         if (premixedRatioInput) premixedRatioInput.value = ratio;
+    }
+    
+    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+    const actualVg = calculateActualVgPgRatio('pro');
+    const slider = document.getElementById('proVgPgRatio');
+    if (slider) {
+        slider.value = actualVg;
+        updateProRatioDisplay();
     }
     
     updateProVgPgLimits();
@@ -5153,9 +5238,13 @@ function calculateMix() {
 }
 
 function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actualVg, actualPg, extraData = {}) {
-    document.getElementById('resultTotal').textContent = `${total} ml`;
+    // Zaokrouhlit hodnoty na 2 desetinná místa
+    const roundedTotal = typeof total === 'number' ? parseFloat(total.toFixed(2)) : total;
+    const roundedNicotine = typeof nicotine === 'number' ? parseFloat(nicotine.toFixed(2)) : nicotine;
+    
+    document.getElementById('resultTotal').textContent = `${roundedTotal} ml`;
     document.getElementById('resultRatio').textContent = `${vg}:${pg}`;
-    document.getElementById('resultNicotine').textContent = `${nicotine} mg/ml`;
+    document.getElementById('resultNicotine').textContent = `${roundedNicotine} mg/ml`;
     
     // Přepnout tlačítka podle režimu (editace vs nový recept)
     const newButtons = document.getElementById('resultsNewButtons');
@@ -6943,16 +7032,24 @@ function updateProFlavorCountHint() {
 // Toggle flavor composition panel
 function toggleFlavorComposition(flavorIndex) {
     const panel = document.getElementById(`flavorComposition${flavorIndex}`);
-    const arrow = panel?.previousElementSibling?.querySelector('.prep-arrow');
+    const btn = document.querySelector(`button[onclick="toggleFlavorComposition(${flavorIndex})"]`);
+    const arrow = btn?.querySelector('.prep-arrow');
     
     if (panel) {
-        panel.classList.toggle('hidden');
+        // Remove hidden class if present (initial state)
+        panel.classList.remove('hidden');
+        // Toggle open class for animation
+        panel.classList.toggle('open');
+        
         if (arrow) {
-            arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
+            arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+        }
+        if (btn) {
+            btn.classList.toggle('active', panel.classList.contains('open'));
         }
         
         // Pre-fill with average values for selected flavor type if opening
-        if (!panel.classList.contains('hidden')) {
+        if (panel.classList.contains('open')) {
             const flavorType = document.getElementById(`proFlavorType${flavorIndex}`)?.value || 'fruit';
             prefillFlavorComposition(flavorIndex, flavorType);
         }
