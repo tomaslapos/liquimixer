@@ -232,7 +232,7 @@
     "nicotine": "Nicotine strength:",
     "table_component": "Component",
     "table_volume": "ml",
-    "table_grams": "g",
+    "table_grams": "Grams",
     "component_nicotine_booster": "Nicotine booster",
     "component_nicotine_salt": "Nicotine salt",
     "component_flavor": "Flavor",
@@ -522,6 +522,7 @@
     "premixed_base": "Premixed Base",
     "nicotine_base": "Nicotine base",
     "additive": "Additive",
+    "shortfill_liquid": "Shortfill liquid",
     "total": "TOTAL"
   },
   "nicotine_descriptions": {

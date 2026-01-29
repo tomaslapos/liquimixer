@@ -1004,8 +1004,8 @@
             <div class="form-tabs">
                 <button type="button" class="form-tab active" data-tab="liquid" onclick="switchFormTab('liquid')" data-i18n="form.tab_liquid">Liquid</button>
                 <button type="button" class="form-tab tab-green" data-tab="shakevape" onclick="switchFormTab('shakevape')" data-i18n="form.tab_shakevape">Shake & Vape</button>
-                <button type="button" class="form-tab tab-red" data-tab="liquidpro" onclick="switchFormTab('liquidpro')" data-i18n="form.tab_liquidpro">Liquid PRO</button>
                 <button type="button" class="form-tab tab-purple" data-tab="shortfill" onclick="switchFormTab('shortfill')" data-i18n="form.tab_shortfill">Shortfill</button>
+                <button type="button" class="form-tab tab-red" data-tab="liquidpro" onclick="switchFormTab('liquidpro')" data-i18n="form.tab_liquidpro">Liquid PRO</button>
             </div>
 
             <!-- ============================================ -->
@@ -1036,12 +1036,12 @@
                     <div id="premixedRatioContainer" class="form-group-sub hidden">
                         <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
                         <div class="ratio-toggle-buttons">
-                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="50/50" onclick="updatePremixedRatio('50/50')">50/50</button>
-                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn active" data-value="60/40" onclick="updatePremixedRatio('60/40')">60/40</button>
+                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updatePremixedRatio('50/50')">50/50</button>
+                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updatePremixedRatio('60/40')">60/40</button>
                             <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updatePremixedRatio('70/30')">70/30</button>
                             <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updatePremixedRatio('80/20')">80/20</button>
                         </div>
-                        <input type="hidden" id="premixedRatio" value="60/40">
+                        <input type="hidden" id="premixedRatio" value="50/50">
                     </div>
                 </div>
 
@@ -1357,13 +1357,13 @@
                     <div id="proPremixedRatioContainer" class="form-group-sub hidden">
                         <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
                         <div class="ratio-toggle-buttons">
-                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="50/50" onclick="updateProPremixedRatio('50/50')">50/50</button>
-                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn active" data-value="60/40" onclick="updateProPremixedRatio('60/40')">60/40</button>
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateProPremixedRatio('50/50')">50/50</button>
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updateProPremixedRatio('60/40')">60/40</button>
                             <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateProPremixedRatio('70/30')">70/30</button>
                             <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updateProPremixedRatio('80/20')">80/20</button>
                             <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="custom" onclick="updateProPremixedRatio('custom')" data-i18n="form.custom">Vlastní</button>
                         </div>
-                        <input type="hidden" id="proPremixedRatio" value="60/40">
+                        <input type="hidden" id="proPremixedRatio" value="50/50">
                         <div id="proCustomPremixedContainer" class="hidden" style="margin-top: 10px;">
                             <div class="input-wrapper inline">
                                 <input type="number" id="proCustomPremixedVg" min="0" max="100" value="65" class="neon-input small" oninput="updateProCustomPremixedPg()">
@@ -1688,9 +1688,9 @@
                     </div>
                 </div>
 
-                <!-- Výsledky shortfill -->
+                <!-- Výsledky shortfill - real-time preview -->
                 <div class="shortfill-results" id="sfResults">
-                    <h4 data-i18n="shortfill.results_title">Výsledek</h4>
+                    <h4 data-i18n="shortfill.results_title">Náhled</h4>
                     <div class="sf-result-grid">
                         <div class="sf-result-item">
                             <span class="sf-label" data-i18n="shortfill.result_total">Celkový objem:</span>
@@ -1713,6 +1713,10 @@
                 <div class="button-group">
                     <button class="neon-button secondary" onclick="goBack()">
                         <span data-i18n="form.back">◀ ZPĚT</span>
+                    </button>
+                    <button class="neon-button btn-purple" onclick="calculateShortfillMix()">
+                        <span data-i18n="form.mix_button">MIXUJ!</span>
+                        <div class="button-glow"></div>
                     </button>
                 </div>
             </div>
@@ -1743,7 +1747,7 @@
                         <tr>
                             <th data-i18n="results.table_component">Složka</th>
                             <th data-i18n="results.table_volume">ml</th>
-                            <th data-i18n="results.table_grams">g</th>
+                            <th data-i18n="results.table_grams">Gramy</th>
                         </tr>
                     </thead>
                     <tbody id="resultsBody">
@@ -2218,7 +2222,7 @@
         <div class="footer-copyright">© 2026 LiquiMixer</div>
     </footer>
 
-    <script src="/app.js?v=20260112c"></script>
+    <script src="/app.js?v=20260129a"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

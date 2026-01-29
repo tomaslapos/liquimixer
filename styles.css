@@ -6141,15 +6141,35 @@ body.subscription-required #subscriptionModal {
 
 .flavor-composition-section {
     margin-top: 15px;
+    position: relative;
+    z-index: 10;
 }
 
 .composition-toggle-btn {
     font-size: 0.85rem;
     padding: 8px 12px;
+    color: var(--neon-yellow);
+    border-color: var(--neon-yellow);
+}
+
+.composition-toggle-btn:hover {
+    background: rgba(255, 255, 0, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.3);
+}
+
+.composition-toggle-btn.active {
+    background: var(--neon-yellow);
+    color: var(--bg-dark);
 }
 
 .flavor-composition-detail {
     margin-top: 10px;
+    position: relative;
+    z-index: 15;
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--neon-yellow);
 }
 
 .composition-hint {
@@ -6256,6 +6276,14 @@ body.subscription-required #subscriptionModal {
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
+}
+
+.additive-percent-row .input-wrapper.small {
+    min-width: 90px;
+}
+
+.additive-percent-row .neon-input {
+    width: 70px;
 }
 
 .additive-composition-detail {
