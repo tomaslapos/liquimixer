@@ -81,83 +81,178 @@ function t(key, fallback = null) {
 // Flavor database with recommended percentages (15 options)
 // Data z tabulky příchutí pro e-liquid
 // steepingDays = doporučená doba zrání ve dnech
+// composition = složení příchutě pro přesný výpočet (pg, vg, alcohol, water, other v %)
 const flavorDatabase = {
     none: { 
         name: 'Žádná (bez příchutě)', 
         min: 0, max: 0, ideal: 0, steepingDays: 0,
-        note: 'Čistá báze PG/VG + nikotin'
+        note: 'Čistá báze PG/VG + nikotin',
+        composition: { pg: 0, vg: 0, alcohol: 0, water: 0, other: 0 }
     },
     fruit: { 
         name: 'Ovoce (jahoda, jablko)', 
         min: 8, max: 12, ideal: 10, steepingDays: 7,
-        note: 'Optimum: 10%, zrání 3–7 dní'
+        note: 'Optimum: 10%, zrání 3–7 dní',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     },
     citrus: { 
         name: 'Citrónové (citron, limeta)', 
         min: 6, max: 10, ideal: 8, steepingDays: 7,
-        note: 'Silné kyseliny, méně stačí'
+        note: 'Silné kyseliny, méně stačí',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     },
     berry: { 
         name: 'Bobulové (borůvka, malina)', 
         min: 10, max: 15, ideal: 12, steepingDays: 7,
-        note: 'Vyvážené, dobře fungují s 50/50 PG/VG'
+        note: 'Vyvážené, dobře fungují s 50/50 PG/VG',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     },
     tropical: { 
         name: 'Tropické (ananas, mango)', 
         min: 12, max: 18, ideal: 15, steepingDays: 10,
-        note: 'Sladké, potřebují vyšší % pro hloubku'
+        note: 'Sladké, potřebují vyšší % pro hloubku',
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
     },
     tobacco: { 
         name: 'Tabákové (klasický, kubánský)', 
         min: 10, max: 15, ideal: 12, steepingDays: 14,
-        note: 'Dlouhý steeping: 1–4 týdny pro rozvinutí'
+        note: 'Dlouhý steeping: 1–4 týdny pro rozvinutí',
+        composition: { pg: 85, vg: 0, alcohol: 5, water: 5, other: 5 }
     },
     menthol: { 
         name: 'Mentol / Mátové', 
         min: 4, max: 8, ideal: 6, steepingDays: 7,
-        note: 'Velmi koncentrované, při 10% chladí až pálí'
+        note: 'Velmi koncentrované, při 10% chladí až pálí',
+        composition: { pg: 35, vg: 5, alcohol: 50, water: 5, other: 5 }
     },
     candy: { 
         name: 'Sladkosti (cukroví, karamel)', 
         min: 12, max: 20, ideal: 16, steepingDays: 10,
-        note: 'Sladké tlumí škrábání, vyšší % nutné'
+        note: 'Sladké tlumí škrábání, vyšší % nutné',
+        composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
     },
     dessert: { 
         name: 'Dezerty (koláč, pudink)', 
         min: 15, max: 22, ideal: 18, steepingDays: 21,
-        note: 'Komplexní: 2–4 týdny zrání, riziko přechucení'
+        note: 'Komplexní: 2–4 týdny zrání, riziko přechucení',
+        composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
     },
     bakery: { 
         name: 'Zákusky (tyčinka, donut)', 
         min: 18, max: 25, ideal: 20, steepingDays: 21,
-        note: 'Doporučujeme vyzkoušet na 15%'
+        note: 'Doporučujeme vyzkoušet na 15%',
+        composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
     },
     biscuit: { 
         name: 'Piškotové (vanilka, máslo)', 
         min: 10, max: 15, ideal: 12, steepingDays: 10,
-        note: 'Univerzální, funguje s vysokým VG'
+        note: 'Univerzální, funguje s vysokým VG',
+        composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
     },
     drink: { 
         name: 'Nápojové (kola, čaj)', 
         min: 8, max: 12, ideal: 10, steepingDays: 7,
-        note: 'Jemné, méně intenzivní'
+        note: 'Jemné, méně intenzivní',
+        composition: { pg: 40, vg: 30, alcohol: 20, water: 5, other: 5 }
     },
     tobaccosweet: { 
         name: 'Tabák + sladké (custard tobacco)', 
         min: 15, max: 20, ideal: 17, steepingDays: 28,
-        note: 'Nejsložitější: 3–6 týdnů zrání'
+        note: 'Nejsložitější: 3–6 týdnů zrání',
+        composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
     },
     nuts: { 
         name: 'Oříškové (arašíd, lískový)', 
         min: 12, max: 18, ideal: 15, steepingDays: 14,
-        note: 'Dobře tlumí nikotin'
+        note: 'Dobře tlumí nikotin',
+        composition: { pg: 75, vg: 5, alcohol: 10, water: 5, other: 5 }
     },
     spice: { 
         name: 'Kořeněné (skořice, perník)', 
         min: 5, max: 10, ideal: 7, steepingDays: 14,
-        note: 'Silné: při 12% dominují nad vším'
+        note: 'Silné: při 12% dominují nad vším',
+        composition: { pg: 70, vg: 5, alcohol: 15, water: 5, other: 5 }
     }
 };
+
+// Additive database pro Liquid PRO
+// Aditiva jako chladiva, sladidla, zesilovače, terpeny
+const additiveDatabase = {
+    coolant: {
+        nameKey: 'additive.coolant',
+        defaultPercent: 1.5,
+        minPercent: 0.2,
+        maxPercent: 4,
+        descriptionKey: 'additive.coolant_desc',
+        composition: { pg: 100, vg: 0, alcohol: 0, water: 0, other: 0 }
+    },
+    sweetener: {
+        nameKey: 'additive.sweetener',
+        defaultPercent: 0.5,
+        minPercent: 0.2,
+        maxPercent: 2,
+        descriptionKey: 'additive.sweetener_desc',
+        composition: { pg: 90, vg: 0, alcohol: 0, water: 10, other: 0 }
+    },
+    enhancer: {
+        nameKey: 'additive.enhancer',
+        defaultPercent: 1,
+        minPercent: 0.5,
+        maxPercent: 3,
+        descriptionKey: 'additive.enhancer_desc',
+        composition: { pg: 100, vg: 0, alcohol: 0, water: 0, other: 0 }
+    },
+    terpene: {
+        nameKey: 'additive.terpene',
+        defaultPercent: 2,
+        minPercent: 1,
+        maxPercent: 5,
+        descriptionKey: 'additive.terpene_desc',
+        composition: { pg: 50, vg: 0, alcohol: 40, water: 0, other: 10 }
+    }
+};
+
+// Densities for gram calculations (g/ml)
+const ingredientDensities = {
+    pg: 1.036,
+    vg: 1.261,
+    water: 1.000,
+    alcohol: 0.789,
+    other: 1.000  // approximation
+};
+
+// Calculate density of a composition
+function calculateCompositionDensity(composition) {
+    if (!composition) return 1.036; // default to PG
+    return (
+        (composition.pg / 100) * ingredientDensities.pg +
+        (composition.vg / 100) * ingredientDensities.vg +
+        (composition.alcohol / 100) * ingredientDensities.alcohol +
+        (composition.water / 100) * ingredientDensities.water +
+        (composition.other / 100) * ingredientDensities.other
+    );
+}
+
+// Calculate nicotine density based on VG/PG ratio
+function calculateNicotineDensity(vgPercent) {
+    return (vgPercent / 100) * ingredientDensities.vg + ((100 - vgPercent) / 100) * ingredientDensities.pg;
+}
+
+// Calculate premixed base density based on VG/PG ratio
+function calculatePremixedBaseDensity(vgPercent) {
+    return (vgPercent / 100) * ingredientDensities.vg + ((100 - vgPercent) / 100) * ingredientDensities.pg;
+}
+
+// Convert ml to grams
+function mlToGrams(volumeMl, density) {
+    return (volumeMl * density).toFixed(2);
+}
+
+// Export additive database
+window.additiveDatabase = additiveDatabase;
+window.ingredientDensities = ingredientDensities;
+window.calculateCompositionDensity = calculateCompositionDensity;
+window.mlToGrams = mlToGrams;
 
 // Helper funkce pro výpočet doporučeného data zrání
 function calculateMaturityDate(mixedDate, flavorType) {
@@ -553,6 +648,252 @@ function setupSvFlavorRatioToggle() {
         });
     }
 }
+
+// ============================================
+// PREMIXED BASE FUNCTIONS
+// ============================================
+
+// Update base type (separate or premixed)
+function updateBaseType(type) {
+    const baseTypeInput = document.getElementById('baseType');
+    const premixedContainer = document.getElementById('premixedRatioContainer');
+    const separateBtn = document.getElementById('baseSeparate');
+    const premixedBtn = document.getElementById('basePremixed');
+    
+    if (baseTypeInput) baseTypeInput.value = type;
+    
+    if (type === 'premixed') {
+        separateBtn.classList.remove('active');
+        premixedBtn.classList.add('active');
+        if (premixedContainer) premixedContainer.classList.remove('hidden');
+        
+        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+        const actualVg = calculateActualVgPgRatio('liquid');
+        const slider = document.getElementById('vgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateRatioDisplay();
+        }
+    } else {
+        separateBtn.classList.add('active');
+        premixedBtn.classList.remove('active');
+        if (premixedContainer) premixedContainer.classList.add('hidden');
+    }
+    
+    updateVgPgRatioLimits();
+}
+
+// Update premixed ratio
+function updatePremixedRatio(ratio) {
+    const premixedRatioInput = document.getElementById('premixedRatio');
+    if (premixedRatioInput) premixedRatioInput.value = ratio;
+    
+    // Update button states
+    const buttons = document.querySelectorAll('.premixed-ratio-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.value === ratio) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+    const actualVg = calculateActualVgPgRatio('liquid');
+    const slider = document.getElementById('vgPgRatio');
+    if (slider) {
+        slider.value = actualVg;
+        updateRatioDisplay();
+    }
+    
+    updateVgPgRatioLimits();
+}
+
+// Get premixed base VG percent
+function getPremixedVgPercent() {
+    const premixedRatio = document.getElementById('premixedRatio')?.value || '60/40';
+    const parts = premixedRatio.split('/');
+    return parseInt(parts[0]) || 60;
+}
+
+// ============================================
+// LIQUID PRO PREMIXED BASE FUNCTIONS
+// ============================================
+
+// Calculate actual VG/PG ratio from all components (for premixed mode)
+function calculateActualVgPgRatio(formType) {
+    let totalAmount, nicotineType, targetNicotine, baseNicotine, nicVgPercent;
+    let flavorVolume = 0, flavorVgPercent = 0;
+    let premixedVgPercent = 50;
+    
+    if (formType === 'pro') {
+        totalAmount = parseFloat(document.getElementById('proTotalAmount')?.value) || 100;
+        nicotineType = document.getElementById('proNicotineType')?.value || 'none';
+        targetNicotine = parseFloat(document.getElementById('proTargetNicotine')?.value) || 0;
+        baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength')?.value) || 0;
+        nicVgPercent = parseInt(document.getElementById('proNicotineRatioSlider')?.value) || 50;
+        
+        // Get flavors data
+        const flavorsData = typeof getProFlavorsData === 'function' ? getProFlavorsData() : [];
+        flavorsData.forEach(flavor => {
+            const vol = (flavor.percent / 100) * totalAmount;
+            flavorVolume += vol;
+            // Weighted average for VG
+        });
+        // Simplified: use average VG from all flavors
+        if (flavorsData.length > 0) {
+            const totalFlavorVg = flavorsData.reduce((sum, f) => sum + (f.vgRatio * f.percent), 0);
+            const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
+            flavorVgPercent = totalFlavorPercent > 0 ? totalFlavorVg / totalFlavorPercent : 0;
+            flavorVolume = (totalFlavorPercent / 100) * totalAmount;
+        }
+        
+        const premixedRatio = document.getElementById('proPremixedRatio')?.value || '50/50';
+        premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
+    } else {
+        // Standard Liquid form
+        totalAmount = parseFloat(document.getElementById('totalAmount')?.value) || 100;
+        nicotineType = document.getElementById('nicotineType')?.value || 'none';
+        targetNicotine = parseFloat(document.getElementById('targetNicotine')?.value) || 0;
+        baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength')?.value) || 0;
+        const nicRatio = document.getElementById('nicotineRatio')?.value || '50/50';
+        nicVgPercent = nicRatio === '70/30' ? 70 : 50;
+        
+        const flavorType = document.getElementById('flavorType')?.value || 'none';
+        const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('flavorStrength')?.value) || 0 : 0;
+        const flavorRatio = document.getElementById('flavorRatio')?.value || '0/100';
+        flavorVgPercent = flavorRatio === '80/20' ? 80 : (flavorRatio === '70/30' ? 70 : 0);
+        flavorVolume = (flavorPercent / 100) * totalAmount;
+        
+        const premixedRatio = document.getElementById('premixedRatio')?.value || '50/50';
+        premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
+    }
+    
+    // Calculate nicotine volume
+    let nicotineVolume = 0;
+    if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
+        nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+    }
+    
+    // Remaining volume for carrier (premixed base)
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    
+    // Calculate VG from each component
+    const vgFromNicotine = nicotineVolume * (nicVgPercent / 100);
+    const vgFromFlavor = flavorVolume * (flavorVgPercent / 100);
+    const vgFromBase = remainingVolume * (premixedVgPercent / 100);
+    
+    // Total VG
+    const totalVg = vgFromNicotine + vgFromFlavor + vgFromBase;
+    const actualVgPercent = Math.round((totalVg / totalAmount) * 100);
+    
+    return Math.max(0, Math.min(100, actualVgPercent));
+}
+
+// Update PRO base type (separate or premixed)
+function updateProBaseType(type) {
+    const baseTypeInput = document.getElementById('proBaseType');
+    const premixedContainer = document.getElementById('proPremixedRatioContainer');
+    const separateBtn = document.getElementById('proBaseSeparate');
+    const premixedBtn = document.getElementById('proBasePremixed');
+    
+    if (baseTypeInput) baseTypeInput.value = type;
+    
+    if (type === 'premixed') {
+        separateBtn.classList.remove('active');
+        premixedBtn.classList.add('active');
+        if (premixedContainer) premixedContainer.classList.remove('hidden');
+        
+        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+        const actualVg = calculateActualVgPgRatio('pro');
+        const slider = document.getElementById('proVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateProRatioDisplay();
+        }
+    } else {
+        separateBtn.classList.add('active');
+        premixedBtn.classList.remove('active');
+        if (premixedContainer) premixedContainer.classList.add('hidden');
+    }
+    
+    updateProVgPgLimits();
+}
+
+// Update PRO premixed ratio
+function updateProPremixedRatio(ratio) {
+    const premixedRatioInput = document.getElementById('proPremixedRatio');
+    const customContainer = document.getElementById('proCustomPremixedContainer');
+    
+    // Update button states
+    const buttons = document.querySelectorAll('.pro-premixed-ratio-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.value === ratio) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // DŮLEŽITÉ: Nejprve nastavit hodnotu, pak počítat ratio
+    if (ratio === 'custom') {
+        if (customContainer) customContainer.classList.remove('hidden');
+        // Get custom values
+        const customVg = parseInt(document.getElementById('proCustomPremixedVg')?.value) || 65;
+        if (premixedRatioInput) premixedRatioInput.value = `${customVg}/${100 - customVg}`;
+    } else {
+        if (customContainer) customContainer.classList.add('hidden');
+        if (premixedRatioInput) premixedRatioInput.value = ratio;
+    }
+    
+    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr (po nastavení proPremixedRatio)
+    setTimeout(() => {
+        const actualVg = calculateActualVgPgRatio('pro');
+        const slider = document.getElementById('proVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateProRatioDisplay();
+        }
+        updateProVgPgLimits();
+    }, 0);
+}
+
+// Update PRO custom premixed PG (auto-calculate from VG)
+function updateProCustomPremixedPg() {
+    const vgInput = document.getElementById('proCustomPremixedVg');
+    const pgInput = document.getElementById('proCustomPremixedPg');
+    const premixedRatioInput = document.getElementById('proPremixedRatio');
+    
+    if (vgInput && pgInput) {
+        let vgValue = parseInt(vgInput.value) || 0;
+        if (vgValue > 100) vgValue = 100;
+        if (vgValue < 0) vgValue = 0;
+        vgInput.value = vgValue;
+        pgInput.value = 100 - vgValue;
+        
+        if (premixedRatioInput) {
+            premixedRatioInput.value = `${vgValue}/${100 - vgValue}`;
+        }
+    }
+    
+    updateProVgPgLimits();
+}
+
+// Get PRO premixed base VG percent
+function getProPremixedVgPercent() {
+    const premixedRatio = document.getElementById('proPremixedRatio')?.value || '60/40';
+    const parts = premixedRatio.split('/');
+    return parseInt(parts[0]) || 60;
+}
+
+// Export premixed base functions
+window.updateBaseType = updateBaseType;
+window.updatePremixedRatio = updatePremixedRatio;
+window.getPremixedVgPercent = getPremixedVgPercent;
+window.updateProBaseType = updateProBaseType;
+window.updateProPremixedRatio = updateProPremixedRatio;
+window.updateProCustomPremixedPg = updateProCustomPremixedPg;
+window.getProPremixedVgPercent = getProPremixedVgPercent;
 
 // Force HTTPS redirect
 if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
@@ -2574,6 +2915,15 @@ function prefillLiquidForm(data) {
     if (data.totalAmount) {
         document.getElementById('totalAmount').value = data.totalAmount;
     }
+    
+    // Base type
+    if (data.baseType) {
+        updateBaseType(data.baseType);
+        if (data.baseType === 'premixed' && data.premixedRatio) {
+            updatePremixedRatio(data.premixedRatio);
+        }
+    }
+    
     if (data.vgPercent !== undefined) {
         document.getElementById('vgPgRatio').value = data.vgPercent;
         updateRatioDisplay();
@@ -2631,6 +2981,25 @@ function prefillProForm(data) {
         const el = document.getElementById('proTotalAmount');
         if (el) el.value = data.totalAmount;
     }
+    
+    // Base type
+    if (data.baseType) {
+        updateProBaseType(data.baseType);
+        if (data.baseType === 'premixed' && data.premixedRatio) {
+            // Check if it's custom ratio
+            const standardRatios = ['50/50', '60/40', '70/30', '80/20'];
+            if (standardRatios.includes(data.premixedRatio)) {
+                updateProPremixedRatio(data.premixedRatio);
+            } else {
+                updateProPremixedRatio('custom');
+                const parts = data.premixedRatio.split('/');
+                const vgEl = document.getElementById('proCustomPremixedVg');
+                if (vgEl) vgEl.value = parseInt(parts[0]) || 65;
+                updateProCustomPremixedPg();
+            }
+        }
+    }
+    
     if (data.vgPercent !== undefined) {
         const el = document.getElementById('proVgPgRatio');
         if (el) {
@@ -2649,8 +3018,52 @@ function prefillProForm(data) {
     if (data.flavors && data.flavors.length > 0) {
         resetAndPrefillProFlavors(data.flavors);
     }
+    // Aditiva - předvyplnit
+    if (data.additives && data.additives.length > 0) {
+        resetAndPrefillProAdditives(data.additives);
+    }
     // Aktualizovat limity
     updateProVgPgLimits();
+}
+
+// Resetovat a předvyplnit aditiva PRO formuláře
+function resetAndPrefillProAdditives(additives) {
+    if (!additives || additives.length === 0) return;
+    
+    // Reset
+    proAdditiveCount = 0;
+    const container = document.getElementById('proAdditivesContainer');
+    if (container) container.innerHTML = '';
+    
+    const addBtn = document.getElementById('proAddAdditiveBtn');
+    if (addBtn) addBtn.classList.remove('hidden');
+    
+    // Předvyplnit
+    additives.forEach((additive) => {
+        addProAdditive();
+        
+        const idx = proAdditiveCount;
+        const typeEl = document.getElementById(`proAdditiveType${idx}`);
+        const percentEl = document.getElementById(`proAdditivePercent${idx}`);
+        
+        if (typeEl) typeEl.value = additive.type;
+        if (percentEl) percentEl.value = additive.percent;
+        
+        updateProAdditiveType(idx);
+        
+        // Custom composition
+        if (additive.customComposition) {
+            toggleAdditiveComposition(idx);
+            const pgEl = document.getElementById(`proAdditiveCompPg${idx}`);
+            const vgEl = document.getElementById(`proAdditiveCompVg${idx}`);
+            const alcoholEl = document.getElementById(`proAdditiveCompAlcohol${idx}`);
+            
+            if (pgEl) pgEl.value = additive.customComposition.pg;
+            if (vgEl) vgEl.value = additive.customComposition.vg;
+            if (alcoholEl) alcoholEl.value = additive.customComposition.alcohol;
+            updateAdditiveCompositionOther(idx);
+        }
+    });
 }
 
 // Resetovat a předvyplnit příchutě PRO formuláře
@@ -4476,12 +4889,27 @@ function getIngredientName(ingredient) {
             return t('ingredients.vg', 'VG (Glycerin)');
         case 'pg':
             return t('ingredients.pg', 'PG (Propylenglykol)');
+        case 'vg_adjustment':
+            return t('ingredients.vg_adjustment', 'VG (doladění)');
+        case 'pg_adjustment':
+            return t('ingredients.pg_adjustment', 'PG (doladění)');
+        case 'premixedBase':
+            const premixedName = t('ingredients.premixed_base', 'Předmíchaná báze');
+            return `${premixedName} (VG/PG ${params.vgpg})`;
         case 'nicotine_base':
             const baseName = t('ingredients.nicotine_base', 'Nikotinová báze');
             if (params.strength && params.vgpg) {
                 return `${baseName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
             }
             return baseName;
+        case 'additive':
+            const additiveType = ingredient.additiveType;
+            if (additiveType && additiveDatabase[additiveType]) {
+                return t(additiveDatabase[additiveType].nameKey, additiveType);
+            }
+            return t('ingredients.additive', 'Aditivum');
+        case 'shortfill_liquid':
+            return t('ingredients.shortfill_liquid', 'Shortfill liquid');
         default:
             return ingredient.name || key;
     }
@@ -4555,10 +4983,14 @@ function calculateMix() {
     const baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength').value) || 0;
     const flavorType = document.getElementById('flavorType').value;
     const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('flavorStrength').value) : 0;
+    
+    // Get base type (separate or premixed)
+    const baseType = document.getElementById('baseType')?.value || 'separate';
+    const premixedRatio = document.getElementById('premixedRatio')?.value || '60/40';
 
     // =========================================
     // CALCULATION FORMULA
-    // Total = Nicotine + Flavor + PG + VG
+    // Total = Nicotine + Flavor + PG + VG (or Premixed Base)
     // All values in ml, must equal totalAmount
     // =========================================
 
@@ -4573,30 +5005,26 @@ function calculateMix() {
     // Formula: flavor_ml = (flavor_percent / 100) * total_ml
     const flavorVolume = (flavorPercent / 100) * totalAmount;
 
-    // 3. Calculate remaining volume for PG and VG (carrier liquids)
+    // 3. Calculate remaining volume for carrier liquids
     // This is what's left after nicotine and flavor
     const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
 
     // 4. Nicotine base composition (affects final PG/VG ratio)
-    // Get VG/PG ratio from user selection
     let nicotineVgContent = 0;
     let nicotinePgContent = 0;
+    let nicVgPercent = 50;
     
     if (nicotineType !== 'none' && nicotineVolume > 0) {
         const nicotineRatio = document.getElementById('nicotineRatio').value;
-        let nicVgPercent = 50;
-        let nicPgPercent = 50;
         
         if (nicotineRatio === '50/50') {
             nicVgPercent = 50;
-            nicPgPercent = 50;
         } else if (nicotineRatio === '70/30') {
             nicVgPercent = 70;
-            nicPgPercent = 30;
         }
         
         nicotineVgContent = nicotineVolume * (nicVgPercent / 100);
-        nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
+        nicotinePgContent = nicotineVolume * ((100 - nicVgPercent) / 100);
     }
 
     // 5. Flavor VG/PG content based on selected ratio
@@ -4606,132 +5034,219 @@ function calculateMix() {
     if (flavorType !== 'none' && flavorVolume > 0) {
         const flavorRatio = document.getElementById('flavorRatio').value;
         let flavorVgPercent = 0;
-        let flavorPgPercent = 100;
         
         if (flavorRatio === '0/100') {
             flavorVgPercent = 0;
-            flavorPgPercent = 100;
         } else if (flavorRatio === '80/20') {
             flavorVgPercent = 80;
-            flavorPgPercent = 20;
         } else if (flavorRatio === '70/30') {
             flavorVgPercent = 70;
-            flavorPgPercent = 30;
         }
         
         flavorVgContent = flavorVolume * (flavorVgPercent / 100);
-        flavorPgContent = flavorVolume * (flavorPgPercent / 100);
+        flavorPgContent = flavorVolume * ((100 - flavorVgPercent) / 100);
     }
 
-    // 6. Calculate pure PG and VG needed to achieve target ratio
-    // Target VG in final mix = (vgPercent / 100) * totalAmount
-    // Target PG in final mix = (pgPercent / 100) * totalAmount
+    // 6. Calculate carrier liquids needed
     const targetVgTotal = (vgPercent / 100) * totalAmount;
     const targetPgTotal = (pgPercent / 100) * totalAmount;
 
-    // Subtract what's already coming from nicotine and flavor
     let pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
     let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
+    let premixedBaseVolume = 0;
+    let premixedVgPercent = 60;
 
-    // Handle negative values (when nicotine/flavor exceeds target ratio)
+    // Handle negative values
     if (pureVgNeeded < 0) pureVgNeeded = 0;
     if (purePgNeeded < 0) purePgNeeded = 0;
 
-    // If remaining volume doesn't allow exact ratio, distribute proportionally
-    const totalPureNeeded = pureVgNeeded + purePgNeeded;
-    if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
-        const ratio = remainingVolume / totalPureNeeded;
-        pureVgNeeded *= ratio;
-        purePgNeeded *= ratio;
-    } else if (totalPureNeeded < remainingVolume) {
-        // If we have extra room, add it proportionally
-        const extra = remainingVolume - totalPureNeeded;
-        if (vgPercent + pgPercent > 0) {
-            pureVgNeeded += extra * (vgPercent / 100);
-            purePgNeeded += extra * (pgPercent / 100);
+    // Build results
+    const ingredients = [];
+
+    if (baseType === 'premixed') {
+        // PREMIXED BASE MODE
+        // Parse premixed ratio
+        const premixedParts = premixedRatio.split('/');
+        premixedVgPercent = parseInt(premixedParts[0]) || 50;
+        const premixedPgPercent = 100 - premixedVgPercent;
+        
+        // Kolik VG a PG potřebujeme z nosných kapalin (po odečtení nikotinu a příchutě)
+        const neededVgFromCarrier = targetVgTotal - nicotineVgContent - flavorVgContent;
+        const neededPgFromCarrier = targetPgTotal - nicotinePgContent - flavorPgContent;
+        
+        // Kolik předmíchané báze můžeme použít, aniž bychom překročili potřebné VG nebo PG
+        // Pokud premixed VG% > 0: max z VG = neededVg / (premixedVg% / 100)
+        // Pokud premixed PG% > 0: max z PG = neededPg / (premixedPg% / 100)
+        let maxFromVg = premixedVgPercent > 0 ? neededVgFromCarrier / (premixedVgPercent / 100) : Infinity;
+        let maxFromPg = premixedPgPercent > 0 ? neededPgFromCarrier / (premixedPgPercent / 100) : Infinity;
+        
+        // Maximální množství předmíchané báze = minimum z obou omezení a zbývajícího objemu
+        premixedBaseVolume = Math.min(Math.max(0, maxFromVg), Math.max(0, maxFromPg), Math.max(0, remainingVolume));
+        
+        // VG a PG z předmíchané báze
+        const premixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
+        const premixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
+        
+        // Kolik ještě potřebujeme čistého VG a PG pro dosažení přesného poměru
+        pureVgNeeded = neededVgFromCarrier - premixedVgContent;
+        purePgNeeded = neededPgFromCarrier - premixedPgContent;
+        
+        // Ošetřit záporné hodnoty (zaokrouhlovací chyby)
+        if (pureVgNeeded < 0.01) pureVgNeeded = 0;
+        if (purePgNeeded < 0.01) purePgNeeded = 0;
+        
+        // Add nicotine to ingredients
+        if (nicotineVolume > 0) {
+            const nicotineRatioValue = document.getElementById('nicotineRatio').value;
+            ingredients.push({
+                ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+                vgRatio: nicVgPercent,
+                params: {
+                    strength: baseNicotine,
+                    vgpg: nicotineRatioValue
+                },
+                volume: nicotineVolume,
+                percent: (nicotineVolume / totalAmount) * 100
+            });
+        }
+
+        // Add flavor to ingredients
+        if (flavorVolume > 0) {
+            const flavorRatioValue = document.getElementById('flavorRatio').value;
+            ingredients.push({
+                ingredientKey: 'flavor',
+                flavorType: flavorType,
+                params: {
+                    vgpg: flavorRatioValue
+                },
+                volume: flavorVolume,
+                percent: (flavorVolume / totalAmount) * 100
+            });
+        }
+        
+        // Add premixed base
+        if (premixedBaseVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'premixedBase',
+                vgRatio: premixedVgPercent,
+                params: {
+                    vgpg: premixedRatio
+                },
+                volume: premixedBaseVolume,
+                percent: (premixedBaseVolume / totalAmount) * 100
+            });
+        }
+        
+        // Add adjustment VG if needed
+        if (pureVgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg_adjustment',
+                volume: pureVgNeeded,
+                percent: (pureVgNeeded / totalAmount) * 100
+            });
+        }
+        
+        // Add adjustment PG if needed
+        if (purePgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg_adjustment',
+                volume: purePgNeeded,
+                percent: (purePgNeeded / totalAmount) * 100
+            });
+        }
+        
+    } else {
+        // SEPARATE PG/VG MODE (original logic)
+        // Adjust if needed
+        const totalPureNeeded = pureVgNeeded + purePgNeeded;
+        if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
+            const ratio = remainingVolume / totalPureNeeded;
+            pureVgNeeded *= ratio;
+            purePgNeeded *= ratio;
+        } else if (totalPureNeeded < remainingVolume) {
+            const extra = remainingVolume - totalPureNeeded;
+            if (vgPercent + pgPercent > 0) {
+                pureVgNeeded += extra * (vgPercent / 100);
+                purePgNeeded += extra * (pgPercent / 100);
+            }
+        }
+
+        // Add nicotine to ingredients
+        if (nicotineVolume > 0) {
+            const nicotineRatioValue = document.getElementById('nicotineRatio').value;
+            ingredients.push({
+                ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+                vgRatio: nicVgPercent,
+                params: {
+                    strength: baseNicotine,
+                    vgpg: nicotineRatioValue
+                },
+                volume: nicotineVolume,
+                percent: (nicotineVolume / totalAmount) * 100
+            });
+        }
+
+        // Add flavor to ingredients
+        if (flavorVolume > 0) {
+            const flavorRatioValue = document.getElementById('flavorRatio').value;
+            ingredients.push({
+                ingredientKey: 'flavor',
+                flavorType: flavorType,
+                params: {
+                    vgpg: flavorRatioValue
+                },
+                volume: flavorVolume,
+                percent: (flavorVolume / totalAmount) * 100
+            });
+        }
+
+        // Add carrier liquids
+        if (purePgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg',
+                volume: purePgNeeded,
+                percent: (purePgNeeded / totalAmount) * 100
+            });
+        }
+
+        if (pureVgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg',
+                volume: pureVgNeeded,
+                percent: (pureVgNeeded / totalAmount) * 100
+            });
         }
     }
 
-    // =========================================
-    // Build results
-    // Drops calculation: 1 ml ≈ 20 drops (standard pipette)
-    // Ukládáme klíče pro dynamický překlad ingrediencí
-    // =========================================
-    const DROPS_PER_ML = 20;
-    const ingredients = [];
-
-    if (nicotineVolume > 0) {
-        const nicotineRatioValue = document.getElementById('nicotineRatio').value;
-        ingredients.push({
-            // Klíč pro překlad
-            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
-            // Parametry pro zobrazení
-            params: {
-                strength: baseNicotine,
-                vgpg: nicotineRatioValue
-            },
-            volume: nicotineVolume,
-            percent: (nicotineVolume / totalAmount) * 100,
-            drops: Math.round(nicotineVolume * DROPS_PER_ML),
-            showDrops: true
-        });
-    }
-
-    if (flavorVolume > 0) {
-        const flavorRatioValue = document.getElementById('flavorRatio').value;
-        ingredients.push({
-            ingredientKey: 'flavor',
-            flavorType: flavorType,
-            params: {
-                vgpg: flavorRatioValue
-            },
-            volume: flavorVolume,
-            percent: (flavorVolume / totalAmount) * 100,
-            drops: Math.round(flavorVolume * DROPS_PER_ML),
-            showDrops: true
-        });
-    }
-
-    // Add carrier liquids (no drops for these - measured in ml)
-    if (purePgNeeded > 0.01) {
-        ingredients.push({
-            ingredientKey: 'pg',
-            volume: purePgNeeded,
-            percent: (purePgNeeded / totalAmount) * 100,
-            drops: null,
-            showDrops: false
-        });
-    }
-
-    if (pureVgNeeded > 0.01) {
-        ingredients.push({
-            ingredientKey: 'vg',
-            volume: pureVgNeeded,
-            percent: (pureVgNeeded / totalAmount) * 100,
-            drops: null,
-            showDrops: false
-        });
-    }
-
     // Calculate actual totals for verification
-    const actualTotal = nicotineVolume + flavorVolume + purePgNeeded + pureVgNeeded;
+    const actualTotal = ingredients.reduce((sum, ing) => sum + ing.volume, 0);
     
     // Calculate actual VG/PG ratio in final mix
-    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
-    const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
+    let actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
+    let actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
+    
+    if (baseType === 'premixed' && premixedBaseVolume > 0) {
+        actualVg += premixedBaseVolume * (premixedVgPercent / 100);
+        actualPg += premixedBaseVolume * ((100 - premixedVgPercent) / 100);
+    }
 
-    // Display results - pro formulář Liquid zobrazí výsledky i nepřihlášeným
-    // Modál se zobrazí až při pokusu o uložení receptu
+    // Display results
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, actualTotal, actualVg, actualPg, {
-        flavorType: flavorType
+        flavorType: flavorType,
+        baseType: baseType,
+        premixedRatio: baseType === 'premixed' ? premixedRatio : null
     });
     showPage('results');
 }
 
 function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actualVg, actualPg, extraData = {}) {
-    document.getElementById('resultTotal').textContent = `${total} ml`;
+    // Zaokrouhlit hodnoty na 2 desetinná místa
+    const roundedTotal = typeof total === 'number' ? parseFloat(total.toFixed(2)) : total;
+    const roundedNicotine = typeof nicotine === 'number' ? parseFloat(nicotine.toFixed(2)) : nicotine;
+    
+    document.getElementById('resultTotal').textContent = `${roundedTotal} ml`;
     document.getElementById('resultRatio').textContent = `${vg}:${pg}`;
-    document.getElementById('resultNicotine').textContent = `${nicotine} mg/ml`;
+    document.getElementById('resultNicotine').textContent = `${roundedNicotine} mg/ml`;
     
     // Přepnout tlačítka podle režimu (editace vs nový recept)
     const newButtons = document.getElementById('resultsNewButtons');
@@ -4757,10 +5272,14 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
         ingredients: ingredients.map(ing => ({
             ingredientKey: ing.ingredientKey,
             flavorType: ing.flavorType,
+            flavorIndex: ing.flavorIndex,
+            flavorNumber: ing.flavorNumber,
+            additiveType: ing.additiveType,
+            customComposition: ing.customComposition,
+            vgRatio: ing.vgRatio,
             params: ing.params,
             volume: ing.volume,
-            percent: ing.percent,
-            drops: ing.drops
+            percent: ing.percent
         })),
         actualVg: actualVg,
         actualPg: actualPg
@@ -4776,6 +5295,15 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     if (extraData.flavors) {
         recipeData.flavors = extraData.flavors;
     }
+    if (extraData.additives) {
+        recipeData.additives = extraData.additives;
+    }
+    if (extraData.baseType) {
+        recipeData.baseType = extraData.baseType;
+    }
+    if (extraData.premixedRatio) {
+        recipeData.premixedRatio = extraData.premixedRatio;
+    }
     
     storeCurrentRecipe(recipeData);
 
@@ -4783,26 +5311,22 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     tbody.innerHTML = '';
 
     let runningTotal = 0;
+    let totalGrams = 0;
 
     ingredients.forEach(ing => {
         const row = document.createElement('tr');
 
-        // Calculate drops display based on volume
-        // Show drops only for nicotine/flavor AND if volume <= 5ml
-        let dropsDisplay = '-';
-        if (ing.showDrops && ing.volume <= 5) {
-            const drops = Math.round(ing.volume * 20);
-            dropsDisplay = String(drops);
-        }
+        // Calculate grams based on ingredient type
+        const grams = calculateIngredientGrams(ing);
+        totalGrams += parseFloat(grams);
 
         // Dynamicky přeložit název ingredience
         const ingredientName = getIngredientName(ing);
 
         row.innerHTML = `
-            <td class="ingredient-name">${ingredientName}</td>
-            <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
-            <td class="ingredient-drops">${dropsDisplay}</td>
-            <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
+            <td class="ingredient-name">${ingredientName} <span class="ingredient-percent-inline">(${ing.percent.toFixed(1)}%)</span></td>
+            <td class="ingredient-value">${ing.volume.toFixed(2)}</td>
+            <td class="ingredient-grams">${grams}</td>
         `;
         tbody.appendChild(row);
         runningTotal += ing.volume;
@@ -4813,27 +5337,120 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
         <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
-        <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
-        <td class="ingredient-drops">-</td>
-        <td class="ingredient-percent">100%</td>
+        <td class="ingredient-value">${runningTotal.toFixed(2)}</td>
+        <td class="ingredient-grams">${totalGrams.toFixed(2)}</td>
     `;
     tbody.appendChild(totalRow);
 
-    // Add actual ratio info
-    const actualVgPercent = (actualVg / total * 100).toFixed(1);
-    const actualPgPercent = (actualPg / total * 100).toFixed(1);
+    // Generate dynamic mixing notes
+    generateMixingNotes(recipeData);
+}
+
+// Calculate grams for an ingredient based on its type and composition
+function calculateIngredientGrams(ing) {
+    let density = ingredientDensities.pg; // default
     
-    // Update notes with actual ratio
-    const notesEl = document.querySelector('.results-notes ul');
-    if (notesEl) {
-        notesEl.innerHTML = `
-            <li>${t('results.notes_1', 'Nejprve přidejte nikotin (pokud používáte)')} - ${t('results.dilute_notes_1', 'pracujte v rukavicích!')}</li>
-            <li>${t('results.notes_2', 'Poté přidejte příchutě')}</li>
-            <li>${t('results.notes_3', 'Nakonec doplňte PG a VG')}</li>
-            <li>${t('results.notes_4', 'Důkladně protřepejte a nechte zrát 1-2 týdny')}</li>
-            <li>${t('results.actual_ratio', 'Skutečný poměr VG/PG ve směsi')}: ${actualVgPercent}% / ${actualPgPercent}%</li>
-        `;
+    if (ing.ingredientKey === 'vg') {
+        density = ingredientDensities.vg;
+    } else if (ing.ingredientKey === 'pg') {
+        density = ingredientDensities.pg;
+    } else if (ing.ingredientKey === 'nicotine') {
+        // Nicotine density depends on VG/PG ratio
+        const nicVgRatio = ing.vgRatio || 50;
+        density = calculateNicotineDensity(nicVgRatio);
+    } else if (ing.ingredientKey === 'flavor') {
+        // Flavor density depends on composition
+        const flavorType = ing.flavorType || 'fruit';
+        const flavorData = flavorDatabase[flavorType];
+        if (flavorData && flavorData.composition) {
+            density = calculateCompositionDensity(flavorData.composition);
+        }
+    } else if (ing.ingredientKey === 'premixedBase') {
+        // Premixed base density
+        const baseVgRatio = ing.vgRatio || 50;
+        density = calculatePremixedBaseDensity(baseVgRatio);
+    } else if (ing.ingredientKey === 'additive') {
+        // Additive density
+        const additiveType = ing.additiveType;
+        if (additiveType && additiveDatabase[additiveType]) {
+            density = calculateCompositionDensity(additiveDatabase[additiveType].composition);
+        }
     }
+    
+    return mlToGrams(ing.volume, density);
+}
+
+// Generate dynamic mixing notes based on recipe data
+function generateMixingNotes(recipeData) {
+    const notesEl = document.getElementById('mixingNotesList');
+    if (!notesEl) return;
+    
+    const notes = [];
+    
+    // 1. Flavors first
+    notes.push(t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'));
+    
+    // 2. Nicotine if present
+    if (recipeData.nicotine > 0) {
+        notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
+    }
+    
+    // 3. Base type
+    if (recipeData.baseType === 'premixed') {
+        notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
+        // Check if adjustment needed
+        const hasAdjustment = recipeData.ingredients && recipeData.ingredients.some(
+            ing => (ing.ingredientKey === 'pg' || ing.ingredientKey === 'vg') && ing.volume > 0.1
+        );
+        if (hasAdjustment) {
+            notes.push(t('results.notes_adjustment', 'Pokud je třeba, dolaďte čistým PG nebo VG.'));
+        }
+    } else {
+        notes.push(t('results.notes_pg_vg', 'Nakonec doplňte PG a VG.'));
+    }
+    
+    // 4. Shake
+    notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
+    
+    // 5. Steeping based on flavor type
+    const steepingDays = getMaxSteepingDaysFromRecipe(recipeData);
+    if (steepingDays > 0) {
+        const steepText = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', steepingDays);
+        notes.push(steepText);
+    }
+    
+    // 6. Actual ratio info
+    if (recipeData.actualVg !== undefined && recipeData.totalAmount) {
+        const actualVgPercent = (recipeData.actualVg / recipeData.totalAmount * 100).toFixed(1);
+        const actualPgPercent = (recipeData.actualPg / recipeData.totalAmount * 100).toFixed(1);
+        notes.push(`${t('results.actual_ratio', 'Skutečný poměr VG/PG')}: ${actualVgPercent}% / ${actualPgPercent}%`);
+    }
+    
+    // Render notes
+    notesEl.innerHTML = notes.map(note => `<li>${note}</li>`).join('');
+}
+
+// Get max steeping days from recipe data
+function getMaxSteepingDaysFromRecipe(recipeData) {
+    let maxDays = 0;
+    
+    if (recipeData.formType === 'liquidpro' && recipeData.flavors) {
+        for (const flavor of recipeData.flavors) {
+            if (flavor.type && flavor.type !== 'none') {
+                const flavorData = flavorDatabase[flavor.type];
+                if (flavorData && flavorData.steepingDays > maxDays) {
+                    maxDays = flavorData.steepingDays;
+                }
+            }
+        }
+    } else if (recipeData.flavorType && recipeData.flavorType !== 'none') {
+        const flavorData = flavorDatabase[recipeData.flavorType];
+        if (flavorData && flavorData.steepingDays) {
+            maxDays = flavorData.steepingDays;
+        }
+    }
+    
+    return maxDays;
 }
 
 // Překreslit tabulku výsledků při změně jazyka
@@ -4843,22 +5460,20 @@ function refreshResultsTable() {
     
     tbody.innerHTML = '';
     let runningTotal = 0;
+    let totalGrams = 0;
     
     currentRecipeData.ingredients.forEach(ing => {
         const row = document.createElement('tr');
         
-        let dropsDisplay = '-';
-        if (ing.drops && ing.volume <= 5) {
-            dropsDisplay = String(ing.drops);
-        }
+        const grams = calculateIngredientGrams(ing);
+        totalGrams += parseFloat(grams);
         
         const ingredientName = getIngredientName(ing);
         
         row.innerHTML = `
-            <td class="ingredient-name">${ingredientName}</td>
-            <td class="ingredient-value">${parseFloat(ing.volume || 0).toFixed(2)} ml</td>
-            <td class="ingredient-drops">${dropsDisplay}</td>
-            <td class="ingredient-percent">${parseFloat(ing.percent || 0).toFixed(1)}%</td>
+            <td class="ingredient-name">${ingredientName} <span class="ingredient-percent-inline">(${parseFloat(ing.percent || 0).toFixed(1)}%)</span></td>
+            <td class="ingredient-value">${parseFloat(ing.volume || 0).toFixed(2)}</td>
+            <td class="ingredient-grams">${grams}</td>
         `;
         tbody.appendChild(row);
         runningTotal += parseFloat(ing.volume || 0);
@@ -4869,27 +5484,13 @@ function refreshResultsTable() {
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
         <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
-        <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
-        <td class="ingredient-drops">-</td>
-        <td class="ingredient-percent">100%</td>
+        <td class="ingredient-value">${runningTotal.toFixed(2)}</td>
+        <td class="ingredient-grams">${totalGrams.toFixed(2)}</td>
     `;
     tbody.appendChild(totalRow);
     
-    // Aktualizovat poznámky
-    const notesEl = document.querySelector('.results-notes ul');
-    if (notesEl && currentRecipeData.actualVg !== undefined) {
-        const total = currentRecipeData.totalAmount || 100;
-        const actualVgPercent = (currentRecipeData.actualVg / total * 100).toFixed(1);
-        const actualPgPercent = (currentRecipeData.actualPg / total * 100).toFixed(1);
-        
-        notesEl.innerHTML = `
-            <li>${t('results.notes_1', 'Nejprve přidejte nikotin (pokud používáte)')} - ${t('results.dilute_notes_1', 'pracujte v rukavicích!')}</li>
-            <li>${t('results.notes_2', 'Poté přidejte příchutě')}</li>
-            <li>${t('results.notes_3', 'Nakonec doplňte PG a VG')}</li>
-            <li>${t('results.notes_4', 'Důkladně protřepejte a nechte zrát 1-2 týdny')}</li>
-            <li>${t('results.actual_ratio', 'Skutečný poměr VG/PG ve směsi')}: ${actualVgPercent}% / ${actualPgPercent}%</li>
-        `;
-    }
+    // Regenerovat dynamické poznámky
+    generateMixingNotes(currentRecipeData);
 }
 
 // Překreslit detail receptu při změně jazyka
@@ -5454,6 +6055,8 @@ function switchFormTab(tabName) {
         initShakeVapeForm();
     } else if (tabName === 'liquidpro') {
         initLiquidProForm();
+    } else if (tabName === 'shortfill') {
+        calculateShortfill();
     }
 }
 
@@ -5847,10 +6450,149 @@ function calculateShakeVape() {
 }
 
 // =========================================
+// Shortfill Calculator Functions
+// =========================================
+
+// Calculate shortfill results in real-time (preview)
+function calculateShortfill() {
+    const bottleVolume = parseFloat(document.getElementById('sfBottleVolume')?.value) || 60;
+    const liquidVolume = parseFloat(document.getElementById('sfLiquidVolume')?.value) || 50;
+    const nicStrength = parseFloat(document.getElementById('sfNicStrength')?.value) || 20;
+    const nicShotVolume = parseFloat(document.getElementById('sfNicShotVolume')?.value) || 10;
+    const shotCount = parseInt(document.getElementById('sfShotCountValue')?.value) || 1;
+    
+    // Calculate results
+    const totalNicVolume = nicShotVolume * shotCount;
+    const totalVolume = liquidVolume + totalNicVolume;
+    const resultNic = (nicStrength * totalNicVolume) / totalVolume;
+    const freeSpace = bottleVolume - totalVolume;
+    
+    // Update display
+    const totalEl = document.getElementById('sfResultTotal');
+    const nicEl = document.getElementById('sfResultNic');
+    const spaceEl = document.getElementById('sfResultSpace');
+    
+    if (totalEl) totalEl.textContent = `${totalVolume.toFixed(1)} ml`;
+    if (nicEl) nicEl.textContent = `${resultNic.toFixed(2)} mg/ml`;
+    if (spaceEl) spaceEl.textContent = `${freeSpace.toFixed(1)} ml`;
+    
+    // Show/hide warning
+    const warningEl = document.getElementById('sfWarning');
+    if (warningEl) {
+        if (freeSpace < 0) {
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
+}
+
+// Adjust shot count
+function adjustSfShotCount(change) {
+    const valueEl = document.getElementById('sfShotCountValue');
+    const displayEl = document.getElementById('sfShotCount');
+    
+    let current = parseInt(valueEl?.value) || 1;
+    current += change;
+    
+    if (current < 1) current = 1;
+    if (current > 10) current = 10;
+    
+    if (valueEl) valueEl.value = current;
+    if (displayEl) displayEl.textContent = current;
+    
+    calculateShortfill();
+}
+
+// Calculate shortfill and show in results (Tvůj recept)
+function calculateShortfillMix() {
+    const bottleVolume = parseFloat(document.getElementById('sfBottleVolume')?.value) || 60;
+    const liquidVolume = parseFloat(document.getElementById('sfLiquidVolume')?.value) || 50;
+    const nicStrength = parseFloat(document.getElementById('sfNicStrength')?.value) || 20;
+    const nicShotVolume = parseFloat(document.getElementById('sfNicShotVolume')?.value) || 10;
+    const shotCount = parseInt(document.getElementById('sfShotCountValue')?.value) || 1;
+    
+    // Calculate results
+    const totalNicVolume = nicShotVolume * shotCount;
+    const totalVolume = liquidVolume + totalNicVolume;
+    const resultNic = (nicStrength * totalNicVolume) / totalVolume;
+    const freeSpace = bottleVolume - totalVolume;
+    
+    // Build ingredients for results display
+    const ingredients = [];
+    
+    // Shortfill liquid
+    ingredients.push({
+        ingredientKey: 'shortfill_liquid',
+        volume: liquidVolume,
+        percent: (liquidVolume / totalVolume) * 100
+    });
+    
+    // Nicotine shots (show total volume)
+    ingredients.push({
+        ingredientKey: 'nicotine_booster',
+        vgRatio: 50,
+        params: {
+            strength: nicStrength,
+            vgpg: '50/50',
+            count: shotCount
+        },
+        volume: totalNicVolume,
+        percent: (totalNicVolume / totalVolume) * 100
+    });
+    
+    // Determine VG/PG ratio (typically shortfills are 70/30 VG/PG)
+    // Assume shortfill is 70/30, nic shot is 50/50
+    const shortfillVgPercent = 70;
+    const nicShotVgPercent = 50;
+    
+    const vgFromShortfill = liquidVolume * (shortfillVgPercent / 100);
+    const vgFromNic = totalNicVolume * (nicShotVgPercent / 100);
+    const totalVg = vgFromShortfill + vgFromNic;
+    const actualVgPercent = Math.round((totalVg / totalVolume) * 100);
+    const actualPgPercent = 100 - actualVgPercent;
+    
+    // Display results
+    displayResults(totalVolume, actualVgPercent, actualPgPercent, resultNic, ingredients, totalVolume, totalVg, totalVolume - totalVg, {
+        formType: 'shortfill',
+        flavorType: 'none',
+        bottleVolume: bottleVolume,
+        freeSpace: freeSpace,
+        shotCount: shotCount
+    });
+    
+    // Show warning if overflow
+    if (freeSpace < 0) {
+        showNotification(t('shortfill.overflow_warning', 'Pozor: Obsah přesáhne kapacitu lahvičky!'), 'warning');
+    }
+    
+    showPage('results');
+}
+
+// Export shortfill functions
+window.calculateShortfill = calculateShortfill;
+window.adjustSfShotCount = adjustSfShotCount;
+window.calculateShortfillMix = calculateShortfillMix;
+
+// =========================================
 // Liquid PRO Functions
 // =========================================
 
 let proVgPgLimits = { min: 0, max: 100 };
+
+// Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode)
+function autoRecalculateProVgPgRatio() {
+    const baseType = document.getElementById('proBaseType')?.value || 'separate';
+    if (baseType === 'premixed') {
+        const actualVg = calculateActualVgPgRatio('pro');
+        const slider = document.getElementById('proVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateProRatioDisplay();
+        }
+    }
+    updateProVgPgLimits();
+}
 
 function initLiquidProForm() {
     updateProVgPgLimits();
@@ -5865,20 +6607,35 @@ function updateProNicotineType() {
     const strengthContainer = document.getElementById('proNicotineStrengthContainer');
     const ratioContainer = document.getElementById('proNicotineRatioContainer');
     const targetGroup = document.getElementById('proTargetNicotineGroup');
+    const saltTypeContainer = document.getElementById('proSaltTypeContainer');
     
     if (type === 'none') {
         strengthContainer.classList.add('hidden');
         ratioContainer.classList.add('hidden');
         targetGroup.classList.add('hidden');
+        if (saltTypeContainer) saltTypeContainer.classList.add('hidden');
         document.getElementById('proTargetNicotine').value = 0;
         updateProNicotineDisplay();
     } else {
         strengthContainer.classList.remove('hidden');
         ratioContainer.classList.remove('hidden');
         targetGroup.classList.remove('hidden');
+        
+        // Show salt type selector only for salt type
+        if (saltTypeContainer) {
+            if (type === 'salt') {
+                saltTypeContainer.classList.remove('hidden');
+                // Aplikovat překlady na nově zobrazený kontejner
+                if (window.i18n && window.i18n.applyTranslations) {
+                    window.i18n.applyTranslations();
+                }
+            } else {
+                saltTypeContainer.classList.add('hidden');
+            }
+        }
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 function adjustProNicRatio(change) {
@@ -5913,7 +6670,7 @@ function updateProNicRatioDisplay() {
         }
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 function adjustProTargetNicotine(change) {
@@ -5942,7 +6699,7 @@ function updateProNicotineDisplay() {
         trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
     }
 
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // ============================================
@@ -5968,7 +6725,7 @@ function updateProFlavorType(flavorIndex = 1) {
     }
     
     updateProTotalFlavorPercent();
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Upravit sílu příchutě
@@ -5985,6 +6742,7 @@ function adjustProFlavor(flavorIndex, change) {
 function updateProFlavorStrength(flavorIndex) {
     updateProFlavorDisplay(flavorIndex);
     updateProTotalFlavorPercent();
+    autoRecalculateProVgPgRatio();
 }
 
 // Zobrazení hodnoty příchutě
@@ -6019,7 +6777,7 @@ function updateProFlavorDisplay(flavorIndex = 1) {
     displayEl.style.color = 'inherit';
     if (displayContainer) displayContainer.style.color = color;
 
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Upravit VG/PG poměr příchutě
@@ -6063,7 +6821,7 @@ function updateProFlavorRatioDisplay(flavorIndex = 1) {
         }
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Přidat další příchuť (max 4)
@@ -6130,6 +6888,45 @@ function addProFlavor() {
                             <div class="ratio-display small">
                                 <span id="proFlavorVgValue${proFlavorCount}">0</span>:<span id="proFlavorPgValue${proFlavorCount}">100</span>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Volitelné složení příchutě (PRO) -->
+                    <div class="form-group-sub flavor-composition-section">
+                        <button type="button" class="prep-item-btn composition-toggle-btn" onclick="toggleFlavorComposition(${proFlavorCount})">
+                            <span data-i18n="form.flavor_composition">${window.i18n?.t('form.flavor_composition') || 'Složení příchutě'}</span>
+                            <span class="prep-arrow">▼</span>
+                        </button>
+                        <div class="prep-detail flavor-composition-detail hidden" id="flavorComposition${proFlavorCount}">
+                            <p class="composition-hint" data-i18n="form.flavor_composition_hint">${window.i18n?.t('form.flavor_composition_hint') || 'Údaje najdete na webu výrobce'}</p>
+                            <div class="composition-grid">
+                                <div class="composition-item">
+                                    <label>PG</label>
+                                    <input type="number" id="proFlavorCompPg${proFlavorCount}" min="0" max="100" value="60" class="neon-input tiny" oninput="updateFlavorCompositionOther(${proFlavorCount})">
+                                    <span>%</span>
+                                </div>
+                                <div class="composition-item">
+                                    <label>VG</label>
+                                    <input type="number" id="proFlavorCompVg${proFlavorCount}" min="0" max="100" value="5" class="neon-input tiny" oninput="updateFlavorCompositionOther(${proFlavorCount})">
+                                    <span>%</span>
+                                </div>
+                                <div class="composition-item">
+                                    <label data-i18n="form.alcohol">${window.i18n?.t('form.alcohol') || 'Alkohol'}</label>
+                                    <input type="number" id="proFlavorCompAlcohol${proFlavorCount}" min="0" max="100" value="25" class="neon-input tiny" oninput="updateFlavorCompositionOther(${proFlavorCount})">
+                                    <span>%</span>
+                                </div>
+                                <div class="composition-item">
+                                    <label data-i18n="form.water">${window.i18n?.t('form.water') || 'Voda'}</label>
+                                    <input type="number" id="proFlavorCompWater${proFlavorCount}" min="0" max="100" value="5" class="neon-input tiny" oninput="updateFlavorCompositionOther(${proFlavorCount})">
+                                    <span>%</span>
+                                </div>
+                                <div class="composition-item">
+                                    <label data-i18n="form.other">${window.i18n?.t('form.other') || 'Ostatní'}</label>
+                                    <span id="proFlavorCompOther${proFlavorCount}" class="composition-calculated">5</span>
+                                    <span>%</span>
+                                </div>
+                            </div>
+                            <button type="button" class="neon-button small secondary" onclick="resetFlavorComposition(${proFlavorCount})" data-i18n="form.use_average">${window.i18n?.t('form.use_average') || 'Použít průměr'}</button>
                         </div>
                     </div>
                 </div>
@@ -6202,7 +6999,9 @@ function updateFlavorElementIds(container, oldIndex, newIndex) {
     const elementsToUpdate = [
         'proFlavorType', 'proFlavorStrengthContainer', 'proFlavorStrength',
         'proFlavorTrack', 'proFlavorValue', 'proFlavorRatioSlider',
-        'proFlavorTrackRatio', 'proFlavorVgValue', 'proFlavorPgValue'
+        'proFlavorTrackRatio', 'proFlavorVgValue', 'proFlavorPgValue',
+        'flavorComposition', 'proFlavorCompPg', 'proFlavorCompVg',
+        'proFlavorCompAlcohol', 'proFlavorCompWater', 'proFlavorCompOther'
     ];
     
     elementsToUpdate.forEach(prefix => {
@@ -6246,6 +7045,357 @@ function updateProFlavorCountHint() {
         }
     }
 }
+
+// ============================================
+// FLAVOR COMPOSITION FUNCTIONS (PRO)
+// ============================================
+
+// Toggle flavor composition panel
+function toggleFlavorComposition(flavorIndex) {
+    const panel = document.getElementById(`flavorComposition${flavorIndex}`);
+    const btn = document.querySelector(`button[onclick="toggleFlavorComposition(${flavorIndex})"]`);
+    const arrow = btn?.querySelector('.prep-arrow');
+    
+    if (panel) {
+        // Remove hidden class if present (initial state)
+        panel.classList.remove('hidden');
+        // Toggle open class for animation
+        panel.classList.toggle('open');
+        
+        if (arrow) {
+            arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+        }
+        if (btn) {
+            btn.classList.toggle('active', panel.classList.contains('open'));
+        }
+        
+        // Pre-fill with average values for selected flavor type if opening
+        if (panel.classList.contains('open')) {
+            const flavorType = document.getElementById(`proFlavorType${flavorIndex}`)?.value || 'fruit';
+            prefillFlavorComposition(flavorIndex, flavorType);
+        }
+    }
+}
+
+// Pre-fill flavor composition with average values from database
+function prefillFlavorComposition(flavorIndex, flavorType) {
+    const flavorData = flavorDatabase[flavorType];
+    if (!flavorData || !flavorData.composition) return;
+    
+    const comp = flavorData.composition;
+    const pgEl = document.getElementById(`proFlavorCompPg${flavorIndex}`);
+    const vgEl = document.getElementById(`proFlavorCompVg${flavorIndex}`);
+    const alcoholEl = document.getElementById(`proFlavorCompAlcohol${flavorIndex}`);
+    const waterEl = document.getElementById(`proFlavorCompWater${flavorIndex}`);
+    const otherEl = document.getElementById(`proFlavorCompOther${flavorIndex}`);
+    
+    if (pgEl) pgEl.value = comp.pg;
+    if (vgEl) vgEl.value = comp.vg;
+    if (alcoholEl) alcoholEl.value = comp.alcohol;
+    if (waterEl) waterEl.value = comp.water;
+    if (otherEl) otherEl.textContent = comp.other;
+}
+
+// Update "Other" value in composition (auto-calculate to 100%)
+function updateFlavorCompositionOther(flavorIndex) {
+    const pgEl = document.getElementById(`proFlavorCompPg${flavorIndex}`);
+    const vgEl = document.getElementById(`proFlavorCompVg${flavorIndex}`);
+    const alcoholEl = document.getElementById(`proFlavorCompAlcohol${flavorIndex}`);
+    const waterEl = document.getElementById(`proFlavorCompWater${flavorIndex}`);
+    const otherEl = document.getElementById(`proFlavorCompOther${flavorIndex}`);
+    
+    const pg = parseFloat(pgEl?.value) || 0;
+    const vg = parseFloat(vgEl?.value) || 0;
+    const alcohol = parseFloat(alcoholEl?.value) || 0;
+    const water = parseFloat(waterEl?.value) || 0;
+    
+    const other = Math.max(0, 100 - pg - vg - alcohol - water);
+    if (otherEl) otherEl.textContent = other.toFixed(0);
+}
+
+// Reset flavor composition to average
+function resetFlavorComposition(flavorIndex) {
+    const flavorType = document.getElementById(`proFlavorType${flavorIndex}`)?.value || 'fruit';
+    prefillFlavorComposition(flavorIndex, flavorType);
+}
+
+// Get custom composition for a flavor (if set)
+function getFlavorCustomComposition(flavorIndex) {
+    const panel = document.getElementById(`flavorComposition${flavorIndex}`);
+    if (!panel || panel.classList.contains('hidden')) {
+        return null; // Not customized
+    }
+    
+    const pg = parseFloat(document.getElementById(`proFlavorCompPg${flavorIndex}`)?.value) || 0;
+    const vg = parseFloat(document.getElementById(`proFlavorCompVg${flavorIndex}`)?.value) || 0;
+    const alcohol = parseFloat(document.getElementById(`proFlavorCompAlcohol${flavorIndex}`)?.value) || 0;
+    const water = parseFloat(document.getElementById(`proFlavorCompWater${flavorIndex}`)?.value) || 0;
+    const other = Math.max(0, 100 - pg - vg - alcohol - water);
+    
+    return { pg, vg, alcohol, water, other };
+}
+
+// Export flavor composition functions
+window.toggleFlavorComposition = toggleFlavorComposition;
+window.prefillFlavorComposition = prefillFlavorComposition;
+window.updateFlavorCompositionOther = updateFlavorCompositionOther;
+window.resetFlavorComposition = resetFlavorComposition;
+window.getFlavorCustomComposition = getFlavorCustomComposition;
+
+// ============================================
+// ADDITIVES FUNCTIONS (PRO only)
+// ============================================
+
+let proAdditiveCount = 0;
+const MAX_PRO_ADDITIVES = 4;
+
+// Add a new additive row
+function addProAdditive() {
+    if (proAdditiveCount >= MAX_PRO_ADDITIVES) {
+        return;
+    }
+    
+    proAdditiveCount++;
+    const container = document.getElementById('proAdditivesContainer');
+    
+    const additiveHtml = `
+        <div class="additive-row form-group-sub" id="proAdditiveRow${proAdditiveCount}">
+            <div class="additive-header">
+                <select id="proAdditiveType${proAdditiveCount}" class="neon-select" onchange="updateProAdditiveType(${proAdditiveCount})">
+                    <option value="" data-i18n="form.additive_select">${window.i18n?.t('form.additive_select') || 'Vyberte typ...'}</option>
+                    <option value="coolant" data-i18n="additive.coolant">${window.i18n?.t('additive.coolant') || 'Chladivo (WS-23, Koolada)'}</option>
+                    <option value="sweetener" data-i18n="additive.sweetener">${window.i18n?.t('additive.sweetener') || 'Sladidlo (Sukralóza)'}</option>
+                    <option value="enhancer" data-i18n="additive.enhancer">${window.i18n?.t('additive.enhancer') || 'Zesilovač (Smooth, TH)'}</option>
+                    <option value="terpene" data-i18n="additive.terpene">${window.i18n?.t('additive.terpene') || 'Terpeny'}</option>
+                </select>
+                <button type="button" class="remove-btn" onclick="removeProAdditive(${proAdditiveCount})">×</button>
+            </div>
+            
+            <div id="proAdditiveDetails${proAdditiveCount}" class="additive-details hidden">
+                <div class="additive-description" id="proAdditiveDesc${proAdditiveCount}"></div>
+                
+                <div class="additive-percent-row">
+                    <label data-i18n="form.percent">${window.i18n?.t('form.percent') || 'Procento'}:</label>
+                    <div class="input-wrapper small">
+                        <input type="number" id="proAdditivePercent${proAdditiveCount}" min="0.1" max="10" step="0.1" value="1" class="neon-input small" oninput="updateProAdditiveCalculation()">
+                        <span class="input-unit">%</span>
+                    </div>
+                </div>
+                
+                <button type="button" class="prep-item-btn composition-toggle-btn small" onclick="toggleAdditiveComposition(${proAdditiveCount})">
+                    <span data-i18n="form.custom_composition">${window.i18n?.t('form.custom_composition') || 'Vlastní složení'}</span>
+                    <span class="prep-arrow">▼</span>
+                </button>
+                <div class="prep-detail additive-composition-detail hidden" id="additiveComposition${proAdditiveCount}">
+                    <div class="composition-grid">
+                        <div class="composition-item">
+                            <label>PG</label>
+                            <input type="number" id="proAdditiveCompPg${proAdditiveCount}" min="0" max="100" value="100" class="neon-input tiny" oninput="updateAdditiveCompositionOther(${proAdditiveCount})">
+                            <span>%</span>
+                        </div>
+                        <div class="composition-item">
+                            <label>VG</label>
+                            <input type="number" id="proAdditiveCompVg${proAdditiveCount}" min="0" max="100" value="0" class="neon-input tiny" oninput="updateAdditiveCompositionOther(${proAdditiveCount})">
+                            <span>%</span>
+                        </div>
+                        <div class="composition-item">
+                            <label data-i18n="form.alcohol">${window.i18n?.t('form.alcohol') || 'Alkohol'}</label>
+                            <input type="number" id="proAdditiveCompAlcohol${proAdditiveCount}" min="0" max="100" value="0" class="neon-input tiny" oninput="updateAdditiveCompositionOther(${proAdditiveCount})">
+                            <span>%</span>
+                        </div>
+                        <div class="composition-item">
+                            <label data-i18n="form.other">${window.i18n?.t('form.other') || 'Ostatní'}</label>
+                            <span id="proAdditiveCompOther${proAdditiveCount}" class="composition-calculated">0</span>
+                            <span>%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', additiveHtml);
+    
+    // Hide add button if max reached
+    if (proAdditiveCount >= MAX_PRO_ADDITIVES) {
+        document.getElementById('proAddAdditiveBtn').classList.add('hidden');
+    }
+}
+
+// Remove an additive
+function removeProAdditive(additiveIndex) {
+    const row = document.getElementById(`proAdditiveRow${additiveIndex}`);
+    if (row) {
+        row.remove();
+    }
+    
+    proAdditiveCount--;
+    
+    // Show add button if below max
+    if (proAdditiveCount < MAX_PRO_ADDITIVES) {
+        document.getElementById('proAddAdditiveBtn').classList.remove('hidden');
+    }
+    
+    autoRecalculateProVgPgRatio();
+}
+
+// Update additive type selection
+function updateProAdditiveType(additiveIndex) {
+    const typeSelect = document.getElementById(`proAdditiveType${additiveIndex}`);
+    const detailsContainer = document.getElementById(`proAdditiveDetails${additiveIndex}`);
+    const descEl = document.getElementById(`proAdditiveDesc${additiveIndex}`);
+    const percentEl = document.getElementById(`proAdditivePercent${additiveIndex}`);
+    
+    const type = typeSelect?.value;
+    
+    if (type && additiveDatabase[type]) {
+        const additive = additiveDatabase[type];
+        
+        // Show details
+        if (detailsContainer) detailsContainer.classList.remove('hidden');
+        
+        // Set description
+        if (descEl) {
+            descEl.textContent = t(additive.descriptionKey, '');
+        }
+        
+        // Set default percent
+        if (percentEl) {
+            percentEl.value = additive.defaultPercent;
+            percentEl.min = additive.minPercent;
+            percentEl.max = additive.maxPercent;
+        }
+        
+        // Pre-fill composition
+        prefillAdditiveComposition(additiveIndex, type);
+        
+    } else {
+        if (detailsContainer) detailsContainer.classList.add('hidden');
+    }
+    
+    autoRecalculateProVgPgRatio();
+}
+
+// Toggle additive composition panel
+function toggleAdditiveComposition(additiveIndex) {
+    const panel = document.getElementById(`additiveComposition${additiveIndex}`);
+    const btn = document.querySelector(`button[onclick="toggleAdditiveComposition(${additiveIndex})"]`);
+    const arrow = btn?.querySelector('.prep-arrow');
+    
+    if (panel) {
+        // Remove hidden class if present (initial state)
+        panel.classList.remove('hidden');
+        // Toggle open class for animation
+        panel.classList.toggle('open');
+        
+        if (arrow) {
+            arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+        }
+        if (btn) {
+            btn.classList.toggle('active', panel.classList.contains('open'));
+        }
+    }
+}
+
+// Pre-fill additive composition with default values
+function prefillAdditiveComposition(additiveIndex, type) {
+    const additive = additiveDatabase[type];
+    if (!additive || !additive.composition) return;
+    
+    const comp = additive.composition;
+    const pgEl = document.getElementById(`proAdditiveCompPg${additiveIndex}`);
+    const vgEl = document.getElementById(`proAdditiveCompVg${additiveIndex}`);
+    const alcoholEl = document.getElementById(`proAdditiveCompAlcohol${additiveIndex}`);
+    const otherEl = document.getElementById(`proAdditiveCompOther${additiveIndex}`);
+    
+    if (pgEl) pgEl.value = comp.pg;
+    if (vgEl) vgEl.value = comp.vg;
+    if (alcoholEl) alcoholEl.value = comp.alcohol;
+    if (otherEl) otherEl.textContent = comp.other;
+}
+
+// Update "Other" value in additive composition (auto-adjust to 100%)
+function updateAdditiveCompositionOther(additiveIndex) {
+    const pgEl = document.getElementById(`proAdditiveCompPg${additiveIndex}`);
+    const vgEl = document.getElementById(`proAdditiveCompVg${additiveIndex}`);
+    const alcoholEl = document.getElementById(`proAdditiveCompAlcohol${additiveIndex}`);
+    const otherEl = document.getElementById(`proAdditiveCompOther${additiveIndex}`);
+    
+    let pg = parseFloat(pgEl?.value) || 0;
+    let vg = parseFloat(vgEl?.value) || 0;
+    let alcohol = parseFloat(alcoholEl?.value) || 0;
+    
+    // Zajistit aby hodnoty nepřekročily 100%
+    const total = pg + vg + alcohol;
+    if (total > 100) {
+        // Proporcionálně snížit hodnoty
+        const ratio = 100 / total;
+        pg = Math.round(pg * ratio);
+        vg = Math.round(vg * ratio);
+        alcohol = Math.round(alcohol * ratio);
+        
+        // Aktualizovat vstupní pole
+        if (pgEl) pgEl.value = pg;
+        if (vgEl) vgEl.value = vg;
+        if (alcoholEl) alcoholEl.value = alcohol;
+    }
+    
+    const other = Math.max(0, 100 - pg - vg - alcohol);
+    if (otherEl) otherEl.textContent = other.toFixed(0);
+    
+    // Přepočítat VG/PG poměr
+    autoRecalculateProVgPgRatio();
+}
+
+// Update calculation when additive percent changes
+function updateProAdditiveCalculation() {
+    autoRecalculateProVgPgRatio();
+}
+
+// Get all additives data
+function getProAdditivesData() {
+    const additives = [];
+    
+    for (let i = 1; i <= MAX_PRO_ADDITIVES; i++) {
+        const typeEl = document.getElementById(`proAdditiveType${i}`);
+        const percentEl = document.getElementById(`proAdditivePercent${i}`);
+        
+        if (typeEl && typeEl.value && percentEl) {
+            const type = typeEl.value;
+            const percent = parseFloat(percentEl.value) || 0;
+            
+            // Check for custom composition
+            const panel = document.getElementById(`additiveComposition${i}`);
+            let customComposition = null;
+            
+            if (panel && !panel.classList.contains('hidden')) {
+                const pg = parseFloat(document.getElementById(`proAdditiveCompPg${i}`)?.value) || 0;
+                const vg = parseFloat(document.getElementById(`proAdditiveCompVg${i}`)?.value) || 0;
+                const alcohol = parseFloat(document.getElementById(`proAdditiveCompAlcohol${i}`)?.value) || 0;
+                const other = Math.max(0, 100 - pg - vg - alcohol);
+                customComposition = { pg, vg, alcohol, water: 0, other };
+            }
+            
+            additives.push({
+                index: i,
+                type: type,
+                percent: percent,
+                customComposition: customComposition
+            });
+        }
+    }
+    
+    return additives;
+}
+
+// Export additive functions
+window.addProAdditive = addProAdditive;
+window.removeProAdditive = removeProAdditive;
+window.updateProAdditiveType = updateProAdditiveType;
+window.toggleAdditiveComposition = toggleAdditiveComposition;
+window.updateAdditiveCompositionOther = updateAdditiveCompositionOther;
+window.updateProAdditiveCalculation = updateProAdditiveCalculation;
+window.getProAdditivesData = getProAdditivesData;
 
 // Vypočítat celkové procento příchutí
 function updateProTotalFlavorPercent() {
@@ -6395,11 +7545,32 @@ function updateProVgPgLimits() {
     proVgPgLimits.min = Math.max(0, minVgPercent);
     proVgPgLimits.max = Math.min(100, maxVgPercent);
     
+    const limitValueLeft = document.getElementById('proLimitValueLeft');
+    const limitValueRight = document.getElementById('proLimitValueRight');
+    
     if (disabledLeft) {
         disabledLeft.style.width = proVgPgLimits.min + '%';
     }
     if (disabledRight) {
         disabledRight.style.width = (100 - proVgPgLimits.max) + '%';
+    }
+    
+    // Zobrazit hodnoty limitů
+    if (limitValueLeft) {
+        if (proVgPgLimits.min > 0) {
+            limitValueLeft.textContent = proVgPgLimits.min + '%';
+            limitValueLeft.style.display = 'block';
+        } else {
+            limitValueLeft.style.display = 'none';
+        }
+    }
+    if (limitValueRight) {
+        if (proVgPgLimits.max < 100) {
+            limitValueRight.textContent = proVgPgLimits.max + '%';
+            limitValueRight.style.display = 'block';
+        } else {
+            limitValueRight.style.display = 'none';
+        }
     }
     
     let currentValue = parseInt(slider.value);
@@ -6451,17 +7622,26 @@ function calculateProMix() {
     const targetNicotine = parseFloat(document.getElementById('proTargetNicotine').value) || 0;
     const baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength').value) || 0;
     
+    // Get base type (separate or premixed) - PRO version
+    const baseType = document.getElementById('proBaseType')?.value || 'separate';
+    const premixedRatio = document.getElementById('proPremixedRatio')?.value || '60/40';
+    
     // Získat data všech příchutí (multi-flavor support)
     const flavorsData = typeof getProFlavorsData === 'function' ? getProFlavorsData() : [];
     const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
     const totalFlavorVolume = (totalFlavorPercent / 100) * totalAmount;
+    
+    // Získat data aditiv
+    const additivesData = typeof getProAdditivesData === 'function' ? getProAdditivesData() : [];
+    const totalAdditivePercent = additivesData.reduce((sum, a) => sum + a.percent, 0);
+    const totalAdditiveVolume = (totalAdditivePercent / 100) * totalAmount;
     
     let nicotineVolume = 0;
     if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
         nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
     }
     
-    const remainingVolume = totalAmount - nicotineVolume - totalFlavorVolume;
+    const remainingVolume = totalAmount - nicotineVolume - totalFlavorVolume - totalAdditiveVolume;
     
     // Get VG/PG ratios from nicotine slider
     const nicSliderValue = document.getElementById('proNicotineRatioSlider').value;
@@ -6486,88 +7666,234 @@ function calculateProMix() {
         totalFlavorPgContent += flavorVolume * ((100 - flavor.vgRatio) / 100);
     });
     
+    // Spočítat VG/PG obsah z aditiv
+    let totalAdditiveVgContent = 0;
+    let totalAdditivePgContent = 0;
+    
+    additivesData.forEach(additive => {
+        const additiveVolume = (additive.percent / 100) * totalAmount;
+        const composition = additive.customComposition || (additiveDatabase[additive.type]?.composition) || { pg: 100, vg: 0 };
+        totalAdditiveVgContent += additiveVolume * (composition.vg / 100);
+        totalAdditivePgContent += additiveVolume * (composition.pg / 100);
+    });
+    
     const targetVgTotal = (vgPercent / 100) * totalAmount;
     const targetPgTotal = (pgPercent / 100) * totalAmount;
     
-    let pureVgNeeded = targetVgTotal - nicotineVgContent - totalFlavorVgContent;
-    let purePgNeeded = targetPgTotal - nicotinePgContent - totalFlavorPgContent;
+    let pureVgNeeded = targetVgTotal - nicotineVgContent - totalFlavorVgContent - totalAdditiveVgContent;
+    let purePgNeeded = targetPgTotal - nicotinePgContent - totalFlavorPgContent - totalAdditivePgContent;
+    let premixedBaseVolume = 0;
+    let premixedVgPercent = 60;
     
     if (pureVgNeeded < 0) pureVgNeeded = 0;
     if (purePgNeeded < 0) purePgNeeded = 0;
     
-    const totalPureNeeded = pureVgNeeded + purePgNeeded;
-    if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
-        const ratio = remainingVolume / totalPureNeeded;
-        pureVgNeeded *= ratio;
-        purePgNeeded *= ratio;
-    } else if (totalPureNeeded < remainingVolume) {
-        const extra = remainingVolume - totalPureNeeded;
-        if (vgPercent + pgPercent > 0) {
-            pureVgNeeded += extra * (vgPercent / 100);
-            purePgNeeded += extra * (pgPercent / 100);
+    const ingredients = [];
+    
+    if (baseType === 'premixed') {
+        // PREMIXED BASE MODE for PRO
+        const premixedParts = premixedRatio.split('/');
+        premixedVgPercent = parseInt(premixedParts[0]) || 60;
+        const premixedPgPercent = 100 - premixedVgPercent;
+        
+        premixedBaseVolume = remainingVolume;
+        
+        const premixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
+        const premixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
+        
+        // Skutečný VG/PG poměr ze všech složek (včetně aditiv)
+        const actualVgFromAll = nicotineVgContent + totalFlavorVgContent + totalAdditiveVgContent + premixedVgContent;
+        const actualPgFromAll = nicotinePgContent + totalFlavorPgContent + totalAdditivePgContent + premixedPgContent;
+        const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
+        
+        // Pokud slider hodnota odpovídá skutečnému poměru (±1%), nepřidávat doladění
+        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
+        
+        let adjustmentVg = 0;
+        let adjustmentPg = 0;
+        
+        if (!sliderMatchesActual) {
+            // Uživatel změnil slider - potřeba doladění
+            adjustmentVg = targetVgTotal - actualVgFromAll;
+            adjustmentPg = targetPgTotal - actualPgFromAll;
+            
+            if (adjustmentVg < 0) adjustmentVg = 0;
+            if (adjustmentPg < 0) adjustmentPg = 0;
+        }
+        
+        const totalAdjustment = adjustmentVg + adjustmentPg;
+        if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
+            premixedBaseVolume = remainingVolume - totalAdjustment;
+            pureVgNeeded = adjustmentVg;
+            purePgNeeded = adjustmentPg;
+        } else {
+            premixedBaseVolume = remainingVolume;
+            pureVgNeeded = 0;
+            purePgNeeded = 0;
+        }
+        
+        // Add nicotine
+        if (nicotineVolume > 0) {
+            ingredients.push({
+                ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+                vgRatio: nicVgPercent,
+                params: {
+                    strength: baseNicotine,
+                    vgpg: `${nicVgPercent}/${nicPgPercent}`
+                },
+                volume: nicotineVolume,
+                percent: (nicotineVolume / totalAmount) * 100
+            });
+        }
+        
+        // Add all flavors
+        flavorsData.forEach((flavor, index) => {
+            const flavorVolume = (flavor.percent / 100) * totalAmount;
+            const flavorVgPercent = flavor.vgRatio;
+            const flavorPgPercent = 100 - flavorVgPercent;
+            
+            ingredients.push({
+                ingredientKey: 'flavor',
+                flavorType: flavor.type,
+                flavorIndex: flavor.index,
+                flavorNumber: index + 1,
+                params: {
+                    vgpg: `${flavorVgPercent}/${flavorPgPercent}`
+                },
+                volume: flavorVolume,
+                percent: (flavorVolume / totalAmount) * 100
+            });
+        });
+        
+        // Add all additives
+        additivesData.forEach((additive) => {
+            const additiveVolume = (additive.percent / 100) * totalAmount;
+            
+            ingredients.push({
+                ingredientKey: 'additive',
+                additiveType: additive.type,
+                customComposition: additive.customComposition,
+                volume: additiveVolume,
+                percent: (additiveVolume / totalAmount) * 100
+            });
+        });
+        
+        // Add premixed base
+        if (premixedBaseVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'premixedBase',
+                vgRatio: premixedVgPercent,
+                params: {
+                    vgpg: premixedRatio
+                },
+                volume: premixedBaseVolume,
+                percent: (premixedBaseVolume / totalAmount) * 100
+            });
+        }
+        
+        // Add adjustment VG/PG if needed
+        if (pureVgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg_adjustment',
+                volume: pureVgNeeded,
+                percent: (pureVgNeeded / totalAmount) * 100
+            });
+        }
+        
+        if (purePgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg_adjustment',
+                volume: purePgNeeded,
+                percent: (purePgNeeded / totalAmount) * 100
+            });
+        }
+        
+    } else {
+        // SEPARATE PG/VG MODE (original logic)
+        const totalPureNeeded = pureVgNeeded + purePgNeeded;
+        if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
+            const ratio = remainingVolume / totalPureNeeded;
+            pureVgNeeded *= ratio;
+            purePgNeeded *= ratio;
+        } else if (totalPureNeeded < remainingVolume) {
+            const extra = remainingVolume - totalPureNeeded;
+            if (vgPercent + pgPercent > 0) {
+                pureVgNeeded += extra * (vgPercent / 100);
+                purePgNeeded += extra * (pgPercent / 100);
+            }
+        }
+        
+        // Add nicotine
+        if (nicotineVolume > 0) {
+            ingredients.push({
+                ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+                vgRatio: nicVgPercent,
+                params: {
+                    strength: baseNicotine,
+                    vgpg: `${nicVgPercent}/${nicPgPercent}`
+                },
+                volume: nicotineVolume,
+                percent: (nicotineVolume / totalAmount) * 100
+            });
+        }
+        
+        // Add all flavors
+        flavorsData.forEach((flavor, index) => {
+            const flavorVolume = (flavor.percent / 100) * totalAmount;
+            const flavorVgPercent = flavor.vgRatio;
+            const flavorPgPercent = 100 - flavorVgPercent;
+            
+            ingredients.push({
+                ingredientKey: 'flavor',
+                flavorType: flavor.type,
+                flavorIndex: flavor.index,
+                flavorNumber: index + 1,
+                params: {
+                    vgpg: `${flavorVgPercent}/${flavorPgPercent}`
+                },
+                volume: flavorVolume,
+                percent: (flavorVolume / totalAmount) * 100
+            });
+        });
+        
+        // Add all additives
+        additivesData.forEach((additive) => {
+            const additiveVolume = (additive.percent / 100) * totalAmount;
+            
+            ingredients.push({
+                ingredientKey: 'additive',
+                additiveType: additive.type,
+                customComposition: additive.customComposition,
+                volume: additiveVolume,
+                percent: (additiveVolume / totalAmount) * 100
+            });
+        });
+        
+        if (purePgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg',
+                volume: purePgNeeded,
+                percent: (purePgNeeded / totalAmount) * 100
+            });
+        }
+        
+        if (pureVgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg',
+                volume: pureVgNeeded,
+                percent: (pureVgNeeded / totalAmount) * 100
+            });
         }
     }
     
-    const DROPS_PER_ML = 20;
-    const ingredients = [];
-
-    if (nicotineVolume > 0) {
-        ingredients.push({
-            ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
-            params: {
-                strength: baseNicotine,
-                vgpg: `${nicVgPercent}/${nicPgPercent}`
-            },
-            volume: nicotineVolume,
-            percent: (nicotineVolume / totalAmount) * 100,
-            drops: Math.round(nicotineVolume * DROPS_PER_ML),
-            showDrops: true
-        });
-    }
-
-    // Přidat všechny příchutě jako ingredience
-    flavorsData.forEach((flavor, index) => {
-        const flavorVolume = (flavor.percent / 100) * totalAmount;
-        const flavorVgPercent = flavor.vgRatio;
-        const flavorPgPercent = 100 - flavorVgPercent;
-        
-        ingredients.push({
-            ingredientKey: 'flavor',
-            flavorType: flavor.type,
-            flavorIndex: flavor.index,
-            flavorNumber: index + 1,
-            params: {
-                vgpg: `${flavorVgPercent}/${flavorPgPercent}`
-            },
-            volume: flavorVolume,
-            percent: (flavorVolume / totalAmount) * 100,
-            drops: Math.round(flavorVolume * DROPS_PER_ML),
-            showDrops: true
-        });
-    });
+    // Calculate actual VG/PG
+    let actualVg = pureVgNeeded + nicotineVgContent + totalFlavorVgContent + totalAdditiveVgContent;
+    let actualPg = purePgNeeded + nicotinePgContent + totalFlavorPgContent + totalAdditivePgContent;
     
-    if (purePgNeeded > 0.01) {
-        ingredients.push({
-            ingredientKey: 'pg',
-            volume: purePgNeeded,
-            percent: (purePgNeeded / totalAmount) * 100,
-            drops: null,
-            showDrops: false
-        });
+    if (baseType === 'premixed' && premixedBaseVolume > 0) {
+        actualVg += premixedBaseVolume * (premixedVgPercent / 100);
+        actualPg += premixedBaseVolume * ((100 - premixedVgPercent) / 100);
     }
-    
-    if (pureVgNeeded > 0.01) {
-        ingredients.push({
-            ingredientKey: 'vg',
-            volume: pureVgNeeded,
-            percent: (pureVgNeeded / totalAmount) * 100,
-            drops: null,
-            showDrops: false
-        });
-    }
-    
-    const actualVg = pureVgNeeded + nicotineVgContent + totalFlavorVgContent;
-    const actualPg = purePgNeeded + nicotinePgContent + totalFlavorPgContent;
     
     // Uložit data příchutí pro recept
     window.lastProFlavorsData = flavorsData;
@@ -6580,7 +7906,10 @@ function calculateProMix() {
     
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg, {
         formType: 'liquidpro',
-        flavors: flavorsData
+        flavors: flavorsData,
+        additives: additivesData,
+        baseType: baseType,
+        premixedRatio: baseType === 'premixed' ? premixedRatio : null
     });
     showPage('results');
 }
@@ -8134,4 +9463,5 @@ window.adjustProFlavor = adjustProFlavor;
 window.updateProFlavorStrength = updateProFlavorStrength;
 window.adjustProFlavorRatio = adjustProFlavorRatio;
 window.updateProFlavorRatioDisplay = updateProFlavorRatioDisplay;
+window.autoRecalculateProVgPgRatio = autoRecalculateProVgPgRatio;
 
