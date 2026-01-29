@@ -1597,8 +1597,12 @@
                             <div class="slider-wrapper-with-limits">
                                 <span class="slider-limit left">100</span>
                                 <div class="slider-wrapper ratio-slider-wrapper">
-                                    <div class="slider-disabled-zone left" id="proSliderDisabledLeft"></div>
-                                    <div class="slider-disabled-zone right" id="proSliderDisabledRight"></div>
+                                    <div class="slider-disabled-zone left" id="proSliderDisabledLeft">
+                                        <span class="limit-value" id="proLimitValueLeft"></span>
+                                    </div>
+                                    <div class="slider-disabled-zone right" id="proSliderDisabledRight">
+                                        <span class="limit-value" id="proLimitValueRight"></span>
+                                    </div>
                                     <input type="range" id="proVgPgRatio" min="0" max="100" value="50" class="ratio-slider" oninput="updateProRatioDisplay()">
                                     <div class="slider-track" id="proSliderTrack"></div>
                                     <div class="slider-center-mark"></div>
@@ -2222,7 +2226,7 @@
         <div class="footer-copyright">© 2026 LiquiMixer</div>
     </footer>
 
-    <script src="/app.js?v=20260129b"></script>
+    <script src="/app.js?v=20260129c"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

@@ -6192,7 +6192,7 @@ body.subscription-required #subscriptionModal {
 .composition-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 10px;
 }
 
@@ -6200,18 +6200,20 @@ body.subscription-required #subscriptionModal {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 }
 
 .composition-item label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .composition-item .neon-input.tiny {
-    width: 50px;
-    padding: 5px;
-    font-size: 0.85rem;
+    width: 65px;
+    min-width: 65px;
+    padding: 8px 6px;
+    font-size: 0.95rem;
     text-align: center;
 }
 
@@ -6298,7 +6300,23 @@ body.subscription-required #subscriptionModal {
 }
 
 .additive-composition-detail {
-    margin-top: 10px;
+    margin-top: 0;
+    position: relative;
+    z-index: 15;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--neon-green);
+    border-top: none;
+    border-bottom-left-radius: var(--border-radius-small);
+    border-bottom-right-radius: var(--border-radius-small);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0 15px;
+}
+
+.additive-composition-detail.open {
+    max-height: 300px;
+    padding: 15px;
 }
 
 /* =========================================
@@ -6338,8 +6356,10 @@ body.subscription-required #subscriptionModal {
 }
 
 .neon-input.tiny {
-    width: 60px;
-    padding: 6px 8px;
+    width: 70px;
+    min-width: 70px;
+    padding: 8px 10px;
+    font-size: 0.95rem;
 }
 
 /* Add button styling */

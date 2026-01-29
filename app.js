@@ -835,6 +835,7 @@ function updateProPremixedRatio(ratio) {
         }
     });
     
+    // DŮLEŽITÉ: Nejprve nastavit hodnotu, pak počítat ratio
     if (ratio === 'custom') {
         if (customContainer) customContainer.classList.remove('hidden');
         // Get custom values
@@ -845,15 +846,16 @@ function updateProPremixedRatio(ratio) {
         if (premixedRatioInput) premixedRatioInput.value = ratio;
     }
     
-    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-    const actualVg = calculateActualVgPgRatio('pro');
-    const slider = document.getElementById('proVgPgRatio');
-    if (slider) {
-        slider.value = actualVg;
-        updateProRatioDisplay();
-    }
-    
-    updateProVgPgLimits();
+    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr (po nastavení proPremixedRatio)
+    setTimeout(() => {
+        const actualVg = calculateActualVgPgRatio('pro');
+        const slider = document.getElementById('proVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateProRatioDisplay();
+        }
+        updateProVgPgLimits();
+    }, 0);
 }
 
 // Update PRO custom premixed PG (auto-calculate from VG)
@@ -7258,12 +7260,20 @@ function updateProAdditiveType(additiveIndex) {
 // Toggle additive composition panel
 function toggleAdditiveComposition(additiveIndex) {
     const panel = document.getElementById(`additiveComposition${additiveIndex}`);
-    const arrow = panel?.previousElementSibling?.querySelector('.prep-arrow');
+    const btn = document.querySelector(`button[onclick="toggleAdditiveComposition(${additiveIndex})"]`);
+    const arrow = btn?.querySelector('.prep-arrow');
     
     if (panel) {
-        panel.classList.toggle('hidden');
+        // Remove hidden class if present (initial state)
+        panel.classList.remove('hidden');
+        // Toggle open class for animation
+        panel.classList.toggle('open');
+        
         if (arrow) {
-            arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
+            arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+        }
+        if (btn) {
+            btn.classList.toggle('active', panel.classList.contains('open'));
         }
     }
 }
@@ -7498,11 +7508,32 @@ function updateProVgPgLimits() {
     proVgPgLimits.min = Math.max(0, minVgPercent);
     proVgPgLimits.max = Math.min(100, maxVgPercent);
     
+    const limitValueLeft = document.getElementById('proLimitValueLeft');
+    const limitValueRight = document.getElementById('proLimitValueRight');
+    
     if (disabledLeft) {
         disabledLeft.style.width = proVgPgLimits.min + '%';
     }
     if (disabledRight) {
         disabledRight.style.width = (100 - proVgPgLimits.max) + '%';
+    }
+    
+    // Zobrazit hodnoty limitů
+    if (limitValueLeft) {
+        if (proVgPgLimits.min > 0) {
+            limitValueLeft.textContent = proVgPgLimits.min + '%';
+            limitValueLeft.style.display = 'block';
+        } else {
+            limitValueLeft.style.display = 'none';
+        }
+    }
+    if (limitValueRight) {
+        if (proVgPgLimits.max < 100) {
+            limitValueRight.textContent = proVgPgLimits.max + '%';
+            limitValueRight.style.display = 'block';
+        } else {
+            limitValueRight.style.display = 'none';
+        }
     }
     
     let currentValue = parseInt(slider.value);
