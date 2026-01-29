@@ -6625,6 +6625,10 @@ function updateProNicotineType() {
         if (saltTypeContainer) {
             if (type === 'salt') {
                 saltTypeContainer.classList.remove('hidden');
+                // Aplikovat překlady na nově zobrazený kontejner
+                if (window.i18n && window.i18n.applyTranslations) {
+                    window.i18n.applyTranslations();
+                }
             } else {
                 saltTypeContainer.classList.add('hidden');
             }
@@ -7697,17 +7701,28 @@ function calculateProMix() {
         const premixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
         const premixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
         
-        const actualVgFromPremixed = nicotineVgContent + totalFlavorVgContent + premixedVgContent;
-        const actualPgFromPremixed = nicotinePgContent + totalFlavorPgContent + premixedPgContent;
+        // Skutečný VG/PG poměr ze všech složek (včetně aditiv)
+        const actualVgFromAll = nicotineVgContent + totalFlavorVgContent + totalAdditiveVgContent + premixedVgContent;
+        const actualPgFromAll = nicotinePgContent + totalFlavorPgContent + totalAdditivePgContent + premixedPgContent;
+        const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
         
-        let adjustmentVg = targetVgTotal - actualVgFromPremixed;
-        let adjustmentPg = targetPgTotal - actualPgFromPremixed;
+        // Pokud slider hodnota odpovídá skutečnému poměru (±1%), nepřidávat doladění
+        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
         
-        if (adjustmentVg < 0) adjustmentVg = 0;
-        if (adjustmentPg < 0) adjustmentPg = 0;
+        let adjustmentVg = 0;
+        let adjustmentPg = 0;
+        
+        if (!sliderMatchesActual) {
+            // Uživatel změnil slider - potřeba doladění
+            adjustmentVg = targetVgTotal - actualVgFromAll;
+            adjustmentPg = targetPgTotal - actualPgFromAll;
+            
+            if (adjustmentVg < 0) adjustmentVg = 0;
+            if (adjustmentPg < 0) adjustmentPg = 0;
+        }
         
         const totalAdjustment = adjustmentVg + adjustmentPg;
-        if (totalAdjustment > 0 && totalAdjustment < remainingVolume) {
+        if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
             premixedBaseVolume = remainingVolume - totalAdjustment;
             pureVgNeeded = adjustmentVg;
             purePgNeeded = adjustmentPg;
