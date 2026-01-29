@@ -6580,6 +6580,20 @@ window.calculateShortfillMix = calculateShortfillMix;
 
 let proVgPgLimits = { min: 0, max: 100 };
 
+// Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode)
+function autoRecalculateProVgPgRatio() {
+    const baseType = document.getElementById('proBaseType')?.value || 'separate';
+    if (baseType === 'premixed') {
+        const actualVg = calculateActualVgPgRatio('pro');
+        const slider = document.getElementById('proVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateProRatioDisplay();
+        }
+    }
+    updateProVgPgLimits();
+}
+
 function initLiquidProForm() {
     updateProVgPgLimits();
     updateProRatioDisplay();
@@ -6617,7 +6631,7 @@ function updateProNicotineType() {
         }
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 function adjustProNicRatio(change) {
@@ -6652,7 +6666,7 @@ function updateProNicRatioDisplay() {
         }
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 function adjustProTargetNicotine(change) {
@@ -6681,7 +6695,7 @@ function updateProNicotineDisplay() {
         trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
     }
 
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // ============================================
@@ -6707,7 +6721,7 @@ function updateProFlavorType(flavorIndex = 1) {
     }
     
     updateProTotalFlavorPercent();
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Upravit sílu příchutě
@@ -6724,6 +6738,7 @@ function adjustProFlavor(flavorIndex, change) {
 function updateProFlavorStrength(flavorIndex) {
     updateProFlavorDisplay(flavorIndex);
     updateProTotalFlavorPercent();
+    autoRecalculateProVgPgRatio();
 }
 
 // Zobrazení hodnoty příchutě
@@ -6758,7 +6773,7 @@ function updateProFlavorDisplay(flavorIndex = 1) {
     displayEl.style.color = 'inherit';
     if (displayContainer) displayContainer.style.color = color;
 
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Upravit VG/PG poměr příchutě
@@ -6802,7 +6817,7 @@ function updateProFlavorRatioDisplay(flavorIndex = 1) {
         }
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Přidat další příchuť (max 4)
@@ -7217,7 +7232,7 @@ function removeProAdditive(additiveIndex) {
         document.getElementById('proAddAdditiveBtn').classList.remove('hidden');
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Update additive type selection
@@ -7254,7 +7269,7 @@ function updateProAdditiveType(additiveIndex) {
         if (detailsContainer) detailsContainer.classList.add('hidden');
     }
     
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Toggle additive composition panel
@@ -7295,24 +7310,42 @@ function prefillAdditiveComposition(additiveIndex, type) {
     if (otherEl) otherEl.textContent = comp.other;
 }
 
-// Update "Other" value in additive composition
+// Update "Other" value in additive composition (auto-adjust to 100%)
 function updateAdditiveCompositionOther(additiveIndex) {
     const pgEl = document.getElementById(`proAdditiveCompPg${additiveIndex}`);
     const vgEl = document.getElementById(`proAdditiveCompVg${additiveIndex}`);
     const alcoholEl = document.getElementById(`proAdditiveCompAlcohol${additiveIndex}`);
     const otherEl = document.getElementById(`proAdditiveCompOther${additiveIndex}`);
     
-    const pg = parseFloat(pgEl?.value) || 0;
-    const vg = parseFloat(vgEl?.value) || 0;
-    const alcohol = parseFloat(alcoholEl?.value) || 0;
+    let pg = parseFloat(pgEl?.value) || 0;
+    let vg = parseFloat(vgEl?.value) || 0;
+    let alcohol = parseFloat(alcoholEl?.value) || 0;
+    
+    // Zajistit aby hodnoty nepřekročily 100%
+    const total = pg + vg + alcohol;
+    if (total > 100) {
+        // Proporcionálně snížit hodnoty
+        const ratio = 100 / total;
+        pg = Math.round(pg * ratio);
+        vg = Math.round(vg * ratio);
+        alcohol = Math.round(alcohol * ratio);
+        
+        // Aktualizovat vstupní pole
+        if (pgEl) pgEl.value = pg;
+        if (vgEl) vgEl.value = vg;
+        if (alcoholEl) alcoholEl.value = alcohol;
+    }
     
     const other = Math.max(0, 100 - pg - vg - alcohol);
     if (otherEl) otherEl.textContent = other.toFixed(0);
+    
+    // Přepočítat VG/PG poměr
+    autoRecalculateProVgPgRatio();
 }
 
 // Update calculation when additive percent changes
 function updateProAdditiveCalculation() {
-    updateProVgPgLimits();
+    autoRecalculateProVgPgRatio();
 }
 
 // Get all additives data
@@ -9415,4 +9448,5 @@ window.adjustProFlavor = adjustProFlavor;
 window.updateProFlavorStrength = updateProFlavorStrength;
 window.adjustProFlavorRatio = adjustProFlavorRatio;
 window.updateProFlavorRatioDisplay = updateProFlavorRatioDisplay;
+window.autoRecalculateProVgPgRatio = autoRecalculateProVgPgRatio;
 
