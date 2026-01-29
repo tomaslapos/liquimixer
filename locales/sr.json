@@ -178,6 +178,29 @@
     "flavor_volume_hint": "Запремина укуса већ у бочици",
     "in_bottle": "већ у бочици"
   },
+  "additive": {
+    "coolant": "Хладило (WS-23, Koolada)",
+    "coolant_desc": "Додаје хладан учинак без укуса ментола. WS-23 је најглатки, Koolada је јача.",
+    "sweetener": "Заслађивач (Sucralose)",
+    "sweetener_desc": "Додаје слаткоћу без калорија. Може зачепити грејач при вишим процентима.",
+    "enhancer": "Појачивач (Smooth, TH)",
+    "enhancer_desc": "Smooth смањује иритацију грла, Throat Hit је повећава.",
+    "terpene": "Терпени",
+    "terpene_desc": "Природни ароматични састави. Користите опрезно, веома су концентрисани."
+  },
+  "shortfill": {
+    "info": "Shortfill је бочица са е-течношћу без никотина која има празан простор за додавање никотинских shotова.",
+    "bottle_volume": "Запремина бочице Shortfill",
+    "bottle_hint": "Укупни капацитет бочице (не количина течности)",
+    "liquid_volume": "Количина течности у бочици",
+    "nic_shot": "Никотински shot",
+    "shot_count": "Број никотинских shotова",
+    "results_title": "Резултат",
+    "result_total": "Укупна запремина:",
+    "result_nic": "Резултујућа никотин:",
+    "result_space": "Слободан простор након пуњења:",
+    "overflow_warning": "⚠️ Упозорење: Садржај ће премашити капацитет бочице!"
+  },
   "results": {
     "title": "Ваш рецепт",
     "dilute_title": "Рецепт за разблаживање",
@@ -186,8 +209,7 @@
     "nicotine": "Концентрација никотина:",
     "table_component": "Састојак",
     "table_volume": "Запремина (мл)",
-    "table_drops": "Капи",
-    "table_percent": "Проценат",
+    "table_grams": "г",
     "component_nicotine_booster": "Никотински бустер",
     "component_nicotine_salt": "Никотинска со",
     "component_flavor": "Укус",
@@ -461,7 +483,11 @@
     "flavor": "Укус",
     "vg": "VG (Глицерин)",
     "pg": "PG (Пропилен гликол)",
+    "vg_adjustment": "VG (прилагођавање)",
+    "pg_adjustment": "PG (прилагођавање)",
+    "premixed_base": "Премешана база",
     "nicotine_base": "Никотинска база",
+    "additive": "Адитив",
     "total": "УКУПНО"
   },
   "nicotine_descriptions": {

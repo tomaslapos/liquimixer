@@ -117,6 +117,12 @@
     "tab_liquid": "リキッド",
     "tab_shakevape": "シェイク＆ベイプ",
     "tab_liquidpro": "リキッド PRO",
+    "tab_shortfill": "ショートフィル",
+    "base_type_label": "ベースタイプ",
+    "base_separate": "PG/VG別々",
+    "base_premixed": "プレミックスベース",
+    "premixed_ratio": "プレミックスベース比率 (VG/PG)",
+    "custom": "カスタム",
     "amount_label": "どのくらいの量のリキッドをミキシングしますか？",
     "nicotine_base_label": "ニコチンベースの強さは？",
     "nicotine_base_hint": "ニコチンパッケージからこれらの値をコピーしてください",
@@ -177,6 +183,29 @@
     "flavor_volume": "フレーバー容量",
     "flavor_volume_hint": "すでにボトル内のフレーバー容量",
     "in_bottle": "すでにボトル内"
+  },
+  "additive": {
+    "coolant": "クーラント (WS-23, Koolada)",
+    "coolant_desc": "メンソールフレーバーなしで冷却効果を追加。WS-23は最も滑らかで、Kooladaはより強力です。",
+    "sweetener": "甘味料 (スクラロース)",
+    "sweetener_desc": "カロリーなしで甘さを追加。高いパーセンテージではコイルを汚す可能性があります。",
+    "enhancer": "エンハンサー (Smooth, TH)",
+    "enhancer_desc": "Smoothは喉の刺激を減らし、Throat Hitはそれを増やします。",
+    "terpene": "テルペン",
+    "terpene_desc": "天然の芳香化合物。注意して使用してください。非常に濃縮されています。"
+  },
+  "shortfill": {
+    "info": "ショートフィルは、ニコチンショットを追加するための空きスペースがあるニコチンフリーのEリキッドが入ったボトルです。",
+    "bottle_volume": "ショートフィルボトル容量",
+    "bottle_hint": "ボトルの総容量（液体内容量ではありません）",
+    "liquid_volume": "ボトル内の液体量",
+    "nic_shot": "ニコチンショット",
+    "shot_count": "ニコチンショット数",
+    "results_title": "結果",
+    "result_total": "総容量：",
+    "result_nic": "結果のニコチン：",
+    "result_space": "充填後の空きスペース：",
+    "overflow_warning": "⚠️ 警告：内容物がボトル容量を超えます！"
   },
   "results": {
     "title": "あなたのレシピ",

@@ -4353,6 +4353,32 @@ body {
     box-shadow: 0 0 20px rgba(255, 0, 68, 0.5);
 }
 
+/* Purple tab - Shortfill */
+.form-tab.tab-purple {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+}
+
+.form-tab.tab-purple:hover {
+    background: rgba(170, 0, 255, 0.1);
+    box-shadow: 0 0 15px rgba(170, 0, 255, 0.3);
+}
+
+.form-tab.tab-purple.active {
+    background: var(--neon-purple);
+    color: white;
+    box-shadow: 0 0 20px rgba(170, 0, 255, 0.5);
+}
+
+/* Purple form - Shortfill */
+.form-purple {
+    border-color: var(--neon-purple);
+}
+
+.form-purple .neon-button:not(.secondary) {
+    background: linear-gradient(135deg, var(--neon-purple), #8800cc);
+}
+
 /* Disabled tab - v režimu editace nelze přepnout záložku */
 .form-tab.tab-disabled {
     opacity: 0.4;
@@ -6016,4 +6042,287 @@ body.subscription-required #subscriptionModal {
 
 .reminder-dates.clickable:hover {
     opacity: 0.8;
+}
+
+/* =========================================
+   Shortfill Calculator Styles
+   ========================================= */
+
+.shortfill-info {
+    background: rgba(170, 0, 255, 0.1);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius-small);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.shortfill-info p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.shortfill-nic-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.shot-count-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.shot-count-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--neon-purple);
+    min-width: 40px;
+    text-align: center;
+}
+
+.shortfill-results {
+    background: rgba(170, 0, 255, 0.1);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--border-radius-small);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.shortfill-results h4 {
+    color: var(--neon-purple);
+    margin-bottom: 15px;
+    font-family: 'Orbitron', monospace;
+}
+
+.sf-result-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.sf-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sf-result-item:last-child {
+    border-bottom: none;
+}
+
+.sf-label {
+    color: var(--text-secondary);
+}
+
+.sf-value {
+    font-family: 'Orbitron', monospace;
+    font-weight: 600;
+    color: var(--neon-purple);
+}
+
+.sf-warning {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 0, 68, 0.2);
+    border: 1px solid var(--neon-red);
+    border-radius: var(--border-radius-small);
+    color: var(--neon-red);
+    text-align: center;
+}
+
+/* =========================================
+   Flavor Composition Styles
+   ========================================= */
+
+.flavor-composition-section {
+    margin-top: 15px;
+}
+
+.composition-toggle-btn {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+}
+
+.flavor-composition-detail {
+    margin-top: 10px;
+}
+
+.composition-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.composition-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.composition-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.composition-item label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.composition-item .neon-input.tiny {
+    width: 50px;
+    padding: 5px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.composition-calculated {
+    font-family: 'Orbitron', monospace;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    min-width: 30px;
+    text-align: center;
+}
+
+/* =========================================
+   Additives Section Styles
+   ========================================= */
+
+.additives-section {
+    margin-top: 10px;
+}
+
+.additive-row {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-small);
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.additive-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.additive-header .neon-select {
+    flex: 1;
+}
+
+.additive-header .remove-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 1.2rem;
+    background: rgba(255, 0, 68, 0.2);
+    border: 1px solid var(--neon-red);
+    color: var(--neon-red);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.additive-header .remove-btn:hover {
+    background: var(--neon-red);
+    color: white;
+}
+
+.additive-details {
+    margin-top: 10px;
+}
+
+.additive-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 8px;
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.additive-percent-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.additive-composition-detail {
+    margin-top: 10px;
+}
+
+/* =========================================
+   Results Table Updates
+   ========================================= */
+
+.ingredient-percent-inline {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-left: 5px;
+}
+
+.ingredient-grams {
+    font-family: 'Orbitron', monospace;
+    text-align: right;
+}
+
+/* =========================================
+   Premixed Base Section Styles
+   ========================================= */
+
+.form-group-sub {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--border-radius-small);
+}
+
+.input-wrapper.inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.neon-input.small {
+    width: 80px;
+}
+
+.neon-input.tiny {
+    width: 60px;
+    padding: 6px 8px;
+}
+
+/* Add button styling */
+.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Responsive adjustments for composition grid */
+@media (max-width: 480px) {
+    .composition-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .shortfill-nic-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
