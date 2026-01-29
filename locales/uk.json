@@ -117,6 +117,11 @@
     "tab_liquid": "Рідина",
     "tab_shakevape": "Shake & Vape",
     "tab_liquidpro": "Рідина PRO",
+    "tab_shortfill": "Shortfill",
+    "base_type_label": "Тип основи",
+    "base_separate": "Роздільний PG/VG",
+    "base_premixed": "Готова основа",
+    "premixed_ratio": "Співвідношення готової основи",
     "amount_label": "Скільки рідини я хочу змішати?",
     "nicotine_base_label": "Яка міцність моєї нікотинової бази?",
     "nicotine_base_hint": "Скопіюйте ці значення з упаковки нікотину",
@@ -178,6 +183,29 @@
     "flavor_volume_hint": "Об'єм ароматизатора, що вже є в пляшці",
     "in_bottle": "вже в пляшці"
   },
+  "additive": {
+    "coolant": "Холодоагент (WS-23, Koolada)",
+    "coolant_desc": "Додає охолоджуючий ефект без ментолового смаку. WS-23 найм'якший, Koolada сильніший.",
+    "sweetener": "Підсолоджувач (Сукралоза)",
+    "sweetener_desc": "Додає солодкість без калорій. Може засмічувати спіралі при високих відсотках.",
+    "enhancer": "Підсилювач (Smooth, TH)",
+    "enhancer_desc": "Smooth зменшує подразнення горла, Throat Hit збільшує його.",
+    "terpene": "Терпени",
+    "terpene_desc": "Природні ароматичні сполуки. Використовуйте обережно, вони дуже концентровані."
+  },
+  "shortfill": {
+    "info": "Shortfill — це пляшка з безнікотиновою рідиною, яка має вільне місце для додавання нікотинових шотів.",
+    "bottle_volume": "Об'єм пляшки Shortfill",
+    "bottle_hint": "Загальна місткість пляшки (не об'єм рідини)",
+    "liquid_volume": "Кількість рідини в пляшці",
+    "nic_shot": "Нікотиновий шот",
+    "shot_count": "Кількість нікотинових шотів",
+    "results_title": "Результат",
+    "result_total": "Загальний об'єм:",
+    "result_nic": "Результатна міцність нікотину:",
+    "result_space": "Вільне місце після заповнення:",
+    "overflow_warning": "⚠️ Увага: Вміст перевищить місткість пляшки!"
+  },
   "results": {
     "title": "Ваш рецепт",
     "dilute_title": "Рецепт розведення",
@@ -186,8 +214,7 @@
     "nicotine": "Міцність нікотину:",
     "table_component": "Компонент",
     "table_volume": "Об'єм (мл)",
-    "table_drops": "Краплі",
-    "table_percent": "Відсоток",
+    "table_grams": "г",
     "component_nicotine_booster": "Нікотиновий бустер",
     "component_nicotine_salt": "Нікотинова сіль",
     "component_flavor": "Ароматизатор",
@@ -461,7 +488,11 @@
     "flavor": "Ароматизатор",
     "vg": "VG (гліцерин)",
     "pg": "PG (пропіленгліколь)",
+    "vg_adjustment": "VG (коригування)",
+    "pg_adjustment": "PG (коригування)",
+    "premixed_base": "Готова основа",
     "nicotine_base": "Нікотинова база",
+    "additive": "Добавка",
     "total": "РАЗОМ"
   },
   "nicotine_descriptions": {

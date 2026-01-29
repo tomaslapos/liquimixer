@@ -118,6 +118,12 @@
     "tab_liquid": "سائل",
     "tab_shakevape": "شيك آند فيب",
     "tab_liquidpro": "سائل PRO",
+    "tab_shortfill": "شورت فيل",
+    "base_type_label": "نوع القاعدة",
+    "base_separate": "PG/VG منفصل",
+    "base_premixed": "قاعدة مخلوطة مسبقًا",
+    "premixed_ratio": "نسبة القاعدة المخلوطة مسبقًا (VG/PG)",
+    "custom": "مخصص",
     "amount_label": "كم سائل أريد أن أخلط؟",
     "nicotine_base_label": "ما قوة قاعدة النيكوتين؟",
     "nicotine_base_hint": "انسخ هذه القيم من عبوة النيكوتين",
@@ -178,6 +184,29 @@
     "flavor_volume": "حجم النكهة",
     "flavor_volume_hint": "حجم النكهة الموجود في الزجاجة",
     "in_bottle": "موجود في الزجاجة"
+  },
+  "additive": {
+    "coolant": "مبرد (WS-23، Koolada)",
+    "coolant_desc": "يضيف تأثير تبريد بدون نكهة المنثول. WS-23 هو الأكثر نعومة، Koolada أقوى.",
+    "sweetener": "محلي (سكرالوز)",
+    "sweetener_desc": "يضيف الحلاوة بدون سعرات حرارية. قد يلوث الملفات عند النسب العالية.",
+    "enhancer": "معزز (Smooth، TH)",
+    "enhancer_desc": "Smooth يقلل تهيج الحلق، Throat Hit يزيده.",
+    "terpene": "تيربينات",
+    "terpene_desc": "مركبات عطرية طبيعية. استخدم بحذر، فهي مركزة جدًا."
+  },
+  "shortfill": {
+    "info": "شورت فيل هو زجاجة تحتوي على سائل إلكتروني خالي من النيكوتين مع مساحة فارغة لإضافة جرعات النيكوتين.",
+    "bottle_volume": "حجم زجاجة شورت فيل",
+    "bottle_hint": "السعة الإجمالية للزجاجة (وليس محتوى السائل)",
+    "liquid_volume": "كمية السائل في الزجاجة",
+    "nic_shot": "جرعة النيكوتين",
+    "shot_count": "عدد جرعات النيكوتين",
+    "results_title": "النتيجة",
+    "result_total": "الحجم الإجمالي:",
+    "result_nic": "النيكوتين الناتج:",
+    "result_space": "المساحة الحرة بعد الملء:",
+    "overflow_warning": "⚠️ تحذير: المحتوى سيتجاوز سعة الزجاجة!"
   },
   "results": {
     "title": "وصفتك",
