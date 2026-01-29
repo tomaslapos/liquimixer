@@ -1004,6 +1004,7 @@
             <div class="form-tabs">
                 <button type="button" class="form-tab active" data-tab="liquid" onclick="switchFormTab('liquid')" data-i18n="form.tab_liquid">Liquid</button>
                 <button type="button" class="form-tab tab-green" data-tab="shakevape" onclick="switchFormTab('shakevape')" data-i18n="form.tab_shakevape">Shake & Vape</button>
+                <button type="button" class="form-tab tab-purple" data-tab="shortfill" onclick="switchFormTab('shortfill')" data-i18n="form.tab_shortfill">Shortfill</button>
                 <button type="button" class="form-tab tab-red" data-tab="liquidpro" onclick="switchFormTab('liquidpro')" data-i18n="form.tab_liquidpro">Liquid PRO</button>
             </div>
 
@@ -1019,6 +1020,28 @@
                     <div class="input-wrapper">
                         <input type="number" id="totalAmount" min="1" max="1000" value="100" class="neon-input">
                         <span class="input-unit" data-i18n="common.ml">ml</span>
+                    </div>
+                </div>
+
+                <!-- Typ báze (separátní / předmíchaná) -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="form.base_type_label">
+                        Typ báze
+                    </label>
+                    <div class="ratio-toggle-buttons">
+                        <button type="button" id="baseSeparate" class="ratio-toggle-btn active" data-value="separate" onclick="updateBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
+                        <button type="button" id="basePremixed" class="ratio-toggle-btn" data-value="premixed" onclick="updateBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
+                    </div>
+                    <input type="hidden" id="baseType" value="separate">
+                    <div id="premixedRatioContainer" class="form-group-sub hidden">
+                        <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updatePremixedRatio('50/50')">50/50</button>
+                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updatePremixedRatio('60/40')">60/40</button>
+                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updatePremixedRatio('70/30')">70/30</button>
+                            <button type="button" class="premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updatePremixedRatio('80/20')">80/20</button>
+                        </div>
+                        <input type="hidden" id="premixedRatio" value="50/50">
                     </div>
                 </div>
 
@@ -1316,8 +1339,39 @@
                         Kolik liquidu chci namíchat?
                     </label>
                     <div class="input-wrapper">
-                        <input type="number" id="proTotalAmount" min="1" max="1000" value="100" class="neon-input">
+                        <input type="number" id="proTotalAmount" min="1" max="1000" value="100" class="neon-input" oninput="autoRecalculateProVgPgRatio()">
                         <span class="input-unit">ml</span>
+                    </div>
+                </div>
+
+                <!-- Typ báze (separátní / předmíchaná) - PRO verze s vlastním poměrem -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="form.base_type_label">
+                        Typ báze
+                    </label>
+                    <div class="ratio-toggle-buttons">
+                        <button type="button" id="proBaseSeparate" class="ratio-toggle-btn active" data-value="separate" onclick="updateProBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
+                        <button type="button" id="proBasePremixed" class="ratio-toggle-btn" data-value="premixed" onclick="updateProBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
+                    </div>
+                    <input type="hidden" id="proBaseType" value="separate">
+                    <div id="proPremixedRatioContainer" class="form-group-sub hidden">
+                        <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateProPremixedRatio('50/50')">50/50</button>
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updateProPremixedRatio('60/40')">60/40</button>
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateProPremixedRatio('70/30')">70/30</button>
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updateProPremixedRatio('80/20')">80/20</button>
+                            <button type="button" class="pro-premixed-ratio-btn ratio-toggle-btn" data-value="custom" onclick="updateProPremixedRatio('custom')" data-i18n="form.custom">Vlastní</button>
+                        </div>
+                        <input type="hidden" id="proPremixedRatio" value="50/50">
+                        <div id="proCustomPremixedContainer" class="hidden" style="margin-top: 10px;">
+                            <div class="input-wrapper inline">
+                                <input type="number" id="proCustomPremixedVg" min="0" max="100" value="65" class="neon-input small" oninput="updateProCustomPremixedPg()">
+                                <span>VG :</span>
+                                <input type="number" id="proCustomPremixedPg" min="0" max="100" value="35" class="neon-input small" disabled>
+                                <span>PG</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1334,7 +1388,7 @@
                             <option value="salt" data-i18n="form.nicotine_salt">Nikotinová sůl</option>
                         </select>
                         <div id="proNicotineStrengthContainer" class="hidden">
-                            <input type="number" id="proNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium">
+                            <input type="number" id="proNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="autoRecalculateProVgPgRatio()">
                             <span class="input-unit">mg/ml</span>
                         </div>
                     </div>
@@ -1357,6 +1411,16 @@
                                 <span id="proNicVgValue">50</span>:<span id="proNicPgValue">50</span>
                             </div>
                         </div>
+                    </div>
+                    <!-- Typ nikotinové soli (pouze pokud je vybrána sůl) -->
+                    <div id="proSaltTypeContainer" class="form-group-sub hidden">
+                        <label class="form-label-small" data-i18n="form.salt_type">Typ nikotinové soli</label>
+                        <select id="proSaltType" class="neon-select">
+                            <option value="unknown" data-i18n="form.salt_unknown">Nevím / Obecná</option>
+                            <option value="benzoic" data-i18n="form.salt_benzoic">Benzoová (TFN) - nejhladší</option>
+                            <option value="lactic" data-i18n="form.salt_lactic">Mléčná - středně hladká</option>
+                            <option value="citric" data-i18n="form.salt_citric">Citronová - lehce kyselá</option>
+                        </select>
                     </div>
                 </div>
 
@@ -1438,6 +1502,45 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Volitelné složení příchutě (PRO) -->
+                            <div class="form-group-sub flavor-composition-section">
+                                <button type="button" class="prep-item-btn composition-toggle-btn" onclick="toggleFlavorComposition(1)">
+                                    <span data-i18n="form.flavor_composition">Složení příchutě</span>
+                                    <span class="prep-arrow">▼</span>
+                                </button>
+                                <div class="prep-detail flavor-composition-detail hidden" id="flavorComposition1">
+                                    <p class="composition-hint" data-i18n="form.flavor_composition_hint">Údaje najdete na webu výrobce (Capella, TFA, Liquid Barn)</p>
+                                    <div class="composition-grid">
+                                        <div class="composition-item">
+                                            <label>PG</label>
+                                            <input type="number" id="proFlavorCompPg1" min="0" max="100" value="60" class="neon-input tiny" oninput="updateFlavorCompositionOther(1)">
+                                            <span>%</span>
+                                        </div>
+                                        <div class="composition-item">
+                                            <label>VG</label>
+                                            <input type="number" id="proFlavorCompVg1" min="0" max="100" value="5" class="neon-input tiny" oninput="updateFlavorCompositionOther(1)">
+                                            <span>%</span>
+                                        </div>
+                                        <div class="composition-item">
+                                            <label data-i18n="form.alcohol">Alkohol</label>
+                                            <input type="number" id="proFlavorCompAlcohol1" min="0" max="100" value="25" class="neon-input tiny" oninput="updateFlavorCompositionOther(1)">
+                                            <span>%</span>
+                                        </div>
+                                        <div class="composition-item">
+                                            <label data-i18n="form.water">Voda</label>
+                                            <input type="number" id="proFlavorCompWater1" min="0" max="100" value="5" class="neon-input tiny" oninput="updateFlavorCompositionOther(1)">
+                                            <span>%</span>
+                                        </div>
+                                        <div class="composition-item">
+                                            <label data-i18n="form.other">Ostatní</label>
+                                            <span id="proFlavorCompOther1" class="composition-calculated">5</span>
+                                            <span>%</span>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="neon-button small secondary" onclick="resetFlavorComposition(1)" data-i18n="form.use_average">Použít průměr</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1462,6 +1565,23 @@
                     </div>
                 </div>
 
+                <!-- Aditiva (volitelné) - pouze PRO -->
+                <div class="form-group additives-section">
+                    <label class="form-label">
+                        <span data-i18n="form.additives_label">Aditiva (volitelné)</span>
+                        <span class="label-hint" data-i18n="form.additives_hint">Chladiva, sladidla, zesilovače</span>
+                    </label>
+                    
+                    <div id="proAdditivesContainer">
+                        <!-- Dynamicky generované řádky aditiv -->
+                    </div>
+                    
+                    <button type="button" class="neon-button secondary add-btn" id="proAddAdditiveBtn" onclick="addProAdditive()">
+                        <span class="add-icon">+</span>
+                        <span data-i18n="form.add_additive">Přidat aditivum</span>
+                    </button>
+                </div>
+
                 <!-- Poměr VG/PG ve výsledném liquidu -->
                 <div class="form-group">
                     <label class="form-label" data-i18n="form.vgpg_label">
@@ -1477,8 +1597,12 @@
                             <div class="slider-wrapper-with-limits">
                                 <span class="slider-limit left">100</span>
                                 <div class="slider-wrapper ratio-slider-wrapper">
-                                    <div class="slider-disabled-zone left" id="proSliderDisabledLeft"></div>
-                                    <div class="slider-disabled-zone right" id="proSliderDisabledRight"></div>
+                                    <div class="slider-disabled-zone left" id="proSliderDisabledLeft">
+                                        <span class="limit-value" id="proLimitValueLeft"></span>
+                                    </div>
+                                    <div class="slider-disabled-zone right" id="proSliderDisabledRight">
+                                        <span class="limit-value" id="proLimitValueRight"></span>
+                                    </div>
                                     <input type="range" id="proVgPgRatio" min="0" max="100" value="50" class="ratio-slider" oninput="updateProRatioDisplay()">
                                     <div class="slider-track" id="proSliderTrack"></div>
                                     <div class="slider-center-mark"></div>
@@ -1499,6 +1623,102 @@
                         <span data-i18n="form.back">◀ ZPĚT</span>
                     </button>
                     <button class="neon-button btn-red" onclick="calculateProMix()">
+                        <span data-i18n="form.mix_button">MIXUJ!</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- SHORTFILL - Kalkulátor doplnění shortfill lahviček -->
+            <!-- ============================================ -->
+            <div id="form-shortfill" class="form-content form-purple">
+                <!-- Info o shortfill -->
+                <div class="shortfill-info">
+                    <p data-i18n="shortfill.info">Shortfill je lahvička s e-liquidem bez nikotinu, která má prázdné místo pro přidání nikotinových shotů.</p>
+                </div>
+
+                <!-- Objem shortfill lahvičky -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="shortfill.bottle_volume">
+                        Objem shortfill lahvičky
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sfBottleVolume" min="10" max="500" value="60" class="neon-input" oninput="calculateShortfill()">
+                        <span class="input-unit" data-i18n="common.ml">ml</span>
+                    </div>
+                    <div class="form-hint" data-i18n="shortfill.bottle_hint">Celková kapacita lahvičky (ne obsah liquidu)</div>
+                </div>
+
+                <!-- Množství liquidu v lahvičce -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="shortfill.liquid_volume">
+                        Množství liquidu v lahvičce
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sfLiquidVolume" min="1" max="500" value="50" class="neon-input" oninput="calculateShortfill()">
+                        <span class="input-unit" data-i18n="common.ml">ml</span>
+                    </div>
+                </div>
+
+                <!-- Nikotinový shot -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="shortfill.nic_shot">
+                        Nikotinový shot
+                    </label>
+                    <div class="shortfill-nic-row">
+                        <div class="input-wrapper">
+                            <input type="number" id="sfNicStrength" min="1" max="200" value="20" class="neon-input small" oninput="calculateShortfill()">
+                            <span class="input-unit">mg/ml</span>
+                        </div>
+                        <span>×</span>
+                        <div class="input-wrapper">
+                            <input type="number" id="sfNicShotVolume" min="1" max="30" value="10" class="neon-input small" oninput="calculateShortfill()">
+                            <span class="input-unit" data-i18n="common.ml">ml</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Počet shotů -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="shortfill.shot_count">
+                        Počet nikotinových shotů
+                    </label>
+                    <div class="shot-count-controls">
+                        <button type="button" class="neon-button small secondary" onclick="adjustSfShotCount(-1)">−</button>
+                        <span class="shot-count-display" id="sfShotCount">1</span>
+                        <button type="button" class="neon-button small secondary" onclick="adjustSfShotCount(1)">+</button>
+                        <input type="hidden" id="sfShotCountValue" value="1">
+                    </div>
+                </div>
+
+                <!-- Výsledky shortfill - real-time preview -->
+                <div class="shortfill-results" id="sfResults">
+                    <h4 data-i18n="shortfill.results_title">Náhled</h4>
+                    <div class="sf-result-grid">
+                        <div class="sf-result-item">
+                            <span class="sf-label" data-i18n="shortfill.result_total">Celkový objem:</span>
+                            <span class="sf-value" id="sfResultTotal">60 ml</span>
+                        </div>
+                        <div class="sf-result-item">
+                            <span class="sf-label" data-i18n="shortfill.result_nic">Výsledný nikotin:</span>
+                            <span class="sf-value" id="sfResultNic">3.33 mg/ml</span>
+                        </div>
+                        <div class="sf-result-item">
+                            <span class="sf-label" data-i18n="shortfill.result_space">Volné místo po naplnění:</span>
+                            <span class="sf-value" id="sfResultSpace">0 ml</span>
+                        </div>
+                    </div>
+                    <div class="sf-warning hidden" id="sfWarning">
+                        <span data-i18n="shortfill.overflow_warning">⚠️ Pozor: Obsah přesáhne kapacitu lahvičky!</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="neon-button secondary" onclick="goBack()">
+                        <span data-i18n="form.back">◀ ZPĚT</span>
+                    </button>
+                    <button class="neon-button btn-purple" onclick="calculateShortfillMix()">
                         <span data-i18n="form.mix_button">MIXUJ!</span>
                         <div class="button-glow"></div>
                     </button>
@@ -1530,9 +1750,8 @@
                     <thead>
                         <tr>
                             <th data-i18n="results.table_component">Složka</th>
-                            <th data-i18n="results.table_volume">Objem (ml)</th>
-                            <th data-i18n="results.table_drops">Kapky</th>
-                            <th data-i18n="results.table_percent">Procento</th>
+                            <th data-i18n="results.table_volume">ml</th>
+                            <th data-i18n="results.table_grams">Gramy</th>
                         </tr>
                     </thead>
                     <tbody id="resultsBody">
@@ -1542,12 +1761,9 @@
 
             <div class="results-notes">
                 <h4 data-i18n="results.notes_title">Poznámky k míchání:</h4>
-                <ul>
-                    <li data-i18n="results.notes_1">Nejprve přidejte nikotin (pokud používáte)</li>
-                    <li data-i18n="results.notes_2">Poté přidejte příchutě</li>
-                    <li data-i18n="results.notes_3">Nakonec doplňte PG a VG</li>
-                    <li data-i18n="results.notes_4">Důkladně protřepejte a nechte zrát 1-2 týdny</li>
-                </ul>
+                <ol id="mixingNotesList">
+                    <!-- Dynamicky generováno -->
+                </ol>
             </div>
 
             <!-- Standardní tlačítka pro nový recept -->
@@ -2010,7 +2226,7 @@
         <div class="footer-copyright">© 2026 LiquiMixer</div>
     </footer>
 
-    <script src="/app.js?v=20260112c"></script>
+    <script src="/app.js?v=20260129e"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
