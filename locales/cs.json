@@ -229,7 +229,7 @@
     "nicotine": "Síla nikotinu:",
     "table_component": "Složka",
     "table_volume": "ml",
-    "table_grams": "g",
+    "table_grams": "Gramy",
     "component_nicotine_booster": "Nikotin booster",
     "component_nicotine_salt": "Nikotinová sůl",
     "component_flavor": "Příchuť",
@@ -477,6 +477,7 @@
     "premixed_base": "Předmíchaná báze",
     "nicotine_base": "Nikotinová báze",
     "additive": "Aditivum",
+    "shortfill_liquid": "Shortfill liquid",
     "total": "CELKEM"
   },
   "nicotine_descriptions": {

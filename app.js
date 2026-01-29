@@ -666,6 +666,15 @@ function updateBaseType(type) {
         separateBtn.classList.remove('active');
         premixedBtn.classList.add('active');
         if (premixedContainer) premixedContainer.classList.remove('hidden');
+        
+        // Automaticky nastavit VG/PG slider na hodnotu předmíchané báze
+        const premixedRatio = document.getElementById('premixedRatio')?.value || '50/50';
+        const premixedVg = parseInt(premixedRatio.split('/')[0]) || 50;
+        const slider = document.getElementById('vgPgRatio');
+        if (slider) {
+            slider.value = premixedVg;
+            updateRatioDisplay();
+        }
     } else {
         separateBtn.classList.add('active');
         premixedBtn.classList.remove('active');
@@ -689,6 +698,14 @@ function updatePremixedRatio(ratio) {
             btn.classList.remove('active');
         }
     });
+    
+    // Automaticky nastavit VG/PG slider na hodnotu předmíchané báze
+    const premixedVg = parseInt(ratio.split('/')[0]) || 50;
+    const slider = document.getElementById('vgPgRatio');
+    if (slider) {
+        slider.value = premixedVg;
+        updateRatioDisplay();
+    }
     
     updateVgPgRatioLimits();
 }
@@ -4804,6 +4821,8 @@ function getIngredientName(ingredient) {
                 return t(additiveDatabase[additiveType].nameKey, additiveType);
             }
             return t('ingredients.additive', 'Aditivum');
+        case 'shortfill_liquid':
+            return t('ingredients.shortfill_liquid', 'Shortfill liquid');
         default:
             return ingredient.name || key;
     }
@@ -4961,44 +4980,33 @@ function calculateMix() {
         // PREMIXED BASE MODE
         // Parse premixed ratio
         const premixedParts = premixedRatio.split('/');
-        premixedVgPercent = parseInt(premixedParts[0]) || 60;
+        premixedVgPercent = parseInt(premixedParts[0]) || 50;
         const premixedPgPercent = 100 - premixedVgPercent;
         
-        // Calculate how much premixed base we can use
-        premixedBaseVolume = remainingVolume;
+        // Kolik VG a PG potřebujeme z nosných kapalin (po odečtení nikotinu a příchutě)
+        const neededVgFromCarrier = targetVgTotal - nicotineVgContent - flavorVgContent;
+        const neededPgFromCarrier = targetPgTotal - nicotinePgContent - flavorPgContent;
         
-        // VG/PG from premixed base
+        // Kolik předmíchané báze můžeme použít, aniž bychom překročili potřebné VG nebo PG
+        // Pokud premixed VG% > 0: max z VG = neededVg / (premixedVg% / 100)
+        // Pokud premixed PG% > 0: max z PG = neededPg / (premixedPg% / 100)
+        let maxFromVg = premixedVgPercent > 0 ? neededVgFromCarrier / (premixedVgPercent / 100) : Infinity;
+        let maxFromPg = premixedPgPercent > 0 ? neededPgFromCarrier / (premixedPgPercent / 100) : Infinity;
+        
+        // Maximální množství předmíchané báze = minimum z obou omezení a zbývajícího objemu
+        premixedBaseVolume = Math.min(Math.max(0, maxFromVg), Math.max(0, maxFromPg), Math.max(0, remainingVolume));
+        
+        // VG a PG z předmíchané báze
         const premixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
         const premixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
         
-        // Calculate actual totals
-        const actualVgFromPremixed = nicotineVgContent + flavorVgContent + premixedVgContent;
-        const actualPgFromPremixed = nicotinePgContent + flavorPgContent + premixedPgContent;
+        // Kolik ještě potřebujeme čistého VG a PG pro dosažení přesného poměru
+        pureVgNeeded = neededVgFromCarrier - premixedVgContent;
+        purePgNeeded = neededPgFromCarrier - premixedPgContent;
         
-        // Check if we need adjustment
-        const targetVg = targetVgTotal;
-        const targetPg = targetPgTotal;
-        
-        let adjustmentVg = targetVg - actualVgFromPremixed;
-        let adjustmentPg = targetPg - actualPgFromPremixed;
-        
-        // Limit adjustments to remaining volume after premixed base
-        // In premixed mode, we first fill with premixed, then adjust if needed
-        if (adjustmentVg < 0) adjustmentVg = 0;
-        if (adjustmentPg < 0) adjustmentPg = 0;
-        
-        // If we need more VG/PG than premixed provides, reduce premixed and add pure
-        const totalAdjustment = adjustmentVg + adjustmentPg;
-        if (totalAdjustment > 0 && totalAdjustment < remainingVolume) {
-            premixedBaseVolume = remainingVolume - totalAdjustment;
-            pureVgNeeded = adjustmentVg;
-            purePgNeeded = adjustmentPg;
-        } else {
-            // Use all remaining as premixed base
-            premixedBaseVolume = remainingVolume;
-            pureVgNeeded = 0;
-            purePgNeeded = 0;
-        }
+        // Ošetřit záporné hodnoty (zaokrouhlovací chyby)
+        if (pureVgNeeded < 0.01) pureVgNeeded = 0;
+        if (purePgNeeded < 0.01) purePgNeeded = 0;
         
         // Add nicotine to ingredients
         if (nicotineVolume > 0) {
@@ -5042,7 +5050,7 @@ function calculateMix() {
             });
         }
         
-        // Add adjustment VG/PG if needed
+        // Add adjustment VG if needed
         if (pureVgNeeded > 0.01) {
             ingredients.push({
                 ingredientKey: 'vg_adjustment',
@@ -5051,6 +5059,7 @@ function calculateMix() {
             });
         }
         
+        // Add adjustment PG if needed
         if (purePgNeeded > 0.01) {
             ingredients.push({
                 ingredientKey: 'pg_adjustment',
@@ -6353,7 +6362,7 @@ function calculateShakeVape() {
 // Shortfill Calculator Functions
 // =========================================
 
-// Calculate shortfill results in real-time
+// Calculate shortfill results in real-time (preview)
 function calculateShortfill() {
     const bottleVolume = parseFloat(document.getElementById('sfBottleVolume')?.value) || 60;
     const liquidVolume = parseFloat(document.getElementById('sfLiquidVolume')?.value) || 50;
@@ -6368,9 +6377,13 @@ function calculateShortfill() {
     const freeSpace = bottleVolume - totalVolume;
     
     // Update display
-    document.getElementById('sfResultTotal').textContent = `${totalVolume.toFixed(1)} ml`;
-    document.getElementById('sfResultNic').textContent = `${resultNic.toFixed(2)} mg/ml`;
-    document.getElementById('sfResultSpace').textContent = `${freeSpace.toFixed(1)} ml`;
+    const totalEl = document.getElementById('sfResultTotal');
+    const nicEl = document.getElementById('sfResultNic');
+    const spaceEl = document.getElementById('sfResultSpace');
+    
+    if (totalEl) totalEl.textContent = `${totalVolume.toFixed(1)} ml`;
+    if (nicEl) nicEl.textContent = `${resultNic.toFixed(2)} mg/ml`;
+    if (spaceEl) spaceEl.textContent = `${freeSpace.toFixed(1)} ml`;
     
     // Show/hide warning
     const warningEl = document.getElementById('sfWarning');
@@ -6400,9 +6413,75 @@ function adjustSfShotCount(change) {
     calculateShortfill();
 }
 
+// Calculate shortfill and show in results (Tvůj recept)
+function calculateShortfillMix() {
+    const bottleVolume = parseFloat(document.getElementById('sfBottleVolume')?.value) || 60;
+    const liquidVolume = parseFloat(document.getElementById('sfLiquidVolume')?.value) || 50;
+    const nicStrength = parseFloat(document.getElementById('sfNicStrength')?.value) || 20;
+    const nicShotVolume = parseFloat(document.getElementById('sfNicShotVolume')?.value) || 10;
+    const shotCount = parseInt(document.getElementById('sfShotCountValue')?.value) || 1;
+    
+    // Calculate results
+    const totalNicVolume = nicShotVolume * shotCount;
+    const totalVolume = liquidVolume + totalNicVolume;
+    const resultNic = (nicStrength * totalNicVolume) / totalVolume;
+    const freeSpace = bottleVolume - totalVolume;
+    
+    // Build ingredients for results display
+    const ingredients = [];
+    
+    // Shortfill liquid
+    ingredients.push({
+        ingredientKey: 'shortfill_liquid',
+        volume: liquidVolume,
+        percent: (liquidVolume / totalVolume) * 100
+    });
+    
+    // Nicotine shots (show total volume)
+    ingredients.push({
+        ingredientKey: 'nicotine_booster',
+        vgRatio: 50,
+        params: {
+            strength: nicStrength,
+            vgpg: '50/50',
+            count: shotCount
+        },
+        volume: totalNicVolume,
+        percent: (totalNicVolume / totalVolume) * 100
+    });
+    
+    // Determine VG/PG ratio (typically shortfills are 70/30 VG/PG)
+    // Assume shortfill is 70/30, nic shot is 50/50
+    const shortfillVgPercent = 70;
+    const nicShotVgPercent = 50;
+    
+    const vgFromShortfill = liquidVolume * (shortfillVgPercent / 100);
+    const vgFromNic = totalNicVolume * (nicShotVgPercent / 100);
+    const totalVg = vgFromShortfill + vgFromNic;
+    const actualVgPercent = Math.round((totalVg / totalVolume) * 100);
+    const actualPgPercent = 100 - actualVgPercent;
+    
+    // Display results
+    displayResults(totalVolume, actualVgPercent, actualPgPercent, resultNic, ingredients, totalVolume, totalVg, totalVolume - totalVg, {
+        formType: 'shortfill',
+        flavorType: 'none',
+        bottleVolume: bottleVolume,
+        freeSpace: freeSpace,
+        shotCount: shotCount
+    });
+    
+    // Show warning if overflow
+    if (freeSpace < 0) {
+        showNotification(t('shortfill.overflow_warning', 'Pozor: Obsah přesáhne kapacitu lahvičky!'), 'warning');
+    }
+    
+    showPage('results');
+}
+
 // Export shortfill functions
 window.calculateShortfill = calculateShortfill;
 window.adjustSfShotCount = adjustSfShotCount;
+window.calculateShortfillMix = calculateShortfillMix;
 
 // =========================================
 // Liquid PRO Functions
