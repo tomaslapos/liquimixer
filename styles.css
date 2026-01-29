@@ -6163,13 +6163,23 @@ body.subscription-required #subscriptionModal {
 }
 
 .flavor-composition-detail {
-    margin-top: 10px;
+    margin-top: 0;
     position: relative;
     z-index: 15;
-    background: var(--bg-card);
-    padding: 15px;
-    border-radius: var(--border-radius-small);
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--neon-yellow);
+    border-top: none;
+    border-bottom-left-radius: var(--border-radius-small);
+    border-bottom-right-radius: var(--border-radius-small);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0 15px;
+}
+
+.flavor-composition-detail.open {
+    max-height: 400px;
+    padding: 15px;
 }
 
 .composition-hint {
@@ -6278,12 +6288,13 @@ body.subscription-required #subscriptionModal {
     margin-bottom: 10px;
 }
 
-.additive-percent-row .input-wrapper.small {
-    min-width: 90px;
+.additive-percent-row .input-wrapper {
+    min-width: 110px;
 }
 
 .additive-percent-row .neon-input {
-    width: 70px;
+    width: 80px;
+    min-width: 80px;
 }
 
 .additive-composition-detail {
