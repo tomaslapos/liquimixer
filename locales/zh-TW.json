@@ -294,6 +294,7 @@
     "table_component": "成分",
     "table_volume": "容量 (ml)",
     "table_percent": "百分比",
+    "table_grams": "克",
     "total_volume": "總容量",
     "ratio": "VG/PG 比例",
     "nicotine": "尼古丁",
