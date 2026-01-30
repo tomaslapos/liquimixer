@@ -6952,46 +6952,72 @@ body.subscription-required #subscriptionModal {
     z-index: 1;
 }
 
-/* Stock control buttons */
-.stock-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.stock-btn {
+/* Stock control buttons - use same style as reminder-btn */
+.reminder-btn.stock-minus,
+.reminder-btn.stock-plus {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    border: 2px solid var(--neon-cyan);
-    background: transparent;
-    color: var(--neon-cyan);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
-.stock-btn:hover {
-    background: var(--neon-cyan);
-    color: var(--bg-dark);
-    transform: scale(1.1);
-}
-
-.stock-btn:active {
-    transform: scale(0.95);
-}
-
-.stock-btn.minus {
+.reminder-btn.stock-minus {
     border-color: #ff6666;
     color: #ff6666;
 }
 
-.stock-btn.minus:hover {
-    background: #ff6666;
-    color: white;
+.reminder-btn.stock-minus:hover {
+    background: rgba(255, 102, 102, 0.2);
+    border-color: #ff6666;
+}
+
+.reminder-btn.stock-plus {
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+}
+
+.reminder-btn.stock-plus:hover {
+    background: rgba(0, 255, 0, 0.2);
+    border-color: var(--neon-green);
+}
+
+/* Stock bar in modal */
+.reminder-stock-modal {
+    margin-top: 10px;
+}
+
+.reminder-stock.modal-stock {
+    justify-content: center;
+    padding: 15px 0;
+}
+
+.reminder-stock.modal-stock .stock-battery {
+    max-width: 250px;
+}
+
+/* Back to database button */
+.back-to-database {
+    margin-bottom: 20px;
+}
+
+/* Filter toggle row */
+.filter-toggle .toggle-row,
+.public-recipe-toggle .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-toggle .toggle-label,
+.public-recipe-toggle .toggle-label {
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.public-recipe-toggle .toggle-hint {
+    margin-left: 52px;
+    margin-top: 5px;
 }
 
 /* =========================================
