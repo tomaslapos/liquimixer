@@ -1780,6 +1780,7 @@ body {
 
 .reminder-item {
     display: flex !important;
+    flex-wrap: wrap;
     justify-content: space-between !important;
     align-items: center !important;
     padding: 12px 15px !important;
@@ -1788,6 +1789,7 @@ body {
     border: 1px solid rgba(0, 255, 255, 0.2) !important;
     border-radius: 8px !important;
     transition: all 0.3s ease;
+    gap: 10px;
 }
 
 .reminder-item:hover {
@@ -1851,6 +1853,14 @@ body {
 .reminder-status-badge.cancelled {
     background: rgba(255, 0, 0, 0.2);
     color: #ff6666;
+}
+
+/* Kontejner pro stock bar + akční tlačítka */
+.reminder-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .reminder-actions {
@@ -1938,6 +1948,54 @@ body {
 .show-all-reminders-btn:hover {
     background: rgba(255, 0, 255, 0.1);
     border-color: #ff00ff;
+}
+
+/* Mobilní zobrazení připomínek - 2 řádky */
+@media (max-width: 600px) {
+    .reminder-item {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+    
+    .reminder-dates {
+        width: 100%;
+        text-align: left;
+    }
+    
+    /* Kontejner controls na celou šířku */
+    .reminder-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    /* Stock bar vlevo */
+    .reminder-stock {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Akční tlačítka vpravo */
+    .reminder-actions {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 400px) {
+    .reminder-stock .stock-battery {
+        width: 70px;
+    }
+    
+    .reminder-btn.stock-minus,
+    .reminder-btn.stock-plus {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .reminder-controls {
+        gap: 8px;
+    }
 }
 
 .reminder-info {
@@ -6898,13 +6956,11 @@ body.subscription-required #subscriptionModal {
    Stock Bar - Battery Style
    ========================================= */
 
-/* Stock container - inline with reminder item */
+/* Stock container - inline with reminder controls */
 .reminder-stock {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: auto;
-    margin-right: 15px;
 }
 
 /* Battery container - larger and more visible */
