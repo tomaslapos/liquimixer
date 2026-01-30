@@ -1991,6 +1991,15 @@ async function showSaveRecipeModal() {
         // Inicializovat připomínku jako zaškrtnutou s dnešním datem
         initReminderFieldsEnabled();
         
+        // Odblokovat "Sdílet do veřejné databáze" - toto je NOVÝ recept z kalkulátoru
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+        if (publicCheckbox && publicToggle) {
+            publicCheckbox.disabled = false;
+            publicToggle.style.opacity = '1';
+            publicToggle.title = '';
+        }
+        
         // Aplikovat překlady na modal
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
             window.i18n.applyTranslations();
@@ -2392,6 +2401,7 @@ async function saveRecipe(event) {
     const name = document.getElementById('recipeName').value;
     const description = document.getElementById('recipeDescription').value;
     const rating = parseInt(document.getElementById('recipeRating').value) || 0;
+    const isPublic = document.getElementById('recipeIsPublic')?.checked || false;
     
     // Kontrola, zda jde o úpravu nebo nový recept
     const isEditing = !!window.editingRecipeId;
@@ -2402,10 +2412,18 @@ async function saveRecipe(event) {
         return false;
     }
     
+    // Určit form_type z currentRecipeData
+    let formType = 'liquid';
+    if (currentRecipeData) {
+        formType = currentRecipeData.formType || currentRecipeData.form_type || 'liquid';
+    }
+    
     const recipeData = {
         name: name,
         description: description,
-        rating: rating
+        rating: rating,
+        is_public: isPublic,
+        form_type: formType
     };
     
     // Přidat data receptu pouze při vytváření nového
@@ -3282,6 +3300,20 @@ async function showEditRecipeForm() {
         }
     }
     
+    // Odblokovat "Sdílet do veřejné databáze" - toto je úprava VLASTNÍHO receptu
+    const publicCheckbox = document.getElementById('recipeIsPublic');
+    const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+    if (publicCheckbox && publicToggle) {
+        publicCheckbox.disabled = false;
+        publicToggle.style.opacity = '1';
+        publicToggle.title = '';
+        // Nastavit aktuální hodnotu z receptu
+        publicCheckbox.checked = !!currentViewingRecipe.is_public;
+    }
+    
+    // Inicializovat připomínku
+    initReminderFieldsEnabled();
+    
     modal.classList.remove('hidden');
 }
 
@@ -3634,6 +3666,16 @@ async function saveSharedRecipe() {
         
         // Inicializovat připomínku
         initReminderFieldsEnabled();
+        
+        // Blokovat "Sdílet do veřejné databáze" - ukládáme sdílený recept
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+        if (publicCheckbox && publicToggle) {
+            publicCheckbox.checked = false;
+            publicCheckbox.disabled = true;
+            publicToggle.style.opacity = '0.5';
+            publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet již sdílený recept');
+        }
         
         // Aplikovat překlady
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
@@ -9228,6 +9270,18 @@ function renderReminderItem(reminder, recipeId) {
     reminderDate.setHours(0, 0, 0, 0);
     const isMatured = reminder.status === 'pending' && reminderDate <= today;
     
+    // Stock tracking
+    const stockPercent = reminder.stock_percent ?? 100;
+    const isConsumed = reminder.consumed_at != null;
+    
+    // Skrýt spotřebované připomínky
+    if (isConsumed) return '';
+    
+    // Barva podle stavu zásoby
+    const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
+                       stockPercent > 20 ? '#ffcc00' : '#ff4444';
+    const lowClass = stockPercent <= 20 ? 'low' : '';
+    
     // Sestavit CSS třídy
     let statusClass = '';
     if (reminder.status === 'sent') {
@@ -9247,18 +9301,40 @@ function renderReminderItem(reminder, recipeId) {
         statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Vyzrálo')}</span>`;
     }
 
+    // Třída pro barvu procent (černá když >50%, bílá když <=50%)
+    const percentClass = stockPercent > 50 ? '' : 'low-text';
+
     return `
         <div class="reminder-item ${statusClass}" data-reminder-id="${reminder.id}">
             <div class="reminder-dates clickable" onclick="showViewReminderModal('${reminder.id}')">
                 <div class="reminder-mixed-date">${t('reminder.mixed_on', 'Namícháno')}: ${mixedDate}</div>
                 <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
             </div>
-            ${reminder.status === 'pending' ? `
-                <div class="reminder-actions">
-                    <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
-                    <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+            
+            <!-- Druhý řádek: Stock bar + akční tlačítka -->
+            <div class="reminder-controls">
+                <div class="reminder-stock">
+                    <button type="button" class="reminder-btn stock-minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
+                    <div class="stock-battery">
+                        <div class="battery-body">
+                            <div class="battery-level ${lowClass}" 
+                                 id="stock-bar-${reminder.id}"
+                                 style="width: ${stockPercent}%; background: ${stockColor};">
+                            </div>
+                            <span class="battery-percent ${percentClass}" id="stock-percent-${reminder.id}">${stockPercent}%</span>
+                        </div>
+                        <div class="battery-tip"></div>
+                    </div>
+                    <button type="button" class="reminder-btn stock-plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
                 </div>
-            ` : ''}
+                
+                ${reminder.status === 'pending' ? `
+                    <div class="reminder-actions">
+                        <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
+                        <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+                    </div>
+                ` : ''}
+            </div>
         </div>
     `;
 }
@@ -9654,10 +9730,36 @@ function showViewReminderModal(reminderId) {
     const mixDateEl = document.getElementById('viewReminderMixDate');
     const remindDateEl = document.getElementById('viewReminderRemindDate');
     const noteEl = document.getElementById('viewReminderNote');
+    const stockContainer = document.getElementById('viewReminderStockContainer');
 
     if (mixDateEl) mixDateEl.textContent = formatDate(reminder.mixed_at);
     if (remindDateEl) remindDateEl.textContent = formatDate(reminder.remind_at);
     if (noteEl) noteEl.textContent = reminder.note || t('reminder.no_note', 'Bez poznámky');
+    
+    // Render stock bar v modalu
+    if (stockContainer) {
+        // Použít cache pokud existuje, jinak z reminder
+        const stockPercent = stockCache[reminderId] ?? reminder.stock_percent ?? 100;
+        const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
+                           stockPercent > 20 ? '#ffcc00' : '#ff4444';
+        const lowClass = stockPercent <= 20 ? 'low' : '';
+        const percentClass = stockPercent > 50 ? '' : 'low-text';
+        const recipeId = reminder.recipe_id || '';
+        
+        stockContainer.innerHTML = `
+            <div class="reminder-stock modal-stock">
+                <button type="button" class="reminder-btn stock-minus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', -10);" title="-10%">−</button>
+                <div class="stock-battery">
+                    <div class="battery-body">
+                        <div class="battery-level ${lowClass}" style="width: ${stockPercent}%; background: ${stockColor};"></div>
+                        <span class="battery-percent ${percentClass}">${stockPercent}%</span>
+                    </div>
+                    <div class="battery-tip"></div>
+                </div>
+                <button type="button" class="reminder-btn stock-plus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', +10);" title="+10%">+</button>
+            </div>
+        `;
+    }
 
     modal.classList.remove('hidden');
 }
@@ -9680,6 +9782,492 @@ window.hideViewReminderModal = hideViewReminderModal;
 window.updateReminderModalDate = updateReminderModalDate;
 window.saveReminderFromModal = saveReminderFromModal;
 window.deleteReminderConfirm = deleteReminderConfirm;
+
+// =============================================
+// VEŘEJNÁ DATABÁZE RECEPTŮ
+// =============================================
+
+let currentDbPage = 1;
+let dbSearchTimeout = null;
+
+// Zobrazit stránku databáze receptů
+function showRecipeDatabase() {
+    // Kontrola přihlášení
+    if (!window.Clerk?.user) {
+        showLoginRequiredModal();
+        return;
+    }
+    
+    showPage('recipe-database');
+    initFlavorFilterOptions();
+    
+    // Aplikovat překlady po zobrazení stránky
+    if (window.i18n?.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+    
+    loadPublicRecipes();
+}
+
+// Inicializovat select s typy příchutí z flavorDatabase
+function initFlavorFilterOptions() {
+    const select = document.getElementById('dbFilterFlavorType');
+    if (!select) return;
+    
+    // Uložit aktuální vybranou hodnotu
+    const currentValue = select.value;
+    
+    // Vymazat existující options (kromě první "Všechny")
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+    
+    // Přeložit první option "Všechny"
+    if (select.options[0]) {
+        select.options[0].textContent = t('recipe_database.all', 'Všechny');
+    }
+    
+    // Přidat typy z flavorDatabase s překlady
+    if (window.flavorDatabase) {
+        Object.keys(window.flavorDatabase).forEach(key => {
+            if (key === 'none') return; // Přeskočit "Žádná"
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = t(`form.flavor_type_${key}`, window.flavorDatabase[key]?.name || key);
+            select.appendChild(option);
+        });
+    }
+    
+    // Obnovit vybranou hodnotu
+    select.value = currentValue;
+}
+
+// Toggle rozbalovacích filtrů
+function toggleDatabaseFilters() {
+    const panel = document.getElementById('dbFiltersPanel');
+    const icon = document.querySelector('.filter-toggle-icon');
+    if (!panel || !icon) return;
+    
+    if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        panel.classList.add('open');
+        icon.textContent = '▲';
+        // Aplikovat překlady po otevření panelu (pro <option> elementy)
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+    } else {
+        panel.classList.remove('open');
+        panel.classList.add('hidden');
+        icon.textContent = '▼';
+    }
+}
+
+// Reset všech filtrů
+function resetDatabaseFilters() {
+    document.getElementById('dbFilterFormType').value = '';
+    document.getElementById('dbFilterFlavorType').value = '';
+    document.getElementById('dbFilterVgMin').value = '';
+    document.getElementById('dbFilterVgMax').value = '';
+    document.getElementById('dbFilterNicMin').value = '';
+    document.getElementById('dbFilterNicMax').value = '';
+    document.getElementById('dbFilterHasAdditive').checked = false;
+    document.getElementById('dbSearchInput').value = '';
+    currentDbPage = 1;
+    loadPublicRecipes();
+}
+
+// Debounce pro vyhledávání
+function debounceSearch() {
+    if (dbSearchTimeout) clearTimeout(dbSearchTimeout);
+    dbSearchTimeout = setTimeout(() => {
+        currentDbPage = 1;
+        loadPublicRecipes();
+    }, 300);
+}
+
+// Načíst veřejné recepty
+async function loadPublicRecipes() {
+    const listEl = document.getElementById('publicRecipesList');
+    const paginationEl = document.getElementById('dbPagination');
+    if (!listEl) return;
+    
+    // Zobrazit loading
+    listEl.innerHTML = `<div class="loading-message">${t('recipe_database.loading', 'Načítání receptů...')}</div>`;
+    
+    // Sestavit filtry
+    const filters = {
+        search: document.getElementById('dbSearchInput')?.value || '',
+        formType: document.getElementById('dbFilterFormType')?.value || '',
+        flavorType: document.getElementById('dbFilterFlavorType')?.value || '',
+        vgMin: document.getElementById('dbFilterVgMin')?.value || '',
+        vgMax: document.getElementById('dbFilterVgMax')?.value || '',
+        nicMin: document.getElementById('dbFilterNicMin')?.value || '',
+        nicMax: document.getElementById('dbFilterNicMax')?.value || '',
+        hasAdditive: document.getElementById('dbFilterHasAdditive')?.checked || false,
+        sortBy: document.getElementById('dbSortBy')?.value || 'rating_desc'
+    };
+    
+    try {
+        const result = await window.LiquiMixerDB.getPublicRecipes(filters, currentDbPage, 50);
+        
+        if (!result.recipes || result.recipes.length === 0) {
+            listEl.innerHTML = `<div class="no-recipes-message">${t('recipe_database.no_recipes', 'Žádné recepty nenalezeny')}</div>`;
+            if (paginationEl) paginationEl.innerHTML = '';
+            return;
+        }
+        
+        // Render karty receptů
+        listEl.innerHTML = result.recipes.map(recipe => renderPublicRecipeCard(recipe)).join('');
+        
+        // Render paginace
+        if (paginationEl) {
+            renderDbPagination(paginationEl, result.total, result.page, result.limit);
+        }
+        
+        // Aplikovat překlady
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+    } catch (error) {
+        console.error('Error loading public recipes:', error);
+        listEl.innerHTML = `<div class="error-message">${t('common.error', 'Chyba při načítání')}</div>`;
+    }
+}
+
+// Render karty veřejného receptu
+function renderPublicRecipeCard(recipe) {
+    const avgRating = recipe.public_rating_avg || 0;
+    const ratingCount = recipe.public_rating_count || 0;
+    const formType = recipe.form_type || 'liquid';
+    const recipeData = recipe.recipe_data || {};
+    
+    // VG/PG a nikotin z recipe_data
+    const vgRatio = recipeData.vgRatio || recipeData.ratio || 70;
+    const nicStrength = recipeData.nicStrength || 0;
+    const flavorType = recipeData.flavorType || '';
+    
+    // Render hvězdiček
+    const stars = renderStars(avgRating);
+    
+    return `
+        <div class="public-recipe-card" onclick="loadPublicRecipeDetail('${recipe.id}')">
+            <div class="recipe-card-header">
+                <h4 class="recipe-card-name">${escapeHtml(recipe.name)}</h4>
+                <div class="recipe-card-rating">
+                    <span class="rating-avg">${avgRating.toFixed(1)}</span>
+                    <span class="rating-stars">${stars}</span>
+                    <span class="rating-count">(${ratingCount})</span>
+                </div>
+            </div>
+            <div class="recipe-card-type">${formType.toUpperCase()}</div>
+            <div class="recipe-card-meta">
+                <span class="recipe-card-badge vg-pg">${vgRatio}/${100 - vgRatio} VG/PG</span>
+                ${nicStrength > 0 ? `<span class="recipe-card-badge nicotine">${nicStrength} mg</span>` : ''}
+                ${flavorType ? `<span class="recipe-card-badge flavor">${t(`form.flavor_type_${flavorType}`, flavorType)}</span>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+// Render hvězdiček
+function renderStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            stars += '★';
+        } else if (i - 0.5 <= rating) {
+            stars += '☆';
+        } else {
+            stars += '☆';
+        }
+    }
+    return stars;
+}
+
+// Render paginace
+function renderDbPagination(container, total, currentPage, limit) {
+    const totalPages = Math.ceil(total / limit);
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    let html = '';
+    
+    // Tlačítko Předchozí
+    html += `<button class="pagination-btn" ${currentPage <= 1 ? 'disabled' : ''} 
+             onclick="goToDbPage(${currentPage - 1})">◀</button>`;
+    
+    // Čísla stránek
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+            html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                     onclick="goToDbPage(${i})">${i}</button>`;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+            html += '<span class="pagination-ellipsis">...</span>';
+        }
+    }
+    
+    // Tlačítko Další
+    html += `<button class="pagination-btn" ${currentPage >= totalPages ? 'disabled' : ''} 
+             onclick="goToDbPage(${currentPage + 1})">▶</button>`;
+    
+    // Info o počtu
+    html += `<span class="pagination-info">${t('recipe_database.results_count', 'Nalezeno {count} receptů').replace('{count}', total)}</span>`;
+    
+    container.innerHTML = html;
+}
+
+// Přejít na stránku
+function goToDbPage(page) {
+    currentDbPage = page;
+    loadPublicRecipes();
+    // Scroll nahoru
+    document.getElementById('recipe-database')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Načíst detail veřejného receptu
+async function loadPublicRecipeDetail(recipeId) {
+    try {
+        const recipe = await window.LiquiMixerDB.getPublicRecipeById(recipeId);
+        if (!recipe) {
+            showNotification(t('common.error', 'Recept nenalezen'), 'error');
+            return;
+        }
+        
+        window.currentSharedRecipe = recipe;
+        window.cameFromRecipeDatabase = true; // Flag pro tlačítko zpět
+        
+        // Načíst hodnocení uživatele
+        let userRating = 0;
+        if (window.Clerk?.user) {
+            userRating = await window.LiquiMixerDB.getUserRatingForRecipe(window.Clerk.user.id, recipeId);
+        }
+        
+        // Zobrazit detail
+        displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', [], true);
+        
+        // Přidat sekci hodnocení
+        appendRatingSection(recipeId, recipe.public_rating_avg || 0, recipe.public_rating_count || 0, userRating);
+        
+        // Přidat tlačítko zpět do databáze
+        appendBackToDatabaseButton();
+        
+        showPage('shared-recipe');
+        
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+    } catch (error) {
+        console.error('Error loading public recipe detail:', error);
+        showNotification(t('common.error', 'Chyba při načítání receptu'), 'error');
+    }
+}
+
+// Přidat tlačítko zpět do databáze receptů - na konec k ostatním tlačítkům
+function appendBackToDatabaseButton() {
+    // Najít button-group na stránce shared-recipe
+    const sharedRecipePage = document.getElementById('shared-recipe');
+    if (!sharedRecipePage) return;
+    
+    const buttonGroup = sharedRecipePage.querySelector('.button-group');
+    if (!buttonGroup) return;
+    
+    // Odstranit existující tlačítka zpět do databáze (aby se nehromadily)
+    const existingBackBtns = buttonGroup.querySelectorAll('.back-to-db-btn');
+    existingBackBtns.forEach(btn => btn.remove());
+    
+    // Přidat tlačítko zpět do databáze na začátek button-group
+    const backBtnHtml = `
+        <button class="neon-button secondary back-to-db-btn" onclick="showRecipeDatabase()">
+            <span data-i18n="form.back">◀ ZPĚT DO DATABÁZE</span>
+        </button>
+    `;
+    buttonGroup.insertAdjacentHTML('afterbegin', backBtnHtml);
+}
+
+// Přidat sekci hodnocení do detailu receptu
+function appendRatingSection(recipeId, avgRating, ratingCount, userRating) {
+    const container = document.getElementById('sharedRecipeContent');
+    if (!container) return;
+    
+    const ratingHtml = `
+        <div class="recipe-rating-section">
+            <h3 data-i18n="rating.title">Hodnocení</h3>
+            <div class="rating-summary">
+                <span class="rating-avg">${avgRating.toFixed(1)}</span>
+                <span class="rating-stars">${renderStars(avgRating)}</span>
+                <span class="rating-count">(${ratingCount} ${t('rating.votes', 'hlasů')})</span>
+            </div>
+            <div class="rating-user">
+                <label data-i18n="rating.your_rating">Vaše hodnocení:</label>
+                <div class="star-rating-input" data-recipe-id="${recipeId}">
+                    ${[1,2,3,4,5].map(i => `
+                        <span class="star-input ${i <= userRating ? 'active' : ''}" 
+                              data-value="${i}" 
+                              onclick="submitRating('${recipeId}', ${i})">★</span>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', ratingHtml);
+}
+
+// Odeslat hodnocení
+async function submitRating(recipeId, rating) {
+    if (!window.Clerk?.user) {
+        showLoginRequiredModal();
+        return;
+    }
+    
+    try {
+        await window.LiquiMixerDB.addRecipeRating(window.Clerk.user.id, recipeId, rating);
+        
+        // Aktualizovat UI
+        const stars = document.querySelectorAll(`.star-rating-input[data-recipe-id="${recipeId}"] .star-input`);
+        stars.forEach((star, index) => {
+            star.classList.toggle('active', index < rating);
+        });
+        
+        showNotification(t('rating.thank_you', 'Děkujeme za hodnocení!'), 'success');
+    } catch (error) {
+        console.error('Error submitting rating:', error);
+        showNotification(t('common.error', 'Chyba při ukládání hodnocení'), 'error');
+    }
+}
+
+// =============================================
+// STOCK TRACKING (SKLADOVÁ ZÁSOBA)
+// =============================================
+
+// Aktualizovat zásobu připomínky (volá se z tlačítek +/-)
+// Cache pro aktuální stock hodnoty (aby nemusíme čekat na DB)
+const stockCache = {};
+
+async function updateReminderStockUI(reminderId, recipeId, delta) {
+    const clerkId = window.Clerk?.user?.id;
+    if (!clerkId) return;
+    
+    // Použít cache nebo načíst z allRecipeReminders
+    let currentStock = stockCache[reminderId];
+    if (currentStock === undefined) {
+        const reminder = allRecipeReminders.find(r => r.id === reminderId);
+        currentStock = reminder?.stock_percent ?? 100;
+    }
+    
+    let newStock = Math.max(0, Math.min(100, currentStock + delta));
+    stockCache[reminderId] = newStock; // Uložit do cache
+    
+    // Okamžitá aktualizace UI (bez čekání na DB)
+    updateStockBarVisual(reminderId, newStock);
+    
+    // Při dosažení 0% - zobrazit dialog
+    if (newStock === 0) {
+        const confirmed = await showConsumedConfirmDialog();
+        if (confirmed) {
+            // Uložit do DB a obnovit seznam
+            await window.database.markReminderConsumed(clerkId, reminderId);
+            delete stockCache[reminderId];
+            showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
+            loadRecipeReminders(recipeId);
+            hideViewReminderModal();
+        } else {
+            // Vrátit na 10%
+            newStock = 10;
+            stockCache[reminderId] = 10;
+            updateStockBarVisual(reminderId, 10);
+            window.database.updateReminderStock(clerkId, reminderId, 10);
+        }
+    } else {
+        // Uložit do DB na pozadí (neblokuje UI)
+        window.database.updateReminderStock(clerkId, reminderId, newStock);
+    }
+}
+
+// Pomocná funkce pro vizuální aktualizaci stock baru
+function updateStockBarVisual(reminderId, newStock) {
+    // Najít všechny stock bary s tímto ID (může být v seznamu i v modalu)
+    const stockBars = document.querySelectorAll(`[id^="stock-bar-${reminderId}"], .modal-stock .battery-level`);
+    const percentLabels = document.querySelectorAll(`[id^="stock-percent-${reminderId}"], .modal-stock .battery-percent`);
+    
+    const stockColor = newStock > 50 ? 'var(--neon-green)' : 
+                       newStock > 20 ? '#ffcc00' : '#ff4444';
+    const percentClass = newStock > 50 ? '' : 'low-text';
+    
+    stockBars.forEach(bar => {
+        bar.style.width = `${newStock}%`;
+        bar.style.background = stockColor;
+        if (newStock <= 20) {
+            bar.classList.add('low');
+        } else {
+            bar.classList.remove('low');
+        }
+    });
+    
+    percentLabels.forEach(label => {
+        label.textContent = `${newStock}%`;
+        if (newStock > 50) {
+            label.classList.remove('low-text');
+        } else {
+            label.classList.add('low-text');
+        }
+    });
+    
+    // Aktualizovat také v allRecipeReminders cache
+    const reminder = allRecipeReminders.find(r => r.id === reminderId);
+    if (reminder) {
+        reminder.stock_percent = newStock;
+    }
+}
+
+// Dialog pro potvrzení spotřebování
+function showConsumedConfirmDialog() {
+    return new Promise((resolve) => {
+        const dialog = document.createElement('div');
+        dialog.className = 'confirm-dialog-overlay';
+        dialog.innerHTML = `
+            <div class="confirm-dialog">
+                <div class="confirm-dialog-icon">🧪</div>
+                <h3 data-i18n="reminder.consumed_title">Liquid spotřebován?</h3>
+                <p data-i18n="reminder.consumed_text">
+                    Chcete označit tento liquid jako spotřebovaný? 
+                    Připomínka bude odstraněna ze seznamu.
+                </p>
+                <div class="confirm-dialog-buttons">
+                    <button class="neon-button secondary" onclick="this.closest('.confirm-dialog-overlay').remove(); window._consumedResolve(false);">
+                        <span data-i18n="common.cancel">Zrušit</span>
+                    </button>
+                    <button class="neon-button" onclick="this.closest('.confirm-dialog-overlay').remove(); window._consumedResolve(true);">
+                        <span data-i18n="reminder.mark_consumed">Ano, spotřebován</span>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        window._consumedResolve = resolve;
+        document.body.appendChild(dialog);
+        
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+        
+        // Animace vstupu
+        requestAnimationFrame(() => dialog.classList.add('visible'));
+    });
+}
+
+// Export funkcí pro veřejnou databázi a stock
+window.showRecipeDatabase = showRecipeDatabase;
+window.loadPublicRecipes = loadPublicRecipes;
+window.toggleDatabaseFilters = toggleDatabaseFilters;
+window.resetDatabaseFilters = resetDatabaseFilters;
+window.debounceSearch = debounceSearch;
+window.goToDbPage = goToDbPage;
+window.loadPublicRecipeDetail = loadPublicRecipeDetail;
+window.submitRating = submitRating;
+window.updateReminderStockUI = updateReminderStockUI;
 
 // =========================================
 // EXPORT: Funkce pro globalni pristup z onclick

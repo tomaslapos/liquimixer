@@ -399,6 +399,8 @@ async function saveUserRecipe(clerkId, recipe) {
         share_id: shareId,
         share_url: shareUrl, // Kompletní URL pro sdílení
         recipe_data: recipe.data, // JSONB - supabaseClient escapuje automaticky
+        is_public: !!recipe.is_public, // Veřejná databáze receptů
+        form_type: recipe.form_type || 'liquid', // Typ formuláře (liquid, shakevape, shortfill, liquidpro)
         created_at: new Date().toISOString()
     };
     
@@ -432,16 +434,29 @@ async function updateUserRecipe(clerkId, recipeId, updates) {
         return null;
     }
     
+    // Sestavit objekt aktualizace
+    const updateData = {
+        name: sanitizeInput(updates.name),
+        description: sanitizeInput(updates.description),
+        rating: Math.min(Math.max(parseInt(updates.rating) || 0, 0), 5),
+        updated_at: new Date().toISOString()
+    };
+    
+    // Přidat volitelné sloupce pokud jsou v updates
+    if (updates.data !== undefined) {
+        updateData.recipe_data = updates.data;
+    }
+    if (updates.is_public !== undefined) {
+        updateData.is_public = !!updates.is_public;
+    }
+    if (updates.form_type !== undefined) {
+        updateData.form_type = updates.form_type;
+    }
+    
     try {
         const { data, error } = await supabaseClient
             .from('recipes')
-            .update({
-                name: sanitizeInput(updates.name),
-                description: sanitizeInput(updates.description),
-                rating: Math.min(Math.max(parseInt(updates.rating) || 0, 0), 5),
-                recipe_data: updates.data,
-                updated_at: new Date().toISOString()
-            })
+            .update(updateData)
             .eq('id', recipeId)
             .eq('clerk_id', clerkId)
             .select()
@@ -1435,6 +1450,345 @@ async function cancelReminder(clerkId, reminderId) {
 }
 
 // =============================================
+// STOCK TRACKING FUNCTIONS (Reminder stock percentage)
+// =============================================
+
+// Získat jednu připomínku podle ID
+async function getReminderById(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('getReminderById: Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .select('*')
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('getReminderById: Error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('getReminderById: Database error:', err);
+        return null;
+    }
+}
+
+// Aktualizovat zásobu připomínky (stock_percent)
+async function updateReminderStock(clerkId, reminderId, stockPercent) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('updateReminderStock: Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace rozsahu
+    const validStock = Math.max(0, Math.min(100, parseInt(stockPercent) || 0));
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .update({ 
+                stock_percent: validStock,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('updateReminderStock: Error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('updateReminderStock: Database error:', err);
+        return null;
+    }
+}
+
+// Označit připomínku jako spotřebovanou
+async function markReminderConsumed(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('markReminderConsumed: Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .update({ 
+                stock_percent: 0,
+                consumed_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('markReminderConsumed: Error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('markReminderConsumed: Database error:', err);
+        return null;
+    }
+}
+
+// =============================================
+// PUBLIC RECIPE DATABASE FUNCTIONS
+// =============================================
+
+// Získat veřejné recepty s filtrováním a paginací
+async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
+    if (!supabaseClient) return { recipes: [], total: 0, page: 1, limit: 50 };
+    
+    try {
+        let query = supabaseClient
+            .from('recipes')
+            .select('id, name, description, is_public, public_rating_avg, public_rating_count, form_type, recipe_data, created_at', { count: 'exact' })
+            .eq('is_public', true);
+        
+        // Filtr: Metoda přípravy
+        if (filters.formType) {
+            query = query.eq('form_type', filters.formType);
+        }
+        
+        // Filtr: Hledání v názvu
+        if (filters.search) {
+            query = query.ilike('name', `%${filters.search}%`);
+        }
+        
+        // Filtr: Typ příchutě (v recipe_data.flavorType)
+        if (filters.flavorType) {
+            query = query.eq('recipe_data->flavorType', filters.flavorType);
+        }
+        
+        // Filtr: VG poměr - min
+        if (filters.vgMin !== undefined && filters.vgMin !== '' && !isNaN(filters.vgMin)) {
+            query = query.gte('recipe_data->vgRatio', parseInt(filters.vgMin));
+        }
+        
+        // Filtr: VG poměr - max
+        if (filters.vgMax !== undefined && filters.vgMax !== '' && !isNaN(filters.vgMax)) {
+            query = query.lte('recipe_data->vgRatio', parseInt(filters.vgMax));
+        }
+        
+        // Filtr: Síla nikotinu - min
+        if (filters.nicMin !== undefined && filters.nicMin !== '' && !isNaN(filters.nicMin)) {
+            query = query.gte('recipe_data->nicStrength', parseInt(filters.nicMin));
+        }
+        
+        // Filtr: Síla nikotinu - max
+        if (filters.nicMax !== undefined && filters.nicMax !== '' && !isNaN(filters.nicMax)) {
+            query = query.lte('recipe_data->nicStrength', parseInt(filters.nicMax));
+        }
+        
+        // Filtr: Obsahuje aditiva
+        if (filters.hasAdditive) {
+            query = query.not('recipe_data->additive', 'is', null);
+        }
+        
+        // Řazení
+        switch (filters.sortBy) {
+            case 'rating_asc':
+                query = query.order('public_rating_avg', { ascending: true });
+                break;
+            case 'name_asc':
+                query = query.order('name', { ascending: true });
+                break;
+            case 'name_desc':
+                query = query.order('name', { ascending: false });
+                break;
+            case 'newest':
+                query = query.order('created_at', { ascending: false });
+                break;
+            case 'oldest':
+                query = query.order('created_at', { ascending: true });
+                break;
+            case 'rating_desc':
+            default:
+                query = query.order('public_rating_avg', { ascending: false });
+                break;
+        }
+        
+        // Paginace (50 na stránku)
+        const offset = (page - 1) * limit;
+        query = query.range(offset, offset + limit - 1);
+        
+        const { data, error, count } = await query;
+        
+        if (error) {
+            console.error('getPublicRecipes: Error:', error);
+            return { recipes: [], total: 0, page, limit };
+        }
+        
+        return { recipes: data || [], total: count || 0, page, limit };
+    } catch (err) {
+        console.error('getPublicRecipes: Database error:', err);
+        return { recipes: [], total: 0, page, limit };
+    }
+}
+
+// Získat veřejný recept podle ID (bez ověření vlastníka)
+async function getPublicRecipeById(recipeId) {
+    if (!supabaseClient || !recipeId) return null;
+    
+    if (!isValidUUID(recipeId)) {
+        console.error('getPublicRecipeById: Invalid recipe ID format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .select('*')
+            .eq('id', recipeId)
+            .eq('is_public', true)
+            .single();
+        
+        if (error) {
+            console.error('getPublicRecipeById: Error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('getPublicRecipeById: Database error:', err);
+        return null;
+    }
+}
+
+// Přidat/aktualizovat hodnocení receptu (1-5 hvězdiček)
+async function addRecipeRating(clerkId, recipeId, rating) {
+    if (!supabaseClient || !clerkId || !recipeId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('addRecipeRating: Invalid clerk_id format');
+        return null;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('addRecipeRating: Invalid recipe ID format');
+        return null;
+    }
+    
+    // Validace hodnocení (1-5)
+    const validRating = Math.max(1, Math.min(5, parseInt(rating) || 1));
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_ratings')
+            .upsert({
+                recipe_id: recipeId,
+                clerk_id: clerkId,
+                rating: validRating,
+                updated_at: new Date().toISOString()
+            }, {
+                onConflict: 'recipe_id,clerk_id'
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('addRecipeRating: Error:', error);
+            return null;
+        }
+        
+        // Přepočítat průměr
+        await updateRecipeRatingAvg(recipeId);
+        
+        return data;
+    } catch (err) {
+        console.error('addRecipeRating: Database error:', err);
+        return null;
+    }
+}
+
+// Získat hodnocení uživatele pro konkrétní recept
+async function getUserRatingForRecipe(clerkId, recipeId) {
+    if (!supabaseClient || !clerkId || !recipeId) return 0;
+    
+    if (!isValidClerkId(clerkId)) return 0;
+    if (!isValidUUID(recipeId)) return 0;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_ratings')
+            .select('rating')
+            .eq('recipe_id', recipeId)
+            .eq('clerk_id', clerkId)
+            .maybeSingle();
+        
+        if (error) {
+            console.error('getUserRatingForRecipe: Error:', error);
+            return 0;
+        }
+        
+        return data?.rating || 0;
+    } catch (err) {
+        console.error('getUserRatingForRecipe: Database error:', err);
+        return 0;
+    }
+}
+
+// Přepočítat průměrné hodnocení receptu
+async function updateRecipeRatingAvg(recipeId) {
+    if (!supabaseClient || !recipeId) return;
+    
+    if (!isValidUUID(recipeId)) return;
+    
+    try {
+        // Získat všechna hodnocení
+        const { data: ratings, error: fetchError } = await supabaseClient
+            .from('recipe_ratings')
+            .select('rating')
+            .eq('recipe_id', recipeId);
+        
+        if (fetchError) {
+            console.error('updateRecipeRatingAvg: Fetch error:', fetchError);
+            return;
+        }
+        
+        const count = ratings?.length || 0;
+        const avg = count > 0 
+            ? ratings.reduce((sum, r) => sum + r.rating, 0) / count 
+            : 0;
+        
+        // Aktualizovat recept
+        const { error: updateError } = await supabaseClient
+            .from('recipes')
+            .update({
+                public_rating_avg: Math.round(avg * 10) / 10, // 1 desetinné místo
+                public_rating_count: count
+            })
+            .eq('id', recipeId);
+        
+        if (updateError) {
+            console.error('updateRecipeRatingAvg: Update error:', updateError);
+        }
+    } catch (err) {
+        console.error('updateRecipeRatingAvg: Database error:', err);
+    }
+}
+
+// =============================================
 // FCM TOKEN FUNCTIONS
 // =============================================
 
@@ -1537,6 +1891,395 @@ async function getFcmTokens(clerkId) {
     }
 }
 
+// =============================================
+// STOCK TRACKING FUNCTIONS (Reminder Stock)
+// =============================================
+
+// Získat jednu připomínku podle ID
+async function getReminderById(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('getReminderById: Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .select('*')
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .single();
+        
+        if (error) {
+            console.error('getReminderById: Supabase error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('getReminderById: Database error:', err);
+        return null;
+    }
+}
+
+// Aktualizovat zásobu připomínky (stock_percent)
+async function updateReminderStock(clerkId, reminderId, stockPercent) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('updateReminderStock: Invalid clerk_id format');
+        return null;
+    }
+    
+    // Validace stock_percent (0-100)
+    const validStock = Math.max(0, Math.min(100, parseInt(stockPercent) || 0));
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .update({ 
+                stock_percent: validStock,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('updateReminderStock: Supabase error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('updateReminderStock: Database error:', err);
+        return null;
+    }
+}
+
+// Označit připomínku jako spotřebovanou
+async function markReminderConsumed(clerkId, reminderId) {
+    if (!supabaseClient || !clerkId || !reminderId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('markReminderConsumed: Invalid clerk_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_reminders')
+            .update({ 
+                stock_percent: 0,
+                consumed_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', reminderId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('markReminderConsumed: Supabase error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('markReminderConsumed: Database error:', err);
+        return null;
+    }
+}
+
+// =============================================
+// PUBLIC RECIPE DATABASE FUNCTIONS
+// =============================================
+
+// Získat veřejné recepty s filtrováním a paginací
+async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
+    if (!supabaseClient) return { recipes: [], total: 0, page: 1, limit: 50 };
+    
+    try {
+        let query = supabaseClient
+            .from('recipes')
+            .select('id, name, description, is_public, public_rating_avg, public_rating_count, form_type, recipe_data, created_at, clerk_id', { count: 'exact' })
+            .eq('is_public', true);
+        
+        // Filtr: Metoda přípravy
+        if (filters.formType) {
+            query = query.eq('form_type', filters.formType);
+        }
+        
+        // Filtr: Hledání v názvu
+        if (filters.search) {
+            query = query.ilike('name', `%${filters.search}%`);
+        }
+        
+        // Řazení
+        switch (filters.sortBy) {
+            case 'rating_asc':
+                query = query.order('public_rating_avg', { ascending: true });
+                break;
+            case 'name_asc':
+                query = query.order('name', { ascending: true });
+                break;
+            case 'name_desc':
+                query = query.order('name', { ascending: false });
+                break;
+            case 'newest':
+                query = query.order('created_at', { ascending: false });
+                break;
+            case 'oldest':
+                query = query.order('created_at', { ascending: true });
+                break;
+            case 'rating_desc':
+            default:
+                query = query.order('public_rating_avg', { ascending: false });
+                break;
+        }
+        
+        // Paginace (50 na stránku)
+        const offset = (page - 1) * limit;
+        query = query.range(offset, offset + limit - 1);
+        
+        const { data, error, count } = await query;
+        
+        if (error) {
+            console.error('getPublicRecipes: Supabase error:', error);
+            return { recipes: [], total: 0, page, limit };
+        }
+        
+        // Aplikovat filtry na JSONB data (client-side, protože Supabase JSONB queries jsou omezené)
+        let filteredData = data || [];
+        
+        // Filtr: Typ příchutě
+        if (filters.flavorType && filteredData.length > 0) {
+            filteredData = filteredData.filter(r => {
+                const rd = r.recipe_data;
+                if (!rd) return false;
+                // Check flavorType or flavors array
+                if (rd.flavorType === filters.flavorType) return true;
+                if (Array.isArray(rd.flavors)) {
+                    return rd.flavors.some(f => f.type === filters.flavorType);
+                }
+                return false;
+            });
+        }
+        
+        // Filtr: VG rozsah
+        if (filters.vgMin !== undefined && filters.vgMin !== '' && filteredData.length > 0) {
+            const vgMin = parseInt(filters.vgMin);
+            filteredData = filteredData.filter(r => {
+                const vg = r.recipe_data?.vgRatio ?? r.recipe_data?.ratio ?? 50;
+                return vg >= vgMin;
+            });
+        }
+        if (filters.vgMax !== undefined && filters.vgMax !== '' && filteredData.length > 0) {
+            const vgMax = parseInt(filters.vgMax);
+            filteredData = filteredData.filter(r => {
+                const vg = r.recipe_data?.vgRatio ?? r.recipe_data?.ratio ?? 50;
+                return vg <= vgMax;
+            });
+        }
+        
+        // Filtr: Nikotin rozsah
+        if (filters.nicMin !== undefined && filters.nicMin !== '' && filteredData.length > 0) {
+            const nicMin = parseInt(filters.nicMin);
+            filteredData = filteredData.filter(r => {
+                const nic = r.recipe_data?.nicStrength ?? r.recipe_data?.nicotineStrength ?? 0;
+                return nic >= nicMin;
+            });
+        }
+        if (filters.nicMax !== undefined && filters.nicMax !== '' && filteredData.length > 0) {
+            const nicMax = parseInt(filters.nicMax);
+            filteredData = filteredData.filter(r => {
+                const nic = r.recipe_data?.nicStrength ?? r.recipe_data?.nicotineStrength ?? 0;
+                return nic <= nicMax;
+            });
+        }
+        
+        // Filtr: Obsahuje aditiva
+        if (filters.hasAdditive && filteredData.length > 0) {
+            filteredData = filteredData.filter(r => {
+                const rd = r.recipe_data;
+                if (!rd) return false;
+                return rd.additive || rd.additives || rd.hasAdditive;
+            });
+        }
+        
+        return { 
+            recipes: filteredData, 
+            total: count || filteredData.length, 
+            page, 
+            limit 
+        };
+    } catch (err) {
+        console.error('getPublicRecipes: Database error:', err);
+        return { recipes: [], total: 0, page, limit };
+    }
+}
+
+// Získat veřejný recept podle ID (pro detail)
+async function getPublicRecipeById(recipeId) {
+    if (!supabaseClient || !recipeId) return null;
+    
+    if (!isValidUUID(recipeId)) {
+        console.error('getPublicRecipeById: Invalid recipe ID format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipes')
+            .select('*')
+            .eq('id', recipeId)
+            .eq('is_public', true)
+            .single();
+        
+        if (error) {
+            console.error('getPublicRecipeById: Supabase error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('getPublicRecipeById: Database error:', err);
+        return null;
+    }
+}
+
+// Přidat/aktualizovat hodnocení receptu (1-5 hvězdiček)
+async function addRecipeRating(clerkId, recipeId, rating) {
+    if (!supabaseClient || !clerkId || !recipeId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('addRecipeRating: Invalid clerk_id format');
+        return null;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('addRecipeRating: Invalid recipe ID format');
+        return null;
+    }
+    
+    // Validace rating (1-5)
+    const validRating = Math.max(1, Math.min(5, parseInt(rating) || 1));
+    
+    // Rate limiting
+    if (!rateLimiter.canProceed('addRating')) {
+        console.error('Too many rating attempts. Please wait.');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_ratings')
+            .upsert({
+                recipe_id: recipeId,
+                clerk_id: clerkId,
+                rating: validRating,
+                updated_at: new Date().toISOString()
+            }, {
+                onConflict: 'recipe_id,clerk_id'
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('addRecipeRating: Supabase error:', error);
+            return null;
+        }
+        
+        // Přepočítat průměr
+        await updateRecipeRatingAvg(recipeId);
+        
+        return data;
+    } catch (err) {
+        console.error('addRecipeRating: Database error:', err);
+        return null;
+    }
+}
+
+// Získat hodnocení uživatele pro konkrétní recept
+async function getUserRatingForRecipe(clerkId, recipeId) {
+    if (!supabaseClient || !clerkId || !recipeId) return 0;
+    
+    if (!isValidClerkId(clerkId)) {
+        return 0;
+    }
+    if (!isValidUUID(recipeId)) {
+        return 0;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_ratings')
+            .select('rating')
+            .eq('recipe_id', recipeId)
+            .eq('clerk_id', clerkId)
+            .maybeSingle();
+        
+        if (error) {
+            console.error('getUserRatingForRecipe: Supabase error:', error);
+            return 0;
+        }
+        
+        return data?.rating || 0;
+    } catch (err) {
+        console.error('getUserRatingForRecipe: Database error:', err);
+        return 0;
+    }
+}
+
+// Přepočítat průměrné hodnocení receptu
+async function updateRecipeRatingAvg(recipeId) {
+    if (!supabaseClient || !recipeId) return false;
+    
+    if (!isValidUUID(recipeId)) {
+        console.error('updateRecipeRatingAvg: Invalid recipe ID format');
+        return false;
+    }
+    
+    try {
+        // Získat všechna hodnocení
+        const { data: ratings, error: fetchError } = await supabaseClient
+            .from('recipe_ratings')
+            .select('rating')
+            .eq('recipe_id', recipeId);
+        
+        if (fetchError) {
+            console.error('updateRecipeRatingAvg: Fetch error:', fetchError);
+            return false;
+        }
+        
+        const count = ratings?.length || 0;
+        const avg = count > 0 
+            ? ratings.reduce((sum, r) => sum + r.rating, 0) / count 
+            : 0;
+        
+        // Aktualizovat recept
+        const { error: updateError } = await supabaseClient
+            .from('recipes')
+            .update({
+                public_rating_avg: Math.round(avg * 10) / 10, // 1 desetinné místo
+                public_rating_count: count
+            })
+            .eq('id', recipeId);
+        
+        if (updateError) {
+            console.error('updateRecipeRatingAvg: Update error:', updateError);
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('updateRecipeRatingAvg: Database error:', err);
+        return false;
+    }
+}
+
 // Exportuj funkce pro použití v app.js
 console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
@@ -1576,6 +2319,16 @@ window.LiquiMixerDB = {
     updateReminder: updateReminder,
     deleteReminder: deleteReminder,
     cancelReminder: cancelReminder,
+    // Stock tracking
+    getReminderById: getReminderById,
+    updateReminderStock: updateReminderStock,
+    markReminderConsumed: markReminderConsumed,
+    // Veřejné recepty
+    getPublicRecipes: getPublicRecipes,
+    getPublicRecipeById: getPublicRecipeById,
+    addRecipeRating: addRecipeRating,
+    getUserRatingForRecipe: getUserRatingForRecipe,
+    updateRecipeRatingAvg: updateRecipeRatingAvg,
     // FCM tokeny
     saveFcmToken: saveFcmToken,
     deleteFcmToken: deleteFcmToken,
@@ -1583,10 +2336,19 @@ window.LiquiMixerDB = {
     onSignIn: onClerkSignIn
 };
 
-// Export pro fcm.js kompatibilitu (volá window.database.saveFcmToken)
+// Export pro fcm.js a app.js kompatibilitu
 window.database = {
     saveFcmToken: saveFcmToken,
-    deleteFcmToken: deleteFcmToken
+    deleteFcmToken: deleteFcmToken,
+    // Stock tracking
+    getReminderById: getReminderById,
+    updateReminderStock: updateReminderStock,
+    markReminderConsumed: markReminderConsumed,
+    // Veřejné recepty
+    getPublicRecipes: getPublicRecipes,
+    getPublicRecipeById: getPublicRecipeById,
+    addRecipeRating: addRecipeRating,
+    getUserRatingForRecipe: getUserRatingForRecipe
 };
 
 console.log('database.js: LiquiMixerDB exported successfully!', !!window.LiquiMixerDB);
