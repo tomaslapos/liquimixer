@@ -1780,6 +1780,7 @@ body {
 
 .reminder-item {
     display: flex !important;
+    flex-wrap: wrap;
     justify-content: space-between !important;
     align-items: center !important;
     padding: 12px 15px !important;
@@ -1788,6 +1789,7 @@ body {
     border: 1px solid rgba(0, 255, 255, 0.2) !important;
     border-radius: 8px !important;
     transition: all 0.3s ease;
+    gap: 10px;
 }
 
 .reminder-item:hover {
@@ -1851,6 +1853,14 @@ body {
 .reminder-status-badge.cancelled {
     background: rgba(255, 0, 0, 0.2);
     color: #ff6666;
+}
+
+/* Kontejner pro stock bar + akční tlačítka */
+.reminder-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .reminder-actions {
@@ -1938,6 +1948,54 @@ body {
 .show-all-reminders-btn:hover {
     background: rgba(255, 0, 255, 0.1);
     border-color: #ff00ff;
+}
+
+/* Mobilní zobrazení připomínek - 2 řádky */
+@media (max-width: 600px) {
+    .reminder-item {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+    
+    .reminder-dates {
+        width: 100%;
+        text-align: left;
+    }
+    
+    /* Kontejner controls na celou šířku */
+    .reminder-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    /* Stock bar vlevo */
+    .reminder-stock {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Akční tlačítka vpravo */
+    .reminder-actions {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 400px) {
+    .reminder-stock .stock-battery {
+        width: 70px;
+    }
+    
+    .reminder-btn.stock-minus,
+    .reminder-btn.stock-plus {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .reminder-controls {
+        gap: 8px;
+    }
 }
 
 .reminder-info {
@@ -6547,5 +6605,755 @@ body.subscription-required #subscriptionModal {
     
     .form-group-sub .ratio-toggle-buttons {
         gap: 6px;
+    }
+}
+
+/* =========================================
+   Public Recipe Database Styles
+   ========================================= */
+
+/* Database controls container */
+.database-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+}
+
+/* Top row - search and sort */
+.database-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-search .neon-input {
+    width: 100%;
+}
+
+.filter-sort {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-sort label {
+    white-space: nowrap;
+}
+
+.filter-sort {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-sort > label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Collapsible filters */
+.database-filters-collapsible {
+    border-top: 1px solid rgba(0, 255, 255, 0.15);
+    padding-top: 10px;
+}
+
+.filter-toggle-btn {
+    background: transparent;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: var(--neon-cyan);
+    padding: 8px 15px;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.filter-toggle-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.filter-toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Filters panel - flex wrap layout */
+.filters-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 25px;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius-small);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    align-items: flex-end;
+}
+
+.filters-panel.hidden {
+    display: none;
+}
+
+.filters-panel.open {
+    display: flex;
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* Filter groups */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 140px;
+}
+
+.filter-group > label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* Range filters */
+.filter-range .range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-range .neon-select.small {
+    width: 80px;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+}
+
+.range-separator {
+    color: var(--text-secondary);
+}
+
+.range-unit {
+    font-size: 0.85rem;
+    color: var(--neon-cyan);
+}
+
+/* Checkbox filter */
+.filter-checkbox .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--neon-cyan);
+}
+
+/* Reset button */
+.filter-reset {
+    justify-content: flex-end;
+}
+
+.neon-button.small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+/* Active filters tags */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(0, 255, 255, 0.15);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 15px;
+    font-size: 0.8rem;
+    color: var(--neon-cyan);
+}
+
+.filter-tag .remove-tag {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.filter-tag .remove-tag:hover {
+    opacity: 1;
+}
+
+/* Recipe grid */
+.recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Recipe card */
+.public-recipe-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.public-recipe-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.recipe-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.recipe-card-name {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    color: var(--neon-cyan);
+    margin: 0;
+    flex: 1;
+}
+
+.recipe-card-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ffd700;
+    font-size: 0.9rem;
+}
+
+.recipe-card-rating .rating-avg {
+    font-weight: bold;
+}
+
+/* Card metadata */
+.recipe-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.recipe-card-badge {
+    padding: 2px 8px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.recipe-card-badge.vg-pg {
+    color: var(--neon-green);
+}
+
+.recipe-card-badge.nicotine {
+    color: var(--neon-pink);
+}
+
+.recipe-card-badge.flavor {
+    color: var(--neon-purple);
+}
+
+.recipe-card-type {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Pagination */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--neon-cyan);
+    background: transparent;
+    color: var(--neon-cyan);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-primary);
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.pagination-btn.active {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Empty state */
+.database-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.database-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+/* Loading state */
+.database-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--neon-cyan);
+}
+
+/* =========================================
+   Stock Bar - Battery Style
+   ========================================= */
+
+/* Stock container - inline with reminder controls */
+.reminder-stock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Battery container - larger and more visible */
+.stock-battery {
+    display: flex;
+    align-items: center;
+    width: 100px;
+}
+
+/* Battery tip (right side) */
+.battery-tip {
+    width: 5px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 0 3px 3px 0;
+    margin-left: -1px;
+    order: 2;
+}
+
+/* Battery body - larger */
+.battery-body {
+    flex: 1;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    order: 1;
+}
+
+/* Battery level - animated, no transition delay */
+.battery-level {
+    height: 100%;
+    background: var(--neon-green);
+    border-radius: 3px;
+    transition: width 0.2s ease-out, background 0.2s ease;
+    position: relative;
+}
+
+/* Pulsing effect for low battery */
+.battery-level.low {
+    animation: lowBatteryPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes lowBatteryPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Percentage inside battery - black when high, white when low */
+.battery-percent {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #000;
+    text-shadow: none;
+    z-index: 1;
+}
+
+.battery-percent.low-text {
+    color: #fff;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Stock control buttons - subtle, smaller, centered text */
+.reminder-btn.stock-minus,
+.reminder-btn.stock-plus {
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    opacity: 0.7;
+    border-width: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+.reminder-btn.stock-minus:hover,
+.reminder-btn.stock-plus:hover {
+    opacity: 1;
+}
+
+.reminder-btn.stock-minus {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.reminder-btn.stock-minus:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+
+.reminder-btn.stock-plus {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.reminder-btn.stock-plus:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+
+/* Stock bar in modal - larger */
+.reminder-stock-modal {
+    margin-top: 10px;
+}
+
+.reminder-stock.modal-stock {
+    justify-content: center;
+    padding: 15px 0;
+    margin: 0;
+}
+
+.reminder-stock.modal-stock .stock-battery {
+    width: 180px;
+}
+
+.reminder-stock.modal-stock .battery-body {
+    height: 36px;
+}
+
+.reminder-stock.modal-stock .battery-percent {
+    font-size: 1rem;
+}
+
+.reminder-stock.modal-stock .reminder-btn.stock-minus,
+.reminder-stock.modal-stock .reminder-btn.stock-plus {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+    opacity: 1;
+    border-width: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+/* Filter toggle row - proper alignment */
+.filter-toggle .toggle-row,
+.public-recipe-toggle .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-toggle .toggle-label,
+.public-recipe-toggle .toggle-label {
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.public-recipe-toggle .toggle-hint {
+    margin-left: 52px;
+    margin-top: 5px;
+}
+
+/* Filter toggle in database */
+.filter-group.filter-toggle {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: auto;
+}
+
+.filter-group.filter-toggle .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+/* Filter reset button - push to right */
+.filter-group.filter-reset {
+    margin-left: auto;
+    min-width: auto;
+    align-self: flex-end;
+}
+
+/* =========================================
+   Consumed Confirm Dialog
+   ========================================= */
+
+.confirm-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.confirm-dialog-overlay.visible {
+    opacity: 1;
+}
+
+.confirm-dialog {
+    background: var(--bg-card);
+    border: 2px solid var(--neon-cyan);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.confirm-dialog-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.confirm-dialog h3 {
+    font-family: var(--font-primary);
+    color: var(--neon-cyan);
+    margin-bottom: 10px;
+}
+
+.confirm-dialog p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.confirm-dialog-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* =========================================
+   Rating Stars
+   ========================================= */
+
+.recipe-rating-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+}
+
+.rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.rating-avg {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+.rating-stars {
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+.rating-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.rating-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.star-rating-input {
+    display: flex;
+    gap: 5px;
+}
+
+.star-input {
+    font-size: 1.5rem;
+    color: rgba(255, 215, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.star-input:hover,
+.star-input.active {
+    color: #ffd700;
+    transform: scale(1.1);
+}
+
+.star-input:hover ~ .star-input {
+    color: rgba(255, 215, 0, 0.3);
+}
+
+/* Public recipe checkbox */
+.public-recipe-toggle {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: var(--border-radius-small);
+}
+
+.public-recipe-toggle .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.public-recipe-toggle .form-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 5px;
+    margin-left: 28px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-group {
+        min-width: 120px;
+    }
+    
+    .filter-group.filter-reset {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .database-row {
+        flex-direction: column;
+    }
+    
+    .filter-sort {
+        width: 100%;
+    }
+    
+    .filters-panel {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: 100%;
+    }
+    
+    .filter-group.filter-toggle {
+        justify-content: flex-start;
+    }
+    
+    .filter-group.filter-reset {
+        margin-left: 0;
+        align-self: center;
+    }
+    
+    .filter-range .range-inputs {
+        flex-wrap: wrap;
+    }
+    
+    .filter-range .neon-select.small {
+        width: 70px;
+    }
+    
+    .stock-battery {
+        max-width: 150px;
+    }
+    
+    .stock-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1.2rem;
+    }
+    
+    .confirm-dialog {
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .confirm-dialog-buttons {
+        flex-direction: column;
     }
 }

@@ -272,7 +272,7 @@
     
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20260130c">
+    <link rel="stylesheet" href="/styles.css?v=20260131g">
     
     <!-- Clerk Authentication -->
     <script 
@@ -286,7 +286,7 @@
     <!-- Supabase Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/database.js"></script>
-    <script src="/i18n.js?v=20260130c"></script>
+    <script src="/i18n.js?v=20260131g"></script>
 </head>
 <body>
     <div class="neon-grid"></div>
@@ -335,6 +335,15 @@
             <div class="menu-content">
                 <button class="menu-close" onclick="toggleMenu()">✕</button>
                 <h3 class="menu-title" data-i18n="menu.title">Menu</h3>
+                
+                <!-- Databáze receptů - pouze pro přihlášené -->
+                <div class="menu-section menu-section-database">
+                    <button class="neon-button menu-database-btn" onclick="toggleMenu(); showRecipeDatabase();">
+                        <span data-i18n="menu.recipe_database">Databáze receptů</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+                
                 <div class="menu-section">
                     <h4 class="menu-section-title" data-i18n="menu.cookies_title">Cookies</h4>
                     <p class="menu-text" data-i18n="menu.cookies_text">
@@ -1857,6 +1866,12 @@
                         <label class="login-label" data-i18n="reminder.note_label">Poznámka</label>
                         <div id="viewReminderNote" class="login-input readonly-field note-field"></div>
                     </div>
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="reminder.stock_label">Zásoba</label>
+                        <div id="viewReminderStockContainer" class="reminder-stock-modal">
+                            <!-- Stock bar se naplní JavaScriptem -->
+                        </div>
+                    </div>
                     <button type="button" class="neon-button secondary" onclick="hideViewReminderModal()" data-i18n="recipe_detail.back">Zpět</button>
                 </div>
             </div>
@@ -1928,6 +1943,18 @@
                                 <span id="reminderInfoText" data-i18n="save_recipe.reminder_info">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
                             </div>
                         </div>
+                    </div>
+                    
+                    <!-- Veřejná databáze receptů -->
+                    <div class="form-group-login public-recipe-toggle">
+                        <div class="toggle-row">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="recipeIsPublic">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="toggle-label" for="recipeIsPublic" data-i18n="save_recipe.make_public">Sdílet do veřejné databáze receptů</label>
+                        </div>
+                        <p class="form-hint toggle-hint" data-i18n="save_recipe.public_hint">Recept bude viditelný a hodnotitelný ostatními uživateli</p>
                     </div>
                     
                     <button type="submit" class="neon-button" id="saveRecipeSubmitBtn"><span data-i18n="save_recipe.save_button">Uložit recept</span></button>
@@ -2040,6 +2067,145 @@
                 <span data-i18n="shared_recipe.view_recipe">ZOBRAZIT RECEPT</span>
                 <div class="button-glow"></div>
             </button>
+        </section>
+
+        <!-- Veřejná databáze receptů -->
+        <section id="recipe-database" class="page">
+            <h2 class="page-title" data-i18n="recipe_database.title">Databáze receptů</h2>
+            
+            <!-- Filtry a řazení -->
+            <div class="database-controls">
+                <!-- Řádek 1: Vyhledávání + Řazení -->
+                <div class="database-row">
+                    <div class="filter-group filter-search">
+                        <input type="text" id="dbSearchInput" class="neon-input" 
+                               data-i18n-placeholder="recipe_database.search_placeholder" 
+                               placeholder="Hledat recept..." 
+                               oninput="debounceSearch()" />
+                    </div>
+                    <div class="filter-group filter-sort">
+                        <label data-i18n="recipe_database.sort_by">Řadit:</label>
+                        <select id="dbSortBy" class="neon-select" onchange="loadPublicRecipes()">
+                            <option value="rating_desc" data-i18n="recipe_database.sort_rating_desc">Hodnocení (nejlepší)</option>
+                            <option value="rating_asc" data-i18n="recipe_database.sort_rating_asc">Hodnocení (nejhorší)</option>
+                            <option value="name_asc" data-i18n="recipe_database.sort_name_asc">Název (A-Z)</option>
+                            <option value="name_desc" data-i18n="recipe_database.sort_name_desc">Název (Z-A)</option>
+                            <option value="newest" data-i18n="recipe_database.sort_newest">Nejnovější</option>
+                            <option value="oldest" data-i18n="recipe_database.sort_oldest">Nejstarší</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Řádek 2: Rozbalovací filtry -->
+                <div class="database-filters-collapsible">
+                    <button type="button" class="filter-toggle-btn" onclick="toggleDatabaseFilters()">
+                        <span data-i18n="recipe_database.filters">Filtry</span>
+                        <span class="filter-toggle-icon">▼</span>
+                    </button>
+                    
+                    <div id="dbFiltersPanel" class="filters-panel hidden">
+                        <!-- Metoda přípravy -->
+                        <div class="filter-group">
+                            <label data-i18n="recipe_database.filter_method">Metoda přípravy:</label>
+                            <select id="dbFilterFormType" class="neon-select" onchange="loadPublicRecipes()">
+                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="liquid" data-i18n="form.tab_liquid">Liquid</option>
+                                <option value="shakevape" data-i18n="form.tab_shakevape">Shake & Vape</option>
+                                <option value="shortfill" data-i18n="form.tab_shortfill">Shortfill</option>
+                                <option value="liquidpro" data-i18n="form.tab_liquidpro">Liquid PRO</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Typ příchutě -->
+                        <div class="filter-group">
+                            <label data-i18n="recipe_database.filter_flavor">Typ příchutě:</label>
+                            <select id="dbFilterFlavorType" class="neon-select" onchange="loadPublicRecipes()">
+                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <!-- Generováno z flavorDatabase v app.js -->
+                            </select>
+                        </div>
+                        
+                        <!-- VG/PG poměr -->
+                        <div class="filter-group filter-range">
+                            <label data-i18n="recipe_database.filter_vg_pg">VG/PG poměr:</label>
+                            <div class="range-inputs">
+                                <select id="dbFilterVgMin" class="neon-select small" onchange="loadPublicRecipes()">
+                                    <option value="" data-i18n="recipe_database.min">Min</option>
+                                    <option value="0">0%</option>
+                                    <option value="30">30%</option>
+                                    <option value="50">50%</option>
+                                    <option value="70">70%</option>
+                                </select>
+                                <span class="range-separator">-</span>
+                                <select id="dbFilterVgMax" class="neon-select small" onchange="loadPublicRecipes()">
+                                    <option value="" data-i18n="recipe_database.max">Max</option>
+                                    <option value="50">50%</option>
+                                    <option value="70">70%</option>
+                                    <option value="80">80%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                                <span class="range-unit">VG</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Síla nikotinu -->
+                        <div class="filter-group filter-range">
+                            <label data-i18n="recipe_database.filter_nicotine">Síla nikotinu:</label>
+                            <div class="range-inputs">
+                                <select id="dbFilterNicMin" class="neon-select small" onchange="loadPublicRecipes()">
+                                    <option value="" data-i18n="recipe_database.min">Min</option>
+                                    <option value="0">0 mg</option>
+                                    <option value="3">3 mg</option>
+                                    <option value="6">6 mg</option>
+                                    <option value="12">12 mg</option>
+                                </select>
+                                <span class="range-separator">-</span>
+                                <select id="dbFilterNicMax" class="neon-select small" onchange="loadPublicRecipes()">
+                                    <option value="" data-i18n="recipe_database.max">Max</option>
+                                    <option value="6">6 mg</option>
+                                    <option value="12">12 mg</option>
+                                    <option value="18">18 mg</option>
+                                    <option value="50">50 mg</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Obsahuje aditiva -->
+                        <div class="filter-group filter-toggle">
+                            <div class="toggle-row">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="dbFilterHasAdditive" onchange="loadPublicRecipes()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <label class="toggle-label" for="dbFilterHasAdditive" data-i18n="recipe_database.filter_has_additive">Pouze s aditivy</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Reset filtrů -->
+                        <div class="filter-group filter-reset">
+                            <button type="button" class="neon-button secondary small" onclick="resetDatabaseFilters()">
+                                <span data-i18n="recipe_database.reset_filters">Resetovat filtry</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Aktivní filtry (tagy) -->
+            <div id="dbActiveFilters" class="active-filters"></div>
+            
+            <!-- Seznam receptů -->
+            <div id="publicRecipesList" class="recipes-grid"></div>
+            
+            <!-- Paginace -->
+            <div id="dbPagination" class="pagination-controls"></div>
+            
+            <!-- Tlačítko zpět -->
+            <div class="button-group">
+                <button class="neon-button secondary" onclick="goBack()">
+                    <span data-i18n="form.back">◀ ZPĚT</span>
+                </button>
+            </div>
         </section>
 
         <!-- Sdílený recept stránka -->
@@ -2248,7 +2414,7 @@
         <div class="footer-copyright">© 2026 LiquiMixer</div>
     </footer>
 
-    <script src="/app.js?v=20260130c"></script>
+    <script src="/app.js?v=20260131g"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
