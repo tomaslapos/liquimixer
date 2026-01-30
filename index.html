@@ -272,7 +272,7 @@
     
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20260112c">
+    <link rel="stylesheet" href="/styles.css?v=20260130b">
     
     <!-- Clerk Authentication -->
     <script 
@@ -286,7 +286,7 @@
     <!-- Supabase Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/database.js"></script>
-    <script src="/i18n.js"></script>
+    <script src="/i18n.js?v=20260130b"></script>
 </head>
 <body>
     <div class="neon-grid"></div>
@@ -1207,8 +1207,30 @@
                         Celkový objem nádoby Shake & Vape?
                     </label>
                     <div class="input-wrapper">
-                        <input type="number" id="svTotalAmount" min="1" max="1000" value="60" class="neon-input">
+                        <input type="number" id="svTotalAmount" min="1" max="1000" value="60" class="neon-input" oninput="autoRecalculateSvVgPgRatio()">
                         <span class="input-unit" data-i18n="common.ml">ml</span>
+                    </div>
+                </div>
+
+                <!-- Typ báze (separátní nebo předmíchaná) -->
+                <div class="form-group">
+                    <label class="form-label" data-i18n="form.base_type_label">
+                        Typ báze
+                    </label>
+                    <div class="ratio-toggle-buttons">
+                        <button type="button" id="svBaseSeparate" class="ratio-toggle-btn active" data-value="separate" onclick="updateSvBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
+                        <button type="button" id="svBasePremixed" class="ratio-toggle-btn" data-value="premixed" onclick="updateSvBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
+                    </div>
+                    <input type="hidden" id="svBaseType" value="separate">
+                    <div id="svPremixedRatioContainer" class="form-group-sub hidden">
+                        <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="sv-premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateSvPremixedRatio('50/50')">50/50</button>
+                            <button type="button" class="sv-premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updateSvPremixedRatio('60/40')">60/40</button>
+                            <button type="button" class="sv-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateSvPremixedRatio('70/30')">70/30</button>
+                            <button type="button" class="sv-premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updateSvPremixedRatio('80/20')">80/20</button>
+                        </div>
+                        <input type="hidden" id="svPremixedRatio" value="50/50">
                     </div>
                 </div>
 
@@ -1219,7 +1241,7 @@
                         <span class="label-hint" data-i18n="shakevape.flavor_volume_hint">Objem příchutě již v lahvičce</span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="number" id="svFlavorVolume" min="0" max="100" value="12" class="neon-input" oninput="updateSvCalculation()">
+                        <input type="number" id="svFlavorVolume" min="0" max="100" value="12" class="neon-input" oninput="autoRecalculateSvVgPgRatio()">
                         <span class="input-unit" data-i18n="common.ml">ml</span>
                     </div>
                     <div class="form-group-sub">
@@ -2226,7 +2248,7 @@
         <div class="footer-copyright">© 2026 LiquiMixer</div>
     </footer>
 
-    <script src="/app.js?v=20260130a"></script>
+    <script src="/app.js?v=20260130b"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
