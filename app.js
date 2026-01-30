@@ -342,7 +342,93 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Zpracovat návrat z platební brány
     handlePaymentReturn();
+    
+    // Listener pro zprávy od Service Workeru (upozornění na novou verzi)
+    setupServiceWorkerListener();
 });
+
+// Nastavit listener pro zprávy od Service Workeru
+function setupServiceWorkerListener() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'SW_UPDATED') {
+                console.log('LiquiMixer: New version available:', event.data.version);
+                showUpdateNotification();
+            }
+        });
+        
+        // Kontrola, zda je k dispozici nová verze Service Workeru
+        navigator.serviceWorker.ready.then((registration) => {
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Nový SW je nainstalovaný, ale starý ještě běží
+                            showUpdateNotification();
+                        }
+                    });
+                }
+            });
+        });
+    }
+}
+
+// Zobrazit notifikaci o nové verzi aplikace
+function showUpdateNotification() {
+    // Zkontrolovat, zda už notifikace není zobrazena
+    if (document.getElementById('updateNotification')) return;
+    
+    const notification = document.createElement('div');
+    notification.id = 'updateNotification';
+    notification.className = 'update-notification';
+    notification.innerHTML = `
+        <div class="update-notification-content">
+            <span class="update-notification-icon">🔄</span>
+            <div class="update-notification-text">
+                <strong>${t('update.new_version_title', 'Nová verze aplikace')}</strong>
+                <p>${t('update.new_version_text', 'Je k dispozici nová verze LiquiMixer. Klikněte pro aktualizaci.')}</p>
+            </div>
+        </div>
+        <div class="update-notification-actions">
+            <button class="update-btn-refresh" onclick="refreshApp()">${t('update.refresh', 'Aktualizovat')}</button>
+            <button class="update-btn-dismiss" onclick="dismissUpdateNotification()">${t('update.dismiss', 'Později')}</button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    // Animace vstupu
+    setTimeout(() => {
+        notification.classList.add('visible');
+    }, 100);
+}
+
+// Zavřít notifikaci o aktualizaci
+function dismissUpdateNotification() {
+    const notification = document.getElementById('updateNotification');
+    if (notification) {
+        notification.classList.remove('visible');
+        setTimeout(() => notification.remove(), 300);
+    }
+}
+
+// Obnovit aplikaci (hard refresh)
+function refreshApp() {
+    // Vymazat cache a znovu načíst stránku
+    if ('caches' in window) {
+        caches.keys().then((names) => {
+            names.forEach(name => caches.delete(name));
+        }).then(() => {
+            window.location.reload(true);
+        });
+    } else {
+        window.location.reload(true);
+    }
+}
+
+// Export funkcí
+window.refreshApp = refreshApp;
+window.dismissUpdateNotification = dismissUpdateNotification;
 
 // Zpracování návratu z platební brány GP WebPay
 function handlePaymentReturn() {

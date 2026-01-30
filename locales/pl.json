@@ -682,6 +682,12 @@
   "notification": {
     "permission_prompt": "Czy chcesz otrzymać powiadomienie, gdy Twój liquid będzie dojrzały?\n\nPo zatwierdzeniu wyślemy Ci przypomnienie w dniu, gdy liquid będzie gotowy."
   },
+  "update": {
+    "new_version_title": "Nowa wersja",
+    "new_version_text": "Dostępna jest nowa wersja LiquiMixer. Kliknij, aby zaktualizować.",
+    "refresh": "Zaktualizuj",
+    "dismiss": "Później"
+  },
   "calculator": {
     "edit_values": "EDYTUJ WARTOSCI"
   },

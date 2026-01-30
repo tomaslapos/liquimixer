@@ -674,6 +674,12 @@
   "notification": {
     "permission_prompt": "Haluatko saada ilmoituksen, kun nesteesi on kypsynyt?\n\nHyväksynnän jälkeen lähetämme sinulle muistutuksen sinä päivänä, kun neste on valmis."
   },
+  "update": {
+    "new_version_title": "Uusi versio",
+    "new_version_text": "LiquiMixerin uusi versio on saatavilla. Päivitä napsauttamalla.",
+    "refresh": "Päivitä",
+    "dismiss": "Myöhemmin"
+  },
   "calculator": {
     "edit_values": "MUOKKAA ARVOJA"
   },

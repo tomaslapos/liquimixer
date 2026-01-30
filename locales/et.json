@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Kas soovite saada teavituse, kui teie vedelik on valmis?\n\nPärast heakskiitu saadame teile meeldetuletuse päeval, mil vedelik on valmis."
   },
+  "update": {
+    "new_version_title": "Uus versioon",
+    "new_version_text": "LiquiMixeri uus versioon on saadaval. Värskendamiseks klõpsake.",
+    "refresh": "Värskenda",
+    "dismiss": "Hiljem"
+  },
   "calculator": {
     "edit_values": "MUUDA VAARTUSI"
   },

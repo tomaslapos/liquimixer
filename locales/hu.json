@@ -658,6 +658,12 @@
   "notification": {
     "permission_prompt": "Szeretne értesítést kapni, amikor a folyadék megérett?\n\nJóváhagyás után emlékeztetőt küldünk azon a napon, amikor a folyadék elkészült."
   },
+  "update": {
+    "new_version_title": "Új verzió",
+    "new_version_text": "Elérhető a LiquiMixer új verziója. Kattintson a frissítéshez.",
+    "refresh": "Frissítés",
+    "dismiss": "Később"
+  },
   "calculator": {
     "edit_values": "ERTEKEK SZERKESZTESE"
   },

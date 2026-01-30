@@ -686,6 +686,12 @@
   "notification": {
     "permission_prompt": "Да ли желите да будете обавештени када ваша течност сазри?\n\nНакон одобрења, послаћемо вам подсетник на дан када течност буде спремна."
   },
+  "update": {
+    "new_version_title": "Нова верзија",
+    "new_version_text": "Доступна је нова верзија LiquiMixer. Кликните за ажурирање.",
+    "refresh": "Ажурирај",
+    "dismiss": "Касније"
+  },
   "calculator": {
     "edit_values": "UREDI VREDNOSTI"
   },

@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Vai vēlaties saņemt paziņojumu, kad jūsu šķidrums būs nobriedis?\n\nPēc apstiprināšanas mēs nosūtīsim jums atgādinājumu dienā, kad šķidrums būs gatavs."
   },
+  "update": {
+    "new_version_title": "Jauna versija",
+    "new_version_text": "Ir pieejama jauna LiquiMixer versija. Noklikšķiniet, lai atjauninātu.",
+    "refresh": "Atjaunināt",
+    "dismiss": "Vēlāk"
+  },
   "calculator": {
     "edit_values": "REDIGET VERTIBAS"
   },

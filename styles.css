@@ -3171,7 +3171,7 @@ body {
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--neon-pink);
-    background: transparent;
+    background: rgba(255, 0, 255, 0.08);
     border: 6px solid var(--neon-pink);
     border-radius: 50px;
     cursor: pointer;
@@ -3194,6 +3194,7 @@ body {
 .neon-button.secondary {
     color: var(--neon-cyan);
     border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.06);
     padding: 15px 30px;
     font-size: 1rem;
 }
@@ -4376,10 +4377,6 @@ body {
     border-color: var(--neon-purple);
 }
 
-.form-purple .neon-button:not(.secondary) {
-    background: linear-gradient(135deg, var(--neon-purple), #8800cc);
-}
-
 /* Disabled tab - v režimu editace nelze přepnout záložku */
 .form-tab.tab-disabled {
     opacity: 0.4;
@@ -4622,6 +4619,7 @@ body {
 .neon-button.btn-green {
     color: var(--neon-green);
     border-color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.08);
 }
 
 .neon-button.btn-green:hover {
@@ -4745,6 +4743,7 @@ body {
 .neon-button.btn-red {
     color: var(--neon-red);
     border-color: var(--neon-red);
+    background: rgba(255, 0, 68, 0.08);
 }
 
 .neon-button.btn-red:hover {
@@ -4754,6 +4753,26 @@ body {
         0 0 20px var(--neon-red),
         0 0 40px var(--neon-red),
         0 0 60px var(--neon-red);
+}
+
+/* =========================================
+   Purple Form - Shortfill Styles
+   ========================================= */
+
+/* Purple button */
+.neon-button.btn-purple {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+    background: rgba(136, 0, 255, 0.08);
+}
+
+.neon-button.btn-purple:hover {
+    color: white;
+    background: var(--neon-purple);
+    box-shadow: 
+        0 0 20px var(--neon-purple),
+        0 0 40px var(--neon-purple),
+        0 0 60px var(--neon-purple);
 }
 
 /* =========================================
@@ -5536,6 +5555,19 @@ body {
     background-size: 200% 100%;
 }
 
+/* Neon-button purple - fialové pulzování */
+.neon-button.btn-purple::after {
+    background: linear-gradient(
+        90deg, 
+        transparent 0%,
+        transparent 40%,
+        rgba(136, 0, 255, 0.7) 50%,
+        transparent 60%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+}
+
 /* Nav-btn - cyan pulzování */
 .nav-btn::after {
     background: linear-gradient(
@@ -5905,6 +5937,120 @@ body.subscription-required #subscriptionModal {
 .matured-btn-dismiss:hover {
     border-color: var(--text-primary);
     color: var(--text-primary);
+}
+
+/* =========================================
+   Update Notification
+   ========================================= */
+
+.update-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-120%);
+    background: rgba(10, 10, 21, 0.98);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--neon-cyan);
+    border-radius: var(--border-radius);
+    padding: 16px 20px;
+    z-index: 10001;
+    max-width: 400px;
+    width: calc(100% - 40px);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.update-notification.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.update-notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.update-notification-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.update-notification-text {
+    flex: 1;
+}
+
+.update-notification-text strong {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    color: var(--neon-cyan);
+    margin-bottom: 4px;
+}
+
+.update-notification-text p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.update-notification-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.update-btn-refresh {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.update-btn-refresh:hover {
+    background: #00cccc;
+    transform: scale(1.02);
+}
+
+.update-btn-dismiss {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.update-btn-dismiss:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+    .update-notification {
+        top: 10px;
+        max-width: none;
+    }
+    
+    .update-notification-actions {
+        flex-direction: column;
+    }
+    
+    .update-btn-refresh,
+    .update-btn-dismiss {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 @media (max-width: 480px) {

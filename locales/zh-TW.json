@@ -686,6 +686,12 @@
   "notification": {
     "permission_prompt": "您想在液體成熟時收到通知嗎？\n\n批准後，我們將在液體準備好的當天向您發送提醒。"
   },
+  "update": {
+    "new_version_title": "新版本",
+    "new_version_text": "LiquiMixer 新版本可用。點擊更新。",
+    "refresh": "更新",
+    "dismiss": "稍後"
+  },
   "calculator": {
     "edit_values": "編輯數值"
   },

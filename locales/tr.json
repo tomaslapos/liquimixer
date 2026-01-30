@@ -686,6 +686,12 @@
   "notification": {
     "permission_prompt": "Sıvınız olgunlaştığında bildirim almak ister misiniz?\n\nOnaydan sonra, sıvı hazır olduğu gün size bir hatırlatma göndereceğiz."
   },
+  "update": {
+    "new_version_title": "Yeni sürüm",
+    "new_version_text": "LiquiMixer'ın yeni bir sürümü mevcut. Güncellemek için tıklayın.",
+    "refresh": "Güncelle",
+    "dismiss": "Daha sonra"
+  },
   "calculator": {
     "edit_values": "DEGERLERI DUZENLE"
   },

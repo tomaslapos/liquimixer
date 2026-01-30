@@ -325,6 +325,12 @@
   "notification": {
     "permission_prompt": "Möchten Sie benachrichtigt werden, wenn Ihr Liquid gereift ist?\n\nNach der Genehmigung senden wir Ihnen eine Erinnerung am Tag, an dem das Liquid fertig ist."
   },
+  "update": {
+    "new_version_title": "Neue App-Version",
+    "new_version_text": "Eine neue Version von LiquiMixer ist verfügbar. Klicken Sie zum Aktualisieren.",
+    "refresh": "Aktualisieren",
+    "dismiss": "Später"
+  },
   "save_recipe": {
     "title": "Rezept speichern",
     "edit_title": "Rezept bearbeiten",

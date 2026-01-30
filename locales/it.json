@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Vuoi essere avvisato quando il tuo liquido sarà maturato?\n\nDopo l'approvazione, ti invieremo un promemoria il giorno in cui il liquido sarà pronto."
   },
+  "update": {
+    "new_version_title": "Nuova versione",
+    "new_version_text": "È disponibile una nuova versione di LiquiMixer. Clicca per aggiornare.",
+    "refresh": "Aggiorna",
+    "dismiss": "Più tardi"
+  },
   "calculator": {
     "edit_values": "MODIFICA VALORI"
   },

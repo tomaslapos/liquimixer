@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Vil du gerne have besked, når din væske er modnet?\n\nEfter godkendelse sender vi dig en påmindelse den dag, væsken er klar."
   },
+  "update": {
+    "new_version_title": "Ny version",
+    "new_version_text": "En ny version af LiquiMixer er tilgængelig. Klik for at opdatere.",
+    "refresh": "Opdater",
+    "dismiss": "Senere"
+  },
   "calculator": {
     "edit_values": "REDIGER VAERDIER"
   },
