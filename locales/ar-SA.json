@@ -682,6 +682,12 @@
   "notification": {
     "permission_prompt": "هل تريد أن يتم إعلامك عندما ينضج السائل الخاص بك؟\n\nبعد الموافقة، سنرسل لك تذكيرًا في اليوم الذي يكون فيه السائل جاهزًا."
   },
+  "update": {
+    "new_version_title": "إصدار جديد",
+    "new_version_text": "يتوفر إصدار جديد من LiquiMixer. انقر للتحديث.",
+    "refresh": "تحديث",
+    "dismiss": "لاحقاً"
+  },
   "calculator": {
     "edit_values": "تعديل القيم"
   },

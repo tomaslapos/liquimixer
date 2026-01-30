@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Vill du bli meddelad när din vätska har mognat?\n\nEfter godkännande skickar vi en påminnelse den dag vätskan är klar."
   },
+  "update": {
+    "new_version_title": "Ny version",
+    "new_version_text": "En ny version av LiquiMixer är tillgänglig. Klicka för att uppdatera.",
+    "refresh": "Uppdatera",
+    "dismiss": "Senare"
+  },
   "calculator": {
     "edit_values": "REDIGERA VARDEN"
   },

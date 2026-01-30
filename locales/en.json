@@ -325,6 +325,12 @@
   "notification": {
     "permission_prompt": "Would you like to be notified when your liquid is steeped?\n\nAfter approval, we will send you a reminder on the day when the liquid is ready."
   },
+  "update": {
+    "new_version_title": "New app version",
+    "new_version_text": "A new version of LiquiMixer is available. Click to update.",
+    "refresh": "Update",
+    "dismiss": "Later"
+  },
   "save_recipe": {
     "title": "Save Recipe",
     "edit_title": "Edit Recipe",

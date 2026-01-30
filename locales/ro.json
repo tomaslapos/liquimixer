@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Doriți să fiți notificat când lichidul dumneavoastră este maturat?\n\nDupă aprobare, vă vom trimite un memento în ziua în care lichidul este gata."
   },
+  "update": {
+    "new_version_title": "Versiune nouă",
+    "new_version_text": "Este disponibilă o nouă versiune LiquiMixer. Faceți clic pentru actualizare.",
+    "refresh": "Actualizare",
+    "dismiss": "Mai târziu"
+  },
   "calculator": {
     "edit_values": "EDITARE VALORI"
   },

@@ -325,6 +325,12 @@
   "notification": {
     "permission_prompt": "Chcete dostávať upozornenia, keď bude váš liquid vyzretý?\n\nPo povolení vám pošleme pripomienku v deň, keď bude liquid pripravený."
   },
+  "update": {
+    "new_version_title": "Nová verzia",
+    "new_version_text": "Je k dispozícii nová verzia LiquiMixer. Kliknite pre aktualizáciu.",
+    "refresh": "Aktualizovať",
+    "dismiss": "Neskôr"
+  },
   "save_recipe": {
     "title": "Uložiť recept",
     "edit_title": "Upraviť recept",

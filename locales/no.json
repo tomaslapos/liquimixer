@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Ønsker du å bli varslet når væsken din er modnet?\n\nEtter godkjenning sender vi deg en påminnelse den dagen væsken er klar."
   },
+  "update": {
+    "new_version_title": "Ny versjon",
+    "new_version_text": "En ny versjon av LiquiMixer er tilgengelig. Klikk for å oppdatere.",
+    "refresh": "Oppdater",
+    "dismiss": "Senere"
+  },
   "calculator": {
     "edit_values": "REDIGER VERDIER"
   },

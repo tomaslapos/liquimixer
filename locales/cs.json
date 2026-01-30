@@ -322,6 +322,12 @@
   "notification": {
     "permission_prompt": "Chcete dostávat upozornění, když bude váš liquid vyzrálý?\n\nPo povolení vám pošleme připomínku v den, kdy bude liquid připraven."
   },
+  "update": {
+    "new_version_title": "Nová verze aplikace",
+    "new_version_text": "Je k dispozici nová verze LiquiMixer. Klikněte pro aktualizaci.",
+    "refresh": "Aktualizovat",
+    "dismiss": "Později"
+  },
   "products": {
     "title": "Oblíbené produkty",
     "add_new": "+ PŘIDAT NOVÝ",

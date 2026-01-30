@@ -686,6 +686,12 @@
   "notification": {
     "permission_prompt": "Хотите получить уведомление, когда ваша жидкость созреет?\n\nПосле одобрения мы отправим вам напоминание в день, когда жидкость будет готова."
   },
+  "update": {
+    "new_version_title": "Новая версия",
+    "new_version_text": "Доступна новая версия LiquiMixer. Нажмите для обновления.",
+    "refresh": "Обновить",
+    "dismiss": "Позже"
+  },
   "calculator": {
     "edit_values": "IZMENIT ZNACHENIYA"
   },

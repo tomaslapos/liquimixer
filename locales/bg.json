@@ -681,6 +681,12 @@
   "notification": {
     "permission_prompt": "Искате ли да бъдете уведомени, когато вашата течност узрее?\n\nСлед одобрение ще ви изпратим напомняне в деня, когато течността е готова."
   },
+  "update": {
+    "new_version_title": "Нова версия",
+    "new_version_text": "Налична е нова версия на LiquiMixer. Щракнете за актуализация.",
+    "refresh": "Актуализиране",
+    "dismiss": "По-късно"
+  },
   "calculator": {
     "edit_values": "REDAKTIRANE NA STOYNOSTI"
   },

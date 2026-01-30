@@ -681,6 +681,12 @@
   "notification": {
     "permission_prompt": "リキッドが熟成したら通知を受け取りますか？\n\n承認後、リキッドが準備できた日にリマインダーをお送りします。"
   },
+  "update": {
+    "new_version_title": "新しいバージョン",
+    "new_version_text": "LiquiMixerの新しいバージョンが利用可能です。更新するにはクリックしてください。",
+    "refresh": "更新",
+    "dismiss": "後で"
+  },
   "calculator": {
     "edit_values": "値を編集"
   },

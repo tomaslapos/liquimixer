@@ -662,6 +662,12 @@
   "notification": {
     "permission_prompt": "Wilt u een melding ontvangen wanneer uw vloeistof gerijpt is?\n\nNa goedkeuring sturen we u een herinnering op de dag dat de vloeistof klaar is."
   },
+  "update": {
+    "new_version_title": "Nieuwe versie",
+    "new_version_text": "Er is een nieuwe versie van LiquiMixer beschikbaar. Klik om bij te werken.",
+    "refresh": "Bijwerken",
+    "dismiss": "Later"
+  },
   "calculator": {
     "edit_values": "WAARDEN BEWERKEN"
   },

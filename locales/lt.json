@@ -685,6 +685,12 @@
   "notification": {
     "permission_prompt": "Ar norėtumėte gauti pranešimą, kai jūsų skystis subręs?\n\nPo patvirtinimo atsiųsime jums priminimą tą dieną, kai skystis bus paruoštas."
   },
+  "update": {
+    "new_version_title": "Nauja versija",
+    "new_version_text": "Galima nauja LiquiMixer versija. Spustelėkite, kad atnaujintumėte.",
+    "refresh": "Atnaujinti",
+    "dismiss": "Vėliau"
+  },
   "calculator": {
     "edit_values": "REDAGUOTI REIKSMES"
   },

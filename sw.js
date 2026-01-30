@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v129';
+const CACHE_NAME = 'liquimixer-v131';
 
 // Soubory pro precaching
 const urlsToCache = [
@@ -27,6 +27,7 @@ const networkFirstFiles = [
   '/subscription.js',
   '/i18n.js',
   '/index.html',
+  '/styles.css',  // CSS - network-first pro aktuální styly
   '/locales/'  // Všechny lokalizační soubory - network-first pro aktuální překlady
 ];
 
