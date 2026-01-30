@@ -1991,21 +1991,13 @@ async function showSaveRecipeModal() {
         // Inicializovat připomínku jako zaškrtnutou s dnešním datem
         initReminderFieldsEnabled();
         
-        // Blokovat "Sdílet do veřejné databáze" pokud ukládáme sdílený recept
+        // Odblokovat "Sdílet do veřejné databáze" - toto je NOVÝ recept z kalkulátoru
         const publicCheckbox = document.getElementById('recipeIsPublic');
         const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
         if (publicCheckbox && publicToggle) {
-            const isFromSharedRecipe = !!(window.currentSharedRecipe || window.pendingSharedRecipeUUID);
-            if (isFromSharedRecipe) {
-                publicCheckbox.checked = false;
-                publicCheckbox.disabled = true;
-                publicToggle.style.opacity = '0.5';
-                publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet již sdílený recept');
-            } else {
-                publicCheckbox.disabled = false;
-                publicToggle.style.opacity = '1';
-                publicToggle.title = '';
-            }
+            publicCheckbox.disabled = false;
+            publicToggle.style.opacity = '1';
+            publicToggle.title = '';
         }
         
         // Aplikovat překlady na modal
@@ -3307,6 +3299,20 @@ async function showEditRecipeForm() {
             submitBtn.textContent = t('save_recipe.save_changes', 'Uložit změny');
         }
     }
+    
+    // Odblokovat "Sdílet do veřejné databáze" - toto je úprava VLASTNÍHO receptu
+    const publicCheckbox = document.getElementById('recipeIsPublic');
+    const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+    if (publicCheckbox && publicToggle) {
+        publicCheckbox.disabled = false;
+        publicToggle.style.opacity = '1';
+        publicToggle.title = '';
+        // Nastavit aktuální hodnotu z receptu
+        publicCheckbox.checked = !!currentViewingRecipe.is_public;
+    }
+    
+    // Inicializovat připomínku
+    initReminderFieldsEnabled();
     
     modal.classList.remove('hidden');
 }
@@ -9792,6 +9798,12 @@ function showRecipeDatabase() {
     
     showPage('recipe-database');
     initFlavorFilterOptions();
+    
+    // Aplikovat překlady po zobrazení stránky
+    if (window.i18n?.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+    
     loadPublicRecipes();
 }
 
@@ -9823,6 +9835,10 @@ function toggleDatabaseFilters() {
         panel.classList.remove('hidden');
         panel.classList.add('open');
         icon.textContent = '▲';
+        // Aplikovat překlady po otevření panelu (pro <option> elementy)
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
     } else {
         panel.classList.remove('open');
         panel.classList.add('hidden');
