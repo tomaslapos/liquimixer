@@ -3431,6 +3431,7 @@ body {
 
 .ratio-toggle-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -6383,5 +6384,22 @@ body.subscription-required #subscriptionModal {
     .shortfill-nic-row {
         flex-direction: column;
         align-items: flex-start;
+    }
+    
+    /* Responsive ratio toggle buttons for premixed base */
+    .ratio-toggle-btn {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+    
+    .premixed-ratio-btn,
+    .pro-premixed-ratio-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        min-width: auto;
+    }
+    
+    .form-group-sub .ratio-toggle-buttons {
+        gap: 6px;
     }
 }

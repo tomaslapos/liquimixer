@@ -270,6 +270,7 @@
     "table_component": "Component",
     "table_volume": "Volume (ml)",
     "table_percent": "Percentage",
+    "table_grams": "Gram",
     "total_volume": "Totaal volume",
     "ratio": "VG/PG-verhouding",
     "nicotine": "Nicotine",

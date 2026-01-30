@@ -2778,18 +2778,21 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         <tr>
                             <th>${t('recipe_detail.table_component', 'Složka')}</th>
                             <th>${t('recipe_detail.table_volume', 'Objem (ml)')}</th>
-                            <th>${t('recipe_detail.table_percent', 'Procento')}</th>
+                            <th>${t('recipe_detail.table_grams', 'Gramy')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${data.ingredients.map(ing => {
                             // Dynamicky přeložit název ingredience
                             const ingredientName = escapeHtml(getIngredientName(ing));
+                            // Vypočítat gramy
+                            const grams = calculateIngredientGrams(ing);
+                            const percentInline = `<span class="ingredient-percent-inline">(${parseFloat(ing.percent || 0).toFixed(1)}%)</span>`;
                             return `
                             <tr>
-                                <td class="ingredient-name">${ingredientName}</td>
+                                <td class="ingredient-name">${ingredientName} ${percentInline}</td>
                                 <td class="ingredient-value">${parseFloat(ing.volume || 0).toFixed(2)}</td>
-                                <td class="ingredient-percent">${parseFloat(ing.percent || 0).toFixed(1)}%</td>
+                                <td class="ingredient-grams">${grams}</td>
                             </tr>
                             `;
                         }).join('')}
@@ -2838,7 +2841,9 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     const safeTotal = escapeHtml(data.totalAmount || '?');
     const safeVg = escapeHtml(data.vgPercent || '?');
     const safePg = escapeHtml(data.pgPercent || '?');
-    const safeNicotine = escapeHtml(data.nicotine || '0');
+    // Zaokrouhlit nikotin na 2 desetinná místa
+    const nicotineValue = parseFloat(data.nicotine || 0);
+    const safeNicotine = escapeHtml(nicotineValue.toFixed(2));
     
     contentEl.innerHTML = `
         <div class="recipe-detail-header">
@@ -5087,30 +5092,42 @@ function calculateMix() {
         premixedVgPercent = parseInt(premixedParts[0]) || 50;
         const premixedPgPercent = 100 - premixedVgPercent;
         
-        // Kolik VG a PG potřebujeme z nosných kapalin (po odečtení nikotinu a příchutě)
-        const neededVgFromCarrier = targetVgTotal - nicotineVgContent - flavorVgContent;
-        const neededPgFromCarrier = targetPgTotal - nicotinePgContent - flavorPgContent;
-        
-        // Kolik předmíchané báze můžeme použít, aniž bychom překročili potřebné VG nebo PG
-        // Pokud premixed VG% > 0: max z VG = neededVg / (premixedVg% / 100)
-        // Pokud premixed PG% > 0: max z PG = neededPg / (premixedPg% / 100)
-        let maxFromVg = premixedVgPercent > 0 ? neededVgFromCarrier / (premixedVgPercent / 100) : Infinity;
-        let maxFromPg = premixedPgPercent > 0 ? neededPgFromCarrier / (premixedPgPercent / 100) : Infinity;
-        
-        // Maximální množství předmíchané báze = minimum z obou omezení a zbývajícího objemu
-        premixedBaseVolume = Math.min(Math.max(0, maxFromVg), Math.max(0, maxFromPg), Math.max(0, remainingVolume));
+        // Předmíchaná báze vyplní celý zbývající objem
+        premixedBaseVolume = remainingVolume;
         
         // VG a PG z předmíchané báze
         const premixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
         const premixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
         
-        // Kolik ještě potřebujeme čistého VG a PG pro dosažení přesného poměru
-        pureVgNeeded = neededVgFromCarrier - premixedVgContent;
-        purePgNeeded = neededPgFromCarrier - premixedPgContent;
+        // Skutečný VG/PG poměr ze všech složek
+        const actualVgFromAll = nicotineVgContent + flavorVgContent + premixedVgContent;
+        const actualPgFromAll = nicotinePgContent + flavorPgContent + premixedPgContent;
+        const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
         
-        // Ošetřit záporné hodnoty (zaokrouhlovací chyby)
-        if (pureVgNeeded < 0.01) pureVgNeeded = 0;
-        if (purePgNeeded < 0.01) purePgNeeded = 0;
+        // Pokud slider hodnota odpovídá skutečnému poměru (±1.5%), nepřidávat doladění
+        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
+        
+        let adjustmentVg = 0;
+        let adjustmentPg = 0;
+        
+        if (!sliderMatchesActual) {
+            // Uživatel změnil slider - potřeba doladění
+            adjustmentVg = targetVgTotal - actualVgFromAll;
+            adjustmentPg = targetPgTotal - actualPgFromAll;
+            
+            if (adjustmentVg < 0) adjustmentVg = 0;
+            if (adjustmentPg < 0) adjustmentPg = 0;
+            
+            // Upravit předmíchanou bázi aby bylo místo na doladění
+            const totalAdjustment = adjustmentVg + adjustmentPg;
+            if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
+                premixedBaseVolume = remainingVolume - totalAdjustment;
+            }
+        }
+        
+        // Přepočítat obsah předmíchané báze po úpravě
+        const finalPremixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
+        const finalPremixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
         
         // Add nicotine to ingredients
         if (nicotineVolume > 0) {
@@ -5154,23 +5171,27 @@ function calculateMix() {
             });
         }
         
-        // Add adjustment VG if needed
-        if (pureVgNeeded > 0.01) {
+        // Add adjustment VG if needed (only if user changed slider)
+        if (!sliderMatchesActual && adjustmentVg > 0.01) {
             ingredients.push({
                 ingredientKey: 'vg_adjustment',
-                volume: pureVgNeeded,
-                percent: (pureVgNeeded / totalAmount) * 100
+                volume: adjustmentVg,
+                percent: (adjustmentVg / totalAmount) * 100
             });
         }
         
-        // Add adjustment PG if needed
-        if (purePgNeeded > 0.01) {
+        // Add adjustment PG if needed (only if user changed slider)
+        if (!sliderMatchesActual && adjustmentPg > 0.01) {
             ingredients.push({
                 ingredientKey: 'pg_adjustment',
-                volume: purePgNeeded,
-                percent: (purePgNeeded / totalAmount) * 100
+                volume: adjustmentPg,
+                percent: (adjustmentPg / totalAmount) * 100
             });
         }
+        
+        // Update pureVgNeeded and purePgNeeded for final calculation
+        pureVgNeeded = sliderMatchesActual ? 0 : adjustmentVg;
+        purePgNeeded = sliderMatchesActual ? 0 : adjustmentPg;
         
     } else {
         // SEPARATE PG/VG MODE (original logic)
@@ -9285,8 +9306,13 @@ async function saveReminderFromModal(event) {
             const recipe = window.currentViewingRecipe;
             await saveNewReminder(currentReminderRecipeId, mixDate, remindDate, currentReminderFlavorType, currentReminderFlavorName, recipe?.name || '', note);
         }
+        // Uložit recipeId před zavřením modálu (hideAddReminderModal nastaví currentReminderRecipeId na null)
+        const recipeIdToRefresh = currentReminderRecipeId;
+        
         hideAddReminderModal();
-        if (currentReminderRecipeId) loadRecipeReminders(currentReminderRecipeId);
+        
+        // Obnovit seznam připomínek
+        if (recipeIdToRefresh) loadRecipeReminders(recipeIdToRefresh);
         
         // Po uložení připomínky aktualizovat maturedRecipeIds a zkontrolovat notifikace
         await loadMaturedRecipeIds();
