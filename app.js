@@ -9311,28 +9311,30 @@ function renderReminderItem(reminder, recipeId) {
                 <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
             </div>
             
-            <!-- Stock bar - bateriový styl: mínus | baterie | plus -->
-            <div class="reminder-stock">
-                <button type="button" class="reminder-btn stock-minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
-                <div class="stock-battery">
-                    <div class="battery-body">
-                        <div class="battery-level ${lowClass}" 
-                             id="stock-bar-${reminder.id}"
-                             style="width: ${stockPercent}%; background: ${stockColor};">
+            <!-- Druhý řádek: Stock bar + akční tlačítka -->
+            <div class="reminder-controls">
+                <div class="reminder-stock">
+                    <button type="button" class="reminder-btn stock-minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
+                    <div class="stock-battery">
+                        <div class="battery-body">
+                            <div class="battery-level ${lowClass}" 
+                                 id="stock-bar-${reminder.id}"
+                                 style="width: ${stockPercent}%; background: ${stockColor};">
+                            </div>
+                            <span class="battery-percent ${percentClass}" id="stock-percent-${reminder.id}">${stockPercent}%</span>
                         </div>
-                        <span class="battery-percent ${percentClass}" id="stock-percent-${reminder.id}">${stockPercent}%</span>
+                        <div class="battery-tip"></div>
                     </div>
-                    <div class="battery-tip"></div>
+                    <button type="button" class="reminder-btn stock-plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
                 </div>
-                <button type="button" class="reminder-btn stock-plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
+                
+                ${reminder.status === 'pending' ? `
+                    <div class="reminder-actions">
+                        <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
+                        <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+                    </div>
+                ` : ''}
             </div>
-            
-            ${reminder.status === 'pending' ? `
-                <div class="reminder-actions">
-                    <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
-                    <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
-                </div>
-            ` : ''}
         </div>
     `;
 }
