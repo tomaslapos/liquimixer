@@ -9810,19 +9810,34 @@ function showRecipeDatabase() {
 // Inicializovat select s typy příchutí z flavorDatabase
 function initFlavorFilterOptions() {
     const select = document.getElementById('dbFilterFlavorType');
-    if (!select || select.options.length > 1) return; // Již inicializováno
+    if (!select) return;
     
-    // Přidat typy z flavorDatabase
+    // Uložit aktuální vybranou hodnotu
+    const currentValue = select.value;
+    
+    // Vymazat existující options (kromě první "Všechny")
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+    
+    // Přeložit první option "Všechny"
+    if (select.options[0]) {
+        select.options[0].textContent = t('recipe_database.all', 'Všechny');
+    }
+    
+    // Přidat typy z flavorDatabase s překlady
     if (window.flavorDatabase) {
         Object.keys(window.flavorDatabase).forEach(key => {
             if (key === 'none') return; // Přeskočit "Žádná"
             const option = document.createElement('option');
             option.value = key;
-            const flavorData = window.flavorDatabase[key];
-            option.textContent = t(`form.flavor_type_${key}`, flavorData.name || key);
+            option.textContent = t(`form.flavor_type_${key}`, window.flavorDatabase[key]?.name || key);
             select.appendChild(option);
         });
     }
+    
+    // Obnovit vybranou hodnotu
+    select.value = currentValue;
 }
 
 // Toggle rozbalovacích filtrů
