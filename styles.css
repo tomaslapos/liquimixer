@@ -6633,11 +6633,11 @@ body.subscription-required #subscriptionModal {
     transition: transform 0.3s ease;
 }
 
-/* Filters panel - two rows layout */
+/* Filters panel - flex wrap layout */
 .filters-panel {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr) auto auto;
-    gap: 15px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 25px;
     margin-top: 15px;
     padding: 15px;
     background: rgba(0, 0, 0, 0.2);
@@ -6646,7 +6646,7 @@ body.subscription-required #subscriptionModal {
     overflow: hidden;
     opacity: 0;
     transition: all 0.3s ease;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .filters-panel.hidden {
@@ -6654,7 +6654,7 @@ body.subscription-required #subscriptionModal {
 }
 
 .filters-panel.open {
-    display: grid;
+    display: flex;
     max-height: 500px;
     opacity: 1;
 }
@@ -6664,6 +6664,7 @@ body.subscription-required #subscriptionModal {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    min-width: 140px;
 }
 
 .filter-group > label {
@@ -7074,12 +7075,12 @@ body.subscription-required #subscriptionModal {
     margin-top: 5px;
 }
 
-/* Filter toggle in database - grid row 2 start */
+/* Filter toggle in database */
 .filter-group.filter-toggle {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    grid-column: span 1;
+    min-width: auto;
 }
 
 .filter-group.filter-toggle .toggle-row {
@@ -7089,11 +7090,11 @@ body.subscription-required #subscriptionModal {
     white-space: nowrap;
 }
 
-/* Filter reset button - right aligned */
+/* Filter reset button - push to right */
 .filter-group.filter-reset {
-    grid-column: -2 / -1;
-    justify-self: end;
-    align-self: end;
+    margin-left: auto;
+    min-width: auto;
+    align-self: flex-end;
 }
 
 /* =========================================
@@ -7235,13 +7236,14 @@ body.subscription-required #subscriptionModal {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .filters-panel {
-        grid-template-columns: repeat(2, 1fr);
+    .filter-group {
+        min-width: 120px;
     }
     
     .filter-group.filter-reset {
-        grid-column: span 2;
-        justify-self: center;
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
     }
 }
 
@@ -7255,12 +7257,21 @@ body.subscription-required #subscriptionModal {
     }
     
     .filters-panel {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: 100%;
+    }
+    
+    .filter-group.filter-toggle {
+        justify-content: flex-start;
     }
     
     .filter-group.filter-reset {
-        grid-column: span 1;
-        justify-self: center;
+        margin-left: 0;
+        align-self: center;
     }
     
     .filter-range .range-inputs {
