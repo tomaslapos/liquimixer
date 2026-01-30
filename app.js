@@ -9275,8 +9275,9 @@ function renderReminderItem(reminder, recipeId) {
                 <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
             </div>
             
-            <!-- Stock bar - bateriový styl -->
+            <!-- Stock bar - bateriový styl: mínus | baterie | plus -->
             <div class="reminder-stock">
+                <button type="button" class="reminder-btn stock-minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
                 <div class="stock-battery">
                     <div class="battery-body">
                         <div class="battery-level ${lowClass}" 
@@ -9287,10 +9288,7 @@ function renderReminderItem(reminder, recipeId) {
                     </div>
                     <div class="battery-tip"></div>
                 </div>
-                <div class="stock-controls">
-                    <button type="button" class="stock-btn minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
-                    <button type="button" class="stock-btn plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
-                </div>
+                <button type="button" class="reminder-btn stock-plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
             </div>
             
             ${reminder.status === 'pending' ? `
@@ -9694,10 +9692,34 @@ function showViewReminderModal(reminderId) {
     const mixDateEl = document.getElementById('viewReminderMixDate');
     const remindDateEl = document.getElementById('viewReminderRemindDate');
     const noteEl = document.getElementById('viewReminderNote');
+    const stockContainer = document.getElementById('viewReminderStockContainer');
 
     if (mixDateEl) mixDateEl.textContent = formatDate(reminder.mixed_at);
     if (remindDateEl) remindDateEl.textContent = formatDate(reminder.remind_at);
     if (noteEl) noteEl.textContent = reminder.note || t('reminder.no_note', 'Bez poznámky');
+    
+    // Render stock bar v modalu
+    if (stockContainer) {
+        const stockPercent = reminder.stock_percent ?? 100;
+        const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
+                           stockPercent > 20 ? '#ffcc00' : '#ff4444';
+        const lowClass = stockPercent <= 20 ? 'low' : '';
+        const recipeId = reminder.recipe_id || '';
+        
+        stockContainer.innerHTML = `
+            <div class="reminder-stock modal-stock">
+                <button type="button" class="reminder-btn stock-minus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', -10); showViewReminderModal('${reminderId}');" title="-10%">−</button>
+                <div class="stock-battery">
+                    <div class="battery-body">
+                        <div class="battery-level ${lowClass}" style="width: ${stockPercent}%; background: ${stockColor};"></div>
+                        <span class="battery-percent">${stockPercent}%</span>
+                    </div>
+                    <div class="battery-tip"></div>
+                </div>
+                <button type="button" class="reminder-btn stock-plus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', +10); showViewReminderModal('${reminderId}');" title="+10%">+</button>
+            </div>
+        `;
+    }
 
     modal.classList.remove('hidden');
 }
@@ -9950,6 +9972,7 @@ async function loadPublicRecipeDetail(recipeId) {
         }
         
         window.currentSharedRecipe = recipe;
+        window.cameFromRecipeDatabase = true; // Flag pro tlačítko zpět
         
         // Načíst hodnocení uživatele
         let userRating = 0;
@@ -9963,6 +9986,9 @@ async function loadPublicRecipeDetail(recipeId) {
         // Přidat sekci hodnocení
         appendRatingSection(recipeId, recipe.public_rating_avg || 0, recipe.public_rating_count || 0, userRating);
         
+        // Přidat tlačítko zpět do databáze
+        appendBackToDatabaseButton();
+        
         showPage('shared-recipe');
         
         if (window.i18n?.applyTranslations) {
@@ -9972,6 +9998,22 @@ async function loadPublicRecipeDetail(recipeId) {
         console.error('Error loading public recipe detail:', error);
         showNotification(t('common.error', 'Chyba při načítání receptu'), 'error');
     }
+}
+
+// Přidat tlačítko zpět do databáze receptů
+function appendBackToDatabaseButton() {
+    const container = document.getElementById('sharedRecipeContent');
+    if (!container) return;
+    
+    // Přidat na začátek
+    const backBtnHtml = `
+        <div class="back-to-database">
+            <button class="neon-button secondary" onclick="showRecipeDatabase()">
+                <span data-i18n="form.back">◀ ZPĚT</span>
+            </button>
+        </div>
+    `;
+    container.insertAdjacentHTML('afterbegin', backBtnHtml);
 }
 
 // Přidat sekci hodnocení do detailu receptu
