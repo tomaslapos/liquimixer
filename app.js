@@ -3661,6 +3661,16 @@ async function saveSharedRecipe() {
         // Inicializovat připomínku
         initReminderFieldsEnabled();
         
+        // Blokovat "Sdílet do veřejné databáze" - ukládáme sdílený recept
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+        if (publicCheckbox && publicToggle) {
+            publicCheckbox.checked = false;
+            publicCheckbox.disabled = true;
+            publicToggle.style.opacity = '0.5';
+            publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet již sdílený recept');
+        }
+        
         // Aplikovat překlady
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
             window.i18n.applyTranslations();
@@ -10031,9 +10041,13 @@ function appendBackToDatabaseButton() {
     const buttonGroup = sharedRecipePage.querySelector('.button-group');
     if (!buttonGroup) return;
     
+    // Odstranit existující tlačítka zpět do databáze (aby se nehromadily)
+    const existingBackBtns = buttonGroup.querySelectorAll('.back-to-db-btn');
+    existingBackBtns.forEach(btn => btn.remove());
+    
     // Přidat tlačítko zpět do databáze na začátek button-group
     const backBtnHtml = `
-        <button class="neon-button secondary" onclick="showRecipeDatabase()">
+        <button class="neon-button secondary back-to-db-btn" onclick="showRecipeDatabase()">
             <span data-i18n="form.back">◀ ZPĚT DO DATABÁZE</span>
         </button>
     `;

@@ -272,7 +272,7 @@
     
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20260131c">
+    <link rel="stylesheet" href="/styles.css?v=20260131d">
     
     <!-- Clerk Authentication -->
     <script 
@@ -286,7 +286,7 @@
     <!-- Supabase Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/database.js"></script>
-    <script src="/i18n.js?v=20260131c"></script>
+    <script src="/i18n.js?v=20260131d"></script>
 </head>
 <body>
     <div class="neon-grid"></div>
@@ -2109,10 +2109,10 @@
                             <label data-i18n="recipe_database.filter_method">Metoda přípravy:</label>
                             <select id="dbFilterFormType" class="neon-select" onchange="loadPublicRecipes()">
                                 <option value="" data-i18n="recipe_database.all">Všechny</option>
-                                <option value="liquid">Liquid</option>
-                                <option value="shakevape">Shake & Vape</option>
-                                <option value="shortfill">Shortfill</option>
-                                <option value="liquidpro">Liquid PRO</option>
+                                <option value="liquid" data-i18n="form.tab_liquid">Liquid</option>
+                                <option value="shakevape" data-i18n="form.tab_shakevape">Shake & Vape</option>
+                                <option value="shortfill" data-i18n="form.tab_shortfill">Shortfill</option>
+                                <option value="liquidpro" data-i18n="form.tab_liquidpro">Liquid PRO</option>
                             </select>
                         </div>
                         
@@ -2414,7 +2414,7 @@
         <div class="footer-copyright">© 2026 LiquiMixer</div>
     </footer>
 
-    <script src="/app.js?v=20260131c"></script>
+    <script src="/app.js?v=20260131d"></script>
     
     <!-- Firebase Cloud Messaging -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

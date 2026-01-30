@@ -6586,7 +6586,22 @@ body.subscription-required #subscriptionModal {
 .filter-sort {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+}
+
+.filter-sort label {
+    white-space: nowrap;
+}
+
+.filter-sort {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-sort > label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
 }
 
 /* Collapsible filters */
@@ -6618,11 +6633,11 @@ body.subscription-required #subscriptionModal {
     transition: transform 0.3s ease;
 }
 
-/* Filters panel */
+/* Filters panel - two rows layout */
 .filters-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(3, 1fr) auto auto;
+    gap: 15px 20px;
     margin-top: 15px;
     padding: 15px;
     background: rgba(0, 0, 0, 0.2);
@@ -6631,6 +6646,7 @@ body.subscription-required #subscriptionModal {
     overflow: hidden;
     opacity: 0;
     transition: all 0.3s ease;
+    align-items: end;
 }
 
 .filters-panel.hidden {
@@ -6653,6 +6669,7 @@ body.subscription-required #subscriptionModal {
 .filter-group > label {
     font-size: 0.85rem;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 /* Range filters */
@@ -6956,7 +6973,7 @@ body.subscription-required #subscriptionModal {
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
 }
 
-/* Stock control buttons - subtle, smaller */
+/* Stock control buttons - subtle, smaller, centered text */
 .reminder-btn.stock-minus,
 .reminder-btn.stock-plus {
     width: 26px;
@@ -6966,6 +6983,11 @@ body.subscription-required #subscriptionModal {
     flex-shrink: 0;
     opacity: 0.7;
     border-width: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
 }
 
 .reminder-btn.stock-minus:hover,
@@ -7025,6 +7047,11 @@ body.subscription-required #subscriptionModal {
     font-size: 1.3rem;
     opacity: 1;
     border-width: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
 }
 
 /* Filter toggle row - proper alignment */
@@ -7047,15 +7074,26 @@ body.subscription-required #subscriptionModal {
     margin-top: 5px;
 }
 
-/* Filter toggle in database - vertical alignment fix */
+/* Filter toggle in database - grid row 2 start */
 .filter-group.filter-toggle {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    grid-column: span 1;
 }
 
 .filter-group.filter-toggle .toggle-row {
-    padding-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+/* Filter reset button - right aligned */
+.filter-group.filter-reset {
+    grid-column: -2 / -1;
+    justify-self: end;
+    align-self: end;
 }
 
 /* =========================================
@@ -7196,6 +7234,17 @@ body.subscription-required #subscriptionModal {
 }
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+    .filters-panel {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filter-group.filter-reset {
+        grid-column: span 2;
+        justify-self: center;
+    }
+}
+
 @media (max-width: 600px) {
     .database-row {
         flex-direction: column;
@@ -7207,6 +7256,11 @@ body.subscription-required #subscriptionModal {
     
     .filters-panel {
         grid-template-columns: 1fr;
+    }
+    
+    .filter-group.filter-reset {
+        grid-column: span 1;
+        justify-self: center;
     }
     
     .filter-range .range-inputs {
