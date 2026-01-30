@@ -504,8 +504,11 @@ function initializeSliders() {
     targetNicotineSlider.addEventListener('input', updateNicotineDisplay);
     flavorStrengthSlider.addEventListener('input', updateFlavorDisplay);
     
-    document.getElementById('nicotineBaseStrength').addEventListener('input', validateNicotineStrength);
-    document.getElementById('totalAmount').addEventListener('input', updateVgPgRatioLimits);
+    document.getElementById('nicotineBaseStrength').addEventListener('input', () => {
+        validateNicotineStrength();
+        autoRecalculateLiquidVgPgRatio();
+    });
+    document.getElementById('totalAmount').addEventListener('input', autoRecalculateLiquidVgPgRatio);
     
     // Setup nicotine ratio toggle buttons
     setupNicotineRatioToggle();
@@ -571,14 +574,14 @@ function setupNicotineRatioToggle() {
             ratio5050Btn.classList.add('active');
             ratio7030Btn.classList.remove('active');
             nicotineRatioInput.value = '50/50';
-            updateVgPgRatioLimits();
+            autoRecalculateLiquidVgPgRatio();
         });
 
         ratio7030Btn.addEventListener('click', () => {
             ratio7030Btn.classList.add('active');
             ratio5050Btn.classList.remove('active');
             nicotineRatioInput.value = '70/30';
-            updateVgPgRatioLimits();
+            autoRecalculateLiquidVgPgRatio();
         });
     }
 }
@@ -595,7 +598,7 @@ function setupFlavorRatioToggle() {
             ratio8020Btn.classList.remove('active');
             ratio7030Btn.classList.remove('active');
             flavorRatioInput.value = '0/100';
-            updateVgPgRatioLimits();
+            autoRecalculateLiquidVgPgRatio();
         });
 
         ratio8020Btn.addEventListener('click', () => {
@@ -603,7 +606,7 @@ function setupFlavorRatioToggle() {
             ratio8020Btn.classList.add('active');
             ratio7030Btn.classList.remove('active');
             flavorRatioInput.value = '80/20';
-            updateVgPgRatioLimits();
+            autoRecalculateLiquidVgPgRatio();
         });
 
         ratio7030Btn.addEventListener('click', () => {
@@ -611,7 +614,7 @@ function setupFlavorRatioToggle() {
             ratio8020Btn.classList.remove('active');
             ratio7030Btn.classList.add('active');
             flavorRatioInput.value = '70/30';
-            updateVgPgRatioLimits();
+            autoRecalculateLiquidVgPgRatio();
         });
     }
 }
@@ -714,6 +717,20 @@ function getPremixedVgPercent() {
     const premixedRatio = document.getElementById('premixedRatio')?.value || '60/40';
     const parts = premixedRatio.split('/');
     return parseInt(parts[0]) || 60;
+}
+
+// Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode) - LIQUID form
+function autoRecalculateLiquidVgPgRatio() {
+    const baseType = document.getElementById('baseType')?.value || 'separate';
+    if (baseType === 'premixed') {
+        const actualVg = calculateActualVgPgRatio('liquid');
+        const slider = document.getElementById('vgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateRatioDisplay();
+        }
+    }
+    updateVgPgRatioLimits();
 }
 
 // ============================================
@@ -4754,8 +4771,8 @@ function updateNicotineType() {
         updateMaxTargetNicotine();
     }
     
-    // Update VG/PG ratio limits
-    updateVgPgRatioLimits();
+    // Update VG/PG ratio limits and auto-recalculate in premixed mode
+    autoRecalculateLiquidVgPgRatio();
 }
 
 function updateMaxTargetNicotine() {
@@ -4798,8 +4815,8 @@ function updateNicotineDisplay() {
         trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
     }
     
-    // Update VG/PG ratio limits when nicotine changes
-    updateVgPgRatioLimits();
+    // Update VG/PG ratio limits and auto-recalculate in premixed mode
+    autoRecalculateLiquidVgPgRatio();
 }
 
 // =========================================
@@ -4819,8 +4836,8 @@ function updateFlavorType() {
         updateFlavorDisplay();
     }
     
-    // Update VG/PG ratio limits when flavor changes
-    updateVgPgRatioLimits();
+    // Update VG/PG ratio limits and auto-recalculate in premixed mode
+    autoRecalculateLiquidVgPgRatio();
 }
 
 function adjustFlavor(change) {
@@ -4956,8 +4973,8 @@ function updateFlavorDisplay() {
     displayEl.style.color = 'inherit';
     displayContainer.style.color = color;
     
-    // Update VG/PG ratio limits when flavor strength changes
-    updateVgPgRatioLimits();
+    // Update VG/PG ratio limits and auto-recalculate in premixed mode
+    autoRecalculateLiquidVgPgRatio();
 }
 
 function updateAllDisplays() {
