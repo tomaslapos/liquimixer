@@ -631,7 +631,7 @@ function setupSvFlavorRatioToggle() {
             ratio8020Btn.classList.remove('active');
             ratio7030Btn.classList.remove('active');
             flavorRatioInput.value = '0/100';
-            updateSvVgPgLimits();
+            autoRecalculateSvVgPgRatio();
         });
 
         ratio8020Btn.addEventListener('click', () => {
@@ -639,7 +639,7 @@ function setupSvFlavorRatioToggle() {
             ratio8020Btn.classList.add('active');
             ratio7030Btn.classList.remove('active');
             flavorRatioInput.value = '80/20';
-            updateSvVgPgLimits();
+            autoRecalculateSvVgPgRatio();
         });
 
         ratio7030Btn.addEventListener('click', () => {
@@ -647,7 +647,7 @@ function setupSvFlavorRatioToggle() {
             ratio8020Btn.classList.remove('active');
             ratio7030Btn.classList.add('active');
             flavorRatioInput.value = '70/30';
-            updateSvVgPgLimits();
+            autoRecalculateSvVgPgRatio();
         });
     }
 }
@@ -766,6 +766,22 @@ function calculateActualVgPgRatio(formType) {
         }
         
         const premixedRatio = document.getElementById('proPremixedRatio')?.value || '50/50';
+        premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
+    } else if (formType === 'shakevape') {
+        // Shake & Vape form
+        totalAmount = parseFloat(document.getElementById('svTotalAmount')?.value) || 60;
+        nicotineType = document.getElementById('svNicotineType')?.value || 'none';
+        targetNicotine = parseFloat(document.getElementById('svTargetNicotine')?.value) || 0;
+        baseNicotine = parseFloat(document.getElementById('svNicotineBaseStrength')?.value) || 0;
+        const nicRatio = document.getElementById('svNicotineRatio')?.value || '50/50';
+        nicVgPercent = nicRatio === '70/30' ? 70 : 50;
+        
+        // Flavor in S&V is by volume, not percent
+        flavorVolume = parseFloat(document.getElementById('svFlavorVolume')?.value) || 0;
+        const svFlavorRatio = document.getElementById('svFlavorRatio')?.value || '0/100';
+        flavorVgPercent = svFlavorRatio === '80/20' ? 80 : (svFlavorRatio === '70/30' ? 70 : 0);
+        
+        const premixedRatio = document.getElementById('svPremixedRatio')?.value || '50/50';
         premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
     } else {
         // Standard Liquid form
@@ -6140,17 +6156,105 @@ function setupSvNicotineRatioToggle() {
             ratio5050Btn.classList.add('active');
             ratio7030Btn.classList.remove('active');
             nicotineRatioInput.value = '50/50';
-            updateSvVgPgLimits();
+            autoRecalculateSvVgPgRatio();
         };
         
         ratio7030Btn.onclick = () => {
             ratio7030Btn.classList.add('active');
             ratio5050Btn.classList.remove('active');
             nicotineRatioInput.value = '70/30';
-            updateSvVgPgLimits();
+            autoRecalculateSvVgPgRatio();
         };
     }
 }
+
+// =========================================
+// Shake & Vape Premixed Base Functions
+// =========================================
+
+// Update SV base type (separate or premixed)
+function updateSvBaseType(type) {
+    const baseTypeInput = document.getElementById('svBaseType');
+    const premixedContainer = document.getElementById('svPremixedRatioContainer');
+    const separateBtn = document.getElementById('svBaseSeparate');
+    const premixedBtn = document.getElementById('svBasePremixed');
+    
+    if (baseTypeInput) baseTypeInput.value = type;
+    
+    if (type === 'premixed') {
+        separateBtn.classList.remove('active');
+        premixedBtn.classList.add('active');
+        if (premixedContainer) premixedContainer.classList.remove('hidden');
+        
+        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+        const actualVg = calculateActualVgPgRatio('shakevape');
+        const slider = document.getElementById('svVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateSvRatioDisplay();
+        }
+    } else {
+        separateBtn.classList.add('active');
+        premixedBtn.classList.remove('active');
+        if (premixedContainer) premixedContainer.classList.add('hidden');
+    }
+    
+    updateSvVgPgLimits();
+}
+
+// Update SV premixed ratio
+function updateSvPremixedRatio(ratio) {
+    const premixedRatioInput = document.getElementById('svPremixedRatio');
+    if (premixedRatioInput) premixedRatioInput.value = ratio;
+    
+    // Update button states
+    const buttons = document.querySelectorAll('.sv-premixed-ratio-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.value === ratio) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+    setTimeout(() => {
+        const actualVg = calculateActualVgPgRatio('shakevape');
+        const slider = document.getElementById('svVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateSvRatioDisplay();
+        }
+    }, 0);
+    
+    updateSvVgPgLimits();
+}
+
+// Get SV premixed base VG percent
+function getSvPremixedVgPercent() {
+    const premixedRatio = document.getElementById('svPremixedRatio')?.value || '60/40';
+    const parts = premixedRatio.split('/');
+    return parseInt(parts[0]) || 60;
+}
+
+// Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode) - SHAKE & VAPE form
+function autoRecalculateSvVgPgRatio() {
+    const baseType = document.getElementById('svBaseType')?.value || 'separate';
+    if (baseType === 'premixed') {
+        const actualVg = calculateActualVgPgRatio('shakevape');
+        const slider = document.getElementById('svVgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateSvRatioDisplay();
+        }
+    }
+    updateSvVgPgLimits();
+}
+
+// Export SV premixed base functions
+window.updateSvBaseType = updateSvBaseType;
+window.updateSvPremixedRatio = updateSvPremixedRatio;
+window.autoRecalculateSvVgPgRatio = autoRecalculateSvVgPgRatio;
 
 function updateSvNicotineType() {
     const type = document.getElementById('svNicotineType').value;
@@ -6170,7 +6274,7 @@ function updateSvNicotineType() {
         targetGroup.classList.remove('hidden');
     }
     
-    updateSvVgPgLimits();
+    autoRecalculateSvVgPgRatio();
 }
 
 function adjustSvTargetNicotine(change) {
@@ -6203,7 +6307,7 @@ function updateSvNicotineDisplay() {
         trackEl.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
     }
     
-    updateSvVgPgLimits();
+    autoRecalculateSvVgPgRatio();
 }
 
 function adjustSvRatio(change) {
@@ -6359,6 +6463,10 @@ function calculateShakeVape() {
     const baseNicotine = parseFloat(document.getElementById('svNicotineBaseStrength').value) || 0;
     const flavorVolume = parseFloat(document.getElementById('svFlavorVolume').value) || 0;
     
+    // Get base type (separate or premixed)
+    const baseType = document.getElementById('svBaseType')?.value || 'separate';
+    const premixedRatio = document.getElementById('svPremixedRatio')?.value || '50/50';
+    
     let nicotineVolume = 0;
     if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
         nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
@@ -6403,24 +6511,10 @@ function calculateShakeVape() {
     const targetVgTotal = (vgPercent / 100) * totalAmount;
     const targetPgTotal = (pgPercent / 100) * totalAmount;
 
-    let pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
-    let purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
-    
-    if (pureVgNeeded < 0) pureVgNeeded = 0;
-    if (purePgNeeded < 0) purePgNeeded = 0;
-    
-    const totalPureNeeded = pureVgNeeded + purePgNeeded;
-    if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
-        const ratio = remainingVolume / totalPureNeeded;
-        pureVgNeeded *= ratio;
-        purePgNeeded *= ratio;
-    } else if (totalPureNeeded < remainingVolume) {
-        const extra = remainingVolume - totalPureNeeded;
-        if (vgPercent + pgPercent > 0) {
-            pureVgNeeded += extra * (vgPercent / 100);
-            purePgNeeded += extra * (pgPercent / 100);
-        }
-    }
+    let pureVgNeeded = 0;
+    let purePgNeeded = 0;
+    let premixedBaseVolume = 0;
+    let premixedVgPercent = 50;
     
     const DROPS_PER_ML = 20;
     const ingredients = [];
@@ -6443,6 +6537,7 @@ function calculateShakeVape() {
         const nicotineRatioValue = document.getElementById('svNicotineRatio').value;
         ingredients.push({
             ingredientKey: nicotineType === 'salt' ? 'nicotine_salt' : 'nicotine_booster',
+            vgRatio: nicVgPercent,
             params: {
                 strength: baseNicotine,
                 vgpg: nicotineRatioValue
@@ -6453,36 +6548,129 @@ function calculateShakeVape() {
             showDrops: true
         });
     }
-    
-    if (purePgNeeded > 0.01) {
-        ingredients.push({
-            ingredientKey: 'pg',
-            volume: purePgNeeded,
-            percent: (purePgNeeded / totalAmount) * 100,
-            drops: null,
-            showDrops: false
-        });
+
+    if (baseType === 'premixed') {
+        // PREMIXED BASE MODE
+        const premixedParts = premixedRatio.split('/');
+        premixedVgPercent = parseInt(premixedParts[0]) || 50;
+        const premixedPgPercent = 100 - premixedVgPercent;
+        
+        // Předmíchaná báze vyplní celý zbývající objem
+        premixedBaseVolume = remainingVolume;
+        
+        // VG a PG z předmíchané báze
+        const premixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
+        const premixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
+        
+        // Skutečný VG/PG poměr ze všech složek
+        const actualVgFromAll = nicotineVgContent + flavorVgContent + premixedVgContent;
+        const actualPgFromAll = nicotinePgContent + flavorPgContent + premixedPgContent;
+        const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
+        
+        // Pokud slider hodnota odpovídá skutečnému poměru (±1.5%), nepřidávat doladění
+        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
+        
+        let adjustmentVg = 0;
+        let adjustmentPg = 0;
+        
+        if (!sliderMatchesActual) {
+            // Uživatel změnil slider - potřeba doladění
+            adjustmentVg = targetVgTotal - actualVgFromAll;
+            adjustmentPg = targetPgTotal - actualPgFromAll;
+            
+            if (adjustmentVg < 0) adjustmentVg = 0;
+            if (adjustmentPg < 0) adjustmentPg = 0;
+            
+            // Upravit předmíchanou bázi aby bylo místo na doladění
+            const totalAdjustment = adjustmentVg + adjustmentPg;
+            if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
+                premixedBaseVolume = remainingVolume - totalAdjustment;
+            }
+        }
+        
+        // Add premixed base
+        if (premixedBaseVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'premixedBase',
+                vgRatio: premixedVgPercent,
+                params: {
+                    vgpg: premixedRatio
+                },
+                volume: premixedBaseVolume,
+                percent: (premixedBaseVolume / totalAmount) * 100
+            });
+        }
+        
+        // Add adjustment VG if needed (only if user changed slider)
+        if (!sliderMatchesActual && adjustmentVg > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg_adjustment',
+                volume: adjustmentVg,
+                percent: (adjustmentVg / totalAmount) * 100
+            });
+            pureVgNeeded = adjustmentVg;
+        }
+        
+        // Add adjustment PG if needed (only if user changed slider)
+        if (!sliderMatchesActual && adjustmentPg > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg_adjustment',
+                volume: adjustmentPg,
+                percent: (adjustmentPg / totalAmount) * 100
+            });
+            purePgNeeded = adjustmentPg;
+        }
+    } else {
+        // SEPARATE PG/VG MODE (original logic)
+        pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
+        purePgNeeded = targetPgTotal - nicotinePgContent - flavorPgContent;
+        
+        if (pureVgNeeded < 0) pureVgNeeded = 0;
+        if (purePgNeeded < 0) purePgNeeded = 0;
+        
+        const totalPureNeeded = pureVgNeeded + purePgNeeded;
+        if (totalPureNeeded > remainingVolume && totalPureNeeded > 0) {
+            const ratio = remainingVolume / totalPureNeeded;
+            pureVgNeeded *= ratio;
+            purePgNeeded *= ratio;
+        } else if (totalPureNeeded < remainingVolume) {
+            const extra = remainingVolume - totalPureNeeded;
+            if (vgPercent + pgPercent > 0) {
+                pureVgNeeded += extra * (vgPercent / 100);
+                purePgNeeded += extra * (pgPercent / 100);
+            }
+        }
+        
+        if (purePgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg',
+                volume: purePgNeeded,
+                percent: (purePgNeeded / totalAmount) * 100,
+                drops: null,
+                showDrops: false
+            });
+        }
+        
+        if (pureVgNeeded > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg',
+                volume: pureVgNeeded,
+                percent: (pureVgNeeded / totalAmount) * 100,
+                drops: null,
+                showDrops: false
+            });
+        }
     }
     
-    if (pureVgNeeded > 0.01) {
-        ingredients.push({
-            ingredientKey: 'vg',
-            volume: pureVgNeeded,
-            percent: (pureVgNeeded / totalAmount) * 100,
-            drops: null,
-            showDrops: false
-        });
-    }
+    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent + (baseType === 'premixed' ? premixedBaseVolume * (premixedVgPercent / 100) : 0);
+    const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent + (baseType === 'premixed' ? premixedBaseVolume * ((100 - premixedVgPercent) / 100) : 0);
     
-    const actualVg = pureVgNeeded + nicotineVgContent + flavorVgContent;
-    const actualPg = purePgNeeded + nicotinePgContent + flavorPgContent;
-    
-    // Display results - pro formulář Shake and Vape zobrazí výsledky i nepřihlášeným
-    // Modál se zobrazí až při pokusu o uložení receptu
-    // Shake & Vape nemá výběr typu příchutě - použijeme 'fruit' jako výchozí (7 dní zrání)
+    // Display results
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, totalAmount, actualVg, actualPg, {
         formType: 'shakevape',
-        flavorType: 'fruit'
+        flavorType: 'fruit',
+        baseType: baseType,
+        premixedRatio: baseType === 'premixed' ? premixedRatio : null
     });
     showPage('results');
 }
