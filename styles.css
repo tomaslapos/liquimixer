@@ -6880,51 +6880,50 @@ body.subscription-required #subscriptionModal {
    Stock Bar - Battery Style
    ========================================= */
 
-/* Stock container */
+/* Stock container - inline with reminder item */
 .reminder-stock {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin: 12px 0;
-    padding: 8px 0;
+    gap: 8px;
+    margin-left: auto;
+    margin-right: 15px;
 }
 
-/* Battery container */
+/* Battery container - larger and more visible */
 .stock-battery {
     display: flex;
     align-items: center;
-    flex: 1;
-    max-width: 200px;
+    width: 100px;
 }
 
 /* Battery tip (right side) */
 .battery-tip {
-    width: 4px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 0 2px 2px 0;
+    width: 5px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 0 3px 3px 0;
     margin-left: -1px;
     order: 2;
 }
 
-/* Battery body */
+/* Battery body - larger */
 .battery-body {
     flex: 1;
-    height: 24px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
     position: relative;
     overflow: hidden;
     order: 1;
 }
 
-/* Battery level - animated */
+/* Battery level - animated, no transition delay */
 .battery-level {
     height: 100%;
     background: var(--neon-green);
-    border-radius: 2px;
-    transition: width 0.5s ease-out, background 0.5s ease;
+    border-radius: 3px;
+    transition: width 0.2s ease-out, background 0.2s ease;
     position: relative;
 }
 
@@ -6938,51 +6937,65 @@ body.subscription-required #subscriptionModal {
     50% { opacity: 0.6; }
 }
 
-/* Percentage inside battery */
+/* Percentage inside battery - black when high, white when low */
 .battery-percent {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     font-family: var(--font-primary);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    color: white;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    color: #000;
+    text-shadow: none;
     z-index: 1;
 }
 
-/* Stock control buttons - use same style as reminder-btn */
+.battery-percent.low-text {
+    color: #fff;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Stock control buttons - subtle, smaller */
 .reminder-btn.stock-minus,
 .reminder-btn.stock-plus {
-    width: 32px;
-    height: 32px;
-    font-size: 1.2rem;
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
     font-weight: bold;
     flex-shrink: 0;
+    opacity: 0.7;
+    border-width: 1px;
+}
+
+.reminder-btn.stock-minus:hover,
+.reminder-btn.stock-plus:hover {
+    opacity: 1;
 }
 
 .reminder-btn.stock-minus {
-    border-color: #ff6666;
-    color: #ff6666;
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .reminder-btn.stock-minus:hover {
-    background: rgba(255, 102, 102, 0.2);
-    border-color: #ff6666;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
 }
 
 .reminder-btn.stock-plus {
-    border-color: var(--neon-green);
-    color: var(--neon-green);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .reminder-btn.stock-plus:hover {
-    background: rgba(0, 255, 0, 0.2);
-    border-color: var(--neon-green);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
 }
 
-/* Stock bar in modal */
+/* Stock bar in modal - larger */
 .reminder-stock-modal {
     margin-top: 10px;
 }
@@ -6990,18 +7003,31 @@ body.subscription-required #subscriptionModal {
 .reminder-stock.modal-stock {
     justify-content: center;
     padding: 15px 0;
+    margin: 0;
 }
 
 .reminder-stock.modal-stock .stock-battery {
-    max-width: 250px;
+    width: 180px;
 }
 
-/* Back to database button */
-.back-to-database {
-    margin-bottom: 20px;
+.reminder-stock.modal-stock .battery-body {
+    height: 36px;
 }
 
-/* Filter toggle row */
+.reminder-stock.modal-stock .battery-percent {
+    font-size: 1rem;
+}
+
+.reminder-stock.modal-stock .reminder-btn.stock-minus,
+.reminder-stock.modal-stock .reminder-btn.stock-plus {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+    opacity: 1;
+    border-width: 2px;
+}
+
+/* Filter toggle row - proper alignment */
 .filter-toggle .toggle-row,
 .public-recipe-toggle .toggle-row {
     display: flex;
@@ -7013,11 +7039,23 @@ body.subscription-required #subscriptionModal {
 .public-recipe-toggle .toggle-label {
     cursor: pointer;
     color: var(--text-primary);
+    font-size: 0.9rem;
 }
 
 .public-recipe-toggle .toggle-hint {
     margin-left: 52px;
     margin-top: 5px;
+}
+
+/* Filter toggle in database - vertical alignment fix */
+.filter-group.filter-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.filter-group.filter-toggle .toggle-row {
+    padding-top: 8px;
 }
 
 /* =========================================

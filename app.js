@@ -1991,6 +1991,23 @@ async function showSaveRecipeModal() {
         // Inicializovat připomínku jako zaškrtnutou s dnešním datem
         initReminderFieldsEnabled();
         
+        // Blokovat "Sdílet do veřejné databáze" pokud ukládáme sdílený recept
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+        if (publicCheckbox && publicToggle) {
+            const isFromSharedRecipe = !!(window.currentSharedRecipe || window.pendingSharedRecipeUUID);
+            if (isFromSharedRecipe) {
+                publicCheckbox.checked = false;
+                publicCheckbox.disabled = true;
+                publicToggle.style.opacity = '0.5';
+                publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet již sdílený recept');
+            } else {
+                publicCheckbox.disabled = false;
+                publicToggle.style.opacity = '1';
+                publicToggle.title = '';
+            }
+        }
+        
         // Aplikovat překlady na modal
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
             window.i18n.applyTranslations();
@@ -9268,6 +9285,9 @@ function renderReminderItem(reminder, recipeId) {
         statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Vyzrálo')}</span>`;
     }
 
+    // Třída pro barvu procent (černá když >50%, bílá když <=50%)
+    const percentClass = stockPercent > 50 ? '' : 'low-text';
+
     return `
         <div class="reminder-item ${statusClass}" data-reminder-id="${reminder.id}">
             <div class="reminder-dates clickable" onclick="showViewReminderModal('${reminder.id}')">
@@ -9284,7 +9304,7 @@ function renderReminderItem(reminder, recipeId) {
                              id="stock-bar-${reminder.id}"
                              style="width: ${stockPercent}%; background: ${stockColor};">
                         </div>
-                        <span class="battery-percent">${stockPercent}%</span>
+                        <span class="battery-percent ${percentClass}" id="stock-percent-${reminder.id}">${stockPercent}%</span>
                     </div>
                     <div class="battery-tip"></div>
                 </div>
@@ -9700,23 +9720,25 @@ function showViewReminderModal(reminderId) {
     
     // Render stock bar v modalu
     if (stockContainer) {
-        const stockPercent = reminder.stock_percent ?? 100;
+        // Použít cache pokud existuje, jinak z reminder
+        const stockPercent = stockCache[reminderId] ?? reminder.stock_percent ?? 100;
         const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
                            stockPercent > 20 ? '#ffcc00' : '#ff4444';
         const lowClass = stockPercent <= 20 ? 'low' : '';
+        const percentClass = stockPercent > 50 ? '' : 'low-text';
         const recipeId = reminder.recipe_id || '';
         
         stockContainer.innerHTML = `
             <div class="reminder-stock modal-stock">
-                <button type="button" class="reminder-btn stock-minus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', -10); showViewReminderModal('${reminderId}');" title="-10%">−</button>
+                <button type="button" class="reminder-btn stock-minus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', -10);" title="-10%">−</button>
                 <div class="stock-battery">
                     <div class="battery-body">
                         <div class="battery-level ${lowClass}" style="width: ${stockPercent}%; background: ${stockColor};"></div>
-                        <span class="battery-percent">${stockPercent}%</span>
+                        <span class="battery-percent ${percentClass}">${stockPercent}%</span>
                     </div>
                     <div class="battery-tip"></div>
                 </div>
-                <button type="button" class="reminder-btn stock-plus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', +10); showViewReminderModal('${reminderId}');" title="+10%">+</button>
+                <button type="button" class="reminder-btn stock-plus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', +10);" title="+10%">+</button>
             </div>
         `;
     }
@@ -10000,20 +10022,22 @@ async function loadPublicRecipeDetail(recipeId) {
     }
 }
 
-// Přidat tlačítko zpět do databáze receptů
+// Přidat tlačítko zpět do databáze receptů - na konec k ostatním tlačítkům
 function appendBackToDatabaseButton() {
-    const container = document.getElementById('sharedRecipeContent');
-    if (!container) return;
+    // Najít button-group na stránce shared-recipe
+    const sharedRecipePage = document.getElementById('shared-recipe');
+    if (!sharedRecipePage) return;
     
-    // Přidat na začátek
+    const buttonGroup = sharedRecipePage.querySelector('.button-group');
+    if (!buttonGroup) return;
+    
+    // Přidat tlačítko zpět do databáze na začátek button-group
     const backBtnHtml = `
-        <div class="back-to-database">
-            <button class="neon-button secondary" onclick="showRecipeDatabase()">
-                <span data-i18n="form.back">◀ ZPĚT</span>
-            </button>
-        </div>
+        <button class="neon-button secondary" onclick="showRecipeDatabase()">
+            <span data-i18n="form.back">◀ ZPĚT DO DATABÁZE</span>
+        </button>
     `;
-    container.insertAdjacentHTML('afterbegin', backBtnHtml);
+    buttonGroup.insertAdjacentHTML('afterbegin', backBtnHtml);
 }
 
 // Přidat sekci hodnocení do detailu receptu
@@ -10072,66 +10096,82 @@ async function submitRating(recipeId, rating) {
 // =============================================
 
 // Aktualizovat zásobu připomínky (volá se z tlačítek +/-)
+// Cache pro aktuální stock hodnoty (aby nemusíme čekat na DB)
+const stockCache = {};
+
 async function updateReminderStockUI(reminderId, recipeId, delta) {
     const clerkId = window.Clerk?.user?.id;
     if (!clerkId) return;
     
-    try {
-        // Načíst aktuální stav
-        const reminder = await window.database.getReminderById(clerkId, reminderId);
-        if (!reminder) return;
-        
-        const currentStock = reminder.stock_percent ?? 100;
-        let newStock = Math.max(0, Math.min(100, currentStock + delta));
-        
-        // Animace změny
-        const stockBar = document.getElementById(`stock-bar-${reminderId}`);
-        if (stockBar) {
-            stockBar.style.transition = 'width 0.5s ease-out, background 0.5s ease';
-            stockBar.style.width = `${newStock}%`;
-            
-            // Změna barvy podle stavu
-            const stockColor = newStock > 50 ? 'var(--neon-green)' : 
-                               newStock > 20 ? '#ffcc00' : '#ff4444';
-            stockBar.style.background = stockColor;
-            
-            // Aktualizovat procenta
-            const percentLabel = stockBar.parentElement?.querySelector('.battery-percent');
-            if (percentLabel) percentLabel.textContent = `${newStock}%`;
-            
-            // Toggle low class pro animaci
-            if (newStock <= 20) {
-                stockBar.classList.add('low');
-            } else {
-                stockBar.classList.remove('low');
-            }
-        }
-        
-        // Při dosažení 0% - zobrazit dialog
-        if (newStock === 0) {
-            const confirmed = await showConsumedConfirmDialog();
-            if (confirmed) {
-                await window.database.markReminderConsumed(clerkId, reminderId);
-                showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
-                // Refresh seznamu - připomínka zmizí
-                loadRecipeReminders(recipeId);
-            } else {
-                // Vrátit na 10%
-                newStock = 10;
-                if (stockBar) {
-                    stockBar.style.width = '10%';
-                    stockBar.style.background = '#ff4444';
-                    const percentLabel = stockBar.parentElement?.querySelector('.battery-percent');
-                    if (percentLabel) percentLabel.textContent = '10%';
-                }
-                await window.database.updateReminderStock(clerkId, reminderId, 10);
-            }
+    // Použít cache nebo načíst z allRecipeReminders
+    let currentStock = stockCache[reminderId];
+    if (currentStock === undefined) {
+        const reminder = allRecipeReminders.find(r => r.id === reminderId);
+        currentStock = reminder?.stock_percent ?? 100;
+    }
+    
+    let newStock = Math.max(0, Math.min(100, currentStock + delta));
+    stockCache[reminderId] = newStock; // Uložit do cache
+    
+    // Okamžitá aktualizace UI (bez čekání na DB)
+    updateStockBarVisual(reminderId, newStock);
+    
+    // Při dosažení 0% - zobrazit dialog
+    if (newStock === 0) {
+        const confirmed = await showConsumedConfirmDialog();
+        if (confirmed) {
+            // Uložit do DB a obnovit seznam
+            await window.database.markReminderConsumed(clerkId, reminderId);
+            delete stockCache[reminderId];
+            showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
+            loadRecipeReminders(recipeId);
+            hideViewReminderModal();
         } else {
-            await window.database.updateReminderStock(clerkId, reminderId, newStock);
+            // Vrátit na 10%
+            newStock = 10;
+            stockCache[reminderId] = 10;
+            updateStockBarVisual(reminderId, 10);
+            window.database.updateReminderStock(clerkId, reminderId, 10);
         }
-    } catch (error) {
-        console.error('Error updating stock:', error);
-        showNotification(t('common.error', 'Chyba při aktualizaci'), 'error');
+    } else {
+        // Uložit do DB na pozadí (neblokuje UI)
+        window.database.updateReminderStock(clerkId, reminderId, newStock);
+    }
+}
+
+// Pomocná funkce pro vizuální aktualizaci stock baru
+function updateStockBarVisual(reminderId, newStock) {
+    // Najít všechny stock bary s tímto ID (může být v seznamu i v modalu)
+    const stockBars = document.querySelectorAll(`[id^="stock-bar-${reminderId}"], .modal-stock .battery-level`);
+    const percentLabels = document.querySelectorAll(`[id^="stock-percent-${reminderId}"], .modal-stock .battery-percent`);
+    
+    const stockColor = newStock > 50 ? 'var(--neon-green)' : 
+                       newStock > 20 ? '#ffcc00' : '#ff4444';
+    const percentClass = newStock > 50 ? '' : 'low-text';
+    
+    stockBars.forEach(bar => {
+        bar.style.width = `${newStock}%`;
+        bar.style.background = stockColor;
+        if (newStock <= 20) {
+            bar.classList.add('low');
+        } else {
+            bar.classList.remove('low');
+        }
+    });
+    
+    percentLabels.forEach(label => {
+        label.textContent = `${newStock}%`;
+        if (newStock > 50) {
+            label.classList.remove('low-text');
+        } else {
+            label.classList.add('low-text');
+        }
+    });
+    
+    // Aktualizovat také v allRecipeReminders cache
+    const reminder = allRecipeReminders.find(r => r.id === reminderId);
+    if (reminder) {
+        reminder.stock_percent = newStock;
     }
 }
 
