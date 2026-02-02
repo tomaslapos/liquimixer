@@ -212,6 +212,144 @@ const additiveDatabase = {
     }
 };
 
+// Shisha flavor database - příchutě pro hookah/shisha
+// Vyšší koncentrace než e-liquid, kratší zrání
+const shishaFlavorDatabase = {
+    none: { 
+        name: 'Žádná (bez příchutě)', 
+        min: 0, max: 0, ideal: 0, steepingDays: 0,
+        composition: { pg: 0, vg: 0, alcohol: 0, water: 0, other: 0 }
+    },
+    double_apple: { 
+        name: 'Double Apple (klasika)', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
+    },
+    mint: { 
+        name: 'Mint / Máta', 
+        min: 10, max: 18, ideal: 15, steepingDays: 1,
+        composition: { pg: 35, vg: 5, alcohol: 50, water: 5, other: 5 }
+    },
+    grape: { 
+        name: 'Grape / Hroznové', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
+    },
+    watermelon: { 
+        name: 'Watermelon / Meloun', 
+        min: 15, max: 25, ideal: 20, steepingDays: 2,
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    lemon_mint: { 
+        name: 'Lemon Mint', 
+        min: 12, max: 20, ideal: 16, steepingDays: 2,
+        composition: { pg: 50, vg: 5, alcohol: 35, water: 5, other: 5 }
+    },
+    blueberry: { 
+        name: 'Blueberry / Borůvka', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    },
+    peach: { 
+        name: 'Peach / Broskev', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    mango: { 
+        name: 'Mango', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    strawberry: { 
+        name: 'Strawberry / Jahoda', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    },
+    mixed_fruit: { 
+        name: 'Mixed Fruit', 
+        min: 18, max: 28, ideal: 22, steepingDays: 4,
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    cola: { 
+        name: 'Cola', 
+        min: 12, max: 20, ideal: 16, steepingDays: 3,
+        composition: { pg: 40, vg: 30, alcohol: 20, water: 5, other: 5 }
+    },
+    gum: { 
+        name: 'Gum / Žvýkačka', 
+        min: 15, max: 25, ideal: 20, steepingDays: 2,
+        composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
+    },
+    rose: { 
+        name: 'Rose / Růže', 
+        min: 10, max: 18, ideal: 14, steepingDays: 4,
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    },
+    custom: { 
+        name: 'Vlastní', 
+        min: 10, max: 30, ideal: 20, steepingDays: 3,
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    }
+};
+
+// Sweetener database - sladidla pro shisha
+const sweetenerDatabase = {
+    sucralose: {
+        name: 'Sukralóza',
+        nameKey: 'shisha.sweetener_sucralose',
+        defaultPercent: 3,
+        minPercent: 1,
+        maxPercent: 8,
+        density: 1.5,
+        composition: { pg: 90, vg: 0, alcohol: 0, water: 10, other: 0 }
+    },
+    ethyl_maltol: {
+        name: 'Ethyl Maltol',
+        nameKey: 'shisha.sweetener_ethyl_maltol',
+        defaultPercent: 2,
+        minPercent: 0.5,
+        maxPercent: 5,
+        density: 1.0,
+        composition: { pg: 100, vg: 0, alcohol: 0, water: 0, other: 0 }
+    },
+    stevia: {
+        name: 'Stevia',
+        nameKey: 'shisha.sweetener_stevia',
+        defaultPercent: 2,
+        minPercent: 0.5,
+        maxPercent: 5,
+        density: 1.0,
+        composition: { pg: 80, vg: 0, alcohol: 0, water: 20, other: 0 }
+    },
+    honey: {
+        name: 'Med',
+        nameKey: 'shisha.sweetener_honey',
+        defaultPercent: 5,
+        minPercent: 2,
+        maxPercent: 10,
+        density: 1.42,
+        composition: { pg: 0, vg: 0, alcohol: 0, water: 20, other: 80 }
+    },
+    molasses: {
+        name: 'Melasa',
+        nameKey: 'shisha.sweetener_molasses',
+        defaultPercent: 5,
+        minPercent: 2,
+        maxPercent: 10,
+        density: 1.4,
+        composition: { pg: 0, vg: 0, alcohol: 0, water: 25, other: 75 }
+    },
+    agave: {
+        name: 'Agáve',
+        nameKey: 'shisha.sweetener_agave',
+        defaultPercent: 4,
+        minPercent: 2,
+        maxPercent: 8,
+        density: 1.35,
+        composition: { pg: 0, vg: 0, alcohol: 0, water: 25, other: 75 }
+    }
+};
+
 // Densities for gram calculations (g/ml)
 const ingredientDensities = {
     pg: 1.036,
@@ -250,6 +388,8 @@ function mlToGrams(volumeMl, density) {
 
 // Export additive database
 window.additiveDatabase = additiveDatabase;
+window.shishaFlavorDatabase = shishaFlavorDatabase;
+window.sweetenerDatabase = sweetenerDatabase;
 window.ingredientDensities = ingredientDensities;
 window.calculateCompositionDensity = calculateCompositionDensity;
 window.mlToGrams = mlToGrams;
@@ -829,7 +969,32 @@ function calculateActualVgPgRatio(formType) {
     let flavorVolume = 0, flavorVgPercent = 0;
     let premixedVgPercent = 50;
     
-    if (formType === 'pro') {
+    if (formType === 'shisha') {
+        // Shisha form
+        totalAmount = parseFloat(document.getElementById('shTotalAmount')?.value) || 200;
+        const nicToggle = document.getElementById('shNicotineToggle');
+        nicotineType = (nicToggle && nicToggle.checked) ? 'freebase' : 'none';
+        targetNicotine = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
+        baseNicotine = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
+        nicVgPercent = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        
+        // Get flavors data
+        const flavorsData = typeof getShishaFlavorsData === 'function' ? getShishaFlavorsData() : [];
+        if (flavorsData.length > 0) {
+            const totalFlavorVg = flavorsData.reduce((sum, f) => sum + (f.vgRatio * f.percent), 0);
+            const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
+            flavorVgPercent = totalFlavorPercent > 0 ? totalFlavorVg / totalFlavorPercent : 0;
+            flavorVolume = (totalFlavorPercent / 100) * totalAmount;
+        }
+        
+        // Get premixed ratio
+        const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
+        if (premixedRatio === 'custom') {
+            premixedVgPercent = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 80;
+        } else {
+            premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 80;
+        }
+    } else if (formType === 'pro') {
         totalAmount = parseFloat(document.getElementById('proTotalAmount')?.value) || 100;
         nicotineType = document.getElementById('proNicotineType')?.value || 'none';
         targetNicotine = parseFloat(document.getElementById('proTargetNicotine')?.value) || 0;
@@ -905,8 +1070,14 @@ function calculateActualVgPgRatio(formType) {
     // Total VG
     const totalVg = vgFromNicotine + vgFromFlavor + vgFromBase;
     const actualVgPercent = Math.round((totalVg / totalAmount) * 100);
+    const clampedVg = Math.max(0, Math.min(100, actualVgPercent));
     
-    return Math.max(0, Math.min(100, actualVgPercent));
+    // For shisha, return object with actualVg
+    if (formType === 'shisha') {
+        return { actualVg: clampedVg };
+    }
+    
+    return clampedVg;
 }
 
 // Update PRO base type (separate or premixed)
@@ -1990,15 +2161,6 @@ async function showSaveRecipeModal() {
         
         // Inicializovat připomínku jako zaškrtnutou s dnešním datem
         initReminderFieldsEnabled();
-        
-        // Odblokovat "Sdílet do veřejné databáze" - toto je NOVÝ recept z kalkulátoru
-        const publicCheckbox = document.getElementById('recipeIsPublic');
-        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
-        if (publicCheckbox && publicToggle) {
-            publicCheckbox.disabled = false;
-            publicToggle.style.opacity = '1';
-            publicToggle.title = '';
-        }
         
         // Aplikovat překlady na modal
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
@@ -3300,20 +3462,6 @@ async function showEditRecipeForm() {
         }
     }
     
-    // Odblokovat "Sdílet do veřejné databáze" - toto je úprava VLASTNÍHO receptu
-    const publicCheckbox = document.getElementById('recipeIsPublic');
-    const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
-    if (publicCheckbox && publicToggle) {
-        publicCheckbox.disabled = false;
-        publicToggle.style.opacity = '1';
-        publicToggle.title = '';
-        // Nastavit aktuální hodnotu z receptu
-        publicCheckbox.checked = !!currentViewingRecipe.is_public;
-    }
-    
-    // Inicializovat připomínku
-    initReminderFieldsEnabled();
-    
     modal.classList.remove('hidden');
 }
 
@@ -3666,16 +3814,6 @@ async function saveSharedRecipe() {
         
         // Inicializovat připomínku
         initReminderFieldsEnabled();
-        
-        // Blokovat "Sdílet do veřejné databáze" - ukládáme sdílený recept
-        const publicCheckbox = document.getElementById('recipeIsPublic');
-        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
-        if (publicCheckbox && publicToggle) {
-            publicCheckbox.checked = false;
-            publicCheckbox.disabled = true;
-            publicToggle.style.opacity = '0.5';
-            publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet již sdílený recept');
-        }
         
         // Aplikovat překlady
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
@@ -6239,6 +6377,8 @@ function switchFormTab(tabName) {
         initLiquidProForm();
     } else if (tabName === 'shortfill') {
         calculateShortfill();
+    } else if (tabName === 'shisha') {
+        initShishaForm();
     }
 }
 
@@ -9301,9 +9441,6 @@ function renderReminderItem(reminder, recipeId) {
         statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Vyzrálo')}</span>`;
     }
 
-    // Třída pro barvu procent (černá když >50%, bílá když <=50%)
-    const percentClass = stockPercent > 50 ? '' : 'low-text';
-
     return `
         <div class="reminder-item ${statusClass}" data-reminder-id="${reminder.id}">
             <div class="reminder-dates clickable" onclick="showViewReminderModal('${reminder.id}')">
@@ -9311,30 +9448,30 @@ function renderReminderItem(reminder, recipeId) {
                 <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
             </div>
             
-            <!-- Druhý řádek: Stock bar + akční tlačítka -->
-            <div class="reminder-controls">
-                <div class="reminder-stock">
-                    <button type="button" class="reminder-btn stock-minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
-                    <div class="stock-battery">
-                        <div class="battery-body">
-                            <div class="battery-level ${lowClass}" 
-                                 id="stock-bar-${reminder.id}"
-                                 style="width: ${stockPercent}%; background: ${stockColor};">
-                            </div>
-                            <span class="battery-percent ${percentClass}" id="stock-percent-${reminder.id}">${stockPercent}%</span>
+            <!-- Stock bar - bateriový styl -->
+            <div class="reminder-stock">
+                <div class="stock-battery">
+                    <div class="battery-body">
+                        <div class="battery-level ${lowClass}" 
+                             id="stock-bar-${reminder.id}"
+                             style="width: ${stockPercent}%; background: ${stockColor};">
                         </div>
-                        <div class="battery-tip"></div>
+                        <span class="battery-percent">${stockPercent}%</span>
                     </div>
-                    <button type="button" class="reminder-btn stock-plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
+                    <div class="battery-tip"></div>
                 </div>
-                
-                ${reminder.status === 'pending' ? `
-                    <div class="reminder-actions">
-                        <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
-                        <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
-                    </div>
-                ` : ''}
+                <div class="stock-controls">
+                    <button type="button" class="stock-btn minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
+                    <button type="button" class="stock-btn plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
+                </div>
             </div>
+            
+            ${reminder.status === 'pending' ? `
+                <div class="reminder-actions">
+                    <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
+                    <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+                </div>
+            ` : ''}
         </div>
     `;
 }
@@ -9730,36 +9867,10 @@ function showViewReminderModal(reminderId) {
     const mixDateEl = document.getElementById('viewReminderMixDate');
     const remindDateEl = document.getElementById('viewReminderRemindDate');
     const noteEl = document.getElementById('viewReminderNote');
-    const stockContainer = document.getElementById('viewReminderStockContainer');
 
     if (mixDateEl) mixDateEl.textContent = formatDate(reminder.mixed_at);
     if (remindDateEl) remindDateEl.textContent = formatDate(reminder.remind_at);
     if (noteEl) noteEl.textContent = reminder.note || t('reminder.no_note', 'Bez poznámky');
-    
-    // Render stock bar v modalu
-    if (stockContainer) {
-        // Použít cache pokud existuje, jinak z reminder
-        const stockPercent = stockCache[reminderId] ?? reminder.stock_percent ?? 100;
-        const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
-                           stockPercent > 20 ? '#ffcc00' : '#ff4444';
-        const lowClass = stockPercent <= 20 ? 'low' : '';
-        const percentClass = stockPercent > 50 ? '' : 'low-text';
-        const recipeId = reminder.recipe_id || '';
-        
-        stockContainer.innerHTML = `
-            <div class="reminder-stock modal-stock">
-                <button type="button" class="reminder-btn stock-minus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', -10);" title="-10%">−</button>
-                <div class="stock-battery">
-                    <div class="battery-body">
-                        <div class="battery-level ${lowClass}" style="width: ${stockPercent}%; background: ${stockColor};"></div>
-                        <span class="battery-percent ${percentClass}">${stockPercent}%</span>
-                    </div>
-                    <div class="battery-tip"></div>
-                </div>
-                <button type="button" class="reminder-btn stock-plus" onclick="updateReminderStockUI('${reminderId}', '${recipeId}', +10);" title="+10%">+</button>
-            </div>
-        `;
-    }
 
     modal.classList.remove('hidden');
 }
@@ -9800,46 +9911,25 @@ function showRecipeDatabase() {
     
     showPage('recipe-database');
     initFlavorFilterOptions();
-    
-    // Aplikovat překlady po zobrazení stránky
-    if (window.i18n?.applyTranslations) {
-        window.i18n.applyTranslations();
-    }
-    
     loadPublicRecipes();
 }
 
 // Inicializovat select s typy příchutí z flavorDatabase
 function initFlavorFilterOptions() {
     const select = document.getElementById('dbFilterFlavorType');
-    if (!select) return;
+    if (!select || select.options.length > 1) return; // Již inicializováno
     
-    // Uložit aktuální vybranou hodnotu
-    const currentValue = select.value;
-    
-    // Vymazat existující options (kromě první "Všechny")
-    while (select.options.length > 1) {
-        select.remove(1);
-    }
-    
-    // Přeložit první option "Všechny"
-    if (select.options[0]) {
-        select.options[0].textContent = t('recipe_database.all', 'Všechny');
-    }
-    
-    // Přidat typy z flavorDatabase s překlady
+    // Přidat typy z flavorDatabase
     if (window.flavorDatabase) {
         Object.keys(window.flavorDatabase).forEach(key => {
             if (key === 'none') return; // Přeskočit "Žádná"
             const option = document.createElement('option');
             option.value = key;
-            option.textContent = t(`form.flavor_type_${key}`, window.flavorDatabase[key]?.name || key);
+            const flavorData = window.flavorDatabase[key];
+            option.textContent = t(`form.flavor_type_${key}`, flavorData.name || key);
             select.appendChild(option);
         });
     }
-    
-    // Obnovit vybranou hodnotu
-    select.value = currentValue;
 }
 
 // Toggle rozbalovacích filtrů
@@ -9852,10 +9942,6 @@ function toggleDatabaseFilters() {
         panel.classList.remove('hidden');
         panel.classList.add('open');
         icon.textContent = '▲';
-        // Aplikovat překlady po otevření panelu (pro <option> elementy)
-        if (window.i18n?.applyTranslations) {
-            window.i18n.applyTranslations();
-        }
     } else {
         panel.classList.remove('open');
         panel.classList.add('hidden');
@@ -10037,7 +10123,6 @@ async function loadPublicRecipeDetail(recipeId) {
         }
         
         window.currentSharedRecipe = recipe;
-        window.cameFromRecipeDatabase = true; // Flag pro tlačítko zpět
         
         // Načíst hodnocení uživatele
         let userRating = 0;
@@ -10051,9 +10136,6 @@ async function loadPublicRecipeDetail(recipeId) {
         // Přidat sekci hodnocení
         appendRatingSection(recipeId, recipe.public_rating_avg || 0, recipe.public_rating_count || 0, userRating);
         
-        // Přidat tlačítko zpět do databáze
-        appendBackToDatabaseButton();
-        
         showPage('shared-recipe');
         
         if (window.i18n?.applyTranslations) {
@@ -10063,28 +10145,6 @@ async function loadPublicRecipeDetail(recipeId) {
         console.error('Error loading public recipe detail:', error);
         showNotification(t('common.error', 'Chyba při načítání receptu'), 'error');
     }
-}
-
-// Přidat tlačítko zpět do databáze receptů - na konec k ostatním tlačítkům
-function appendBackToDatabaseButton() {
-    // Najít button-group na stránce shared-recipe
-    const sharedRecipePage = document.getElementById('shared-recipe');
-    if (!sharedRecipePage) return;
-    
-    const buttonGroup = sharedRecipePage.querySelector('.button-group');
-    if (!buttonGroup) return;
-    
-    // Odstranit existující tlačítka zpět do databáze (aby se nehromadily)
-    const existingBackBtns = buttonGroup.querySelectorAll('.back-to-db-btn');
-    existingBackBtns.forEach(btn => btn.remove());
-    
-    // Přidat tlačítko zpět do databáze na začátek button-group
-    const backBtnHtml = `
-        <button class="neon-button secondary back-to-db-btn" onclick="showRecipeDatabase()">
-            <span data-i18n="form.back">◀ ZPĚT DO DATABÁZE</span>
-        </button>
-    `;
-    buttonGroup.insertAdjacentHTML('afterbegin', backBtnHtml);
 }
 
 // Přidat sekci hodnocení do detailu receptu
@@ -10143,82 +10203,66 @@ async function submitRating(recipeId, rating) {
 // =============================================
 
 // Aktualizovat zásobu připomínky (volá se z tlačítek +/-)
-// Cache pro aktuální stock hodnoty (aby nemusíme čekat na DB)
-const stockCache = {};
-
 async function updateReminderStockUI(reminderId, recipeId, delta) {
     const clerkId = window.Clerk?.user?.id;
     if (!clerkId) return;
     
-    // Použít cache nebo načíst z allRecipeReminders
-    let currentStock = stockCache[reminderId];
-    if (currentStock === undefined) {
-        const reminder = allRecipeReminders.find(r => r.id === reminderId);
-        currentStock = reminder?.stock_percent ?? 100;
-    }
-    
-    let newStock = Math.max(0, Math.min(100, currentStock + delta));
-    stockCache[reminderId] = newStock; // Uložit do cache
-    
-    // Okamžitá aktualizace UI (bez čekání na DB)
-    updateStockBarVisual(reminderId, newStock);
-    
-    // Při dosažení 0% - zobrazit dialog
-    if (newStock === 0) {
-        const confirmed = await showConsumedConfirmDialog();
-        if (confirmed) {
-            // Uložit do DB a obnovit seznam
-            await window.database.markReminderConsumed(clerkId, reminderId);
-            delete stockCache[reminderId];
-            showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
-            loadRecipeReminders(recipeId);
-            hideViewReminderModal();
-        } else {
-            // Vrátit na 10%
-            newStock = 10;
-            stockCache[reminderId] = 10;
-            updateStockBarVisual(reminderId, 10);
-            window.database.updateReminderStock(clerkId, reminderId, 10);
+    try {
+        // Načíst aktuální stav
+        const reminder = await window.database.getReminderById(clerkId, reminderId);
+        if (!reminder) return;
+        
+        const currentStock = reminder.stock_percent ?? 100;
+        let newStock = Math.max(0, Math.min(100, currentStock + delta));
+        
+        // Animace změny
+        const stockBar = document.getElementById(`stock-bar-${reminderId}`);
+        if (stockBar) {
+            stockBar.style.transition = 'width 0.5s ease-out, background 0.5s ease';
+            stockBar.style.width = `${newStock}%`;
+            
+            // Změna barvy podle stavu
+            const stockColor = newStock > 50 ? 'var(--neon-green)' : 
+                               newStock > 20 ? '#ffcc00' : '#ff4444';
+            stockBar.style.background = stockColor;
+            
+            // Aktualizovat procenta
+            const percentLabel = stockBar.parentElement?.querySelector('.battery-percent');
+            if (percentLabel) percentLabel.textContent = `${newStock}%`;
+            
+            // Toggle low class pro animaci
+            if (newStock <= 20) {
+                stockBar.classList.add('low');
+            } else {
+                stockBar.classList.remove('low');
+            }
         }
-    } else {
-        // Uložit do DB na pozadí (neblokuje UI)
-        window.database.updateReminderStock(clerkId, reminderId, newStock);
-    }
-}
-
-// Pomocná funkce pro vizuální aktualizaci stock baru
-function updateStockBarVisual(reminderId, newStock) {
-    // Najít všechny stock bary s tímto ID (může být v seznamu i v modalu)
-    const stockBars = document.querySelectorAll(`[id^="stock-bar-${reminderId}"], .modal-stock .battery-level`);
-    const percentLabels = document.querySelectorAll(`[id^="stock-percent-${reminderId}"], .modal-stock .battery-percent`);
-    
-    const stockColor = newStock > 50 ? 'var(--neon-green)' : 
-                       newStock > 20 ? '#ffcc00' : '#ff4444';
-    const percentClass = newStock > 50 ? '' : 'low-text';
-    
-    stockBars.forEach(bar => {
-        bar.style.width = `${newStock}%`;
-        bar.style.background = stockColor;
-        if (newStock <= 20) {
-            bar.classList.add('low');
+        
+        // Při dosažení 0% - zobrazit dialog
+        if (newStock === 0) {
+            const confirmed = await showConsumedConfirmDialog();
+            if (confirmed) {
+                await window.database.markReminderConsumed(clerkId, reminderId);
+                showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
+                // Refresh seznamu - připomínka zmizí
+                loadRecipeReminders(recipeId);
+            } else {
+                // Vrátit na 10%
+                newStock = 10;
+                if (stockBar) {
+                    stockBar.style.width = '10%';
+                    stockBar.style.background = '#ff4444';
+                    const percentLabel = stockBar.parentElement?.querySelector('.battery-percent');
+                    if (percentLabel) percentLabel.textContent = '10%';
+                }
+                await window.database.updateReminderStock(clerkId, reminderId, 10);
+            }
         } else {
-            bar.classList.remove('low');
+            await window.database.updateReminderStock(clerkId, reminderId, newStock);
         }
-    });
-    
-    percentLabels.forEach(label => {
-        label.textContent = `${newStock}%`;
-        if (newStock > 50) {
-            label.classList.remove('low-text');
-        } else {
-            label.classList.add('low-text');
-        }
-    });
-    
-    // Aktualizovat také v allRecipeReminders cache
-    const reminder = allRecipeReminders.find(r => r.id === reminderId);
-    if (reminder) {
-        reminder.stock_percent = newStock;
+    } catch (error) {
+        console.error('Error updating stock:', error);
+        showNotification(t('common.error', 'Chyba při aktualizaci'), 'error');
     }
 }
 
@@ -10370,3 +10414,930 @@ window.adjustProFlavorRatio = adjustProFlavorRatio;
 window.updateProFlavorRatioDisplay = updateProFlavorRatioDisplay;
 window.autoRecalculateProVgPgRatio = autoRecalculateProVgPgRatio;
 
+// =========================================
+// SHISHA (Hookah) Functions
+// =========================================
+
+let shVgPgLimits = { min: 0, max: 100 };
+let shFlavorCount = 1;
+
+// Initialize Shisha form
+function initShishaForm() {
+    updateShishaVgPgLimits();
+    updateShishaRatioDisplay();
+    updateShishaFlavorType(1);
+    updateShishaTotalFlavorPercent();
+    updateShishaPremiumElements();
+    
+    // Apply translations
+    if (window.i18n && window.i18n.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+}
+
+// Premium elements management
+function updateShishaPremiumElements() {
+    const isPremium = window.checkSubscriptionStatus && window.checkSubscriptionStatus();
+    
+    // Custom base ratio button
+    const customBaseBtn = document.querySelector('.sh-premixed-ratio-btn[data-value="custom"]');
+    const customBaseBadge = document.getElementById('shCustomBasePremiumBadge');
+    
+    if (customBaseBtn) {
+        if (isPremium) {
+            customBaseBtn.classList.remove('locked');
+            if (customBaseBadge) customBaseBadge.classList.add('hidden');
+        } else {
+            customBaseBtn.classList.add('locked');
+        }
+    }
+    
+    // Add flavor button
+    const addFlavorGroup = document.getElementById('shAddFlavorGroup');
+    const addFlavorBadge = document.getElementById('shAddFlavorPremiumBadge');
+    
+    if (addFlavorGroup) {
+        if (isPremium) {
+            addFlavorGroup.classList.remove('locked');
+            if (addFlavorBadge) addFlavorBadge.classList.add('hidden');
+        } else {
+            addFlavorGroup.classList.add('locked');
+            if (addFlavorBadge) addFlavorBadge.classList.remove('hidden');
+        }
+    }
+}
+
+// Premixed base ratio
+function updateShishaPremixedRatio(ratio) {
+    const isPremium = window.checkSubscriptionStatus && window.checkSubscriptionStatus();
+    
+    // Check if custom requires premium
+    if (ratio === 'custom' && !isPremium) {
+        if (window.requireSubscription) {
+            window.requireSubscription();
+        }
+        return;
+    }
+    
+    // Update active button
+    document.querySelectorAll('.sh-premixed-ratio-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.value === ratio) {
+            btn.classList.add('active');
+        }
+    });
+    
+    document.getElementById('shPremixedRatio').value = ratio;
+    
+    // Show/hide custom container
+    const customContainer = document.getElementById('shCustomPremixedContainer');
+    if (ratio === 'custom') {
+        customContainer.classList.remove('hidden');
+    } else {
+        customContainer.classList.add('hidden');
+    }
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+function updateShishaCustomPremixedPg() {
+    const vgInput = document.getElementById('shCustomPremixedVg');
+    const pgInput = document.getElementById('shCustomPremixedPg');
+    
+    let vg = parseInt(vgInput.value) || 0;
+    vg = Math.max(0, Math.min(100, vg));
+    vgInput.value = vg;
+    pgInput.value = 100 - vg;
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+// Nicotine toggle and functions
+function toggleShishaNicotine() {
+    const toggle = document.getElementById('shNicotineToggle');
+    const container = document.getElementById('shNicotineContainer');
+    
+    if (toggle.checked) {
+        container.classList.remove('hidden');
+        updateShishaNicRatioDisplay();
+        updateShishaNicotineDisplay();
+    } else {
+        container.classList.add('hidden');
+    }
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+function updateShishaNicotineType() {
+    autoRecalculateShishaVgPgRatio();
+}
+
+function adjustShishaNicRatio(change) {
+    const slider = document.getElementById('shNicotineRatioSlider');
+    let currentValue = parseInt(slider.value);
+    
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(0, Math.min(100, newValue));
+    slider.value = newValue;
+    updateShishaNicRatioDisplay();
+}
+
+function updateShishaNicRatioDisplay() {
+    const slider = document.getElementById('shNicotineRatioSlider');
+    const vgValue = document.getElementById('shNicVgValue');
+    const pgValue = document.getElementById('shNicPgValue');
+    const track = document.getElementById('shNicotineTrackRatio');
+    
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    vgValue.textContent = vg;
+    pgValue.textContent = pg;
+    
+    if (track) {
+        track.style.width = vg + '%';
+    }
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+function adjustShishaTargetNicotine(change) {
+    const slider = document.getElementById('shTargetNicotine');
+    let currentValue = parseFloat(slider.value);
+    
+    let newValue = currentValue + (change * 0.5);
+    newValue = Math.max(0, Math.min(6, newValue));
+    slider.value = newValue;
+    updateShishaNicotineDisplay();
+}
+
+function updateShishaNicotineDisplay() {
+    const slider = document.getElementById('shTargetNicotine');
+    const display = document.getElementById('shTargetNicotineValue');
+    const track = document.getElementById('shNicotineTrack');
+    
+    const value = parseFloat(slider.value);
+    display.textContent = value;
+    
+    if (track) {
+        track.style.width = (value / 6 * 100) + '%';
+    }
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+// Flavor functions
+function updateShishaFlavorType(index) {
+    const select = document.getElementById(`shFlavorType${index}`);
+    const strengthContainer = document.getElementById(`shFlavorStrengthContainer${index}`);
+    
+    if (!select) return;
+    
+    const flavorType = select.value;
+    
+    if (flavorType === 'none') {
+        if (strengthContainer) strengthContainer.classList.add('hidden');
+    } else {
+        if (strengthContainer) strengthContainer.classList.remove('hidden');
+        
+        // Set default strength from database
+        const flavor = shishaFlavorDatabase[flavorType];
+        if (flavor) {
+            const slider = document.getElementById(`shFlavorStrength${index}`);
+            if (slider) {
+                slider.value = flavor.ideal;
+                updateShishaFlavorStrength(index);
+            }
+        }
+    }
+    
+    updateShishaTotalFlavorPercent();
+    autoRecalculateShishaVgPgRatio();
+}
+
+function adjustShishaFlavor(index, change) {
+    const slider = document.getElementById(`shFlavorStrength${index}`);
+    if (!slider) return;
+    
+    let currentValue = parseInt(slider.value);
+    let newValue = currentValue + change;
+    newValue = Math.max(0, Math.min(30, newValue));
+    slider.value = newValue;
+    updateShishaFlavorStrength(index);
+}
+
+function updateShishaFlavorStrength(index) {
+    const slider = document.getElementById(`shFlavorStrength${index}`);
+    const display = document.getElementById(`shFlavorValue${index}`);
+    const track = document.getElementById(`shFlavorTrack${index}`);
+    
+    if (!slider) return;
+    
+    const value = parseInt(slider.value);
+    if (display) display.textContent = value;
+    if (track) track.style.width = (value / 30 * 100) + '%';
+    
+    updateShishaTotalFlavorPercent();
+    autoRecalculateShishaVgPgRatio();
+}
+
+function adjustShishaFlavorRatio(index, change) {
+    const slider = document.getElementById(`shFlavorRatioSlider${index}`);
+    if (!slider) return;
+    
+    let currentValue = parseInt(slider.value);
+    let newValue;
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    newValue = Math.max(0, Math.min(100, newValue));
+    slider.value = newValue;
+    updateShishaFlavorRatioDisplay(index);
+}
+
+function updateShishaFlavorRatioDisplay(index) {
+    const slider = document.getElementById(`shFlavorRatioSlider${index}`);
+    const vgValue = document.getElementById(`shFlavorVgValue${index}`);
+    const pgValue = document.getElementById(`shFlavorPgValue${index}`);
+    const track = document.getElementById(`shFlavorTrackRatio${index}`);
+    
+    if (!slider) return;
+    
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    if (vgValue) vgValue.textContent = vg;
+    if (pgValue) pgValue.textContent = pg;
+    if (track) track.style.width = vg + '%';
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+function updateShishaTotalFlavorPercent() {
+    let total = 0;
+    
+    for (let i = 1; i <= shFlavorCount; i++) {
+        const select = document.getElementById(`shFlavorType${i}`);
+        const slider = document.getElementById(`shFlavorStrength${i}`);
+        
+        if (select && slider && select.value !== 'none') {
+            total += parseInt(slider.value) || 0;
+        }
+    }
+    
+    const totalDisplay = document.getElementById('shTotalFlavorPercent');
+    const warningDisplay = document.getElementById('shFlavorTotalWarning');
+    
+    if (totalDisplay) totalDisplay.textContent = total;
+    
+    if (warningDisplay) {
+        if (total > 25 || (total > 0 && total < 15)) {
+            warningDisplay.classList.remove('hidden');
+        } else {
+            warningDisplay.classList.add('hidden');
+        }
+    }
+}
+
+function addShishaFlavor() {
+    const isPremium = window.checkSubscriptionStatus && window.checkSubscriptionStatus();
+    
+    if (!isPremium) {
+        if (window.requireSubscription) {
+            window.requireSubscription();
+        }
+        return;
+    }
+    
+    if (shFlavorCount >= 4) return;
+    
+    shFlavorCount++;
+    const container = document.getElementById('shAdditionalFlavorsContainer');
+    
+    // Clone flavor 1 structure
+    const flavorHtml = `
+        <div class="form-group sh-flavor-group" id="shFlavorGroup${shFlavorCount}">
+            <label class="form-label">
+                <span data-i18n="shisha.flavor_label">Příchuť</span>
+                <span class="flavor-number"> ${shFlavorCount}</span>
+                <button type="button" class="remove-flavor-btn" onclick="removeShishaFlavor(${shFlavorCount})">✕</button>
+            </label>
+            <div class="flavor-container">
+                <select id="shFlavorType${shFlavorCount}" class="neon-select sh-flavor-select" data-flavor-index="${shFlavorCount}" onchange="updateShishaFlavorType(${shFlavorCount})">
+                    <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
+                    <option value="double_apple" data-i18n="shisha.flavor_double_apple">Double Apple (klasika)</option>
+                    <option value="mint" data-i18n="shisha.flavor_mint">Mint / Máta</option>
+                    <option value="grape" data-i18n="shisha.flavor_grape">Grape / Hroznové</option>
+                    <option value="watermelon" data-i18n="shisha.flavor_watermelon">Watermelon / Meloun</option>
+                    <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">Lemon Mint</option>
+                    <option value="blueberry" data-i18n="shisha.flavor_blueberry">Blueberry / Borůvka</option>
+                    <option value="peach" data-i18n="shisha.flavor_peach">Peach / Broskev</option>
+                    <option value="mango" data-i18n="shisha.flavor_mango">Mango</option>
+                    <option value="strawberry" data-i18n="shisha.flavor_strawberry">Strawberry / Jahoda</option>
+                    <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">Mixed Fruit</option>
+                    <option value="cola" data-i18n="shisha.flavor_cola">Cola</option>
+                    <option value="gum" data-i18n="shisha.flavor_gum">Gum / Žvýkačka</option>
+                    <option value="rose" data-i18n="shisha.flavor_rose">Rose / Růže</option>
+                    <option value="custom" data-i18n="form.custom">Vlastní</option>
+                </select>
+                <div id="shFlavorStrengthContainer${shFlavorCount}" class="hidden">
+                    <div class="slider-container small">
+                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -1)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="shFlavorStrength${shFlavorCount}" min="0" max="30" value="15" class="flavor-slider sh-flavor-slider" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorStrength(${shFlavorCount})">
+                            <div class="slider-track flavor-track" id="shFlavorTrack${shFlavorCount}"></div>
+                        </div>
+                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, 1)">▶</button>
+                    </div>
+                    <div class="flavor-display">
+                        <span id="shFlavorValue${shFlavorCount}">15</span>%
+                    </div>
+                    <div class="form-group-sub">
+                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
+                        <div class="ratio-container compact">
+                            <div class="ratio-labels">
+                                <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                                <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                            </div>
+                            <div class="slider-container">
+                                <button class="slider-btn small" onclick="adjustShishaFlavorRatio(${shFlavorCount}, -5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shFlavorRatioSlider${shFlavorCount}" min="0" max="100" value="0" class="ratio-slider sh-flavor-ratio" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorRatioDisplay(${shFlavorCount})">
+                                    <div class="slider-track" id="shFlavorTrackRatio${shFlavorCount}"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustShishaFlavorRatio(${shFlavorCount}, 5)">▶</button>
+                            </div>
+                            <div class="ratio-display small">
+                                <span id="shFlavorVgValue${shFlavorCount}">0</span>:<span id="shFlavorPgValue${shFlavorCount}">100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', flavorHtml);
+    
+    // Update hint
+    const hint = document.getElementById('shFlavorCountHint');
+    if (hint) {
+        hint.textContent = `(${shFlavorCount}/4 příchutí)`;
+    }
+    
+    // Hide add button if max reached
+    if (shFlavorCount >= 4) {
+        document.getElementById('shAddFlavorGroup').classList.add('hidden');
+    }
+    
+    // Apply translations
+    if (window.i18n && window.i18n.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+}
+
+function removeShishaFlavor(index) {
+    const group = document.getElementById(`shFlavorGroup${index}`);
+    if (group) {
+        group.remove();
+    }
+    
+    // Renumber remaining flavors would be complex, so we just hide add button logic
+    shFlavorCount--;
+    
+    // Show add button
+    document.getElementById('shAddFlavorGroup').classList.remove('hidden');
+    
+    // Update hint
+    const hint = document.getElementById('shFlavorCountHint');
+    if (hint) {
+        hint.textContent = `(${shFlavorCount}/4 příchutí)`;
+    }
+    
+    updateShishaTotalFlavorPercent();
+    autoRecalculateShishaVgPgRatio();
+}
+
+function getShishaFlavorsData() {
+    const flavors = [];
+    
+    for (let i = 1; i <= 4; i++) {
+        const select = document.getElementById(`shFlavorType${i}`);
+        const slider = document.getElementById(`shFlavorStrength${i}`);
+        const ratioSlider = document.getElementById(`shFlavorRatioSlider${i}`);
+        
+        if (select && slider && select.value !== 'none') {
+            const flavorType = select.value;
+            const flavorData = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
+            
+            flavors.push({
+                type: flavorType,
+                percent: parseInt(slider.value) || 0,
+                vgRatio: parseInt(ratioSlider?.value) || 0,
+                data: flavorData
+            });
+        }
+    }
+    
+    return flavors;
+}
+
+// Sweetener functions
+function toggleShishaSweetener() {
+    const toggle = document.getElementById('shSweetenerToggle');
+    const container = document.getElementById('shSweetenerContainer');
+    
+    if (toggle.checked) {
+        container.classList.remove('hidden');
+        updateShishaSweetenerDisplay();
+    } else {
+        container.classList.add('hidden');
+    }
+}
+
+function updateShishaSweetenerType() {
+    const select = document.getElementById('shSweetenerType');
+    const slider = document.getElementById('shSweetenerStrength');
+    
+    if (!select || !slider) return;
+    
+    const sweetenerType = select.value;
+    const sweetener = sweetenerDatabase[sweetenerType];
+    
+    if (sweetener) {
+        slider.value = sweetener.defaultPercent;
+        slider.max = sweetener.maxPercent;
+        updateShishaSweetenerDisplay();
+    }
+}
+
+function adjustShishaSweetener(change) {
+    const slider = document.getElementById('shSweetenerStrength');
+    if (!slider) return;
+    
+    let currentValue = parseFloat(slider.value);
+    let newValue = currentValue + change;
+    newValue = Math.max(0, Math.min(parseFloat(slider.max), newValue));
+    slider.value = newValue;
+    updateShishaSweetenerDisplay();
+}
+
+function updateShishaSweetenerDisplay() {
+    const slider = document.getElementById('shSweetenerStrength');
+    const display = document.getElementById('shSweetenerValue');
+    const track = document.getElementById('shSweetenerTrack');
+    
+    if (!slider) return;
+    
+    const value = parseFloat(slider.value);
+    if (display) display.textContent = value;
+    if (track) track.style.width = (value / parseFloat(slider.max) * 100) + '%';
+}
+
+// Water functions
+function toggleShishaWater() {
+    const toggle = document.getElementById('shWaterToggle');
+    const container = document.getElementById('shWaterContainer');
+    
+    if (toggle.checked) {
+        container.classList.remove('hidden');
+        updateShishaWaterDisplay();
+    } else {
+        container.classList.add('hidden');
+    }
+}
+
+function adjustShishaWater(change) {
+    const slider = document.getElementById('shWaterPercent');
+    if (!slider) return;
+    
+    let currentValue = parseFloat(slider.value);
+    let newValue = currentValue + (change * 0.5);
+    newValue = Math.max(0, Math.min(5, newValue));
+    slider.value = newValue;
+    updateShishaWaterDisplay();
+}
+
+function updateShishaWaterDisplay() {
+    const slider = document.getElementById('shWaterPercent');
+    const display = document.getElementById('shWaterValue');
+    const track = document.getElementById('shWaterTrack');
+    
+    if (!slider) return;
+    
+    const value = parseFloat(slider.value);
+    if (display) display.textContent = value;
+    if (track) track.style.width = (value / 5 * 100) + '%';
+}
+
+// VG/PG ratio functions
+function adjustShishaRatio(change) {
+    const slider = document.getElementById('shVgPgRatio');
+    if (!slider) return;
+    
+    let currentValue = parseInt(slider.value);
+    let newValue;
+    
+    if (change > 0) {
+        newValue = Math.ceil((currentValue + 1) / 5) * 5;
+    } else {
+        newValue = Math.floor((currentValue - 1) / 5) * 5;
+    }
+    
+    // Respect limits
+    newValue = Math.max(shVgPgLimits.min, Math.min(shVgPgLimits.max, newValue));
+    slider.value = newValue;
+    updateShishaRatioDisplay();
+}
+
+function updateShishaRatioDisplay() {
+    const slider = document.getElementById('shVgPgRatio');
+    const vgValue = document.getElementById('shVgValue');
+    const pgValue = document.getElementById('shPgValue');
+    const track = document.getElementById('shSliderTrack');
+    
+    if (!slider) return;
+    
+    const vg = parseInt(slider.value);
+    const pg = 100 - vg;
+    
+    if (vgValue) vgValue.textContent = vg;
+    if (pgValue) pgValue.textContent = pg;
+    if (track) track.style.width = vg + '%';
+}
+
+function autoRecalculateShishaVgPgRatio() {
+    const result = calculateActualVgPgRatio('shisha');
+    
+    if (result && result.actualVg !== undefined) {
+        const slider = document.getElementById('shVgPgRatio');
+        if (slider) {
+            let newValue = Math.round(result.actualVg);
+            newValue = Math.max(shVgPgLimits.min, Math.min(shVgPgLimits.max, newValue));
+            slider.value = newValue;
+            updateShishaRatioDisplay();
+        }
+    }
+    
+    updateShishaVgPgLimits();
+}
+
+function updateShishaVgPgLimits() {
+    const slider = document.getElementById('shVgPgRatio');
+    const disabledLeft = document.getElementById('shSliderDisabledLeft');
+    const disabledRight = document.getElementById('shSliderDisabledRight');
+    
+    if (!slider) return;
+    
+    const totalAmount = parseFloat(document.getElementById('shTotalAmount')?.value) || 200;
+    
+    // Get nicotine contribution
+    let nicotineVgVolume = 0;
+    let nicotinePgVolume = 0;
+    
+    const nicToggle = document.getElementById('shNicotineToggle');
+    if (nicToggle && nicToggle.checked) {
+        const nicStrength = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
+        const targetNic = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
+        const nicRatio = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        
+        if (targetNic > 0 && nicStrength > 0) {
+            const nicVolume = (targetNic / nicStrength) * totalAmount;
+            nicotineVgVolume = nicVolume * (nicRatio / 100);
+            nicotinePgVolume = nicVolume * ((100 - nicRatio) / 100);
+        }
+    }
+    
+    // Get flavor contribution
+    const flavorsData = getShishaFlavorsData();
+    let totalFlavorVgVolume = 0;
+    let totalFlavorPgVolume = 0;
+    
+    flavorsData.forEach(flavor => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        const flavorVg = flavor.vgRatio;
+        const flavorPg = 100 - flavorVg;
+        totalFlavorVgVolume += flavorVolume * (flavorVg / 100);
+        totalFlavorPgVolume += flavorVolume * (flavorPg / 100);
+    });
+    
+    const fixedPgVolume = nicotinePgVolume + totalFlavorPgVolume;
+    const fixedVgVolume = nicotineVgVolume + totalFlavorVgVolume;
+    
+    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    
+    shVgPgLimits.min = Math.max(0, minVgPercent);
+    shVgPgLimits.max = Math.min(100, maxVgPercent);
+    
+    const limitValueLeft = document.getElementById('shLimitValueLeft');
+    const limitValueRight = document.getElementById('shLimitValueRight');
+    
+    if (disabledLeft) {
+        disabledLeft.style.width = shVgPgLimits.min + '%';
+    }
+    if (disabledRight) {
+        disabledRight.style.width = (100 - shVgPgLimits.max) + '%';
+    }
+    
+    // Show limit values
+    if (limitValueLeft) {
+        if (shVgPgLimits.min > 0) {
+            limitValueLeft.textContent = shVgPgLimits.min + '%';
+            limitValueLeft.style.display = 'block';
+        } else {
+            limitValueLeft.style.display = 'none';
+        }
+    }
+    if (limitValueRight) {
+        if (shVgPgLimits.max < 100) {
+            limitValueRight.textContent = shVgPgLimits.max + '%';
+            limitValueRight.style.display = 'block';
+        } else {
+            limitValueRight.style.display = 'none';
+        }
+    }
+    
+    // Constrain current value
+    let currentValue = parseInt(slider.value);
+    if (currentValue < shVgPgLimits.min) {
+        slider.value = shVgPgLimits.min;
+        updateShishaRatioDisplay();
+    } else if (currentValue > shVgPgLimits.max) {
+        slider.value = shVgPgLimits.max;
+        updateShishaRatioDisplay();
+    }
+}
+
+// Calculate Shisha Mix - main calculation function
+function calculateShishaMix() {
+    // Get values
+    const totalAmount = parseFloat(document.getElementById('shTotalAmount')?.value) || 200;
+    
+    // VG/PG ratio
+    const vgPercent = parseInt(document.getElementById('shVgPgRatio')?.value) || 80;
+    const pgPercent = 100 - vgPercent;
+    
+    // Premixed base ratio
+    const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
+    let premixedVg, premixedPg;
+    if (premixedRatio === 'custom') {
+        premixedVg = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 80;
+        premixedPg = 100 - premixedVg;
+    } else {
+        const parts = premixedRatio.split('/');
+        premixedVg = parseInt(parts[0]) || 80;
+        premixedPg = parseInt(parts[1]) || 20;
+    }
+    
+    // Nicotine
+    let nicotineVolume = 0;
+    let nicotineVgVolume = 0;
+    let nicotinePgVolume = 0;
+    let targetNicotine = 0;
+    
+    const nicToggle = document.getElementById('shNicotineToggle');
+    if (nicToggle && nicToggle.checked) {
+        const baseNicotine = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
+        targetNicotine = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
+        const nicVgPercent = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        
+        if (targetNicotine > 0 && baseNicotine > 0) {
+            nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
+            nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
+            nicotinePgVolume = nicotineVolume * ((100 - nicVgPercent) / 100);
+        }
+    }
+    
+    // Flavors
+    const flavorsData = getShishaFlavorsData();
+    let totalFlavorVolume = 0;
+    let totalFlavorVgVolume = 0;
+    let totalFlavorPgVolume = 0;
+    
+    flavorsData.forEach(flavor => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        totalFlavorVolume += flavorVolume;
+        totalFlavorVgVolume += flavorVolume * (flavor.vgRatio / 100);
+        totalFlavorPgVolume += flavorVolume * ((100 - flavor.vgRatio) / 100);
+    });
+    
+    // Sweetener
+    let sweetenerVolume = 0;
+    let sweetenerType = 'sucralose';
+    const sweetenerToggle = document.getElementById('shSweetenerToggle');
+    if (sweetenerToggle && sweetenerToggle.checked) {
+        const sweetenerPercent = parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0;
+        sweetenerVolume = (sweetenerPercent / 100) * totalAmount;
+        sweetenerType = document.getElementById('shSweetenerType')?.value || 'sucralose';
+    }
+    
+    // Water
+    let waterVolume = 0;
+    const waterToggle = document.getElementById('shWaterToggle');
+    if (waterToggle && waterToggle.checked) {
+        const waterPercent = parseFloat(document.getElementById('shWaterPercent')?.value) || 0;
+        waterVolume = (waterPercent / 100) * totalAmount;
+    }
+    
+    // Calculate remaining base volume
+    const usedVolume = nicotineVolume + totalFlavorVolume + sweetenerVolume + waterVolume;
+    const baseVolume = totalAmount - usedVolume;
+    
+    // Calculate VG and PG needed from base
+    // Target VG/PG minus what we already have from nicotine, flavors
+    const targetVgVolume = (vgPercent / 100) * totalAmount;
+    const targetPgVolume = (pgPercent / 100) * totalAmount;
+    
+    // VG/PG already provided by nicotine and flavors
+    const providedVg = nicotineVgVolume + totalFlavorVgVolume;
+    const providedPg = nicotinePgVolume + totalFlavorPgVolume;
+    
+    // Calculate pure VG and PG needed
+    let pureVgVolume = targetVgVolume - providedVg;
+    let purePgVolume = targetPgVolume - providedPg;
+    
+    // If using premixed base, calculate how much base is needed
+    let premixedBaseVolume = 0;
+    if (baseVolume > 0) {
+        // The base fills the remaining volume
+        premixedBaseVolume = baseVolume;
+        // Adjust pure VG/PG based on premixed base composition
+        pureVgVolume = Math.max(0, pureVgVolume - (premixedBaseVolume * premixedVg / 100));
+        purePgVolume = Math.max(0, purePgVolume - (premixedBaseVolume * premixedPg / 100));
+    }
+    
+    // Build results
+    const results = [];
+    
+    // Add premixed base or separate VG/PG
+    if (premixedBaseVolume > 0) {
+        const baseDensity = calculatePremixedBaseDensity(premixedVg);
+        results.push({
+            name: `${t('results.premixed_base')} (${premixedVg}/${premixedPg})`,
+            volume: premixedBaseVolume.toFixed(2),
+            grams: mlToGrams(premixedBaseVolume, baseDensity),
+            type: 'base'
+        });
+    }
+    
+    // Nicotine
+    if (nicotineVolume > 0) {
+        const nicVgPercent = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        const nicDensity = calculateNicotineDensity(nicVgPercent);
+        results.push({
+            name: t('results.nicotine'),
+            volume: nicotineVolume.toFixed(2),
+            grams: mlToGrams(nicotineVolume, nicDensity),
+            type: 'nicotine'
+        });
+    }
+    
+    // Flavors
+    flavorsData.forEach((flavor, index) => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        const flavorData = shishaFlavorDatabase[flavor.type] || shishaFlavorDatabase.custom;
+        const flavorDensity = calculateCompositionDensity(flavorData.composition);
+        results.push({
+            name: `${t('results.flavor')} ${index + 1}: ${flavorData.name}`,
+            volume: flavorVolume.toFixed(2),
+            grams: mlToGrams(flavorVolume, flavorDensity),
+            type: 'flavor'
+        });
+    });
+    
+    // Sweetener
+    if (sweetenerVolume > 0) {
+        const sweetener = sweetenerDatabase[sweetenerType] || sweetenerDatabase.sucralose;
+        results.push({
+            name: `${t('shisha.sweetener_label')}: ${sweetener.name}`,
+            volume: sweetenerVolume.toFixed(2),
+            grams: mlToGrams(sweetenerVolume, sweetener.density || 1.0),
+            type: 'sweetener'
+        });
+    }
+    
+    // Water
+    if (waterVolume > 0) {
+        results.push({
+            name: t('form.water'),
+            volume: waterVolume.toFixed(2),
+            grams: mlToGrams(waterVolume, 1.0),
+            type: 'water'
+        });
+    }
+    
+    // Update results display
+    document.getElementById('resultTotal').textContent = totalAmount + ' ml';
+    document.getElementById('resultRatio').textContent = vgPercent + ':' + pgPercent;
+    document.getElementById('resultNicotine').textContent = targetNicotine + ' mg/ml';
+    
+    // Build results table
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = '';
+    
+    results.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${escapeHtml(item.name)}</td>
+            <td>${item.volume} ml</td>
+            <td>${item.grams} g</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Add mixing notes
+    const notesList = document.getElementById('mixingNotesList');
+    notesList.innerHTML = '';
+    
+    const notes = [
+        t('results.note_glycerin_first'),
+        t('results.note_add_nic'),
+        t('results.note_add_flavor')
+    ];
+    
+    if (sweetenerVolume > 0) {
+        notes.push(t('shisha.note_add_sweetener') || 'Přidejte sladidlo a promíchejte.');
+    }
+    if (waterVolume > 0) {
+        notes.push(t('shisha.note_add_water') || 'Přidejte vodu pro zředění.');
+    }
+    
+    // Add steeping note
+    if (flavorsData.length > 0) {
+        const maxSteeping = Math.max(...flavorsData.map(f => f.data?.steepingDays || 3));
+        notes.push(t('shisha.note_steeping', { days: maxSteeping }) || `Nechte zrát ${maxSteeping} dní.`);
+    }
+    
+    notes.forEach(note => {
+        const li = document.createElement('li');
+        li.textContent = note;
+        notesList.appendChild(li);
+    });
+    
+    // Store current recipe data
+    window.currentRecipeData = {
+        formType: 'shisha',
+        totalAmount: totalAmount,
+        vgPercent: vgPercent,
+        pgPercent: pgPercent,
+        nicotineStrength: targetNicotine,
+        premixedRatio: premixedRatio,
+        flavors: flavorsData,
+        sweetener: sweetenerToggle?.checked ? {
+            type: sweetenerType,
+            percent: parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0
+        } : null,
+        water: waterToggle?.checked ? parseFloat(document.getElementById('shWaterPercent')?.value) || 0 : 0,
+        results: results
+    };
+    
+    // Show results page
+    showPage('results');
+    
+    // Show appropriate buttons
+    document.getElementById('resultsNewButtons').classList.remove('hidden');
+    document.getElementById('resultsEditButtons').classList.add('hidden');
+}
+
+// Export Shisha functions
+window.initShishaForm = initShishaForm;
+window.updateShishaPremiumElements = updateShishaPremiumElements;
+window.updateShishaPremixedRatio = updateShishaPremixedRatio;
+window.updateShishaCustomPremixedPg = updateShishaCustomPremixedPg;
+window.toggleShishaNicotine = toggleShishaNicotine;
+window.updateShishaNicotineType = updateShishaNicotineType;
+window.adjustShishaNicRatio = adjustShishaNicRatio;
+window.updateShishaNicRatioDisplay = updateShishaNicRatioDisplay;
+window.adjustShishaTargetNicotine = adjustShishaTargetNicotine;
+window.updateShishaNicotineDisplay = updateShishaNicotineDisplay;
+window.updateShishaFlavorType = updateShishaFlavorType;
+window.adjustShishaFlavor = adjustShishaFlavor;
+window.updateShishaFlavorStrength = updateShishaFlavorStrength;
+window.adjustShishaFlavorRatio = adjustShishaFlavorRatio;
+window.updateShishaFlavorRatioDisplay = updateShishaFlavorRatioDisplay;
+window.updateShishaTotalFlavorPercent = updateShishaTotalFlavorPercent;
+window.addShishaFlavor = addShishaFlavor;
+window.removeShishaFlavor = removeShishaFlavor;
+window.getShishaFlavorsData = getShishaFlavorsData;
+window.toggleShishaSweetener = toggleShishaSweetener;
+window.updateShishaSweetenerType = updateShishaSweetenerType;
+window.adjustShishaSweetener = adjustShishaSweetener;
+window.updateShishaSweetenerDisplay = updateShishaSweetenerDisplay;
+window.toggleShishaWater = toggleShishaWater;
+window.adjustShishaWater = adjustShishaWater;
+window.updateShishaWaterDisplay = updateShishaWaterDisplay;
+window.adjustShishaRatio = adjustShishaRatio;
+window.updateShishaRatioDisplay = updateShishaRatioDisplay;
+window.autoRecalculateShishaVgPgRatio = autoRecalculateShishaVgPgRatio;
+window.updateShishaVgPgLimits = updateShishaVgPgLimits;
+window.calculateShishaMix = calculateShishaMix;

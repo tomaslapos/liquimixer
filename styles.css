@@ -11,6 +11,7 @@
     --neon-red: #ff0044;
     --neon-blue: #0088ff;
     --neon-purple: #aa00ff;
+    --neon-gold: #d4a84b;
     
     --bg-dark: #0a0a15;
     --bg-card: rgba(20, 20, 40, 0.85);
@@ -1780,7 +1781,6 @@ body {
 
 .reminder-item {
     display: flex !important;
-    flex-wrap: wrap;
     justify-content: space-between !important;
     align-items: center !important;
     padding: 12px 15px !important;
@@ -1789,7 +1789,6 @@ body {
     border: 1px solid rgba(0, 255, 255, 0.2) !important;
     border-radius: 8px !important;
     transition: all 0.3s ease;
-    gap: 10px;
 }
 
 .reminder-item:hover {
@@ -1853,14 +1852,6 @@ body {
 .reminder-status-badge.cancelled {
     background: rgba(255, 0, 0, 0.2);
     color: #ff6666;
-}
-
-/* Kontejner pro stock bar + akční tlačítka */
-.reminder-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
 }
 
 .reminder-actions {
@@ -1948,54 +1939,6 @@ body {
 .show-all-reminders-btn:hover {
     background: rgba(255, 0, 255, 0.1);
     border-color: #ff00ff;
-}
-
-/* Mobilní zobrazení připomínek - 2 řádky */
-@media (max-width: 600px) {
-    .reminder-item {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 10px !important;
-    }
-    
-    .reminder-dates {
-        width: 100%;
-        text-align: left;
-    }
-    
-    /* Kontejner controls na celou šířku */
-    .reminder-controls {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    /* Stock bar vlevo */
-    .reminder-stock {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    
-    /* Akční tlačítka vpravo */
-    .reminder-actions {
-        margin-left: auto;
-    }
-}
-
-@media (max-width: 400px) {
-    .reminder-stock .stock-battery {
-        width: 70px;
-    }
-    
-    .reminder-btn.stock-minus,
-    .reminder-btn.stock-plus {
-        width: 22px !important;
-        height: 22px !important;
-        font-size: 0.85rem !important;
-    }
-    
-    .reminder-controls {
-        gap: 8px;
-    }
 }
 
 .reminder-info {
@@ -4834,6 +4777,205 @@ body {
 }
 
 /* =========================================
+   Gold Form - Shisha / Hookah Styles
+   ========================================= */
+.form-gold .form-group {
+    border-color: rgba(212, 168, 75, 0.3);
+}
+
+.form-gold .form-group:hover {
+    border-color: var(--neon-gold);
+    box-shadow: 0 0 20px rgba(212, 168, 75, 0.2);
+}
+
+.form-gold .form-label {
+    color: var(--neon-gold);
+}
+
+.form-gold .form-label-small {
+    color: rgba(212, 168, 75, 0.7);
+}
+
+.form-gold .ratio-label.left {
+    color: var(--neon-gold);
+}
+
+.form-gold .ratio-label.right {
+    color: var(--neon-gold);
+}
+
+.form-gold .slider-limit.left {
+    color: var(--neon-gold);
+}
+
+.form-gold .slider-limit.right {
+    color: var(--neon-gold);
+}
+
+/* Gold inputs - neon yellow values */
+.form-gold .neon-input {
+    color: var(--neon-yellow);
+    border-color: rgba(212, 168, 75, 0.3);
+}
+
+.form-gold .neon-input:focus {
+    border-color: var(--neon-gold);
+    box-shadow: 0 0 20px rgba(212, 168, 75, 0.3);
+}
+
+/* Gold selects - neon yellow values */
+.form-gold .neon-select {
+    color: var(--neon-yellow);
+    border-color: rgba(212, 168, 75, 0.3);
+}
+
+.form-gold .neon-select:focus {
+    border-color: var(--neon-gold);
+    box-shadow: 0 0 20px rgba(212, 168, 75, 0.3);
+}
+
+/* Gold input units - neon yellow */
+.form-gold .input-unit {
+    color: var(--neon-yellow);
+}
+
+/* Gold ratio display */
+.form-gold .ratio-display {
+    background: linear-gradient(90deg, var(--neon-gold), #b8860b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Gold slider buttons */
+.form-gold .slider-btn {
+    color: var(--neon-gold);
+    border-color: var(--neon-gold);
+}
+
+.form-gold .slider-btn:hover {
+    background: var(--neon-gold);
+    color: #1a1a2e;
+    box-shadow: 0 0 15px var(--neon-gold);
+}
+
+/* Gold ratio toggle buttons */
+.form-gold .ratio-toggle-btn {
+    border-color: rgba(212, 168, 75, 0.3);
+}
+
+.form-gold .ratio-toggle-btn:hover {
+    border-color: var(--neon-gold);
+    color: var(--neon-gold);
+}
+
+.form-gold .ratio-toggle-btn.active {
+    background: linear-gradient(135deg, var(--neon-gold), #b8860b);
+    border-color: var(--neon-gold);
+    color: #1a1a2e;
+    box-shadow: 0 0 20px rgba(212, 168, 75, 0.4);
+}
+
+/* Gold label hints */
+.form-gold .label-hint {
+    color: rgba(212, 168, 75, 0.6);
+}
+
+/* Gold toggle switch */
+.form-gold .toggle-switch .toggle-slider {
+    background: rgba(212, 168, 75, 0.2);
+}
+
+.form-gold .toggle-switch input:checked + .toggle-slider {
+    background: var(--neon-gold);
+}
+
+/* Gold toggle label */
+.form-gold .toggle-label {
+    color: rgba(212, 168, 75, 0.8);
+}
+
+/* Gold button */
+.neon-button.btn-gold {
+    color: var(--neon-gold);
+    border-color: var(--neon-gold);
+    background: rgba(212, 168, 75, 0.08);
+}
+
+.neon-button.btn-gold:hover {
+    color: #1a1a2e;
+    background: var(--neon-gold);
+    box-shadow: 
+        0 0 20px var(--neon-gold),
+        0 0 40px var(--neon-gold),
+        0 0 60px var(--neon-gold);
+}
+
+/* Gold tab */
+.form-tab.tab-gold {
+    border-color: var(--neon-gold);
+    color: var(--neon-gold);
+}
+
+.form-tab.tab-gold:hover {
+    background: rgba(212, 168, 75, 0.1);
+    box-shadow: 0 0 10px rgba(212, 168, 75, 0.3);
+}
+
+.form-tab.tab-gold.active {
+    background: var(--neon-gold);
+    color: #1a1a2e;
+    box-shadow: 0 0 20px rgba(212, 168, 75, 0.5);
+}
+
+/* Shisha info box */
+.shisha-info {
+    background: rgba(212, 168, 75, 0.1);
+    border: 1px solid rgba(212, 168, 75, 0.3);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+}
+
+.shisha-info p {
+    color: rgba(212, 168, 75, 0.9);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Sweetener and water sections */
+.form-gold .sweetener-section,
+.form-gold .water-section {
+    border-color: rgba(212, 168, 75, 0.2);
+}
+
+/* Premium badge for Shisha */
+.form-gold .premium-badge {
+    background: rgba(212, 168, 75, 0.1);
+    border: 1px solid rgba(212, 168, 75, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: rgba(212, 168, 75, 0.8);
+}
+
+/* Premium-only elements styling */
+.form-gold .premium-only {
+    position: relative;
+}
+
+.form-gold .premium-only.locked {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.form-gold .premium-only.locked .premium-badge {
+    display: block;
+}
+
+/* =========================================
    Linked Products - Propojené produkty
    ========================================= */
 
@@ -6644,22 +6786,7 @@ body.subscription-required #subscriptionModal {
 .filter-sort {
     display: flex;
     align-items: center;
-    gap: 10px;
-}
-
-.filter-sort label {
-    white-space: nowrap;
-}
-
-.filter-sort {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.filter-sort > label {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+    gap: 8px;
 }
 
 /* Collapsible filters */
@@ -6691,11 +6818,11 @@ body.subscription-required #subscriptionModal {
     transition: transform 0.3s ease;
 }
 
-/* Filters panel - flex wrap layout */
+/* Filters panel */
 .filters-panel {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
     margin-top: 15px;
     padding: 15px;
     background: rgba(0, 0, 0, 0.2);
@@ -6704,7 +6831,6 @@ body.subscription-required #subscriptionModal {
     overflow: hidden;
     opacity: 0;
     transition: all 0.3s ease;
-    align-items: flex-end;
 }
 
 .filters-panel.hidden {
@@ -6712,7 +6838,7 @@ body.subscription-required #subscriptionModal {
 }
 
 .filters-panel.open {
-    display: flex;
+    display: grid;
     max-height: 500px;
     opacity: 1;
 }
@@ -6722,13 +6848,11 @@ body.subscription-required #subscriptionModal {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    min-width: 140px;
 }
 
 .filter-group > label {
     font-size: 0.85rem;
     color: var(--text-secondary);
-    white-space: nowrap;
 }
 
 /* Range filters */
@@ -6956,48 +7080,51 @@ body.subscription-required #subscriptionModal {
    Stock Bar - Battery Style
    ========================================= */
 
-/* Stock container - inline with reminder controls */
+/* Stock container */
 .reminder-stock {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    margin: 12px 0;
+    padding: 8px 0;
 }
 
-/* Battery container - larger and more visible */
+/* Battery container */
 .stock-battery {
     display: flex;
     align-items: center;
-    width: 100px;
+    flex: 1;
+    max-width: 200px;
 }
 
 /* Battery tip (right side) */
 .battery-tip {
-    width: 5px;
-    height: 16px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 0 3px 3px 0;
+    width: 4px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0 2px 2px 0;
     margin-left: -1px;
     order: 2;
 }
 
-/* Battery body - larger */
+/* Battery body */
 .battery-body {
     flex: 1;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-radius: 5px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
     position: relative;
     overflow: hidden;
     order: 1;
 }
 
-/* Battery level - animated, no transition delay */
+/* Battery level - animated */
 .battery-level {
     height: 100%;
     background: var(--neon-green);
-    border-radius: 3px;
-    transition: width 0.2s ease-out, background 0.2s ease;
+    border-radius: 2px;
+    transition: width 0.5s ease-out, background 0.5s ease;
     position: relative;
 }
 
@@ -7011,146 +7138,60 @@ body.subscription-required #subscriptionModal {
     50% { opacity: 0.6; }
 }
 
-/* Percentage inside battery - black when high, white when low */
+/* Percentage inside battery */
 .battery-percent {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     font-family: var(--font-primary);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: #000;
-    text-shadow: none;
+    color: white;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
     z-index: 1;
 }
 
-.battery-percent.low-text {
-    color: #fff;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+/* Stock control buttons */
+.stock-controls {
+    display: flex;
+    gap: 6px;
 }
 
-/* Stock control buttons - subtle, smaller, centered text */
-.reminder-btn.stock-minus,
-.reminder-btn.stock-plus {
-    width: 26px;
-    height: 26px;
-    font-size: 1rem;
+.stock-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    background: transparent;
+    color: var(--neon-cyan);
+    font-size: 1.4rem;
     font-weight: bold;
-    flex-shrink: 0;
-    opacity: 0.7;
-    border-width: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    padding: 0;
-}
-
-.reminder-btn.stock-minus:hover,
-.reminder-btn.stock-plus:hover {
-    opacity: 1;
-}
-
-.reminder-btn.stock-minus {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.reminder-btn.stock-minus:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.6);
-    color: #fff;
-}
-
-.reminder-btn.stock-plus {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.reminder-btn.stock-plus:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.6);
-    color: #fff;
-}
-
-/* Stock bar in modal - larger */
-.reminder-stock-modal {
-    margin-top: 10px;
-}
-
-.reminder-stock.modal-stock {
-    justify-content: center;
-    padding: 15px 0;
-    margin: 0;
-}
-
-.reminder-stock.modal-stock .stock-battery {
-    width: 180px;
-}
-
-.reminder-stock.modal-stock .battery-body {
-    height: 36px;
-}
-
-.reminder-stock.modal-stock .battery-percent {
-    font-size: 1rem;
-}
-
-.reminder-stock.modal-stock .reminder-btn.stock-minus,
-.reminder-stock.modal-stock .reminder-btn.stock-plus {
-    width: 36px;
-    height: 36px;
-    font-size: 1.3rem;
-    opacity: 1;
-    border-width: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    padding: 0;
-}
-
-/* Filter toggle row - proper alignment */
-.filter-toggle .toggle-row,
-.public-recipe-toggle .toggle-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.filter-toggle .toggle-label,
-.public-recipe-toggle .toggle-label {
     cursor: pointer;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.public-recipe-toggle .toggle-hint {
-    margin-left: 52px;
-    margin-top: 5px;
-}
-
-/* Filter toggle in database */
-.filter-group.filter-toggle {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    min-width: auto;
-}
-
-.filter-group.filter-toggle .toggle-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    white-space: nowrap;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
-/* Filter reset button - push to right */
-.filter-group.filter-reset {
-    margin-left: auto;
-    min-width: auto;
-    align-self: flex-end;
+.stock-btn:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    transform: scale(1.1);
+}
+
+.stock-btn:active {
+    transform: scale(0.95);
+}
+
+.stock-btn.minus {
+    border-color: #ff6666;
+    color: #ff6666;
+}
+
+.stock-btn.minus:hover {
+    background: #ff6666;
+    color: white;
 }
 
 /* =========================================
@@ -7291,18 +7332,6 @@ body.subscription-required #subscriptionModal {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    .filter-group {
-        min-width: 120px;
-    }
-    
-    .filter-group.filter-reset {
-        width: 100%;
-        margin-left: 0;
-        justify-content: center;
-    }
-}
-
 @media (max-width: 600px) {
     .database-row {
         flex-direction: column;
@@ -7313,21 +7342,7 @@ body.subscription-required #subscriptionModal {
     }
     
     .filters-panel {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .filter-group {
-        min-width: 100%;
-    }
-    
-    .filter-group.filter-toggle {
-        justify-content: flex-start;
-    }
-    
-    .filter-group.filter-reset {
-        margin-left: 0;
-        align-self: center;
+        grid-template-columns: 1fr;
     }
     
     .filter-range .range-inputs {
