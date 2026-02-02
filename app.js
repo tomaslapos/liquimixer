@@ -3862,20 +3862,6 @@ async function saveSharedRecipe() {
         
         // Uložit UUID původního receptu pro zkopírování produktů po uložení
         window.pendingSharedRecipeUUID = recipe.id;
-        
-        // Zablokovat checkbox "Sdílet do veřejné databáze" při ukládání ze sdílené databáze
-        // Prevence duplikátů - uživatel nemůže znovu sdílet již sdílený recept
-        const publicCheckbox = document.getElementById('recipeIsPublic');
-        if (publicCheckbox) {
-            publicCheckbox.checked = false;
-            publicCheckbox.disabled = true;
-            // Přidat vizuální indikaci blokování
-            const publicToggle = publicCheckbox.closest('.public-recipe-toggle');
-            if (publicToggle) {
-                publicToggle.classList.add('disabled');
-                publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet - recept je již z veřejné databáze');
-            }
-        }
     }
 }
 
