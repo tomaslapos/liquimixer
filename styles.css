@@ -7232,27 +7232,28 @@ body.subscription-required #subscriptionModal {
     z-index: 1;
 }
 
-/* Stock control buttons */
+/* Stock control buttons - stejný styl jako .reminder-btn */
 .stock-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid var(--neon-cyan);
     background: transparent;
-    color: var(--neon-cyan);
-    font-size: 1.4rem;
-    font-weight: bold;
+    border: 1px solid rgba(255, 0, 255, 0.5);
+    border-radius: 6px;
+    padding: 6px 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: rgba(255, 0, 255, 0.8);
+    min-width: 32px;
+    height: 32px;
 }
 
 .stock-btn:hover {
-    background: var(--neon-cyan);
-    color: var(--bg-dark);
-    transform: scale(1.1);
+    background: rgba(255, 0, 255, 0.2);
+    border-color: #ff00ff;
+    color: #ff00ff;
 }
 
 .stock-btn:active {
@@ -7260,13 +7261,25 @@ body.subscription-required #subscriptionModal {
 }
 
 .stock-btn.minus {
+    border-color: rgba(255, 100, 100, 0.5);
+    color: rgba(255, 100, 100, 0.8);
+}
+
+.stock-btn.minus:hover {
+    background: rgba(255, 100, 100, 0.2);
     border-color: #ff6666;
     color: #ff6666;
 }
 
-.stock-btn.minus:hover {
-    background: #ff6666;
-    color: white;
+.stock-btn.plus {
+    border-color: rgba(0, 255, 200, 0.5);
+    color: rgba(0, 255, 200, 0.8);
+}
+
+.stock-btn.plus:hover {
+    background: rgba(0, 255, 200, 0.2);
+    border-color: var(--neon-green);
+    color: var(--neon-green);
 }
 
 /* =========================================
