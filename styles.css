@@ -7173,6 +7173,7 @@ body.subscription-required #subscriptionModal {
     display: flex;
     align-items: center;
     flex: 1;
+    min-width: 80px;
     max-width: 200px;
 }
 
