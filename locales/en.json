@@ -102,7 +102,8 @@
     "no_recipes": "No recipes found",
     "login_required": "Please log in to access the database",
     "loading": "Loading recipes...",
-    "results_count": "Found {count} recipes"
+    "results_count": "Found {count} recipes",
+    "back_to_database": "◀ BACK TO DATABASE"
   },
   "rating": {
     "title": "Rating",
@@ -444,7 +445,8 @@
     "products_linked": "Linked products",
     "save_as_new": "SAVE AS NEW",
     "make_public": "Share to public recipe database",
-    "public_hint": "Recipe will be visible and rateable by other users"
+    "public_hint": "Recipe will be visible and rateable by other users",
+    "public_disabled_shared": "Cannot share - recipe is already from public database"
   },
   "share": {
     "copied": "Link copied to clipboard!",
