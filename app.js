@@ -2162,6 +2162,18 @@ async function showSaveRecipeModal() {
         // Inicializovat připomínku jako zaškrtnutou s dnešním datem
         initReminderFieldsEnabled();
         
+        // Reset blokování veřejného sdílení (mohlo být disabled ze saveSharedRecipe)
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        if (publicCheckbox) {
+            publicCheckbox.disabled = false;
+            publicCheckbox.checked = false;
+            const publicToggle = publicCheckbox.closest('.public-recipe-toggle');
+            if (publicToggle) {
+                publicToggle.classList.remove('disabled');
+                publicToggle.title = '';
+            }
+        }
+        
         // Aplikovat překlady na modal
         if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
             window.i18n.applyTranslations();
@@ -3812,6 +3824,18 @@ async function saveSharedRecipe() {
             modalTitle.textContent = t('shared_recipe.save_to_my_recipes', 'Uložit k sobě');
         }
         
+        // Blokovat "Sdílet do veřejné databáze" při ukládání ze sdílené databáze (prevence duplikátů)
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        const publicToggle = publicCheckbox?.closest('.public-recipe-toggle');
+        if (publicCheckbox) {
+            publicCheckbox.checked = false;
+            publicCheckbox.disabled = true;
+        }
+        if (publicToggle) {
+            publicToggle.classList.add('disabled');
+            publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet recept zkopírovaný z veřejné databáze');
+        }
+        
         // Inicializovat připomínku
         initReminderFieldsEnabled();
         
@@ -3838,6 +3862,20 @@ async function saveSharedRecipe() {
         
         // Uložit UUID původního receptu pro zkopírování produktů po uložení
         window.pendingSharedRecipeUUID = recipe.id;
+        
+        // Zablokovat checkbox "Sdílet do veřejné databáze" při ukládání ze sdílené databáze
+        // Prevence duplikátů - uživatel nemůže znovu sdílet již sdílený recept
+        const publicCheckbox = document.getElementById('recipeIsPublic');
+        if (publicCheckbox) {
+            publicCheckbox.checked = false;
+            publicCheckbox.disabled = true;
+            // Přidat vizuální indikaci blokování
+            const publicToggle = publicCheckbox.closest('.public-recipe-toggle');
+            if (publicToggle) {
+                publicToggle.classList.add('disabled');
+                publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet - recept je již z veřejné databáze');
+            }
+        }
     }
 }
 
@@ -9448,30 +9486,31 @@ function renderReminderItem(reminder, recipeId) {
                 <div class="reminder-remind-date">${t('reminder.reminder_on', 'Připomínka')}: ${remindDate} ${statusBadge}</div>
             </div>
             
-            <!-- Stock bar - bateriový styl -->
-            <div class="reminder-stock">
-                <div class="stock-battery">
-                    <div class="battery-body">
-                        <div class="battery-level ${lowClass}" 
-                             id="stock-bar-${reminder.id}"
-                             style="width: ${stockPercent}%; background: ${stockColor};">
-                        </div>
-                        <span class="battery-percent">${stockPercent}%</span>
-                    </div>
-                    <div class="battery-tip"></div>
-                </div>
-                <div class="stock-controls">
+            <!-- Wrapper pro stock bar + akční tlačítka (mobilní 2-řádkový layout) -->
+            <div class="reminder-controls">
+                <!-- Stock bar - bateriový styl s pořadím: mínus-baterie-plus -->
+                <div class="reminder-stock">
                     <button type="button" class="stock-btn minus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', -10)" title="-10%">−</button>
+                    <div class="stock-battery">
+                        <div class="battery-body">
+                            <div class="battery-level ${lowClass}" 
+                                 id="stock-bar-${reminder.id}"
+                                 style="width: ${stockPercent}%; background: ${stockColor};">
+                            </div>
+                            <span class="battery-percent">${stockPercent}%</span>
+                        </div>
+                        <div class="battery-tip"></div>
+                    </div>
                     <button type="button" class="stock-btn plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
                 </div>
+                
+                ${reminder.status === 'pending' ? `
+                    <div class="reminder-actions">
+                        <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
+                        <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
+                    </div>
+                ` : ''}
             </div>
-            
-            ${reminder.status === 'pending' ? `
-                <div class="reminder-actions">
-                    <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
-                    <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
-                </div>
-            ` : ''}
         </div>
     `;
 }
@@ -10136,6 +10175,12 @@ async function loadPublicRecipeDetail(recipeId) {
         // Přidat sekci hodnocení
         appendRatingSection(recipeId, recipe.public_rating_avg || 0, recipe.public_rating_count || 0, userRating);
         
+        // Přidat tlačítko zpět do databáze
+        appendBackToDatabaseButton();
+        
+        // Označit, že recept je z veřejné databáze (pro blokování public checkboxu)
+        window.isFromPublicDatabase = true;
+        
         showPage('shared-recipe');
         
         if (window.i18n?.applyTranslations) {
@@ -10196,6 +10241,38 @@ async function submitRating(recipeId, rating) {
         console.error('Error submitting rating:', error);
         showNotification(t('common.error', 'Chyba při ukládání hodnocení'), 'error');
     }
+}
+
+// Přidat tlačítko zpět do databáze receptů - na konec k ostatním tlačítkům
+function appendBackToDatabaseButton() {
+    // Najít button-group na stránce shared-recipe
+    const sharedRecipePage = document.getElementById('shared-recipe');
+    if (!sharedRecipePage) return;
+    
+    const buttonGroup = sharedRecipePage.querySelector('.button-group');
+    if (!buttonGroup) return;
+    
+    // Zkontrolovat, zda tlačítko již neexistuje
+    if (buttonGroup.querySelector('.back-to-database-btn')) return;
+    
+    // Přidat tlačítko zpět do databáze na začátek button-group
+    const backBtnHtml = `
+        <button class="neon-button secondary back-to-database-btn" onclick="showRecipeDatabase()">
+            <span data-i18n="recipe_database.back_to_database">◀ ZPĚT DO DATABÁZE</span>
+        </button>
+    `;
+    buttonGroup.insertAdjacentHTML('afterbegin', backBtnHtml);
+    
+    // Aplikovat překlady
+    if (window.i18n?.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+}
+
+// Odstranit tlačítko zpět do databáze (při opuštění stránky)
+function removeBackToDatabaseButton() {
+    const btn = document.querySelector('.back-to-database-btn');
+    if (btn) btn.remove();
 }
 
 // =============================================
@@ -10312,6 +10389,8 @@ window.goToDbPage = goToDbPage;
 window.loadPublicRecipeDetail = loadPublicRecipeDetail;
 window.submitRating = submitRating;
 window.updateReminderStockUI = updateReminderStockUI;
+window.appendBackToDatabaseButton = appendBackToDatabaseButton;
+window.removeBackToDatabaseButton = removeBackToDatabaseButton;
 
 // =========================================
 // EXPORT: Funkce pro globalni pristup z onclick

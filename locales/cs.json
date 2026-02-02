@@ -99,7 +99,8 @@
     "no_recipes": "Žádné recepty nenalezeny",
     "login_required": "Pro přístup k databázi se přihlaste",
     "loading": "Načítání receptů...",
-    "results_count": "Nalezeno {count} receptů"
+    "results_count": "Nalezeno {count} receptů",
+    "back_to_database": "◀ ZPĚT DO DATABÁZE"
   },
   "rating": {
     "title": "Hodnocení",
@@ -643,7 +644,8 @@
     "products_linked": "Propojene produkty",
     "save_as_new": "ULOZIT JAKO NOVY",
     "make_public": "Sdílet do veřejné databáze receptů",
-    "public_hint": "Recept bude viditelný a hodnotitelný ostatními uživateli"
+    "public_hint": "Recept bude viditelný a hodnotitelný ostatními uživateli",
+    "public_disabled_shared": "Nelze sdílet - recept je již z veřejné databáze"
   },
   "share": {
     "copied": "Odkaz zkopírován do schránky!",

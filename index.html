@@ -286,7 +286,7 @@
     <!-- Supabase Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/database.js"></script>
-    <script src="/i18n.js?v=20260131a"></script>
+    <script src="/i18n.js?v=20260131b"></script>
 </head>
 <body>
     <div class="neon-grid"></div>
@@ -2247,12 +2247,15 @@
                         </div>
                     </div>
                     
-                    <!-- Veřejná databáze receptů -->
+                    <!-- Veřejná databáze receptů - toggle switch jako u připomínek -->
                     <div class="form-group-login public-recipe-toggle">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="recipeIsPublic">
-                            <span data-i18n="save_recipe.make_public">Sdílet do veřejné databáze receptů</span>
-                        </label>
+                        <div class="reminder-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="recipeIsPublic">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="login-label toggle-label" for="recipeIsPublic" data-i18n="save_recipe.make_public">Sdílet do veřejné databáze receptů</label>
+                        </div>
                         <p class="form-hint" data-i18n="save_recipe.public_hint">Recept bude viditelný a hodnotitelný ostatními uživateli</p>
                     </div>
                     
@@ -2469,12 +2472,15 @@
                             </div>
                         </div>
                         
-                        <!-- Obsahuje aditiva -->
-                        <div class="filter-group filter-checkbox">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="dbFilterHasAdditive" onchange="loadPublicRecipes()">
-                                <span data-i18n="recipe_database.filter_has_additive">Pouze s aditivy</span>
-                            </label>
+                        <!-- Obsahuje aditiva - toggle switch -->
+                        <div class="filter-group filter-toggle">
+                            <div class="filter-toggle-row">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="dbFilterHasAdditive" onchange="loadPublicRecipes()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <label class="filter-toggle-label" for="dbFilterHasAdditive" data-i18n="recipe_database.filter_has_additive">Pouze s aditivy</label>
+                            </div>
                         </div>
                         
                         <!-- Reset filtrů -->

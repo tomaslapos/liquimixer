@@ -1854,6 +1854,14 @@ body {
     color: #ff6666;
 }
 
+/* Wrapper pro stock bar + akční tlačítka - mobilní 2-řádkový layout */
+.reminder-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
 .reminder-actions {
     display: flex;
     gap: 8px;
@@ -5205,6 +5213,61 @@ body {
     .linked-product-item {
         padding: 10px 12px;
     }
+    
+    /* Mobilní layout pro připomínky zrání - 2-řádkový */
+    .reminder-item {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px;
+    }
+    
+    .reminder-dates {
+        width: 100%;
+    }
+    
+    .reminder-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .reminder-stock {
+        flex: 1;
+    }
+    
+    .stock-battery {
+        max-width: 120px;
+    }
+    
+    .stock-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1.1rem;
+    }
+    
+    .reminder-actions {
+        flex-shrink: 0;
+    }
+}
+
+/* Velmi malé obrazovky (<400px) */
+@media (max-width: 400px) {
+    .reminder-stock {
+        gap: 4px;
+    }
+    
+    .stock-battery {
+        max-width: 80px;
+    }
+    
+    .stock-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 1rem;
+    }
+    
+    .reminder-btn {
+        padding: 4px 8px;
+    }
 }
 
 /* =========================================
@@ -6892,6 +6955,24 @@ body.subscription-required #subscriptionModal {
     accent-color: var(--neon-cyan);
 }
 
+/* Toggle switch filter */
+.filter-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.filter-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-toggle-label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
 /* Reset button */
 .filter-reset {
     justify-content: flex-end;
@@ -7080,13 +7161,11 @@ body.subscription-required #subscriptionModal {
    Stock Bar - Battery Style
    ========================================= */
 
-/* Stock container */
+/* Stock container - pořadí: mínus-baterie-plus */
 .reminder-stock {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin: 12px 0;
-    padding: 8px 0;
+    gap: 8px;
 }
 
 /* Battery container */
@@ -7153,11 +7232,6 @@ body.subscription-required #subscriptionModal {
 }
 
 /* Stock control buttons */
-.stock-controls {
-    display: flex;
-    gap: 6px;
-}
-
 .stock-btn {
     width: 32px;
     height: 32px;
@@ -7329,6 +7403,17 @@ body.subscription-required #subscriptionModal {
     color: var(--text-secondary);
     margin-top: 5px;
     margin-left: 28px;
+}
+
+/* Disabled state when saving from shared database */
+.public-recipe-toggle.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.public-recipe-toggle.disabled .toggle-slider {
+    background: rgba(100, 100, 100, 0.3);
+    cursor: not-allowed;
 }
 
 /* Responsive adjustments */
