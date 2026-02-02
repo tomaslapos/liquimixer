@@ -7218,7 +7218,7 @@ body.subscription-required #subscriptionModal {
     50% { opacity: 0.6; }
 }
 
-/* Percentage inside battery */
+/* Percentage inside battery - černá při >50%, bílá při ≤50% */
 .battery-percent {
     position: absolute;
     left: 50%;
@@ -7227,9 +7227,15 @@ body.subscription-required #subscriptionModal {
     font-family: var(--font-primary);
     font-size: 0.75rem;
     font-weight: 700;
-    color: white;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    color: #000;
+    text-shadow: none;
     z-index: 1;
+}
+
+/* Bílý text při nízké úrovni (<= 50%) */
+.battery-percent.low-text {
+    color: #fff;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
 }
 
 /* Stock control buttons - stejný styl jako .reminder-btn */
