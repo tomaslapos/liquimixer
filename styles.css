@@ -4904,15 +4904,9 @@ body {
 }
 
 /* Gold sliders - track a thumb */
-.form-gold .slider-track {
-    background: linear-gradient(90deg, var(--neon-gold), #b8860b) !important;
-}
-
-.form-gold .slider-track.nicotine-track {
-    background: linear-gradient(90deg, #00ff00, var(--neon-gold)) !important;
-}
-
-.form-gold .slider-track.flavor-track {
+/* Pouze pro ratio slider - fixní zlatá barva */
+/* Pro flavor-track a nicotine-track ponecháme dynamickou barvu z JS */
+.form-gold .ratio-slider-wrapper .slider-track {
     background: linear-gradient(90deg, var(--neon-gold), #b8860b) !important;
 }
 
@@ -6895,6 +6889,8 @@ body.subscription-required #subscriptionModal {
 .database-filters-collapsible {
     border-top: 1px solid rgba(0, 255, 255, 0.15);
     padding-top: 10px;
+    position: relative;
+    z-index: 200;
 }
 
 .filter-toggle-btn {
@@ -6922,12 +6918,13 @@ body.subscription-required #subscriptionModal {
 
 /* Filters panel */
 .filters-panel {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 15px 20px;
     margin-top: 15px;
     padding: 15px;
-    background: rgba(10, 10, 21, 0.95);
+    background: rgba(10, 10, 21, 0.98);
     border: 1px solid rgba(0, 255, 255, 0.2);
     border-radius: var(--border-radius-small);
     max-height: 0;
@@ -6935,7 +6932,7 @@ body.subscription-required #subscriptionModal {
     opacity: 0;
     transition: all 0.3s ease;
     position: relative;
-    z-index: 100;
+    z-index: 200;
 }
 
 .filters-panel.hidden {
@@ -6943,7 +6940,7 @@ body.subscription-required #subscriptionModal {
 }
 
 .filters-panel.open {
-    display: grid;
+    display: flex;
     max-height: 500px;
     opacity: 1;
 }
@@ -6963,12 +6960,15 @@ body.subscription-required #subscriptionModal {
 /* Range filters */
 .filter-range .range-inputs {
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 8px;
+    min-width: 180px;
 }
 
 .filter-range .neon-select.small {
-    width: 80px;
+    width: 70px;
+    min-width: 70px;
     padding: 6px 8px;
     font-size: 0.85rem;
 }
@@ -6997,11 +6997,12 @@ body.subscription-required #subscriptionModal {
     accent-color: var(--neon-cyan);
 }
 
-/* Toggle switch filter - plná šířka jako ostatní filtry */
+/* Toggle switch filter - zarovnat ve flex layoutu */
 .filter-toggle {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    min-width: 150px;
 }
 
 .filter-toggle-row {
@@ -7009,6 +7010,7 @@ body.subscription-required #subscriptionModal {
     align-items: center;
     gap: 10px;
     padding: 8px 0;
+    height: 38px; /* Stejná výška jako select elementy */
 }
 
 .filter-toggle-label {
@@ -7018,9 +7020,10 @@ body.subscription-required #subscriptionModal {
     white-space: nowrap;
 }
 
-/* Reset button */
+/* Reset button - na konec řádku */
 .filter-reset {
-    justify-content: flex-end;
+    margin-left: auto;
+    align-self: flex-end;
 }
 
 .neon-button.small {

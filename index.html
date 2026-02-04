@@ -1112,7 +1112,7 @@
                         Příchuť
                     </label>
                     <div class="flavor-container">
-                        <select id="flavorType" class="neon-select" onchange="updateFlavorType()">
+                        <select id="flavorType" class="neon-select" onchange="updateFlavorType(true)">
                             <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
                             <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
                             <option value="citrus" data-i18n="form.flavor_citrus">Citrónové (citron, limeta)</option>
@@ -1839,7 +1839,7 @@
                         <div class="slider-container">
                             <button class="slider-btn" onclick="adjustShishaTargetNicotine(-0.5)">◀</button>
                             <div class="slider-wrapper">
-                                <input type="range" id="shTargetNicotine" min="0" max="6" value="0" step="0.5" class="nicotine-slider">
+                                <input type="range" id="shTargetNicotine" min="0" max="45" value="0" step="1" class="nicotine-slider" oninput="updateShishaNicotineDisplay()">
                                 <div class="slider-track nicotine-track" id="shNicotineTrack"></div>
                             </div>
                             <button class="slider-btn" onclick="adjustShishaTargetNicotine(0.5)">▶</button>
