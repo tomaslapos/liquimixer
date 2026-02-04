@@ -83,95 +83,231 @@ function t(key, fallback = null) {
 // steepingDays = doporučená doba zrání ve dnech
 // composition = složení příchutě pro přesný výpočet (pg, vg, alcohol, water, other v %)
 const flavorDatabase = {
+    // === LIQUID PŘÍCHUTĚ (isShishaOnly: false) ===
     none: { 
         name: 'Žádná (bez příchutě)', 
         min: 0, max: 0, ideal: 0, steepingDays: 0,
+        shishaMin: 0, shishaMax: 0, shishaIdeal: 0, shishaSteepingDays: 0,
+        isShishaOnly: false,
         note: 'Čistá báze PG/VG + nikotin',
         composition: { pg: 0, vg: 0, alcohol: 0, water: 0, other: 0 }
     },
     fruit: { 
         name: 'Ovoce (jahoda, jablko)', 
         min: 8, max: 12, ideal: 10, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Optimum: 10%, zrání 3–7 dní',
         composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     },
     citrus: { 
         name: 'Citrónové (citron, limeta)', 
         min: 6, max: 10, ideal: 8, steepingDays: 7,
+        shishaMin: 12, shishaMax: 20, shishaIdeal: 16, shishaSteepingDays: 2,
+        isShishaOnly: false,
         note: 'Silné kyseliny, méně stačí',
         composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     },
     berry: { 
         name: 'Bobulové (borůvka, malina)', 
         min: 10, max: 15, ideal: 12, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Vyvážené, dobře fungují s 50/50 PG/VG',
         composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     },
     tropical: { 
         name: 'Tropické (ananas, mango)', 
         min: 12, max: 18, ideal: 15, steepingDays: 10,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Sladké, potřebují vyšší % pro hloubku',
         composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
     },
     tobacco: { 
         name: 'Tabákové (klasický, kubánský)', 
         min: 10, max: 15, ideal: 12, steepingDays: 14,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 5,
+        isShishaOnly: false,
         note: 'Dlouhý steeping: 1–4 týdny pro rozvinutí',
         composition: { pg: 85, vg: 0, alcohol: 5, water: 5, other: 5 }
     },
     menthol: { 
         name: 'Mentol / Mátové', 
         min: 4, max: 8, ideal: 6, steepingDays: 7,
+        shishaMin: 10, shishaMax: 18, shishaIdeal: 15, shishaSteepingDays: 1,
+        isShishaOnly: false,
         note: 'Velmi koncentrované, při 10% chladí až pálí',
         composition: { pg: 35, vg: 5, alcohol: 50, water: 5, other: 5 }
     },
     candy: { 
         name: 'Sladkosti (cukroví, karamel)', 
         min: 12, max: 20, ideal: 16, steepingDays: 10,
+        shishaMin: 18, shishaMax: 28, shishaIdeal: 22, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Sladké tlumí škrábání, vyšší % nutné',
         composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
     },
     dessert: { 
         name: 'Dezerty (koláč, pudink)', 
         min: 15, max: 22, ideal: 18, steepingDays: 21,
+        shishaMin: 20, shishaMax: 30, shishaIdeal: 25, shishaSteepingDays: 5,
+        isShishaOnly: false,
         note: 'Komplexní: 2–4 týdny zrání, riziko přechucení',
         composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
     },
     bakery: { 
         name: 'Zákusky (tyčinka, donut)', 
         min: 18, max: 25, ideal: 20, steepingDays: 21,
+        shishaMin: 22, shishaMax: 30, shishaIdeal: 26, shishaSteepingDays: 4,
+        isShishaOnly: false,
         note: 'Doporučujeme vyzkoušet na 15%',
         composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
     },
     biscuit: { 
         name: 'Piškotové (vanilka, máslo)', 
         min: 10, max: 15, ideal: 12, steepingDays: 10,
+        shishaMin: 15, shishaMax: 22, shishaIdeal: 18, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Univerzální, funguje s vysokým VG',
         composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
     },
     drink: { 
         name: 'Nápojové (kola, čaj)', 
         min: 8, max: 12, ideal: 10, steepingDays: 7,
+        shishaMin: 12, shishaMax: 20, shishaIdeal: 16, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Jemné, méně intenzivní',
         composition: { pg: 40, vg: 30, alcohol: 20, water: 5, other: 5 }
     },
     tobaccosweet: { 
         name: 'Tabák + sladké (custard tobacco)', 
         min: 15, max: 20, ideal: 17, steepingDays: 28,
+        shishaMin: 20, shishaMax: 28, shishaIdeal: 24, shishaSteepingDays: 5,
+        isShishaOnly: false,
         note: 'Nejsložitější: 3–6 týdnů zrání',
         composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
     },
     nuts: { 
         name: 'Oříškové (arašíd, lískový)', 
         min: 12, max: 18, ideal: 15, steepingDays: 14,
+        shishaMin: 18, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 4,
+        isShishaOnly: false,
         note: 'Dobře tlumí nikotin',
         composition: { pg: 75, vg: 5, alcohol: 10, water: 5, other: 5 }
     },
     spice: { 
         name: 'Kořeněné (skořice, perník)', 
         min: 5, max: 10, ideal: 7, steepingDays: 14,
+        shishaMin: 10, shishaMax: 18, shishaIdeal: 14, shishaSteepingDays: 3,
+        isShishaOnly: false,
         note: 'Silné: při 12% dominují nad vším',
         composition: { pg: 70, vg: 5, alcohol: 15, water: 5, other: 5 }
+    },
+    // === SHISHA-SPECIFICKÉ PŘÍCHUTĚ (isShishaOnly: true) ===
+    double_apple: { 
+        name: 'Double Apple (klasika)', 
+        min: 15, max: 25, ideal: 20, steepingDays: 3,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: true,
+        note: 'Klasická shisha chuť, výrazná',
+        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
+    },
+    grape: { 
+        name: 'Grape / Hroznové', 
+        min: 12, max: 18, ideal: 15, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Sladké hrozny, univerzální',
+        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
+    },
+    watermelon: { 
+        name: 'Watermelon / Meloun', 
+        min: 10, max: 15, ideal: 12, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 2,
+        isShishaOnly: false,
+        note: 'Osvěžující letní chuť',
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    lemon_mint: { 
+        name: 'Lemon Mint', 
+        min: 8, max: 14, ideal: 10, steepingDays: 7,
+        shishaMin: 12, shishaMax: 20, shishaIdeal: 16, shishaSteepingDays: 2,
+        isShishaOnly: true,
+        note: 'Osvěžující kombinace citrónu a máty',
+        composition: { pg: 50, vg: 5, alcohol: 35, water: 5, other: 5 }
+    },
+    blueberry: { 
+        name: 'Blueberry / Borůvka', 
+        min: 10, max: 15, ideal: 12, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Sladká lesní chuť',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    },
+    peach: { 
+        name: 'Peach / Broskev', 
+        min: 10, max: 15, ideal: 12, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Jemná ovocná chuť',
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    mango: { 
+        name: 'Mango', 
+        min: 12, max: 18, ideal: 15, steepingDays: 10,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Exotická sladká chuť',
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    strawberry: { 
+        name: 'Strawberry / Jahoda', 
+        min: 8, max: 12, ideal: 10, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Klasická oblíbená chuť',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    },
+    mixed_fruit: { 
+        name: 'Mixed Fruit / Ovocný mix', 
+        min: 10, max: 16, ideal: 13, steepingDays: 7,
+        shishaMin: 18, shishaMax: 28, shishaIdeal: 22, shishaSteepingDays: 4,
+        isShishaOnly: false,
+        note: 'Kombinace více ovocných chutí',
+        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
+    },
+    cola: { 
+        name: 'Cola', 
+        min: 8, max: 12, ideal: 10, steepingDays: 7,
+        shishaMin: 12, shishaMax: 20, shishaIdeal: 16, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Nápojová klasika',
+        composition: { pg: 40, vg: 30, alcohol: 20, water: 5, other: 5 }
+    },
+    gum: { 
+        name: 'Gum / Žvýkačka', 
+        min: 12, max: 18, ideal: 15, steepingDays: 7,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 2,
+        isShishaOnly: false,
+        note: 'Sladká žvýkačková chuť',
+        composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
+    },
+    rose: { 
+        name: 'Rose / Růže', 
+        min: 8, max: 14, ideal: 10, steepingDays: 10,
+        shishaMin: 10, shishaMax: 18, shishaIdeal: 14, shishaSteepingDays: 4,
+        isShishaOnly: true,
+        note: 'Jemná květinová chuť, tradiční pro shisha',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
+    },
+    custom: { 
+        name: 'Vlastní', 
+        min: 5, max: 25, ideal: 10, steepingDays: 7,
+        shishaMin: 10, shishaMax: 30, shishaIdeal: 20, shishaSteepingDays: 3,
+        isShishaOnly: false,
+        note: 'Vlastní příchutě - nastavte dle výrobce',
+        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     }
 };
 
@@ -209,86 +345,6 @@ const additiveDatabase = {
         maxPercent: 5,
         descriptionKey: 'additive.terpene_desc',
         composition: { pg: 50, vg: 0, alcohol: 40, water: 0, other: 10 }
-    }
-};
-
-// Shisha flavor database - příchutě pro hookah/shisha
-// Vyšší koncentrace než e-liquid, kratší zrání
-const shishaFlavorDatabase = {
-    none: { 
-        name: 'Žádná (bez příchutě)', 
-        min: 0, max: 0, ideal: 0, steepingDays: 0,
-        composition: { pg: 0, vg: 0, alcohol: 0, water: 0, other: 0 }
-    },
-    double_apple: { 
-        name: 'Double Apple (klasika)', 
-        min: 15, max: 25, ideal: 20, steepingDays: 3,
-        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
-    },
-    mint: { 
-        name: 'Mint / Máta', 
-        min: 10, max: 18, ideal: 15, steepingDays: 1,
-        composition: { pg: 35, vg: 5, alcohol: 50, water: 5, other: 5 }
-    },
-    grape: { 
-        name: 'Grape / Hroznové', 
-        min: 15, max: 25, ideal: 20, steepingDays: 3,
-        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
-    },
-    watermelon: { 
-        name: 'Watermelon / Meloun', 
-        min: 15, max: 25, ideal: 20, steepingDays: 2,
-        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
-    },
-    lemon_mint: { 
-        name: 'Lemon Mint', 
-        min: 12, max: 20, ideal: 16, steepingDays: 2,
-        composition: { pg: 50, vg: 5, alcohol: 35, water: 5, other: 5 }
-    },
-    blueberry: { 
-        name: 'Blueberry / Borůvka', 
-        min: 15, max: 25, ideal: 20, steepingDays: 3,
-        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
-    },
-    peach: { 
-        name: 'Peach / Broskev', 
-        min: 15, max: 25, ideal: 20, steepingDays: 3,
-        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
-    },
-    mango: { 
-        name: 'Mango', 
-        min: 15, max: 25, ideal: 20, steepingDays: 3,
-        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
-    },
-    strawberry: { 
-        name: 'Strawberry / Jahoda', 
-        min: 15, max: 25, ideal: 20, steepingDays: 3,
-        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
-    },
-    mixed_fruit: { 
-        name: 'Mixed Fruit', 
-        min: 18, max: 28, ideal: 22, steepingDays: 4,
-        composition: { pg: 55, vg: 10, alcohol: 25, water: 5, other: 5 }
-    },
-    cola: { 
-        name: 'Cola', 
-        min: 12, max: 20, ideal: 16, steepingDays: 3,
-        composition: { pg: 40, vg: 30, alcohol: 20, water: 5, other: 5 }
-    },
-    gum: { 
-        name: 'Gum / Žvýkačka', 
-        min: 15, max: 25, ideal: 20, steepingDays: 2,
-        composition: { pg: 50, vg: 10, alcohol: 30, water: 5, other: 5 }
-    },
-    rose: { 
-        name: 'Rose / Růže', 
-        min: 10, max: 18, ideal: 14, steepingDays: 4,
-        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
-    },
-    custom: { 
-        name: 'Vlastní', 
-        min: 10, max: 30, ideal: 20, steepingDays: 3,
-        composition: { pg: 60, vg: 5, alcohol: 25, water: 5, other: 5 }
     }
 };
 
@@ -386,9 +442,42 @@ function mlToGrams(volumeMl, density) {
     return (volumeMl * density).toFixed(2);
 }
 
+// Helper funkce pro získání shisha hodnot z flavorDatabase
+// Vrací objekt s min, max, ideal, steepingDays pro shisha formulář
+function getShishaFlavorData(flavorType) {
+    const flavor = flavorDatabase[flavorType] || flavorDatabase.custom;
+    return {
+        name: flavor.name,
+        min: flavor.shishaMin ?? flavor.min,
+        max: flavor.shishaMax ?? flavor.max,
+        ideal: flavor.shishaIdeal ?? flavor.ideal,
+        steepingDays: flavor.shishaSteepingDays ?? flavor.steepingDays,
+        composition: flavor.composition,
+        isShishaOnly: flavor.isShishaOnly || false
+    };
+}
+
+// Alias pro zpětnou kompatibilitu - shishaFlavorDatabase nyní používá flavorDatabase
+const shishaFlavorDatabase = new Proxy({}, {
+    get: function(target, prop) {
+        if (prop === 'custom') {
+            return getShishaFlavorData('custom');
+        }
+        const flavor = flavorDatabase[prop];
+        if (flavor) {
+            return getShishaFlavorData(prop);
+        }
+        return undefined;
+    },
+    has: function(target, prop) {
+        return prop in flavorDatabase;
+    }
+});
+
 // Export additive database
 window.additiveDatabase = additiveDatabase;
 window.shishaFlavorDatabase = shishaFlavorDatabase;
+window.getShishaFlavorData = getShishaFlavorData;
 window.sweetenerDatabase = sweetenerDatabase;
 window.ingredientDensities = ingredientDensities;
 window.calculateCompositionDensity = calculateCompositionDensity;
@@ -5141,7 +5230,7 @@ function updateNicotineDisplay() {
 // Flavor Functions
 // =========================================
 
-function updateFlavorType() {
+function updateFlavorType(forceReset = false) {
     const type = flavorTypeSelect.value;
     const strengthContainer = document.getElementById('flavorStrengthContainer');
     
@@ -5149,8 +5238,12 @@ function updateFlavorType() {
         strengthContainer.classList.add('hidden');
     } else {
         strengthContainer.classList.remove('hidden');
-        const flavor = flavorDatabase[type];
-        flavorStrengthSlider.value = flavor.ideal;
+        // Nastavit ideal POUZE při forceReset (změna typu uživatelem)
+        // Při volání z updateAllDisplays() (localeChanged event) nepřepisovat uživatelskou hodnotu
+        if (forceReset) {
+            const flavor = flavorDatabase[type];
+            flavorStrengthSlider.value = flavor.ideal;
+        }
         updateFlavorDisplay();
     }
     
@@ -5300,7 +5393,7 @@ function updateAllDisplays() {
     updateNicotineDisplay();
     updateFlavorDisplay();
     updateNicotineType();
-    updateFlavorType();
+    updateFlavorType(false);  // BEZ přepsání uživatelské hodnoty
 }
 
 // =========================================
@@ -10873,10 +10966,13 @@ function updateShishaNicRatioDisplay() {
 
 function adjustShishaTargetNicotine(change) {
     const slider = document.getElementById('shTargetNicotine');
-    let currentValue = parseFloat(slider.value);
+    if (!slider) return;
     
-    let newValue = currentValue + (change * 0.5);
-    newValue = Math.max(0, Math.min(6, newValue));
+    let currentValue = parseInt(slider.value);
+    const maxValue = parseInt(slider.max) || 45;
+    
+    let newValue = currentValue + change;
+    newValue = Math.max(0, Math.min(maxValue, newValue));
     slider.value = newValue;
     updateShishaNicotineDisplay();
 }
@@ -10884,13 +10980,35 @@ function adjustShishaTargetNicotine(change) {
 function updateShishaNicotineDisplay() {
     const slider = document.getElementById('shTargetNicotine');
     const display = document.getElementById('shTargetNicotineValue');
+    const displayContainer = display?.parentElement;
     const track = document.getElementById('shNicotineTrack');
+    const descEl = document.getElementById('shNicotineDescription');
     
-    const value = parseFloat(slider.value);
-    display.textContent = value;
+    if (!slider) return;
     
-    if (track) {
-        track.style.width = (value / 6 * 100) + '%';
+    const value = parseInt(slider.value);
+    const maxValue = parseInt(slider.max) || 45;
+    
+    if (display) display.textContent = value;
+    
+    // Barevná škála podle síly nikotinu - stejná jako u Liquid formuláře
+    const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    if (desc) {
+        if (descEl) {
+            descEl.textContent = getNicotineDescriptionText(value);
+            descEl.style.color = desc.color;
+            descEl.style.borderLeftColor = desc.color;
+        }
+        if (displayContainer) {
+            displayContainer.style.color = desc.color;
+            displayContainer.style.textShadow = `0 0 20px ${desc.color}`;
+        }
+        if (track) {
+            track.style.width = (value / maxValue * 100) + '%';
+            track.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
+        }
+    } else if (track) {
+        track.style.width = (value / maxValue * 100) + '%';
     }
     
     autoRecalculateShishaVgPgRatio();
@@ -11253,9 +11371,9 @@ function handleShishaSweetenerSelect() {
         // Nastavit doporučenou hodnotu ze sweetenerDatabase
         const sweetener = sweetenerDatabase[sweetenerType];
         if (sweetener && slider) {
-            slider.min = sweetener.min;
-            slider.max = sweetener.max;
-            slider.value = sweetener.ideal;
+            slider.min = sweetener.minPercent;
+            slider.max = sweetener.maxPercent;
+            slider.value = sweetener.defaultPercent;
         }
         
         updateShishaSweetenerDisplay();
