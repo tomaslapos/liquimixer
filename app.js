@@ -3350,6 +3350,9 @@ async function editSavedRecipe() {
     } else if (formType === 'liquidpro' || formType === 'pro') {
         prefillProForm(recipeData);
         switchFormTab('liquidpro');
+    } else if (formType === 'shisha') {
+        prefillShishaForm(recipeData);
+        switchFormTab('shisha');
     } else {
         prefillLiquidForm(recipeData);
         switchFormTab('liquid');
@@ -3476,6 +3479,129 @@ function prefillProForm(data) {
     }
     // Aktualizovat limity
     updateProVgPgLimits();
+}
+
+// Předvyplnit Shisha formulář
+function prefillShishaForm(data) {
+    // Celkové množství
+    if (data.totalAmount) {
+        const el = document.getElementById('shTotalAmount');
+        if (el) el.value = data.totalAmount;
+    }
+    
+    // Typ báze (separate/premixed)
+    if (data.premixedRatio) {
+        updateShishaBaseType('premixed');
+        // Nastavit poměr předmíchané báze
+        const standardRatios = ['50/50', '60/40', '70/30', '80/20', '90/10'];
+        if (standardRatios.includes(data.premixedRatio)) {
+            updateShishaPremixedRatio(data.premixedRatio);
+        } else {
+            updateShishaPremixedRatio('custom');
+            const parts = data.premixedRatio.split('/');
+            const vgEl = document.getElementById('shCustomPremixedVg');
+            if (vgEl) vgEl.value = parseInt(parts[0]) || 70;
+            updateShishaCustomPremixedPg();
+        }
+    } else {
+        updateShishaBaseType('separate');
+    }
+    
+    // Nikotin
+    if (data.nicotineStrength !== undefined && data.nicotineStrength > 0) {
+        const toggle = document.getElementById('shNicotineToggle');
+        if (toggle) {
+            toggle.checked = true;
+            toggleShishaNicotine();
+        }
+        const nicEl = document.getElementById('shTargetNicotine');
+        if (nicEl) {
+            nicEl.value = data.nicotineStrength;
+            updateShishaNicotineDisplay();
+        }
+    }
+    
+    // VG/PG poměr
+    if (data.vgPercent !== undefined) {
+        const el = document.getElementById('shVgPgRatio');
+        if (el) {
+            el.value = data.vgPercent;
+            updateShishaRatioDisplay();
+        }
+    }
+    
+    // Příchutě
+    if (data.flavors && data.flavors.length > 0) {
+        // První příchuť
+        const firstFlavor = data.flavors[0];
+        if (firstFlavor && firstFlavor.type !== 'none') {
+            const typeEl = document.getElementById('shFlavorType1');
+            if (typeEl) {
+                typeEl.value = firstFlavor.type;
+                updateShishaFlavorType(1);
+            }
+            const strengthEl = document.getElementById('shFlavorStrength1');
+            if (strengthEl) {
+                strengthEl.value = firstFlavor.percent || 15;
+                updateShishaFlavorStrength(1);
+            }
+        }
+        
+        // Další příchutě
+        for (let i = 1; i < data.flavors.length; i++) {
+            const flavor = data.flavors[i];
+            if (flavor && flavor.type !== 'none') {
+                addShishaFlavor();
+                const idx = i + 1;
+                const typeEl = document.getElementById(`shFlavorType${idx}`);
+                if (typeEl) {
+                    typeEl.value = flavor.type;
+                    updateShishaFlavorType(idx);
+                }
+                const strengthEl = document.getElementById(`shFlavorStrength${idx}`);
+                if (strengthEl) {
+                    strengthEl.value = flavor.percent || 15;
+                    updateShishaFlavorStrength(idx);
+                }
+            }
+        }
+    }
+    
+    // Sladidlo
+    if (data.sweetener && data.sweetener.type !== 'none') {
+        const toggle = document.getElementById('shSweetenerToggle');
+        if (toggle) {
+            toggle.checked = true;
+            toggleShishaSweetener();
+        }
+        const typeEl = document.getElementById('shSweetenerType');
+        if (typeEl) {
+            typeEl.value = data.sweetener.type;
+            updateShishaSweetenerType();
+        }
+        const strengthEl = document.getElementById('shSweetenerStrength');
+        if (strengthEl) {
+            strengthEl.value = data.sweetener.percent || 2;
+            updateShishaSweetenerDisplay();
+        }
+    }
+    
+    // Voda
+    if (data.water && data.water > 0) {
+        const toggle = document.getElementById('shWaterToggle');
+        if (toggle) {
+            toggle.checked = true;
+            toggleShishaWater();
+        }
+        const waterEl = document.getElementById('shWaterPercent');
+        if (waterEl) {
+            waterEl.value = data.water;
+            updateShishaWaterDisplay();
+        }
+    }
+    
+    // Aktualizovat limity
+    updateShishaVgPgLimits();
 }
 
 // Resetovat a předvyplnit aditiva PRO formuláře
@@ -5378,6 +5504,20 @@ function getIngredientName(ingredient) {
             return t('ingredients.additive', 'Aditivum');
         case 'shortfill_liquid':
             return t('ingredients.shortfill_liquid', 'Shortfill liquid');
+        case 'shisha_flavor':
+            // Shisha flavor - přeložit název příchutě
+            const shishaFlavorType = ingredient.flavorType || 'custom';
+            const shishaFlavorData = shishaFlavorDatabase[shishaFlavorType] || shishaFlavorDatabase.custom;
+            const shishaFlavorName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
+            return `${t('ingredients.flavor', 'Příchuť')} ${ingredient.flavorNumber || 1}: ${shishaFlavorName}`;
+        case 'shisha_sweetener':
+            // Shisha sweetener - přeložit název sladidla
+            const sweetType = ingredient.sweetenerType || 'sucralose';
+            const sweetData = sweetenerDatabase[sweetType] || sweetenerDatabase.sucralose;
+            const sweetName = t(`shisha.sweetener_${sweetType}`, sweetData.name);
+            return `${t('shisha.sweetener_label', 'Sladidlo')}: ${sweetName}`;
+        case 'water':
+            return t('form.water', 'Voda');
         default:
             return ingredient.name || key;
     }
@@ -10650,11 +10790,43 @@ async function submitRating(recipeId, rating) {
     try {
         await window.LiquiMixerDB.addRecipeRating(window.Clerk.user.id, recipeId, rating);
         
-        // Aktualizovat UI
+        // Aktualizovat UI hvězdiček v detailu
         const stars = document.querySelectorAll(`.star-rating-input[data-recipe-id="${recipeId}"] .star-input`);
         stars.forEach((star, index) => {
             star.classList.toggle('active', index < rating);
         });
+        
+        // Aktualizovat průměrné hodnocení v seznamu receptů (po přepočtu v databázi)
+        // Počkat krátce na přepočet průměru v databázi
+        setTimeout(async () => {
+            try {
+                const updatedRecipe = await window.LiquiMixerDB.getPublicRecipeById(recipeId);
+                if (updatedRecipe) {
+                    // Aktualizovat kartu v seznamu
+                    const card = document.querySelector(`.public-recipe-card[onclick*="${recipeId}"]`);
+                    if (card) {
+                        const starsEl = card.querySelector('.recipe-card-rating');
+                        if (starsEl) {
+                            const avgRating = updatedRecipe.public_rating_avg || 0;
+                            const ratingCount = updatedRecipe.public_rating_count || 0;
+                            starsEl.innerHTML = `${renderStars(avgRating)} <span class="rating-count">(${ratingCount})</span>`;
+                        }
+                    }
+                    
+                    // Aktualizovat průměr v sekci hodnocení v detailu
+                    const avgRatingEl = document.querySelector('.average-rating-value');
+                    const countEl = document.querySelector('.rating-count-value');
+                    if (avgRatingEl) {
+                        avgRatingEl.textContent = `${(updatedRecipe.public_rating_avg || 0).toFixed(1)} ★`;
+                    }
+                    if (countEl) {
+                        countEl.textContent = `(${updatedRecipe.public_rating_count || 0} ${t('rating.votes', 'hlasů')})`;
+                    }
+                }
+            } catch (err) {
+                console.error('Error updating rating display:', err);
+            }
+        }, 500);
         
         showNotification(t('rating.thank_you', 'Děkujeme za hodnocení!'), 'success');
     } catch (error) {
@@ -11024,13 +11196,9 @@ function updateShishaBaseType(type) {
 
 // Premixed base ratio
 function updateShishaPremixedRatio(ratio) {
-    const isPremium = window.checkSubscriptionStatus && window.checkSubscriptionStatus();
-    
-    // Check if custom requires premium
-    if (ratio === 'custom' && !isPremium) {
-        if (window.requireSubscription) {
-            window.requireSubscription();
-        }
+    // Vlastní poměr vyžaduje přihlášení
+    if (ratio === 'custom' && !isUserLoggedIn()) {
+        showLoginRequiredModal();
         return;
     }
     
@@ -11414,12 +11582,9 @@ function updateShishaTotalFlavorPercent() {
 }
 
 function addShishaFlavor() {
-    const isPremium = window.checkSubscriptionStatus && window.checkSubscriptionStatus();
-    
-    if (!isPremium) {
-        if (window.requireSubscription) {
-            window.requireSubscription();
-        }
+    // Přidání více příchutí vyžaduje přihlášení
+    if (!isUserLoggedIn()) {
+        showLoginRequiredModal();
         return;
     }
     
@@ -11739,6 +11904,7 @@ function updateShishaRatioDisplay() {
     const pgValue = document.getElementById('shPgValue');
     const track = document.getElementById('shSliderTrack');
     const displayContainer = document.querySelector('#shVgValue')?.closest('.ratio-display');
+    const descEl = document.getElementById('shRatioDescription');
     
     if (!slider) return;
     
@@ -11750,21 +11916,30 @@ function updateShishaRatioDisplay() {
     
     // Optimální poměr pro shisha: 70-80% VG
     // Plná šířka track s dynamickou barvou podle optimálnosti
+    let color, descText;
+    
+    if (vg >= 70 && vg <= 80) {
+        // Optimální rozsah - zlatá
+        color = 'var(--neon-gold)';
+        descText = t('shisha.ratio_optimal', 'Optimální poměr pro shisha - vyvážený dým i chuť');
+    } else if (vg > 80) {
+        // Více VG - hodně dýmu
+        color = '#ffaa00';
+        descText = t('shisha.ratio_more_vg', 'Více dýmu, méně intenzivní chuť');
+    } else {
+        // Více PG - intenzivnější chuť
+        color = '#00ccff';
+        descText = t('shisha.ratio_more_pg', 'Řidší liquid, intenzivnější chuť');
+    }
+    
     if (track) {
         track.style.width = '100%';
         
-        let color;
         if (vg >= 70 && vg <= 80) {
-            // Optimální rozsah - zlatá
-            color = 'var(--neon-gold)';
             track.style.background = `linear-gradient(90deg, var(--neon-gold), #b8860b)`;
         } else if ((vg >= 60 && vg < 70) || (vg > 80 && vg <= 90)) {
-            // Mírně mimo optimum - přechod k oranžové
-            color = '#ffaa00';
             track.style.background = `linear-gradient(90deg, var(--neon-gold), #ffaa00)`;
         } else {
-            // Výrazně mimo optimum - oranžová až červená
-            color = '#ff6600';
             track.style.background = `linear-gradient(90deg, #ffaa00, #ff6600)`;
         }
         
@@ -11773,6 +11948,13 @@ function updateShishaRatioDisplay() {
             displayContainer.style.color = color;
             displayContainer.style.textShadow = `0 0 15px ${color}`;
         }
+    }
+    
+    // Zobrazit popis poměru
+    if (descEl) {
+        descEl.textContent = descText;
+        descEl.style.color = color;
+        descEl.style.borderLeftColor = color;
     }
 }
 
@@ -12139,14 +12321,68 @@ function calculateShishaMix() {
     // Store current recipe data
     const hasSweetener = sweetenerSelect ? sweetenerType !== 'none' : (sweetenerToggle?.checked);
     
-    // Vytvořit pole ingredients pro kompatibilitu s refreshResultsTable()
-    const ingredients = results.map(item => ({
-        name: item.name,
-        volume: parseFloat(item.volume),
-        percent: ((parseFloat(item.volume) / totalAmount) * 100).toFixed(1),
-        type: item.type,
-        grams: item.grams
-    }));
+    // Vytvořit pole ingredients s ingredientKey pro dynamický překlad při změně jazyka
+    const ingredients = [];
+    
+    // Premixed base
+    if (premixedBaseVolume > 0) {
+        ingredients.push({
+            ingredientKey: 'premixedBase',
+            params: { vgpg: `${premixedVg}/${premixedPg}` },
+            volume: premixedBaseVolume,
+            percent: ((premixedBaseVolume / totalAmount) * 100).toFixed(1),
+            grams: parseFloat(results.find(r => r.type === 'base')?.grams || 0)
+        });
+    }
+    
+    // Nicotine
+    if (nicotineVolume > 0) {
+        const nicRatioInputRes = document.getElementById('shNicotineRatio');
+        const nicRatioValueRes = nicRatioInputRes?.value || '50/50';
+        ingredients.push({
+            ingredientKey: 'nicotine_base',
+            params: { vgpg: nicRatioValueRes },
+            volume: nicotineVolume,
+            percent: ((nicotineVolume / totalAmount) * 100).toFixed(1),
+            grams: parseFloat(results.find(r => r.type === 'nicotine')?.grams || 0)
+        });
+    }
+    
+    // Flavors
+    flavorsData.forEach((flavor, index) => {
+        const flavorVolume = (flavor.percent / 100) * totalAmount;
+        const flavorResult = results.find(r => r.type === 'flavor' && r.name.includes(`${index + 1}:`));
+        ingredients.push({
+            ingredientKey: 'shisha_flavor',
+            flavorType: flavor.type,
+            flavorNumber: index + 1,
+            params: { vgpg: flavor.vgpg || '50/50' },
+            volume: flavorVolume,
+            percent: ((flavorVolume / totalAmount) * 100).toFixed(1),
+            grams: parseFloat(flavorResult?.grams || 0)
+        });
+    });
+    
+    // Sweetener
+    if (sweetenerVolume > 0) {
+        ingredients.push({
+            ingredientKey: 'shisha_sweetener',
+            sweetenerType: sweetenerType,
+            volume: sweetenerVolume,
+            percent: ((sweetenerVolume / totalAmount) * 100).toFixed(1),
+            grams: parseFloat(results.find(r => r.type === 'sweetener')?.grams || 0)
+        });
+    }
+    
+    // Water
+    if (waterVolume > 0) {
+        ingredients.push({
+            ingredientKey: 'water',
+            volume: waterVolume,
+            percent: ((waterVolume / totalAmount) * 100).toFixed(1),
+            grams: parseFloat(results.find(r => r.type === 'water')?.grams || 0)
+        });
+    }
     
     // Uložit data receptu pomocí storeCurrentRecipe() pro konzistenci s ostatními formuláři
     storeCurrentRecipe({
