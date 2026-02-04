@@ -7015,7 +7015,7 @@ body.subscription-required #subscriptionModal {
 
 .filter-toggle-label {
     font-size: 0.9rem;
-    color: var(--text-primary);
+    color: var(--neon-cyan);
     cursor: pointer;
     white-space: nowrap;
 }

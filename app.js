@@ -6484,7 +6484,6 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
             <td class="ingredient-name">${ingredientName}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
             <td class="ingredient-grams">${grams.toFixed(2)} g</td>
-            <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
         `;
         tbody.appendChild(row);
         runningTotal += ing.volume;
@@ -6497,7 +6496,6 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
         <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
         <td class="ingredient-grams">${runningTotalGrams.toFixed(2)} g</td>
-        <td class="ingredient-percent">100%</td>
     `;
     tbody.appendChild(totalRow);
 }
@@ -10070,8 +10068,28 @@ let currentViewReminderId = null;
 let currentViewReminderRecipeId = null;
 
 // Zobrazit detail připomínky (read-only)
-function showViewReminderModal(reminderId) {
-    const reminder = allRecipeReminders.find(r => r.id === reminderId);
+async function showViewReminderModal(reminderId) {
+    // Načíst aktuální data přímo z databáze (ne z cache)
+    const clerkId = window.Clerk?.user?.id;
+    let reminder = allRecipeReminders.find(r => r.id === reminderId);
+    
+    // Pokud je uživatel přihlášen, načíst čerstvá data z databáze
+    if (clerkId && window.database?.getReminderById) {
+        try {
+            const freshReminder = await window.database.getReminderById(clerkId, reminderId);
+            if (freshReminder) {
+                reminder = freshReminder;
+                // Aktualizovat také cache
+                const idx = allRecipeReminders.findIndex(r => r.id === reminderId);
+                if (idx >= 0) {
+                    allRecipeReminders[idx] = freshReminder;
+                }
+            }
+        } catch (e) {
+            console.warn('Could not refresh reminder from DB:', e);
+        }
+    }
+    
     if (!reminder) { console.error('Reminder not found:', reminderId); return; }
 
     const modal = document.getElementById('viewReminderModal');
@@ -10280,9 +10298,10 @@ function initFlavorFilterOptions(forceRegenerate = false) {
             const option = document.createElement('option');
             option.value = key;
             const flavorData = window.flavorDatabase[key];
-            // Použít správný překlad - form.flavor_fruit, form.flavor_citrus, atd.
-            option.textContent = t(`form.flavor_${key}`, flavorData.name || key);
-            option.setAttribute('data-i18n', `form.flavor_${key}`);
+            // Použít správný překlad - shisha příchutě mají klíče shisha.flavor_*, ostatní form.flavor_*
+            const i18nKey = flavorData.isShishaOnly ? `shisha.flavor_${key}` : `form.flavor_${key}`;
+            option.textContent = t(i18nKey, flavorData.name || key);
+            option.setAttribute('data-i18n', i18nKey);
             select.appendChild(option);
         });
     }
@@ -11104,6 +11123,7 @@ function adjustShishaFlavor(index, change) {
 function updateShishaFlavorStrength(index) {
     const slider = document.getElementById(`shFlavorStrength${index}`);
     const display = document.getElementById(`shFlavorValue${index}`);
+    const displayContainer = display?.parentElement;
     const track = document.getElementById(`shFlavorTrack${index}`);
     const select = document.getElementById(`shFlavorType${index}`);
     const strengthDisplay = document.getElementById(`shFlavorStrengthDisplay${index}`);
@@ -11112,10 +11132,12 @@ function updateShishaFlavorStrength(index) {
     
     const value = parseInt(slider.value);
     if (display) display.textContent = value;
-    if (track) track.style.width = (value / 30 * 100) + '%';
+    
+    // Plná šířka track jako v liquid formuláři
+    if (track) track.style.width = '100%';
     
     // Zobrazení doporučení síly příchutě (jako u Liquid formu)
-    if (strengthDisplay && select) {
+    if (select) {
         const flavorType = select.value;
         const flavor = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
         
@@ -11142,11 +11164,19 @@ function updateShishaFlavorStrength(index) {
             if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
         }
         
-        strengthDisplay.innerHTML = `
-            <div class="flavor-strength-info" style="border-left: 3px solid ${color}; padding-left: 10px; margin-bottom: 10px;">
-                <span style="color: ${color};">${text}</span>
-            </div>
-        `;
+        // Barva čísla a % pod sliderem
+        if (displayContainer) {
+            displayContainer.style.color = color;
+            displayContainer.style.textShadow = `0 0 15px ${color}`;
+        }
+        
+        if (strengthDisplay) {
+            strengthDisplay.innerHTML = `
+                <div class="flavor-strength-info" style="border-left: 3px solid ${color}; padding-left: 10px; margin-bottom: 10px;">
+                    <span style="color: ${color};">${text}</span>
+                </div>
+            `;
+        }
     }
     
     updateShishaTotalFlavorPercent();
@@ -11466,14 +11496,43 @@ function adjustShishaSweetener(change) {
 function updateShishaSweetenerDisplay() {
     const slider = document.getElementById('shSweetenerStrength');
     const display = document.getElementById('shSweetenerValue');
+    const displayContainer = display?.parentElement;
     const track = document.getElementById('shSweetenerTrack');
+    const sweetenerSelect = document.getElementById('shSweetenerSelect');
     
     if (!slider) return;
     
     const value = parseFloat(slider.value);
     if (display) display.textContent = value;
-    // Plná šířka track - jako ostatní formuláře
-    if (track) track.style.width = '100%';
+    
+    // Plná šířka track s dynamickou barvou
+    if (track) {
+        track.style.width = '100%';
+        
+        // Dynamická barva podle doporučených hodnot
+        const sweetenerType = sweetenerSelect?.value || 'sucralose';
+        const sweetener = sweetenerDatabase[sweetenerType] || sweetenerDatabase.sucralose;
+        const minVal = sweetener.minPercent || 1;
+        const maxVal = sweetener.maxPercent || 5;
+        const defaultVal = sweetener.defaultPercent || 3;
+        
+        let color;
+        if (value < minVal) {
+            color = '#ffaa00'; // slabé
+            track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
+        } else if (value > maxVal) {
+            color = '#ff0044'; // příliš silné
+            track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
+        } else {
+            color = '#00cc66'; // ideální
+            track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+        }
+        
+        if (displayContainer) {
+            displayContainer.style.color = color;
+            displayContainer.style.textShadow = `0 0 15px ${color}`;
+        }
+    }
 }
 
 // Water functions - voda je nyní vždy viditelný slider bez toggle
@@ -11496,14 +11555,36 @@ function adjustShishaWater(change) {
 function updateShishaWaterDisplay() {
     const slider = document.getElementById('shWaterPercent');
     const display = document.getElementById('shWaterValue');
+    const displayContainer = display?.parentElement;
     const track = document.getElementById('shWaterTrack');
     
     if (!slider) return;
     
     const value = parseFloat(slider.value);
     if (display) display.textContent = value;
-    // Plná šířka track - jako ostatní formuláře
-    if (track) track.style.width = '100%';
+    
+    // Plná šířka track s dynamickou barvou
+    // Voda: 0-2% ideální, 2-5% hodně
+    if (track) {
+        track.style.width = '100%';
+        
+        let color;
+        if (value === 0) {
+            color = '#00aaff'; // bez vody
+            track.style.background = 'linear-gradient(90deg, #00aaff, #00aaff)';
+        } else if (value <= 2) {
+            color = '#00cc66'; // ideální
+            track.style.background = 'linear-gradient(90deg, #00aaff, #00cc66)';
+        } else {
+            color = '#ffaa00'; // hodně vody
+            track.style.background = 'linear-gradient(90deg, #00cc66, #ffaa00)';
+        }
+        
+        if (displayContainer) {
+            displayContainer.style.color = color;
+            displayContainer.style.textShadow = `0 0 15px ${color}`;
+        }
+    }
 }
 
 // VG/PG ratio functions
