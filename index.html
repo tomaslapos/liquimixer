@@ -2727,6 +2727,13 @@
                     .then((registration) => {
                         console.log('LiquiMixer SW registered:', registration.scope);
                         
+                        // IHNED zkontrolovat aktualizace při načtení stránky
+                        registration.update().then(() => {
+                            console.log('LiquiMixer SW: Update check completed');
+                        }).catch((err) => {
+                            console.log('LiquiMixer SW: Update check failed', err);
+                        });
+                        
                         // Kontrola aktualizací s debounce - nezobrazovat prompt příliš často
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
@@ -2780,6 +2787,15 @@
                     });
                 }
             });
+            
+            // Periodická kontrola aktualizací každých 5 minut
+            setInterval(() => {
+                navigator.serviceWorker.ready.then((registration) => {
+                    registration.update().then(() => {
+                        console.log('LiquiMixer SW: Periodic update check');
+                    });
+                });
+            }, 5 * 60 * 1000);
         }
     </script>
     
