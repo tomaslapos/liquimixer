@@ -980,6 +980,7 @@
                         <tr>
                             <th data-i18n="results.table_component">Složka</th>
                             <th data-i18n="results.table_volume">Objem (ml)</th>
+                            <th data-i18n="results.table_grams">Gramy</th>
                             <th data-i18n="results.table_percent">Procento</th>
                         </tr>
                     </thead>
@@ -1293,7 +1294,7 @@
                 </div>
 
                 <!-- Cílová síla nikotinu -->
-                <div class="form-group" id="svTargetNicotineGroup">
+                <div class="form-group hidden" id="svTargetNicotineGroup">
                     <label class="form-label" data-i18n="form.target_nicotine_label">
                         Jak silnou chci finální nikotinovou bázi na vapování?
                     </label>
@@ -1837,12 +1838,12 @@
                     </label>
                     <div class="target-nicotine-container">
                         <div class="slider-container">
-                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(-0.5)">◀</button>
+                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(-1)">◀</button>
                             <div class="slider-wrapper">
-                                <input type="range" id="shTargetNicotine" min="0" max="45" value="0" step="1" class="nicotine-slider" oninput="updateShishaNicotineDisplay()">
+                                <input type="range" id="shTargetNicotine" min="0" max="10" value="0" step="1" class="nicotine-slider" oninput="updateShishaNicotineDisplay()">
                                 <div class="slider-track nicotine-track" id="shNicotineTrack"></div>
                             </div>
-                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(0.5)">▶</button>
+                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(1)">▶</button>
                         </div>
                         <div class="nicotine-display">
                             <span id="shTargetNicotineValue">0</span> mg/ml
@@ -2390,10 +2391,10 @@
                             <label data-i18n="recipe_database.filter_method">Metoda přípravy:</label>
                             <select id="dbFilterFormType" class="neon-select" onchange="loadPublicRecipes()">
                                 <option value="" data-i18n="recipe_database.all">Všechny</option>
-                                <option value="liquid" data-i18n="menu.liquid">Liquid</option>
-                                <option value="shakevape" data-i18n="menu.shake_and_vape">Shake & Vape</option>
-                                <option value="shortfill" data-i18n="menu.shortfill">Shortfill</option>
-                                <option value="liquidpro" data-i18n="menu.liquid_pro">Liquid PRO</option>
+                                <option value="liquid" data-i18n="form.tab_liquid">Liquid</option>
+                                <option value="shakevape" data-i18n="form.tab_shakevape">Shake & Vape</option>
+                                <option value="shortfill" data-i18n="form.tab_shortfill">Shortfill</option>
+                                <option value="liquidpro" data-i18n="form.tab_liquidpro">Liquid PRO</option>
                             </select>
                         </div>
                         

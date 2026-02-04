@@ -540,11 +540,30 @@ const nicotineDescriptions = [
     { min: 36, max: 45, color: '#ff0044', key: 'nic_36_45', text: 'Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!' }
 ];
 
+// Shisha nicotine descriptions - max 10mg, přizpůsobeno pro shisha zvyklosti
+const shishaNicotineDescriptions = [
+    { min: 0, max: 0, color: '#00cc66', key: 'sh_nic_0', text: 'Bez nikotinu - tradiční shisha zkušenost bez nikotinu.' },
+    { min: 1, max: 2, color: '#00aaff', key: 'sh_nic_1_2', text: 'Velmi lehký - jemný nádech nikotinu, vhodné pro začátečníky.' },
+    { min: 3, max: 4, color: '#0088dd', key: 'sh_nic_3_4', text: 'Lehký - mírný nikotin pro příležitostné uživatele.' },
+    { min: 5, max: 6, color: '#00cc88', key: 'sh_nic_5_6', text: 'Střední - vyvážená síla pro pravidelné uživatele.' },
+    { min: 7, max: 8, color: '#ffaa00', key: 'sh_nic_7_8', text: 'Silnější - pro zkušené uživatele, může způsobit závratě.' },
+    { min: 9, max: 10, color: '#ff6600', key: 'sh_nic_9_10', text: 'Silný - maximální doporučená síla pro shisha, pouze pro zkušené.' }
+];
+
 // Získat přeložený popis nikotinu
 function getNicotineDescriptionText(value) {
     const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
     if (desc) {
         return t(`nicotine_descriptions.${desc.key}`, desc.text);
+    }
+    return '';
+}
+
+// Získat přeložený popis nikotinu pro shisha
+function getShishaNicotineDescriptionText(value) {
+    const desc = shishaNicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    if (desc) {
+        return t(`shisha_nicotine_descriptions.${desc.key}`, desc.text);
     }
     return '';
 }
@@ -1065,7 +1084,10 @@ function calculateActualVgPgRatio(formType) {
         nicotineType = (nicToggle && nicToggle.checked) ? 'freebase' : 'none';
         targetNicotine = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
         baseNicotine = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
-        nicVgPercent = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        // Parsovat VG/PG poměr z hidden inputu (formát "50/50")
+        const nicRatioInput = document.getElementById('shNicotineRatio');
+        const nicRatioValue = nicRatioInput?.value || '50/50';
+        nicVgPercent = parseInt(nicRatioValue.split('/')[0]) || 50;
         
         // Get flavors data
         const flavorsData = typeof getShishaFlavorsData === 'function' ? getShishaFlavorsData() : [];
@@ -5394,6 +5416,11 @@ function updateAllDisplays() {
     updateFlavorDisplay();
     updateNicotineType();
     updateFlavorType(false);  // BEZ přepsání uživatelské hodnoty
+    
+    // Inicializovat Shake & Vape nicotine visibility
+    if (typeof updateSvNicotineType === 'function') {
+        updateSvNicotineType();
+    }
 }
 
 // =========================================
@@ -6431,14 +6458,32 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
     tbody.innerHTML = '';
 
     let runningTotal = 0;
+    let runningTotalGrams = 0;
 
     ingredients.forEach(ing => {
         const row = document.createElement('tr');
         // Dynamicky přeložit název ingredience
         const ingredientName = getIngredientName(ing);
+        
+        // Vypočítat gramy podle typu ingredience
+        let density = ingredientDensities.pg; // default
+        if (ing.ingredientKey === 'vg') {
+            density = ingredientDensities.vg;
+        } else if (ing.ingredientKey === 'pg') {
+            density = ingredientDensities.pg;
+        } else if (ing.ingredientKey === 'nicotine') {
+            // Hustota nikotinu závisí na VG/PG poměru
+            const nicVgRatio = ing.vgRatio || 50;
+            density = calculateNicotineDensity(nicVgRatio);
+        }
+        
+        const grams = ing.volume * density;
+        runningTotalGrams += grams;
+        
         row.innerHTML = `
             <td class="ingredient-name">${ingredientName}</td>
             <td class="ingredient-value">${ing.volume.toFixed(2)} ml</td>
+            <td class="ingredient-grams">${grams.toFixed(2)} g</td>
             <td class="ingredient-percent">${ing.percent.toFixed(1)}%</td>
         `;
         tbody.appendChild(row);
@@ -6451,6 +6496,7 @@ function displayDiluteResults(total, vg, pg, nicotine, ingredients) {
     totalRow.innerHTML = `
         <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)} ml</td>
+        <td class="ingredient-grams">${runningTotalGrams.toFixed(2)} g</td>
         <td class="ingredient-percent">100%</td>
     `;
     tbody.appendChild(totalRow);
@@ -10987,15 +11033,15 @@ function updateShishaNicotineDisplay() {
     if (!slider) return;
     
     const value = parseInt(slider.value);
-    const maxValue = parseInt(slider.max) || 45;
+    const maxValue = parseInt(slider.max) || 10;
     
     if (display) display.textContent = value;
     
-    // Barevná škála podle síly nikotinu - stejná jako u Liquid formuláře
-    const desc = nicotineDescriptions.find(d => value >= d.min && value <= d.max);
+    // Barevná škála podle síly nikotinu - SHISHA specifické popisy (max 10mg)
+    const desc = shishaNicotineDescriptions.find(d => value >= d.min && value <= d.max);
     if (desc) {
         if (descEl) {
-            descEl.textContent = getNicotineDescriptionText(value);
+            descEl.textContent = getShishaNicotineDescriptionText(value);
             descEl.style.color = desc.color;
             descEl.style.borderLeftColor = desc.color;
         }
@@ -11004,11 +11050,12 @@ function updateShishaNicotineDisplay() {
             displayContainer.style.textShadow = `0 0 20px ${desc.color}`;
         }
         if (track) {
-            track.style.width = (value / maxValue * 100) + '%';
+            // Plná šířka track s gradientem - jako ostatní formuláře
+            track.style.width = '100%';
             track.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
         }
     } else if (track) {
-        track.style.width = (value / maxValue * 100) + '%';
+        track.style.width = '100%';
     }
     
     autoRecalculateShishaVgPgRatio();
@@ -11224,11 +11271,12 @@ function addShishaFlavor() {
     shFlavorCount++;
     const container = document.getElementById('shAdditionalFlavorsContainer');
     
-    // Clone flavor 1 structure
+    // Clone flavor 1 structure - použít t() pro překlad
+    const flavorLabel = t('shisha.flavor_label', 'Příchuť');
     const flavorHtml = `
         <div class="form-group sh-flavor-group" id="shFlavorGroup${shFlavorCount}">
             <label class="form-label">
-                <span data-i18n="shisha.flavor_label">Příchuť</span>
+                <span>${flavorLabel}</span>
                 <span class="flavor-number"> ${shFlavorCount}</span>
                 <button type="button" class="remove-flavor-btn" onclick="removeShishaFlavor(${shFlavorCount})">✕</button>
             </label>
@@ -11424,7 +11472,8 @@ function updateShishaSweetenerDisplay() {
     
     const value = parseFloat(slider.value);
     if (display) display.textContent = value;
-    if (track) track.style.width = (value / parseFloat(slider.max) * 100) + '%';
+    // Plná šířka track - jako ostatní formuláře
+    if (track) track.style.width = '100%';
 }
 
 // Water functions - voda je nyní vždy viditelný slider bez toggle
@@ -11453,7 +11502,8 @@ function updateShishaWaterDisplay() {
     
     const value = parseFloat(slider.value);
     if (display) display.textContent = value;
-    if (track) track.style.width = (value / 5 * 100) + '%';
+    // Plná šířka track - jako ostatní formuláře
+    if (track) track.style.width = '100%';
 }
 
 // VG/PG ratio functions
@@ -11525,7 +11575,10 @@ function updateShishaVgPgLimits() {
     if (nicToggle && nicToggle.checked) {
         const nicStrength = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
         const targetNic = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
-        const nicRatio = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        // Parsovat VG/PG poměr z hidden inputu (formát "50/50")
+        const nicRatioInput = document.getElementById('shNicotineRatio');
+        const nicRatioValue = nicRatioInput?.value || '50/50';
+        const nicRatio = parseInt(nicRatioValue.split('/')[0]) || 50;
         
         if (targetNic > 0 && nicStrength > 0) {
             const nicVolume = (targetNic / nicStrength) * totalAmount;
@@ -11726,7 +11779,10 @@ function calculateShishaMix() {
     
     // Nicotine
     if (nicotineVolume > 0) {
-        const nicVgPercent = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        // Parsovat VG/PG poměr z hidden inputu (formát "50/50")
+        const nicRatioInputRes = document.getElementById('shNicotineRatio');
+        const nicRatioValueRes = nicRatioInputRes?.value || '50/50';
+        const nicVgPercent = parseInt(nicRatioValueRes.split('/')[0]) || 50;
         const nicDensity = calculateNicotineDensity(nicVgPercent);
         results.push({
             name: t('results.nicotine'),
