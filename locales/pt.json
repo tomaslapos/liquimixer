@@ -274,7 +274,24 @@
     "water_toggle": "Adicionar água",
     "note_add_sweetener": "Adicione o adoçante e misture bem.",
     "note_add_water": "Adicione água para diluir a mistura.",
-    "note_steeping": "Deixe a mistura maturar {{days}} dias para melhor sabor."
+    "note_steeping": "Deixe a mistura maturar {{days}} dias para melhor sabor.",
+    "flavor_weak": "Sabor fraco - para shisha recomendado {min}–{max}%",
+    "flavor_strong": "Sabor muito forte - recomendado máx. {max}%",
+    "flavor_ideal": "Ideal para shisha ({min}–{max}%) - {note}",
+    "note_double_apple": "sabor clássico de shisha",
+    "note_mint": "refrescante, combinável",
+    "note_grape": "doce, frutado",
+    "note_watermelon": "verão, refrescante",
+    "note_lemon_mint": "cítrico com menta",
+    "note_blueberry": "de baga, doce",
+    "note_peach": "frutado, suave",
+    "note_mango": "tropical, exótico",
+    "note_strawberry": "morango clássico",
+    "note_mixed_fruit": "mix de frutas",
+    "note_cola": "bebida refrescante",
+    "note_gum": "doce, chiclete",
+    "note_rose": "floral, suave",
+    "note_custom": "mistura própria"
   },
   "results": {
     "title": "A sua receita",
@@ -582,6 +599,14 @@
     "nic_12_20": "Para fumadores pesados, cigarros fortes, podem ocorrer náuseas sem experiência prévia.",
     "nic_21_35": "Nicotina alta - apenas para fumadores muito pesados ou sistemas pod. Sal de nicotina recomendado.",
     "nic_36_45": "Extremamente forte - apenas para sistemas pod com sal de nicotina. Risco de overdose!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Sem nicotina - experiência tradicional de shisha sem nicotina.",
+    "sh_nic_1_2": "Muito leve - toque suave de nicotina, adequado para iniciantes.",
+    "sh_nic_3_4": "Leve - nicotina suave para utilizadores ocasionais.",
+    "sh_nic_5_6": "Médio - força equilibrada para utilizadores regulares.",
+    "sh_nic_7_8": "Mais forte - para utilizadores experientes, pode causar tonturas.",
+    "sh_nic_9_10": "Forte - força máxima recomendada para shisha, apenas para experientes."
   },
   "flavor_descriptions": {
     "weak": "Sabor fraco ou ausente (recomendado {min}–{max}%)",

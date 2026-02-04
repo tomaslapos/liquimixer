@@ -282,7 +282,24 @@
     "water_toggle": "Lisa vett",
     "note_add_sweetener": "Lisage magustaja ja segage hästi.",
     "note_add_water": "Lisage vett segu lahjendamiseks.",
-    "note_steeping": "Laske segul {{days}} päeva küpseda parema maitse saamiseks."
+    "note_steeping": "Laske segul {{days}} päeva küpseda parema maitse saamiseks.",
+    "flavor_weak": "Nõrk maitse - vesipiibu jaoks soovitatav {min}–{max}%",
+    "flavor_strong": "Liiga tugev maitse - soovitatav max {max}%",
+    "flavor_ideal": "Ideaalne vesipiibu jaoks ({min}–{max}%) - {note}",
+    "note_double_apple": "klassikaline vesipiibu maitse",
+    "note_mint": "värskendav, kombineeritav",
+    "note_grape": "magus, puuviljaline",
+    "note_watermelon": "suvine, värskendav",
+    "note_lemon_mint": "tsitrus mündiga",
+    "note_blueberry": "marjaline, magus",
+    "note_peach": "puuviljaline, pehme",
+    "note_mango": "troopiline, eksootline",
+    "note_strawberry": "klassikaline maasikas",
+    "note_mixed_fruit": "puuviljamiks",
+    "note_cola": "värskendav jook",
+    "note_gum": "magus, närimiskumm",
+    "note_rose": "lilleline, pehme",
+    "note_custom": "oma segu"
   },
   "additive": {
     "coolant": "Jahutusaine (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "Tugevatele suitsetajatele, tugevad sigaretid, iiveldus võib tekkida ilma varasema kogemuseta.",
     "nic_21_35": "Kõrge nikotiin - ainult väga tugevatele suitsetajatele või pod-süsteemidele. Nikotiinisool soovitatav.",
     "nic_36_45": "Äärmiselt tugev - ainult pod-süsteemidele nikotiinisoolaga. Üledoosi oht!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Nikotiinita - traditsiooniline vesipiibu kogemus ilma nikotiinita.",
+    "sh_nic_1_2": "Väga kerge - õrn nikotiinipuudutus, sobib algajatele.",
+    "sh_nic_3_4": "Kerge - mahe nikotiin juhukasutajatele.",
+    "sh_nic_5_6": "Keskmine - tasakaalustatud tugevus regulaarsetele kasutajatele.",
+    "sh_nic_7_8": "Tugevam - kogenud kasutajatele, võib põhjustada pearinglust.",
+    "sh_nic_9_10": "Tugev - maksimaalne soovitatav tugevus vesipiibule, ainult kogenutele."
   },
   "flavor_descriptions": {
     "weak": "Nõrk või maitse puudub (soovitatav {min}–{max}%)",

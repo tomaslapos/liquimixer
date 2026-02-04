@@ -282,7 +282,24 @@
     "water_toggle": "Water toevoegen",
     "note_add_sweetener": "Voeg zoetstof toe en meng goed.",
     "note_add_water": "Voeg water toe om het mengsel te verdunnen.",
-    "note_steeping": "Laat het mengsel {{days}} dagen rijpen voor betere smaak."
+    "note_steeping": "Laat het mengsel {{days}} dagen rijpen voor betere smaak.",
+    "flavor_weak": "Zwakke smaak - voor shisha aanbevolen {min}–{max}%",
+    "flavor_strong": "Te sterke smaak - aanbevolen max {max}%",
+    "flavor_ideal": "Ideaal voor shisha ({min}–{max}%) - {note}",
+    "note_double_apple": "klassieke shisha smaak",
+    "note_mint": "verfrissend, combineerbaar",
+    "note_grape": "zoet, fruitig",
+    "note_watermelon": "zomers, verfrissend",
+    "note_lemon_mint": "citrus met munt",
+    "note_blueberry": "bessig, zoet",
+    "note_peach": "fruitig, zacht",
+    "note_mango": "tropisch, exotisch",
+    "note_strawberry": "klassiek aardbei",
+    "note_mixed_fruit": "fruitmix",
+    "note_cola": "verfrissende drank",
+    "note_gum": "zoet, kauwgom",
+    "note_rose": "bloemig, zacht",
+    "note_custom": "eigen mix"
   },
   "results": {
     "title": "Je Recept",
@@ -596,6 +613,14 @@
     "nic_12_20": "Voor zware rokers, sterke sigaretten, misselijkheid kan optreden zonder eerdere ervaring.",
     "nic_21_35": "Hoge nicotine - alleen voor zeer zware rokers of pod-systemen. Nicotinezout aanbevolen.",
     "nic_36_45": "Extreem sterk - alleen voor pod-systemen met nicotinezout. Overdosisrisico!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Geen nicotine - traditionele shisha-ervaring zonder nicotine.",
+    "sh_nic_1_2": "Zeer licht - zachte nicotine-aanraking, geschikt voor beginners.",
+    "sh_nic_3_4": "Licht - milde nicotine voor occasionele gebruikers.",
+    "sh_nic_5_6": "Medium - gebalanceerde sterkte voor regelmatige gebruikers.",
+    "sh_nic_7_8": "Sterker - voor ervaren gebruikers, kan duizeligheid veroorzaken.",
+    "sh_nic_9_10": "Sterk - maximale aanbevolen sterkte voor shisha, alleen voor ervaren gebruikers."
   },
   "flavor_descriptions": {
     "weak": "Zwakke of geen smaak (aanbevolen {min}–{max}%)",

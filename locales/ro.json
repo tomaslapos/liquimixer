@@ -274,7 +274,24 @@
     "water_toggle": "Adaugă apă",
     "note_add_sweetener": "Adăugați îndulcitorul și amestecați bine.",
     "note_add_water": "Adăugați apă pentru a dilua amestecul.",
-    "note_steeping": "Lăsați amestecul să se maturizeze {{days}} zile pentru o aromă mai bună."
+    "note_steeping": "Lăsați amestecul să se maturizeze {{days}} zile pentru o aromă mai bună.",
+    "flavor_weak": "Aromă slabă - pentru shisha recomandat {min}–{max}%",
+    "flavor_strong": "Aromă prea puternică - recomandat max. {max}%",
+    "flavor_ideal": "Ideal pentru shisha ({min}–{max}%) - {note}",
+    "note_double_apple": "aromă clasică de shisha",
+    "note_mint": "răcoritoare, combinabilă",
+    "note_grape": "dulce, fructată",
+    "note_watermelon": "de vară, răcoritoare",
+    "note_lemon_mint": "citrice cu mentă",
+    "note_blueberry": "de fructe de pădure, dulce",
+    "note_peach": "fructată, blândă",
+    "note_mango": "tropicală, exotică",
+    "note_strawberry": "căpșună clasică",
+    "note_mixed_fruit": "mix de fructe",
+    "note_cola": "băutură răcoritoare",
+    "note_gum": "dulce, gumă de mestecat",
+    "note_rose": "florală, blândă",
+    "note_custom": "amestec propriu"
   },
   "results": {
     "title": "Rețeta dvs.",
@@ -588,6 +605,14 @@
     "nic_12_20": "Pentru fumători înrăiți, țigări puternice, poate apărea greață fără experiență anterioară.",
     "nic_21_35": "Nicotină ridicată - doar pentru fumători foarte înrăiți sau sisteme pod. Se recomandă sarea de nicotină.",
     "nic_36_45": "Extrem de puternică - doar pentru sisteme pod cu sare de nicotină. Risc de supradoză!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Fără nicotină - experiență tradițională de shisha fără nicotină.",
+    "sh_nic_1_2": "Foarte ușoară - atingere blândă de nicotină, potrivită pentru începători.",
+    "sh_nic_3_4": "Ușoară - nicotină blândă pentru utilizatori ocazionali.",
+    "sh_nic_5_6": "Medie - intensitate echilibrată pentru utilizatori obișnuiți.",
+    "sh_nic_7_8": "Mai puternică - pentru utilizatori experimentați, poate provoca amețeli.",
+    "sh_nic_9_10": "Puternică - intensitate maximă recomandată pentru shisha, doar pentru experimentați."
   },
   "flavor_descriptions": {
     "weak": "Aromă slabă sau inexistentă (recomandat {min}–{max}%)",

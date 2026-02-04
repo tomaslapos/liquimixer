@@ -282,7 +282,10 @@
     "water_toggle": "Dodaj wodę",
     "note_add_sweetener": "Dodaj słodzik i dokładnie wymieszaj.",
     "note_add_water": "Dodaj wodę, aby rozcieńczyć mieszankę.",
-    "note_steeping": "Pozostaw mieszankę na {{days}} dni, aby uzyskać lepszy smak."
+    "note_steeping": "Pozostaw mieszankę na {{days}} dni, aby uzyskać lepszy smak.",
+    "flavor_weak": "Słaby smak - dla shisha zalecane {min}–{max}%",
+    "flavor_strong": "Zbyt mocny smak - zalecane maks {max}%",
+    "flavor_ideal": "Idealne dla shisha ({min}–{max}%) - {note}"
   },
   "additive": {
     "coolant": "Chłodzący (WS-23, Koolada)",
@@ -619,6 +622,14 @@
     "nic_12_20": "Dla ciężkich palaczy, mocnych papierosów, mogą wystąpić nudności bez wcześniejszego doświadczenia.",
     "nic_21_35": "Wysoka nikotyna - tylko dla bardzo ciężkich palaczy lub systemów pod. Zalecana sól nikotynowa.",
     "nic_36_45": "Ekstremalnie mocna - tylko dla systemów pod z solą nikotynową. Ryzyko przedawkowania!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Bez nikotyny - tradycyjne doświadczenie shisha bez nikotyny.",
+    "sh_nic_1_2": "Bardzo lekka - delikatny dotyk nikotyny, odpowiedni dla początkujących.",
+    "sh_nic_3_4": "Lekka - łagodna nikotyna dla okazjonalnych użytkowników.",
+    "sh_nic_5_6": "Średnia - zrównoważona siła dla regularnych użytkowników.",
+    "sh_nic_7_8": "Silniejsza - dla doświadczonych użytkowników, może powodować zawroty głowy.",
+    "sh_nic_9_10": "Mocna - maksymalna zalecana siła dla shisha, tylko dla doświadczonych."
   },
   "flavor_descriptions": {
     "weak": "Słaby lub brak smaku (zalecane {min}–{max}%)",

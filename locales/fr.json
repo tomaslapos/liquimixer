@@ -282,7 +282,10 @@
     "water_toggle": "Ajouter de l'eau",
     "note_add_sweetener": "Ajoutez l'édulcorant et mélangez bien.",
     "note_add_water": "Ajoutez de l'eau pour diluer le mélange.",
-    "note_steeping": "Laissez le mélange mûrir {{days}} jours pour un meilleur goût."
+    "note_steeping": "Laissez le mélange mûrir {{days}} jours pour un meilleur goût.",
+    "flavor_weak": "Arôme faible - pour shisha recommandé {min}–{max}%",
+    "flavor_strong": "Arôme trop fort - recommandé max {max}%",
+    "flavor_ideal": "Idéal pour shisha ({min}–{max}%) - {note}"
   },
   "additive": {
     "coolant": "Refroidissant (WS-23, Koolada)",
@@ -612,6 +615,14 @@
     "nic_12_20": "Pour les gros fumeurs, cigarettes fortes, des nausées peuvent survenir sans expérience préalable.",
     "nic_21_35": "Nicotine élevée - uniquement pour les très gros fumeurs ou les systèmes pod. Sel de nicotine recommandé.",
     "nic_36_45": "Extrêmement fort - uniquement pour les systèmes pod avec sel de nicotine. Risque de surdosage !"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Sans nicotine - expérience shisha traditionnelle sans nicotine.",
+    "sh_nic_1_2": "Très léger - touche de nicotine douce, adapté aux débutants.",
+    "sh_nic_3_4": "Léger - nicotine légère pour utilisateurs occasionnels.",
+    "sh_nic_5_6": "Moyen - force équilibrée pour utilisateurs réguliers.",
+    "sh_nic_7_8": "Plus fort - pour utilisateurs expérimentés, peut causer des vertiges.",
+    "sh_nic_9_10": "Fort - force maximale recommandée pour shisha, uniquement pour les expérimentés."
   },
   "flavor_descriptions": {
     "weak": "Saveur faible ou absente (recommandé {min}–{max}%)",

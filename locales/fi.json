@@ -282,7 +282,24 @@
     "water_toggle": "Lisää vettä",
     "note_add_sweetener": "Lisää makeutusaine ja sekoita hyvin.",
     "note_add_water": "Lisää vettä laimentaaksesi seosta.",
-    "note_steeping": "Anna seoksen kypsyä {{days}} päivää paremman maun saavuttamiseksi."
+    "note_steeping": "Anna seoksen kypsyä {{days}} päivää paremman maun saavuttamiseksi.",
+    "flavor_weak": "Heikko maku - shishalle suositeltu {min}–{max}%",
+    "flavor_strong": "Liian voimakas maku - suositeltu max {max}%",
+    "flavor_ideal": "Ihanteellinen shishalle ({min}–{max}%) - {note}",
+    "note_double_apple": "klassinen shisha-maku",
+    "note_mint": "raikas, yhdisteltävä",
+    "note_grape": "makea, hedelmäinen",
+    "note_watermelon": "kesäinen, raikas",
+    "note_lemon_mint": "sitrus mintulla",
+    "note_blueberry": "marjainen, makea",
+    "note_peach": "hedelmäinen, pehmeä",
+    "note_mango": "trooppinen, eksoottinen",
+    "note_strawberry": "klassinen mansikka",
+    "note_mixed_fruit": "hedelmäsekoitus",
+    "note_cola": "raikas juoma",
+    "note_gum": "makea, purukumi",
+    "note_rose": "kukkava, pehmeä",
+    "note_custom": "oma sekoitus"
   },
   "additive": {
     "coolant": "Jäähdytin (WS-23, Koolada)",
@@ -608,6 +625,14 @@
     "nic_12_20": "Vahvoille tupakoijille, vahvat savukkeet, pahoinvointia voi esiintyä ilman aiempaa kokemusta.",
     "nic_21_35": "Korkea nikotiini - vain erittäin vahvoille tupakoijille tai pod-järjestelmille. Nikotiinisuolaa suositellaan.",
     "nic_36_45": "Erittäin vahva - vain pod-järjestelmille nikotiinisuolalla. Yliannostuksen vaara!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Ei nikotiinia - perinteinen shisha-kokemus ilman nikotiinia.",
+    "sh_nic_1_2": "Erittäin kevyt - pehmeä nikotiinin kosketus, sopii aloittelijoille.",
+    "sh_nic_3_4": "Kevyt - mieto nikotiini satunnaisille käyttäjille.",
+    "sh_nic_5_6": "Keskivahva - tasapainoinen vahvuus säännöllisille käyttäjille.",
+    "sh_nic_7_8": "Vahvempi - kokeneille käyttäjille, voi aiheuttaa huimausta.",
+    "sh_nic_9_10": "Vahva - maksimi suositeltu vahvuus shishalle, vain kokeneille."
   },
   "flavor_descriptions": {
     "weak": "Heikko tai ei makua (suositeltu {min}–{max}%)",

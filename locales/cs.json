@@ -552,6 +552,14 @@
     "nic_21_35": "Vysoký nikotin - pouze pro velmi silné kuřáky nebo pod-systémy. Nikotinová sůl doporučena.",
     "nic_36_45": "Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!"
   },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Bez nikotinu - tradiční shisha zkušenost bez nikotinu.",
+    "sh_nic_1_2": "Velmi lehký - jemný nádech nikotinu, vhodné pro začátečníky.",
+    "sh_nic_3_4": "Lehký - mírný nikotin pro příležitostné uživatele.",
+    "sh_nic_5_6": "Střední - vyvážená síla pro pravidelné uživatele.",
+    "sh_nic_7_8": "Silnější - pro zkušené uživatele, může způsobit závratě.",
+    "sh_nic_9_10": "Silný - maximální doporučená síla pro shisha, pouze pro zkušené."
+  },
   "flavor_descriptions": {
     "weak": "Slabá až žádná chuť (doporučeno {min}–{max}%)",
     "strong": "Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)",

@@ -282,7 +282,24 @@
     "water_toggle": "Tilføj vand",
     "note_add_sweetener": "Tilsæt sødestof og bland godt.",
     "note_add_water": "Tilsæt vand for at fortynde blandingen.",
-    "note_steeping": "Lad blandingen modne i {{days}} dage for bedre smag."
+    "note_steeping": "Lad blandingen modne i {{days}} dage for bedre smag.",
+    "flavor_weak": "Svag smag - til shisha anbefales {min}–{max}%",
+    "flavor_strong": "For stærk smag - anbefales maks. {max}%",
+    "flavor_ideal": "Ideel til shisha ({min}–{max}%) - {note}",
+    "note_double_apple": "klassisk shisha-smag",
+    "note_mint": "forfriskende, kombinerbar",
+    "note_grape": "sød, frugtig",
+    "note_watermelon": "sommer, forfriskende",
+    "note_lemon_mint": "citrus med mynte",
+    "note_blueberry": "bær, sød",
+    "note_peach": "frugtig, blød",
+    "note_mango": "tropisk, eksotisk",
+    "note_strawberry": "klassisk jordbær",
+    "note_mixed_fruit": "frugtmix",
+    "note_cola": "forfriskende drik",
+    "note_gum": "sød, tyggegummi",
+    "note_rose": "blomsterrig, blød",
+    "note_custom": "egen blanding"
   },
   "additive": {
     "coolant": "Kølemiddel (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "Til storrygere, stærke cigaretter, kvalme kan forekomme uden tidligere erfaring.",
     "nic_21_35": "Høj nikotin - kun til meget stærke rygere eller pod-systemer. Nikotinsalt anbefales.",
     "nic_36_45": "Ekstremt stærk - kun til pod-systemer med nikotinsalt. Risiko for overdosis!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Ingen nikotin - traditionel shisha-oplevelse uden nikotin.",
+    "sh_nic_1_2": "Meget let - blød nikotinberøring, velegnet til begyndere.",
+    "sh_nic_3_4": "Let - mild nikotin til lejlighedsvise brugere.",
+    "sh_nic_5_6": "Medium - afbalanceret styrke til regelmæssige brugere.",
+    "sh_nic_7_8": "Stærkere - til erfarne brugere, kan forårsage svimmelhed.",
+    "sh_nic_9_10": "Stærk - maksimal anbefalet styrke til shisha, kun til erfarne."
   },
   "flavor_descriptions": {
     "weak": "Svag eller ingen smag (anbefalet {min}–{max}%)",
