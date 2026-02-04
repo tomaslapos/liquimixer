@@ -1777,29 +1777,39 @@
                     </div>
                 </div>
 
-                <!-- Typ báze (předmíchané poměry) -->
+                <!-- Typ báze (separátní / předmíchaná) -->
                 <div class="form-group">
-                    <label class="form-label" data-i18n="shisha.base_type_label">
-                        Předmíchaná báze VG/PG
+                    <label class="form-label" data-i18n="form.base_type_label">
+                        Typ báze
                     </label>
                     <div class="ratio-toggle-buttons">
-                        <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaPremixedRatio('70/30')">70/30</button>
-                        <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn active" data-value="80/20" onclick="updateShishaPremixedRatio('80/20')">80/20</button>
-                        <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="90/10" onclick="updateShishaPremixedRatio('90/10')">90/10</button>
-                        <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="100/0" onclick="updateShishaPremixedRatio('100/0')">100/0</button>
-                        <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn premium-only" data-value="custom" onclick="updateShishaPremixedRatio('custom')" data-i18n="form.custom">Vlastní</button>
+                        <button type="button" id="shBaseSeparate" class="ratio-toggle-btn" data-value="separate" onclick="updateShishaBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
+                        <button type="button" id="shBasePremixed" class="ratio-toggle-btn active" data-value="premixed" onclick="updateShishaBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
                     </div>
-                    <input type="hidden" id="shPremixedRatio" value="80/20">
-                    <div id="shCustomPremixedContainer" class="hidden" style="margin-top: 10px;">
-                        <div class="input-wrapper inline">
-                            <input type="number" id="shCustomPremixedVg" min="0" max="100" value="80" class="neon-input small" oninput="updateShishaCustomPremixedPg()">
-                            <span>VG :</span>
-                            <input type="number" id="shCustomPremixedPg" min="0" max="100" value="20" class="neon-input small" disabled>
-                            <span>PG</span>
+                    <input type="hidden" id="shBaseType" value="premixed">
+                    
+                    <!-- Předmíchané poměry (zobrazí se při volbě "Předmíchaná báze") -->
+                    <div id="shPremixedRatioContainer" class="form-group-sub" style="margin-top: 10px;">
+                        <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaPremixedRatio('70/30')">70/30</button>
+                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn active" data-value="80/20" onclick="updateShishaPremixedRatio('80/20')">80/20</button>
+                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="90/10" onclick="updateShishaPremixedRatio('90/10')">90/10</button>
+                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="100/0" onclick="updateShishaPremixedRatio('100/0')">100/0</button>
+                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn premium-only" data-value="custom" onclick="updateShishaPremixedRatio('custom')" data-i18n="form.custom">Vlastní</button>
                         </div>
-                    </div>
-                    <div class="premium-badge hidden" id="shCustomBasePremiumBadge">
-                        <span data-i18n="premium.custom_base_required">Vlastní poměr báze vyžaduje Premium</span>
+                        <input type="hidden" id="shPremixedRatio" value="80/20">
+                        <div id="shCustomPremixedContainer" class="hidden" style="margin-top: 10px;">
+                            <div class="input-wrapper inline">
+                                <input type="number" id="shCustomPremixedVg" min="0" max="100" value="80" class="neon-input small" oninput="updateShishaCustomPremixedPg()">
+                                <span>VG :</span>
+                                <input type="number" id="shCustomPremixedPg" min="0" max="100" value="20" class="neon-input small" disabled>
+                                <span>PG</span>
+                            </div>
+                        </div>
+                        <div class="premium-badge hidden" id="shCustomBasePremiumBadge">
+                            <span data-i18n="premium.custom_base_required">Vlastní poměr báze vyžaduje Premium</span>
+                        </div>
                     </div>
                 </div>
 
@@ -1878,9 +1888,6 @@
                             <option value="custom" data-i18n="form.custom">Vlastní</option>
                         </select>
                         <div id="shFlavorStrengthContainer1" class="hidden">
-                            <!-- Zobrazení doporučení síly příchutě (jako u Liquid) -->
-                            <div id="shFlavorStrengthDisplay1" class="flavor-strength-display"></div>
-                            
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustShishaFlavor(1, -1)">◀</button>
                                 <div class="slider-wrapper">
@@ -1892,6 +1899,8 @@
                             <div class="flavor-display">
                                 <span id="shFlavorValue1">15</span>%
                             </div>
+                            <!-- Zobrazení doporučení síly příchutě (pod sliderem jako u Liquid) -->
+                            <div id="shFlavorStrengthDisplay1" class="flavor-strength-display"></div>
                             
                             <!-- VG/PG poměr pro příchuť -->
                             <div class="form-group-sub">
@@ -2448,6 +2457,19 @@
                                     <option value="50">50 mg</option>
                                 </select>
                             </div>
+                        </div>
+                        
+                        <!-- Minimální hodnocení -->
+                        <div class="filter-group">
+                            <label data-i18n="recipe_database.filter_rating">Minimální hodnocení:</label>
+                            <select id="dbFilterMinRating" class="neon-select" onchange="loadPublicRecipes()">
+                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="1">★ (1+)</option>
+                                <option value="2">★★ (2+)</option>
+                                <option value="3">★★★ (3+)</option>
+                                <option value="4">★★★★ (4+)</option>
+                                <option value="5">★★★★★ (5)</option>
+                            </select>
                         </div>
                         
                         <!-- Obsahuje aditiva - toggle switch -->
