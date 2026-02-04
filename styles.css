@@ -80,7 +80,7 @@ body {
     background-size: 50px 50px;
     animation: gridMove 20s linear infinite;
     pointer-events: none;
-    z-index: 0;
+    z-index: -2;
 }
 
 @keyframes gridMove {
@@ -96,7 +96,7 @@ body {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
     overflow: hidden;
 }
 
@@ -4903,6 +4903,45 @@ body {
     color: rgba(212, 168, 75, 0.8);
 }
 
+/* Gold sliders - track a thumb */
+.form-gold .slider-track {
+    background: linear-gradient(90deg, var(--neon-gold), #b8860b) !important;
+}
+
+.form-gold .slider-track.nicotine-track {
+    background: linear-gradient(90deg, #00ff00, var(--neon-gold)) !important;
+}
+
+.form-gold .slider-track.flavor-track {
+    background: linear-gradient(90deg, var(--neon-gold), #b8860b) !important;
+}
+
+.form-gold .ratio-slider::-webkit-slider-thumb,
+.form-gold .nicotine-slider::-webkit-slider-thumb,
+.form-gold .flavor-slider::-webkit-slider-thumb {
+    background: var(--neon-gold);
+    box-shadow: 0 0 20px var(--neon-gold);
+}
+
+.form-gold .ratio-slider::-moz-range-thumb,
+.form-gold .nicotine-slider::-moz-range-thumb,
+.form-gold .flavor-slider::-moz-range-thumb {
+    background: var(--neon-gold);
+    box-shadow: 0 0 20px var(--neon-gold);
+}
+
+/* Gold nicotine description */
+.form-gold .nicotine-description {
+    color: var(--neon-gold);
+    border-left-color: var(--neon-gold);
+}
+
+/* Gold flavor strength display */
+.form-gold .flavor-strength-display {
+    color: var(--neon-gold);
+    border-left-color: var(--neon-gold);
+}
+
 /* Gold button */
 .neon-button.btn-gold {
     color: var(--neon-gold);
@@ -6888,12 +6927,15 @@ body.subscription-required #subscriptionModal {
     gap: 15px;
     margin-top: 15px;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(10, 10, 21, 0.95);
+    border: 1px solid rgba(0, 255, 255, 0.2);
     border-radius: var(--border-radius-small);
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 100;
 }
 
 .filters-panel.hidden {
