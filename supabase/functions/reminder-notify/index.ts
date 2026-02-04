@@ -189,6 +189,7 @@ serve(async (req) => {
 
     // Find reminders that should be sent today
     // We check for reminders where remind_at is today and status is pending
+    // Also exclude consumed reminders (consumed_at IS NULL)
     const { data: reminders, error: remindersError } = await supabase
       .from("recipe_reminders")
       .select(`
@@ -201,10 +202,13 @@ serve(async (req) => {
         flavor_name,
         recipe_name,
         timezone,
-        status
+        status,
+        consumed_at,
+        stock_percent
       `)
       .eq("status", "pending")
-      .lte("remind_at", currentDate);
+      .lte("remind_at", currentDate)
+      .is("consumed_at", null);
 
     if (remindersError) {
       console.error("Error fetching reminders:", remindersError);
@@ -228,8 +232,12 @@ serve(async (req) => {
 
     for (const reminder of reminders) {
       try {
-        // Check if it's time to send (around 16:30 local time)
-        // For simplicity, we send all pending reminders whose date has passed
+        // Skip reminders with 0% stock (consumed)
+        const stockPercent = reminder.stock_percent ?? 100;
+        if (stockPercent <= 0) {
+          console.log(`Reminder ${reminder.id} has 0% stock, skipping`);
+          continue;
+        }
         
         // Get FCM tokens for this user
         const { data: tokens, error: tokensError } = await supabase
