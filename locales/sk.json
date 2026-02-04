@@ -282,7 +282,24 @@
     "water_toggle": "Pridať vodu",
     "note_add_sweetener": "Pridajte sladidlo a dôkladne premiešajte.",
     "note_add_water": "Pridajte vodu na zriedenie zmesi.",
-    "note_steeping": "Nechajte zmes zrieť {{days}} dní pre lepšiu chuť."
+    "note_steeping": "Nechajte zmes zrieť {{days}} dní pre lepšiu chuť.",
+    "flavor_weak": "Slabá chuť - pre shisha odporúčané {min}–{max}%",
+    "flavor_strong": "Príliš silná chuť - odporúčané max {max}%",
+    "flavor_ideal": "Ideálne pre shisha ({min}–{max}%) - {note}",
+    "note_double_apple": "klasická shisha príchuť",
+    "note_mint": "osviežujúca, kombinovateľná",
+    "note_grape": "sladká, ovocná",
+    "note_watermelon": "letná, osviežujúca",
+    "note_lemon_mint": "citrusová s mätou",
+    "note_blueberry": "čučoriedková, sladká",
+    "note_peach": "ovocná, jemná",
+    "note_mango": "tropická, exotická",
+    "note_strawberry": "klasická jahodová",
+    "note_mixed_fruit": "ovocný mix",
+    "note_cola": "osviežujúci nápoj",
+    "note_gum": "sladká, žuvačková",
+    "note_rose": "kvetinová, jemná",
+    "note_custom": "vlastná zmes"
   },
   "additive": {
     "coolant": "Chladivo (WS-23, Koolada)",
@@ -629,6 +646,14 @@
     "nic_12_20": "Pre silných fajčiarov, silné cigarety, bez predchádzajúcej skúsenosti hrozí nevoľnosť.",
     "nic_21_35": "Vysoký nikotín - iba pre veľmi silných fajčiarov alebo pod-systémy. Nikotínová soľ odporúčaná.",
     "nic_36_45": "Extrémne silný - iba pre pod-systémy s nikotínovou soľou. Nebezpečenstvo predávkovania!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Bez nikotínu - tradičný zážitok zo shisha bez nikotínu.",
+    "sh_nic_1_2": "Veľmi ľahký - jemný nádych nikotínu, vhodné pre začiatočníkov.",
+    "sh_nic_3_4": "Ľahký - mierny nikotín pre príležitostných používateľov.",
+    "sh_nic_5_6": "Stredný - vyvážená sila pre pravidelných používateľov.",
+    "sh_nic_7_8": "Silnejší - pre skúsených používateľov, môže spôsobiť závraty.",
+    "sh_nic_9_10": "Silný - maximálna odporúčaná sila pre shisha, iba pre skúsených."
   },
   "flavor_descriptions": {
     "weak": "Slabá až žiadna chuť (odporúčané {min}–{max}%)",

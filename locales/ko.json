@@ -282,7 +282,24 @@
     "water_toggle": "물 추가",
     "note_add_sweetener": "감미료를 추가하고 잘 섞으세요.",
     "note_add_water": "블렌드를 희석하기 위해 물을 추가하세요.",
-    "note_steeping": "더 좋은 맛을 위해 {{days}}일 동안 숙성시키세요."
+    "note_steeping": "더 좋은 맛을 위해 {{days}}일 동안 숙성시키세요.",
+    "flavor_weak": "약한 맛 - 시샤에는 {min}–{max}% 권장",
+    "flavor_strong": "너무 강한 맛 - 최대 {max}% 권장",
+    "flavor_ideal": "시샤에 이상적 ({min}–{max}%) - {note}",
+    "note_double_apple": "클래식 시샤 맛",
+    "note_mint": "상쾌한, 조합 가능",
+    "note_grape": "달콤한, 과일향",
+    "note_watermelon": "여름철, 상쾌한",
+    "note_lemon_mint": "시트러스와 민트",
+    "note_blueberry": "베리, 달콤한",
+    "note_peach": "과일향, 부드러운",
+    "note_mango": "열대과일, 이국적",
+    "note_strawberry": "클래식 딸기",
+    "note_mixed_fruit": "과일 믹스",
+    "note_cola": "상쾌한 음료",
+    "note_gum": "달콤한, 껌",
+    "note_rose": "꽃향, 부드러운",
+    "note_custom": "나만의 블렌드"
   },
   "additive": {
     "coolant": "쿨런트 (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "과도한 흡연자, 강한 담배용, 이전 경험 없이 메스꺼움이 나타날 수 있습니다.",
     "nic_21_35": "높은 니코틴 - 매우 과도한 흡연자 또는 팟 시스템 전용. 니코틴 솔트 권장.",
     "nic_36_45": "극도로 강함 - 니코틴 솔트 사용 팟 시스템 전용. 과다복용 위험!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "니코틴 없음 - 니코틴 없는 전통적인 시샤 경험.",
+    "sh_nic_1_2": "매우 가벼움 - 부드러운 니코틴 터치, 초보자에게 적합.",
+    "sh_nic_3_4": "가벼움 - 가끔 사용하는 분을 위한 순한 니코틴.",
+    "sh_nic_5_6": "중간 - 정기적인 사용자를 위한 균형 잡힌 강도.",
+    "sh_nic_7_8": "더 강함 - 경험이 많은 사용자용, 어지러움을 유발할 수 있습니다.",
+    "sh_nic_9_10": "강함 - 시샤의 최대 권장 강도, 경험자 전용."
   },
   "flavor_descriptions": {
     "weak": "약하거나 존재하지 않는 향미 (권장 {min}–{max}%)",

@@ -282,7 +282,10 @@
     "water_toggle": "Wasser hinzufügen",
     "note_add_sweetener": "Süßungsmittel hinzufügen und gründlich mischen.",
     "note_add_water": "Wasser hinzufügen um die Mischung zu verdünnen.",
-    "note_steeping": "Lassen Sie die Mischung {{days}} Tage reifen für besseren Geschmack."
+    "note_steeping": "Lassen Sie die Mischung {{days}} Tage reifen für besseren Geschmack.",
+    "flavor_weak": "Schwacher Geschmack - für Shisha empfohlen {min}–{max}%",
+    "flavor_strong": "Zu starker Geschmack - empfohlen max {max}%",
+    "flavor_ideal": "Ideal für Shisha ({min}–{max}%) - {note}"
   },
   "additive": {
     "coolant": "Kühlmittel (WS-23, Koolada)",
@@ -629,6 +632,14 @@
     "nic_12_20": "Für starke Raucher, starke Zigaretten, Übelkeit kann ohne Vorerfahrung auftreten.",
     "nic_21_35": "Hohes Nikotin - nur für sehr starke Raucher oder Pod-Systeme. Nikotinsalz empfohlen.",
     "nic_36_45": "Extrem stark - nur für Pod-Systeme mit Nikotinsalz. Überdosierungsgefahr!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Kein Nikotin - traditionelles Shisha-Erlebnis ohne Nikotin.",
+    "sh_nic_1_2": "Sehr leicht - sanfter Nikotinhauch, geeignet für Anfänger.",
+    "sh_nic_3_4": "Leicht - mildes Nikotin für gelegentliche Benutzer.",
+    "sh_nic_5_6": "Mittel - ausgewogene Stärke für regelmäßige Benutzer.",
+    "sh_nic_7_8": "Stärker - für erfahrene Benutzer, kann Schwindel verursachen.",
+    "sh_nic_9_10": "Stark - maximale empfohlene Stärke für Shisha, nur für Erfahrene."
   },
   "flavor_descriptions": {
     "weak": "Schwacher oder kein Geschmack (empfohlen {min}–{max}%)",

@@ -282,7 +282,24 @@
     "water_toggle": "Pridėti vandenį",
     "note_add_sweetener": "Pridėkite saldiklį ir gerai išmaišykite.",
     "note_add_water": "Pridėkite vandens, kad praskiestumėte mišinį.",
-    "note_steeping": "Palikite mišinį bręsti {{days}} dienas geresniam skoniui."
+    "note_steeping": "Palikite mišinį bręsti {{days}} dienas geresniam skoniui.",
+    "flavor_weak": "Silpnas skonis - šišai rekomenduojama {min}–{max}%",
+    "flavor_strong": "Per stiprus skonis - rekomenduojama maks. {max}%",
+    "flavor_ideal": "Idealu šišai ({min}–{max}%) - {note}",
+    "note_double_apple": "klasikinis šišos skonis",
+    "note_mint": "gaivus, derinamasis",
+    "note_grape": "saldus, vaisinis",
+    "note_watermelon": "vasariškas, gaivus",
+    "note_lemon_mint": "citrusinis su mėta",
+    "note_blueberry": "uoginis, saldus",
+    "note_peach": "vaisinis, švelnus",
+    "note_mango": "tropinis, egzotiškas",
+    "note_strawberry": "klasikinė braškė",
+    "note_mixed_fruit": "vaisių mišinys",
+    "note_cola": "gaivinantis gėrimas",
+    "note_gum": "saldus, kramtomoji guma",
+    "note_rose": "gėlėtas, švelnus",
+    "note_custom": "savas mišinys"
   },
   "additive": {
     "coolant": "Aušiklis (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "Stipriems rūkaliams, stiprioms cigaretėms, gali pasireikšti pykinimas be ankstesnės patirties.",
     "nic_21_35": "Aukštas nikotinas - tik labai stipriems rūkaliams arba pod sistemoms. Rekomenduojama nikotino druska.",
     "nic_36_45": "Itin stiprus - tik pod sistemoms su nikotino druska. Perdozavimo pavojus!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Be nikotino - tradicinė šišos patirtis be nikotino.",
+    "sh_nic_1_2": "Labai lengvas - švelnus nikotino prisilietimas, tinka pradedantiesiems.",
+    "sh_nic_3_4": "Lengvas - švelnus nikotinas retkarčiais vartotojams.",
+    "sh_nic_5_6": "Vidutinis - subalansuota stiprumas nuolatiniams vartotojams.",
+    "sh_nic_7_8": "Stipresnis - patyrusiems vartotojams, gali sukelti svaigulį.",
+    "sh_nic_9_10": "Stiprus - maksimalus rekomenduojamas stiprumas šišai, tik patyrusiems."
   },
   "flavor_descriptions": {
     "weak": "Silpnas arba jokio skonio (rekomenduojama {min}–{max}%)",

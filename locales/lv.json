@@ -282,7 +282,24 @@
     "water_toggle": "Pievienot ūdeni",
     "note_add_sweetener": "Pievienojiet saldinātāju un labi samaisiet.",
     "note_add_water": "Pievienojiet ūdeni, lai atšķaidītu maisījumu.",
-    "note_steeping": "Ļaujiet maisījumam nogatavot {{days}} dienas labākai garšai."
+    "note_steeping": "Ļaujiet maisījumam nogatavot {{days}} dienas labākai garšai.",
+    "flavor_weak": "Vāja garša - ūdenspīpei ieteicams {min}–{max}%",
+    "flavor_strong": "Pārāk stipra garša - ieteicams maks. {max}%",
+    "flavor_ideal": "Ideāli ūdenspīpei ({min}–{max}%) - {note}",
+    "note_double_apple": "klasiska ūdenspīpes garša",
+    "note_mint": "atsvaidzinoša, kombinējama",
+    "note_grape": "salda, augļu",
+    "note_watermelon": "vasaras, atsvaidzinoša",
+    "note_lemon_mint": "citrusaugļi ar piparmētru",
+    "note_blueberry": "ogu, salda",
+    "note_peach": "augļu, maiga",
+    "note_mango": "tropu, eksotiska",
+    "note_strawberry": "klasiska zemene",
+    "note_mixed_fruit": "augļu maisījums",
+    "note_cola": "atsvaidzinoša dzēriena",
+    "note_gum": "salda, košļājamā gumija",
+    "note_rose": "ziedoša, maiga",
+    "note_custom": "savs maisījums"
   },
   "additive": {
     "coolant": "Dzesētājs (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "Smagiem smēķētājiem, stipras cigaretes, nelabums var rasties bez iepriekšējas pieredzes.",
     "nic_21_35": "Augsts nikotīns - tikai ļoti smagiem smēķētājiem vai pod sistēmām. Nikotīna sāls ieteicama.",
     "nic_36_45": "Ekstrēmi stiprs - tikai pod sistēmām ar nikotīna sāli. Pārdozēšanas risks!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Bez nikotīna - tradicionālā ūdenspīpes pieredze bez nikotīna.",
+    "sh_nic_1_2": "Ļoti viegls - maigs nikotīna pieskāriens, piemērots iesācējiem.",
+    "sh_nic_3_4": "Viegls - maigs nikotīns neregulāriem lietotājiem.",
+    "sh_nic_5_6": "Vidējs - līdzsvarots stiprums regulāriem lietotājiem.",
+    "sh_nic_7_8": "Stiprāks - pieredzējušiem lietotājiem, var izraisīt reiboni.",
+    "sh_nic_9_10": "Stiprs - maksimālais ieteicamais stiprums ūdenspīpei, tikai pieredzējušiem."
   },
   "flavor_descriptions": {
     "weak": "Vāja vai nav garšas (ieteicams {min}–{max}%)",

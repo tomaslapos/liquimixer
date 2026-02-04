@@ -282,7 +282,24 @@
     "water_toggle": "Víz hozzáadása",
     "note_add_sweetener": "Adja hozzá az édesítőszert és alaposan keverje össze.",
     "note_add_water": "Adjon hozzá vizet a keverék hígításához.",
-    "note_steeping": "Hagyja a keveréket {{days}} napig érlelődni a jobb ízért."
+    "note_steeping": "Hagyja a keveréket {{days}} napig érlelődni a jobb ízért.",
+    "flavor_weak": "Gyenge íz - shishához ajánlott {min}–{max}%",
+    "flavor_strong": "Túl erős íz - ajánlott max {max}%",
+    "flavor_ideal": "Ideális shishához ({min}–{max}%) - {note}",
+    "note_double_apple": "klasszikus shisha íz",
+    "note_mint": "frissítő, kombinálható",
+    "note_grape": "édes, gyümölcsös",
+    "note_watermelon": "nyári, frissítő",
+    "note_lemon_mint": "citrusos mentával",
+    "note_blueberry": "bogyós, édes",
+    "note_peach": "gyümölcsös, lágy",
+    "note_mango": "trópusi, egzotikus",
+    "note_strawberry": "klasszikus epres",
+    "note_mixed_fruit": "gyümölcs mix",
+    "note_cola": "frissítő ital",
+    "note_gum": "édes, rágógumi",
+    "note_rose": "virágos, lágy",
+    "note_custom": "saját keverék"
   },
   "results": {
     "title": "A recepted",
@@ -585,6 +602,14 @@
     "nic_12_20": "Erős dohányosoknak, erős cigarettákhoz, előzetes tapasztalat nélkül hányinger léphet fel.",
     "nic_21_35": "Magas nikotin - csak nagyon erős dohányosoknak vagy pod rendszerekhez. Nikotin só ajánlott.",
     "nic_36_45": "Rendkívül erős - csak pod rendszerekhez nikotin sóval. Túladagolás veszélye!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Nikotin nélkül - hagyományos shisha élmény nikotin nélkül.",
+    "sh_nic_1_2": "Nagyon könnyű - finom nikotin érintés, kezdőknek megfelelő.",
+    "sh_nic_3_4": "Könnyű - enyhe nikotin alkalmi felhasználóknak.",
+    "sh_nic_5_6": "Közepes - kiegyensúlyozott erősség rendszeres felhasználóknak.",
+    "sh_nic_7_8": "Erősebb - tapasztalt felhasználóknak, szédülést okozhat.",
+    "sh_nic_9_10": "Erős - maximálisan ajánlott erősség shishához, csak tapasztaltaknak."
   },
   "flavor_descriptions": {
     "weak": "Gyenge vagy nincs íz (ajánlott {min}–{max}%)",

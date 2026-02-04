@@ -282,7 +282,24 @@
     "water_toggle": "Lägg till vatten",
     "note_add_sweetener": "Tillsätt sötningsmedel och blanda noggrant.",
     "note_add_water": "Tillsätt vatten för att späda blandningen.",
-    "note_steeping": "Låt blandningen mogna i {{days}} dagar för bättre smak."
+    "note_steeping": "Låt blandningen mogna i {{days}} dagar för bättre smak.",
+    "flavor_weak": "Svag smak - för shisha rekommenderas {min}–{max}%",
+    "flavor_strong": "För stark smak - rekommenderas max {max}%",
+    "flavor_ideal": "Idealisk för shisha ({min}–{max}%) - {note}",
+    "note_double_apple": "klassisk shisha-smak",
+    "note_mint": "uppfriskande, kombinerbar",
+    "note_grape": "söt, fruktig",
+    "note_watermelon": "sommar, uppfriskande",
+    "note_lemon_mint": "citrus med mynta",
+    "note_blueberry": "bär, söt",
+    "note_peach": "fruktig, mjuk",
+    "note_mango": "tropisk, exotisk",
+    "note_strawberry": "klassisk jordgubbe",
+    "note_mixed_fruit": "fruktmix",
+    "note_cola": "uppfriskande dryck",
+    "note_gum": "söt, tuggummi",
+    "note_rose": "blommig, mjuk",
+    "note_custom": "egen blandning"
   },
   "additive": {
     "coolant": "Kylmedel (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "För storrökare, starka cigaretter, illamående kan uppstå utan tidigare erfarenhet.",
     "nic_21_35": "Hög nikotin - endast för mycket starka rökare eller pod-system. Nikotinsalt rekommenderas.",
     "nic_36_45": "Extremt stark - endast för pod-system med nikotinsalt. Risk för överdos!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Ingen nikotin - traditionell shisha-upplevelse utan nikotin.",
+    "sh_nic_1_2": "Mycket lätt - mjuk nikotinberöring, lämplig för nybörjare.",
+    "sh_nic_3_4": "Lätt - mild nikotin för tillfälliga användare.",
+    "sh_nic_5_6": "Medium - balanserad styrka för regelbundna användare.",
+    "sh_nic_7_8": "Starkare - för erfarna användare, kan orsaka yrsel.",
+    "sh_nic_9_10": "Stark - maximal rekommenderad styrka för shisha, endast för erfarna."
   },
   "flavor_descriptions": {
     "weak": "Svag eller ingen smak (rekommenderat {min}–{max}%)",

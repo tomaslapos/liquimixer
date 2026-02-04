@@ -811,6 +811,21 @@ window.addEventListener('localeChanged', () => {
         updateDiluteTargetRatioDisplay();
     }
     
+    // Aktualizovat Shisha formulář pokud je inicializován
+    if (document.getElementById('shVgPgRatio')) {
+        updateShishaRatioDisplay();
+        updateShishaNicotineDisplay();
+        // Aktualizovat všechny příchutě
+        for (let i = 1; i <= 4; i++) {
+            if (document.getElementById(`shFlavorType${i}`)) {
+                updateShishaFlavorStrength(i);
+                updateShishaFlavorRatioDisplay(i);
+            }
+        }
+        updateShishaSweetenerDisplay();
+        updateShishaWaterDisplay();
+    }
+    
     // Překreslit výsledky výpočtu pokud existují
     refreshResultsTable();
     
@@ -7769,10 +7784,45 @@ function updateFlavorCompositionOther(flavorIndex) {
     const waterEl = document.getElementById(`proFlavorCompWater${flavorIndex}`);
     const otherEl = document.getElementById(`proFlavorCompOther${flavorIndex}`);
     
-    const pg = parseFloat(pgEl?.value) || 0;
-    const vg = parseFloat(vgEl?.value) || 0;
-    const alcohol = parseFloat(alcoholEl?.value) || 0;
-    const water = parseFloat(waterEl?.value) || 0;
+    let pg = parseFloat(pgEl?.value) || 0;
+    let vg = parseFloat(vgEl?.value) || 0;
+    let alcohol = parseFloat(alcoholEl?.value) || 0;
+    let water = parseFloat(waterEl?.value) || 0;
+    
+    // Validace: součet nesmí překročit 100%
+    const total = pg + vg + alcohol + water;
+    
+    if (total > 100) {
+        // Snížit právě editovanou hodnotu tak, aby součet byl max 100
+        // Zjistit, která hodnota byla naposledy změněna (má focus)
+        const activeElement = document.activeElement;
+        
+        if (activeElement === pgEl && pgEl) {
+            pg = Math.max(0, 100 - vg - alcohol - water);
+            pgEl.value = pg;
+        } else if (activeElement === vgEl && vgEl) {
+            vg = Math.max(0, 100 - pg - alcohol - water);
+            vgEl.value = vg;
+        } else if (activeElement === alcoholEl && alcoholEl) {
+            alcohol = Math.max(0, 100 - pg - vg - water);
+            alcoholEl.value = alcohol;
+        } else if (activeElement === waterEl && waterEl) {
+            water = Math.max(0, 100 - pg - vg - alcohol);
+            waterEl.value = water;
+        } else {
+            // Pokud nevíme, která byla změněna, ořežeme postupně od konce
+            const excess = total - 100;
+            if (water >= excess) {
+                water -= excess;
+                if (waterEl) waterEl.value = water;
+            } else if (alcohol >= excess - water) {
+                alcohol -= (excess - water);
+                water = 0;
+                if (alcoholEl) alcoholEl.value = alcohol;
+                if (waterEl) waterEl.value = 0;
+            }
+        }
+    }
     
     const other = Math.max(0, 100 - pg - vg - alcohol - water);
     if (otherEl) otherEl.textContent = other.toFixed(0);
@@ -11243,8 +11293,8 @@ function updateShishaFlavorStrength(index) {
         
         if (strengthDisplay) {
             strengthDisplay.innerHTML = `
-                <div class="flavor-strength-info" style="border-left: 3px solid ${color}; padding-left: 10px; margin-bottom: 10px;">
-                    <span style="color: ${color};">${text}</span>
+                <div class="flavor-strength-info" style="border-left-color: ${color}; color: ${color};">
+                    ${text}
                 </div>
             `;
         }
@@ -11326,7 +11376,13 @@ function updateShishaFlavorRatioDisplay(index) {
     
     if (vgValue) vgValue.textContent = vg;
     if (pgValue) pgValue.textContent = pg;
-    if (track) track.style.width = vg + '%';
+    
+    // Plná šířka track s dynamickou barvou
+    if (track) {
+        track.style.width = '100%';
+        // Gradient od VG (zelená) k PG (zlatá/oranžová)
+        track.style.background = `linear-gradient(90deg, var(--neon-green), var(--neon-gold))`;
+    }
     
     autoRecalculateShishaVgPgRatio();
 }
@@ -11682,6 +11738,7 @@ function updateShishaRatioDisplay() {
     const vgValue = document.getElementById('shVgValue');
     const pgValue = document.getElementById('shPgValue');
     const track = document.getElementById('shSliderTrack');
+    const displayContainer = document.querySelector('#shVgValue')?.closest('.ratio-display');
     
     if (!slider) return;
     
@@ -11690,7 +11747,33 @@ function updateShishaRatioDisplay() {
     
     if (vgValue) vgValue.textContent = vg;
     if (pgValue) pgValue.textContent = pg;
-    if (track) track.style.width = vg + '%';
+    
+    // Optimální poměr pro shisha: 70-80% VG
+    // Plná šířka track s dynamickou barvou podle optimálnosti
+    if (track) {
+        track.style.width = '100%';
+        
+        let color;
+        if (vg >= 70 && vg <= 80) {
+            // Optimální rozsah - zlatá
+            color = 'var(--neon-gold)';
+            track.style.background = `linear-gradient(90deg, var(--neon-gold), #b8860b)`;
+        } else if ((vg >= 60 && vg < 70) || (vg > 80 && vg <= 90)) {
+            // Mírně mimo optimum - přechod k oranžové
+            color = '#ffaa00';
+            track.style.background = `linear-gradient(90deg, var(--neon-gold), #ffaa00)`;
+        } else {
+            // Výrazně mimo optimum - oranžová až červená
+            color = '#ff6600';
+            track.style.background = `linear-gradient(90deg, #ffaa00, #ff6600)`;
+        }
+        
+        // Barevně označit i čísla poměru
+        if (displayContainer) {
+            displayContainer.style.color = color;
+            displayContainer.style.textShadow = `0 0 15px ${color}`;
+        }
+    }
 }
 
 function autoRecalculateShishaVgPgRatio() {
@@ -11921,7 +12004,7 @@ function calculateShishaMix() {
     if (premixedBaseVolume > 0) {
         const baseDensity = calculatePremixedBaseDensity(premixedVg);
         results.push({
-            name: `${t('results.premixed_base')} (${premixedVg}/${premixedPg})`,
+            name: `${t('ingredients.premixed_base', 'Předmíchaná báze')} (${premixedVg}/${premixedPg})`,
             volume: premixedBaseVolume.toFixed(2),
             grams: mlToGrams(premixedBaseVolume, baseDensity),
             type: 'base'
@@ -11936,7 +12019,7 @@ function calculateShishaMix() {
         const nicVgPercent = parseInt(nicRatioValueRes.split('/')[0]) || 50;
         const nicDensity = calculateNicotineDensity(nicVgPercent);
         results.push({
-            name: t('results.nicotine'),
+            name: t('ingredients.nicotine_base', 'Nikotinová báze'),
             volume: nicotineVolume.toFixed(2),
             grams: mlToGrams(nicotineVolume, nicDensity),
             type: 'nicotine'
@@ -11951,7 +12034,7 @@ function calculateShishaMix() {
         // Získat přeložený název příchutě
         const flavorName = t(`shisha.flavor_${flavor.type}`, flavorData.name);
         results.push({
-            name: `${t('results.flavor')} ${index + 1}: ${flavorName}`,
+            name: `${t('ingredients.flavor', 'Příchuť')} ${index + 1}: ${flavorName}`,
             volume: flavorVolume.toFixed(2),
             grams: mlToGrams(flavorVolume, flavorDensity),
             type: 'flavor'
@@ -12025,22 +12108,25 @@ function calculateShishaMix() {
     notesList.innerHTML = '';
     
     const notes = [
-        t('results.note_glycerin_first'),
-        t('results.note_add_nic'),
-        t('results.note_add_flavor')
+        t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'),
+        t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'),
+        t('results.notes_premixed', 'Doplňte předmíchanou bázi.')
     ];
     
     if (sweetenerVolume > 0) {
-        notes.push(t('shisha.note_add_sweetener') || 'Přidejte sladidlo a promíchejte.');
+        notes.push(t('shisha.note_add_sweetener', 'Přidejte sladidlo a promíchejte.'));
     }
     if (waterVolume > 0) {
-        notes.push(t('shisha.note_add_water') || 'Přidejte vodu pro zředění.');
+        notes.push(t('shisha.note_add_water', 'Přidejte vodu pro zředění.'));
     }
+    
+    // Add shake note
+    notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
     
     // Add steeping note
     if (flavorsData.length > 0) {
         const maxSteeping = Math.max(...flavorsData.map(f => f.data?.steepingDays || 3));
-        const steepingNote = t('shisha.note_steeping', `Nechte směs zrát ${maxSteeping} dní pro lepší chuť.`).replace('{{days}}', maxSteeping);
+        const steepingNote = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', maxSteeping);
         notes.push(steepingNote);
     }
     
@@ -12052,7 +12138,18 @@ function calculateShishaMix() {
     
     // Store current recipe data
     const hasSweetener = sweetenerSelect ? sweetenerType !== 'none' : (sweetenerToggle?.checked);
-    window.currentRecipeData = {
+    
+    // Vytvořit pole ingredients pro kompatibilitu s refreshResultsTable()
+    const ingredients = results.map(item => ({
+        name: item.name,
+        volume: parseFloat(item.volume),
+        percent: ((parseFloat(item.volume) / totalAmount) * 100).toFixed(1),
+        type: item.type,
+        grams: item.grams
+    }));
+    
+    // Uložit data receptu pomocí storeCurrentRecipe() pro konzistenci s ostatními formuláři
+    storeCurrentRecipe({
         formType: 'shisha',
         totalAmount: totalAmount,
         vgPercent: vgPercent,
@@ -12065,8 +12162,9 @@ function calculateShishaMix() {
             percent: parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0
         } : null,
         water: waterPercent > 0 ? waterPercent : 0,
-        results: results
-    };
+        results: results,
+        ingredients: ingredients
+    });
     
     // Show results page
     showPage('results');

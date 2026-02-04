@@ -282,7 +282,24 @@
     "water_toggle": "添加水",
     "note_add_sweetener": "添加甜味剂并充分混合。",
     "note_add_water": "添加水稀释混合物。",
-    "note_steeping": "让混合物静置{{days}}天以获得更好的口感。"
+    "note_steeping": "让混合物静置{{days}}天以获得更好的口感。",
+    "flavor_weak": "口味较淡 - 水烟推荐{min}–{max}%",
+    "flavor_strong": "口味过浓 - 推荐最大{max}%",
+    "flavor_ideal": "水烟理想 ({min}–{max}%) - {note}",
+    "note_double_apple": "经典水烟口味",
+    "note_mint": "清爽，可搭配",
+    "note_grape": "甜美，水果味",
+    "note_watermelon": "夏日，清爽",
+    "note_lemon_mint": "柑橘薄荷",
+    "note_blueberry": "浆果，甜美",
+    "note_peach": "水果味，柔和",
+    "note_mango": "热带，异国情调",
+    "note_strawberry": "经典草莓",
+    "note_mixed_fruit": "水果混合",
+    "note_cola": "清爽饮品",
+    "note_gum": "甜美，口香糖",
+    "note_rose": "花香，柔和",
+    "note_custom": "自定义混合"
   },
   "additive": {
     "coolant": "冷却剂 (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "适合重度吸烟者，浓烈香烟，无经验可能出现恶心。",
     "nic_21_35": "高尼古丁 - 仅适合非常重度的吸烟者或 pod 系统。推荐使用尼古丁盐。",
     "nic_36_45": "极其强烈 - 仅适合使用尼古丁盐的 pod 系统。有过量风险！"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "无尼古丁 - 无尼古丁的传统水烟体验。",
+    "sh_nic_1_2": "非常轻 - 轻柔的尼古丁触感，适合初学者。",
+    "sh_nic_3_4": "轻度 - 适合偶尔使用者的温和尼古丁。",
+    "sh_nic_5_6": "中等 - 适合常规使用者的平衡强度。",
+    "sh_nic_7_8": "较强 - 适合有经验的用户，可能会引起头晕。",
+    "sh_nic_9_10": "强劲 - 水烟的最大推荐强度，仅适合有经验者。"
   },
   "flavor_descriptions": {
     "weak": "弱或不存在的香精（推荐 {min}–{max}%）",

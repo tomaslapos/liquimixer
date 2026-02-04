@@ -282,7 +282,24 @@
     "water_toggle": "Su ekle",
     "note_add_sweetener": "Tatlandırıcıyı ekleyin ve iyice karıştırın.",
     "note_add_water": "Karışımı seyreltmek için su ekleyin.",
-    "note_steeping": "Daha iyi tat için karışımı {{days}} gün dinlendirin."
+    "note_steeping": "Daha iyi tat için karışımı {{days}} gün dinlendirin.",
+    "flavor_weak": "Zayıf tat - nargile için {min}–{max}% önerilir",
+    "flavor_strong": "Çok güçlü tat - maksimum {max}% önerilir",
+    "flavor_ideal": "Nargile için ideal ({min}–{max}%) - {note}",
+    "note_double_apple": "klasik nargile aroması",
+    "note_mint": "ferahlatıcı, birleştirilebilir",
+    "note_grape": "tatlı, meyveli",
+    "note_watermelon": "yazlık, ferahlatıcı",
+    "note_lemon_mint": "narenciye ve nane",
+    "note_blueberry": "böğürtlenli, tatlı",
+    "note_peach": "meyveli, yumuşak",
+    "note_mango": "tropikal, egzotik",
+    "note_strawberry": "klasik çilek",
+    "note_mixed_fruit": "meyve karışımı",
+    "note_cola": "ferahlatıcı içecek",
+    "note_gum": "tatlı, sakız",
+    "note_rose": "çiçeksi, yumuşak",
+    "note_custom": "kendi karışımı"
   },
   "additive": {
     "coolant": "Soğutucu (WS-23, Koolada)",
@@ -620,6 +637,14 @@
     "nic_12_20": "Ağır sigara içenler, güçlü sigaralar için, deneyim olmadan mide bulantısı olabilir.",
     "nic_21_35": "Yüksek nikotin - yalnızca çok ağır sigara içenler veya pod sistemleri için. Nikotin tuzu önerilir.",
     "nic_36_45": "Aşırı güçlü - yalnızca nikotin tuzlu pod sistemleri için. Aşırı doz riski!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Nikotin yok - nikotinsiz geleneksel nargile deneyimi.",
+    "sh_nic_1_2": "Çok hafif - yumuşak nikotin dokunuşu, yeni başlayanlar için uygun.",
+    "sh_nic_3_4": "Hafif - ara sıra kullanıcılar için hafif nikotin.",
+    "sh_nic_5_6": "Orta - düzenli kullanıcılar için dengeli güç.",
+    "sh_nic_7_8": "Daha güçlü - deneyimli kullanıcılar için, baş dönmesine neden olabilir.",
+    "sh_nic_9_10": "Güçlü - nargile için maksimum önerilen güç, yalnızca deneyimliler için."
   },
   "flavor_descriptions": {
     "weak": "Zayıf veya aroma yok (önerilen {min}–{max}%)",

@@ -308,7 +308,10 @@
     "flavor_total_warning": "(recommended 15-25%)",
     "note_add_sweetener": "Add sweetener and mix thoroughly.",
     "note_add_water": "Add water to thin the blend.",
-    "note_steeping": "Let the blend steep for {{days}} days for better flavor."
+    "note_steeping": "Let the blend steep for {{days}} days for better flavor.",
+    "flavor_weak": "Weak flavor - for shisha recommended {min}–{max}%",
+    "flavor_strong": "Too strong flavor - recommended max {max}%",
+    "flavor_ideal": "Ideal for shisha ({min}–{max}%) - {note}"
   },
   "results": {
     "title": "Your Recipe",
@@ -635,6 +638,14 @@
     "nic_12_20": "For heavy smokers, strong cigarettes, nausea may occur without prior experience.",
     "nic_21_35": "High nicotine - only for very heavy smokers or pod systems. Nicotine salt recommended.",
     "nic_36_45": "Extremely strong - only for pod systems with nicotine salt. Risk of overdose!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "No nicotine - traditional shisha experience without nicotine.",
+    "sh_nic_1_2": "Very light - gentle nicotine touch, suitable for beginners.",
+    "sh_nic_3_4": "Light - mild nicotine for occasional users.",
+    "sh_nic_5_6": "Medium - balanced strength for regular users.",
+    "sh_nic_7_8": "Stronger - for experienced users, may cause dizziness.",
+    "sh_nic_9_10": "Strong - maximum recommended strength for shisha, only for experienced users."
   },
   "flavor_descriptions": {
     "weak": "Weak or no flavor (recommended {min}–{max}%)",

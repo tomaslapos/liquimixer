@@ -282,7 +282,24 @@
     "water_toggle": "Dodaj vodu",
     "note_add_sweetener": "Dodajte zaslađivač i dobro promiješajte.",
     "note_add_water": "Dodajte vodu za razrjeđivanje smjese.",
-    "note_steeping": "Ostavite smjesu da odleži {{days}} dana za bolji okus."
+    "note_steeping": "Ostavite smjesu da odleži {{days}} dana za bolji okus.",
+    "flavor_weak": "Slab okus - za shishu preporučeno {min}–{max}%",
+    "flavor_strong": "Prejak okus - preporučeno maks. {max}%",
+    "flavor_ideal": "Idealno za shishu ({min}–{max}%) - {note}",
+    "note_double_apple": "klasični okus shishe",
+    "note_mint": "osvježavajući, kombinirajući",
+    "note_grape": "slatko, voćno",
+    "note_watermelon": "ljetni, osvježavajući",
+    "note_lemon_mint": "citrusi s mentom",
+    "note_blueberry": "bobičast, sladak",
+    "note_peach": "voćni, nježan",
+    "note_mango": "tropski, egzotičan",
+    "note_strawberry": "klasična jagoda",
+    "note_mixed_fruit": "voćni miks",
+    "note_cola": "osvježavajuće piće",
+    "note_gum": "slatka, žvakaća guma",
+    "note_rose": "cvjetni, nježan",
+    "note_custom": "vlastita mješavina"
   },
   "additive": {
     "coolant": "Hladilo (WS-23, Koolada)",
@@ -619,6 +636,14 @@
     "nic_12_20": "Za teške pušače, jake cigarete, mučnina se može pojaviti bez prethodnog iskustva.",
     "nic_21_35": "Visoki nikotin - samo za vrlo teške pušače ili pod sustave. Preporučuje se nikotinska sol.",
     "nic_36_45": "Ekstremno jak - samo za pod sustave s nikotinskom soli. Rizik od predoziranja!"
+  },
+  "shisha_nicotine_descriptions": {
+    "sh_nic_0": "Bez nikotina - tradicionalno iskustvo shishe bez nikotina.",
+    "sh_nic_1_2": "Vrlo lagano - nježan dodir nikotina, pogodno za početnike.",
+    "sh_nic_3_4": "Lagano - blag nikotin za povremene korisnike.",
+    "sh_nic_5_6": "Srednje - uravnotežena jačina za redovite korisnike.",
+    "sh_nic_7_8": "Jače - za iskusne korisnike, može uzrokovati vrtoglavicu.",
+    "sh_nic_9_10": "Jako - maksimalna preporučena jačina za shishu, samo za iskusne."
   },
   "flavor_descriptions": {
     "weak": "Slab ili nepostojeći okus (preporučeno {min}–{max}%)",

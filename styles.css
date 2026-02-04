@@ -3707,7 +3707,8 @@ body {
 
 .ratio-description,
 .nicotine-description,
-.flavor-description {
+.flavor-description,
+.flavor-strength-info {
     padding: 18px 24px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: var(--border-radius-small);
@@ -3720,6 +3721,12 @@ body {
     border-left: 4px solid currentColor;
     text-align: left;
     transition: all 0.3s ease;
+}
+
+/* Override inline styles for flavor-strength-info in shisha form */
+.flavor-strength-info {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* Nicotine styles */
