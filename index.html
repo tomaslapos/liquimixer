@@ -1803,69 +1803,52 @@
                     </div>
                 </div>
 
-                <!-- Nikotin (volitelný) -->
+                <!-- Nikotinová báze - jako Liquid formulář -->
                 <div class="form-group">
                     <label class="form-label">
-                        <span data-i18n="shisha.nicotine_label">Nikotin (volitelný)</span>
+                        <span data-i18n="form.nicotine_base_label">Jak silnou mám nikotinovou bázi?</span>
+                        <span class="label-hint" data-i18n="form.nicotine_base_hint">Tyto údaje opiš z obalu nikotinu</span>
                     </label>
-                    <select id="shNicotineSelect" class="neon-select" onchange="handleShishaNicotineSelect()">
-                        <option value="0" data-i18n="form.no_nicotine">Bez nikotinu</option>
-                        <option value="1" data-i18n="form.nicotine_1mg">1 mg/ml</option>
-                        <option value="2" data-i18n="form.nicotine_2mg">2 mg/ml</option>
-                        <option value="3" data-i18n="form.nicotine_3mg">3 mg/ml</option>
-                        <option value="4" data-i18n="form.nicotine_4mg">4 mg/ml</option>
-                        <option value="5" data-i18n="form.nicotine_5mg">5 mg/ml</option>
-                        <option value="6" data-i18n="form.nicotine_6mg">6 mg/ml</option>
-                    </select>
-                    <div id="shNicotineContainer" class="hidden">
-                        <div class="nicotine-base-container">
-                            <select id="shNicotineType" class="neon-select" onchange="updateShishaNicotineType()">
-                                <option value="freebase" data-i18n="form.nicotine_booster">Nikotin booster</option>
-                                <option value="salt" data-i18n="form.nicotine_salt">Nikotinová sůl</option>
-                            </select>
-                            <div id="shNicotineStrengthContainer">
-                                <input type="number" id="shNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="autoRecalculateShishaVgPgRatio()">
-                                <span class="input-unit">mg/ml</span>
-                            </div>
+                    <div class="nicotine-base-container">
+                        <select id="shNicotineType" class="neon-select" onchange="updateShishaNicotineType()">
+                            <option value="none" data-i18n="form.nicotine_none">Bez nikotinu</option>
+                            <option value="freebase" data-i18n="form.nicotine_booster">Nikotin booster</option>
+                            <option value="salt" data-i18n="form.nicotine_salt">Nikotinová sůl</option>
+                        </select>
+                        <div id="shNicotineStrengthContainer" class="hidden">
+                            <input type="number" id="shNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="autoRecalculateShishaVgPgRatio()">
+                            <span class="input-unit" data-i18n="common.mg_ml">mg/ml</span>
                         </div>
-                        <div id="shNicotineRatioContainer">
-                            <label class="form-label-small" data-i18n="form.nicotine_ratio_label">Poměr VG/PG v koncentrátu nikotinu</label>
-                            <div class="ratio-container compact">
-                                <div class="ratio-labels">
-                                    <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
-                                    <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
-                                </div>
-                                <div class="slider-container">
-                                    <button class="slider-btn small" onclick="adjustShishaNicRatio(-5)">◀</button>
-                                    <div class="slider-wrapper">
-                                        <input type="range" id="shNicotineRatioSlider" min="0" max="100" value="50" class="ratio-slider" oninput="updateShishaNicRatioDisplay()">
-                                        <div class="slider-track" id="shNicotineTrackRatio"></div>
-                                    </div>
-                                    <button class="slider-btn small" onclick="adjustShishaNicRatio(5)">▶</button>
-                                </div>
-                                <div class="ratio-display small">
-                                    <span id="shNicVgValue">50</span>:<span id="shNicPgValue">50</span>
-                                </div>
-                            </div>
+                    </div>
+                    <div id="shNicotineRatioContainer" class="hidden">
+                        <label class="form-label-small" data-i18n="form.nicotine_ratio_label">Poměr VG/PG v koncentrátu</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="sh-nic-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateShishaNicotineRatio('50/50')">50/50</button>
+                            <button type="button" class="sh-nic-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaNicotineRatio('70/30')">70/30</button>
                         </div>
-                        <!-- Cílová síla nikotinu -->
-                        <div class="form-group-sub" id="shTargetNicotineGroup">
-                            <label class="form-label-small" data-i18n="shisha.target_nicotine_label">
-                                Cílová síla nikotinu (max 6mg/ml pro shisha)
-                            </label>
-                            <div class="target-nicotine-container">
-                                <div class="slider-container">
-                                    <button class="slider-btn" onclick="adjustShishaTargetNicotine(-1)">◀</button>
-                                    <div class="slider-wrapper">
-                                        <input type="range" id="shTargetNicotine" min="0" max="6" value="3" step="0.5" class="nicotine-slider">
-                                        <div class="slider-track nicotine-track" id="shNicotineTrack"></div>
-                                    </div>
-                                    <button class="slider-btn" onclick="adjustShishaTargetNicotine(1)">▶</button>
-                                </div>
-                                <div class="nicotine-display">
-                                    <span id="shTargetNicotineValue">3</span> mg/ml
-                                </div>
+                        <input type="hidden" id="shNicotineRatio" value="50/50">
+                    </div>
+                </div>
+
+                <!-- Cílová síla nikotinu pro Shisha -->
+                <div class="form-group hidden" id="shTargetNicotineGroup">
+                    <label class="form-label" data-i18n="form.target_nicotine_label">
+                        Jak silnou chci finální nikotinovou bázi na vapování?
+                    </label>
+                    <div class="target-nicotine-container">
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(-0.5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shTargetNicotine" min="0" max="6" value="0" step="0.5" class="nicotine-slider">
+                                <div class="slider-track nicotine-track" id="shNicotineTrack"></div>
                             </div>
+                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(0.5)">▶</button>
+                        </div>
+                        <div class="nicotine-display">
+                            <span id="shTargetNicotineValue">0</span> mg/ml
+                        </div>
+                        <div class="nicotine-description" id="shNicotineDescription">
+                            Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
                         </div>
                     </div>
                 </div>

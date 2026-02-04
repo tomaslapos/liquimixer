@@ -2816,8 +2816,15 @@ async function loadMaturedRecipeIds() {
         today.setHours(0, 0, 0, 0);
         
         // Najít vyzrálé připomínky a uložit jejich recipe_id
+        // Filtrovat spotřebované připomínky (consumed_at != null nebo stock_percent <= 0)
         reminders.forEach(r => {
             if (r.status !== 'pending' || !r.recipe_id) return;
+            
+            // Přeskočit spotřebované připomínky
+            if (r.consumed_at != null) return;
+            const stockPercent = r.stock_percent ?? 100;
+            if (stockPercent <= 0) return;
+            
             const remindDate = new Date(r.remind_at);
             remindDate.setHours(0, 0, 0, 0);
             if (remindDate <= today) {
@@ -9478,11 +9485,11 @@ function renderReminderItem(reminder, recipeId) {
     if (isConsumed) return '';
     
     // Barva podle stavu zásoby
-    const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
+    const stockColor = stockPercent >= 50 ? 'var(--neon-green)' : 
                        stockPercent > 20 ? '#ffcc00' : '#ff4444';
     const lowClass = stockPercent <= 20 ? 'low' : '';
-    // Barva textu procent: černá při >50%, bílá při <=50%
-    const percentTextClass = stockPercent > 50 ? '' : 'low-text';
+    // Barva textu procent: černá při >=50%, bílá při <50%
+    const percentTextClass = stockPercent >= 50 ? '' : 'low-text';
     
     // Sestavit CSS třídy
     let statusClass = '';
@@ -9954,10 +9961,10 @@ function showViewReminderModal(reminderId) {
     // Vykreslit stock bar
     if (stockContainer) {
         const stockPercent = reminder.stock_percent ?? 100;
-        const stockColor = stockPercent > 50 ? 'var(--neon-green)' : 
+        const stockColor = stockPercent >= 50 ? 'var(--neon-green)' : 
                            stockPercent > 20 ? '#ffcc00' : '#ff4444';
         const lowClass = stockPercent <= 20 ? 'low' : '';
-        const percentTextClass = stockPercent > 50 ? '' : 'low-text';
+        const percentTextClass = stockPercent >= 50 ? '' : 'low-text';
 
         stockContainer.innerHTML = `
             <button type="button" class="stock-btn minus" onclick="updateViewReminderStock(-10)" title="-10%">−</button>
@@ -9982,37 +9989,87 @@ function showViewReminderModal(reminderId) {
 async function updateViewReminderStock(delta) {
     if (!currentViewReminderId || !currentViewReminderRecipeId) return;
     
-    // Použít existující funkci pro aktualizaci
-    await updateReminderStockUI(currentViewReminderId, currentViewReminderRecipeId, delta);
+    const clerkId = window.Clerk?.user?.id;
+    if (!clerkId) return;
     
-    // Aktualizovat i modal stock bar
-    const reminder = allRecipeReminders.find(r => r.id === currentViewReminderId);
-    if (!reminder) return;
-    
-    const newStock = reminder.stock_percent ?? 100;
-    const stockBar = document.getElementById('view-stock-bar');
-    const percentLabel = document.getElementById('view-stock-percent');
-    
-    if (stockBar) {
-        const stockColor = newStock > 50 ? 'var(--neon-green)' : 
-                           newStock > 20 ? '#ffcc00' : '#ff4444';
-        stockBar.style.width = `${newStock}%`;
-        stockBar.style.background = stockColor;
+    try {
+        // Načíst aktuální stav přímo z databáze
+        const reminder = await window.database.getReminderById(clerkId, currentViewReminderId);
+        if (!reminder) return;
         
-        if (newStock <= 20) {
-            stockBar.classList.add('low');
-        } else {
-            stockBar.classList.remove('low');
+        const currentStock = reminder.stock_percent ?? 100;
+        let newStock = Math.max(0, Math.min(100, currentStock + delta));
+        
+        // Aktualizovat UI v modalu
+        const stockBar = document.getElementById('view-stock-bar');
+        const percentLabel = document.getElementById('view-stock-percent');
+        
+        if (stockBar) {
+            stockBar.style.transition = 'width 0.5s ease-out, background 0.5s ease';
+            const stockColor = newStock >= 50 ? 'var(--neon-green)' : 
+                               newStock > 20 ? '#ffcc00' : '#ff4444';
+            stockBar.style.width = `${newStock}%`;
+            stockBar.style.background = stockColor;
+            
+            if (newStock <= 20) {
+                stockBar.classList.add('low');
+            } else {
+                stockBar.classList.remove('low');
+            }
         }
-    }
-    
-    if (percentLabel) {
-        percentLabel.textContent = `${newStock}%`;
-        if (newStock > 50) {
-            percentLabel.classList.remove('low-text');
-        } else {
-            percentLabel.classList.add('low-text');
+        
+        if (percentLabel) {
+            percentLabel.textContent = `${newStock}%`;
+            if (newStock >= 50) {
+                percentLabel.classList.remove('low-text');
+            } else {
+                percentLabel.classList.add('low-text');
+            }
         }
+        
+        // Aktualizovat databázi
+        if (newStock === 0) {
+            const confirmed = await showConsumedConfirmDialog();
+            if (confirmed) {
+                await window.database.markReminderConsumed(clerkId, currentViewReminderId);
+                showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
+                hideViewReminderModal();
+                loadRecipeReminders(currentViewReminderRecipeId);
+            } else {
+                // Vrátit na 10%
+                newStock = 10;
+                if (stockBar) {
+                    stockBar.style.width = '10%';
+                    stockBar.style.background = '#ff4444';
+                }
+                if (percentLabel) percentLabel.textContent = '10%';
+                await window.database.updateReminderStock(clerkId, currentViewReminderId, 10);
+            }
+        } else {
+            await window.database.updateReminderStock(clerkId, currentViewReminderId, newStock);
+        }
+        
+        // Aktualizovat také seznam připomínek pokud je viditelný
+        const listStockBar = document.getElementById(`stock-bar-${currentViewReminderId}`);
+        if (listStockBar) {
+            const stockColor = newStock >= 50 ? 'var(--neon-green)' : 
+                               newStock > 20 ? '#ffcc00' : '#ff4444';
+            listStockBar.style.width = `${newStock}%`;
+            listStockBar.style.background = stockColor;
+            const listPercentLabel = listStockBar.parentElement?.querySelector('.battery-percent');
+            if (listPercentLabel) {
+                listPercentLabel.textContent = `${newStock}%`;
+                if (newStock >= 50) {
+                    listPercentLabel.classList.remove('low-text');
+                } else {
+                    listPercentLabel.classList.add('low-text');
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error updating view reminder stock:', error);
+        showNotification(t('common.error', 'Chyba při aktualizaci'), 'error');
     }
 }
 
@@ -10431,7 +10488,7 @@ async function updateReminderStockUI(reminderId, recipeId, delta) {
             stockBar.style.width = `${newStock}%`;
             
             // Změna barvy podle stavu
-            const stockColor = newStock > 50 ? 'var(--neon-green)' : 
+            const stockColor = newStock >= 50 ? 'var(--neon-green)' : 
                                newStock > 20 ? '#ffcc00' : '#ff4444';
             stockBar.style.background = stockColor;
             
@@ -10439,8 +10496,8 @@ async function updateReminderStockUI(reminderId, recipeId, delta) {
             const percentLabel = stockBar.parentElement?.querySelector('.battery-percent');
             if (percentLabel) {
                 percentLabel.textContent = `${newStock}%`;
-                // Barva textu: černá >50%, bílá <=50%
-                if (newStock > 50) {
+                // Barva textu: černá >=50%, bílá <50%
+                if (newStock >= 50) {
                     percentLabel.classList.remove('low-text');
                 } else {
                     percentLabel.classList.add('low-text');
@@ -10731,69 +10788,81 @@ function updateShishaCustomPremixedPg() {
     autoRecalculateShishaVgPgRatio();
 }
 
-// Nicotine select handler (nahrazuje toggle)
+// Starý select handler pro zpětnou kompatibilitu
 function handleShishaNicotineSelect() {
-    const select = document.getElementById('shNicotineSelect');
-    const container = document.getElementById('shNicotineContainer');
-    const targetSlider = document.getElementById('shTargetNicotine');
-    
-    if (!select) return;
-    
-    const nicValue = parseFloat(select.value);
-    
-    if (nicValue > 0) {
-        // Zobrazit nastavení nikotinu a nastavit cílovou sílu
-        container.classList.remove('hidden');
-        if (targetSlider) {
-            targetSlider.value = nicValue;
-            updateShishaNicotineDisplay();
-        }
-        updateShishaNicRatioDisplay();
-    } else {
-        // Skrýt nastavení nikotinu
-        container.classList.add('hidden');
-    }
-    
-    autoRecalculateShishaVgPgRatio();
+    updateShishaNicotineType();
 }
 
 // Starý toggle pro zpětnou kompatibilitu
 function toggleShishaNicotine() {
-    // Tato funkce již není používána, ale zachována pro kompatibilitu
-    handleShishaNicotineSelect();
+    updateShishaNicotineType();
 }
 
+// Aktualizovat typ nikotinu - jako v Liquid formuláři
 function updateShishaNicotineType() {
+    const typeSelect = document.getElementById('shNicotineType');
+    const strengthContainer = document.getElementById('shNicotineStrengthContainer');
+    const ratioContainer = document.getElementById('shNicotineRatioContainer');
+    const targetGroup = document.getElementById('shTargetNicotineGroup');
+    const targetSlider = document.getElementById('shTargetNicotine');
+    
+    if (!typeSelect) return;
+    
+    const type = typeSelect.value;
+    
+    if (type === 'none') {
+        // Skrýt všechna nastavení nikotinu
+        if (strengthContainer) strengthContainer.classList.add('hidden');
+        if (ratioContainer) ratioContainer.classList.add('hidden');
+        if (targetGroup) targetGroup.classList.add('hidden');
+        if (targetSlider) {
+            targetSlider.value = 0;
+            updateShishaNicotineDisplay();
+        }
+    } else {
+        // Zobrazit nastavení nikotinu
+        if (strengthContainer) strengthContainer.classList.remove('hidden');
+        if (ratioContainer) ratioContainer.classList.remove('hidden');
+        if (targetGroup) targetGroup.classList.remove('hidden');
+        
+        // Nastavit max hodnotu podle typu
+        const baseStrengthInput = document.getElementById('shNicotineBaseStrength');
+        if (baseStrengthInput) {
+            const maxValue = type === 'salt' ? 72 : 200;
+            baseStrengthInput.max = maxValue;
+            if (parseInt(baseStrengthInput.value) > maxValue) {
+                baseStrengthInput.value = maxValue;
+            }
+        }
+    }
+    
     autoRecalculateShishaVgPgRatio();
 }
 
+// Aktualizovat poměr VG/PG nikotinu pomocí tlačítek
+function updateShishaNicotineRatio(ratio) {
+    const buttons = document.querySelectorAll('.sh-nic-ratio-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.value === ratio) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    const hiddenInput = document.getElementById('shNicotineRatio');
+    if (hiddenInput) hiddenInput.value = ratio;
+    
+    autoRecalculateShishaVgPgRatio();
+}
+
+// Starý slider handler pro zpětnou kompatibilitu
 function adjustShishaNicRatio(change) {
-    const slider = document.getElementById('shNicotineRatioSlider');
-    let currentValue = parseInt(slider.value);
-    
-    let newValue;
-    if (change > 0) {
-        newValue = Math.ceil((currentValue + 1) / 5) * 5;
-    } else {
-        newValue = Math.floor((currentValue - 1) / 5) * 5;
-    }
-    
-    newValue = Math.max(0, Math.min(100, newValue));
-    slider.value = newValue;
-    updateShishaNicRatioDisplay();
+    // Již nepoužíváme slider, ale zachováno pro kompatibilitu
 }
 
 function updateShishaNicRatioDisplay() {
-    const slider = document.getElementById('shNicotineRatioSlider');
-    const vgValue = document.getElementById('shNicVgValue');
-    const pgValue = document.getElementById('shNicPgValue');
-    const track = document.getElementById('shNicotineTrackRatio');
-    
-    const vg = parseInt(slider.value);
-    const pg = 100 - vg;
-    
-    vgValue.textContent = vg;
-    pgValue.textContent = pg;
+    // Již nepoužíváme slider, ale zachováno pro kompatibilitu
     
     if (track) {
         track.style.width = vg + '%';
@@ -11064,6 +11133,9 @@ function addShishaFlavor() {
                     <option value="custom" data-i18n="form.custom">Vlastní</option>
                 </select>
                 <div id="shFlavorStrengthContainer${shFlavorCount}" class="hidden">
+                    <!-- Zobrazení doporučení síly příchutě (jako u Liquid) -->
+                    <div id="shFlavorStrengthDisplay${shFlavorCount}" class="flavor-strength-display"></div>
+                    
                     <div class="slider-container small">
                         <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -1)">◀</button>
                         <div class="slider-wrapper">
@@ -11238,6 +11310,11 @@ function updateShishaSweetenerDisplay() {
 }
 
 // Water functions - voda je nyní vždy viditelný slider bez toggle
+// Toggle funkce zachována pro zpětnou kompatibilitu (voda je nyní vždy viditelná)
+function toggleShishaWater() {
+    // Prázdná funkce - voda je nyní vždy viditelná, toggle již není potřeba
+}
+
 function adjustShishaWater(change) {
     const slider = document.getElementById('shWaterPercent');
     if (!slider) return;
@@ -11421,27 +11498,26 @@ function calculateShishaMix() {
         premixedPg = parseInt(parts[1]) || 20;
     }
     
-    // Nicotine - použít nový select nebo starý toggle pro zpětnou kompatibilitu
+    // Nicotine - nová struktura jako Liquid formulář
     let nicotineVolume = 0;
     let nicotineVgVolume = 0;
     let nicotinePgVolume = 0;
     let targetNicotine = 0;
     
-    const nicSelect = document.getElementById('shNicotineSelect');
-    const nicToggle = document.getElementById('shNicotineToggle');
+    const nicTypeSelect = document.getElementById('shNicotineType');
+    const nicotineType = nicTypeSelect?.value || 'none';
     
-    // Preferovat select, pokud existuje
-    const hasNicotine = nicSelect ? parseFloat(nicSelect.value) > 0 : (nicToggle && nicToggle.checked);
+    const hasNicotine = nicotineType !== 'none';
     
     if (hasNicotine) {
         const baseNicotine = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
-        // Pokud je select, použít jeho hodnotu, jinak slider
-        if (nicSelect && parseFloat(nicSelect.value) > 0) {
-            targetNicotine = parseFloat(nicSelect.value);
-        } else {
-            targetNicotine = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
-        }
-        const nicVgPercent = parseInt(document.getElementById('shNicotineRatioSlider')?.value) || 50;
+        targetNicotine = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
+        
+        // Získat poměr VG/PG z tlačítek nebo defaultní 50/50
+        const nicRatioInput = document.getElementById('shNicotineRatio');
+        const nicRatio = nicRatioInput?.value || '50/50';
+        const nicRatioParts = nicRatio.split('/');
+        const nicVgPercent = parseInt(nicRatioParts[0]) || 50;
         
         if (targetNicotine > 0 && baseNicotine > 0) {
             nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
@@ -11588,15 +11664,36 @@ function calculateShishaMix() {
     const tbody = document.getElementById('resultsBody');
     tbody.innerHTML = '';
     
+    let runningTotal = 0;
+    let totalGrams = 0;
+    
     results.forEach(item => {
         const row = document.createElement('tr');
+        const volume = parseFloat(item.volume);
+        const grams = parseFloat(item.grams);
+        runningTotal += volume;
+        totalGrams += grams;
+        
+        // Přidat procenta
+        const percent = ((volume / totalAmount) * 100).toFixed(1);
+        
         row.innerHTML = `
-            <td>${escapeHtml(item.name)}</td>
-            <td>${item.volume} ml</td>
-            <td>${item.grams} g</td>
+            <td class="ingredient-name">${escapeHtml(item.name)} <span class="ingredient-percent-inline">(${percent}%)</span></td>
+            <td class="ingredient-value">${item.volume}</td>
+            <td class="ingredient-grams">${item.grams}</td>
         `;
         tbody.appendChild(row);
     });
+    
+    // Přidat řádek celkem
+    const totalRow = document.createElement('tr');
+    totalRow.className = 'total-row';
+    totalRow.innerHTML = `
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
+        <td class="ingredient-value">${runningTotal.toFixed(2)}</td>
+        <td class="ingredient-grams">${totalGrams.toFixed(2)}</td>
+    `;
+    tbody.appendChild(totalRow);
     
     // Add mixing notes
     const notesList = document.getElementById('mixingNotesList');
@@ -11662,6 +11759,7 @@ window.updateShishaCustomPremixedPg = updateShishaCustomPremixedPg;
 window.toggleShishaNicotine = toggleShishaNicotine;
 window.handleShishaNicotineSelect = handleShishaNicotineSelect;
 window.updateShishaNicotineType = updateShishaNicotineType;
+window.updateShishaNicotineRatio = updateShishaNicotineRatio;
 window.adjustShishaNicRatio = adjustShishaNicRatio;
 window.updateShishaNicRatioDisplay = updateShishaNicRatioDisplay;
 window.adjustShishaTargetNicotine = adjustShishaTargetNicotine;
