@@ -2594,6 +2594,142 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+/* Product card footer with meta and stock */
+.product-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Product Stock in card */
+.product-stock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.product-stock .stock-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.product-stock .stock-quantity {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--neon-cyan);
+    min-width: 24px;
+    text-align: center;
+}
+
+.product-stock .stock-unit {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.product-stock .stock-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.product-stock .stock-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    border-color: var(--neon-cyan);
+}
+
+.product-stock .stock-btn.minus:hover {
+    background: rgba(255, 100, 100, 0.2);
+    border-color: #ff6666;
+}
+
+.product-stock .stock-btn.plus:hover {
+    background: rgba(0, 255, 200, 0.2);
+    border-color: #00ffc8;
+}
+
+/* Product Detail Stock */
+.product-detail-stock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.product-detail-stock .stock-label {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.product-stock-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-stock-controls .stock-quantity.large {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--neon-cyan);
+    min-width: 40px;
+    text-align: center;
+}
+
+.product-stock-controls .stock-unit {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.product-stock-controls .stock-btn.large {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.product-stock-controls .stock-btn.large:hover {
+    background: rgba(0, 255, 255, 0.2);
+    border-color: var(--neon-cyan);
+}
+
+.product-stock-controls .stock-btn.large.minus:hover {
+    background: rgba(255, 100, 100, 0.2);
+    border-color: #ff6666;
+}
+
+.product-stock-controls .stock-btn.large.plus:hover {
+    background: rgba(0, 255, 200, 0.2);
+    border-color: #00ffc8;
+}
+
 /* Product Detail */
 .product-detail-content {
     background: rgba(0, 0, 0, 0.3);

@@ -466,7 +466,8 @@
     "not_found": "Product niet gevonden.",
     "load_error": "Fout bij laden van product.",
     "deleted": "Product is verwijderd.",
-    "delete_error": "Fout bij verwijderen van product."
+    "delete_error": "Fout bij verwijderen van product.",
+    "stock_unit": "st"
   },
   "product_detail": {
     "title": "Productdetails",

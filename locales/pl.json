@@ -475,7 +475,8 @@
     "not_found": "Nie znaleziono produktu.",
     "load_error": "Błąd podczas ładowania produktu.",
     "deleted": "Produkt został usunięty.",
-    "delete_error": "Błąd podczas usuwania produktu."
+    "delete_error": "Błąd podczas usuwania produktu.",
+    "stock_unit": "szt."
   },
   "product_detail": {
     "title": "Szczegóły produktu",

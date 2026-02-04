@@ -468,7 +468,8 @@
     "not_found": "Produit non trouvé.",
     "load_error": "Erreur lors du chargement du produit.",
     "deleted": "Le produit a été supprimé.",
-    "delete_error": "Erreur lors de la suppression du produit."
+    "delete_error": "Erreur lors de la suppression du produit.",
+    "stock_unit": "pcs"
   },
   "product_detail": {
     "title": "Détails du produit",

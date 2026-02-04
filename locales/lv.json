@@ -489,7 +489,8 @@
     "not_found": "Produkts nav atrasts.",
     "load_error": "Kļūda, ielādējot produktu.",
     "deleted": "Produkts ir dzēsts.",
-    "delete_error": "Kļūda, dzēšot produktu."
+    "delete_error": "Kļūda, dzēšot produktu.",
+    "stock_unit": "gab"
   },
   "product_detail": {
     "title": "Produkta detaļas",

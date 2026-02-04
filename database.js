@@ -723,6 +723,88 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
     }
 }
 
+// Aktualizovat počet kusů produktu na skladě
+async function updateProductStock(clerkId, productId, quantity) {
+    if (!supabaseClient || !clerkId || !productId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('updateProductStock: Invalid clerk_id format');
+        return null;
+    }
+    
+    if (!isValidUUID(productId)) {
+        console.error('updateProductStock: Invalid product ID format');
+        return null;
+    }
+    
+    // Validace množství (min 0, zaokrouhleno na 0.5)
+    const validQuantity = Math.max(0, Math.round(parseFloat(quantity) * 2) / 2);
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .update({ 
+                stock_quantity: validQuantity,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', productId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('updateProductStock: Error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('updateProductStock: Database error:', err);
+        return null;
+    }
+}
+
+// Aktualizovat počet kusů produktu na skladě
+async function updateProductStock(clerkId, productId, quantity) {
+    if (!supabaseClient || !clerkId || !productId) return null;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('updateProductStock: Invalid clerk_id format');
+        return null;
+    }
+    
+    if (!isValidUUID(productId)) {
+        console.error('updateProductStock: Invalid product ID format');
+        return null;
+    }
+    
+    // Validace množství (min 0, max 9999, zaokrouhleno na 0.5)
+    const validQuantity = Math.max(0, Math.min(9999, Math.round(parseFloat(quantity) * 2) / 2));
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .update({ 
+                stock_quantity: validQuantity,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', productId)
+            .eq('clerk_id', clerkId)
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('updateProductStock: Error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('updateProductStock: Database error:', err);
+        return null;
+    }
+}
+
 // Získat oblíbené produkty uživatele
 async function getFavoriteProducts(clerkId) {
     if (!supabaseClient || !clerkId) return [];
@@ -2299,6 +2381,7 @@ window.LiquiMixerDB = {
     // Oblíbené produkty
     saveProduct: saveFavoriteProduct,
     updateProduct: updateFavoriteProduct,
+    updateProductStock: updateProductStock,
     getProducts: getFavoriteProducts,
     getProductById: getFavoriteProductById,
     getProductByShareId: getProductByShareId,

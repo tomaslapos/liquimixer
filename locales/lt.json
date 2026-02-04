@@ -489,7 +489,8 @@
     "not_found": "Produktas nerastas.",
     "load_error": "Klaida kraunant produktą.",
     "deleted": "Produktas ištrintas.",
-    "delete_error": "Klaida trinant produktą."
+    "delete_error": "Klaida trinant produktą.",
+    "stock_unit": "vnt"
   },
   "product_detail": {
     "title": "Produkto detalės",

@@ -489,7 +489,8 @@
     "not_found": "未找到产品。",
     "load_error": "加载产品出错。",
     "deleted": "产品已删除。",
-    "delete_error": "删除产品出错。"
+    "delete_error": "删除产品出错。",
+    "stock_unit": "件"
   },
   "product_detail": {
     "title": "产品详情",

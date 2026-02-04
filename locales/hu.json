@@ -464,7 +464,8 @@
     "not_found": "Termék nem található.",
     "load_error": "Hiba a termék betöltésekor.",
     "deleted": "A termék törölve lett.",
-    "delete_error": "Hiba a termék törlésekor."
+    "delete_error": "Hiba a termék törlésekor.",
+    "stock_unit": "db"
   },
   "product_detail": {
     "title": "Termék részletei",

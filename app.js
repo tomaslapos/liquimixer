@@ -2324,6 +2324,14 @@ function goBackToCalculator() {
         tabName = 'shakevape';
     } else if (formType === 'pro' || formType === 'liquidpro') {
         tabName = 'liquidpro';
+    } else if (formType === 'shisha') {
+        tabName = 'shisha';
+    } else if (formType === 'dilute') {
+        tabName = 'dilute';
+    } else if (formType === 'shisha') {
+        tabName = 'shisha';
+    } else if (formType === 'dilute') {
+        tabName = 'dilute';
     }
     
     // Povolit programovou změnu záložky
@@ -4353,6 +4361,8 @@ function renderProductsList(products) {
         const typeLabel = productTypeLabels[product.product_type] || 'Příchuť';
         const typeIcon = productTypeIcons[product.product_type] || '🍓';
         
+        const stockQuantity = product.stock_quantity || 0;
+        
         html += `
             <div class="product-card rating-${rating}" onclick="viewProductDetail('${product.id}')">
                 ${product.image_url ? `<div class="product-card-image"><img src="${escapeHtml(product.image_url)}" alt="${safeName}"></div>` : ''}
@@ -4365,17 +4375,50 @@ function renderProductsList(products) {
                         <span class="product-type-badge">${typeIcon} ${escapeHtml(typeLabel)}</span>
                     </div>
                     ${safeDescription ? `<p class="product-card-description">${safeDescription.substring(0, 100)}${safeDescription.length > 100 ? '...' : ''}</p>` : ''}
-                    <div class="product-card-meta">
-                        <span>📅 ${date}</span>
-                        ${product.product_url ? '<span>🔗 Odkaz</span>' : ''}
-                    </div>
+                    <div class="product-card-footer">
+                        <div class="product-card-meta">
+                            <span>📅 ${date}</span>
+                            ${product.product_url ? '<span>🔗 Odkaz</span>' : ''}
+                        </div>
+                        <div class="product-stock" onclick="event.stopPropagation();">
+                            <span class="stock-label">${t('reminder.stock_label', 'Sklad')}:</span>
+                            <button type="button" class="stock-btn minus" onclick="updateProductStockUI('${product.id}', -0.5)">−</button>
+                            <span class="stock-quantity" id="product-stock-${product.id}">${stockQuantity % 1 === 0 ? stockQuantity : stockQuantity.toFixed(1)}</span>
+                            <span class="stock-unit">${t('products.stock_unit', 'ks')}</span>
+                            <button type="button" class="stock-btn plus" onclick="updateProductStockUI('${product.id}', +0.5)">+</button>
+                        </div>
                     </div>
                 </div>
+            </div>
             `;
     });
     
     html += '</div>';
     container.innerHTML = html;
+}
+
+// Aktualizovat počet kusů produktu na skladě (UI + DB)
+async function updateProductStockUI(productId, change) {
+    if (!window.Clerk?.user || !window.LiquiMixerDB) return;
+    
+    // Získat aktuální hodnotu z DOM
+    const stockEl = document.getElementById(`product-stock-${productId}`);
+    if (!stockEl) return;
+    
+    let currentStock = parseFloat(stockEl.textContent) || 0;
+    let newStock = Math.max(0, Math.round((currentStock + change) * 2) / 2); // Zaokrouhlit na 0.5
+    
+    // Okamžitá aktualizace UI (zobrazit celé číslo nebo jedno desetinné místo)
+    stockEl.textContent = newStock % 1 === 0 ? newStock : newStock.toFixed(1);
+    
+    // Aktualizace v DB (non-blocking)
+    try {
+        await window.LiquiMixerDB.updateProductStock(window.Clerk.user.id, productId, newStock);
+    } catch (err) {
+        console.error('Error updating product stock:', err);
+        // Vrátit původní hodnotu při chybě
+        stockEl.textContent = currentStock % 1 === 0 ? currentStock : currentStock.toFixed(1);
+    }
 }
 
 // Zobrazit detail produktu
@@ -4475,6 +4518,9 @@ function displayProductDetail(product, linkedRecipes = []) {
         `;
     }
     
+    const stockQuantity = product.stock_quantity || 0;
+    const stockDisplay = stockQuantity % 1 === 0 ? stockQuantity : stockQuantity.toFixed(1);
+    
     contentEl.innerHTML = `
         ${imageHtml}
         <div class="product-detail-header">
@@ -4483,6 +4529,15 @@ function displayProductDetail(product, linkedRecipes = []) {
             </div>
             <div class="product-detail-rating">${stars}</div>
             ${safeDescription ? `<p class="product-detail-description">${safeDescription}</p>` : ''}
+        </div>
+        <div class="product-detail-stock">
+            <span class="stock-label">${t('reminder.stock_label', 'Sklad')}:</span>
+            <div class="product-stock-controls">
+                <button type="button" class="stock-btn minus large" onclick="updateProductStockUI('${product.id}', -0.5)">−</button>
+                <span class="stock-quantity large" id="product-stock-${product.id}">${stockDisplay}</span>
+                <span class="stock-unit">${t('products.stock_unit', 'ks')}</span>
+                <button type="button" class="stock-btn plus large" onclick="updateProductStockUI('${product.id}', +0.5)">+</button>
+            </div>
         </div>
         ${urlHtml}
         ${recipesHtml}
@@ -6016,43 +6071,78 @@ function generateMixingNotes(recipeData) {
     
     const notes = [];
     
-    // 1. Flavors first
-    notes.push(t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'));
-    
-    // 2. Nicotine if present
-    if (recipeData.nicotine > 0) {
-        notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
-    }
-    
-    // 3. Base type
-    if (recipeData.baseType === 'premixed') {
+    // Shisha-specific notes
+    if (recipeData.formType === 'shisha') {
+        // 1. Flavors first
+        notes.push(t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'));
+        
+        // 2. Nicotine if present
+        if (recipeData.nicotine > 0) {
+            notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
+        }
+        
+        // 3. Premixed base
         notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
-        // Check if adjustment needed
-        const hasAdjustment = recipeData.ingredients && recipeData.ingredients.some(
-            ing => (ing.ingredientKey === 'pg' || ing.ingredientKey === 'vg') && ing.volume > 0.1
-        );
-        if (hasAdjustment) {
-            notes.push(t('results.notes_adjustment', 'Pokud je třeba, dolaďte čistým PG nebo VG.'));
+        
+        // 4. Sweetener if present
+        if (recipeData.sweetener > 0) {
+            notes.push(t('shisha.note_add_sweetener', 'Přidejte sladidlo a důkladně promíchejte.'));
+        }
+        
+        // 5. Water if present
+        if (recipeData.water > 0) {
+            notes.push(t('shisha.note_add_water', 'Přidejte vodu pro zředění směsi.'));
+        }
+        
+        // 6. Shake
+        notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
+        
+        // 7. Steeping
+        const steepingDays = getMaxSteepingDaysFromRecipe(recipeData);
+        if (steepingDays > 0) {
+            const steepText = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', steepingDays);
+            notes.push(steepText);
         }
     } else {
-        notes.push(t('results.notes_pg_vg', 'Nakonec doplňte PG a VG.'));
-    }
-    
-    // 4. Shake
-    notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
-    
-    // 5. Steeping based on flavor type
-    const steepingDays = getMaxSteepingDaysFromRecipe(recipeData);
-    if (steepingDays > 0) {
-        const steepText = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', steepingDays);
-        notes.push(steepText);
-    }
-    
-    // 6. Actual ratio info
-    if (recipeData.actualVg !== undefined && recipeData.totalAmount) {
-        const actualVgPercent = (recipeData.actualVg / recipeData.totalAmount * 100).toFixed(1);
-        const actualPgPercent = (recipeData.actualPg / recipeData.totalAmount * 100).toFixed(1);
-        notes.push(`${t('results.actual_ratio', 'Skutečný poměr VG/PG')}: ${actualVgPercent}% / ${actualPgPercent}%`);
+        // Standard liquid notes
+        // 1. Flavors first
+        notes.push(t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'));
+        
+        // 2. Nicotine if present
+        if (recipeData.nicotine > 0) {
+            notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
+        }
+        
+        // 3. Base type
+        if (recipeData.baseType === 'premixed') {
+            notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
+            // Check if adjustment needed
+            const hasAdjustment = recipeData.ingredients && recipeData.ingredients.some(
+                ing => (ing.ingredientKey === 'pg' || ing.ingredientKey === 'vg') && ing.volume > 0.1
+            );
+            if (hasAdjustment) {
+                notes.push(t('results.notes_adjustment', 'Pokud je třeba, dolaďte čistým PG nebo VG.'));
+            }
+        } else {
+            notes.push(t('results.notes_pg_vg', 'Nakonec doplňte PG a VG.'));
+        }
+        
+        // 4. Shake
+        notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
+        
+        // 5. Steeping based on flavor type
+        const steepingDays = getMaxSteepingDaysFromRecipe(recipeData);
+        if (steepingDays > 0) {
+            const steepText = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', steepingDays);
+            notes.push(steepText);
+        }
+        
+        // 6. Actual ratio info
+        if (recipeData.actualVg !== undefined && recipeData.totalAmount) {
+            const actualVgPercent = (recipeData.actualVg / recipeData.totalAmount * 100).toFixed(1);
+            const actualPgPercent = (recipeData.actualPg / recipeData.totalAmount * 100).toFixed(1);
+            notes.push(`${t('results.actual_ratio', 'Skutečný poměr VG/PG')}: ${actualVgPercent}% / ${actualPgPercent}%`);
+        }
     }
     
     // Render notes
@@ -6063,7 +6153,17 @@ function generateMixingNotes(recipeData) {
 function getMaxSteepingDaysFromRecipe(recipeData) {
     let maxDays = 0;
     
-    if (recipeData.formType === 'liquidpro' && recipeData.flavors) {
+    if (recipeData.formType === 'shisha' && recipeData.flavors) {
+        // Shisha recipes - use shishaFlavorDatabase
+        for (const flavor of recipeData.flavors) {
+            if (flavor.type && flavor.type !== 'none') {
+                const flavorData = shishaFlavorDatabase[flavor.type];
+                if (flavorData && flavorData.steepingDays > maxDays) {
+                    maxDays = flavorData.steepingDays;
+                }
+            }
+        }
+    } else if (recipeData.formType === 'liquidpro' && recipeData.flavors) {
         for (const flavor of recipeData.flavors) {
             if (flavor.type && flavor.type !== 'none') {
                 const flavorData = flavorDatabase[flavor.type];
@@ -9763,9 +9863,19 @@ let allRecipeReminders = [];
 
 // Načíst a zobrazit připomínky pro recept
 async function loadRecipeReminders(recipeId, showAll = false) {
-    if (!window.Clerk || !window.Clerk.user) return;
-    const listContainer = document.getElementById(`remindersList-${recipeId}`);
-    if (!listContainer) return;
+    if (!window.Clerk || !window.Clerk.user) {
+        console.log('loadRecipeReminders: Clerk not ready');
+        return;
+    }
+    
+    // Normalize recipeId - remove any HTML escaping if present
+    const normalizedId = recipeId.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'");
+    
+    const listContainer = document.getElementById(`remindersList-${normalizedId}`);
+    if (!listContainer) {
+        console.log('loadRecipeReminders: Container not found for ID:', normalizedId);
+        return;
+    }
 
     try {
         const reminders = await window.LiquiMixerDB.getRecipeReminders(window.Clerk.user.id, recipeId);
@@ -9777,15 +9887,26 @@ async function loadRecipeReminders(recipeId, showAll = false) {
         // Seřadit podle data připomínky (od nejnovější po nejstarší - nejvyšší datum nahoře)
         reminders.sort((a, b) => new Date(b.remind_at) - new Date(a.remind_at));
         allRecipeReminders = reminders;
+        
+        // Filtrovat aktivní připomínky (nezobrazovat spotřebované)
+        const activeReminders = reminders.filter(r => r.consumed_at == null);
 
-        const displayCount = showAll ? reminders.length : Math.min(3, reminders.length);
-        const displayReminders = reminders.slice(0, displayCount);
+        const displayCount = showAll ? activeReminders.length : Math.min(3, activeReminders.length);
+        const displayReminders = activeReminders.slice(0, displayCount);
         let html = displayReminders.map(reminder => renderReminderItem(reminder, recipeId)).join('');
 
-        if (!showAll && reminders.length > 3) {
-            html += `<button type="button" class="show-all-reminders-btn" onclick="loadRecipeReminders('${recipeId}', true)">${t('recipe_detail.show_all_reminders', 'Zobrazit všechny')} (${reminders.length})</button>`;
-        } else if (showAll && reminders.length > 3) {
-            html += `<button type="button" class="show-all-reminders-btn" onclick="loadRecipeReminders('${recipeId}', false)">${t('recipe_detail.show_less', 'Zobrazit méně')}</button>`;
+        if (!showAll && activeReminders.length > 3) {
+            const safeRecipeId = escapeHtml(recipeId);
+            html += `<button type="button" class="show-all-reminders-btn" data-recipe-id="${safeRecipeId}" data-show-all="true" onclick="loadRecipeReminders(this.dataset.recipeId, true)">${t('recipe_detail.show_all_reminders', 'Zobrazit všechny')} (${activeReminders.length})</button>`;
+        } else if (showAll && activeReminders.length > 3) {
+            const safeRecipeId = escapeHtml(recipeId);
+            html += `<button type="button" class="show-all-reminders-btn" data-recipe-id="${safeRecipeId}" data-show-all="false" onclick="loadRecipeReminders(this.dataset.recipeId, false)">${t('recipe_detail.show_less', 'Zobrazit méně')}</button>`;
+        }
+        
+        // Pokud nejsou žádné aktivní připomínky, zobrazit zprávu
+        if (activeReminders.length === 0) {
+            listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.no_reminders', 'Žádné připomínky. Klikněte na tlačítko níže pro přidání.')}</div>`;
+            return;
         }
 
         listContainer.innerHTML = html;
@@ -10636,7 +10757,7 @@ function renderPublicRecipeCard(recipe) {
     const stars = renderStars(avgRating);
     
     return `
-        <div class="public-recipe-card" onclick="loadPublicRecipeDetail('${recipe.id}')">
+        <div class="public-recipe-card" data-recipe-id="${recipe.id}" onclick="loadPublicRecipeDetail('${recipe.id}')">
             <div class="recipe-card-header">
                 <h4 class="recipe-card-name">${escapeHtml(recipe.name)}</h4>
                 <div class="recipe-card-rating">
@@ -10802,14 +10923,20 @@ async function submitRating(recipeId, rating) {
             try {
                 const updatedRecipe = await window.LiquiMixerDB.getPublicRecipeById(recipeId);
                 if (updatedRecipe) {
-                    // Aktualizovat kartu v seznamu
-                    const card = document.querySelector(`.public-recipe-card[onclick*="${recipeId}"]`);
+                    // Aktualizovat kartu v seznamu (použít data-recipe-id atribut)
+                    const card = document.querySelector(`.public-recipe-card[data-recipe-id="${recipeId}"]`);
                     if (card) {
                         const starsEl = card.querySelector('.recipe-card-rating');
                         if (starsEl) {
                             const avgRating = updatedRecipe.public_rating_avg || 0;
                             const ratingCount = updatedRecipe.public_rating_count || 0;
-                            starsEl.innerHTML = `${renderStars(avgRating)} <span class="rating-count">(${ratingCount})</span>`;
+                            // Aktualizovat všechny části rating elementu
+                            const avgEl = starsEl.querySelector('.rating-avg');
+                            const starsSpan = starsEl.querySelector('.rating-stars');
+                            const countSpan = starsEl.querySelector('.rating-count');
+                            if (avgEl) avgEl.textContent = avgRating.toFixed(1);
+                            if (starsSpan) starsSpan.innerHTML = renderStars(avgRating);
+                            if (countSpan) countSpan.textContent = `(${ratingCount})`;
                         }
                     }
                     
@@ -11068,6 +11195,7 @@ window.showAddProductForm = showAddProductForm;
 window.cancelProductForm = cancelProductForm;
 window.saveProduct = saveProduct;
 window.viewProductDetail = viewProductDetail;
+window.updateProductStockUI = updateProductStockUI;
 window.viewSharedProductDetail = viewSharedProductDetail;
 window.copySharedProductToUser = copySharedProductToUser;
 window.goBackFromSharedProduct = goBackFromSharedProduct;
@@ -12405,9 +12533,19 @@ function calculateShishaMix() {
     // Show results page
     showPage('results');
     
-    // Show appropriate buttons
-    document.getElementById('resultsNewButtons').classList.remove('hidden');
-    document.getElementById('resultsEditButtons').classList.add('hidden');
+    // Show appropriate buttons (check edit mode like other forms)
+    const newButtons = document.getElementById('resultsNewButtons');
+    const editButtons = document.getElementById('resultsEditButtons');
+    
+    if (window.editingRecipeFromDetail) {
+        // Režim editace existujícího receptu
+        if (newButtons) newButtons.classList.add('hidden');
+        if (editButtons) editButtons.classList.remove('hidden');
+    } else {
+        // Nový recept
+        if (newButtons) newButtons.classList.remove('hidden');
+        if (editButtons) editButtons.classList.add('hidden');
+    }
 }
 
 // Export Shisha functions

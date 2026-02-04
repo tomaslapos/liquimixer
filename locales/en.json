@@ -488,7 +488,8 @@
     "not_found": "Product not found.",
     "load_error": "Error loading product.",
     "deleted": "Product has been deleted.",
-    "delete_error": "Error deleting product."
+    "delete_error": "Error deleting product.",
+    "stock_unit": "pcs"
   },
   "product_detail": {
     "title": "Product Detail",

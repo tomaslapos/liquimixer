@@ -475,7 +475,8 @@
     "not_found": "Prodotto non trovato.",
     "load_error": "Errore nel caricamento del prodotto.",
     "deleted": "Il prodotto è stato eliminato.",
-    "delete_error": "Errore nell'eliminazione del prodotto."
+    "delete_error": "Errore nell'eliminazione del prodotto.",
+    "stock_unit": "pz"
   },
   "product_detail": {
     "title": "Dettagli prodotto",

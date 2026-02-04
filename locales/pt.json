@@ -456,7 +456,8 @@
     "not_found": "Produto não encontrado.",
     "load_error": "Erro ao carregar o produto.",
     "deleted": "O produto foi eliminado.",
-    "delete_error": "Erro ao eliminar o produto."
+    "delete_error": "Erro ao eliminar o produto.",
+    "stock_unit": "un"
   },
   "product_detail": {
     "title": "Detalhes do produto",

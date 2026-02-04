@@ -475,7 +475,8 @@
     "not_found": "Producto no encontrado.",
     "load_error": "Error al cargar el producto.",
     "deleted": "El producto ha sido eliminado.",
-    "delete_error": "Error al eliminar el producto."
+    "delete_error": "Error al eliminar el producto.",
+    "stock_unit": "uds"
   },
   "product_detail": {
     "title": "Detalles del producto",
