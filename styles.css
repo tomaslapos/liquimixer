@@ -6955,22 +6955,25 @@ body.subscription-required #subscriptionModal {
     accent-color: var(--neon-cyan);
 }
 
-/* Toggle switch filter */
+/* Toggle switch filter - plná šířka jako ostatní filtry */
 .filter-toggle {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .filter-toggle-row {
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 8px 0;
 }
 
 .filter-toggle-label {
     font-size: 0.9rem;
     color: var(--text-primary);
     cursor: pointer;
+    white-space: nowrap;
 }
 
 /* Reset button */
@@ -7275,6 +7278,16 @@ body.subscription-required #subscriptionModal {
     background: rgba(255, 100, 100, 0.2);
     border-color: #ff6666;
     color: #ff6666;
+}
+
+/* Stock bar v modalu detailu připomínky */
+.view-modal-stock {
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.view-modal-stock .stock-battery {
+    max-width: 180px;
 }
 
 .stock-btn.plus {

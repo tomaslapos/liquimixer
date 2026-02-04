@@ -1808,13 +1808,15 @@
                     <label class="form-label">
                         <span data-i18n="shisha.nicotine_label">Nikotin (volitelný)</span>
                     </label>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="shNicotineToggle" onchange="toggleShishaNicotine()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label" data-i18n="shisha.nicotine_toggle">Přidat nikotin</span>
-                    </div>
+                    <select id="shNicotineSelect" class="neon-select" onchange="handleShishaNicotineSelect()">
+                        <option value="0" data-i18n="form.no_nicotine">Bez nikotinu</option>
+                        <option value="1" data-i18n="form.nicotine_1mg">1 mg/ml</option>
+                        <option value="2" data-i18n="form.nicotine_2mg">2 mg/ml</option>
+                        <option value="3" data-i18n="form.nicotine_3mg">3 mg/ml</option>
+                        <option value="4" data-i18n="form.nicotine_4mg">4 mg/ml</option>
+                        <option value="5" data-i18n="form.nicotine_5mg">5 mg/ml</option>
+                        <option value="6" data-i18n="form.nicotine_6mg">6 mg/ml</option>
+                    </select>
                     <div id="shNicotineContainer" class="hidden">
                         <div class="nicotine-base-container">
                             <select id="shNicotineType" class="neon-select" onchange="updateShishaNicotineType()">
@@ -1893,6 +1895,9 @@
                             <option value="custom" data-i18n="form.custom">Vlastní</option>
                         </select>
                         <div id="shFlavorStrengthContainer1" class="hidden">
+                            <!-- Zobrazení doporučení síly příchutě (jako u Liquid) -->
+                            <div id="shFlavorStrengthDisplay1" class="flavor-strength-display"></div>
+                            
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustShishaFlavor(1, -1)">◀</button>
                                 <div class="slider-wrapper">
@@ -1958,22 +1963,16 @@
                     <label class="form-label">
                         <span data-i18n="shisha.sweetener_label">Sladidlo (volitelné)</span>
                     </label>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="shSweetenerToggle" onchange="toggleShishaSweetener()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label" data-i18n="shisha.sweetener_toggle">Přidat sladidlo</span>
-                    </div>
+                    <select id="shSweetenerSelect" class="neon-select" onchange="handleShishaSweetenerSelect()">
+                        <option value="none" data-i18n="shisha.sweetener_none">Bez sladidla</option>
+                        <option value="sucralose" data-i18n="shisha.sweetener_sucralose">Sukralóza (nejčastější)</option>
+                        <option value="ethyl_maltol" data-i18n="shisha.sweetener_ethyl_maltol">Ethyl Maltol (cukrová vata)</option>
+                        <option value="stevia" data-i18n="shisha.sweetener_stevia">Stevia (přírodní)</option>
+                        <option value="honey" data-i18n="shisha.sweetener_honey">Med</option>
+                        <option value="molasses" data-i18n="shisha.sweetener_molasses">Melasa</option>
+                        <option value="agave" data-i18n="shisha.sweetener_agave">Agáve</option>
+                    </select>
                     <div id="shSweetenerContainer" class="hidden">
-                        <select id="shSweetenerType" class="neon-select" onchange="updateShishaSweetenerType()">
-                            <option value="sucralose" data-i18n="shisha.sweetener_sucralose">Sukralóza (nejčastější)</option>
-                            <option value="ethyl_maltol" data-i18n="shisha.sweetener_ethyl_maltol">Ethyl Maltol (cukrová vata)</option>
-                            <option value="stevia" data-i18n="shisha.sweetener_stevia">Stevia (přírodní)</option>
-                            <option value="honey" data-i18n="shisha.sweetener_honey">Med</option>
-                            <option value="molasses" data-i18n="shisha.sweetener_molasses">Melasa</option>
-                            <option value="agave" data-i18n="shisha.sweetener_agave">Agáve</option>
-                        </select>
                         <div class="slider-container small" style="margin-top: 10px;">
                             <button class="slider-btn small" onclick="adjustShishaSweetener(-1)">◀</button>
                             <div class="slider-wrapper">
@@ -1988,30 +1987,22 @@
                     </div>
                 </div>
 
-                <!-- Voda (volitelné) -->
+                <!-- Voda (volitelné) - procentuální slider vždy viditelný -->
                 <div class="form-group water-section">
                     <label class="form-label">
                         <span data-i18n="shisha.water_label">Voda (volitelné)</span>
                         <span class="label-hint" data-i18n="shisha.water_hint">Zředí směs pro lepší průtah</span>
                     </label>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="shWaterToggle" onchange="toggleShishaWater()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label" data-i18n="shisha.water_toggle">Přidat vodu</span>
-                    </div>
-                    <div id="shWaterContainer" class="hidden">
-                        <div class="slider-container small">
-                            <button class="slider-btn small" onclick="adjustShishaWater(-1)">◀</button>
-                            <div class="slider-wrapper">
-                                <input type="range" id="shWaterPercent" min="0" max="5" value="2" step="0.5" class="flavor-slider" oninput="updateShishaWaterDisplay()">
-                                <div class="slider-track flavor-track" id="shWaterTrack"></div>
-                            </div>
-                            <button class="slider-btn small" onclick="adjustShishaWater(1)">▶</button>
+                    <div class="slider-container small">
+                        <button class="slider-btn small" onclick="adjustShishaWater(-0.5)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="shWaterPercent" min="0" max="5" value="0" step="0.5" class="flavor-slider" oninput="updateShishaWaterDisplay()">
+                            <div class="slider-track flavor-track" id="shWaterTrack"></div>
                         </div>
-                        <div class="flavor-display">
-                            <span id="shWaterValue">2</span>%
+                        <button class="slider-btn small" onclick="adjustShishaWater(0.5)">▶</button>
+                    </div>
+                    <div class="flavor-display">
+                        <span id="shWaterValue">0</span>%
                         </div>
                     </div>
                 </div>
@@ -2172,6 +2163,12 @@
                     <div class="form-group-login">
                         <label class="login-label" data-i18n="reminder.note_label">Poznámka</label>
                         <div id="viewReminderNote" class="login-input readonly-field note-field"></div>
+                    </div>
+                    <div class="form-group-login">
+                        <label class="login-label" data-i18n="reminder.stock_label">Skladová zásoba</label>
+                        <div id="viewReminderStockContainer" class="reminder-stock view-modal-stock">
+                            <!-- Stock bar bude dynamicky vygenerován -->
+                        </div>
                     </div>
                     <button type="button" class="neon-button secondary" onclick="hideViewReminderModal()" data-i18n="recipe_detail.back">Zpět</button>
                 </div>
@@ -2410,10 +2407,10 @@
                             <label data-i18n="recipe_database.filter_method">Metoda přípravy:</label>
                             <select id="dbFilterFormType" class="neon-select" onchange="loadPublicRecipes()">
                                 <option value="" data-i18n="recipe_database.all">Všechny</option>
-                                <option value="liquid">Liquid</option>
-                                <option value="shakevape">Shake & Vape</option>
-                                <option value="shortfill">Shortfill</option>
-                                <option value="liquidpro">Liquid PRO</option>
+                                <option value="liquid" data-i18n="menu.liquid">Liquid</option>
+                                <option value="shakevape" data-i18n="menu.shake_and_vape">Shake & Vape</option>
+                                <option value="shortfill" data-i18n="menu.shortfill">Shortfill</option>
+                                <option value="liquidpro" data-i18n="menu.liquid_pro">Liquid PRO</option>
                             </select>
                         </div>
                         
