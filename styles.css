@@ -6890,7 +6890,7 @@ body.subscription-required #subscriptionModal {
     border-top: 1px solid rgba(0, 255, 255, 0.15);
     padding-top: 10px;
     position: relative;
-    z-index: 200;
+    /* z-index odstraněn - nesmí překrývat modály */
 }
 
 .filter-toggle-btn {
@@ -6932,7 +6932,7 @@ body.subscription-required #subscriptionModal {
     opacity: 0;
     transition: all 0.3s ease;
     position: relative;
-    z-index: 200;
+    /* z-index odstraněn - nesmí překrývat modály */
 }
 
 .filters-panel.hidden {
