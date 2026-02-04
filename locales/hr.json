@@ -489,7 +489,8 @@
     "not_found": "Proizvod nije pronađen.",
     "load_error": "Greška pri učitavanju proizvoda.",
     "deleted": "Proizvod je obrisan.",
-    "delete_error": "Greška pri brisanju proizvoda."
+    "delete_error": "Greška pri brisanju proizvoda.",
+    "stock_unit": "kom"
   },
   "product_detail": {
     "title": "Detalji proizvoda",

@@ -490,7 +490,8 @@
     "not_found": "未找到產品。",
     "load_error": "載入產品時出錯。",
     "deleted": "產品已刪除。",
-    "delete_error": "刪除產品時出錯。"
+    "delete_error": "刪除產品時出錯。",
+    "stock_unit": "件"
   },
   "product_detail": {
     "title": "產品詳情",

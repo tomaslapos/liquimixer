@@ -458,7 +458,8 @@
     "not_found": "Produsul nu a fost găsit.",
     "load_error": "Eroare la încărcarea produsului.",
     "deleted": "Produsul a fost șters.",
-    "delete_error": "Eroare la ștergerea produsului."
+    "delete_error": "Eroare la ștergerea produsului.",
+    "stock_unit": "buc"
   },
   "product_detail": {
     "title": "Detalii produs",

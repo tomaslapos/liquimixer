@@ -489,7 +489,8 @@
     "not_found": "제품을 찾을 수 없습니다.",
     "load_error": "제품 로딩 오류.",
     "deleted": "제품이 삭제되었습니다.",
-    "delete_error": "제품 삭제 오류."
+    "delete_error": "제품 삭제 오류.",
+    "stock_unit": "개"
   },
   "product_detail": {
     "title": "제품 상세",

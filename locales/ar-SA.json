@@ -490,7 +490,8 @@
     "not_found": "المنتج غير موجود.",
     "load_error": "خطأ في تحميل المنتج.",
     "deleted": "تم حذف المنتج.",
-    "delete_error": "خطأ في حذف المنتج."
+    "delete_error": "خطأ في حذف المنتج.",
+    "stock_unit": "قطعة"
   },
   "product_detail": {
     "title": "تفاصيل المنتج",

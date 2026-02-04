@@ -482,7 +482,8 @@
     "not_found": "Tuotetta ei löytynyt.",
     "load_error": "Virhe tuotteen lataamisessa.",
     "deleted": "Tuote on poistettu.",
-    "delete_error": "Virhe tuotteen poistamisessa."
+    "delete_error": "Virhe tuotteen poistamisessa.",
+    "stock_unit": "kpl"
   },
   "product_detail": {
     "title": "Tuotteen tiedot",

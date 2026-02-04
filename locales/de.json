@@ -484,7 +484,8 @@
     "not_found": "Produkt nicht gefunden.",
     "load_error": "Fehler beim Laden des Produkts.",
     "deleted": "Produkt wurde gelöscht.",
-    "delete_error": "Fehler beim Löschen des Produkts."
+    "delete_error": "Fehler beim Löschen des Produkts.",
+    "stock_unit": "Stk"
   },
   "product_detail": {
     "title": "Produktdetails",

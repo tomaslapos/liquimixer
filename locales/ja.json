@@ -489,7 +489,8 @@
     "not_found": "製品が見つかりません。",
     "load_error": "製品の読み込みエラー。",
     "deleted": "製品が削除されました。",
-    "delete_error": "製品削除エラー。"
+    "delete_error": "製品削除エラー。",
+    "stock_unit": "個"
   },
   "product_detail": {
     "title": "製品詳細",

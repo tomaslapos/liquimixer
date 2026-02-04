@@ -498,7 +498,8 @@
     "not_found": "Produkt nenájdený.",
     "load_error": "Chyba pri načítaní produktu.",
     "deleted": "Produkt bol zmazaný.",
-    "delete_error": "Chyba pri mazaní produktu."
+    "delete_error": "Chyba pri mazaní produktu.",
+    "stock_unit": "ks"
   },
   "product_detail": {
     "title": "Detail produktu",

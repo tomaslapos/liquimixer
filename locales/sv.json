@@ -489,7 +489,8 @@
     "not_found": "Produkt hittades inte.",
     "load_error": "Fel vid laddning av produkt.",
     "deleted": "Produkten har raderats.",
-    "delete_error": "Fel vid radering av produkt."
+    "delete_error": "Fel vid radering av produkt.",
+    "stock_unit": "st"
   },
   "product_detail": {
     "title": "Produktdetaljer",

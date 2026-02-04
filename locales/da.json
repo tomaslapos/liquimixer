@@ -489,7 +489,8 @@
     "not_found": "Produkt ikke fundet.",
     "load_error": "Fejl ved indlæsning af produkt.",
     "deleted": "Produktet er blevet slettet.",
-    "delete_error": "Fejl ved sletning af produkt."
+    "delete_error": "Fejl ved sletning af produkt.",
+    "stock_unit": "stk"
   },
   "product_detail": {
     "title": "Produktdetaljer",

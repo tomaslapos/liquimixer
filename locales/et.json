@@ -489,7 +489,8 @@
     "not_found": "Toodet ei leitud.",
     "load_error": "Viga toote laadimisel.",
     "deleted": "Toode kustutatud.",
-    "delete_error": "Viga toote kustutamisel."
+    "delete_error": "Viga toote kustutamisel.",
+    "stock_unit": "tk"
   },
   "product_detail": {
     "title": "Toote üksikasjad",
