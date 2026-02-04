@@ -820,6 +820,9 @@ window.addEventListener('localeChanged', () => {
     // Překreslit detail produktu pokud je zobrazen (pro sekci "Použito v receptech")
     refreshProductDetail();
     
+    // Překreslit veřejný recept z databáze pokud je zobrazen
+    refreshPublicRecipeDetail();
+    
     // Aktualizovat stav předplatného v profilu (pokud je zobrazen)
     if (subscriptionData) {
         updateSubscriptionStatusUI(subscriptionData);
@@ -10298,10 +10301,28 @@ function initFlavorFilterOptions(forceRegenerate = false) {
             const option = document.createElement('option');
             option.value = key;
             const flavorData = window.flavorDatabase[key];
-            // Použít správný překlad - shisha příchutě mají klíče shisha.flavor_*, ostatní form.flavor_*
-            const i18nKey = flavorData.isShishaOnly ? `shisha.flavor_${key}` : `form.flavor_${key}`;
-            option.textContent = t(i18nKey, flavorData.name || key);
-            option.setAttribute('data-i18n', i18nKey);
+            
+            // Zkusit nejprve form.flavor_*, pak shisha.flavor_*
+            const formKey = `form.flavor_${key}`;
+            const shishaKey = `shisha.flavor_${key}`;
+            
+            let translation = t(formKey);
+            let usedKey = formKey;
+            
+            // Pokud form překlad neexistuje nebo vrací klíč, zkusit shisha
+            if (!translation || translation === formKey) {
+                const shishaTranslation = t(shishaKey);
+                if (shishaTranslation && shishaTranslation !== shishaKey) {
+                    translation = shishaTranslation;
+                    usedKey = shishaKey;
+                }
+            }
+            
+            // Pokud stále není překlad, použít název z databáze
+            option.textContent = (translation && translation !== formKey && translation !== shishaKey) 
+                ? translation 
+                : (flavorData.name || key);
+            option.setAttribute('data-i18n', usedKey);
             select.appendChild(option);
         });
     }
@@ -10343,6 +10364,7 @@ function resetDatabaseFilters() {
     document.getElementById('dbFilterVgMax').value = '';
     document.getElementById('dbFilterNicMin').value = '';
     document.getElementById('dbFilterNicMax').value = '';
+    document.getElementById('dbFilterMinRating').value = '';
     document.getElementById('dbFilterHasAdditive').checked = false;
     document.getElementById('dbSearchInput').value = '';
     currentDbPage = 1;
@@ -10376,6 +10398,7 @@ async function loadPublicRecipes() {
         vgMax: document.getElementById('dbFilterVgMax')?.value || '',
         nicMin: document.getElementById('dbFilterNicMin')?.value || '',
         nicMax: document.getElementById('dbFilterNicMax')?.value || '',
+        minRating: document.getElementById('dbFilterMinRating')?.value || '',
         hasAdditive: document.getElementById('dbFilterHasAdditive')?.checked || false,
         sortBy: document.getElementById('dbSortBy')?.value || 'rating_desc'
     };
@@ -10622,6 +10645,29 @@ function removeBackToDatabaseButton() {
     if (btn) btn.remove();
 }
 
+// Překreslit detail veřejného receptu při změně jazyka
+function refreshPublicRecipeDetail() {
+    // Zkontrolovat, zda je stránka shared-recipe zobrazená a máme data receptu
+    const sharedRecipePage = document.getElementById('shared-recipe');
+    if (!sharedRecipePage || sharedRecipePage.classList.contains('hidden')) return;
+    if (!window.currentSharedRecipe) return;
+    
+    const recipe = window.currentSharedRecipe;
+    
+    // Znovu vykreslit detail
+    displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', [], true);
+    
+    // Znovu přidat sekci hodnocení
+    if (recipe.id) {
+        appendRatingSection(recipe.id, recipe.public_rating_avg || 0, recipe.public_rating_count || 0, 0);
+    }
+    
+    // Aplikovat překlady
+    if (window.i18n?.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+}
+
 // =============================================
 // STOCK TRACKING (SKLADOVÁ ZÁSOBA)
 // =============================================
@@ -10863,6 +10909,11 @@ function initShishaForm() {
     updateShishaTotalFlavorPercent();
     updateShishaPremiumElements();
     
+    // Inicializovat display funkcí pro správné vybarvení sliderů
+    updateShishaNicotineDisplay();
+    updateShishaSweetenerDisplay();
+    updateShishaWaterDisplay();
+    
     // Apply translations
     if (window.i18n && window.i18n.applyTranslations) {
         window.i18n.applyTranslations();
@@ -10899,6 +10950,26 @@ function updateShishaPremiumElements() {
             if (addFlavorBadge) addFlavorBadge.classList.remove('hidden');
         }
     }
+}
+
+// Base type (separate / premixed)
+function updateShishaBaseType(type) {
+    // Update hidden input
+    document.getElementById('shBaseType').value = type;
+    
+    // Update active button
+    document.getElementById('shBaseSeparate').classList.toggle('active', type === 'separate');
+    document.getElementById('shBasePremixed').classList.toggle('active', type === 'premixed');
+    
+    // Show/hide premixed ratio container
+    const premixedContainer = document.getElementById('shPremixedRatioContainer');
+    if (type === 'premixed') {
+        premixedContainer.classList.remove('hidden');
+    } else {
+        premixedContainer.classList.add('hidden');
+    }
+    
+    autoRecalculateShishaVgPgRatio();
 }
 
 // Premixed base ratio
@@ -11312,26 +11383,23 @@ function addShishaFlavor() {
             </label>
             <div class="flavor-container">
                 <select id="shFlavorType${shFlavorCount}" class="neon-select sh-flavor-select" data-flavor-index="${shFlavorCount}" onchange="updateShishaFlavorType(${shFlavorCount})">
-                    <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
-                    <option value="double_apple" data-i18n="shisha.flavor_double_apple">Double Apple (klasika)</option>
-                    <option value="mint" data-i18n="shisha.flavor_mint">Mint / Máta</option>
-                    <option value="grape" data-i18n="shisha.flavor_grape">Grape / Hroznové</option>
-                    <option value="watermelon" data-i18n="shisha.flavor_watermelon">Watermelon / Meloun</option>
-                    <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">Lemon Mint</option>
-                    <option value="blueberry" data-i18n="shisha.flavor_blueberry">Blueberry / Borůvka</option>
-                    <option value="peach" data-i18n="shisha.flavor_peach">Peach / Broskev</option>
+                    <option value="none" data-i18n="form.flavor_none">Žádná</option>
+                    <option value="double_apple" data-i18n="shisha.flavor_double_apple">Double Apple</option>
+                    <option value="mint" data-i18n="shisha.flavor_mint">Máta</option>
+                    <option value="grape" data-i18n="shisha.flavor_grape">Hrozno</option>
+                    <option value="watermelon" data-i18n="shisha.flavor_watermelon">Meloun</option>
+                    <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">Citrón a máta</option>
+                    <option value="blueberry" data-i18n="shisha.flavor_blueberry">Borůvka</option>
+                    <option value="peach" data-i18n="shisha.flavor_peach">Broskev</option>
                     <option value="mango" data-i18n="shisha.flavor_mango">Mango</option>
-                    <option value="strawberry" data-i18n="shisha.flavor_strawberry">Strawberry / Jahoda</option>
-                    <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">Mixed Fruit</option>
-                    <option value="cola" data-i18n="shisha.flavor_cola">Cola</option>
-                    <option value="gum" data-i18n="shisha.flavor_gum">Gum / Žvýkačka</option>
-                    <option value="rose" data-i18n="shisha.flavor_rose">Rose / Růže</option>
+                    <option value="strawberry" data-i18n="shisha.flavor_strawberry">Jahoda</option>
+                    <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">Ovocný mix</option>
+                    <option value="cola" data-i18n="shisha.flavor_cola">Kola</option>
+                    <option value="gum" data-i18n="shisha.flavor_gum">Žvýkačka</option>
+                    <option value="rose" data-i18n="shisha.flavor_rose">Růže</option>
                     <option value="custom" data-i18n="form.custom">Vlastní</option>
                 </select>
                 <div id="shFlavorStrengthContainer${shFlavorCount}" class="hidden">
-                    <!-- Zobrazení doporučení síly příchutě (jako u Liquid) -->
-                    <div id="shFlavorStrengthDisplay${shFlavorCount}" class="flavor-strength-display"></div>
-                    
                     <div class="slider-container small">
                         <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -1)">◀</button>
                         <div class="slider-wrapper">
@@ -11343,6 +11411,8 @@ function addShishaFlavor() {
                     <div class="flavor-display">
                         <span id="shFlavorValue${shFlavorCount}">15</span>%
                     </div>
+                    <!-- Zobrazení doporučení síly příchutě (pod sliderem jako u Liquid) -->
+                    <div id="shFlavorStrengthDisplay${shFlavorCount}" class="flavor-strength-display"></div>
                     <div class="form-group-sub">
                         <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
                         <div class="ratio-container compact">
@@ -12009,6 +12079,7 @@ function calculateShishaMix() {
 // Export Shisha functions
 window.initShishaForm = initShishaForm;
 window.updateShishaPremiumElements = updateShishaPremiumElements;
+window.updateShishaBaseType = updateShishaBaseType;
 window.updateShishaPremixedRatio = updateShishaPremixedRatio;
 window.updateShishaCustomPremixedPg = updateShishaCustomPremixedPg;
 window.toggleShishaNicotine = toggleShishaNicotine;

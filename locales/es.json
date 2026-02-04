@@ -243,6 +243,7 @@
     "sweetener_label": "Edulcorante",
     "sweetener_hint": "La shisha tradicional es dulce",
     "sweetener_enabled": "Añadir edulcorante",
+    "sweetener_none": "Sin edulcorante",
     "sweetener_type": "Tipo de edulcorante",
     "sweetener_honey": "Miel",
     "sweetener_molasses": "Melaza",

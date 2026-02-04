@@ -84,6 +84,7 @@
     "filter_vg_pg": "VG/PG poměr",
     "filter_nicotine": "Síla nikotinu",
     "filter_has_additive": "Pouze s aditivy",
+    "filter_rating": "Minimální hodnocení",
     "reset_filters": "Resetovat filtry",
     "all": "Všechny",
     "min": "Min",
