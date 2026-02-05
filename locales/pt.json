@@ -79,6 +79,12 @@
     "contact_cat_other": "Outro",
     "recipe_database": "Base de receitas"
   },
+  "difficulty": {
+    "beginner": "Iniciante",
+    "intermediate": "Intermediário",
+    "expert": "Especialista",
+    "virtuoso": "Virtuoso"
+  },
   "intro": {
     "subtitle": "CALCULADORA DE E-LÍQUIDO",
     "warning_title": "Concentre-se em seguir as diretrizes de segurança ao misturar",

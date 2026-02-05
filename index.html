@@ -2473,6 +2473,18 @@
                             </select>
                         </div>
                         
+                        <!-- Obtížnost -->
+                        <div class="filter-group">
+                            <label data-i18n="recipe_database.filter_difficulty">Obtížnost:</label>
+                            <select id="dbFilterDifficulty" class="neon-select" onchange="loadPublicRecipes()">
+                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="beginner" data-i18n="difficulty.beginner">Začátečník</option>
+                                <option value="intermediate" data-i18n="difficulty.intermediate">Pokročilý</option>
+                                <option value="expert" data-i18n="difficulty.expert">Expert</option>
+                                <option value="virtuoso" data-i18n="difficulty.virtuoso">Virtuos</option>
+                            </select>
+                        </div>
+                        
                         <!-- Obsahuje aditiva - toggle switch -->
                         <div class="filter-group filter-toggle">
                             <div class="filter-toggle-row">

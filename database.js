@@ -400,7 +400,8 @@ async function saveUserRecipe(clerkId, recipe) {
         share_url: shareUrl, // Kompletní URL pro sdílení
         recipe_data: recipe.data, // JSONB - supabaseClient escapuje automaticky
         is_public: !!recipe.is_public, // Veřejná databáze receptů
-        form_type: recipe.form_type || 'liquid', // Typ formuláře (liquid, shakevape, shortfill, liquidpro)
+        form_type: recipe.form_type || 'liquid', // Typ formuláře (liquid, shakevape, shortfill, liquidpro, shisha)
+        difficulty_level: recipe.difficulty_level || 'beginner', // Automaticky vypočítaná obtížnost
         created_at: new Date().toISOString()
     };
     
@@ -451,6 +452,9 @@ async function updateUserRecipe(clerkId, recipeId, updates) {
     }
     if (updates.form_type !== undefined) {
         updateData.form_type = updates.form_type;
+    }
+    if (updates.difficulty_level !== undefined) {
+        updateData.difficulty_level = updates.difficulty_level;
     }
     
     try {
@@ -1604,7 +1608,7 @@ async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
     try {
         let query = supabaseClient
             .from('recipes')
-            .select('id, name, description, is_public, public_rating_avg, public_rating_count, form_type, recipe_data, created_at', { count: 'exact' })
+            .select('id, name, description, is_public, public_rating_avg, public_rating_count, form_type, difficulty_level, recipe_data, created_at', { count: 'exact' })
             .eq('is_public', true);
         
         // Filtr: Metoda přípravy
@@ -1645,6 +1649,11 @@ async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
         // Filtr: Obsahuje aditiva
         if (filters.hasAdditive) {
             query = query.not('recipe_data->additive', 'is', null);
+        }
+        
+        // Filtr: Obtížnost
+        if (filters.difficulty) {
+            query = query.eq('difficulty_level', filters.difficulty);
         }
         
         // Řazení

@@ -104,6 +104,12 @@
     "loading": "Kraunami receptai...",
     "results_count": "Rasta {count} receptų"
   },
+  "difficulty": {
+    "beginner": "Pradedantysis",
+    "intermediate": "Pažengęs",
+    "expert": "Ekspertas",
+    "virtuoso": "Virtuozas"
+  },
   "rating": {
     "title": "Įvertinimas",
     "votes": "balsų",

@@ -104,6 +104,12 @@
     "loading": "Завантаження рецептів...",
     "results_count": "Знайдено {count} рецептів"
   },
+  "difficulty": {
+    "beginner": "Початківець",
+    "intermediate": "Середній",
+    "expert": "Експерт",
+    "virtuoso": "Віртуоз"
+  },
   "rating": {
     "title": "Рейтинг",
     "votes": "голосів",

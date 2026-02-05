@@ -104,6 +104,12 @@
     "loading": "Recepten laden...",
     "results_count": "{count} recepten gevonden"
   },
+  "difficulty": {
+    "beginner": "Beginner",
+    "intermediate": "Gevorderd",
+    "expert": "Expert",
+    "virtuoso": "Virtuoos"
+  },
   "rating": {
     "title": "Beoordeling",
     "votes": "stemmen",

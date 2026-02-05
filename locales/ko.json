@@ -104,6 +104,12 @@
     "loading": "레시피 로딩 중...",
     "results_count": "{count}개의 레시피를 찾았습니다"
   },
+  "difficulty": {
+    "beginner": "초보자",
+    "intermediate": "중급자",
+    "expert": "전문가",
+    "virtuoso": "달인"
+  },
   "rating": {
     "title": "평점",
     "votes": "표",

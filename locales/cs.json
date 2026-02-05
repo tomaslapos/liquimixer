@@ -84,6 +84,7 @@
     "filter_vg_pg": "VG/PG poměr",
     "filter_nicotine": "Síla nikotinu",
     "filter_has_additive": "Pouze s aditivy",
+    "filter_difficulty": "Obtížnost",
     "filter_rating": "Minimální hodnocení",
     "reset_filters": "Resetovat filtry",
     "all": "Všechny",
@@ -102,6 +103,12 @@
     "loading": "Načítání receptů...",
     "results_count": "Nalezeno {count} receptů",
     "back_to_database": "◀ ZPĚT DO DATABÁZE"
+  },
+  "difficulty": {
+    "beginner": "Začátečník",
+    "intermediate": "Pokročilý",
+    "expert": "Expert",
+    "virtuoso": "Virtuos"
   },
   "rating": {
     "title": "Hodnocení",

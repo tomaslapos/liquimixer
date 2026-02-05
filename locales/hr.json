@@ -104,6 +104,12 @@
     "loading": "Učitavanje recepata...",
     "results_count": "Pronađeno {count} recepata"
   },
+  "difficulty": {
+    "beginner": "Početnik",
+    "intermediate": "Napredni",
+    "expert": "Stručnjak",
+    "virtuoso": "Virtuoz"
+  },
   "rating": {
     "title": "Ocjena",
     "votes": "glasova",

@@ -87,6 +87,8 @@
     "filter_vg_pg": "Ratio VG/PG",
     "filter_nicotine": "Force nicotine",
     "filter_has_additive": "Avec additifs uniquement",
+    "filter_difficulty": "Difficulté",
+    "filter_rating": "Note minimale",
     "reset_filters": "Réinitialiser",
     "all": "Tous",
     "min": "Min",
@@ -103,6 +105,12 @@
     "login_required": "Connectez-vous pour accéder",
     "loading": "Chargement...",
     "results_count": "{count} recettes trouvées"
+  },
+  "difficulty": {
+    "beginner": "Débutant",
+    "intermediate": "Intermédiaire",
+    "expert": "Expert",
+    "virtuoso": "Virtuose"
   },
   "rating": {
     "title": "Évaluation",

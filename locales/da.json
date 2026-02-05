@@ -104,6 +104,12 @@
     "loading": "Indlæser opskrifter...",
     "results_count": "Fundet {count} opskrifter"
   },
+  "difficulty": {
+    "beginner": "Begynder",
+    "intermediate": "Øvet",
+    "expert": "Ekspert",
+    "virtuoso": "Virtuos"
+  },
   "rating": {
     "title": "Vurdering",
     "votes": "stemmer",

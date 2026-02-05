@@ -104,6 +104,12 @@
     "loading": "Laddar recept...",
     "results_count": "Hittade {count} recept"
   },
+  "difficulty": {
+    "beginner": "Nybörjare",
+    "intermediate": "Medel",
+    "expert": "Expert",
+    "virtuoso": "Virtuos"
+  },
   "rating": {
     "title": "Betyg",
     "votes": "röster",

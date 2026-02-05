@@ -104,6 +104,12 @@
     "loading": "レシピを読み込み中...",
     "results_count": "{count}件のレシピが見つかりました"
   },
+  "difficulty": {
+    "beginner": "初心者",
+    "intermediate": "中級者",
+    "expert": "上級者",
+    "virtuoso": "達人"
+  },
   "rating": {
     "title": "評価",
     "votes": "票",

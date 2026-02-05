@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG Verhältnis",
     "filter_nicotine": "Nikotinstärke",
     "filter_has_additive": "Nur mit Zusätzen",
+    "filter_difficulty": "Schwierigkeit",
+    "filter_rating": "Mindestbewertung",
     "reset_filters": "Filter zurücksetzen",
     "all": "Alle",
     "min": "Min",
@@ -102,7 +104,14 @@
     "no_recipes": "Keine Rezepte gefunden",
     "login_required": "Bitte anmelden für Datenbankzugang",
     "loading": "Rezepte werden geladen...",
-    "results_count": "{count} Rezepte gefunden"
+    "results_count": "{count} Rezepte gefunden",
+    "back_to_database": "◀ ZURÜCK ZUR DATENBANK"
+  },
+  "difficulty": {
+    "beginner": "Anfänger",
+    "intermediate": "Fortgeschritten",
+    "expert": "Experte",
+    "virtuoso": "Virtuose"
   },
   "rating": {
     "title": "Bewertung",
