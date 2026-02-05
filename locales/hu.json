@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG arány",
     "filter_nicotine": "Nikotin erősség",
     "filter_has_additive": "Csak adalékanyaggal",
+    "filter_difficulty": "Nehézség",
+    "filter_rating": "Minimum értékelés",
     "reset_filters": "Szűrők törlése",
     "all": "Összes",
     "min": "Min",

@@ -87,6 +87,8 @@
     "filter_vg_pg": "Proporción VG/PG",
     "filter_nicotine": "Fuerza de nicotina",
     "filter_has_additive": "Solo con aditivos",
+    "filter_difficulty": "Dificultad",
+    "filter_rating": "Puntuación mínima",
     "reset_filters": "Restablecer filtros",
     "all": "Todos",
     "min": "Mín",

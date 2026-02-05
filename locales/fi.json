@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG-suhde",
     "filter_nicotine": "Nikotiinivahvuus",
     "filter_has_additive": "Vain lisäaineilla",
+    "filter_difficulty": "Vaikeustaso",
+    "filter_rating": "Vähimmäisarvio",
     "reset_filters": "Nollaa suodattimet",
     "all": "Kaikki",
     "min": "Min",

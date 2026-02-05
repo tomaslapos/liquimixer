@@ -87,6 +87,8 @@
     "filter_vg_pg": "Соотношение VG/PG",
     "filter_nicotine": "Крепость никотина",
     "filter_has_additive": "Только с добавками",
+    "filter_difficulty": "Сложность",
+    "filter_rating": "Минимальный рейтинг",
     "reset_filters": "Сбросить фильтры",
     "all": "Все",
     "min": "Мин",

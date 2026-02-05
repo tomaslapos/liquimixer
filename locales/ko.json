@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG 비율",
     "filter_nicotine": "니코틴 강도",
     "filter_has_additive": "첨가물 포함만",
+    "filter_difficulty": "난이도",
+    "filter_rating": "최소 평점",
     "reset_filters": "필터 재설정",
     "all": "전체",
     "min": "최소",

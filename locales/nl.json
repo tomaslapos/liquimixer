@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG-verhouding",
     "filter_nicotine": "Nicotinesterkte",
     "filter_has_additive": "Alleen met additieven",
+    "filter_difficulty": "Moeilijkheid",
+    "filter_rating": "Minimale beoordeling",
     "reset_filters": "Filters resetten",
     "all": "Alles",
     "min": "Min",

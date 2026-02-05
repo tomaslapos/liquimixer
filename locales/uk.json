@@ -87,6 +87,8 @@
     "filter_vg_pg": "Співвідношення VG/PG",
     "filter_nicotine": "Міцність нікотину",
     "filter_has_additive": "Тільки з добавками",
+    "filter_difficulty": "Складність",
+    "filter_rating": "Мінімальний рейтинг",
     "reset_filters": "Скинути фільтри",
     "all": "Всі",
     "min": "Мін",

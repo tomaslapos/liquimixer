@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG-förhållande",
     "filter_nicotine": "Nikotinstyrka",
     "filter_has_additive": "Endast med tillsatser",
+    "filter_difficulty": "Svårighetsgrad",
+    "filter_rating": "Lägsta betyg",
     "reset_filters": "Återställ filter",
     "all": "Alla",
     "min": "Min",
