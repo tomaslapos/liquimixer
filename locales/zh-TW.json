@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG 比例",
     "filter_nicotine": "尼古丁濃度",
     "filter_has_additive": "僅含添加劑",
+    "filter_difficulty": "難度",
+    "filter_rating": "最低評分",
     "reset_filters": "重置篩選",
     "all": "全部",
     "min": "最小",

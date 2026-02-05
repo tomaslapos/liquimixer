@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG比率",
     "filter_nicotine": "ニコチン濃度",
     "filter_has_additive": "添加物を含むもののみ",
+    "filter_difficulty": "難易度",
+    "filter_rating": "最低評価",
     "reset_filters": "フィルターをリセット",
     "all": "すべて",
     "min": "最小",

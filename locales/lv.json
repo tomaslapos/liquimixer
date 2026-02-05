@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG attiecība",
     "filter_nicotine": "Nikotīna stiprums",
     "filter_has_additive": "Tikai ar piedevām",
+    "filter_difficulty": "Grūtības pakāpe",
+    "filter_rating": "Minimālais vērtējums",
     "reset_filters": "Notīrīt filtrus",
     "all": "Visi",
     "min": "Min",

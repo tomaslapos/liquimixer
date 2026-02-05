@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG santykis",
     "filter_nicotine": "Nikotino stiprumas",
     "filter_has_additive": "Tik su priedais",
+    "filter_difficulty": "Sudėtingumas",
+    "filter_rating": "Mažiausias įvertinimas",
     "reset_filters": "Išvalyti filtrus",
     "all": "Visi",
     "min": "Min",

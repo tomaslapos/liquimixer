@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG oranı",
     "filter_nicotine": "Nikotin gücü",
     "filter_has_additive": "Sadece katkı maddeli",
+    "filter_difficulty": "Zorluk",
+    "filter_rating": "Minimum puan",
     "reset_filters": "Filtreleri sıfırla",
     "all": "Tümü",
     "min": "Min",

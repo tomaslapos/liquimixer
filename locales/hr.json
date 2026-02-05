@@ -87,6 +87,8 @@
     "filter_vg_pg": "Omjer VG/PG",
     "filter_nicotine": "Jačina nikotina",
     "filter_has_additive": "Samo s aditivima",
+    "filter_difficulty": "Težina",
+    "filter_rating": "Minimalna ocjena",
     "reset_filters": "Resetiraj filtere",
     "all": "Sve",
     "min": "Min",

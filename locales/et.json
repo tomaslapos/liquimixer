@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG suhe",
     "filter_nicotine": "Nikotiini tugevus",
     "filter_has_additive": "Ainult lisanditega",
+    "filter_difficulty": "Raskusaste",
+    "filter_rating": "Minimaalne hinnang",
     "reset_filters": "Tühjenda filtrid",
     "all": "Kõik",
     "min": "Min",
