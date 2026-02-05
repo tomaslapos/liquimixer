@@ -4401,15 +4401,23 @@ function renderProductsList(products) {
 async function updateProductStockUI(productId, change) {
     if (!window.Clerk?.user || !window.LiquiMixerDB) return;
     
-    // Získat aktuální hodnotu z DOM
-    const stockEl = document.getElementById(`product-stock-${productId}`);
-    if (!stockEl) return;
+    // Získat aktuální hodnotu z DOM - hledat všechny elementy s tímto ID (v seznamu i v detailu)
+    const stockElements = document.querySelectorAll(`#product-stock-${productId}, [id="product-stock-${productId}"]`);
     
-    let currentStock = parseFloat(stockEl.textContent) || 0;
+    if (stockElements.length === 0) {
+        console.warn('updateProductStockUI: No stock element found for product', productId);
+        return;
+    }
+    
+    // Použít první nalezený element pro získání aktuální hodnoty
+    let currentStock = parseFloat(stockElements[0].textContent) || 0;
     let newStock = Math.max(0, Math.round((currentStock + change) * 2) / 2); // Zaokrouhlit na 0.5
+    const displayValue = newStock % 1 === 0 ? String(newStock) : newStock.toFixed(1);
     
-    // Okamžitá aktualizace UI (zobrazit celé číslo nebo jedno desetinné místo)
-    stockEl.textContent = newStock % 1 === 0 ? newStock : newStock.toFixed(1);
+    // Okamžitá aktualizace UI pro VŠECHNY nalezené elementy (seznam i detail)
+    stockElements.forEach(el => {
+        el.textContent = displayValue;
+    });
     
     // Aktualizace v DB (non-blocking)
     try {
@@ -4417,7 +4425,10 @@ async function updateProductStockUI(productId, change) {
     } catch (err) {
         console.error('Error updating product stock:', err);
         // Vrátit původní hodnotu při chybě
-        stockEl.textContent = currentStock % 1 === 0 ? currentStock : currentStock.toFixed(1);
+        const revertValue = currentStock % 1 === 0 ? String(currentStock) : currentStock.toFixed(1);
+        stockElements.forEach(el => {
+            el.textContent = revertValue;
+        });
     }
 }
 
@@ -10941,13 +10952,14 @@ async function submitRating(recipeId, rating) {
                     }
                     
                     // Aktualizovat průměr v sekci hodnocení v detailu
-                    const avgRatingEl = document.querySelector('.average-rating-value');
-                    const countEl = document.querySelector('.rating-count-value');
-                    if (avgRatingEl) {
-                        avgRatingEl.textContent = `${(updatedRecipe.public_rating_avg || 0).toFixed(1)} ★`;
-                    }
-                    if (countEl) {
-                        countEl.textContent = `(${updatedRecipe.public_rating_count || 0} ${t('rating.votes', 'hlasů')})`;
+                    const ratingSummary = document.querySelector('.rating-summary');
+                    if (ratingSummary) {
+                        const avgEl = ratingSummary.querySelector('.rating-avg');
+                        const starsEl = ratingSummary.querySelector('.rating-stars');
+                        const countEl = ratingSummary.querySelector('.rating-count');
+                        if (avgEl) avgEl.textContent = (updatedRecipe.public_rating_avg || 0).toFixed(1);
+                        if (starsEl) starsEl.innerHTML = renderStars(updatedRecipe.public_rating_avg || 0);
+                        if (countEl) countEl.textContent = `(${updatedRecipe.public_rating_count || 0} ${t('rating.votes', 'hlasů')})`;
                     }
                 }
             } catch (err) {
@@ -12201,7 +12213,10 @@ function calculateShishaMix() {
     const vgPercent = parseInt(document.getElementById('shVgPgRatio')?.value) || 80;
     const pgPercent = 100 - vgPercent;
     
-    // Premixed base ratio
+    // Base type (separate or premixed)
+    const baseType = document.getElementById('shBaseType')?.value || 'premixed';
+    
+    // Premixed base ratio (only used when baseType is 'premixed')
     const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
     let premixedVg, premixedPg;
     if (premixedRatio === 'custom') {
@@ -12299,19 +12314,45 @@ function calculateShishaMix() {
     
     // If using premixed base, calculate how much base is needed
     let premixedBaseVolume = 0;
-    if (baseVolume > 0) {
-        // The base fills the remaining volume
-        premixedBaseVolume = baseVolume;
-        // Adjust pure VG/PG based on premixed base composition
-        pureVgVolume = Math.max(0, pureVgVolume - (premixedBaseVolume * premixedVg / 100));
-        purePgVolume = Math.max(0, purePgVolume - (premixedBaseVolume * premixedPg / 100));
+    
+    if (baseType === 'premixed') {
+        // PREMIXED BASE MODE
+        if (baseVolume > 0) {
+            // The base fills the remaining volume
+            premixedBaseVolume = baseVolume;
+            // Adjust pure VG/PG based on premixed base composition
+            pureVgVolume = Math.max(0, pureVgVolume - (premixedBaseVolume * premixedVg / 100));
+            purePgVolume = Math.max(0, purePgVolume - (premixedBaseVolume * premixedPg / 100));
+        }
+    } else {
+        // SEPARATE PG/VG MODE
+        // Normalize negative values
+        if (pureVgVolume < 0) pureVgVolume = 0;
+        if (purePgVolume < 0) purePgVolume = 0;
+        
+        // Adjust if total needed exceeds available base volume
+        const totalPureNeeded = pureVgVolume + purePgVolume;
+        if (totalPureNeeded > baseVolume && totalPureNeeded > 0) {
+            const ratio = baseVolume / totalPureNeeded;
+            pureVgVolume *= ratio;
+            purePgVolume *= ratio;
+        } else if (totalPureNeeded < baseVolume && totalPureNeeded > 0) {
+            // Distribute extra volume according to VG/PG ratio
+            const extra = baseVolume - totalPureNeeded;
+            pureVgVolume += extra * (vgPercent / 100);
+            purePgVolume += extra * (pgPercent / 100);
+        } else if (totalPureNeeded === 0 && baseVolume > 0) {
+            // All VG/PG comes from nicotine/flavors, distribute base volume
+            pureVgVolume = baseVolume * (vgPercent / 100);
+            purePgVolume = baseVolume * (pgPercent / 100);
+        }
     }
     
     // Build results
     const results = [];
     
-    // Add premixed base or separate VG/PG
-    if (premixedBaseVolume > 0) {
+    // Add premixed base or separate VG/PG based on baseType
+    if (baseType === 'premixed' && premixedBaseVolume > 0) {
         const baseDensity = calculatePremixedBaseDensity(premixedVg);
         results.push({
             name: `${t('ingredients.premixed_base', 'Předmíchaná báze')} (${premixedVg}/${premixedPg})`,
@@ -12319,6 +12360,25 @@ function calculateShishaMix() {
             grams: mlToGrams(premixedBaseVolume, baseDensity),
             type: 'base'
         });
+    } else if (baseType === 'separate') {
+        // Add pure VG
+        if (pureVgVolume > 0.01) {
+            results.push({
+                name: t('ingredients.vg', 'Rostlinný glycerin (VG)'),
+                volume: pureVgVolume.toFixed(2),
+                grams: mlToGrams(pureVgVolume, 1.261),
+                type: 'vg'
+            });
+        }
+        // Add pure PG
+        if (purePgVolume > 0.01) {
+            results.push({
+                name: t('ingredients.pg', 'Propylenglykol (PG)'),
+                volume: purePgVolume.toFixed(2),
+                grams: mlToGrams(purePgVolume, 1.036),
+                type: 'pg'
+            });
+        }
     }
     
     // Nicotine
@@ -12419,9 +12479,15 @@ function calculateShishaMix() {
     
     const notes = [
         t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'),
-        t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'),
-        t('results.notes_premixed', 'Doplňte předmíchanou bázi.')
+        t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).')
     ];
+    
+    // Add base note based on type
+    if (baseType === 'premixed') {
+        notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
+    } else {
+        notes.push(t('results.notes_vg_pg', 'Doplňte VG a PG podle receptu.'));
+    }
     
     if (sweetenerVolume > 0) {
         notes.push(t('shisha.note_add_sweetener', 'Přidejte sladidlo a promíchejte.'));
@@ -12452,8 +12518,9 @@ function calculateShishaMix() {
     // Vytvořit pole ingredients s ingredientKey pro dynamický překlad při změně jazyka
     const ingredients = [];
     
-    // Premixed base
-    if (premixedBaseVolume > 0) {
+    // Add base ingredients based on baseType
+    if (baseType === 'premixed' && premixedBaseVolume > 0) {
+        // Premixed base
         ingredients.push({
             ingredientKey: 'premixedBase',
             params: { vgpg: `${premixedVg}/${premixedPg}` },
@@ -12461,6 +12528,25 @@ function calculateShishaMix() {
             percent: ((premixedBaseVolume / totalAmount) * 100).toFixed(1),
             grams: parseFloat(results.find(r => r.type === 'base')?.grams || 0)
         });
+    } else if (baseType === 'separate') {
+        // Pure VG
+        if (pureVgVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg',
+                volume: pureVgVolume,
+                percent: ((pureVgVolume / totalAmount) * 100).toFixed(1),
+                grams: parseFloat(results.find(r => r.type === 'vg')?.grams || 0)
+            });
+        }
+        // Pure PG
+        if (purePgVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg',
+                volume: purePgVolume,
+                percent: ((purePgVolume / totalAmount) * 100).toFixed(1),
+                grams: parseFloat(results.find(r => r.type === 'pg')?.grams || 0)
+            });
+        }
     }
     
     // Nicotine
@@ -12519,6 +12605,7 @@ function calculateShishaMix() {
         vgPercent: vgPercent,
         pgPercent: pgPercent,
         nicotineStrength: targetNicotine,
+        baseType: baseType,
         premixedRatio: premixedRatio,
         flavors: flavorsData,
         sweetener: hasSweetener ? {
