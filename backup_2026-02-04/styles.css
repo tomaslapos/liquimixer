@@ -7588,14 +7588,10 @@ body.subscription-required #subscriptionModal {
 }
 
 .star-input {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: rgba(255, 215, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 8px 4px;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    user-select: none;
 }
 
 .star-input:hover,
@@ -7606,18 +7602,6 @@ body.subscription-required #subscriptionModal {
 
 .star-input:hover ~ .star-input {
     color: rgba(255, 215, 0, 0.3);
-}
-
-/* Mobile touch improvements */
-@media (max-width: 768px) {
-    .star-input {
-        font-size: 2.5rem;
-        padding: 12px 6px;
-    }
-    
-    .star-rating-input {
-        gap: 2px;
-    }
 }
 
 /* Public recipe checkbox */
