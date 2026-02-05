@@ -104,6 +104,12 @@
     "loading": "Φόρτωση συνταγών...",
     "results_count": "Βρέθηκαν {count} συνταγές"
   },
+  "difficulty": {
+    "beginner": "Αρχάριος",
+    "intermediate": "Μέτριος",
+    "expert": "Ειδικός",
+    "virtuoso": "Βιρτουόζος"
+  },
   "rating": {
     "title": "Αξιολόγηση",
     "votes": "ψήφοι",

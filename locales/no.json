@@ -104,6 +104,12 @@
     "loading": "Laster oppskrifter...",
     "results_count": "Fant {count} oppskrifter"
   },
+  "difficulty": {
+    "beginner": "Nybegynner",
+    "intermediate": "Øvd",
+    "expert": "Ekspert",
+    "virtuoso": "Virtuos"
+  },
   "rating": {
     "title": "Vurdering",
     "votes": "stemmer",

@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG pomer",
     "filter_nicotine": "Sila nikotínu",
     "filter_has_additive": "Iba s aditívami",
+    "filter_difficulty": "Obtiažnosť",
+    "filter_rating": "Minimálne hodnotenie",
     "reset_filters": "Resetovať filtre",
     "all": "Všetky",
     "min": "Min",
@@ -103,6 +105,12 @@
     "login_required": "Pre prístup k databáze sa prihláste",
     "loading": "Načítavam recepty...",
     "results_count": "Nájdených {count} receptov"
+  },
+  "difficulty": {
+    "beginner": "Začiatočník",
+    "intermediate": "Pokročilý",
+    "expert": "Expert",
+    "virtuoso": "Virtuóz"
   },
   "rating": {
     "title": "Hodnotenie",

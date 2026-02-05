@@ -464,6 +464,12 @@
     "loading": "جاري تحميل الوصفات...",
     "results_count": "تم العثور على {count} وصفة"
   },
+  "difficulty": {
+    "beginner": "مبتدئ",
+    "intermediate": "متوسط",
+    "expert": "خبير",
+    "virtuoso": "محترف"
+  },
   "rating": {
     "title": "التقييم",
     "votes": "أصوات",

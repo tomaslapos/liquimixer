@@ -104,6 +104,12 @@
     "loading": "Retseptide laadimine...",
     "results_count": "Leitud {count} retsepti"
   },
+  "difficulty": {
+    "beginner": "Algaja",
+    "intermediate": "Keskmine",
+    "expert": "Ekspert",
+    "virtuoso": "Virtuoos"
+  },
   "rating": {
     "title": "Hinnang",
     "votes": "häält",

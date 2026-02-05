@@ -104,6 +104,12 @@
     "loading": "Caricamento ricette...",
     "results_count": "Trovate {count} ricette"
   },
+  "difficulty": {
+    "beginner": "Principiante",
+    "intermediate": "Intermedio",
+    "expert": "Esperto",
+    "virtuoso": "Virtuoso"
+  },
   "rating": {
     "title": "Valutazione",
     "votes": "voti",

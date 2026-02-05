@@ -104,6 +104,12 @@
     "loading": "Ladataan reseptejä...",
     "results_count": "Löytyi {count} reseptiä"
   },
+  "difficulty": {
+    "beginner": "Aloittelija",
+    "intermediate": "Keskitaso",
+    "expert": "Asiantuntija",
+    "virtuoso": "Virtuoosi"
+  },
   "rating": {
     "title": "Arvio",
     "votes": "ääntä",

@@ -104,6 +104,12 @@
     "loading": "Загрузка рецептов...",
     "results_count": "Найдено {count} рецептов"
   },
+  "difficulty": {
+    "beginner": "Новичок",
+    "intermediate": "Средний",
+    "expert": "Эксперт",
+    "virtuoso": "Виртуоз"
+  },
   "rating": {
     "title": "Оценка",
     "votes": "голосов",

@@ -104,6 +104,12 @@
     "loading": "Recepšu ielāde...",
     "results_count": "Atrastas {count} receptes"
   },
+  "difficulty": {
+    "beginner": "Iesācējs",
+    "intermediate": "Vidējs",
+    "expert": "Eksperts",
+    "virtuoso": "Virtuozs"
+  },
   "rating": {
     "title": "Vērtējums",
     "votes": "balsu",

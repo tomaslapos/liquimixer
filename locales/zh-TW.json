@@ -104,6 +104,12 @@
     "loading": "正在載入配方...",
     "results_count": "找到 {count} 個配方"
   },
+  "difficulty": {
+    "beginner": "初學者",
+    "intermediate": "中級",
+    "expert": "專家",
+    "virtuoso": "大師"
+  },
   "rating": {
     "title": "評分",
     "votes": "票",

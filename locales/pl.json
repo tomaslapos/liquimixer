@@ -87,6 +87,8 @@
     "filter_vg_pg": "Stosunek VG/PG",
     "filter_nicotine": "Moc nikotyny",
     "filter_has_additive": "Tylko z dodatkami",
+    "filter_difficulty": "Trudność",
+    "filter_rating": "Minimalna ocena",
     "reset_filters": "Resetuj filtry",
     "all": "Wszystkie",
     "min": "Min",
@@ -103,6 +105,12 @@
     "login_required": "Zaloguj się, aby uzyskać dostęp do bazy",
     "loading": "Ładowanie przepisów...",
     "results_count": "Znaleziono {count} przepisów"
+  },
+  "difficulty": {
+    "beginner": "Początkujący",
+    "intermediate": "Średniozaawansowany",
+    "expert": "Ekspert",
+    "virtuoso": "Wirtuoz"
   },
   "rating": {
     "title": "Ocena",

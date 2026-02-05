@@ -104,6 +104,12 @@
     "loading": "Tarifler yükleniyor...",
     "results_count": "{count} tarif bulundu"
   },
+  "difficulty": {
+    "beginner": "Başlangıç",
+    "intermediate": "Orta",
+    "expert": "Uzman",
+    "virtuoso": "Virtüöz"
+  },
   "rating": {
     "title": "Puanlama",
     "votes": "oy",

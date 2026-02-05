@@ -104,6 +104,12 @@
     "loading": "Учитавање рецепата...",
     "results_count": "Пронађено {count} рецепата"
   },
+  "difficulty": {
+    "beginner": "Почетник",
+    "intermediate": "Напредни",
+    "expert": "Стручњак",
+    "virtuoso": "Виртуоз"
+  },
   "rating": {
     "title": "Оцена",
     "votes": "гласова",

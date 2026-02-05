@@ -104,6 +104,12 @@
     "loading": "Receptek betöltése...",
     "results_count": "{count} recept található"
   },
+  "difficulty": {
+    "beginner": "Kezdő",
+    "intermediate": "Haladó",
+    "expert": "Szakértő",
+    "virtuoso": "Virtuóz"
+  },
   "rating": {
     "title": "Értékelés",
     "votes": "szavazat",

@@ -1,0 +1,21 @@
+# Supabase Edge Functions Configuration
+
+[functions.gpwebpay]
+# Disable JWT verification for GP WebPay callback
+# GP WebPay sends callbacks without Authorization header
+verify_jwt = false
+
+[functions.idoklad]
+# Disable JWT verification for internal calls from gpwebpay
+# gpwebpay calls idoklad using service_role_key
+verify_jwt = false
+
+[functions.invoice]
+# Disable JWT verification for internal calls from gpwebpay
+# gpwebpay calls invoice using service_role_key for sending emails
+verify_jwt = false
+
+[functions.geolocation]
+# Disable JWT verification for geolocation detection
+# Called from frontend for pricing display
+verify_jwt = false

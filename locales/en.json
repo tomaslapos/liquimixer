@@ -87,6 +87,8 @@
     "filter_vg_pg": "VG/PG ratio",
     "filter_nicotine": "Nicotine strength",
     "filter_has_additive": "With additives only",
+    "filter_difficulty": "Difficulty",
+    "filter_rating": "Minimum rating",
     "reset_filters": "Reset filters",
     "all": "All",
     "min": "Min",
@@ -104,6 +106,12 @@
     "loading": "Loading recipes...",
     "results_count": "Found {count} recipes",
     "back_to_database": "◀ BACK TO DATABASE"
+  },
+  "difficulty": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "expert": "Expert",
+    "virtuoso": "Virtuoso"
   },
   "rating": {
     "title": "Rating",

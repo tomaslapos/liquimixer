@@ -2261,6 +2261,67 @@ function storeCurrentRecipe(data) {
     currentRecipeData = data;
 }
 
+// ============================================
+// AUTOMATIC DIFFICULTY LEVEL CALCULATION
+// ============================================
+// Pravidla:
+// - beginner: 1 příchuť, bez aditiv
+// - intermediate: 2 příchutě NEBO sladidlo (shisha)
+// - expert: 3 příchutě NEBO aditivum
+// - virtuoso: 4 příchutě
+// ============================================
+function calculateDifficultyLevel(recipeData) {
+    if (!recipeData) return 'beginner';
+    
+    let flavorCount = 0;
+    let hasAdditive = false;
+    let hasSweetener = false;
+    
+    const formType = recipeData.formType || 'liquid';
+    
+    // Počet příchutí podle typu formuláře
+    if (formType === 'liquidpro' || formType === 'shisha') {
+        // Multi-flavor formuláře
+        if (recipeData.flavors && Array.isArray(recipeData.flavors)) {
+            flavorCount = recipeData.flavors.filter(f => f && f.type && f.type !== 'none' && f.percent > 0).length;
+        }
+    } else {
+        // Jednoduchý formulář (liquid, shakevape, shortfill)
+        if (recipeData.flavorType && recipeData.flavorType !== 'none') {
+            flavorCount = 1;
+        }
+    }
+    
+    // Kontrola aditiv (pouze liquidpro)
+    if (formType === 'liquidpro' && recipeData.additives && Array.isArray(recipeData.additives)) {
+        hasAdditive = recipeData.additives.some(a => a && a.type && a.type !== 'none' && a.percent > 0);
+    }
+    
+    // Kontrola sladidla (pouze shisha)
+    if (formType === 'shisha' && recipeData.sweetener) {
+        hasSweetener = recipeData.sweetener.type && recipeData.sweetener.percent > 0;
+    }
+    
+    // Určení obtížnosti
+    // Virtuoso: 4 příchutě
+    if (flavorCount >= 4) {
+        return 'virtuoso';
+    }
+    
+    // Expert: 3 příchutě NEBO aditivum
+    if (flavorCount >= 3 || hasAdditive) {
+        return 'expert';
+    }
+    
+    // Intermediate: 2 příchutě NEBO sladidlo (shisha)
+    if (flavorCount >= 2 || hasSweetener) {
+        return 'intermediate';
+    }
+    
+    // Beginner: 1 příchuť nebo méně
+    return 'beginner';
+}
+
 // Zobrazit modal pro uložení receptu
 async function showSaveRecipeModal() {
     // PRO funkce - vyžaduje přihlášení A předplatné
@@ -2729,12 +2790,16 @@ async function saveRecipe(event) {
         formType = currentRecipeData.formType || currentRecipeData.form_type || 'liquid';
     }
     
+    // Automaticky vypočítat difficulty_level pro veřejné recepty
+    const difficultyLevel = calculateDifficultyLevel(currentRecipeData);
+    
     const recipeData = {
         name: name,
         description: description,
         rating: rating,
         is_public: isPublic,
-        form_type: formType
+        form_type: formType,
+        difficulty_level: difficultyLevel
     };
     
     // Přidat data receptu pouze při vytváření nového
@@ -10688,6 +10753,7 @@ function resetDatabaseFilters() {
     document.getElementById('dbFilterNicMax').value = '';
     document.getElementById('dbFilterMinRating').value = '';
     document.getElementById('dbFilterHasAdditive').checked = false;
+    document.getElementById('dbFilterDifficulty').value = '';
     document.getElementById('dbSearchInput').value = '';
     currentDbPage = 1;
     loadPublicRecipes();
@@ -10722,6 +10788,7 @@ async function loadPublicRecipes() {
         nicMax: document.getElementById('dbFilterNicMax')?.value || '',
         minRating: document.getElementById('dbFilterMinRating')?.value || '',
         hasAdditive: document.getElementById('dbFilterHasAdditive')?.checked || false,
+        difficulty: document.getElementById('dbFilterDifficulty')?.value || '',
         sortBy: document.getElementById('dbSortBy')?.value || 'rating_desc'
     };
     

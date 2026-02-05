@@ -79,6 +79,12 @@
     "contact_cat_other": "Altele",
     "recipe_database": "Baza de rețete"
   },
+  "difficulty": {
+    "beginner": "Începător",
+    "intermediate": "Intermediar",
+    "expert": "Expert",
+    "virtuoso": "Virtuoz"
+  },
   "intro": {
     "subtitle": "CALCULATOR E-LICHID",
     "warning_title": "Concentrați-vă pe respectarea regulilor de siguranță la amestecare",

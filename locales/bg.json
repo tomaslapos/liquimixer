@@ -104,6 +104,12 @@
     "loading": "Зареждане на рецепти...",
     "results_count": "Намерени {count} рецепти"
   },
+  "difficulty": {
+    "beginner": "Начинаещ",
+    "intermediate": "Напреднал",
+    "expert": "Експерт",
+    "virtuoso": "Виртуоз"
+  },
   "rating": {
     "title": "Оценка",
     "votes": "гласа",
