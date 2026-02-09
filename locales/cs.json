@@ -993,7 +993,8 @@
     "category_label": "Kategorie příchutě *",
     "category_placeholder": "-- Vyberte kategorii --",
     "type_conflict_warning": "Tato příchuť je určena pro {type}. Opravdu ji chcete použít v tomto receptu?",
-    "ratio_locked": "Poměr je nastaven dle výrobce"
+    "ratio_locked": "Poměr VG/PG je nastaven dle výrobce",
+    "percent_from_category": "Doporučené % nastaveno dle kategorie - výrobce neuvedl přesné hodnoty"
   },
   "flavor_autocomplete": {
     "from_favorites": "Z mých příchutí",
