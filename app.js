@@ -4054,7 +4054,8 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     const safeDescription = escapeHtml(recipe.description);
     
     let ingredientsHtml = '';
-    if (data.ingredients && Array.isArray(data.ingredients)) {
+    const ingredients = data.ingredients || [];
+    if (ingredients && Array.isArray(ingredients) && ingredients.length > 0) {
         ingredientsHtml = `
             <h4 class="recipe-ingredients-title">${t('recipe_detail.ingredients_title', 'Složky')}</h4>
             <div class="results-table-container">
@@ -6753,7 +6754,10 @@ function calculateMix() {
             if (flavorData && flavorData.name) {
                 specificFlavorName = flavorData.name;
                 specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                specificFlavorId = flavorData.id || flavorAutocomplete.dataset.flavorId || null;
+                // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), jinak id
+                const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
+                specificFlavorId = isFavorite ? (flavorData.flavor_id || flavorData.id) : flavorData.id;
+                specificFlavorId = specificFlavorId || flavorAutocomplete.dataset.flavorId || null;
                 specificFlavorSource = flavorAutocomplete.dataset.flavorSource || 'database';
             }
         } catch (e) {
@@ -9541,7 +9545,10 @@ function getProFlavorsData() {
                 if (flavorData && flavorData.name) {
                     specificFlavorName = flavorData.name;
                     specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                    specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
+                    // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), jinak id
+                    const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
+                    specificFlavorId = isFavorite ? (flavorData.flavor_id || flavorData.id) : flavorData.id;
+                    specificFlavorId = specificFlavorId || autocomplete.dataset.flavorId || null;
                     specificFlavorSource = autocomplete.dataset.flavorSource || 'database';
                 }
             } catch (e) {
@@ -12840,9 +12847,14 @@ function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
     
     // Nastavit hodnotu do inputu
     input.value = flavorData.name;
-    input.dataset.flavorId = flavorData.id || '';
+    // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), pro databázové použít id
+    const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
+    // flavorId = ID příchutě v tabulce flavors (pro ukládání do oblíbených)
+    input.dataset.flavorId = isFavorite ? (flavorData.flavor_id || flavorData.id || '') : (flavorData.id || '');
+    // favoriteProductId = ID v tabulce favorite_products (pouze pro oblíbené)
+    input.dataset.favoriteProductId = isFavorite ? (flavorData.id || '') : '';
     // Zdroj příchutě: 'favorite' pro oblíbené, 'database' pro veřejnou DB
-    input.dataset.flavorSource = (flavorData.source === 'favorites' || flavorData.source === 'favorite') ? 'favorite' : 'database';
+    input.dataset.flavorSource = isFavorite ? 'favorite' : 'database';
     input.dataset.flavorData = JSON.stringify(flavorData);
     
     // Skrýt dropdown
