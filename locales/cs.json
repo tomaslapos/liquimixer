@@ -607,6 +607,8 @@
     "description_label": "Popis",
     "description_placeholder": "Popis receptu, poznámky k zrání...",
     "rating_label": "Hodnocení",
+    "flavors_label": "Použité příchutě",
+    "no_flavors": "Recept neobsahuje příchutě",
     "products_label": "Použité produkty",
     "add_product": "Přidat produkt",
     "save_button": "Uložit recept",
