@@ -1120,6 +1120,19 @@
                         Příchuť
                     </label>
                     <div class="flavor-container">
+                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze - PRVNÍ -->
+                        <div class="flavor-autocomplete-wrapper" id="flavorAutocompleteWrapper">
+                            <input type="text" 
+                                   id="flavorAutocomplete" 
+                                   class="login-input flavor-search-input" 
+                                   data-i18n-placeholder="flavor_autocomplete.search_placeholder"
+                                   placeholder="Hledat konkrétní příchuť..."
+                                   autocomplete="off">
+                        </div>
+                        <!-- Kategorie příchutě - DRUHÁ (aktivní pouze bez konkrétní příchutě) -->
+                        <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label" id="flavorCategoryLabel">
+                            Nebo vyberte kategorii (bez konkrétní příchutě):
+                        </label>
                         <select id="flavorType" class="neon-select" onchange="updateFlavorType(true)">
                             <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
                             <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
@@ -1139,15 +1152,6 @@
                             <option value="cream" data-i18n="form.flavor_cream">Krémové (vanilka, smetana)</option>
                             <option value="mix" data-i18n="form.flavor_mix">Mix / Směs</option>
                         </select>
-                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze -->
-                        <div class="flavor-autocomplete-wrapper" id="flavorAutocompleteWrapper">
-                            <input type="text" 
-                                   id="flavorAutocomplete" 
-                                   class="login-input flavor-search-input" 
-                                   data-i18n-placeholder="flavor_autocomplete.search_placeholder"
-                                   placeholder="Hledat konkrétní příchuť..."
-                                   autocomplete="off">
-                        </div>
                         <div id="flavorStrengthContainer" class="hidden">
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustFlavor(-1)">◀</button>
@@ -1502,6 +1506,14 @@
                         <span class="flavor-number"> 1</span>
                     </label>
                     <div class="flavor-container">
+                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze - PRVNÍ -->
+                        <div class="flavor-autocomplete-wrapper">
+                            <input type="text" id="proFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                        </div>
+                        <!-- Kategorie příchutě - DRUHÁ (aktivní pouze bez konkrétní příchutě) -->
+                        <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
+                            Nebo vyberte kategorii (bez konkrétní příchutě):
+                        </label>
                         <select id="proFlavorType1" class="neon-select pro-flavor-select" data-flavor-index="1" onchange="updateProFlavorType(1)">
                             <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
                             <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
@@ -1521,10 +1533,6 @@
                             <option value="cream" data-i18n="form.flavor_cream">Krémové (vanilka, smetana)</option>
                             <option value="mix" data-i18n="form.flavor_mix">Mix / Směs</option>
                         </select>
-                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze -->
-                        <div class="flavor-autocomplete-wrapper">
-                            <input type="text" id="proFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
-                        </div>
                         <div id="proFlavorStrengthContainer1" class="hidden">
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustProFlavor(1, -1)">◀</button>
@@ -1895,6 +1903,14 @@
                         <span class="flavor-number"> 1</span>
                     </label>
                     <div class="flavor-container">
+                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze - PRVNÍ -->
+                        <div class="flavor-autocomplete-wrapper">
+                            <input type="text" id="shFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                        </div>
+                        <!-- Kategorie příchutě - DRUHÁ (aktivní pouze bez konkrétní příchutě) -->
+                        <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
+                            Nebo vyberte kategorii (bez konkrétní příchutě):
+                        </label>
                         <select id="shFlavorType1" class="neon-select sh-flavor-select" data-flavor-index="1" onchange="updateShishaFlavorType(1)">
                             <option value="none" data-i18n="form.flavor_none">Žádná</option>
                             <option value="double_apple" data-i18n="shisha.flavor_double_apple">Double Apple</option>
@@ -1912,10 +1928,6 @@
                             <option value="rose" data-i18n="shisha.flavor_rose">Růže</option>
                             <option value="custom" data-i18n="form.custom">Vlastní</option>
                         </select>
-                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze -->
-                        <div class="flavor-autocomplete-wrapper">
-                            <input type="text" id="shFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
-                        </div>
                         <div id="shFlavorStrengthContainer1" class="hidden">
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustShishaFlavor(1, -1)">◀</button>
