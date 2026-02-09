@@ -1904,9 +1904,32 @@ window.addEventListener('load', async function() {
     }
 });
 
-// Update UI based on auth state
+// Update UI based on auth state - with debounce to prevent multiple rapid calls
+let updateAuthUITimeout = null;
+let lastAuthState = null;
+
 function updateAuthUI() {
-    console.log('updateAuthUI called, clerkLoaded:', clerkLoaded, 'Clerk.user:', window.Clerk?.user?.id);
+    // Debounce - prevent multiple rapid calls
+    if (updateAuthUITimeout) {
+        clearTimeout(updateAuthUITimeout);
+    }
+    
+    // Check if auth state actually changed
+    const currentAuthState = window.Clerk?.user?.id || 'anonymous';
+    if (currentAuthState === lastAuthState) {
+        console.log('updateAuthUI: Auth state unchanged, skipping');
+        return;
+    }
+    
+    updateAuthUITimeout = setTimeout(() => {
+        updateAuthUIActual();
+    }, 100);
+}
+
+function updateAuthUIActual() {
+    const currentAuthState = window.Clerk?.user?.id || 'anonymous';
+    console.log('updateAuthUI called, clerkLoaded:', clerkLoaded, 'Clerk.user:', currentAuthState);
+    lastAuthState = currentAuthState;
     
     if (!clerkLoaded || !window.Clerk) {
         console.log('Clerk not ready yet');
@@ -12236,9 +12259,14 @@ function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSe
     const { favorites, database } = results;
     
     let html = '';
-    
-    // Vždy na konci: "Nezadat konkrétní příchuť"
     html += `<div class="autocomplete-section">`;
+    
+    // "Nezadat konkrétní příchuť" VŽDY JAKO PRVNÍ A PŘEDNASTAVENÁ VOLBA
+    html += `
+        <div class="autocomplete-item no-specific highlighted" onclick="selectNoSpecificFlavor('${inputId}')">
+            <span>${t('flavor_autocomplete.no_specific', 'Nezadat konkrétní příchuť')}</span>
+        </div>
+    `;
     
     // Oblíbené příchutě uživatele
     if (favorites.length > 0) {
@@ -12274,17 +12302,10 @@ function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSe
         });
     }
     
-    // Prázdný výsledek
+    // Prázdný výsledek (jen pokud žádné oblíbené ani z databáze)
     if (favorites.length === 0 && database.length === 0) {
         html += `<div class="autocomplete-empty">${t('flavor_autocomplete.no_results', 'Žádné odpovídající příchutě')}</div>`;
     }
-    
-    // "Nezadat konkrétní příchuť" vždy na konci
-    html += `
-        <div class="autocomplete-item no-specific" onclick="selectNoSpecificFlavor('${inputId}')">
-            <span>${t('flavor_autocomplete.no_specific', 'Nezadat konkrétní příchuť')}</span>
-        </div>
-    `;
     
     html += '</div>';
     
@@ -12299,7 +12320,7 @@ function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
     
     if (!input) return;
     
-    // Zkontrolovat konflikt typu
+    // Zkontrolovat konflikt typu - nyní by neměl nastat díky filtrování
     const isVapeRecipe = ['liquid', 'liquid_pro', 'shakevape', 'shortfill'].includes(recipeType);
     const isShishaRecipe = recipeType === 'shisha';
     
@@ -12317,13 +12338,16 @@ function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
     // Nastavit hodnotu do inputu
     input.value = flavorData.name;
     input.dataset.flavorId = flavorData.id || '';
-    input.dataset.flavorSource = flavorData.source || 'manual';
+    input.dataset.flavorSource = flavorData.source || 'database';
     input.dataset.flavorData = JSON.stringify(flavorData);
     
     // Skrýt dropdown
     if (dropdown) {
         dropdown.classList.add('hidden');
     }
+    
+    // Deaktivovat kategorie select - příchuť má svou kategorii
+    updateFlavorCategoryState(inputId, true);
     
     // Aktualizovat doporučené procento pokud existuje
     if (flavorData.min_percent && flavorData.max_percent) {
@@ -12342,7 +12366,7 @@ function selectNoSpecificFlavor(inputId) {
     const dropdown = document.getElementById(`${inputId}-autocomplete`);
     
     if (input) {
-        input.value = '';
+        input.value = t('flavor_autocomplete.no_specific', 'Nezadat konkrétní příchuť');
         input.dataset.flavorId = '';
         input.dataset.flavorSource = 'generic';
         input.dataset.flavorData = '';
@@ -12351,6 +12375,9 @@ function selectNoSpecificFlavor(inputId) {
     if (dropdown) {
         dropdown.classList.add('hidden');
     }
+    
+    // Aktivovat kategorie select - uživatel MUSÍ vybrat kategorii
+    updateFlavorCategoryState(inputId, false);
 }
 
 // Inicializovat flavor autocomplete pro všechny formuláře receptů
@@ -12380,6 +12407,41 @@ function initRecipeFlavorAutocomplete() {
                 console.log('Selected Shisha flavor', i, flavorData);
             });
         }
+    }
+}
+
+// Aktualizovat stav kategorie selectu při výběru příchutě
+// disabled = true: konkrétní příchuť vybrána -> kategorie zašedlá a prázdná
+// disabled = false: "nezadat" vybrána -> kategorie aktivní a povinná
+function updateFlavorCategoryState(inputId, disabled) {
+    // Mapování autocomplete inputu na kategorie select
+    const categorySelectMap = {
+        'flavorAutocomplete': 'flavorType',           // Liquid form
+        'proFlavorAutocomplete1': 'proFlavorType1',   // Liquid PRO
+        'proFlavorAutocomplete2': 'proFlavorType2',
+        'proFlavorAutocomplete3': 'proFlavorType3',
+        'proFlavorAutocomplete4': 'proFlavorType4',
+        'shFlavorAutocomplete1': 'shFlavorType1',     // Shisha
+        'shFlavorAutocomplete2': 'shFlavorType2',
+        'shFlavorAutocomplete3': 'shFlavorType3',
+        'shFlavorAutocomplete4': 'shFlavorType4'
+    };
+    
+    const categorySelectId = categorySelectMap[inputId];
+    if (!categorySelectId) return;
+    
+    const categorySelect = document.getElementById(categorySelectId);
+    if (!categorySelect) return;
+    
+    if (disabled) {
+        // Konkrétní příchuť vybrána - zašednout a vymazat kategorii
+        categorySelect.disabled = true;
+        categorySelect.value = '';
+        categorySelect.classList.add('disabled-by-flavor');
+    } else {
+        // "Nezadat" vybrána - aktivovat kategorii (je povinná)
+        categorySelect.disabled = false;
+        categorySelect.classList.remove('disabled-by-flavor');
     }
 }
 
