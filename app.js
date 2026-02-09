@@ -3099,8 +3099,12 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     if (!recipeData) return [];
     
     const flavors = [];
+    const formType = recipeData.formType || 'liquid';
     
-    // Z ingredients
+    // Pro Liquid PRO a Shisha používáme POUZE ingredients (obsahují kompletní data)
+    // Pro ostatní formuláře (liquid, shakevape) používáme ingredients nebo fallback
+    
+    // Z ingredients - primární zdroj pro všechny formuláře
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
             if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor') {
@@ -3117,9 +3121,8 @@ function extractRecipeFlavorsForDisplay(recipeData) {
         }
     }
     
-    // Z flavors array (Liquid PRO, Shisha)
-    const formType = recipeData.formType || 'liquid';
-    if ((formType === 'liquidpro' || formType === 'shisha') && recipeData.flavors && Array.isArray(recipeData.flavors)) {
+    // Pokud nebyly nalezeny příchutě v ingredients a existuje flavors array (záložní zdroj)
+    if (flavors.length === 0 && (formType === 'liquidpro' || formType === 'shisha') && recipeData.flavors && Array.isArray(recipeData.flavors)) {
         for (const flavor of recipeData.flavors) {
             if (flavor.type && flavor.type !== 'none') {
                 const flavorInfo = {
@@ -3131,16 +3134,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
                     flavorId: flavor.flavorId || null,
                     flavorSource: flavor.flavorSource || flavor.source || 'generic'
                 };
-                
-                // Zamezit duplicitám
-                const alreadyExists = flavors.some(f => 
-                    (f.name && f.name === flavorInfo.name) ||
-                    (f.category === flavorInfo.category && !f.name && !flavorInfo.name)
-                );
-                
-                if (!alreadyExists) {
-                    flavors.push(flavorInfo);
-                }
+                flavors.push(flavorInfo);
             }
         }
     }
@@ -9865,7 +9859,7 @@ function calculateProMix() {
             const flavorVgPercent = flavor.vgRatio;
             const flavorPgPercent = 100 - flavorVgPercent;
             
-            ingredients.push({
+            const flavorIngredient = {
                 ingredientKey: 'flavor',
                 flavorType: flavor.type,
                 flavorIndex: flavor.index,
@@ -9875,7 +9869,17 @@ function calculateProMix() {
                 },
                 volume: flavorVolume,
                 percent: (flavorVolume / totalAmount) * 100
-            });
+            };
+            
+            // Přidat info o konkrétní příchuti pokud existuje
+            if (flavor.flavorName) {
+                flavorIngredient.flavorName = flavor.flavorName;
+                flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
+                flavorIngredient.flavorId = flavor.flavorId;
+                flavorIngredient.flavorSource = flavor.flavorSource;
+            }
+            
+            ingredients.push(flavorIngredient);
         });
         
         // Add all additives
@@ -9956,7 +9960,7 @@ function calculateProMix() {
             const flavorVgPercent = flavor.vgRatio;
             const flavorPgPercent = 100 - flavorVgPercent;
             
-            ingredients.push({
+            const flavorIngredient = {
                 ingredientKey: 'flavor',
                 flavorType: flavor.type,
                 flavorIndex: flavor.index,
@@ -9966,7 +9970,17 @@ function calculateProMix() {
                 },
                 volume: flavorVolume,
                 percent: (flavorVolume / totalAmount) * 100
-            });
+            };
+            
+            // Přidat info o konkrétní příchuti pokud existuje
+            if (flavor.flavorName) {
+                flavorIngredient.flavorName = flavor.flavorName;
+                flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
+                flavorIngredient.flavorId = flavor.flavorId;
+                flavorIngredient.flavorSource = flavor.flavorSource;
+            }
+            
+            ingredients.push(flavorIngredient);
         });
         
         // Add all additives
