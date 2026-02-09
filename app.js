@@ -7024,7 +7024,13 @@ function calculateMix() {
     displayResults(totalAmount, vgPercent, pgPercent, targetNicotine, ingredients, actualTotal, actualVg, actualPg, {
         flavorType: flavorType,
         baseType: baseType,
-        premixedRatio: baseType === 'premixed' ? premixedRatio : null
+        premixedRatio: baseType === 'premixed' ? premixedRatio : null,
+        // Přidat info o konkrétní příchuti pro fallback v extractRecipeFlavorsForDisplay
+        specificFlavorName: specificFlavorName,
+        specificFlavorManufacturer: specificFlavorManufacturer,
+        specificFlavorId: specificFlavorId,
+        specificFlavorSource: specificFlavorSource,
+        flavorPercent: flavorPercent
     });
     showPage('results');
 }
@@ -7069,7 +7075,12 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
             vgRatio: ing.vgRatio,
             params: ing.params,
             volume: ing.volume,
-            percent: ing.percent
+            percent: ing.percent,
+            // Konkrétní příchuť - zachovat všechna data
+            flavorName: ing.flavorName,
+            flavorManufacturer: ing.flavorManufacturer,
+            flavorId: ing.flavorId,
+            flavorSource: ing.flavorSource
         })),
         actualVg: actualVg,
         actualPg: actualPg
@@ -7093,6 +7104,16 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     }
     if (extraData.premixedRatio) {
         recipeData.premixedRatio = extraData.premixedRatio;
+    }
+    // Uložit info o konkrétní příchuti pro fallback v extractRecipeFlavorsForDisplay
+    if (extraData.specificFlavorName) {
+        recipeData.specificFlavorName = extraData.specificFlavorName;
+        recipeData.specificFlavorManufacturer = extraData.specificFlavorManufacturer;
+        recipeData.specificFlavorId = extraData.specificFlavorId;
+        recipeData.specificFlavorSource = extraData.specificFlavorSource;
+    }
+    if (extraData.flavorPercent !== undefined) {
+        recipeData.flavorPercent = extraData.flavorPercent;
     }
     
     storeCurrentRecipe(recipeData);
