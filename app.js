@@ -12287,12 +12287,15 @@ function renderFlavorCard(flavor) {
     const typeClass = flavor.product_type === 'vape' ? 'type-vape' : 'type-shisha';
     
     // Procento
-    let percentRange = '-';
-    if (flavor.min_percent && flavor.max_percent) {
-        percentRange = `${flavor.min_percent}-${flavor.max_percent}%`;
-    } else if (flavor.recommended_percent) {
-        percentRange = `${flavor.recommended_percent}%`;
-    }
+    // Získat výchozí hodnoty z flavorDatabase podle kategorie
+    const category = flavor.category || 'fruit';
+    const isShisha = flavor.product_type === 'shisha';
+    const defaultFlavorData = flavorDatabase[category] || flavorDatabase.fruit;
+    
+    // Použít hodnoty z DB nebo výchozí podle kategorie
+    const minPercent = flavor.min_percent || (isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5));
+    const maxPercent = flavor.max_percent || (isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15));
+    const percentRange = `${minPercent}-${maxPercent}%`;
     
     // Hodnocení a rating class (stejná logika jako recepty)
     const rating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '-';
@@ -12426,17 +12429,21 @@ function renderFlavorDetailContent(flavor) {
     const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
     
     // Procento
-    let percentRange = '-';
-    if (flavor.min_percent && flavor.max_percent) {
-        percentRange = `${flavor.min_percent} - ${flavor.max_percent}%`;
-    } else if (flavor.recommended_percent) {
-        percentRange = `${flavor.recommended_percent}%`;
-    }
+    // Získat výchozí hodnoty z flavorDatabase podle kategorie
+    const category = flavor.category || 'fruit';
+    const isShisha = flavor.product_type === 'shisha';
+    const defaultFlavorData = flavorDatabase[category] || flavorDatabase.fruit;
     
-    // Steep time
-    const steepDays = flavor.steep_days !== null && flavor.steep_days !== undefined 
-        ? t('flavor_database.detail_steep_days', '{days} dní').replace('{days}', flavor.steep_days)
-        : '-';
+    // Použít hodnoty z DB nebo výchozí podle kategorie
+    const minPercent = flavor.min_percent || (isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5));
+    const maxPercent = flavor.max_percent || (isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15));
+    const recommendedPercent = flavor.recommended_percent || Math.round((minPercent + maxPercent) / 2);
+    const steepDaysValue = (flavor.steep_days !== null && flavor.steep_days !== undefined && flavor.steep_days > 0)
+        ? flavor.steep_days 
+        : (isShisha ? (defaultFlavorData.shishaSteepingDays || 3) : (defaultFlavorData.steepingDays || 7));
+    
+    const percentRange = `${minPercent} - ${maxPercent}%`;
+    const steepDays = t('flavor_database.detail_steep_days', '{days} dní').replace('{days}', steepDaysValue);
     
     // Hodnocení
     const avgRating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '0.0';
