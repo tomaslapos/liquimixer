@@ -6568,11 +6568,12 @@ function getIngredientName(ingredient) {
             } else {
                 displayFlavorName = getFlavorName(ingredient.flavorType || 'fruit');
             }
-            // Přidat číslo příchutě pokud je více příchutí
+            // Vždy přidat prefix "Příchuť" - s číslem pokud je více příchutí
+            const flavorPrefix = t('ingredients.flavor', 'Příchuť');
             if (ingredient.flavorNumber && ingredient.flavorNumber > 1) {
-                return `${t('ingredients.flavor', 'Příchuť')} ${ingredient.flavorNumber}: ${displayFlavorName} (VG/PG ${params.vgpg})`;
+                return `${flavorPrefix} ${ingredient.flavorNumber}: ${displayFlavorName} (VG/PG ${params.vgpg})`;
             }
-            return `${displayFlavorName} (VG/PG ${params.vgpg})`;
+            return `${flavorPrefix}: ${displayFlavorName} (VG/PG ${params.vgpg})`;
         case 'shakevape_flavor':
             // Shake & Vape - příchuť již v lahvičce
             const svFlavorLabel = t('ingredients.flavor', 'Příchuť');
@@ -6604,11 +6605,22 @@ function getIngredientName(ingredient) {
         case 'shortfill_liquid':
             return t('ingredients.shortfill_liquid', 'Shortfill liquid');
         case 'shisha_flavor':
-            // Shisha flavor - přeložit název příchutě
-            const shishaFlavorType = ingredient.flavorType || 'custom';
-            const shishaFlavorData = shishaFlavorDatabase[shishaFlavorType] || shishaFlavorDatabase.custom;
-            const shishaFlavorName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
-            return `${t('ingredients.flavor', 'Příchuť')} ${ingredient.flavorNumber || 1}: ${shishaFlavorName}`;
+            // Shisha flavor - použít konkrétní příchuť pokud existuje, jinak přeložit
+            let shishaDisplayName;
+            if (ingredient.flavorName) {
+                // Konkrétní příchuť z databáze/oblíbených
+                if (ingredient.flavorManufacturer) {
+                    shishaDisplayName = `${ingredient.flavorName} (${ingredient.flavorManufacturer})`;
+                } else {
+                    shishaDisplayName = ingredient.flavorName;
+                }
+            } else {
+                // Generická příchuť z číselníku
+                const shishaFlavorType = ingredient.flavorType || 'custom';
+                const shishaFlavorData = shishaFlavorDatabase[shishaFlavorType] || shishaFlavorDatabase.custom;
+                shishaDisplayName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
+            }
+            return `${t('ingredients.flavor', 'Příchuť')} ${ingredient.flavorNumber || 1}: ${shishaDisplayName}`;
         case 'shisha_sweetener':
             // Shisha sweetener - přeložit název sladidla
             const sweetType = ingredient.sweetenerType || 'sucralose';
@@ -6849,28 +6861,20 @@ function calculateMix() {
         const actualPgFromAll = nicotinePgContent + flavorPgContent + premixedPgContent;
         const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
         
-        // Pokud slider hodnota odpovídá skutečnému poměru (±1.5%), nepřidávat doladění
-        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
+        // V PREMIXED módu: slider vždy zobrazuje skutečný poměr
+        // Doladění se NEPŘIDÁVÁ - uživatel dostane přesně to, co vyplývá z předmíchané báze
+        // Aktualizovat slider na skutečný poměr
+        const ratioSlider = document.getElementById('vgPgRatio');
+        if (ratioSlider) {
+            ratioSlider.value = Math.round(actualVgPercent);
+            updateRatioDisplay();
+        }
         
+        // V premixed módu NIKDY nepřidávat doladění - recept je přesně dle složek
         let adjustmentVg = 0;
         let adjustmentPg = 0;
         
-        if (!sliderMatchesActual) {
-            // Uživatel změnil slider - potřeba doladění
-            adjustmentVg = targetVgTotal - actualVgFromAll;
-            adjustmentPg = targetPgTotal - actualPgFromAll;
-            
-            if (adjustmentVg < 0) adjustmentVg = 0;
-            if (adjustmentPg < 0) adjustmentPg = 0;
-            
-            // Upravit předmíchanou bázi aby bylo místo na doladění
-            const totalAdjustment = adjustmentVg + adjustmentPg;
-            if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
-                premixedBaseVolume = remainingVolume - totalAdjustment;
-            }
-        }
-        
-        // Přepočítat obsah předmíchané báze po úpravě
+        // Přepočítat obsah předmíchané báze (bez úprav - používáme plný objem)
         const finalPremixedVgContent = premixedBaseVolume * (premixedVgPercent / 100);
         const finalPremixedPgContent = premixedBaseVolume * (premixedPgPercent / 100);
         
@@ -6926,27 +6930,10 @@ function calculateMix() {
             });
         }
         
-        // Add adjustment VG if needed (only if user changed slider)
-        if (!sliderMatchesActual && adjustmentVg > 0.01) {
-            ingredients.push({
-                ingredientKey: 'vg_adjustment',
-                volume: adjustmentVg,
-                percent: (adjustmentVg / totalAmount) * 100
-            });
-        }
-        
-        // Add adjustment PG if needed (only if user changed slider)
-        if (!sliderMatchesActual && adjustmentPg > 0.01) {
-            ingredients.push({
-                ingredientKey: 'pg_adjustment',
-                volume: adjustmentPg,
-                percent: (adjustmentPg / totalAmount) * 100
-            });
-        }
-        
-        // Update pureVgNeeded and purePgNeeded for final calculation
-        pureVgNeeded = sliderMatchesActual ? 0 : adjustmentVg;
-        purePgNeeded = sliderMatchesActual ? 0 : adjustmentPg;
+        // V PREMIXED módu se doladění NEPŘIDÁVÁ
+        // pureVgNeeded a purePgNeeded zůstávají 0
+        pureVgNeeded = 0;
+        purePgNeeded = 0;
         
     } else {
         // SEPARATE PG/VG MODE (original logic)
@@ -8380,25 +8367,12 @@ function calculateShakeVape() {
         const actualPgFromAll = nicotinePgContent + flavorPgContent + premixedPgContent;
         const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
         
-        // Pokud slider hodnota odpovídá skutečnému poměru (±1.5%), nepřidávat doladění
-        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
-        
-        let adjustmentVg = 0;
-        let adjustmentPg = 0;
-        
-        if (!sliderMatchesActual) {
-            // Uživatel změnil slider - potřeba doladění
-            adjustmentVg = targetVgTotal - actualVgFromAll;
-            adjustmentPg = targetPgTotal - actualPgFromAll;
-            
-            if (adjustmentVg < 0) adjustmentVg = 0;
-            if (adjustmentPg < 0) adjustmentPg = 0;
-            
-            // Upravit předmíchanou bázi aby bylo místo na doladění
-            const totalAdjustment = adjustmentVg + adjustmentPg;
-            if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
-                premixedBaseVolume = remainingVolume - totalAdjustment;
-            }
+        // V PREMIXED módu: slider vždy zobrazuje skutečný poměr
+        // Doladění se NEPŘIDÁVÁ - uživatel dostane přesně to, co vyplývá z předmíchané báze
+        const ratioSlider = document.getElementById('proVgPgRatio');
+        if (ratioSlider) {
+            ratioSlider.value = Math.round(actualVgPercent);
+            updateProRatioDisplay();
         }
         
         // Add premixed base
@@ -8414,25 +8388,9 @@ function calculateShakeVape() {
             });
         }
         
-        // Add adjustment VG if needed (only if user changed slider)
-        if (!sliderMatchesActual && adjustmentVg > 0.01) {
-            ingredients.push({
-                ingredientKey: 'vg_adjustment',
-                volume: adjustmentVg,
-                percent: (adjustmentVg / totalAmount) * 100
-            });
-            pureVgNeeded = adjustmentVg;
-        }
-        
-        // Add adjustment PG if needed (only if user changed slider)
-        if (!sliderMatchesActual && adjustmentPg > 0.01) {
-            ingredients.push({
-                ingredientKey: 'pg_adjustment',
-                volume: adjustmentPg,
-                percent: (adjustmentPg / totalAmount) * 100
-            });
-            purePgNeeded = adjustmentPg;
-        }
+        // V PREMIXED módu se doladění NEPŘIDÁVÁ
+        pureVgNeeded = 0;
+        purePgNeeded = 0;
     } else {
         // SEPARATE PG/VG MODE (original logic)
         pureVgNeeded = targetVgTotal - nicotineVgContent - flavorVgContent;
@@ -9800,7 +9758,7 @@ function calculateProMix() {
     const ingredients = [];
     
     if (baseType === 'premixed') {
-        // PREMIXED BASE MODE for PRO
+        // PREMIXED BASE MODE for Shake & Vape
         const premixedParts = premixedRatio.split('/');
         premixedVgPercent = parseInt(premixedParts[0]) || 60;
         const premixedPgPercent = 100 - premixedVgPercent;
@@ -9815,31 +9773,20 @@ function calculateProMix() {
         const actualPgFromAll = nicotinePgContent + totalFlavorPgContent + totalAdditivePgContent + premixedPgContent;
         const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
         
-        // Pokud slider hodnota odpovídá skutečnému poměru (±1%), nepřidávat doladění
-        const sliderMatchesActual = Math.abs(vgPercent - actualVgPercent) < 1.5;
-        
-        let adjustmentVg = 0;
-        let adjustmentPg = 0;
-        
-        if (!sliderMatchesActual) {
-            // Uživatel změnil slider - potřeba doladění
-            adjustmentVg = targetVgTotal - actualVgFromAll;
-            adjustmentPg = targetPgTotal - actualPgFromAll;
-            
-            if (adjustmentVg < 0) adjustmentVg = 0;
-            if (adjustmentPg < 0) adjustmentPg = 0;
+        // V PREMIXED módu: slider vždy zobrazuje skutečný poměr
+        // Doladění se NEPŘIDÁVÁ - uživatel dostane přesně to, co vyplývá z předmíchané báze
+        const ratioSlider = document.getElementById('svVgPgRatio');
+        if (ratioSlider) {
+            ratioSlider.value = Math.round(actualVgPercent);
+            updateSvRatioDisplay();
         }
         
-        const totalAdjustment = adjustmentVg + adjustmentPg;
-        if (totalAdjustment > 0.1 && totalAdjustment < remainingVolume) {
-            premixedBaseVolume = remainingVolume - totalAdjustment;
-            pureVgNeeded = adjustmentVg;
-            purePgNeeded = adjustmentPg;
-        } else {
-            premixedBaseVolume = remainingVolume;
-            pureVgNeeded = 0;
-            purePgNeeded = 0;
-        }
+        // Předmíchaná báze vyplní celý zbývající objem
+        premixedBaseVolume = remainingVolume;
+        
+        // V PREMIXED módu se doladění NEPŘIDÁVÁ
+        pureVgNeeded = 0;
+        purePgNeeded = 0;
         
         // Add nicotine
         if (nicotineVolume > 0) {
@@ -14962,7 +14909,7 @@ function calculateShishaMix() {
     flavorsData.forEach((flavor, index) => {
         const flavorVolume = (flavor.percent / 100) * totalAmount;
         const flavorResult = results.find(r => r.type === 'flavor' && r.name.includes(`${index + 1}:`));
-        ingredients.push({
+        const flavorIngredient = {
             ingredientKey: 'shisha_flavor',
             flavorType: flavor.type,
             flavorNumber: index + 1,
@@ -14970,7 +14917,17 @@ function calculateShishaMix() {
             volume: flavorVolume,
             percent: ((flavorVolume / totalAmount) * 100).toFixed(1),
             grams: parseFloat(flavorResult?.grams || 0)
-        });
+        };
+        
+        // Přidat info o konkrétní příchuti pokud existuje
+        if (flavor.flavorName) {
+            flavorIngredient.flavorName = flavor.flavorName;
+            flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
+            flavorIngredient.flavorId = flavor.flavorId;
+            flavorIngredient.flavorSource = flavor.flavorSource;
+        }
+        
+        ingredients.push(flavorIngredient);
     });
     
     // Sweetener
