@@ -344,6 +344,14 @@
                     </button>
                 </div>
                 
+                <!-- Databáze příchutí - pouze pro přihlášené -->
+                <div class="menu-section menu-section-database menu-section-flavor-database">
+                    <button class="neon-button menu-database-btn" onclick="toggleMenu(); showFlavorDatabase();">
+                        <span data-i18n="flavor_database.menu_item">Databáze příchutí</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+                
                 <div class="menu-section">
                     <h4 class="menu-section-title" data-i18n="menu.cookies_title">Cookies</h4>
                     <p class="menu-text" data-i18n="menu.cookies_text">
@@ -2525,6 +2533,125 @@
             </div>
         </section>
 
+        <!-- Databáze příchutí -->
+        <section id="flavor-database" class="page">
+            <h2 class="page-title" data-i18n="flavor_database.title">Databáze příchutí</h2>
+            
+            <!-- Filtry a řazení -->
+            <div class="database-controls">
+                <!-- Řádek 1: Vyhledávání + Řazení -->
+                <div class="database-row">
+                    <div class="filter-group filter-search">
+                        <input type="text" id="flavorSearchInput" class="neon-input" 
+                               data-i18n-placeholder="flavor_database.search_placeholder" 
+                               placeholder="Hledat příchuť..." 
+                               oninput="debounceFlavorSearch()" />
+                    </div>
+                    <div class="filter-group filter-sort">
+                        <label data-i18n="flavor_database.sort_by">Řadit:</label>
+                        <select id="flavorSortBy" class="neon-select" onchange="loadFlavors()">
+                            <option value="popularity" data-i18n="flavor_database.sort_popularity">Popularita</option>
+                            <option value="rating" data-i18n="flavor_database.sort_rating">Hodnocení</option>
+                            <option value="name" data-i18n="flavor_database.sort_name">Název A-Z</option>
+                            <option value="newest" data-i18n="flavor_database.sort_newest">Nejnovější</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Řádek 2: Rozbalovací filtry -->
+                <div class="database-filters-collapsible">
+                    <button type="button" class="filter-toggle-btn" onclick="toggleFlavorDatabaseFilters()">
+                        <span data-i18n="recipe_database.filters">Filtry</span>
+                        <span class="filter-toggle-icon">▼</span>
+                    </button>
+                    
+                    <div id="flavorFiltersPanel" class="filters-panel hidden">
+                        <!-- Typ (Vape/Shisha) -->
+                        <div class="filter-group">
+                            <label data-i18n="flavor_database.filter_type">Typ:</label>
+                            <select id="flavorFilterType" class="neon-select" onchange="loadFlavors()">
+                                <option value="all" data-i18n="flavor_database.filter_type_all">Všechny typy</option>
+                                <option value="vape" data-i18n="flavor_database.filter_type_vape">Vape</option>
+                                <option value="shisha" data-i18n="flavor_database.filter_type_shisha">Shisha</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Výrobce -->
+                        <div class="filter-group">
+                            <label data-i18n="flavor_database.filter_manufacturer">Výrobce:</label>
+                            <select id="flavorFilterManufacturer" class="neon-select" onchange="loadFlavors()">
+                                <option value="all" data-i18n="flavor_database.filter_manufacturer_all">Všichni výrobci</option>
+                                <!-- Generováno z flavor_manufacturers -->
+                            </select>
+                        </div>
+                        
+                        <!-- Kategorie -->
+                        <div class="filter-group">
+                            <label data-i18n="flavor_database.filter_category">Kategorie:</label>
+                            <select id="flavorFilterCategory" class="neon-select" onchange="loadFlavors()">
+                                <option value="all" data-i18n="flavor_database.filter_category_all">Všechny kategorie</option>
+                                <!-- Generováno z flavor categories -->
+                            </select>
+                        </div>
+                        
+                        <!-- Minimální hodnocení -->
+                        <div class="filter-group">
+                            <label data-i18n="flavor_database.filter_rating">Minimální hodnocení:</label>
+                            <select id="flavorFilterRating" class="neon-select" onchange="loadFlavors()">
+                                <option value="">Všechny</option>
+                                <option value="1">★ (1+)</option>
+                                <option value="2">★★ (2+)</option>
+                                <option value="3">★★★ (3+)</option>
+                                <option value="4">★★★★ (4+)</option>
+                                <option value="5">★★★★★ (5)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Reset filtrů -->
+                        <div class="filter-group filter-reset">
+                            <button type="button" class="neon-button secondary small" onclick="resetFlavorDatabaseFilters()">
+                                <span data-i18n="recipe_database.reset_filters">Resetovat filtry</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Počet výsledků -->
+            <div id="flavorResultsCount" class="results-count"></div>
+            
+            <!-- Seznam příchutí -->
+            <div id="flavorsList" class="recipes-grid flavors-grid"></div>
+            
+            <!-- Paginace -->
+            <div id="flavorPagination" class="pagination-controls"></div>
+            
+            <!-- Tlačítko zpět -->
+            <div class="button-group">
+                <button class="neon-button secondary" onclick="goBack()">
+                    <span data-i18n="form.back">◀ ZPĚT</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Detail příchutě -->
+        <section id="flavor-detail" class="page">
+            <h2 class="page-title" id="flavorDetailTitle">Detail příchutě</h2>
+            
+            <div class="flavor-detail-content" id="flavorDetailContent">
+                <!-- Naplní se JavaScriptem -->
+            </div>
+            
+            <div class="button-group">
+                <button class="neon-button btn-green" id="flavorSaveToFavoritesBtn" onclick="saveCurrentFlavorToFavorites()">
+                    <span data-i18n="flavor_database.save_to_favorites">ULOŽIT DO OBLÍBENÝCH</span>
+                </button>
+                <button class="neon-button secondary" onclick="showFlavorDatabase()">
+                    <span data-i18n="flavor_database.back_to_database">◀ ZPĚT DO DATABÁZE</span>
+                </button>
+            </div>
+        </section>
+
         <!-- Sdílený recept stránka -->
         <section id="shared-recipe" class="page">
             <h2 class="page-title" id="sharedRecipeTitle" data-i18n="recipe_detail.shared_title">Sdílený recept</h2>
@@ -2655,7 +2782,7 @@
                 
                 <div class="form-group">
                     <label for="productType" data-i18n="product_form.type_label">Typ produktu *</label>
-                    <select id="productType" required class="product-select">
+                    <select id="productType" required class="product-select" onchange="toggleFlavorFields()">
                         <option value="" data-i18n="product_form.type_select">-- Vyberte typ --</option>
                         <option value="vg" data-i18n="products.type_vg">VG (Glycerin)</option>
                         <option value="pg" data-i18n="products.type_pg">PG (Propylenglykol)</option>
@@ -2663,6 +2790,77 @@
                         <option value="nicotine_booster" data-i18n="products.type_nicotine_booster">Nikotin booster</option>
                         <option value="nicotine_salt" data-i18n="products.type_nicotine_salt">Nikotinová sůl</option>
                     </select>
+                </div>
+                
+                <!-- Rozšířená pole pro příchutě - zobrazí se pouze když productType === 'flavor' -->
+                <div id="flavorFieldsSection" class="flavor-fields-section hidden">
+                    <div class="flavor-fields-header">
+                        <h4 data-i18n="flavor_form.section_title">Nastavení příchutě</h4>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productFlavorProductType" data-i18n="flavor_form.product_type_label">Typ příchutě *</label>
+                        <select id="productFlavorProductType" class="product-select">
+                            <option value="" data-i18n="product_form.type_select">-- Vyberte typ --</option>
+                            <option value="vape" data-i18n="flavor_form.product_type_vape">Vape příchuť</option>
+                            <option value="shisha" data-i18n="flavor_form.product_type_shisha">Shisha příchuť</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productFlavorManufacturer" data-i18n="flavor_form.manufacturer_label">Výrobce *</label>
+                        <select id="productFlavorManufacturer" class="product-select">
+                            <option value="" data-i18n="flavor_form.manufacturer_placeholder">Vyberte výrobce</option>
+                            <!-- Generováno z flavor_manufacturers -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productFlavorCategory" data-i18n="flavor_form.category_label">Kategorie příchutě</label>
+                        <select id="productFlavorCategory" class="product-select">
+                            <option value="">-- Vyberte kategorii --</option>
+                            <option value="fruit" data-i18n="flavor_categories.fruit">Ovocná</option>
+                            <option value="citrus" data-i18n="flavor_categories.citrus">Citrusová</option>
+                            <option value="berry" data-i18n="flavor_categories.berry">Lesní plody</option>
+                            <option value="tropical" data-i18n="flavor_categories.tropical">Tropická</option>
+                            <option value="cream" data-i18n="flavor_categories.cream">Krémová</option>
+                            <option value="dessert" data-i18n="flavor_categories.dessert">Dezertní</option>
+                            <option value="bakery" data-i18n="flavor_categories.bakery">Pečivo</option>
+                            <option value="candy" data-i18n="flavor_categories.candy">Sladkosti</option>
+                            <option value="tobacco" data-i18n="flavor_categories.tobacco">Tabáková</option>
+                            <option value="menthol" data-i18n="flavor_categories.menthol">Mentol / Máta</option>
+                            <option value="drink" data-i18n="flavor_categories.drink">Nápoje</option>
+                            <option value="nuts" data-i18n="flavor_categories.nuts">Oříšková</option>
+                            <option value="spice" data-i18n="flavor_categories.spice">Kořeněná</option>
+                            <option value="mix" data-i18n="flavor_categories.mix">Mix / Směs</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="productFlavorMinPercent" data-i18n="flavor_form.min_percent_label">Min %</label>
+                            <input type="number" id="productFlavorMinPercent" min="0" max="100" step="0.5" placeholder="0">
+                        </div>
+                        <div class="form-group half">
+                            <label for="productFlavorMaxPercent" data-i18n="flavor_form.max_percent_label">Max %</label>
+                            <input type="number" id="productFlavorMaxPercent" min="0" max="100" step="0.5" placeholder="20">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productFlavorSteepDays" data-i18n="flavor_form.steep_days_label">Doba zrání (dny)</label>
+                        <input type="number" id="productFlavorSteepDays" min="0" max="90" step="1" value="7" placeholder="7">
+                    </div>
+                    
+                    <!-- Toggle pro návrh do databáze -->
+                    <div class="form-group flavor-suggestion-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="productSuggestToDatabase">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <label class="toggle-label" for="productSuggestToDatabase" data-i18n="flavor_suggestion.toggle_label">Navrhnout přidání do databáze</label>
+                        <div class="form-hint" id="flavorSuggestionHint"></div>
+                    </div>
                 </div>
                 
                 <div class="form-group">

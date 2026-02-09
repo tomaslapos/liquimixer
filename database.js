@@ -2,6 +2,105 @@
 // SUPABASE DATABASE INTEGRATION
 // Šifrovaná databáze uživatelů oddělená od aplikace
 // ============================================
+//
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║                       MAPA FUNKCÍ - DATABASE.JS                              ║
+// ║                      Aktualizováno: 08.02.2026                               ║
+// ╠══════════════════════════════════════════════════════════════════════════════╣
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 1: INICIALIZACE A BEZPEČNOST (řádky 18-90)                             ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   isAllowedDomain()              18   - Kontrola povolené domény             ║
+// ║   initSupabase()                 40   - Inicializace Supabase klienta        ║
+// ║   setSupabaseAuth()              63   - Nastavení autentizace                ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 2: UŽIVATELÉ (řádky 87-280)                                            ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   saveUserToDatabase()           87   - Uložení uživatele do DB              ║
+// ║   getUserFromDatabase()         125   - Získání uživatele z DB               ║
+// ║   saveTermsAcceptance()         148   - Uložení souhlasu s podmínkami        ║
+// ║   saveUserPreferences()         182   - Uložení preferencí                   ║
+// ║   saveUserLocale()              209   - Uložení jazyka                       ║
+// ║   getUserLocale()               248   - Získání jazyka                       ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 3: POMOCNÉ FUNKCE (řádky 277-375)                                      ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   generateShareId()             277   - Generování share ID                  ║
+// ║   generateProductCode()         289   - Generování kódu produktu             ║
+// ║   sanitizeInput()               299   - Sanitizace vstupu                    ║
+// ║   isValidClerkId()              313   - Validace Clerk ID                    ║
+// ║   isValidUUID()                 342   - Validace UUID                        ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 4: RECEPTY (řádky 375-630)                                             ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   saveUserRecipe()              375   - ⭐ Uložení receptu                    ║
+// ║   updateUserRecipe()            429   - Aktualizace receptu                  ║
+// ║   isValidShareId()              482   - Validace share ID                    ║
+// ║   getRecipeByShareId()          488   - Získání receptu podle share ID       ║
+// ║   getRecipeById()               517   - Získání receptu podle ID             ║
+// ║   getUserRecipes()              551   - Získání všech receptů uživatele      ║
+// ║   deleteUserRecipe()            581   - Smazání receptu                      ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 5: OBLÍBENÉ PRODUKTY (řádky 624-940)                                   ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   saveFavoriteProduct()         624   - Uložení produktu                     ║
+// ║   updateFavoriteProduct()       685   - Aktualizace produktu                 ║
+// ║   updateProductStock()          731   - ⭐ Aktualizace skladu                 ║
+// ║   getFavoriteProducts()         772   - Získání všech produktů               ║
+// ║   getFavoriteProductById()      801   - Získání produktu podle ID            ║
+// ║   getProductByCode()            835   - Získání podle kódu                   ║
+// ║   getProductByShareId()         871   - Získání podle share ID               ║
+// ║   deleteFavoriteProduct()       900   - Smazání produktu                     ║
+// ║   uploadProductImage()          937   - Upload obrázku produktu              ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 6: PROPOJENÍ PRODUKTŮ A RECEPTŮ (řádky 991-1260)                       ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   linkProductsToRecipe()        991   - Propojení produktů s receptem        ║
+// ║   getLinkedProducts()          1039   - Získání propojených produktů         ║
+// ║   getLinkedProductsByRecipeId() 1083  - Produkty podle recipe ID             ║
+// ║   getRecipesByProductId()      1124   - Recepty podle product ID             ║
+// ║   getProductByIdPublic()       1163   - Veřejný produkt podle ID             ║
+// ║   copyProductToUser()          1191   - Kopírování produktu uživateli        ║
+// ║   onClerkSignIn()              1261   - Handler přihlášení Clerk             ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 7: PŘIPOMÍNKY ZRÁNÍ (řádky 1283-1610)                                  ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   saveReminder()               1283   - Uložení připomínky                   ║
+// ║   getRecipeReminders()         1345   - Připomínky receptu                   ║
+// ║   getUserReminders()           1374   - Všechny připomínky uživatele         ║
+// ║   updateReminder()             1402   - Aktualizace připomínky               ║
+// ║   deleteReminder()             1442   - Smazání připomínky                   ║
+// ║   cancelReminder()             1470   - Zrušení připomínky                   ║
+// ║   getReminderById()            1502   - Získání připomínky podle ID          ║
+// ║   updateReminderStock()        1531   - Aktualizace skladu připomínky        ║
+// ║   markReminderConsumed()       1567   - Označení jako spotřebováno           ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 8: VEŘEJNÁ DATABÁZE RECEPTŮ (řádky 1605-1850)                          ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   getPublicRecipes()           1605   - ⭐ Načtení veřejných receptů          ║
+// ║   getPublicRecipeById()        1701   - Detail veřejného receptu             ║
+// ║   addRecipeRating()            1730   - Přidání hodnocení                    ║
+// ║   getUserRatingForRecipe()     1775   - Hodnocení uživatele                  ║
+// ║   updateRecipeRatingAvg()      1802   - Aktualizace průměru hodnocení        ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 9: FCM TOKENY (řádky 1846-1950)                                        ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║   saveFcmToken()               1846   - Uložení FCM tokenu                   ║
+// ║   deleteFcmToken()             1886   - Smazání FCM tokenu                   ║
+// ║   getFcmTokens()               1918   - Získání FCM tokenů                   ║
+// ║                                                                              ║
+// ╠══════════════════════════════════════════════════════════════════════════════╣
+// ║ ⭐ = Důležitá funkce                                                          ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
 
 console.log('database.js: Loading...');
 
@@ -1839,6 +1938,466 @@ async function updateRecipeRatingAvg(recipeId) {
 }
 
 // =============================================
+// FLAVOR DATABASE FUNCTIONS
+// =============================================
+
+// Získat všechny výrobce příchutí
+async function getFlavorManufacturers() {
+    if (!supabaseClient) {
+        console.error('getFlavorManufacturers: Supabase not initialized');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('flavor_manufacturers')
+            .select('*')
+            .eq('is_active', true)
+            .order('name');
+        
+        if (error) {
+            console.error('getFlavorManufacturers: Supabase error:', error);
+            return [];
+        }
+        
+        return data || [];
+    } catch (err) {
+        console.error('getFlavorManufacturers: Database error:', err);
+        return [];
+    }
+}
+
+// Vyhledávání příchutí s filtry
+async function searchFlavors(filters = {}, page = 1, limit = 20) {
+    if (!supabaseClient) {
+        console.error('searchFlavors: Supabase not initialized');
+        return { data: [], total: 0 };
+    }
+    
+    try {
+        let query = supabaseClient
+            .from('flavors')
+            .select('*, flavor_manufacturers!inner(name, country_code)', { count: 'exact' })
+            .eq('status', 'active');
+        
+        // Filtry
+        if (filters.product_type && filters.product_type !== 'all') {
+            query = query.eq('product_type', filters.product_type);
+        }
+        
+        if (filters.manufacturer_code && filters.manufacturer_code !== 'all') {
+            query = query.eq('manufacturer_code', filters.manufacturer_code);
+        }
+        
+        if (filters.category && filters.category !== 'all') {
+            query = query.eq('category', filters.category);
+        }
+        
+        if (filters.min_rating && filters.min_rating > 0) {
+            query = query.gte('avg_rating', filters.min_rating);
+        }
+        
+        // Fulltext vyhledávání
+        if (filters.search && filters.search.trim().length >= 2) {
+            query = query.ilike('name', `%${filters.search.trim()}%`);
+        }
+        
+        // Řazení
+        switch (filters.sort) {
+            case 'rating':
+                query = query.order('avg_rating', { ascending: false });
+                break;
+            case 'name':
+                query = query.order('name', { ascending: true });
+                break;
+            case 'newest':
+                query = query.order('created_at', { ascending: false });
+                break;
+            case 'popularity':
+            default:
+                query = query.order('usage_count', { ascending: false });
+                break;
+        }
+        
+        // Paginace
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+        query = query.range(from, to);
+        
+        const { data, error, count } = await query;
+        
+        if (error) {
+            console.error('searchFlavors: Supabase error:', error);
+            return { data: [], total: 0 };
+        }
+        
+        return { data: data || [], total: count || 0 };
+    } catch (err) {
+        console.error('searchFlavors: Database error:', err);
+        return { data: [], total: 0 };
+    }
+}
+
+// Získat detail příchutě podle ID
+async function getFlavorById(flavorId) {
+    if (!supabaseClient || !flavorId) {
+        console.error('getFlavorById: Missing required parameters');
+        return null;
+    }
+    
+    if (!isValidUUID(flavorId)) {
+        console.error('getFlavorById: Invalid flavor_id format');
+        return null;
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('flavors')
+            .select('*, flavor_manufacturers(name, country_code, website)')
+            .eq('id', flavorId)
+            .eq('status', 'active')
+            .single();
+        
+        if (error) {
+            console.error('getFlavorById: Supabase error:', error);
+            return null;
+        }
+        
+        return data;
+    } catch (err) {
+        console.error('getFlavorById: Database error:', err);
+        return null;
+    }
+}
+
+// Přidat hodnocení příchutě
+async function addFlavorRating(clerkId, flavorId, rating) {
+    if (!supabaseClient || !clerkId || !flavorId || !rating) {
+        console.error('addFlavorRating: Missing required parameters');
+        return { data: null, error: new Error('Missing required parameters') };
+    }
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('addFlavorRating: Invalid clerk_id format');
+        return { data: null, error: new Error('Invalid clerk_id format') };
+    }
+    
+    if (!isValidUUID(flavorId)) {
+        console.error('addFlavorRating: Invalid flavor_id format');
+        return { data: null, error: new Error('Invalid flavor_id format') };
+    }
+    
+    if (rating < 1 || rating > 5) {
+        console.error('addFlavorRating: Invalid rating value (must be 1-5)');
+        return { data: null, error: new Error('Invalid rating value') };
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('flavor_ratings')
+            .upsert({
+                flavor_id: flavorId,
+                clerk_id: clerkId,
+                rating: rating,
+                updated_at: new Date().toISOString()
+            }, {
+                onConflict: 'flavor_id,clerk_id'
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('addFlavorRating: Supabase error:', error);
+            return { data: null, error };
+        }
+        
+        console.log('addFlavorRating: Rating saved successfully');
+        return { data, error: null };
+    } catch (err) {
+        console.error('addFlavorRating: Database error:', err);
+        return { data: null, error: err };
+    }
+}
+
+// Získat hodnocení uživatele pro příchuť
+async function getUserFlavorRating(clerkId, flavorId) {
+    if (!supabaseClient || !clerkId || !flavorId) return null;
+    
+    if (!isValidClerkId(clerkId) || !isValidUUID(flavorId)) return null;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('flavor_ratings')
+            .select('rating')
+            .eq('clerk_id', clerkId)
+            .eq('flavor_id', flavorId)
+            .maybeSingle();
+        
+        if (error) {
+            console.error('getUserFlavorRating: Supabase error:', error);
+            return null;
+        }
+        
+        return data?.rating || null;
+    } catch (err) {
+        console.error('getUserFlavorRating: Database error:', err);
+        return null;
+    }
+}
+
+// Odeslat návrh příchutě do databáze
+async function submitFlavorSuggestion(clerkId, flavorData) {
+    if (!supabaseClient || !clerkId || !flavorData) {
+        console.error('submitFlavorSuggestion: Missing required parameters');
+        return { data: null, error: new Error('Missing required parameters') };
+    }
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('submitFlavorSuggestion: Invalid clerk_id format');
+        return { data: null, error: new Error('Invalid clerk_id format') };
+    }
+    
+    // Validace povinných polí
+    if (!flavorData.name || !flavorData.manufacturer_code || !flavorData.product_type || !flavorData.category) {
+        console.error('submitFlavorSuggestion: Missing required flavor data');
+        return { data: null, error: new Error('Missing required flavor data') };
+    }
+    
+    // Rate limiting - max 5 návrhů za týden
+    const weeklyCount = await getUserSuggestionCount(clerkId);
+    if (weeklyCount >= 5) {
+        console.error('submitFlavorSuggestion: Weekly limit reached');
+        return { data: null, error: new Error('Weekly suggestion limit reached') };
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('flavors')
+            .insert({
+                name: sanitizeInput(flavorData.name, 100),
+                manufacturer_code: flavorData.manufacturer_code,
+                product_type: flavorData.product_type,
+                category: flavorData.category,
+                min_percent: flavorData.min_percent || null,
+                max_percent: flavorData.max_percent || null,
+                recommended_percent: flavorData.recommended_percent || null,
+                steep_days: flavorData.steep_days || 7,
+                status: 'pending',
+                submitted_by: clerkId
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('submitFlavorSuggestion: Supabase error:', error);
+            return { data: null, error };
+        }
+        
+        console.log('submitFlavorSuggestion: Suggestion submitted successfully');
+        return { data, error: null };
+    } catch (err) {
+        console.error('submitFlavorSuggestion: Database error:', err);
+        return { data: null, error: err };
+    }
+}
+
+// Počet návrhů uživatele za poslední týden
+async function getUserSuggestionCount(clerkId) {
+    if (!supabaseClient || !clerkId) return 0;
+    
+    if (!isValidClerkId(clerkId)) return 0;
+    
+    try {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        const { count, error } = await supabaseClient
+            .from('flavors')
+            .select('*', { count: 'exact', head: true })
+            .eq('submitted_by', clerkId)
+            .gte('created_at', oneWeekAgo.toISOString());
+        
+        if (error) {
+            console.error('getUserSuggestionCount: Supabase error:', error);
+            return 0;
+        }
+        
+        return count || 0;
+    } catch (err) {
+        console.error('getUserSuggestionCount: Database error:', err);
+        return 0;
+    }
+}
+
+// Vyhledávání příchutí pro autocomplete (kombinace oblíbených + veřejná DB)
+async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, limit = 10) {
+    if (!supabaseClient) {
+        console.error('searchFlavorsForAutocomplete: Supabase not initialized');
+        return { favorites: [], database: [] };
+    }
+    
+    const results = { favorites: [], database: [] };
+    const productType = ['liquid', 'liquid_pro', 'shakevape', 'shortfill'].includes(recipeType) ? 'vape' : 'shisha';
+    
+    try {
+        // 1. Hledat v oblíbených produktech uživatele (pokud je přihlášen)
+        if (clerkId && isValidClerkId(clerkId)) {
+            let favQuery = supabaseClient
+                .from('favorite_products')
+                .select('*')
+                .eq('clerk_id', clerkId)
+                .eq('product_type', 'flavor')
+                .limit(limit);
+            
+            if (searchTerm && searchTerm.trim().length >= 2) {
+                favQuery = favQuery.ilike('name', `%${searchTerm.trim()}%`);
+            }
+            
+            const { data: favData, error: favError } = await favQuery;
+            
+            if (!favError && favData) {
+                results.favorites = favData.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    manufacturer: p.manufacturer || null,
+                    manufacturer_code: null,
+                    product_type: p.flavor_product_type || productType,
+                    category: p.flavor_category || null,
+                    min_percent: p.flavor_min_percent,
+                    max_percent: p.flavor_max_percent,
+                    steep_days: p.steep_days,
+                    source: 'favorites',
+                    flavor_id: p.flavor_id
+                }));
+            }
+        }
+        
+        // 2. Hledat ve veřejné databázi příchutí
+        let dbQuery = supabaseClient
+            .from('flavors')
+            .select('*, flavor_manufacturers(name)')
+            .eq('status', 'active')
+            .limit(limit);
+        
+        if (searchTerm && searchTerm.trim().length >= 2) {
+            dbQuery = dbQuery.ilike('name', `%${searchTerm.trim()}%`);
+        }
+        
+        // Preferovat příchutě odpovídajícího typu
+        dbQuery = dbQuery.order('usage_count', { ascending: false });
+        
+        const { data: dbData, error: dbError } = await dbQuery;
+        
+        if (!dbError && dbData) {
+            results.database = dbData.map(f => ({
+                id: f.id,
+                name: f.name,
+                manufacturer: f.flavor_manufacturers?.name || f.manufacturer_code,
+                manufacturer_code: f.manufacturer_code,
+                product_type: f.product_type,
+                category: f.category,
+                min_percent: f.min_percent,
+                max_percent: f.max_percent,
+                recommended_percent: f.recommended_percent,
+                steep_days: f.steep_days,
+                avg_rating: f.avg_rating,
+                source: 'database'
+            }));
+        }
+        
+        return results;
+    } catch (err) {
+        console.error('searchFlavorsForAutocomplete: Database error:', err);
+        return { favorites: [], database: [] };
+    }
+}
+
+// Uložit příchuť z databáze do oblíbených
+async function saveFlavorToFavorites(clerkId, flavorId) {
+    if (!supabaseClient || !clerkId || !flavorId) {
+        console.error('saveFlavorToFavorites: Missing required parameters');
+        return { data: null, error: new Error('Missing required parameters') };
+    }
+    
+    if (!isValidClerkId(clerkId) || !isValidUUID(flavorId)) {
+        console.error('saveFlavorToFavorites: Invalid format');
+        return { data: null, error: new Error('Invalid format') };
+    }
+    
+    try {
+        // Nejprve získat data příchutě
+        const flavor = await getFlavorById(flavorId);
+        if (!flavor) {
+            return { data: null, error: new Error('Flavor not found') };
+        }
+        
+        // Vytvořit oblíbený produkt
+        const shareId = generateShareId();
+        const productCode = generateProductCode();
+        
+        const { data, error } = await supabaseClient
+            .from('favorite_products')
+            .insert({
+                clerk_id: clerkId,
+                name: flavor.name,
+                product_type: 'flavor',
+                flavor_id: flavorId,
+                flavor_product_type: flavor.product_type,
+                flavor_category: flavor.category,
+                manufacturer: flavor.flavor_manufacturers?.name || flavor.manufacturer_code,
+                flavor_type: flavor.category,
+                flavor_min_percent: flavor.min_percent,
+                flavor_max_percent: flavor.max_percent,
+                steep_days: flavor.steep_days,
+                rating: 0,
+                share_id: shareId,
+                product_code: productCode,
+                created_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+        
+        if (error) {
+            console.error('saveFlavorToFavorites: Supabase error:', error);
+            return { data: null, error };
+        }
+        
+        console.log('saveFlavorToFavorites: Flavor saved to favorites');
+        return { data, error: null };
+    } catch (err) {
+        console.error('saveFlavorToFavorites: Database error:', err);
+        return { data: null, error: err };
+    }
+}
+
+// Získat unikátní kategorie příchutí
+async function getFlavorCategories() {
+    if (!supabaseClient) {
+        console.error('getFlavorCategories: Supabase not initialized');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('flavors')
+            .select('category')
+            .eq('status', 'active');
+        
+        if (error) {
+            console.error('getFlavorCategories: Supabase error:', error);
+            return [];
+        }
+        
+        // Získat unikátní kategorie
+        const categories = [...new Set(data.map(f => f.category))].filter(Boolean).sort();
+        return categories;
+    } catch (err) {
+        console.error('getFlavorCategories: Database error:', err);
+        return [];
+    }
+}
+
+// =============================================
 // FCM TOKEN FUNCTIONS
 // =============================================
 
@@ -1864,7 +2423,7 @@ async function saveFcmToken(clerkId, token, deviceInfo) {
                 updated_at: new Date().toISOString(),
                 last_used_at: new Date().toISOString()
             }, { 
-                onConflict: 'clerk_id,token'
+                onConflict: 'clerk_id'
             })
             .select()
             .single();
@@ -1995,7 +2554,18 @@ window.LiquiMixerDB = {
     saveFcmToken: saveFcmToken,
     deleteFcmToken: deleteFcmToken,
     getFcmTokens: getFcmTokens,
-    onSignIn: onClerkSignIn
+    onSignIn: onClerkSignIn,
+    // Databáze příchutí
+    getFlavorManufacturers: getFlavorManufacturers,
+    searchFlavors: searchFlavors,
+    getFlavorById: getFlavorById,
+    addFlavorRating: addFlavorRating,
+    getUserFlavorRating: getUserFlavorRating,
+    submitFlavorSuggestion: submitFlavorSuggestion,
+    getUserSuggestionCount: getUserSuggestionCount,
+    searchFlavorsForAutocomplete: searchFlavorsForAutocomplete,
+    saveFlavorToFavorites: saveFlavorToFavorites,
+    getFlavorCategories: getFlavorCategories
 };
 
 // Export pro fcm.js a app.js kompatibilitu
