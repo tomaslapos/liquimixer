@@ -3095,28 +3095,30 @@ function populateRecipeFlavors() {
 }
 
 // Extrahovat příchutě z receptu pro zobrazení v modalu
+// DŮLEŽITÉ: Vracíme POUZE konkrétní příchutě (s názvem), ne generické kategorie
 function extractRecipeFlavorsForDisplay(recipeData) {
     if (!recipeData) return [];
     
     const flavors = [];
     const formType = recipeData.formType || 'liquid';
     
-    // Pro Liquid PRO a Shisha používáme POUZE ingredients (obsahují kompletní data)
-    // Pro ostatní formuláře (liquid, shakevape) používáme ingredients nebo fallback
-    
     // Z ingredients - primární zdroj pro všechny formuláře
+    // Přidáváme POUZE příchutě s konkrétním názvem (flavorName)
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
             if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor') {
-                const flavorInfo = {
-                    name: ingredient.flavorName || null,
-                    manufacturer: ingredient.flavorManufacturer || null,
-                    category: ingredient.flavorType || 'fruit',
-                    percent: ingredient.percent || 0,
-                    flavorId: ingredient.flavorId || null,
-                    flavorSource: ingredient.flavorSource || 'generic'
-                };
-                flavors.push(flavorInfo);
+                // Pouze konkrétní příchutě s názvem - generické kategorie nepřidávat
+                if (ingredient.flavorName) {
+                    const flavorInfo = {
+                        name: ingredient.flavorName,
+                        manufacturer: ingredient.flavorManufacturer || null,
+                        category: ingredient.flavorType || 'fruit',
+                        percent: ingredient.percent || 0,
+                        flavorId: ingredient.flavorId || null,
+                        flavorSource: ingredient.flavorSource || 'database'
+                    };
+                    flavors.push(flavorInfo);
+                }
             }
         }
     }
@@ -3124,30 +3126,31 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     // Pokud nebyly nalezeny příchutě v ingredients a existuje flavors array (záložní zdroj)
     if (flavors.length === 0 && (formType === 'liquidpro' || formType === 'shisha') && recipeData.flavors && Array.isArray(recipeData.flavors)) {
         for (const flavor of recipeData.flavors) {
-            if (flavor.type && flavor.type !== 'none') {
+            // Pouze konkrétní příchutě s názvem
+            const flavorName = flavor.flavorName || flavor.name;
+            if (flavorName) {
                 const flavorInfo = {
-                    // Hledat jak 'name' tak 'flavorName' pro kompatibilitu
-                    name: flavor.flavorName || flavor.name || null,
+                    name: flavorName,
                     manufacturer: flavor.flavorManufacturer || flavor.manufacturer || null,
                     category: flavor.type,
                     percent: flavor.percent || 0,
                     flavorId: flavor.flavorId || null,
-                    flavorSource: flavor.flavorSource || flavor.source || 'generic'
+                    flavorSource: flavor.flavorSource || flavor.source || 'database'
                 };
                 flavors.push(flavorInfo);
             }
         }
     }
     
-    // Pokud je jednoduchý formulář (liquid, shakevape) a nebyla nalezena příchut v ingredients
-    if (flavors.length === 0 && recipeData.flavorType && recipeData.flavorType !== 'none') {
+    // Pokud je jednoduchý formulář (liquid, shakevape) - pouze pokud má konkrétní příchuť
+    if (flavors.length === 0 && recipeData.specificFlavorName) {
         flavors.push({
-            name: recipeData.specificFlavorName || null,
+            name: recipeData.specificFlavorName,
             manufacturer: recipeData.specificFlavorManufacturer || null,
-            category: recipeData.flavorType,
+            category: recipeData.flavorType || 'fruit',
             percent: recipeData.flavorPercent || 0,
             flavorId: recipeData.specificFlavorId || null,
-            flavorSource: recipeData.specificFlavorSource || 'generic'
+            flavorSource: recipeData.specificFlavorSource || 'database'
         });
     }
     
