@@ -2242,34 +2242,43 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
     try {
         // 1. Hledat v oblíbených produktech uživatele (pokud je přihlášen)
         if (clerkId && isValidClerkId(clerkId)) {
+            // Načíst oblíbené příchutě - filtrovat dle typu, ale zahrnout i ty bez typu
             let favQuery = supabaseClient
                 .from('favorite_products')
                 .select('*')
                 .eq('clerk_id', clerkId)
                 .eq('product_type', 'flavor')
-                .eq('flavor_product_type', productType) // Filtrovat dle typu receptu (vape/shisha)
                 .limit(limit);
             
             if (searchTerm && searchTerm.trim().length >= 2) {
-                favQuery = favQuery.ilike('name', `%${searchTerm.trim()}%`);
+                const term = searchTerm.trim();
+                // Hledat v názvu NEBO výrobci
+                favQuery = favQuery.or(`name.ilike.%${term}%,manufacturer.ilike.%${term}%`);
             }
             
             const { data: favData, error: favError } = await favQuery;
             
+            if (favError) {
+                console.error('searchFlavorsForAutocomplete: favorites error:', favError);
+            }
+            
             if (!favError && favData) {
-                results.favorites = favData.map(p => ({
-                    id: p.id,
-                    name: p.name,
-                    manufacturer: p.manufacturer || null,
-                    manufacturer_code: null,
-                    product_type: p.flavor_product_type || productType,
-                    category: p.flavor_category || null,
-                    min_percent: p.flavor_min_percent,
-                    max_percent: p.flavor_max_percent,
-                    steep_days: p.steep_days,
-                    source: 'favorites',
-                    flavor_id: p.flavor_id
-                }));
+                // Filtrovat na klientovi - zahrnout příchutě odpovídajícího typu NEBO bez typu
+                results.favorites = favData
+                    .filter(p => !p.flavor_product_type || p.flavor_product_type === productType)
+                    .map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        manufacturer: p.manufacturer || null,
+                        manufacturer_code: null,
+                        product_type: p.flavor_product_type || productType,
+                        category: p.flavor_category || null,
+                        min_percent: p.flavor_min_percent,
+                        max_percent: p.flavor_max_percent,
+                        steep_days: p.steep_days,
+                        source: 'favorites',
+                        flavor_id: p.flavor_id
+                    }));
             }
         }
         
@@ -2282,7 +2291,10 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
             .limit(limit);
         
         if (searchTerm && searchTerm.trim().length >= 2) {
-            dbQuery = dbQuery.ilike('name', `%${searchTerm.trim()}%`);
+            const term = searchTerm.trim();
+            // Hledat v názvu příchutě NEBO v kódu výrobce
+            // Supabase nepodporuje OR přímo, použijeme textSearch nebo or()
+            dbQuery = dbQuery.or(`name.ilike.%${term}%,manufacturer_code.ilike.%${term}%`);
         }
         
         // Řadit dle počtu použití

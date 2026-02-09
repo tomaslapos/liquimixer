@@ -6290,7 +6290,6 @@ function getIngredientName(ingredient) {
 function updateFlavorDisplay() {
     const value = parseInt(flavorStrengthSlider.value);
     const type = flavorTypeSelect.value;
-    const flavor = flavorDatabase[type];
     const descEl = document.getElementById('flavorDescription');
     const displayEl = document.getElementById('flavorValue');
     const displayContainer = displayEl.parentElement;
@@ -6298,26 +6297,61 @@ function updateFlavorDisplay() {
     
     displayEl.textContent = value;
     
+    // Zjistit rozsah - buď z konkrétní příchutě nebo z číselníku
+    let minPercent, maxPercent, note;
+    
+    // Zkontrolovat zda je vybraná konkrétní příchuť
+    const flavorAutocomplete = document.getElementById('flavorAutocomplete');
+    const hasSpecificFlavor = flavorAutocomplete && 
+        flavorAutocomplete.dataset.flavorId && 
+        flavorAutocomplete.dataset.flavorData;
+    
+    if (hasSpecificFlavor) {
+        // Použít rozsah z konkrétní příchutě
+        try {
+            const flavorData = JSON.parse(flavorAutocomplete.dataset.flavorData);
+            minPercent = flavorData.min_percent || 5;
+            maxPercent = flavorData.max_percent || 20;
+            note = flavorData.name || '';
+        } catch (e) {
+            minPercent = 5;
+            maxPercent = 20;
+            note = '';
+        }
+    } else {
+        // Použít rozsah z číselníku
+        const flavor = flavorDatabase[type] || flavorDatabase.fruit;
+        minPercent = flavor.min;
+        maxPercent = flavor.max;
+        note = getFlavorNote(type);
+    }
+    
     let color, text;
-    if (value < flavor.min) {
+    if (value < minPercent) {
         color = '#ffaa00';
         text = t('flavor_descriptions.weak', 'Slabá až žádná chuť (doporučeno {min}–{max}%)')
-            .replace('{min}', flavor.min)
-            .replace('{max}', flavor.max);
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
         trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
-    } else if (value > flavor.max) {
+    } else if (value > maxPercent) {
         color = '#ff0044';
         text = t('flavor_descriptions.strong', 'Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)')
-            .replace('{min}', flavor.min)
-            .replace('{max}', flavor.max);
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
     } else {
         color = '#00cc66';
-        const note = getFlavorNote(type);
-        text = t('flavor_descriptions.ideal', 'Ideální chuť ({min}–{max}%) - {note}')
-            .replace('{min}', flavor.min)
-            .replace('{max}', flavor.max)
-            .replace('{note}', note);
+        if (hasSpecificFlavor && note) {
+            text = t('flavor_descriptions.ideal_specific', 'Ideální chuť ({min}–{max}%) - {note}')
+                .replace('{min}', minPercent)
+                .replace('{max}', maxPercent)
+                .replace('{note}', note);
+        } else {
+            text = t('flavor_descriptions.ideal', 'Ideální chuť ({min}–{max}%) - {note}')
+                .replace('{min}', minPercent)
+                .replace('{max}', maxPercent)
+                .replace('{note}', note);
+        }
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #00aaff)`;
     }
     
@@ -12274,12 +12308,17 @@ function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSe
         favorites.forEach(f => {
             const typeClass = f.product_type === 'vape' ? 'type-vape' : 'type-shisha';
             const percentInfo = f.min_percent && f.max_percent ? `${f.min_percent}-${f.max_percent}%` : '';
+            const manufacturerDisplay = f.manufacturer || f.manufacturer_code || '';
             html += `
                 <div class="autocomplete-item" onclick="selectFlavorFromAutocomplete('${inputId}', ${JSON.stringify(f).replace(/"/g, '&quot;')}, '${recipeType}')">
-                    <span class="flavor-name">${escapeHtml(f.name)}</span>
-                    ${f.manufacturer ? `<span class="flavor-manufacturer">${escapeHtml(f.manufacturer)}</span>` : ''}
-                    ${percentInfo ? `<span class="flavor-percent">${percentInfo}</span>` : ''}
-                    <span class="flavor-type-badge small ${typeClass}">${f.product_type === 'vape' ? 'V' : 'S'}</span>
+                    <div class="flavor-info">
+                        <span class="flavor-name">${escapeHtml(f.name)}</span>
+                        ${manufacturerDisplay ? `<span class="flavor-manufacturer">${escapeHtml(manufacturerDisplay)}</span>` : ''}
+                    </div>
+                    <div class="flavor-meta">
+                        ${percentInfo ? `<span class="flavor-percent">${percentInfo}</span>` : ''}
+                        <span class="flavor-type-badge small ${typeClass}">${f.product_type === 'vape' ? 'V' : 'S'}</span>
+                    </div>
                 </div>
             `;
         });
@@ -12291,12 +12330,17 @@ function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSe
         database.forEach(f => {
             const typeClass = f.product_type === 'vape' ? 'type-vape' : 'type-shisha';
             const percentInfo = f.min_percent && f.max_percent ? `${f.min_percent}-${f.max_percent}%` : '';
+            const manufacturerDisplay = f.manufacturer || f.manufacturer_code || '';
             html += `
                 <div class="autocomplete-item" onclick="selectFlavorFromAutocomplete('${inputId}', ${JSON.stringify(f).replace(/"/g, '&quot;')}, '${recipeType}')">
-                    <span class="flavor-name">${escapeHtml(f.name)}</span>
-                    ${f.manufacturer ? `<span class="flavor-manufacturer">${escapeHtml(f.manufacturer)}</span>` : ''}
-                    ${percentInfo ? `<span class="flavor-percent">${percentInfo}</span>` : ''}
-                    <span class="flavor-type-badge small ${typeClass}">${f.product_type === 'vape' ? 'V' : 'S'}</span>
+                    <div class="flavor-info">
+                        <span class="flavor-name">${escapeHtml(f.name)}</span>
+                        ${manufacturerDisplay ? `<span class="flavor-manufacturer">${escapeHtml(manufacturerDisplay)}</span>` : ''}
+                    </div>
+                    <div class="flavor-meta">
+                        ${percentInfo ? `<span class="flavor-percent">${percentInfo}</span>` : ''}
+                        <span class="flavor-type-badge small ${typeClass}">${f.product_type === 'vape' ? 'V' : 'S'}</span>
+                    </div>
                 </div>
             `;
         });
@@ -12349,10 +12393,8 @@ function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
     // Deaktivovat kategorie select - příchuť má svou kategorii
     updateFlavorCategoryState(inputId, true);
     
-    // Aktualizovat doporučené procento pokud existuje
-    if (flavorData.min_percent && flavorData.max_percent) {
-        updateRecommendedFlavorPercent(inputId, flavorData);
-    }
+    // Zobrazit slider a nastavit rozsah dle příchutě
+    showFlavorSliderWithRange(inputId, flavorData);
     
     // Aktualizovat steep time pokud existuje
     if (flavorData.steep_days) {
@@ -12378,6 +12420,9 @@ function selectNoSpecificFlavor(inputId) {
     
     // Aktivovat kategorie select - uživatel MUSÍ vybrat kategorii
     updateFlavorCategoryState(inputId, false);
+    
+    // Slider se zobrazí/skryje automaticky dle výběru kategorie
+    // Pro Liquid formulář ponechat stávající logiku v updateFlavorType()
 }
 
 // Inicializovat flavor autocomplete pro všechny formuláře receptů
@@ -12407,6 +12452,146 @@ function initRecipeFlavorAutocomplete() {
                 console.log('Selected Shisha flavor', i, flavorData);
             });
         }
+    }
+}
+
+// Zobrazit slider pro konkrétní příchuť a nastavit rozsah
+function showFlavorSliderWithRange(inputId, flavorData) {
+    // Mapování autocomplete inputu na slider container a slider
+    const sliderMapping = {
+        'flavorAutocomplete': {
+            containerId: 'flavorStrengthContainer',
+            sliderId: 'flavorStrength',
+            valueId: 'flavorValue',
+            descriptionId: 'flavorDescription'
+        },
+        'proFlavorAutocomplete1': {
+            containerId: 'proFlavorStrengthContainer1',
+            sliderId: 'proFlavorStrength1',
+            valueId: 'proFlavorValue1',
+            descriptionId: null
+        },
+        'proFlavorAutocomplete2': {
+            containerId: 'proFlavorStrengthContainer2',
+            sliderId: 'proFlavorStrength2',
+            valueId: 'proFlavorValue2',
+            descriptionId: null
+        },
+        'proFlavorAutocomplete3': {
+            containerId: 'proFlavorStrengthContainer3',
+            sliderId: 'proFlavorStrength3',
+            valueId: 'proFlavorValue3',
+            descriptionId: null
+        },
+        'proFlavorAutocomplete4': {
+            containerId: 'proFlavorStrengthContainer4',
+            sliderId: 'proFlavorStrength4',
+            valueId: 'proFlavorValue4',
+            descriptionId: null
+        },
+        'shFlavorAutocomplete1': {
+            containerId: 'shFlavorStrengthContainer1',
+            sliderId: 'shFlavorStrength1',
+            valueId: 'shFlavorValue1',
+            descriptionId: 'shFlavorStrengthDisplay1'
+        },
+        'shFlavorAutocomplete2': {
+            containerId: 'shFlavorStrengthContainer2',
+            sliderId: 'shFlavorStrength2',
+            valueId: 'shFlavorValue2',
+            descriptionId: 'shFlavorStrengthDisplay2'
+        },
+        'shFlavorAutocomplete3': {
+            containerId: 'shFlavorStrengthContainer3',
+            sliderId: 'shFlavorStrength3',
+            valueId: 'shFlavorValue3',
+            descriptionId: 'shFlavorStrengthDisplay3'
+        },
+        'shFlavorAutocomplete4': {
+            containerId: 'shFlavorStrengthContainer4',
+            sliderId: 'shFlavorStrength4',
+            valueId: 'shFlavorValue4',
+            descriptionId: 'shFlavorStrengthDisplay4'
+        }
+    };
+    
+    const mapping = sliderMapping[inputId];
+    if (!mapping) return;
+    
+    const container = document.getElementById(mapping.containerId);
+    const slider = document.getElementById(mapping.sliderId);
+    const valueDisplay = document.getElementById(mapping.valueId);
+    const descriptionDisplay = mapping.descriptionId ? document.getElementById(mapping.descriptionId) : null;
+    
+    if (!container || !slider) return;
+    
+    // Zobrazit container
+    container.classList.remove('hidden');
+    
+    // Nastavit rozsah slideru dle příchutě
+    const minPercent = flavorData.min_percent || 5;
+    const maxPercent = flavorData.max_percent || 20;
+    const recommendedPercent = flavorData.recommended_percent || ((minPercent + maxPercent) / 2);
+    
+    // Uložit původní min/max do data atributů
+    slider.dataset.flavorMin = minPercent;
+    slider.dataset.flavorMax = maxPercent;
+    slider.dataset.flavorRecommended = recommendedPercent;
+    
+    // Nastavit hodnotu na doporučenou
+    slider.value = recommendedPercent;
+    
+    // Aktualizovat zobrazení hodnoty
+    if (valueDisplay) {
+        valueDisplay.textContent = Math.round(recommendedPercent);
+    }
+    
+    // Aktualizovat popis
+    if (descriptionDisplay) {
+        updateFlavorSliderDescription(slider.value, minPercent, maxPercent, descriptionDisplay);
+    } else if (inputId === 'flavorAutocomplete') {
+        // Pro Liquid formulář aktualizovat přes updateFlavorDisplay
+        updateFlavorDisplay();
+    }
+    
+    // Přepočítat recept
+    if (inputId === 'flavorAutocomplete') {
+        calculateLiquid();
+    } else if (inputId.startsWith('proFlavor')) {
+        const index = inputId.match(/\d+/)?.[0];
+        if (index) updateProFlavorStrength(parseInt(index));
+    } else if (inputId.startsWith('shFlavor')) {
+        const index = inputId.match(/\d+/)?.[0];
+        if (index) updateShishaFlavorStrength(parseInt(index));
+    }
+}
+
+// Aktualizovat popis slideru dle rozsahu konkrétní příchutě
+function updateFlavorSliderDescription(value, minPercent, maxPercent, descriptionElement) {
+    const percent = parseFloat(value);
+    let description = '';
+    let className = '';
+    
+    if (percent < minPercent) {
+        description = t('flavor_description.too_low', 'Pod doporučeným rozsahem ({min}-{max}%)')
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
+        className = 'warning';
+    } else if (percent > maxPercent) {
+        description = t('flavor_description.too_high', 'Nad doporučeným rozsahem ({min}-{max}%)')
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
+        className = 'warning';
+    } else {
+        description = t('flavor_description.ideal_range', 'Ideální rozsah ({min}-{max}%)')
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
+        className = 'ideal';
+    }
+    
+    if (descriptionElement) {
+        descriptionElement.textContent = description;
+        descriptionElement.className = 'flavor-description ' + className;
     }
 }
 

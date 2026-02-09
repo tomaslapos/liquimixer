@@ -574,6 +574,7 @@
     "weak": "Slabá až žádná chuť (doporučeno {min}–{max}%)",
     "strong": "Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)",
     "ideal": "Ideální chuť ({min}–{max}%) - {note}",
+    "ideal_specific": "Ideální chuť ({min}–{max}%) - {note}",
     "note_none": "Čistá báze PG/VG + nikotin",
     "note_fruit": "Optimum: 10%, zrání 3–7 dní",
     "note_citrus": "Silné kyseliny, méně stačí",
@@ -588,7 +589,15 @@
     "note_drink": "Osvěžující, rychlé zrání",
     "note_tobaccosweet": "Kombinace vyžaduje 2+ týdny steepingu",
     "note_nuts": "Krémové, vyžaduje 1–2 týdny zrání",
-    "note_spice": "Kořeněné, opatrně s koncentrací"
+    "note_spice": "Kořeněné, opatrně s koncentrací",
+    "too_low": "Pod doporučeným rozsahem ({min}-{max}%)",
+    "too_high": "Nad doporučeným rozsahem ({min}-{max}%)",
+    "ideal_range": "Ideální rozsah ({min}-{max}%)"
+  },
+  "flavor_description": {
+    "too_low": "Pod doporučeným rozsahem ({min}-{max}%)",
+    "too_high": "Nad doporučeným rozsahem ({min}-{max}%)",
+    "ideal_range": "Ideální rozsah ({min}-{max}%)"
   },
   "save_recipe": {
     "title": "Uložit recept",
@@ -986,7 +995,7 @@
     "from_database": "Veřejná databáze",
     "no_specific": "Nezadat konkrétní příchuť",
     "no_results": "Žádné odpovídající příchutě",
-    "search_placeholder": "Hledat nebo vybrat příchuť..."
+    "search_placeholder": "Hledat dle názvu nebo výrobce (např. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Ovocná",
