@@ -3123,12 +3123,13 @@ function extractRecipeFlavorsForDisplay(recipeData) {
         for (const flavor of recipeData.flavors) {
             if (flavor.type && flavor.type !== 'none') {
                 const flavorInfo = {
-                    name: flavor.name || null,
-                    manufacturer: flavor.manufacturer || null,
+                    // Hledat jak 'name' tak 'flavorName' pro kompatibilitu
+                    name: flavor.flavorName || flavor.name || null,
+                    manufacturer: flavor.flavorManufacturer || flavor.manufacturer || null,
                     category: flavor.type,
                     percent: flavor.percent || 0,
                     flavorId: flavor.flavorId || null,
-                    flavorSource: flavor.source || 'generic'
+                    flavorSource: flavor.flavorSource || flavor.source || 'generic'
                 };
                 
                 // Zamezit duplicitám
@@ -9529,14 +9530,49 @@ function getProFlavorsData() {
         const typeEl = document.getElementById(`proFlavorType${i}`);
         const strengthEl = document.getElementById(`proFlavorStrength${i}`);
         const ratioEl = document.getElementById(`proFlavorRatioSlider${i}`);
+        const autocomplete = document.getElementById(`proFlavorAutocomplete${i}`);
         
-        if (typeEl && typeEl.value !== 'none') {
-            flavors.push({
+        // Zkontrolovat zda je vybraná konkrétní příchuť z autocomplete
+        let specificFlavorName = null;
+        let specificFlavorManufacturer = null;
+        let specificFlavorId = null;
+        let specificFlavorSource = 'generic';
+        
+        if (autocomplete && autocomplete.dataset.flavorData) {
+            try {
+                const flavorData = JSON.parse(autocomplete.dataset.flavorData);
+                if (flavorData && flavorData.name) {
+                    specificFlavorName = flavorData.name;
+                    specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
+                    specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
+                    specificFlavorSource = autocomplete.dataset.flavorSource || 'database';
+                }
+            } catch (e) {
+                console.log('Error parsing PRO flavor data:', e);
+            }
+        }
+        
+        // Příchuť je aktivní buď když je vybraná kategorie NEBO konkrétní příchuť
+        const hasCategory = typeEl && typeEl.value !== 'none';
+        const hasSpecific = specificFlavorName !== null;
+        
+        if (hasCategory || hasSpecific) {
+            const flavorEntry = {
                 index: i,
-                type: typeEl.value,
+                type: typeEl?.value || 'fruit',
                 percent: parseInt(strengthEl?.value) || 10,
                 vgRatio: parseInt(ratioEl?.value) || 0
-            });
+            };
+            
+            // Přidat info o konkrétní příchuti
+            if (specificFlavorName) {
+                flavorEntry.flavorName = specificFlavorName;
+                flavorEntry.flavorManufacturer = specificFlavorManufacturer;
+                flavorEntry.flavorId = specificFlavorId;
+                flavorEntry.flavorSource = specificFlavorSource;
+            }
+            
+            flavors.push(flavorEntry);
         }
     }
     
