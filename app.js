@@ -14652,9 +14652,23 @@ function calculateShishaMix() {
         if (baseVolume > 0) {
             // The base fills the remaining volume
             premixedBaseVolume = baseVolume;
-            // Adjust pure VG/PG based on premixed base composition
-            pureVgVolume = Math.max(0, pureVgVolume - (premixedBaseVolume * premixedVg / 100));
-            purePgVolume = Math.max(0, purePgVolume - (premixedBaseVolume * premixedPg / 100));
+            
+            // Skutečný VG/PG poměr ze všech složek
+            const premixedVgVolume = premixedBaseVolume * (premixedVg / 100);
+            const premixedPgVolume = premixedBaseVolume * (premixedPg / 100);
+            const actualVgFromAll = nicotineVgVolume + totalFlavorVgVolume + premixedVgVolume;
+            const actualVgPercent = (actualVgFromAll / totalAmount) * 100;
+            
+            // V PREMIXED módu: slider vždy zobrazuje skutečný poměr
+            const ratioSlider = document.getElementById('shVgPgRatio');
+            if (ratioSlider) {
+                ratioSlider.value = Math.round(actualVgPercent);
+                updateShishaRatioDisplay();
+            }
+            
+            // V PREMIXED módu se doladění NEPŘIDÁVÁ
+            pureVgVolume = 0;
+            purePgVolume = 0;
         }
     } else {
         // SEPARATE PG/VG MODE
