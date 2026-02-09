@@ -206,6 +206,8 @@
     "flavor_tobaccosweet": "Tabak + sladké (custard tobacco)",
     "flavor_nuts": "Oriešky (arašíd, lieskový)",
     "flavor_spice": "Korenené (škorica, perník)",
+    "flavor_cream": "Krémové (vanilka, smotana)",
+    "flavor_mix": "Mix / Zmes",
     "add_flavor": "+ Pridať ďalšiu príchuť",
     "remove_flavor": "Odobrať príchuť",
     "flavor_count_hint": "(max 4 príchute)",

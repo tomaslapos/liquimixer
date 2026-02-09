@@ -7947,17 +7947,16 @@ body.subscription-required #subscriptionModal {
    ============================================= */
 
 .flavor-autocomplete-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 300px;
+    /* Změna z absolute na normální flow - posune ostatní elementy dolů */
+    position: relative;
+    width: 100%;
+    max-height: 250px;
     overflow-y: auto;
     background: var(--bg-secondary);
     border: 1px solid rgba(0, 255, 255, 0.3);
     border-radius: var(--border-radius-small);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    z-index: 9999;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    margin-top: 5px;
 }
 
 .flavor-autocomplete-dropdown.hidden {
@@ -8027,21 +8026,6 @@ body.subscription-required #subscriptionModal {
 .flavor-autocomplete-wrapper {
     position: relative;
     margin-top: 10px;
-    z-index: 500;
-}
-
-/* Ensure containers don't clip the autocomplete dropdown */
-.form-group,
-.flavor-container,
-.form-section,
-.calculator-step {
-    overflow: visible !important;
-}
-
-/* When autocomplete is open, parent should have higher z-index */
-.flavor-container:has(.flavor-autocomplete-dropdown:not(.hidden)) {
-    z-index: 1000;
-    position: relative;
 }
 
 .flavor-search-input {
