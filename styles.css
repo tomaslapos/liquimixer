@@ -3562,6 +3562,22 @@ body {
     min-width: 120px;
 }
 
+/* Zašedlý select - při výběru konkrétní příchutě */
+.neon-select:disabled,
+.neon-select.disabled-by-flavor {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: rgba(20, 20, 30, 0.5);
+    border-color: rgba(100, 100, 100, 0.3);
+    color: var(--text-secondary);
+}
+
+.neon-select:disabled:hover,
+.neon-select.disabled-by-flavor:hover {
+    border-color: rgba(100, 100, 100, 0.3);
+    box-shadow: none;
+}
+
 .form-label-small {
     display: block;
     font-family: 'Exo 2', sans-serif;
@@ -8013,13 +8029,20 @@ body.subscription-required #subscriptionModal {
 }
 
 .autocomplete-item.no-specific {
-    border-top: 1px solid rgba(0, 255, 255, 0.15);
     color: var(--text-secondary);
     font-style: italic;
 }
 
+.autocomplete-item.no-specific.highlighted {
+    background: rgba(0, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    color: var(--neon-cyan);
+    font-style: normal;
+    font-weight: 500;
+}
+
 .autocomplete-item.no-specific:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 255, 255, 0.2);
 }
 
 /* Flavor autocomplete wrapper in recipe forms */

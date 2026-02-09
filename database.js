@@ -2247,6 +2247,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                 .select('*')
                 .eq('clerk_id', clerkId)
                 .eq('product_type', 'flavor')
+                .eq('flavor_product_type', productType) // Filtrovat dle typu receptu (vape/shisha)
                 .limit(limit);
             
             if (searchTerm && searchTerm.trim().length >= 2) {
@@ -2277,13 +2278,14 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
             .from('flavors')
             .select('*, flavor_manufacturers(name)')
             .eq('status', 'active')
+            .eq('product_type', productType) // Filtrovat dle typu receptu (vape/shisha)
             .limit(limit);
         
         if (searchTerm && searchTerm.trim().length >= 2) {
             dbQuery = dbQuery.ilike('name', `%${searchTerm.trim()}%`);
         }
         
-        // Preferovat příchutě odpovídajícího typu
+        // Řadit dle počtu použití
         dbQuery = dbQuery.order('usage_count', { ascending: false });
         
         const { data: dbData, error: dbError } = await dbQuery;
