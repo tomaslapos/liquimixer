@@ -936,17 +936,19 @@
     "rejected_body": "Your flavor {name} was not added. Reason: {reason}"
   },
   "flavor_form": {
+    "section_title": "Flavor Settings",
     "manufacturer_label": "Manufacturer *",
     "manufacturer_placeholder": "Select manufacturer",
     "manufacturer_required": "Please select a manufacturer",
-    "product_type_label": "Flavor type *",
-    "product_type_vape": "Vape flavor",
-    "product_type_shisha": "Shisha flavor",
-    "product_type_required": "Please select flavor type",
+    "product_type_label": "Intended for *",
+    "product_type_vape": "Vape liquid",
+    "product_type_shisha": "Shisha mix",
+    "product_type_required": "Please select intended use",
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
-    "category_label": "Flavor category",
+    "category_label": "Flavor category *",
+    "category_placeholder": "-- Select category --",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {

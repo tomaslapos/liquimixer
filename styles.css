@@ -7983,6 +7983,58 @@ body.subscription-required #subscriptionModal {
     background: rgba(255, 255, 255, 0.05);
 }
 
+/* Flavor autocomplete wrapper in recipe forms */
+.flavor-autocomplete-wrapper {
+    position: relative;
+    margin-top: 10px;
+}
+
+.flavor-search-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+}
+
+.flavor-search-input::placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Selected flavor display */
+.flavor-selected-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: var(--border-radius-small);
+    font-size: 0.85rem;
+}
+
+.flavor-selected-info .flavor-name {
+    flex: 1;
+    color: var(--neon-cyan);
+    font-weight: 500;
+}
+
+.flavor-selected-info .clear-flavor {
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 2px 6px;
+}
+
+.flavor-selected-info .clear-flavor:hover {
+    color: var(--neon-pink);
+}
+
+.autocomplete-empty {
+    padding: 15px 12px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
 .autocomplete-empty {
     padding: 15px 12px;
     color: var(--text-secondary);

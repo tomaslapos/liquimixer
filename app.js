@@ -990,6 +990,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Listener pro zprávy od Service Workeru (upozornění na novou verzi)
     setupServiceWorkerListener();
+    
+    // Inicializovat flavor autocomplete pro formuláře receptů
+    initRecipeFlavorAutocomplete();
 });
 
 // Nastavit listener pro zprávy od Service Workeru
@@ -11861,12 +11864,13 @@ function renderFlavorCard(flavor) {
         percentRange = `${flavor.recommended_percent}%`;
     }
     
-    // Hodnocení
+    // Hodnocení a rating class (stejná logika jako recepty)
     const rating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '-';
     const ratingStars = flavor.avg_rating ? '★'.repeat(Math.round(flavor.avg_rating)) + '☆'.repeat(5 - Math.round(flavor.avg_rating)) : '☆☆☆☆☆';
+    const ratingClass = flavor.avg_rating ? `rating-${Math.round(flavor.avg_rating)}` : 'rating-0';
     
     return `
-        <div class="recipe-card flavor-card" onclick="showFlavorDetail('${flavor.id}')">
+        <div class="recipe-card flavor-card ${ratingClass}" onclick="showFlavorDetail('${flavor.id}')">
             <div class="recipe-card-header">
                 <h3 class="recipe-card-title">${escapeHtml(flavor.name)}</h3>
                 <span class="flavor-type-badge ${typeClass}">${typeLabel}</span>
@@ -12328,6 +12332,36 @@ function selectNoSpecificFlavor(inputId) {
     
     if (dropdown) {
         dropdown.classList.add('hidden');
+    }
+}
+
+// Inicializovat flavor autocomplete pro všechny formuláře receptů
+function initRecipeFlavorAutocomplete() {
+    // Liquid formulář
+    if (document.getElementById('flavorAutocomplete')) {
+        initFlavorAutocomplete('flavorAutocomplete', 'liquid', (flavorData) => {
+            console.log('Selected flavor:', flavorData);
+        });
+    }
+    
+    // Liquid PRO - příchutě 1-4
+    for (let i = 1; i <= 4; i++) {
+        const inputId = `proFlavorAutocomplete${i}`;
+        if (document.getElementById(inputId)) {
+            initFlavorAutocomplete(inputId, 'liquid_pro', (flavorData) => {
+                console.log('Selected PRO flavor', i, flavorData);
+            });
+        }
+    }
+    
+    // Shisha - příchutě 1-4
+    for (let i = 1; i <= 4; i++) {
+        const inputId = `shFlavorAutocomplete${i}`;
+        if (document.getElementById(inputId)) {
+            initFlavorAutocomplete(inputId, 'shisha', (flavorData) => {
+                console.log('Selected Shisha flavor', i, flavorData);
+            });
+        }
     }
 }
 
