@@ -5853,6 +5853,26 @@ function updateVgPgRatioLimits() {
     const flavorType = flavorTypeSelect.value;
     const flavorPercent = flavorType !== 'none' ? parseFloat(flavorStrengthSlider.value) : 0;
     
+    // Získat informace o konkrétní příchuti (pokud je vybraná)
+    const flavorAutocomplete = document.getElementById('flavorAutocomplete');
+    let specificFlavorName = null;
+    let specificFlavorManufacturer = null;
+    let specificFlavorVgRatio = null;
+    
+    if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
+        try {
+            const flavorData = JSON.parse(flavorAutocomplete.dataset.flavorData);
+            if (flavorData && flavorData.name) {
+                specificFlavorName = flavorData.name;
+                specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
+                // Většina aromat je 100% PG (0% VG)
+                specificFlavorVgRatio = flavorData.vg_ratio !== undefined ? flavorData.vg_ratio : 0;
+            }
+        } catch (e) {
+            console.log('Error parsing flavor data:', e);
+        }
+    }
+    
     // Calculate nicotine volume
     let nicotineVolume = 0;
     if (nicotineType !== 'none' && targetNicotine > 0 && baseNicotine > 0) {
@@ -6229,7 +6249,12 @@ function getIngredientName(ingredient) {
             // Použít flavorName pokud existuje, jinak přeložit flavorType
             let displayFlavorName;
             if (ingredient.flavorName) {
-                displayFlavorName = ingredient.flavorName;
+                // Konkrétní příchuť - přidat výrobce pokud existuje
+                if (ingredient.flavorManufacturer) {
+                    displayFlavorName = `${ingredient.flavorName} (${ingredient.flavorManufacturer})`;
+                } else {
+                    displayFlavorName = ingredient.flavorName;
+                }
             } else {
                 displayFlavorName = getFlavorName(ingredient.flavorType || 'fruit');
             }
@@ -6536,7 +6561,7 @@ function calculateMix() {
         // Add flavor to ingredients
         if (flavorVolume > 0) {
             const flavorRatioValue = document.getElementById('flavorRatio').value;
-            ingredients.push({
+            const flavorIngredient = {
                 ingredientKey: 'flavor',
                 flavorType: flavorType,
                 params: {
@@ -6544,7 +6569,15 @@ function calculateMix() {
                 },
                 volume: flavorVolume,
                 percent: (flavorVolume / totalAmount) * 100
-            });
+            };
+            
+            // Přidat info o konkrétní příchuti pokud existuje
+            if (specificFlavorName) {
+                flavorIngredient.flavorName = specificFlavorName;
+                flavorIngredient.flavorManufacturer = specificFlavorManufacturer;
+            }
+            
+            ingredients.push(flavorIngredient);
         }
         
         // Add premixed base
@@ -6616,7 +6649,7 @@ function calculateMix() {
         // Add flavor to ingredients
         if (flavorVolume > 0) {
             const flavorRatioValue = document.getElementById('flavorRatio').value;
-            ingredients.push({
+            const flavorIngredient = {
                 ingredientKey: 'flavor',
                 flavorType: flavorType,
                 params: {
@@ -6624,7 +6657,15 @@ function calculateMix() {
                 },
                 volume: flavorVolume,
                 percent: (flavorVolume / totalAmount) * 100
-            });
+            };
+            
+            // Přidat info o konkrétní příchuti pokud existuje
+            if (specificFlavorName) {
+                flavorIngredient.flavorName = specificFlavorName;
+                flavorIngredient.flavorManufacturer = specificFlavorManufacturer;
+            }
+            
+            ingredients.push(flavorIngredient);
         }
 
         // Add carrier liquids
