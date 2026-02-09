@@ -5,28 +5,29 @@
 -- =====================================================
 
 -- Nejprve zajistit existenci výrobců
-INSERT INTO flavor_manufacturers (code, name, country, website, product_types)
+-- Tabulka má sloupce: code, name, country_code (2 znaky), type (vape/shisha/both), website
+INSERT INTO flavor_manufacturers (code, name, country_code, type, website)
 VALUES 
-    ('TPA', 'The Flavor Apprentice', 'USA', 'https://shop.perfumersapprentice.com', ARRAY['vape']),
-    ('CAP', 'Capella Flavors', 'USA', 'https://capellaflavors.com', ARRAY['vape']),
-    ('FA', 'FlavourArt', 'Italy', 'https://flavourart.com', ARRAY['vape']),
-    ('FLV', 'Flavorah', 'USA', 'https://flavorah.com', ARRAY['vape']),
-    ('INW', 'Inawera', 'Poland', 'https://inaweraflavours.com', ARRAY['vape']),
-    ('JF', 'Jungle Flavors', 'USA', 'https://jungleflavors.com', ARRAY['vape']),
-    ('WF', 'Wonder Flavours', 'Canada', 'https://wonderflavours.com', ARRAY['vape']),
-    ('LB', 'LorAnn', 'USA', 'https://www.lorannoils.com', ARRAY['vape']),
-    ('MF', 'Medicine Flower', 'USA', 'https://www.medicineflower.com', ARRAY['vape']),
-    ('OOO', 'One on One', 'USA', 'https://www.ecigexpress.com', ARRAY['vape']),
-    ('ALF', 'Al Fakher', 'UAE', 'https://www.alfakher.com', ARRAY['shisha']),
-    ('ADA', 'Adalya', 'Germany', 'https://www.adalya.de', ARRAY['shisha']),
-    ('STB', 'Starbuzz', 'USA', 'https://www.starbuzztobacco.com', ARRAY['shisha']),
-    ('FUM', 'Fumari', 'USA', 'https://www.fumari.com', ARRAY['shisha']),
-    ('DRK', 'Darkside', 'Russia', 'https://www.darkside.ru', ARRAY['shisha']),
-    ('TGO', 'Tangiers', 'USA', 'https://www.tangiers.us', ARRAY['shisha']),
-    ('HOL', 'Holster', 'Germany', 'https://www.holster-tobacco.com', ARRAY['shisha']),
-    ('MZO', 'Mazaya', 'Jordan', 'https://www.mazaya.com', ARRAY['shisha']),
-    ('NAK', 'Nakhla', 'Egypt', 'https://www.nakhla.com', ARRAY['shisha']),
-    ('ARG', 'Argelini', 'Turkey', 'https://www.argelini.com', ARRAY['shisha'])
+    ('TPA', 'The Flavor Apprentice', 'US', 'vape', 'https://shop.perfumersapprentice.com'),
+    ('CAP', 'Capella Flavors', 'US', 'vape', 'https://capellaflavors.com'),
+    ('FA', 'FlavourArt', 'IT', 'vape', 'https://flavourart.com'),
+    ('FLV', 'Flavorah', 'US', 'vape', 'https://flavorah.com'),
+    ('INW', 'Inawera', 'PL', 'vape', 'https://inaweraflavours.com'),
+    ('JF', 'Jungle Flavors', 'US', 'vape', 'https://jungleflavors.com'),
+    ('WF', 'Wonder Flavours', 'CA', 'vape', 'https://wonderflavours.com'),
+    ('LB', 'LorAnn', 'US', 'vape', 'https://www.lorannoils.com'),
+    ('MF', 'Medicine Flower', 'US', 'vape', 'https://www.medicineflower.com'),
+    ('OOO', 'One on One', 'US', 'vape', 'https://www.ecigexpress.com'),
+    ('ALF', 'Al Fakher', 'AE', 'shisha', 'https://www.alfakher.com'),
+    ('ADA', 'Adalya', 'DE', 'shisha', 'https://www.adalya.de'),
+    ('STB', 'Starbuzz', 'US', 'shisha', 'https://www.starbuzztobacco.com'),
+    ('FUM', 'Fumari', 'US', 'shisha', 'https://www.fumari.com'),
+    ('DRK', 'Darkside', 'RU', 'shisha', 'https://www.darkside.ru'),
+    ('TGO', 'Tangiers', 'US', 'shisha', 'https://www.tangiers.us'),
+    ('HOL', 'Holster', 'DE', 'shisha', 'https://www.holster-tobacco.com'),
+    ('MZO', 'Mazaya', 'JO', 'shisha', 'https://www.mazaya.com'),
+    ('NAK', 'Nakhla', 'EG', 'shisha', 'https://www.nakhla.com'),
+    ('ARG', 'Argelini', 'TR', 'shisha', 'https://www.argelini.com')
 ON CONFLICT (code) DO NOTHING;
 
 -- =====================================================
