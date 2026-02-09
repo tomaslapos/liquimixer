@@ -1137,6 +1137,15 @@
                             <option value="nuts" data-i18n="form.flavor_nuts">Oříškové (arašíd, lískový)</option>
                             <option value="spice" data-i18n="form.flavor_spice">Kořeněné (skořice, perník)</option>
                         </select>
+                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze -->
+                        <div class="flavor-autocomplete-wrapper" id="flavorAutocompleteWrapper">
+                            <input type="text" 
+                                   id="flavorAutocomplete" 
+                                   class="login-input flavor-search-input" 
+                                   data-i18n-placeholder="flavor_autocomplete.search_placeholder"
+                                   placeholder="Hledat konkrétní příchuť..."
+                                   autocomplete="off">
+                        </div>
                         <div id="flavorStrengthContainer" class="hidden">
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustFlavor(-1)">◀</button>
@@ -1508,6 +1517,10 @@
                             <option value="nuts" data-i18n="form.flavor_nuts">Oříškové (arašíd, lískový)</option>
                             <option value="spice" data-i18n="form.flavor_spice">Kořeněné (skořice, perník)</option>
                         </select>
+                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze -->
+                        <div class="flavor-autocomplete-wrapper">
+                            <input type="text" id="proFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                        </div>
                         <div id="proFlavorStrengthContainer1" class="hidden">
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustProFlavor(1, -1)">◀</button>
@@ -1895,6 +1908,10 @@
                             <option value="rose" data-i18n="shisha.flavor_rose">Růže</option>
                             <option value="custom" data-i18n="form.custom">Vlastní</option>
                         </select>
+                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze -->
+                        <div class="flavor-autocomplete-wrapper">
+                            <input type="text" id="shFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                        </div>
                         <div id="shFlavorStrengthContainer1" class="hidden">
                             <div class="slider-container small">
                                 <button class="slider-btn small" onclick="adjustShishaFlavor(1, -1)">◀</button>
@@ -2816,9 +2833,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="productFlavorCategory" data-i18n="flavor_form.category_label">Kategorie příchutě</label>
-                        <select id="productFlavorCategory" class="product-select">
-                            <option value="">-- Vyberte kategorii --</option>
+                        <label for="productFlavorCategory" data-i18n="flavor_form.category_label">Kategorie příchutě *</label>
+                        <select id="productFlavorCategory" class="product-select" required>
+                            <option value="" data-i18n="flavor_form.category_placeholder">-- Vyberte kategorii --</option>
                             <option value="fruit" data-i18n="flavor_categories.fruit">Ovocná</option>
                             <option value="citrus" data-i18n="flavor_categories.citrus">Citrusová</option>
                             <option value="berry" data-i18n="flavor_categories.berry">Lesní plody</option>
@@ -2839,17 +2856,17 @@
                     <div class="form-row">
                         <div class="form-group half">
                             <label for="productFlavorMinPercent" data-i18n="flavor_form.min_percent_label">Min %</label>
-                            <input type="number" id="productFlavorMinPercent" min="0" max="100" step="0.5" placeholder="0">
+                            <input type="number" id="productFlavorMinPercent" class="login-input" min="0" max="100" step="0.5" placeholder="0">
                         </div>
                         <div class="form-group half">
                             <label for="productFlavorMaxPercent" data-i18n="flavor_form.max_percent_label">Max %</label>
-                            <input type="number" id="productFlavorMaxPercent" min="0" max="100" step="0.5" placeholder="20">
+                            <input type="number" id="productFlavorMaxPercent" class="login-input" min="0" max="100" step="0.5" placeholder="20">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="productFlavorSteepDays" data-i18n="flavor_form.steep_days_label">Doba zrání (dny)</label>
-                        <input type="number" id="productFlavorSteepDays" min="0" max="90" step="1" value="7" placeholder="7">
+                        <input type="number" id="productFlavorSteepDays" class="login-input" min="0" max="90" step="1" value="7" placeholder="7">
                     </div>
                     
                     <!-- Toggle pro návrh do databáze -->

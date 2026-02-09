@@ -926,17 +926,19 @@
     "rejected_body": "Ihr Aroma {name} wurde nicht hinzugefügt. Grund: {reason}"
   },
   "flavor_form": {
+    "section_title": "Aromaeinstellungen",
     "manufacturer_label": "Hersteller *",
     "manufacturer_placeholder": "Hersteller auswählen",
     "manufacturer_required": "Bitte wählen Sie einen Hersteller",
-    "product_type_label": "Aromatyp *",
-    "product_type_vape": "Vape-Aroma",
-    "product_type_shisha": "Shisha-Aroma",
-    "product_type_required": "Bitte wählen Sie einen Aromatyp",
+    "product_type_label": "Bestimmt für *",
+    "product_type_vape": "Vape-Liquid",
+    "product_type_shisha": "Shisha-Mischung",
+    "product_type_required": "Bitte wählen Sie die Verwendung",
     "steep_days_label": "Reifezeit (Tage)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
-    "category_label": "Aromakategorie",
+    "category_label": "Aromakategorie *",
+    "category_placeholder": "-- Kategorie wählen --",
     "type_conflict_warning": "Dieses Aroma ist für {type}. Möchten Sie es wirklich in diesem Rezept verwenden?"
   },
   "flavor_autocomplete": {

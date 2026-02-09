@@ -943,17 +943,19 @@
     "rejected_body": "Vaša príchuť {name} nebola pridaná. Dôvod: {reason}"
   },
   "flavor_form": {
+    "section_title": "Nastavenie príchute",
     "manufacturer_label": "Výrobca *",
     "manufacturer_placeholder": "Vyberte výrobcu",
     "manufacturer_required": "Vyberte prosím výrobcu",
-    "product_type_label": "Typ príchute *",
-    "product_type_vape": "Vape príchuť",
-    "product_type_shisha": "Shisha príchuť",
-    "product_type_required": "Vyberte prosím typ príchute",
+    "product_type_label": "Určené pre *",
+    "product_type_vape": "Vape liquid",
+    "product_type_shisha": "Shisha zmes",
+    "product_type_required": "Vyberte prosím určenie príchute",
     "steep_days_label": "Doba zrenia (dni)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
-    "category_label": "Kategória príchute",
+    "category_label": "Kategória príchute *",
+    "category_placeholder": "-- Vyberte kategóriu --",
     "type_conflict_warning": "Táto príchuť je určená pre {type}. Naozaj ju chcete použiť v tomto recepte?"
   },
   "flavor_autocomplete": {
