@@ -2848,6 +2848,9 @@ async function showSaveRecipeModal() {
             window.i18n.applyTranslations();
         }
         
+        // Naplnit použité příchutě z receptu
+        populateRecipeFlavors();
+        
         // Načíst oblíbené produkty pro výběr
         await loadProductsForRecipe();
     }
@@ -3061,6 +3064,191 @@ async function loadProductsForRecipe() {
     }
 }
 
+// Počítadlo pro řádky příchutí
+let selectedFlavorRows = 0;
+
+// Naplnit příchutě z aktuálního receptu do formuláře ukládání
+function populateRecipeFlavors() {
+    const listContainer = document.getElementById('selectedFlavorsList');
+    if (!listContainer) return;
+    
+    // Vyčistit seznam
+    listContainer.innerHTML = '';
+    selectedFlavorRows = 0;
+    
+    if (!currentRecipeData) {
+        listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recept neobsahuje příchutě')}</div>`;
+        return;
+    }
+    
+    const flavors = extractRecipeFlavorsForDisplay(currentRecipeData);
+    
+    if (flavors.length === 0) {
+        listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recept neobsahuje příchutě')}</div>`;
+        return;
+    }
+    
+    // Přidat řádek pro každou příchuť
+    flavors.forEach((flavor, index) => {
+        addFlavorRowToModal(flavor, index);
+    });
+}
+
+// Extrahovat příchutě z receptu pro zobrazení v modalu
+function extractRecipeFlavorsForDisplay(recipeData) {
+    if (!recipeData) return [];
+    
+    const flavors = [];
+    
+    // Z ingredients
+    if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
+        for (const ingredient of recipeData.ingredients) {
+            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor') {
+                const flavorInfo = {
+                    name: ingredient.flavorName || null,
+                    manufacturer: ingredient.flavorManufacturer || null,
+                    category: ingredient.flavorType || 'fruit',
+                    percent: ingredient.percent || 0,
+                    flavorId: ingredient.flavorId || null,
+                    flavorSource: ingredient.flavorSource || 'generic'
+                };
+                flavors.push(flavorInfo);
+            }
+        }
+    }
+    
+    // Z flavors array (Liquid PRO, Shisha)
+    const formType = recipeData.formType || 'liquid';
+    if ((formType === 'liquidpro' || formType === 'shisha') && recipeData.flavors && Array.isArray(recipeData.flavors)) {
+        for (const flavor of recipeData.flavors) {
+            if (flavor.type && flavor.type !== 'none') {
+                const flavorInfo = {
+                    name: flavor.name || null,
+                    manufacturer: flavor.manufacturer || null,
+                    category: flavor.type,
+                    percent: flavor.percent || 0,
+                    flavorId: flavor.flavorId || null,
+                    flavorSource: flavor.source || 'generic'
+                };
+                
+                // Zamezit duplicitám
+                const alreadyExists = flavors.some(f => 
+                    (f.name && f.name === flavorInfo.name) ||
+                    (f.category === flavorInfo.category && !f.name && !flavorInfo.name)
+                );
+                
+                if (!alreadyExists) {
+                    flavors.push(flavorInfo);
+                }
+            }
+        }
+    }
+    
+    // Pokud je jednoduchý formulář (liquid, shakevape) a nebyla nalezena příchut v ingredients
+    if (flavors.length === 0 && recipeData.flavorType && recipeData.flavorType !== 'none') {
+        flavors.push({
+            name: recipeData.specificFlavorName || null,
+            manufacturer: recipeData.specificFlavorManufacturer || null,
+            category: recipeData.flavorType,
+            percent: recipeData.flavorPercent || 0,
+            flavorId: recipeData.specificFlavorId || null,
+            flavorSource: recipeData.specificFlavorSource || 'generic'
+        });
+    }
+    
+    return flavors;
+}
+
+// Přidat řádek příchutě do modalu ukládání
+function addFlavorRowToModal(flavor, index) {
+    const listContainer = document.getElementById('selectedFlavorsList');
+    if (!listContainer) return;
+    
+    selectedFlavorRows++;
+    const rowId = `flavor-row-${selectedFlavorRows}`;
+    
+    // Název příchutě - buď konkrétní nebo z číselníku
+    let displayName = flavor.name || getFlavorName(flavor.category);
+    let manufacturerHtml = '';
+    let categoryHtml = '';
+    
+    if (flavor.manufacturer) {
+        manufacturerHtml = `<span class="flavor-item-manufacturer">${escapeHtml(flavor.manufacturer)}</span>`;
+    }
+    
+    // Kategorie zobrazit jen pokud je konkrétní příchuť
+    if (flavor.name && flavor.category) {
+        categoryHtml = `<span class="flavor-item-category">${getFlavorName(flavor.category)}</span>`;
+    }
+    
+    const percentDisplay = flavor.percent ? `${flavor.percent.toFixed(1)}%` : '';
+    
+    // Uložit data příchutě do hidden inputu
+    const flavorDataJson = JSON.stringify({
+        name: flavor.name,
+        manufacturer: flavor.manufacturer,
+        category: flavor.category,
+        percent: flavor.percent,
+        flavorId: flavor.flavorId,
+        flavorSource: flavor.flavorSource
+    });
+    
+    const rowHtml = `
+        <div class="flavor-item-row" id="${rowId}">
+            <input type="hidden" name="recipeFlavors" value='${escapeHtml(flavorDataJson)}'>
+            <div class="flavor-item-info">
+                <span class="flavor-item-name">${escapeHtml(displayName)}</span>
+                ${manufacturerHtml}
+                ${categoryHtml}
+            </div>
+            ${percentDisplay ? `<span class="flavor-item-percent">${percentDisplay}</span>` : ''}
+            <button type="button" class="remove-flavor-btn" onclick="removeFlavorRow('${rowId}')" title="${t('common.remove', 'Odebrat')}">✕</button>
+        </div>
+    `;
+    
+    listContainer.insertAdjacentHTML('beforeend', rowHtml);
+}
+
+// Odebrat řádek příchutě
+function removeFlavorRow(rowId) {
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.remove();
+        selectedFlavorRows--;
+        
+        // Pokud nezbyly žádné příchutě, zobrazit zprávu
+        const listContainer = document.getElementById('selectedFlavorsList');
+        if (listContainer && listContainer.children.length === 0) {
+            listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recept neobsahuje příchutě')}</div>`;
+        }
+    }
+}
+
+// Získat vybrané příchutě z formuláře pro uložení
+function getSelectedRecipeFlavors() {
+    const inputs = document.querySelectorAll('input[name="recipeFlavors"]');
+    const flavors = [];
+    
+    inputs.forEach((input, index) => {
+        try {
+            const data = JSON.parse(input.value);
+            flavors.push({
+                position: index + 1,
+                percentage: data.percent || 0,
+                flavor_name: data.name || null,
+                flavor_manufacturer: data.manufacturer || null,
+                generic_flavor_type: data.category || 'fruit',
+                flavor_id: data.flavorSource === 'database' ? data.flavorId : null,
+                favorite_product_id: data.flavorSource === 'favorite' ? data.flavorId : null
+            });
+        } catch (e) {
+            console.error('Error parsing flavor data:', e);
+        }
+    });
+    
+    return flavors;
+}
+
 // Přidat řádek pro výběr produktu
 function addProductRow() {
     if (availableProductsForRecipe.length === 0) {
@@ -3175,6 +3363,13 @@ function hideSaveRecipeModal() {
         selectedProductRows = 0;
         availableProductsForRecipe = [];
         
+        // Reset příchutí
+        const flavorListContainer = document.getElementById('selectedFlavorsList');
+        if (flavorListContainer) {
+            flavorListContainer.innerHTML = '';
+        }
+        selectedFlavorRows = 0;
+        
         // Reset režimu úpravy
         window.editingRecipeId = null;
         window.editingRecipeFromDetail = null;
@@ -3238,6 +3433,104 @@ function highlightStars(rating) {
 
 function updateStarDisplay(rating) {
     highlightStars(rating);
+}
+
+// Extrahovat příchutě z receptu pro uložení do recipe_flavors
+function extractRecipeFlavors(recipeData, formType) {
+    if (!recipeData) return [];
+    
+    const flavors = [];
+    
+    // Extrahovat příchutě z ingredients
+    if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
+        let position = 1;
+        for (const ingredient of recipeData.ingredients) {
+            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor') {
+                const flavorEntry = {
+                    position: position++,
+                    percentage: ingredient.percent || 0
+                };
+                
+                // Konkrétní příchuť (z databáze nebo oblíbených)
+                if (ingredient.flavorName) {
+                    flavorEntry.flavor_name = ingredient.flavorName;
+                    flavorEntry.flavor_manufacturer = ingredient.flavorManufacturer || null;
+                    
+                    // Pokud máme flavor_id nebo favorite_product_id
+                    if (ingredient.flavorId) {
+                        // Rozlišit zdroj (databáze vs oblíbené)
+                        if (ingredient.flavorSource === 'favorite') {
+                            flavorEntry.favorite_product_id = ingredient.flavorId;
+                        } else {
+                            flavorEntry.flavor_id = ingredient.flavorId;
+                        }
+                    }
+                } else {
+                    // Generická příchuť z číselníku
+                    flavorEntry.generic_flavor_type = ingredient.flavorType || 'fruit';
+                }
+                
+                flavors.push(flavorEntry);
+            }
+        }
+    }
+    
+    // Extrahovat příchutě z formátů Liquid PRO a Shisha
+    if ((formType === 'liquidpro' || formType === 'shisha') && recipeData.flavors && Array.isArray(recipeData.flavors)) {
+        let position = flavors.length + 1;
+        for (const flavor of recipeData.flavors) {
+            if (flavor.type && flavor.type !== 'none') {
+                const flavorEntry = {
+                    position: position++,
+                    percentage: flavor.percent || 0,
+                    generic_flavor_type: flavor.type
+                };
+                
+                // Pokud má konkrétní příchuť
+                if (flavor.name) {
+                    flavorEntry.flavor_name = flavor.name;
+                    flavorEntry.flavor_manufacturer = flavor.manufacturer || null;
+                }
+                
+                // Zamezit duplicitám
+                const alreadyExists = flavors.some(f => 
+                    f.generic_flavor_type === flavorEntry.generic_flavor_type ||
+                    (f.flavor_name && f.flavor_name === flavorEntry.flavor_name)
+                );
+                
+                if (!alreadyExists) {
+                    flavors.push(flavorEntry);
+                }
+            }
+        }
+    }
+    
+    // Pokud je jednoduchý formulář s jednou příchutí (liquid, shakevape)
+    if (flavors.length === 0 && recipeData.flavorType && recipeData.flavorType !== 'none') {
+        const flavorEntry = {
+            position: 1,
+            percentage: recipeData.flavorPercent || 0,
+            generic_flavor_type: recipeData.flavorType
+        };
+        
+        // Konkrétní příchuť pokud byla vybrána
+        if (recipeData.specificFlavorName) {
+            flavorEntry.flavor_name = recipeData.specificFlavorName;
+            flavorEntry.flavor_manufacturer = recipeData.specificFlavorManufacturer || null;
+            if (recipeData.specificFlavorId) {
+                if (recipeData.specificFlavorSource === 'favorite') {
+                    flavorEntry.favorite_product_id = recipeData.specificFlavorId;
+                } else {
+                    flavorEntry.flavor_id = recipeData.specificFlavorId;
+                }
+            }
+        }
+        
+        flavors.push(flavorEntry);
+    }
+    
+    console.log('[extractRecipeFlavors] Extracted:', flavors);
+    return flavors;
 }
 
 // Uložit recept
@@ -3359,6 +3652,18 @@ async function saveRecipe(event) {
                 );
                 console.log('[saveRecipe] Link products result:', linkResult);
             }
+            
+            // Uložit propojené příchutě (z formuláře - uživatel mohl některé odebrat)
+            const recipeFlavors = getSelectedRecipeFlavors();
+            console.log('[saveRecipe] Flavors from form:', recipeFlavors.length);
+            
+            // Uložit příchutě do databáze
+            const flavorLinkResult = await window.LiquiMixerDB.linkFlavorsToRecipe(
+                window.Clerk.user.id,
+                recipeId,
+                recipeFlavors
+            );
+            console.log('[saveRecipe] Link flavors result:', flavorLinkResult);
             
             // Uložit připomínku zrání (pouze pro nové recepty)
             let reminderInfo = '';
@@ -5858,6 +6163,8 @@ function updateVgPgRatioLimits() {
     let specificFlavorName = null;
     let specificFlavorManufacturer = null;
     let specificFlavorVgRatio = null;
+    let specificFlavorId = null;
+    let specificFlavorSource = 'generic';
     
     if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
         try {
@@ -5867,6 +6174,9 @@ function updateVgPgRatioLimits() {
                 specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
                 // Většina aromat je 100% PG (0% VG)
                 specificFlavorVgRatio = flavorData.vg_ratio !== undefined ? flavorData.vg_ratio : 0;
+                // ID a zdroj příchutě
+                specificFlavorId = flavorData.id || flavorAutocomplete.dataset.flavorId || null;
+                specificFlavorSource = flavorAutocomplete.dataset.flavorSource || 'database';
             }
         } catch (e) {
             console.log('Error parsing flavor data:', e);
@@ -6575,6 +6885,8 @@ function calculateMix() {
             if (specificFlavorName) {
                 flavorIngredient.flavorName = specificFlavorName;
                 flavorIngredient.flavorManufacturer = specificFlavorManufacturer;
+                flavorIngredient.flavorId = specificFlavorId;
+                flavorIngredient.flavorSource = specificFlavorSource;
             }
             
             ingredients.push(flavorIngredient);
@@ -6663,6 +6975,8 @@ function calculateMix() {
             if (specificFlavorName) {
                 flavorIngredient.flavorName = specificFlavorName;
                 flavorIngredient.flavorManufacturer = specificFlavorManufacturer;
+                flavorIngredient.flavorId = specificFlavorId;
+                flavorIngredient.flavorSource = specificFlavorSource;
             }
             
             ingredients.push(flavorIngredient);
@@ -12423,7 +12737,8 @@ function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
     // Nastavit hodnotu do inputu
     input.value = flavorData.name;
     input.dataset.flavorId = flavorData.id || '';
-    input.dataset.flavorSource = flavorData.source || 'database';
+    // Zdroj příchutě: 'favorite' pro oblíbené, 'database' pro veřejnou DB
+    input.dataset.flavorSource = (flavorData.source === 'favorites' || flavorData.source === 'favorite') ? 'favorite' : 'database';
     input.dataset.flavorData = JSON.stringify(flavorData);
     
     // Skrýt dropdown

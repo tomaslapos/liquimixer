@@ -2333,7 +2333,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
     }
 }
 
-// Uložit příchuť z databáze do oblíbených
+// Uložit příchuť z databáze do oblíbených (nebo vrátit existující)
 async function saveFlavorToFavorites(clerkId, flavorId) {
     if (!supabaseClient || !clerkId || !flavorId) {
         console.error('saveFlavorToFavorites: Missing required parameters');
@@ -2346,13 +2346,31 @@ async function saveFlavorToFavorites(clerkId, flavorId) {
     }
     
     try {
-        // Nejprve získat data příchutě
+        // Nejprve zkontrolovat, zda příchuť už není v oblíbených
+        const { data: existingFavorite, error: checkError } = await supabaseClient
+            .from('favorite_products')
+            .select('*')
+            .eq('clerk_id', clerkId)
+            .eq('flavor_id', flavorId)
+            .maybeSingle();
+        
+        if (checkError) {
+            console.error('saveFlavorToFavorites: Error checking existing:', checkError);
+        }
+        
+        // Pokud už existuje, vrátit existující
+        if (existingFavorite) {
+            console.log('saveFlavorToFavorites: Flavor already in favorites, returning existing');
+            return { data: existingFavorite, error: null, alreadyExists: true };
+        }
+        
+        // Získat data příchutě z veřejné databáze
         const flavor = await getFlavorById(flavorId);
         if (!flavor) {
             return { data: null, error: new Error('Flavor not found') };
         }
         
-        // Vytvořit oblíbený produkt
+        // Vytvořit nový oblíbený produkt
         const shareId = generateShareId();
         const productCode = generateProductCode();
         
@@ -2384,7 +2402,7 @@ async function saveFlavorToFavorites(clerkId, flavorId) {
         }
         
         console.log('saveFlavorToFavorites: Flavor saved to favorites');
-        return { data, error: null };
+        return { data, error: null, alreadyExists: false };
     } catch (err) {
         console.error('saveFlavorToFavorites: Database error:', err);
         return { data: null, error: err };
@@ -2521,6 +2539,184 @@ async function getFcmTokens(clerkId) {
     }
 }
 
+// =====================================================
+// SEKCE 10: PROPOJENÍ PŘÍCHUTÍ S RECEPTY
+// =====================================================
+
+// Propojit příchutě s receptem
+// flavors = array of { flavor_id?, favorite_product_id?, generic_flavor_type?, percentage, position, flavor_name?, flavor_manufacturer? }
+// Při ukládání konkrétní příchutě (flavor_id) ji automaticky přidá do oblíbených uživatele
+async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
+    if (!supabaseClient || !clerkId || !recipeId) return false;
+    
+    if (!isValidClerkId(clerkId)) {
+        console.error('linkFlavorsToRecipe: Invalid clerk_id format');
+        return false;
+    }
+    if (!isValidUUID(recipeId)) {
+        console.error('linkFlavorsToRecipe: Invalid recipe ID format');
+        return false;
+    }
+    
+    try {
+        // Smazat existující propojení
+        const { error: deleteError } = await supabaseClient
+            .from('recipe_flavors')
+            .delete()
+            .eq('recipe_id', recipeId);
+        
+        if (deleteError) {
+            console.error('linkFlavorsToRecipe: Error deleting existing links:', deleteError);
+        }
+        
+        // Pokud nejsou žádné příchutě, končíme
+        if (!flavors || flavors.length === 0) {
+            console.log('linkFlavorsToRecipe: No flavors to link');
+            return true;
+        }
+        
+        // Zpracovat příchutě - pokud je flavor_id (z veřejné DB), uložit do oblíbených
+        const links = [];
+        
+        for (let i = 0; i < flavors.length; i++) {
+            const f = flavors[i];
+            const link = {
+                recipe_id: recipeId,
+                flavor_id: null,
+                favorite_product_id: null,
+                generic_flavor_type: f.generic_flavor_type || null,
+                percentage: f.percentage || 0,
+                position: f.position || (i + 1),
+                flavor_name: f.flavor_name || null,
+                flavor_manufacturer: f.flavor_manufacturer || null
+            };
+            
+            // Pokud má flavor_id (příchuť z veřejné databáze), uložit do oblíbených
+            if (f.flavor_id && isValidUUID(f.flavor_id)) {
+                console.log('linkFlavorsToRecipe: Saving flavor to favorites:', f.flavor_id);
+                const saveResult = await saveFlavorToFavorites(clerkId, f.flavor_id);
+                
+                if (saveResult.data) {
+                    // Propojit přes oblíbený produkt
+                    link.favorite_product_id = saveResult.data.id;
+                    link.flavor_id = f.flavor_id; // Zachovat i odkaz na veřejnou DB
+                    console.log('linkFlavorsToRecipe: Flavor linked via favorite_product_id:', saveResult.data.id, 
+                        saveResult.alreadyExists ? '(already existed)' : '(newly created)');
+                } else {
+                    // Pokud se nepodařilo uložit, propojit přímo na veřejnou DB
+                    link.flavor_id = f.flavor_id;
+                    console.log('linkFlavorsToRecipe: Flavor linked directly via flavor_id');
+                }
+            } 
+            // Pokud už má favorite_product_id (z oblíbených)
+            else if (f.favorite_product_id && isValidUUID(f.favorite_product_id)) {
+                link.favorite_product_id = f.favorite_product_id;
+            }
+            
+            links.push(link);
+        }
+        
+        console.log('linkFlavorsToRecipe: Inserting links:', links.length);
+        
+        const { error } = await supabaseClient
+            .from('recipe_flavors')
+            .insert(links);
+        
+        if (error) {
+            console.error('linkFlavorsToRecipe: Error inserting:', error);
+            return false;
+        }
+        
+        console.log('linkFlavorsToRecipe: Successfully linked', links.length, 'flavors');
+        return true;
+    } catch (err) {
+        console.error('linkFlavorsToRecipe: Database error:', err);
+        return false;
+    }
+}
+
+// Získat příchutě propojené s receptem
+async function getLinkedFlavors(recipeId) {
+    if (!supabaseClient || !recipeId) return [];
+    
+    if (!isValidUUID(recipeId)) {
+        console.error('getLinkedFlavors: Invalid recipe ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_flavors')
+            .select(`
+                *,
+                flavors (
+                    id,
+                    name,
+                    manufacturer_code,
+                    category,
+                    min_percent,
+                    max_percent,
+                    recommended_percent,
+                    vg_ratio,
+                    flavor_manufacturers (name)
+                ),
+                favorite_products (
+                    id,
+                    name,
+                    flavor_manufacturer,
+                    flavor_category,
+                    flavor_min_percent,
+                    flavor_max_percent,
+                    flavor_recommended_percent,
+                    flavor_vg_ratio
+                )
+            `)
+            .eq('recipe_id', recipeId)
+            .order('position', { ascending: true });
+        
+        if (error) {
+            console.error('getLinkedFlavors: Supabase error:', error);
+            return [];
+        }
+        
+        // Transformovat data pro snadnější použití
+        return (data || []).map(item => ({
+            id: item.id,
+            position: item.position,
+            percentage: item.percentage,
+            flavor_name: item.flavor_name,
+            flavor_manufacturer: item.flavor_manufacturer,
+            generic_flavor_type: item.generic_flavor_type,
+            // Data z konkrétní příchutě (veřejná DB)
+            flavor: item.flavors ? {
+                id: item.flavors.id,
+                name: item.flavors.name,
+                manufacturer_code: item.flavors.manufacturer_code,
+                manufacturer_name: item.flavors.flavor_manufacturers?.name,
+                category: item.flavors.category,
+                min_percent: item.flavors.min_percent,
+                max_percent: item.flavors.max_percent,
+                recommended_percent: item.flavors.recommended_percent,
+                vg_ratio: item.flavors.vg_ratio
+            } : null,
+            // Data z oblíbené příchutě uživatele
+            favorite: item.favorite_products ? {
+                id: item.favorite_products.id,
+                name: item.favorite_products.name,
+                manufacturer: item.favorite_products.flavor_manufacturer,
+                category: item.favorite_products.flavor_category,
+                min_percent: item.favorite_products.flavor_min_percent,
+                max_percent: item.favorite_products.flavor_max_percent,
+                recommended_percent: item.favorite_products.flavor_recommended_percent,
+                vg_ratio: item.favorite_products.flavor_vg_ratio
+            } : null
+        }));
+    } catch (err) {
+        console.error('getLinkedFlavors: Database error:', err);
+        return [];
+    }
+}
+
 // Exportuj funkce pro použití v app.js
 console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
@@ -2586,7 +2782,10 @@ window.LiquiMixerDB = {
     getUserSuggestionCount: getUserSuggestionCount,
     searchFlavorsForAutocomplete: searchFlavorsForAutocomplete,
     saveFlavorToFavorites: saveFlavorToFavorites,
-    getFlavorCategories: getFlavorCategories
+    getFlavorCategories: getFlavorCategories,
+    // Propojení příchutí s recepty
+    linkFlavorsToRecipe: linkFlavorsToRecipe,
+    getLinkedFlavors: getLinkedFlavors
 };
 
 // Export pro fcm.js a app.js kompatibilitu
