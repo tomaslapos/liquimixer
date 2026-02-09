@@ -206,6 +206,8 @@
     "flavor_tobaccosweet": "Tytoniowy + słodki (tytoniowy waniliowy)",
     "flavor_nuts": "Orzechowy (orzeszek ziemny, orzech laskowy)",
     "flavor_spice": "Korzennyy (cynamon, piernik)",
+    "flavor_cream": "Kremowy (wanilia, śmietana)",
+    "flavor_mix": "Mix / Mieszanka",
     "add_flavor": "+ Dodaj kolejny aromat",
     "remove_flavor": "Usuń aromat",
     "flavor_count_hint": "(max 4 aromaty)",

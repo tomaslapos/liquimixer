@@ -537,6 +537,14 @@ const flavorDatabase = {
         note: 'Velmi koncentrované, při 10% chladí až pálí',
         composition: { pg: 35, vg: 5, alcohol: 50, water: 5, other: 5 }
     },
+    mint: { 
+        name: 'Máta', 
+        min: 4, max: 8, ideal: 6, steepingDays: 7,
+        shishaMin: 10, shishaMax: 18, shishaIdeal: 15, shishaSteepingDays: 1,
+        isShishaOnly: false,
+        note: 'Osvěžující mátová chuť, populární pro shisha',
+        composition: { pg: 35, vg: 5, alcohol: 50, water: 5, other: 5 }
+    },
     candy: { 
         name: 'Sladkosti (cukroví, karamel)', 
         min: 12, max: 20, ideal: 16, steepingDays: 10,
@@ -568,6 +576,22 @@ const flavorDatabase = {
         isShishaOnly: false,
         note: 'Univerzální, funguje s vysokým VG',
         composition: { pg: 70, vg: 10, alcohol: 10, water: 5, other: 5 }
+    },
+    cream: { 
+        name: 'Krémové (vanilka, smetana)', 
+        min: 8, max: 15, ideal: 12, steepingDays: 14,
+        shishaMin: 12, shishaMax: 20, shishaIdeal: 16, shishaSteepingDays: 4,
+        isShishaOnly: false,
+        note: 'Krémové příchutě vyžadují delší zrání',
+        composition: { pg: 65, vg: 15, alcohol: 10, water: 5, other: 5 }
+    },
+    mix: { 
+        name: 'Mix / Směs', 
+        min: 10, max: 20, ideal: 15, steepingDays: 14,
+        shishaMin: 15, shishaMax: 25, shishaIdeal: 20, shishaSteepingDays: 4,
+        isShishaOnly: false,
+        note: 'Kombinace více kategorií příchutí',
+        composition: { pg: 60, vg: 10, alcohol: 20, water: 5, other: 5 }
     },
     drink: { 
         name: 'Nápojové (kola, čaj)', 
@@ -11741,36 +11765,8 @@ async function initFlavorDatabaseFilters() {
         if (currentValue) manufacturerSelect.value = currentValue;
     }
     
-    // Načíst kategorie (cache)
-    if (!flavorCategoriesCache) {
-        try {
-            flavorCategoriesCache = await window.LiquiMixerDB.getFlavorCategories();
-        } catch (e) {
-            console.error('Error loading categories:', e);
-            flavorCategoriesCache = [];
-        }
-    }
-    
-    // Naplnit dropdown kategorií
-    const categorySelect = document.getElementById('flavorFilterCategory');
-    if (categorySelect && flavorCategoriesCache.length > 0) {
-        const currentValue = categorySelect.value;
-        
-        while (categorySelect.options.length > 1) {
-            categorySelect.remove(1);
-        }
-        
-        flavorCategoriesCache.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat;
-            // Použít překlad z form.flavor_* (primární číselník)
-            option.textContent = t(`form.flavor_${cat}`, cat);
-            option.setAttribute('data-i18n', `form.flavor_${cat}`);
-            categorySelect.appendChild(option);
-        });
-        
-        if (currentValue) categorySelect.value = currentValue;
-    }
+    // Kategorie jsou nyní staticky definované v HTML (stejný číselník jako formuláře)
+    // Nepotřebujeme dynamické načítání z databáze
     
     // Aplikovat překlady
     if (window.i18n?.applyTranslations) {

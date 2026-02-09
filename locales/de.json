@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tabak + süß (Vanilletabak)",
     "flavor_nuts": "Nussig (Erdnuss, Haselnuss)",
     "flavor_spice": "Gewürzt (Zimt, Lebkuchen)",
+    "flavor_cream": "Cremig (Vanille, Sahne)",
+    "flavor_mix": "Mix / Mischung",
     "add_flavor": "+ Weiteres Aroma hinzufügen",
     "remove_flavor": "Aroma entfernen",
     "flavor_count_hint": "(max. 4 Aromen)",

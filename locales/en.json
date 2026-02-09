@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tobacco + sweet (custard tobacco)",
     "flavor_nuts": "Nutty (peanut, hazelnut)",
     "flavor_spice": "Spiced (cinnamon, gingerbread)",
+    "flavor_cream": "Creamy (vanilla, cream)",
+    "flavor_mix": "Mix / Blend",
     "add_flavor": "+ Add another flavor",
     "remove_flavor": "Remove flavor",
     "flavor_count_hint": "(max 4 flavors)",
