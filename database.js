@@ -2283,27 +2283,33 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
         }
         
         // 2. Hledat ve veřejné databázi příchutí
+        // Načíst více výsledků a filtrovat na klientovi kvůli hledání v názvu výrobce
         let dbQuery = supabaseClient
             .from('flavors')
             .select('*, flavor_manufacturers(name)')
             .eq('status', 'active')
-            .eq('product_type', productType) // Filtrovat dle typu receptu (vape/shisha)
-            .limit(limit);
-        
-        if (searchTerm && searchTerm.trim().length >= 2) {
-            const term = searchTerm.trim();
-            // Hledat v názvu příchutě NEBO v kódu výrobce
-            // Supabase nepodporuje OR přímo, použijeme textSearch nebo or()
-            dbQuery = dbQuery.or(`name.ilike.%${term}%,manufacturer_code.ilike.%${term}%`);
-        }
-        
-        // Řadit dle počtu použití
-        dbQuery = dbQuery.order('usage_count', { ascending: false });
+            .eq('product_type', productType)
+            .order('usage_count', { ascending: false })
+            .limit(searchTerm && searchTerm.trim().length >= 2 ? 100 : limit);
         
         const { data: dbData, error: dbError } = await dbQuery;
         
         if (!dbError && dbData) {
-            results.database = dbData.map(f => ({
+            let filteredData = dbData;
+            
+            // Filtrovat na klientovi - case-insensitive hledání v názvu, kódu i jménu výrobce
+            if (searchTerm && searchTerm.trim().length >= 2) {
+                const term = searchTerm.trim().toLowerCase();
+                filteredData = dbData.filter(f => {
+                    const nameMatch = f.name?.toLowerCase().includes(term);
+                    const codeMatch = f.manufacturer_code?.toLowerCase().includes(term);
+                    const manufacturerMatch = f.flavor_manufacturers?.name?.toLowerCase().includes(term);
+                    return nameMatch || codeMatch || manufacturerMatch;
+                });
+            }
+            
+            // Omezit na požadovaný limit
+            results.database = filteredData.slice(0, limit).map(f => ({
                 id: f.id,
                 name: f.name,
                 manufacturer: f.flavor_manufacturers?.name || f.manufacturer_code,
@@ -2315,6 +2321,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                 recommended_percent: f.recommended_percent,
                 steep_days: f.steep_days,
                 avg_rating: f.avg_rating,
+                vg_ratio: f.vg_ratio,
                 source: 'database'
             }));
         }
