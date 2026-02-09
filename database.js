@@ -2423,7 +2423,7 @@ async function saveFcmToken(clerkId, token, deviceInfo) {
                 updated_at: new Date().toISOString(),
                 last_used_at: new Date().toISOString()
             }, { 
-                onConflict: 'clerk_id'
+                onConflict: 'token'
             })
             .select()
             .single();
