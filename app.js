@@ -1023,9 +1023,28 @@ function setupServiceWorkerListener() {
 }
 
 // Zobrazit notifikaci o nové verzi aplikace
+// Debounce flag - zabránit opakovanému zobrazení
+let updateNotificationShown = false;
+
 function showUpdateNotification() {
-    // Zkontrolovat, zda už notifikace není zobrazena
+    // Zkontrolovat, zda už notifikace není zobrazena nebo byla zobrazena v této session
     if (document.getElementById('updateNotification')) return;
+    if (updateNotificationShown) {
+        console.log('LiquiMixer SW: Update prompt suppressed (debounce)');
+        return;
+    }
+    
+    // Zkontrolovat sessionStorage - zabránit opakování po refresh
+    const lastUpdatePrompt = sessionStorage.getItem('lastUpdatePrompt');
+    const now = Date.now();
+    if (lastUpdatePrompt && (now - parseInt(lastUpdatePrompt)) < 60000) {
+        // Poslední prompt byl před méně než 60 sekund - ignorovat
+        console.log('LiquiMixer SW: Update prompt suppressed (recent)');
+        return;
+    }
+    
+    updateNotificationShown = true;
+    sessionStorage.setItem('lastUpdatePrompt', now.toString());
     
     const notification = document.createElement('div');
     notification.id = 'updateNotification';
@@ -1062,6 +1081,9 @@ function dismissUpdateNotification() {
 
 // Obnovit aplikaci (hard refresh)
 function refreshApp() {
+    // Nastavit flag že update byl proveden - zabránit opakování
+    sessionStorage.setItem('updateCompleted', Date.now().toString());
+    
     // Vymazat cache a znovu načíst stránku
     if ('caches' in window) {
         caches.keys().then((names) => {
@@ -11741,9 +11763,9 @@ async function initFlavorDatabaseFilters() {
         flavorCategoriesCache.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
-            // Zkusit překlad z flavor_categories
-            option.textContent = t(`flavor_categories.${cat}`, cat);
-            option.setAttribute('data-i18n', `flavor_categories.${cat}`);
+            // Použít překlad z form.flavor_* (primární číselník)
+            option.textContent = t(`form.flavor_${cat}`, cat);
+            option.setAttribute('data-i18n', `form.flavor_${cat}`);
             categorySelect.appendChild(option);
         });
         
@@ -11852,7 +11874,7 @@ async function loadFlavors() {
 // Vykreslit kartu příchutě
 function renderFlavorCard(flavor) {
     const manufacturerName = flavor.flavor_manufacturers?.name || flavor.manufacturer_code;
-    const categoryTranslation = t(`flavor_categories.${flavor.category}`, flavor.category);
+    const categoryTranslation = t(`form.flavor_${flavor.category}`, flavor.category);
     const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
     const typeClass = flavor.product_type === 'vape' ? 'type-vape' : 'type-shisha';
     
@@ -11870,9 +11892,9 @@ function renderFlavorCard(flavor) {
     const ratingClass = flavor.avg_rating ? `rating-${Math.round(flavor.avg_rating)}` : 'rating-0';
     
     return `
-        <div class="recipe-card flavor-card ${ratingClass}" onclick="showFlavorDetail('${flavor.id}')">
+        <div class="public-recipe-card flavor-card" onclick="showFlavorDetail('${flavor.id}')">
             <div class="recipe-card-header">
-                <h3 class="recipe-card-title">${escapeHtml(flavor.name)}</h3>
+                <h3 class="recipe-card-name">${escapeHtml(flavor.name)}</h3>
                 <span class="flavor-type-badge ${typeClass}">${typeLabel}</span>
             </div>
             <div class="recipe-card-meta">
@@ -11992,7 +12014,7 @@ async function showFlavorDetail(flavorId) {
 // Vykreslit obsah detailu příchutě
 function renderFlavorDetailContent(flavor) {
     const manufacturerName = flavor.flavor_manufacturers?.name || flavor.manufacturer_code;
-    const categoryTranslation = t(`flavor_categories.${flavor.category}`, flavor.category);
+    const categoryTranslation = t(`form.flavor_${flavor.category}`, flavor.category);
     const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
     
     // Procento

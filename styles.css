@@ -7699,47 +7699,55 @@ body.subscription-required #subscriptionModal {
    FLAVOR DATABASE STYLES
    ============================================= */
 
-/* Flavor card specifics */
+/* Flavor card - uses same styling as public-recipe-card */
 .flavor-card {
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Flavor cards with no rating - use neutral dark color instead of purple */
-.flavor-card.rating-0 {
-    background: rgba(45, 55, 72, 0.9);
-    border-color: rgba(74, 85, 104, 0.9);
+/* Flavor card meta info */
+.flavor-card .recipe-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
 }
 
-/* Flavor cards inherit rating colors from recipe-card */
-.flavor-card.rating-5 {
-    background: rgba(0, 200, 83, 0.85);
-    border-color: rgba(0, 150, 60, 0.9);
+.flavor-card .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
 }
 
-.flavor-card.rating-4 {
-    background: rgba(33, 150, 243, 0.85);
-    border-color: rgba(25, 118, 210, 0.9);
+.flavor-card .meta-label {
+    color: var(--text-secondary);
 }
 
-.flavor-card.rating-3 {
-    background: rgba(255, 235, 59, 0.85);
-    border-color: rgba(251, 192, 45, 0.9);
+.flavor-card .meta-value {
+    color: var(--text-primary);
+    font-weight: 500;
 }
 
-.flavor-card.rating-2 {
-    background: rgba(255, 152, 0, 0.85);
-    border-color: rgba(245, 124, 0, 0.9);
+.flavor-card .recipe-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.flavor-card.rating-1 {
-    background: rgba(244, 67, 54, 0.85);
-    border-color: rgba(211, 47, 47, 0.9);
+.flavor-card .rating-display {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.flavor-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.15);
+.flavor-card .rating-stars {
+    color: #ffd700;
+    font-size: 0.9rem;
+}
+
+.flavor-card .rating-value {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
 }
 
 .flavor-type-badge {
@@ -7949,7 +7957,7 @@ body.subscription-required #subscriptionModal {
     border: 1px solid rgba(0, 255, 255, 0.3);
     border-radius: var(--border-radius-small);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .flavor-autocomplete-dropdown.hidden {
@@ -8019,12 +8027,21 @@ body.subscription-required #subscriptionModal {
 .flavor-autocomplete-wrapper {
     position: relative;
     margin-top: 10px;
-    z-index: 100;
+    z-index: 500;
 }
 
-/* Ensure form groups don't clip the autocomplete dropdown */
-.form-group {
-    overflow: visible;
+/* Ensure containers don't clip the autocomplete dropdown */
+.form-group,
+.flavor-container,
+.form-section,
+.calculator-step {
+    overflow: visible !important;
+}
+
+/* When autocomplete is open, parent should have higher z-index */
+.flavor-container:has(.flavor-autocomplete-dropdown:not(.hidden)) {
+    z-index: 1000;
+    position: relative;
 }
 
 .flavor-search-input {
