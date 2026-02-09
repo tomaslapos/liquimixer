@@ -3614,16 +3614,41 @@ button.locked {
 }
 
 .ratio-lock-note {
-    font-size: 0.75rem;
-    color: var(--warning-color, #ffcc00);
-    font-style: italic;
-    margin-top: 8px;
-    padding: 4px 8px;
-    background: rgba(255, 204, 0, 0.1);
-    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--neon-cyan, #00ffff);
+    font-weight: 600;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(0, 255, 255, 0.15);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: var(--border-radius-small);
+    text-align: center;
 }
 
 .ratio-lock-note.hidden {
+    display: none;
+}
+
+/* Upozornění o fallback hodnotách procent */
+.percent-fallback-warning {
+    font-size: 0.85rem;
+    color: var(--warning-color, #ffcc00);
+    font-weight: 500;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: rgba(255, 204, 0, 0.15);
+    border: 1px solid rgba(255, 204, 0, 0.4);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.percent-fallback-warning .warning-icon {
+    font-size: 1.1rem;
+}
+
+.percent-fallback-warning.hidden {
     display: none;
 }
 
