@@ -196,6 +196,7 @@
     "target_nicotine_label": "Jak silnou chci finální nikotinovou bázi na vapování?",
     "target_nicotine_desc_0": "Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.",
     "flavor_label": "Příchuť",
+    "flavor_category_label": "Nebo vyberte kategorii (bez konkrétní příchutě):",
     "flavor_none": "Žádná (bez příchutě)",
     "flavor_fruit": "Ovoce (jahoda, jablko)",
     "flavor_citrus": "Citrónové (citron, limeta)",
@@ -964,7 +965,8 @@
     "loading": "Načítání příchutí...",
     "results_count": "Nalezeno {count} příchutí",
     "back_to_database": "◀ ZPĚT DO DATABÁZE",
-    "login_required": "Pro přístup k databázi příchutí se přihlaste"
+    "login_required": "Pro přístup k databázi příchutí se přihlaste",
+    "values_from_category": "dle kategorie - výrobce neuvedl"
   },
   "flavor_suggestion": {
     "toggle_label": "Navrhnout přidání do databáze",
@@ -990,7 +992,8 @@
     "max_percent_label": "Max %",
     "category_label": "Kategorie příchutě *",
     "category_placeholder": "-- Vyberte kategorii --",
-    "type_conflict_warning": "Tato příchuť je určena pro {type}. Opravdu ji chcete použít v tomto receptu?"
+    "type_conflict_warning": "Tato příchuť je určena pro {type}. Opravdu ji chcete použít v tomto receptu?",
+    "ratio_locked": "Poměr je nastaven dle výrobce"
   },
   "flavor_autocomplete": {
     "from_favorites": "Z mých příchutí",

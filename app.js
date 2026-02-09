@@ -12286,16 +12286,22 @@ function renderFlavorCard(flavor) {
     const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
     const typeClass = flavor.product_type === 'vape' ? 'type-vape' : 'type-shisha';
     
-    // Procento
-    // Získat výchozí hodnoty z flavorDatabase podle kategorie
-    const category = flavor.category || 'fruit';
-    const isShisha = flavor.product_type === 'shisha';
-    const defaultFlavorData = flavorDatabase[category] || flavorDatabase.fruit;
+    // Procento - zobrazit přesné hodnoty z DB
+    // Pokud chybí, zobrazit fallback s upozorněním
+    const hasExactPercent = flavor.min_percent && flavor.max_percent && flavor.min_percent > 0 && flavor.max_percent > 0;
+    let percentRange;
     
-    // Použít hodnoty z DB nebo výchozí podle kategorie
-    const minPercent = flavor.min_percent || (isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5));
-    const maxPercent = flavor.max_percent || (isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15));
-    const percentRange = `${minPercent}-${maxPercent}%`;
+    if (hasExactPercent) {
+        percentRange = `${flavor.min_percent}-${flavor.max_percent}%`;
+    } else {
+        // Fallback s upozorněním
+        const category = flavor.category || 'fruit';
+        const isShisha = flavor.product_type === 'shisha';
+        const defaultFlavorData = flavorDatabase[category] || flavorDatabase.fruit;
+        const fallbackMin = isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5);
+        const fallbackMax = isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15);
+        percentRange = `${fallbackMin}-${fallbackMax}% <span class="card-note">*</span>`;
+    }
     
     // Hodnocení a rating class (stejná logika jako recepty)
     const rating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '-';
@@ -12429,21 +12435,35 @@ function renderFlavorDetailContent(flavor) {
     const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
     
     // Procento
-    // Získat výchozí hodnoty z flavorDatabase podle kategorie
+    // Zkontrolovat zda má příchuť přesné hodnoty od výrobce
+    const hasExactPercent = flavor.min_percent && flavor.max_percent && flavor.min_percent > 0 && flavor.max_percent > 0;
+    const hasExactSteepDays = flavor.steep_days !== null && flavor.steep_days !== undefined && flavor.steep_days > 0;
+    
+    // Získat výchozí hodnoty z flavorDatabase podle kategorie (pro fallback)
     const category = flavor.category || 'fruit';
     const isShisha = flavor.product_type === 'shisha';
     const defaultFlavorData = flavorDatabase[category] || flavorDatabase.fruit;
     
-    // Použít hodnoty z DB nebo výchozí podle kategorie
-    const minPercent = flavor.min_percent || (isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5));
-    const maxPercent = flavor.max_percent || (isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15));
-    const recommendedPercent = flavor.recommended_percent || Math.round((minPercent + maxPercent) / 2);
-    const steepDaysValue = (flavor.steep_days !== null && flavor.steep_days !== undefined && flavor.steep_days > 0)
-        ? flavor.steep_days 
-        : (isShisha ? (defaultFlavorData.shishaSteepingDays || 3) : (defaultFlavorData.steepingDays || 7));
+    // Procenta - buď přesné od výrobce nebo fallback s upozorněním
+    let percentRange, percentNote = '';
+    if (hasExactPercent) {
+        percentRange = `${flavor.min_percent} - ${flavor.max_percent}%`;
+    } else {
+        const fallbackMin = isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5);
+        const fallbackMax = isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15);
+        percentRange = `${fallbackMin} - ${fallbackMax}%`;
+        percentNote = `<span class="detail-note">(${t('flavor_database.values_from_category', 'dle kategorie - výrobce neuvedl')})</span>`;
+    }
     
-    const percentRange = `${minPercent} - ${maxPercent}%`;
-    const steepDays = t('flavor_database.detail_steep_days', '{days} dní').replace('{days}', steepDaysValue);
+    // Steep days - buď přesné od výrobce nebo fallback s upozorněním
+    let steepDays, steepNote = '';
+    if (hasExactSteepDays) {
+        steepDays = t('flavor_database.detail_steep_days', '{days} dní').replace('{days}', flavor.steep_days);
+    } else {
+        const fallbackSteep = isShisha ? (defaultFlavorData.shishaSteepingDays || 3) : (defaultFlavorData.steepingDays || 7);
+        steepDays = t('flavor_database.detail_steep_days', '{days} dní').replace('{days}', fallbackSteep);
+        steepNote = `<span class="detail-note">(${t('flavor_database.values_from_category', 'dle kategorie - výrobce neuvedl')})</span>`;
+    }
     
     // Hodnocení
     const avgRating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '0.0';
@@ -12468,12 +12488,12 @@ function renderFlavorDetailContent(flavor) {
             
             <div class="detail-section">
                 <h3 class="detail-section-title" data-i18n="flavor_database.detail_recommended_percent">Doporučené %</h3>
-                <p class="detail-value">${percentRange}</p>
+                <p class="detail-value">${percentRange} ${percentNote}</p>
             </div>
             
             <div class="detail-section">
                 <h3 class="detail-section-title" data-i18n="flavor_database.detail_steep_time">Doba zrání</h3>
-                <p class="detail-value">${steepDays}</p>
+                <p class="detail-value">${steepDays} ${steepNote}</p>
             </div>
             
             <div class="detail-section">
@@ -12784,6 +12804,9 @@ function selectNoSpecificFlavor(inputId) {
     // Aktivovat kategorie select - uživatel MUSÍ vybrat kategorii
     updateFlavorCategoryState(inputId, false);
     
+    // Odemknout VG/PG poměr - uživatel může měnit
+    unlockFlavorVgPgRatio(inputId);
+    
     // Slider se zobrazí/skryje automaticky dle výběru kategorie
     // Pro Liquid formulář ponechat stávající logiku v updateFlavorType()
 }
@@ -12917,6 +12940,9 @@ function showFlavorSliderWithRange(inputId, flavorData) {
         updateFlavorDisplay();
     }
     
+    // Zakázat VG/PG ratio slider - konkrétní příchuť má nastavený poměr od výrobce
+    lockFlavorVgPgRatio(inputId, flavorData);
+    
     // Přepočítat recept
     if (inputId === 'flavorAutocomplete') {
         calculateLiquid();
@@ -12926,6 +12952,169 @@ function showFlavorSliderWithRange(inputId, flavorData) {
     } else if (inputId.startsWith('shFlavor')) {
         const index = inputId.match(/\d+/)?.[0];
         if (index) updateShishaFlavorStrength(parseInt(index));
+    }
+}
+
+// Zakázat změnu VG/PG poměru když je vybraná konkrétní příchuť z databáze
+function lockFlavorVgPgRatio(inputId, flavorData) {
+    // Mapování autocomplete inputu na VG/PG elementy
+    const ratioMapping = {
+        'flavorAutocomplete': {
+            buttonsSelector: '.form-group-sub:has(#flavorRatio) .ratio-toggle-buttons button, #flavorRatio0100, #flavorRatio8020, #flavorRatio7030',
+            ratioContainerId: 'flavorStrengthContainer'
+        },
+        'proFlavorAutocomplete1': {
+            sliderId: 'proFlavorRatioSlider1',
+            buttonsSelector: '[onclick*="adjustProFlavorRatio(1"]'
+        },
+        'proFlavorAutocomplete2': {
+            sliderId: 'proFlavorRatioSlider2',
+            buttonsSelector: '[onclick*="adjustProFlavorRatio(2"]'
+        },
+        'proFlavorAutocomplete3': {
+            sliderId: 'proFlavorRatioSlider3',
+            buttonsSelector: '[onclick*="adjustProFlavorRatio(3"]'
+        },
+        'proFlavorAutocomplete4': {
+            sliderId: 'proFlavorRatioSlider4',
+            buttonsSelector: '[onclick*="adjustProFlavorRatio(4"]'
+        },
+        'shFlavorAutocomplete1': {
+            sliderId: 'shFlavorRatioSlider1',
+            buttonsSelector: '[onclick*="adjustShishaFlavorRatio(1"]'
+        },
+        'shFlavorAutocomplete2': {
+            sliderId: 'shFlavorRatioSlider2',
+            buttonsSelector: '[onclick*="adjustShishaFlavorRatio(2"]'
+        },
+        'shFlavorAutocomplete3': {
+            sliderId: 'shFlavorRatioSlider3',
+            buttonsSelector: '[onclick*="adjustShishaFlavorRatio(3"]'
+        },
+        'shFlavorAutocomplete4': {
+            sliderId: 'shFlavorRatioSlider4',
+            buttonsSelector: '[onclick*="adjustShishaFlavorRatio(4"]'
+        }
+    };
+    
+    const mapping = ratioMapping[inputId];
+    if (!mapping) return;
+    
+    // Pro Liquid formulář - toggle buttons
+    if (inputId === 'flavorAutocomplete') {
+        const buttons = document.querySelectorAll('#flavorRatio0100, #flavorRatio8020, #flavorRatio7030');
+        const vgRatio = flavorData.vg_ratio !== undefined ? flavorData.vg_ratio : 0;
+        
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('locked');
+            btn.classList.remove('active');
+        });
+        
+        // Nastavit správný poměr a označit jako aktivní
+        const pgRatio = 100 - vgRatio;
+        const ratioValue = `${vgRatio}/${pgRatio}`;
+        const ratioInput = document.getElementById('flavorRatio');
+        if (ratioInput) ratioInput.value = ratioValue;
+        
+        // Najít a aktivovat správné tlačítko
+        const matchingBtn = Array.from(buttons).find(b => b.dataset.value === ratioValue);
+        if (matchingBtn) {
+            matchingBtn.classList.add('active');
+        } else if (buttons[0]) {
+            // Pokud není přesná shoda, nastavit první (0/100)
+            buttons[0].classList.add('active');
+        }
+        
+        // Přidat informaci že je zamčeno
+        const ratioContainer = document.querySelector('.form-group-sub:has(#flavorRatio0100)');
+        if (ratioContainer) {
+            let lockNote = ratioContainer.querySelector('.ratio-lock-note');
+            if (!lockNote) {
+                lockNote = document.createElement('div');
+                lockNote.className = 'ratio-lock-note';
+                ratioContainer.appendChild(lockNote);
+            }
+            lockNote.textContent = t('flavor_form.ratio_locked', 'Poměr je nastaven dle výrobce');
+            lockNote.classList.remove('hidden');
+        }
+    } else {
+        // Pro PRO a Shisha formuláře - slider
+        const slider = document.getElementById(mapping.sliderId);
+        if (slider) {
+            slider.disabled = true;
+            slider.classList.add('locked');
+            
+            // Nastavit hodnotu dle příchutě
+            const vgRatio = flavorData.vg_ratio !== undefined ? flavorData.vg_ratio : 0;
+            slider.value = vgRatio;
+            
+            // Aktualizovat zobrazení
+            if (inputId.startsWith('proFlavor')) {
+                const index = inputId.match(/\d+/)?.[0];
+                if (index) {
+                    const vgDisplay = document.getElementById(`proFlavorVgValue${index}`);
+                    const pgDisplay = document.getElementById(`proFlavorPgValue${index}`);
+                    if (vgDisplay) vgDisplay.textContent = vgRatio;
+                    if (pgDisplay) pgDisplay.textContent = 100 - vgRatio;
+                }
+            } else if (inputId.startsWith('shFlavor')) {
+                const index = inputId.match(/\d+/)?.[0];
+                if (index) {
+                    const vgDisplay = document.getElementById(`shFlavorVgValue${index}`);
+                    const pgDisplay = document.getElementById(`shFlavorPgValue${index}`);
+                    if (vgDisplay) vgDisplay.textContent = vgRatio;
+                    if (pgDisplay) pgDisplay.textContent = 100 - vgRatio;
+                }
+            }
+        }
+        
+        // Zakázat tlačítka pro úpravu
+        const adjustButtons = document.querySelectorAll(mapping.buttonsSelector);
+        adjustButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('locked');
+        });
+    }
+}
+
+// Odemknout VG/PG poměr když se odstraní konkrétní příchuť
+function unlockFlavorVgPgRatio(inputId) {
+    if (inputId === 'flavorAutocomplete') {
+        const buttons = document.querySelectorAll('#flavorRatio0100, #flavorRatio8020, #flavorRatio7030');
+        buttons.forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('locked');
+        });
+        
+        const lockNote = document.querySelector('.form-group-sub:has(#flavorRatio0100) .ratio-lock-note');
+        if (lockNote) lockNote.classList.add('hidden');
+    } else {
+        const ratioMapping = {
+            'proFlavorAutocomplete1': { sliderId: 'proFlavorRatioSlider1', buttonsSelector: '[onclick*="adjustProFlavorRatio(1"]' },
+            'proFlavorAutocomplete2': { sliderId: 'proFlavorRatioSlider2', buttonsSelector: '[onclick*="adjustProFlavorRatio(2"]' },
+            'proFlavorAutocomplete3': { sliderId: 'proFlavorRatioSlider3', buttonsSelector: '[onclick*="adjustProFlavorRatio(3"]' },
+            'proFlavorAutocomplete4': { sliderId: 'proFlavorRatioSlider4', buttonsSelector: '[onclick*="adjustProFlavorRatio(4"]' },
+            'shFlavorAutocomplete1': { sliderId: 'shFlavorRatioSlider1', buttonsSelector: '[onclick*="adjustShishaFlavorRatio(1"]' },
+            'shFlavorAutocomplete2': { sliderId: 'shFlavorRatioSlider2', buttonsSelector: '[onclick*="adjustShishaFlavorRatio(2"]' },
+            'shFlavorAutocomplete3': { sliderId: 'shFlavorRatioSlider3', buttonsSelector: '[onclick*="adjustShishaFlavorRatio(3"]' },
+            'shFlavorAutocomplete4': { sliderId: 'shFlavorRatioSlider4', buttonsSelector: '[onclick*="adjustShishaFlavorRatio(4"]' }
+        };
+        
+        const mapping = ratioMapping[inputId];
+        if (!mapping) return;
+        
+        const slider = document.getElementById(mapping.sliderId);
+        if (slider) {
+            slider.disabled = false;
+            slider.classList.remove('locked');
+        }
+        
+        const adjustButtons = document.querySelectorAll(mapping.buttonsSelector);
+        adjustButtons.forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('locked');
+        });
     }
 }
 

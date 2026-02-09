@@ -3587,6 +3587,46 @@ body {
     margin-top: 5px;
 }
 
+/* Label pro kategorii příchutě */
+.flavor-category-label {
+    margin-top: 15px;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.flavor-category-label.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* Zamčený VG/PG poměr (konkrétní příchuť z databáze) */
+.ratio-toggle-btn.locked,
+input[type="range"].locked,
+button.locked {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.ratio-toggle-btn.locked:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.ratio-lock-note {
+    font-size: 0.75rem;
+    color: var(--warning-color, #ffcc00);
+    font-style: italic;
+    margin-top: 8px;
+    padding: 4px 8px;
+    background: rgba(255, 204, 0, 0.1);
+    border-radius: 4px;
+}
+
+.ratio-lock-note.hidden {
+    display: none;
+}
+
 #nicotineRatioContainer {
     margin-top: 15px;
 }
@@ -7912,6 +7952,22 @@ body.subscription-required #subscriptionModal {
     font-size: 1.1rem;
     color: var(--text-primary);
     font-weight: 500;
+}
+
+/* Poznámka u hodnot odvozených z kategorie */
+.detail-note {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--warning-color, #ffcc00);
+    font-weight: 400;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* Poznámka na kartě příchutě */
+.card-note {
+    color: var(--warning-color, #ffcc00);
+    font-weight: bold;
 }
 
 /* Large rating display */
