@@ -7705,6 +7705,38 @@ body.subscription-required #subscriptionModal {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Flavor cards with no rating - use neutral dark color instead of purple */
+.flavor-card.rating-0 {
+    background: rgba(45, 55, 72, 0.9);
+    border-color: rgba(74, 85, 104, 0.9);
+}
+
+/* Flavor cards inherit rating colors from recipe-card */
+.flavor-card.rating-5 {
+    background: rgba(0, 200, 83, 0.85);
+    border-color: rgba(0, 150, 60, 0.9);
+}
+
+.flavor-card.rating-4 {
+    background: rgba(33, 150, 243, 0.85);
+    border-color: rgba(25, 118, 210, 0.9);
+}
+
+.flavor-card.rating-3 {
+    background: rgba(255, 235, 59, 0.85);
+    border-color: rgba(251, 192, 45, 0.9);
+}
+
+.flavor-card.rating-2 {
+    background: rgba(255, 152, 0, 0.85);
+    border-color: rgba(245, 124, 0, 0.9);
+}
+
+.flavor-card.rating-1 {
+    background: rgba(244, 67, 54, 0.85);
+    border-color: rgba(211, 47, 47, 0.9);
+}
+
 .flavor-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 255, 255, 0.15);
@@ -7987,6 +8019,12 @@ body.subscription-required #subscriptionModal {
 .flavor-autocomplete-wrapper {
     position: relative;
     margin-top: 10px;
+    z-index: 100;
+}
+
+/* Ensure form groups don't clip the autocomplete dropdown */
+.form-group {
+    overflow: visible;
 }
 
 .flavor-search-input {
