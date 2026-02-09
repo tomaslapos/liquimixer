@@ -2,6 +2,403 @@
 // LiquiMixer - E-liquid Calculator Logic
 // Výpočet dle metodiky: http://www.todmuller.com/ejuice/ejuice.php
 // =========================================
+//
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║                           MAPA FUNKCÍ - OBSAH                                ║
+// ║                      Aktualizováno: 08.02.2026                               ║
+// ╠══════════════════════════════════════════════════════════════════════════════╣
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 1: BEZPEČNOST A UTILITY (řádky 1-450)                                  ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   escapeHtml()                    12    - Escapování HTML entit (XSS)        ║
+// ║   showNotification()              28    - Zobrazení notifikace               ║
+// ║   sanitizeUrl()                   57    - Sanitizace URL                     ║
+// ║   isValidUUID()                   68    - Validace UUID formátu              ║
+// ║   t()                             74    - Helper pro překlady i18n           ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 2: DATABÁZE A KONSTANTY (řádky 80-450)                                 ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   flavorDatabase                  85    - Databáze příchutí a steeping časů  ║
+// ║   ingredientDensities            380    - Hustoty ingrediencí (g/ml)         ║
+// ║   calculateCompositionDensity()  419    - Výpočet hustoty směsi              ║
+// ║   calculateNicotineDensity()     431    - Hustota nikotinu podle VG/PG       ║
+// ║   calculatePremixedBaseDensity() 436    - Hustota předmíchané báze           ║
+// ║   mlToGrams()                    441    - Převod ml na gramy                 ║
+// ║   getShishaFlavorData()          447    - Data příchutě pro Shisha           ║
+// ║   calculateMaturityDate()        487    - Výpočet data zralosti              ║
+// ║   calculateMaxMaturityDate()     496    - Max datum zralosti (více příchutí) ║
+// ║   getNicotineDescriptionText()   554    - Popis síly nikotinu                ║
+// ║   getShishaNicotineDescriptionText() 563 - Popis pro Shisha                  ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 3: SERVICE WORKER A PWA (řádky 599-680)                                ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   setupServiceWorkerListener()   599    - Nastavení SW listeneru             ║
+// ║   showUpdateNotification()       626    - Notifikace o aktualizaci           ║
+// ║   dismissUpdateNotification()    655    - Zavření notifikace                 ║
+// ║   refreshApp()                   664    - Refresh aplikace                   ║
+// ║   handlePaymentReturn()          682    - Zpracování návratu z platby        ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 4: INICIALIZACE A SLIDERY (řádky 847-1000)                             ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   initializeSliders()            847    - Inicializace všech sliderů         ║
+// ║   initShakeVapeListeners()       879    - Listenery pro Shake & Vape         ║
+// ║   initLiquidProListeners()       899    - Listenery pro Liquid PRO           ║
+// ║   setupNicotineRatioToggle()     919    - Toggle VG/PG nikotinu              ║
+// ║   setupFlavorRatioToggle()       941    - Toggle VG/PG příchutě              ║
+// ║   setupSvFlavorRatioToggle()     974    - Toggle pro Shake & Vape            ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 5: LIQUID ZÁKLADNÍ - NASTAVENÍ BÁZE (řádky 1012-1300)                  ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   updateBaseType()              1012    - Přepnutí typu báze                 ║
+// ║   updatePremixedRatio()         1042    - Aktualizace předmíchaného poměru   ║
+// ║   getPremixedVgPercent()        1068    - Získání VG% z předmíchané báze     ║
+// ║   autoRecalculateLiquidVgPgRatio() 1075 - Auto přepočet VG/PG               ║
+// ║   calculateActualVgPgRatio()    1093    - Výpočet skutečného VG/PG           ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 6: LIQUID PRO - NASTAVENÍ BÁZE (řádky 1213-1460)                       ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   updateProBaseType()           1213    - Přepnutí typu báze PRO             ║
+// ║   updateProPremixedRatio()      1243    - Předmíchaný poměr PRO              ║
+// ║   updateProCustomPremixedPg()   1281    - Vlastní PG pro předmíchanou bázi   ║
+// ║   getProPremixedVgPercent()     1302    - Získání VG% PRO                    ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 7: AUTENTIZACE A PROFIL (řádky 1462-2270)                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   updateAuthUI()                1462    - Aktualizace UI podle přihlášení    ║
+// ║   toggleMenu()                  1501    - Přepnutí menu                      ║
+// ║   showAuthChoiceModal()         1526    - Modal volby přihlášení             ║
+// ║   showLoginModal()              1584    - Zobrazení login modalu             ║
+// ║   hideLoginModal()              1868    - Skrytí login modalu                ║
+// ║   showLoginRequiredModal()      1922    - Modal "vyžadováno přihlášení"      ║
+// ║   updatePriceDisplay()          1953    - Aktualizace zobrazení ceny         ║
+// ║   isUserLoggedIn()              1998    - Kontrola přihlášení                ║
+// ║   hasActiveSubscription()       2003    - Kontrola aktivního předplatného    ║
+// ║   requireLogin()                2010    - Vyžádání přihlášení                ║
+// ║   requireSubscription()         2022    - Vyžádání předplatného              ║
+// ║   showUserProfileModal()        2037    - Zobrazení profilu uživatele        ║
+// ║   signOut()                     2101    - Odhlášení                          ║
+// ║   handleContact()               2174    - Zpracování kontaktního formuláře   ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 8: UKLÁDÁNÍ RECEPTŮ (řádky 2270-2990)                                  ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   storeCurrentRecipe()          2270    - Uložení aktuálního receptu do RAM  ║
+// ║   calculateDifficultyLevel()    2283    - Výpočet obtížnosti receptu         ║
+// ║   showSaveRecipeModal()         2336    - Modal pro uložení receptu          ║
+// ║   goBackToCalculator()          2388    - Návrat do formuláře                ║
+// ║   showSaveAsNewModal()          2420    - Modal "Uložit jako nový"           ║
+// ║   showSaveChangesModal()        2477    - Modal "Uložit změny"               ║
+// ║   loadProductsForRecipe()       2567    - Načtení produktů pro recept        ║
+// ║   addProductRow()               2596    - Přidání řádku produktu             ║
+// ║   hideSaveRecipeModal()         2690    - Skrytí modalu                      ║
+// ║   initStarRating()              2738    - Inicializace hvězdiček             ║
+// ║   saveRecipe()                  2775    - ⭐ ULOŽENÍ RECEPTU DO DB            ║
+// ║   getSelectedProductIds()       2972    - Získání vybraných produktů         ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 9: ZOBRAZENÍ RECEPTŮ (řádky 2985-3970)                                 ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   showMyRecipes()               2985    - Zobrazení mých receptů             ║
+// ║   loadMaturedRecipeIds()        3016    - Načtení zralých receptů            ║
+// ║   resetRecipeFilters()          3054    - Reset filtrů receptů               ║
+// ║   filterRecipes()               3124    - Filtrování receptů                 ║
+// ║   renderRecipesList()           3181    - Vykreslení seznamu receptů         ║
+// ║   viewRecipeDetail()            3233    - ⭐ ZOBRAZENÍ DETAILU RECEPTU        ║
+// ║   displayRecipeDetail()         3267    - ⭐ VYKRESLENÍ DETAILU RECEPTU       ║
+// ║   editSavedRecipe()             3410    - Editace uloženého receptu          ║
+// ║   prefillLiquidForm()           3452    - Předvyplnění Liquid formuláře      ║
+// ║   prefillSnvForm()              3487    - Předvyplnění Shake & Vape          ║
+// ║   prefillProForm()              3517    - Předvyplnění Liquid PRO            ║
+// ║   prefillShishaForm()           3568    - Předvyplnění Shisha                ║
+// ║   showEditRecipeForm()          3770    - Zobrazení formuláře editace        ║
+// ║   shareRecipe()                 3871    - Sdílení receptu                    ║
+// ║   deleteRecipe()                3938    - Smazání receptu                    ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 10: SDÍLENÉ RECEPTY (řádky 3972-4260)                                  ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   isValidShareId()              3972    - Validace share ID                  ║
+// ║   loadSharedRecipe()            3978    - Načtení sdíleného receptu          ║
+// ║   showSharedRecipeDisclaimer()  4032    - Disclaimer pro sdílený recept      ║
+// ║   confirmAndShowSharedRecipe()  4045    - Potvrzení a zobrazení              ║
+// ║   loadSharedRecipeContent()     4086    - Načtení obsahu sdíleného           ║
+// ║   saveSharedRecipe()            4131    - Uložení sdíleného receptu          ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 11: OBLÍBENÉ PRODUKTY (řádky 4268-4880)                                ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   showFavoriteProducts()        4268    - Zobrazení oblíbených produktů      ║
+// ║   resetProductFilters()         4296    - Reset filtrů produktů              ║
+// ║   filterProducts()              4366    - Filtrování produktů                ║
+// ║   renderProductsList()          4417    - Vykreslení seznamu produktů        ║
+// ║   updateProductStockUI()        4476    - ⭐ AKTUALIZACE SKLADU V UI          ║
+// ║   viewProductDetail()           4511    - Zobrazení detailu produktu         ║
+// ║   displayProductDetail()        4547    - Vykreslení detailu produktu        ║
+// ║   viewSharedProductDetail()     4637    - Detail sdíleného produktu          ║
+// ║   copySharedProductToUser()     4717    - Kopírování sdíleného produktu      ║
+// ║   getProductTypeLabel()         4758    - Získání popisku typu produktu      ║
+// ║   showAddProductForm()          4789    - Formulář přidání produktu          ║
+// ║   editProduct()                 4820    - Editace produktu                   ║
+// ║   deleteProduct()               4854    - Smazání produktu                   ║
+// ║   saveProduct()                 4886    - Uložení produktu                   ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 12: NAVIGACE A UI (řádky 5059-5170)                                    ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   togglePrepDetail()            5059    - Toggle přípravných detailů         ║
+// ║   showPage()                    5085    - ⭐ NAVIGACE MEZI STRÁNKAMI          ║
+// ║   initHistoryNavigation()       5121    - Inicializace historie              ║
+// ║   updateHomeButtonVisibility()  5138    - Viditelnost tlačítka Domů          ║
+// ║   goHome()                      5153    - Návrat na domovskou stránku        ║
+// ║   goBack()                      5158    - Krok zpět v historii               ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 13: LIQUID ZÁKLADNÍ - SLIDERY A DISPLEJE (řádky 5172-5740)             ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   adjustRatio()                 5172    - Úprava VG/PG poměru                ║
+// ║   getRatioDescriptionText()     5193    - Popis VG/PG poměru                 ║
+// ║   updateRatioDisplay()          5206    - Aktualizace displeje poměru        ║
+// ║   updateVgPgRatioLimits()       5229    - Aktualizace limitů VG/PG           ║
+// ║   clampVgPgValue()              5393    - Omezení hodnoty VG/PG              ║
+// ║   getNicotineMaxValue()         5410    - Max hodnota nikotinu               ║
+// ║   getNicotineTypeName()         5417    - Název typu nikotinu                ║
+// ║   showNicotineWarning()         5424    - Zobrazení varování nikotinu        ║
+// ║   validateNicotineStrength()    5443    - Validace síly nikotinu             ║
+// ║   updateNicotineType()          5459    - Aktualizace typu nikotinu          ║
+// ║   updateMaxTargetNicotine()     5492    - Max cílový nikotin                 ║
+// ║   adjustTargetNicotine()        5503    - Úprava cílového nikotinu           ║
+// ║   updateNicotineDisplay()       5510    - Aktualizace displeje nikotinu      ║
+// ║   updateFlavorType()            5540    - Aktualizace typu příchutě          ║
+// ║   adjustFlavor()                5561    - Úprava síly příchutě               ║
+// ║   getFlavorNote()               5569    - Získání poznámky k příchuti        ║
+// ║   getFlavorName()               5592    - Získání názvu příchutě             ║
+// ║   getIngredientName()           5599    - ⭐ PŘEKLAD NÁZVŮ INGREDIENCÍ        ║
+// ║   updateFlavorDisplay()         5677    - Aktualizace displeje příchutě      ║
+// ║   updateAllDisplays()           5722    - Aktualizace všech displejů         ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 14: LIQUID ZÁKLADNÍ - KALKULACE (řádky 5740-6280)                      ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   calculateMix()                5740    - ⭐⭐⭐ HLAVNÍ VÝPOČET LIQUID          ║
+// ║   displayResults()              6022    - ⭐⭐⭐ ZOBRAZENÍ VÝSLEDKŮ             ║
+// ║   calculateIngredientGrams()    6130    - Výpočet gramů ingredience          ║
+// ║   generateMixingNotes()         6164    - Generování poznámek k míchání      ║
+// ║   getMaxSteepingDaysFromRecipe() 6249   - Max steeping z receptu             ║
+// ║   refreshResultsTable()         6282    - Refresh tabulky výsledků           ║
+// ║   refreshRecipeDetail()         6322    - Refresh detailu receptu            ║
+// ║   refreshProductDetail()        6342    - Refresh detailu produktu           ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 15: POMOCNÉ FUNKCE (řádky 6367-6500)                                   ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   adjustColorBrightness()       6367    - Úprava jasu barvy                  ║
+// ║   isMobileDevice()              6383    - Detekce mobilního zařízení         ║
+// ║   isIOSDevice()                 6389    - Detekce iOS                        ║
+// ║   isStandalone()                6394    - Detekce standalone režimu          ║
+// ║   showInstallPrompt()           6420    - Zobrazení install promptu          ║
+// ║   hideInstallPrompt()           6427    - Skrytí install promptu             ║
+// ║   showIOSInstallPrompt()        6434    - iOS specifický prompt              ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 16: ŘEDĚNÍ NIKOTINU (řádky 6505-6910)                                  ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   updateDiluteAmountType()      6505    - Typ množství pro ředění            ║
+// ║   updateDiluteNicotineType()    6521    - Typ nikotinu pro ředění            ║
+// ║   adjustDiluteSourceRatio()     6540    - Úprava zdrojového poměru           ║
+// ║   updateDiluteSourceRatioDisplay() 6548 - Displej zdrojového poměru         ║
+// ║   adjustDiluteTargetRatio()     6582    - Úprava cílového poměru             ║
+// ║   updateDiluteTargetRatioDisplay() 6598 - Displej cílového poměru           ║
+// ║   updateDiluteRatioLimits()     6636    - Limity poměrů                      ║
+// ║   updateDiluteCalculation()     6697    - Aktualizace výpočtu ředění         ║
+// ║   calculateDilution()           6718    - ⭐ VÝPOČET ŘEDĚNÍ                   ║
+// ║   displayDiluteResults()        6806    - Zobrazení výsledků ředění          ║
+// ║   switchFormTab()               6863    - Přepnutí záložky formuláře         ║
+// ║   updateFormTabsState()         6908    - Stav záložek formuláře             ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 17: SHAKE & VAPE (řádky 6933-7470)                                     ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   initShakeVapeForm()           6933    - Inicializace formuláře             ║
+// ║   setupSvNicotineRatioToggle()  6939    - Toggle nikotinu                    ║
+// ║   updateSvBaseType()            6966    - Typ báze Shake & Vape              ║
+// ║   updateSvPremixedRatio()       6996    - Předmíchaný poměr                  ║
+// ║   getSvPremixedVgPercent()      7024    - VG% pro Shake & Vape               ║
+// ║   autoRecalculateSvVgPgRatio()  7031    - Auto přepočet VG/PG                ║
+// ║   updateSvNicotineType()        7049    - Typ nikotinu                       ║
+// ║   adjustSvTargetNicotine()      7070    - Úprava cílového nikotinu           ║
+// ║   updateSvNicotineDisplay()     7078    - Displej nikotinu                   ║
+// ║   adjustSvRatio()               7103    - Úprava poměru                      ║
+// ║   updateSvRatioDisplay()        7119    - Displej poměru                     ║
+// ║   updateSvVgPgLimits()          7138    - Limity VG/PG                       ║
+// ║   updateSvCalculation()         7243    - Aktualizace výpočtu                ║
+// ║   calculateShakeVape()          7247    - ⭐ VÝPOČET SHAKE & VAPE             ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 18: SHORTFILL (řádky 7473-7600)                                        ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   calculateShortfill()          7473    - Přepočet shortfill                 ║
+// ║   adjustSfShotCount()           7507    - Úprava počtu shotů                 ║
+// ║   calculateShortfillMix()       7524    - ⭐ VÝPOČET SHORTFILL                ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 19: LIQUID PRO (řádky 7600-8970)                                       ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   autoRecalculateProVgPgRatio() 7600    - Auto přepočet VG/PG PRO            ║
+// ║   initLiquidProForm()           7613    - Inicializace PRO formuláře         ║
+// ║   updateProNicotineType()       7621    - Typ nikotinu PRO                   ║
+// ║   adjustProNicRatio()           7657    - Úprava poměru nikotinu             ║
+// ║   updateProNicRatioDisplay()    7673    - Displej poměru nikotinu            ║
+// ║   adjustProTargetNicotine()     7692    - Cílový nikotin PRO                 ║
+// ║   updateProNicotineDisplay()    7700    - Displej nikotinu PRO               ║
+// ║   updateProFlavorType()         7730    - Typ příchutě PRO                   ║
+// ║   adjustProFlavor()             7748    - Úprava příchutě PRO                ║
+// ║   updateProFlavorStrength()     7758    - Síla příchutě PRO                  ║
+// ║   updateProFlavorDisplay()      7765    - Displej příchutě PRO               ║
+// ║   adjustProFlavorRatio()        7800    - Poměr příchutě PRO                 ║
+// ║   updateProFlavorRatioDisplay() 7819    - Displej poměru příchutě            ║
+// ║   addProFlavor()                7844    - ⭐ PŘIDÁNÍ PŘÍCHUTĚ                 ║
+// ║   removeProFlavor()             7968    - Odebrání příchutě                  ║
+// ║   renumberProFlavors()          7990    - Přečíslování příchutí              ║
+// ║   updateFlavorElementIds()      8014    - Aktualizace ID elementů            ║
+// ║   updateProFlavorCountHint()    8053    - Hint počtu příchutí                ║
+// ║   toggleFlavorComposition()     8070    - Toggle složení příchutě            ║
+// ║   prefillFlavorComposition()    8097    - Předvyplnění složení               ║
+// ║   resetFlavorComposition()      8168    - Reset složení                      ║
+// ║   getFlavorCustomComposition()  8174    - Vlastní složení příchutě           ║
+// ║   addProAdditive()              8204    - Přidání aditivu                    ║
+// ║   removeProAdditive()           8277    - Odebrání aditivu                   ║
+// ║   updateProAdditiveType()       8294    - Typ aditivu                        ║
+// ║   getProAdditivesData()         8407    - Data aditiv                        ║
+// ║   updateProTotalFlavorPercent() 8452    - Celkové % příchutí                 ║
+// ║   getProFlavorsData()           8488    - Data příchutí                      ║
+// ║   adjustProRatio()              8509    - Úprava poměru PRO                  ║
+// ║   updateProRatioDisplay()       8525    - Displej poměru PRO                 ║
+// ║   updateProVgPgLimits()         8550    - Limity VG/PG PRO                   ║
+// ║   calculateProMix()             8663    - ⭐⭐⭐ HLAVNÍ VÝPOČET LIQUID PRO      ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 20: PŘEDPLATNÉ (řádky 8978-9700)                                       ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   checkSubscriptionStatus()     8978    - Kontrola stavu předplatného        ║
+// ║   getSupabaseUrl()              9048    - URL Supabase                       ║
+// ║   getSupabaseAnonKey()          9053    - Anon klíč Supabase                 ║
+// ║   getClerkToken()               9059    - Získání Clerk tokenu               ║
+// ║   showSubscriptionModal()       9103    - Modal předplatného                 ║
+// ║   updateGuestPayButton()        9279    - Tlačítko platby pro hosta          ║
+// ║   startRegistrationAndPayment() 9288    - Start registrace + platby          ║
+// ║   goToLoginFromSubscription()   9322    - Přechod na login                   ║
+// ║   hideSubscriptionModal()       9332    - Skrytí modalu                      ║
+// ║   detectUserLocation()          9363    - Detekce lokace uživatele           ║
+// ║   updatePricingUI()             9443    - Aktualizace UI s cenami            ║
+// ║   startPayment()                9475    - Start platby                       ║
+// ║   processPayment()              9506    - ⭐ ZPRACOVÁNÍ PLATBY                ║
+// ║   saveTermsAcceptance()         9612    - Uložení souhlasu s podmínkami      ║
+// ║   updateSubscriptionStatusUI()  9631    - UI stavu předplatného              ║
+// ║   renewSubscription()           9668    - Obnovení předplatného              ║
+// ║   showTermsModal()              9673    - Modal podmínek                     ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 21: PŘIPOMÍNKY ZRÁNÍ (řádky 9700-10650)                                ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   toggleReminderFields()        9700    - Toggle polí připomínky             ║
+// ║   initReminderDates()           9714    - Inicializace datumů                ║
+// ║   formatDateForInput()          9725    - Formátování data pro input         ║
+// ║   initDatePickers()             9733    - Inicializace date pickerů          ║
+// ║   updateReminderDate()          9749    - Aktualizace data připomínky        ║
+// ║   resetReminderFields()         9794    - Reset polí připomínky              ║
+// ║   initReminderFieldsEnabled()   9808    - Povolení polí                      ║
+// ║   getReminderDataFromForm()     9838    - Data z formuláře                   ║
+// ║   requestNotificationPermissionWithPrompt() 9924 - Žádost o notifikace       ║
+// ║   loadRecipeReminders()         9961    - ⭐ NAČTENÍ PŘIPOMÍNEK RECEPTU       ║
+// ║   renderReminderItem()         10016    - ⭐ VYKRESLENÍ PŘIPOMÍNKY            ║
+// ║   wasReminderDismissedToday()  10105    - Kontrola dismissnutí               ║
+// ║   setReminderDismissedToday()  10114    - Nastavení dismissnutí              ║
+// ║   checkMaturedReminders()      10152    - Kontrola zralých připomínek        ║
+// ║   showMaturedLiquidsNotification() 10207 - Notifikace zralých                ║
+// ║   goToSavedRecipes()           10265    - Přechod na uložené recepty         ║
+// ║   showAddReminderModal()       10277    - Modal přidání připomínky           ║
+// ║   showEditReminderModal()      10340    - Modal editace připomínky           ║
+// ║   hideAddReminderModal()       10363    - Skrytí modalu                      ║
+// ║   saveReminderFromModal()      10390    - Uložení z modalu                   ║
+// ║   saveNewReminder()            10440    - Uložení nové připomínky            ║
+// ║   deleteReminderConfirm()      10463    - Potvrzení smazání                  ║
+// ║   showViewReminderModal()      10481    - Modal zobrazení připomínky         ║
+// ║   updateViewReminderStock()    10556    - Aktualizace skladu v připomínce    ║
+// ║   hideViewReminderModal()      10643    - Skrytí modalu                      ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 22: VEŘEJNÁ DATABÁZE RECEPTŮ (řádky 10671-11100)                       ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   showRecipeDatabase()         10671    - Zobrazení databáze receptů         ║
+// ║   initFlavorFilterOptions()    10684    - Inicializace filtrů příchutí       ║
+// ║   toggleDatabaseFilters()      10744    - Toggle filtrů                      ║
+// ║   resetDatabaseFilters()       10767    - Reset filtrů                       ║
+// ║   debounceSearch()             10783    - Debounce vyhledávání               ║
+// ║   loadPublicRecipes()          10792    - ⭐ NAČTENÍ VEŘEJNÝCH RECEPTŮ        ║
+// ║   renderPublicRecipeCard()     10843    - Vykreslení karty receptu           ║
+// ║   renderStars()                10878    - Vykreslení hvězdiček               ║
+// ║   renderDbPagination()         10893    - Vykreslení paginace                ║
+// ║   goToDbPage()                 10927    - Přechod na stránku                 ║
+// ║   loadPublicRecipeDetail()     10935    - Načtení detailu veřejného receptu  ║
+// ║   appendRatingSection()        10975    - Přidání sekce hodnocení            ║
+// ║   submitRating()               11004    - ⭐ ODESLÁNÍ HODNOCENÍ               ║
+// ║   appendBackToDatabaseButton() 11066    - Tlačítko zpět do databáze          ║
+// ║   removeBackToDatabaseButton() 11092    - Odebrání tlačítka                  ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 23: SHISHA FORMULÁŘ (řádky 11100-12800)                                ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   (Shisha funkce - hledat "Shisha" nebo "shisha" v souboru)                  ║
+// ║   updateShishaBaseType()        ~11200  - Typ báze Shisha                    ║
+// ║   autoRecalculateShishaVgPgRatio() ~11300 - Auto přepočet VG/PG Shisha       ║
+// ║   calculateShishaMix()          ~12000  - ⭐⭐⭐ HLAVNÍ VÝPOČET SHISHA          ║
+// ║                                                                              ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║ SEKCE 24: WINDOW EXPORTY (konec souboru)                                     ║
+// ║ ═══════════════════════════════════════════════════════════════════════════  ║
+// ║                                                                              ║
+// ║   window.calculateMixture, window.showSaveRecipeModal,                       ║
+// ║   window.viewRecipeDetail, window.showAddReminderModal, ...                  ║
+// ║                                                                              ║
+// ╠══════════════════════════════════════════════════════════════════════════════╣
+// ║                                                                              ║
+// ║ ⭐ = Důležitá funkce                                                          ║
+// ║ ⭐⭐⭐ = Kritická funkce - NEMĚNIT BEZ DŮKLADNÉ ANALÝZY                         ║
+// ║                                                                              ║
+// ║ POZNÁMKA: Čísla řádků jsou orientační a mohou se lišit po editacích.         ║
+// ║ Pro aktuální pozici použijte Ctrl+G (Go to Line) nebo vyhledávání.           ║
+// ║                                                                              ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
 
 // =========================================
 // SECURITY: HTML Sanitization
@@ -1363,6 +1760,16 @@ window.addEventListener('load', async function() {
                     // Save user to database on sign in
                     if (window.LiquiMixerDB) {
                         await window.LiquiMixerDB.onSignIn(window.Clerk.user);
+                    }
+                    
+                    // Automaticky získat a uložit FCM token při přihlášení
+                    if (window.fcm && window.fcm.getToken && Notification.permission === 'granted') {
+                        try {
+                            await window.fcm.getToken();
+                            console.log('FCM token refreshed after sign in');
+                        } catch (fcmError) {
+                            console.warn('Failed to refresh FCM token:', fcmError);
+                        }
                     }
                     
                     // Načíst uložený jazyk uživatele z databáze
@@ -3285,7 +3692,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         </tr>
                     </thead>
                     <tbody>
-                        ${data.ingredients.map(ing => {
+                        ${ingredients.map(ing => {
                             // Dynamicky přeložit název ingredience
                             const ingredientName = escapeHtml(getIngredientName(ing));
                             // Vypočítat gramy
@@ -4872,6 +5279,78 @@ function cancelProductForm() {
     }
 }
 
+// Toggle flavor fields visibility
+function toggleFlavorFields() {
+    const productType = document.getElementById('productType').value;
+    const flavorSection = document.getElementById('flavorFieldsSection');
+    
+    if (!flavorSection) return;
+    
+    if (productType === 'flavor') {
+        flavorSection.classList.remove('hidden');
+        // Načíst výrobce do selectu
+        initFlavorManufacturersSelect();
+        // Aktualizovat nápovědu pro rate limit
+        updateFlavorSuggestionHint();
+    } else {
+        flavorSection.classList.add('hidden');
+    }
+}
+
+// Inicializovat select s výrobci příchutí
+async function initFlavorManufacturersSelect() {
+    const select = document.getElementById('productFlavorManufacturer');
+    if (!select) return;
+    
+    // Pokud již naplněno, přeskočit
+    if (select.options.length > 1) return;
+    
+    try {
+        // Použít cache pokud existuje
+        if (!flavorManufacturersCache) {
+            flavorManufacturersCache = await window.LiquiMixerDB.getFlavorManufacturers();
+        }
+        
+        flavorManufacturersCache.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.code;
+            option.textContent = `${m.name} (${m.country_code})`;
+            select.appendChild(option);
+        });
+    } catch (e) {
+        console.error('Error loading manufacturers for select:', e);
+    }
+}
+
+// Aktualizovat nápovědu pro návrhy příchutí
+async function updateFlavorSuggestionHint() {
+    const hintEl = document.getElementById('flavorSuggestionHint');
+    if (!hintEl) return;
+    
+    const clerkId = window.Clerk?.user?.id;
+    if (!clerkId) {
+        hintEl.textContent = '';
+        return;
+    }
+    
+    try {
+        const count = await window.LiquiMixerDB.getUserSuggestionCount(clerkId);
+        const remaining = Math.max(0, 5 - count);
+        
+        if (remaining === 0) {
+            hintEl.textContent = t('flavor_suggestion.rate_limit_reached', 'Dosažen týdenní limit návrhů');
+            hintEl.classList.add('error');
+            document.getElementById('productSuggestToDatabase').disabled = true;
+        } else {
+            hintEl.textContent = t('flavor_suggestion.rate_limit', 'Můžete navrhnout max 5 příchutí týdně').replace('5', remaining);
+            hintEl.classList.remove('error');
+            document.getElementById('productSuggestToDatabase').disabled = false;
+        }
+    } catch (e) {
+        console.error('Error getting suggestion count:', e);
+    }
+}
+
 // Uložit produkt
 async function saveProduct(event) {
     event.preventDefault();
@@ -4899,6 +5378,22 @@ async function saveProduct(event) {
         return false;
     }
     
+    // Validace pro příchutě
+    if (productType === 'flavor') {
+        const flavorProductType = document.getElementById('productFlavorProductType').value;
+        const flavorManufacturer = document.getElementById('productFlavorManufacturer').value;
+        
+        if (!flavorProductType) {
+            alert(t('flavor_form.product_type_required', 'Vyberte prosím typ příchutě'));
+            return false;
+        }
+        
+        if (!flavorManufacturer) {
+            alert(t('flavor_form.manufacturer_required', 'Vyberte prosím výrobce'));
+            return false;
+        }
+    }
+    
     const productData = {
         name: name,
         product_type: productType,
@@ -4907,6 +5402,25 @@ async function saveProduct(event) {
         product_url: productUrl,
         image_url: imageUrl
     };
+    
+    // Přidat flavor-specifická data
+    if (productType === 'flavor') {
+        productData.flavor_product_type = document.getElementById('productFlavorProductType').value;
+        productData.manufacturer = document.getElementById('productFlavorManufacturer').value;
+        productData.flavor_category = document.getElementById('productFlavorCategory').value;
+        productData.flavor_min_percent = parseFloat(document.getElementById('productFlavorMinPercent').value) || null;
+        productData.flavor_max_percent = parseFloat(document.getElementById('productFlavorMaxPercent').value) || null;
+        productData.steep_days = parseInt(document.getElementById('productFlavorSteepDays').value) || 7;
+        
+        // Získat název výrobce pro uložení
+        const manufacturerSelect = document.getElementById('productFlavorManufacturer');
+        const selectedOption = manufacturerSelect.options[manufacturerSelect.selectedIndex];
+        if (selectedOption) {
+            const text = selectedOption.textContent;
+            // Extrahovat název před závorkou
+            productData.manufacturer = text.split(' (')[0] || productData.manufacturer;
+        }
+    }
     
     try {
         let saved;
@@ -4918,6 +5432,11 @@ async function saveProduct(event) {
         }
         
         if (saved) {
+            // Pokud bylo zaškrtnuto "Navrhnout do databáze"
+            if (productType === 'flavor' && document.getElementById('productSuggestToDatabase')?.checked) {
+                await submitFlavorSuggestionFromProduct(productData);
+            }
+            
             alert(editingId ? t('product_form.updated', 'Produkt byl aktualizován!') : t('product_form.success', 'Produkt byl uložen!'));
             showFavoriteProducts();
         } else {
@@ -4929,6 +5448,38 @@ async function saveProduct(event) {
     }
     
     return false;
+}
+
+// Odeslat návrh příchutě do databáze
+async function submitFlavorSuggestionFromProduct(productData) {
+    const clerkId = window.Clerk?.user?.id;
+    if (!clerkId) return;
+    
+    try {
+        const flavorData = {
+            name: productData.name,
+            manufacturer_code: document.getElementById('productFlavorManufacturer').value,
+            product_type: productData.flavor_product_type,
+            category: productData.flavor_category || 'mix',
+            min_percent: productData.flavor_min_percent,
+            max_percent: productData.flavor_max_percent,
+            steep_days: productData.steep_days
+        };
+        
+        const result = await window.LiquiMixerDB.submitFlavorSuggestion(clerkId, flavorData);
+        
+        if (result.error) {
+            if (result.error.message?.includes('limit')) {
+                showNotification(t('flavor_suggestion.rate_limit_reached', 'Dosažen týdenní limit návrhů'), 'warning');
+            } else {
+                console.error('Flavor suggestion error:', result.error);
+            }
+        } else {
+            showNotification(t('flavor_suggestion.submitted', 'Návrh odeslán ke schválení'), 'success');
+        }
+    } catch (e) {
+        console.error('Error submitting flavor suggestion:', e);
+    }
 }
 
 // Inicializace hvězdičkového hodnocení pro produkty
@@ -5603,8 +6154,18 @@ function getIngredientName(ingredient) {
             const saltName = t('ingredients.nicotine_salt', 'Nikotinová sůl');
             return `${saltName} (${params.strength} mg/ml, VG/PG ${params.vgpg})`;
         case 'flavor':
-            const flavorName = getFlavorName(ingredient.flavorType || 'fruit');
-            return `${flavorName} (VG/PG ${params.vgpg})`;
+            // Použít flavorName pokud existuje, jinak přeložit flavorType
+            let displayFlavorName;
+            if (ingredient.flavorName) {
+                displayFlavorName = ingredient.flavorName;
+            } else {
+                displayFlavorName = getFlavorName(ingredient.flavorType || 'fruit');
+            }
+            // Přidat číslo příchutě pokud je více příchutí
+            if (ingredient.flavorNumber && ingredient.flavorNumber > 1) {
+                return `${t('ingredients.flavor', 'Příchuť')} ${ingredient.flavorNumber}: ${displayFlavorName} (VG/PG ${params.vgpg})`;
+            }
+            return `${displayFlavorName} (VG/PG ${params.vgpg})`;
         case 'shakevape_flavor':
             // Shake & Vape - příchuť již v lahvičce
             const svFlavorLabel = t('ingredients.flavor', 'Příchuť');
@@ -11094,6 +11655,724 @@ function refreshPublicRecipeDetail() {
     // Aplikovat překlady
     if (window.i18n?.applyTranslations) {
         window.i18n.applyTranslations();
+    }
+}
+
+// =============================================
+// DATABÁZE PŘÍCHUTÍ (FLAVOR DATABASE)
+// =============================================
+
+let currentFlavorPage = 1;
+let flavorSearchTimeout = null;
+let currentFlavorDetail = null;
+let flavorManufacturersCache = null;
+let flavorCategoriesCache = null;
+
+// Zobrazit stránku databáze příchutí
+function showFlavorDatabase() {
+    // Kontrola přihlášení
+    if (!window.Clerk?.user) {
+        showLoginRequiredModal();
+        return;
+    }
+    
+    showPage('flavor-database');
+    initFlavorDatabaseFilters();
+    loadFlavors();
+}
+
+// Inicializovat filtry pro databázi příchutí
+async function initFlavorDatabaseFilters() {
+    // Načíst výrobce (cache)
+    if (!flavorManufacturersCache) {
+        try {
+            flavorManufacturersCache = await window.LiquiMixerDB.getFlavorManufacturers();
+        } catch (e) {
+            console.error('Error loading manufacturers:', e);
+            flavorManufacturersCache = [];
+        }
+    }
+    
+    // Naplnit dropdown výrobců
+    const manufacturerSelect = document.getElementById('flavorFilterManufacturer');
+    if (manufacturerSelect && flavorManufacturersCache.length > 0) {
+        // Uložit aktuální hodnotu
+        const currentValue = manufacturerSelect.value;
+        
+        // Ponechat první option (Všichni výrobci)
+        while (manufacturerSelect.options.length > 1) {
+            manufacturerSelect.remove(1);
+        }
+        
+        // Přidat výrobce
+        flavorManufacturersCache.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.code;
+            option.textContent = `${m.name} (${m.country_code})`;
+            manufacturerSelect.appendChild(option);
+        });
+        
+        // Obnovit hodnotu
+        if (currentValue) manufacturerSelect.value = currentValue;
+    }
+    
+    // Načíst kategorie (cache)
+    if (!flavorCategoriesCache) {
+        try {
+            flavorCategoriesCache = await window.LiquiMixerDB.getFlavorCategories();
+        } catch (e) {
+            console.error('Error loading categories:', e);
+            flavorCategoriesCache = [];
+        }
+    }
+    
+    // Naplnit dropdown kategorií
+    const categorySelect = document.getElementById('flavorFilterCategory');
+    if (categorySelect && flavorCategoriesCache.length > 0) {
+        const currentValue = categorySelect.value;
+        
+        while (categorySelect.options.length > 1) {
+            categorySelect.remove(1);
+        }
+        
+        flavorCategoriesCache.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            // Zkusit překlad z flavor_categories
+            option.textContent = t(`flavor_categories.${cat}`, cat);
+            option.setAttribute('data-i18n', `flavor_categories.${cat}`);
+            categorySelect.appendChild(option);
+        });
+        
+        if (currentValue) categorySelect.value = currentValue;
+    }
+    
+    // Aplikovat překlady
+    if (window.i18n?.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
+}
+
+// Toggle filtrů databáze příchutí
+function toggleFlavorDatabaseFilters() {
+    const panel = document.getElementById('flavorFiltersPanel');
+    const btn = document.querySelector('#flavor-database .filter-toggle-btn .filter-toggle-icon');
+    if (!panel) return;
+    
+    if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        panel.classList.add('open');
+        if (btn) btn.textContent = '▲';
+    } else {
+        panel.classList.remove('open');
+        panel.classList.add('hidden');
+        if (btn) btn.textContent = '▼';
+    }
+}
+
+// Reset filtrů databáze příchutí
+function resetFlavorDatabaseFilters() {
+    document.getElementById('flavorSearchInput').value = '';
+    document.getElementById('flavorSortBy').value = 'popularity';
+    document.getElementById('flavorFilterType').value = 'all';
+    document.getElementById('flavorFilterManufacturer').value = 'all';
+    document.getElementById('flavorFilterCategory').value = 'all';
+    document.getElementById('flavorFilterRating').value = '';
+    currentFlavorPage = 1;
+    loadFlavors();
+}
+
+// Debounce pro vyhledávání příchutí
+function debounceFlavorSearch() {
+    clearTimeout(flavorSearchTimeout);
+    flavorSearchTimeout = setTimeout(() => {
+        currentFlavorPage = 1;
+        loadFlavors();
+    }, 300);
+}
+
+// Načíst příchutě
+async function loadFlavors() {
+    const listContainer = document.getElementById('flavorsList');
+    const countContainer = document.getElementById('flavorResultsCount');
+    const paginationContainer = document.getElementById('flavorPagination');
+    
+    if (!listContainer) return;
+    
+    // Zobrazit loading
+    listContainer.innerHTML = `<div class="loading-message"><span data-i18n="flavor_database.loading">${t('flavor_database.loading', 'Načítání příchutí...')}</span></div>`;
+    
+    // Sestavit filtry
+    const filters = {
+        search: document.getElementById('flavorSearchInput')?.value || '',
+        sort: document.getElementById('flavorSortBy')?.value || 'popularity',
+        product_type: document.getElementById('flavorFilterType')?.value || 'all',
+        manufacturer_code: document.getElementById('flavorFilterManufacturer')?.value || 'all',
+        category: document.getElementById('flavorFilterCategory')?.value || 'all',
+        min_rating: parseFloat(document.getElementById('flavorFilterRating')?.value) || 0
+    };
+    
+    try {
+        const result = await window.LiquiMixerDB.searchFlavors(filters, currentFlavorPage, 20);
+        
+        if (!result.data || result.data.length === 0) {
+            listContainer.innerHTML = `<div class="empty-message"><span data-i18n="flavor_database.no_results">${t('flavor_database.no_results', 'Žádné příchutě nenalezeny')}</span></div>`;
+            if (countContainer) countContainer.innerHTML = '';
+            if (paginationContainer) paginationContainer.innerHTML = '';
+            return;
+        }
+        
+        // Zobrazit počet výsledků
+        if (countContainer) {
+            countContainer.innerHTML = `<span data-i18n="flavor_database.results_count">${t('flavor_database.results_count', 'Nalezeno {count} příchutí').replace('{count}', result.total)}</span>`;
+        }
+        
+        // Vykreslit karty příchutí
+        listContainer.innerHTML = result.data.map(flavor => renderFlavorCard(flavor)).join('');
+        
+        // Vykreslit paginaci
+        if (paginationContainer) {
+            const totalPages = Math.ceil(result.total / 20);
+            renderFlavorPagination(paginationContainer, currentFlavorPage, totalPages);
+        }
+        
+        // Aplikovat překlady
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+    } catch (error) {
+        console.error('Error loading flavors:', error);
+        listContainer.innerHTML = `<div class="error-message">${t('common.error', 'Chyba při načítání')}</div>`;
+    }
+}
+
+// Vykreslit kartu příchutě
+function renderFlavorCard(flavor) {
+    const manufacturerName = flavor.flavor_manufacturers?.name || flavor.manufacturer_code;
+    const categoryTranslation = t(`flavor_categories.${flavor.category}`, flavor.category);
+    const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
+    const typeClass = flavor.product_type === 'vape' ? 'type-vape' : 'type-shisha';
+    
+    // Procento
+    let percentRange = '-';
+    if (flavor.min_percent && flavor.max_percent) {
+        percentRange = `${flavor.min_percent}-${flavor.max_percent}%`;
+    } else if (flavor.recommended_percent) {
+        percentRange = `${flavor.recommended_percent}%`;
+    }
+    
+    // Hodnocení
+    const rating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '-';
+    const ratingStars = flavor.avg_rating ? '★'.repeat(Math.round(flavor.avg_rating)) + '☆'.repeat(5 - Math.round(flavor.avg_rating)) : '☆☆☆☆☆';
+    
+    return `
+        <div class="recipe-card flavor-card" onclick="showFlavorDetail('${flavor.id}')">
+            <div class="recipe-card-header">
+                <h3 class="recipe-card-title">${escapeHtml(flavor.name)}</h3>
+                <span class="flavor-type-badge ${typeClass}">${typeLabel}</span>
+            </div>
+            <div class="recipe-card-meta">
+                <div class="meta-row">
+                    <span class="meta-label" data-i18n="flavor_database.detail_manufacturer">Výrobce:</span>
+                    <span class="meta-value">${escapeHtml(manufacturerName)}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label" data-i18n="flavor_database.detail_category">Kategorie:</span>
+                    <span class="meta-value">${escapeHtml(categoryTranslation)}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label" data-i18n="flavor_database.detail_recommended_percent">Doporučené %:</span>
+                    <span class="meta-value">${percentRange}</span>
+                </div>
+            </div>
+            <div class="recipe-card-footer">
+                <div class="rating-display">
+                    <span class="rating-stars">${ratingStars}</span>
+                    <span class="rating-value">${rating}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Vykreslit paginaci pro příchutě
+function renderFlavorPagination(container, currentPage, totalPages) {
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    let html = '<div class="pagination">';
+    
+    // Předchozí
+    if (currentPage > 1) {
+        html += `<button class="pagination-btn" onclick="goToFlavorPage(${currentPage - 1})">◀</button>`;
+    }
+    
+    // Stránky
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, currentPage + 2);
+    
+    if (startPage > 1) {
+        html += `<button class="pagination-btn" onclick="goToFlavorPage(1)">1</button>`;
+        if (startPage > 2) html += '<span class="pagination-dots">...</span>';
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const activeClass = i === currentPage ? 'active' : '';
+        html += `<button class="pagination-btn ${activeClass}" onclick="goToFlavorPage(${i})">${i}</button>`;
+    }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) html += '<span class="pagination-dots">...</span>';
+        html += `<button class="pagination-btn" onclick="goToFlavorPage(${totalPages})">${totalPages}</button>`;
+    }
+    
+    // Další
+    if (currentPage < totalPages) {
+        html += `<button class="pagination-btn" onclick="goToFlavorPage(${currentPage + 1})">▶</button>`;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Přejít na stránku příchutí
+function goToFlavorPage(page) {
+    currentFlavorPage = page;
+    loadFlavors();
+    // Scroll nahoru
+    document.getElementById('flavor-database')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Zobrazit detail příchutě
+async function showFlavorDetail(flavorId) {
+    try {
+        const flavor = await window.LiquiMixerDB.getFlavorById(flavorId);
+        if (!flavor) {
+            showNotification(t('common.error', 'Příchuť nenalezena'), 'error');
+            return;
+        }
+        
+        currentFlavorDetail = flavor;
+        
+        // Nastavit titulek
+        document.getElementById('flavorDetailTitle').textContent = flavor.name;
+        
+        // Vykreslit detail
+        const contentContainer = document.getElementById('flavorDetailContent');
+        contentContainer.innerHTML = renderFlavorDetailContent(flavor);
+        
+        // Načíst uživatelovo hodnocení
+        const clerkId = window.Clerk?.user?.id;
+        if (clerkId) {
+            const userRating = await window.LiquiMixerDB.getUserFlavorRating(clerkId, flavorId);
+            if (userRating) {
+                highlightFlavorRatingStars(userRating);
+            }
+        }
+        
+        // Zobrazit stránku
+        showPage('flavor-detail');
+        
+        // Aplikovat překlady
+        if (window.i18n?.applyTranslations) {
+            window.i18n.applyTranslations();
+        }
+    } catch (error) {
+        console.error('Error loading flavor detail:', error);
+        showNotification(t('common.error', 'Chyba při načítání detailu'), 'error');
+    }
+}
+
+// Vykreslit obsah detailu příchutě
+function renderFlavorDetailContent(flavor) {
+    const manufacturerName = flavor.flavor_manufacturers?.name || flavor.manufacturer_code;
+    const categoryTranslation = t(`flavor_categories.${flavor.category}`, flavor.category);
+    const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
+    
+    // Procento
+    let percentRange = '-';
+    if (flavor.min_percent && flavor.max_percent) {
+        percentRange = `${flavor.min_percent} - ${flavor.max_percent}%`;
+    } else if (flavor.recommended_percent) {
+        percentRange = `${flavor.recommended_percent}%`;
+    }
+    
+    // Steep time
+    const steepDays = flavor.steep_days !== null && flavor.steep_days !== undefined 
+        ? t('flavor_database.detail_steep_days', '{days} dní').replace('{days}', flavor.steep_days)
+        : '-';
+    
+    // Hodnocení
+    const avgRating = flavor.avg_rating ? parseFloat(flavor.avg_rating).toFixed(1) : '0.0';
+    const ratingCount = flavor.rating_count || 0;
+    
+    return `
+        <div class="flavor-detail-grid">
+            <div class="detail-section">
+                <h3 class="detail-section-title" data-i18n="flavor_database.detail_manufacturer">Výrobce</h3>
+                <p class="detail-value">${escapeHtml(manufacturerName)}</p>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="detail-section-title" data-i18n="flavor_database.filter_type">Typ</h3>
+                <p class="detail-value">${typeLabel}</p>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="detail-section-title" data-i18n="flavor_database.detail_category">Kategorie</h3>
+                <p class="detail-value">${escapeHtml(categoryTranslation)}</p>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="detail-section-title" data-i18n="flavor_database.detail_recommended_percent">Doporučené %</h3>
+                <p class="detail-value">${percentRange}</p>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="detail-section-title" data-i18n="flavor_database.detail_steep_time">Doba zrání</h3>
+                <p class="detail-value">${steepDays}</p>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="detail-section-title" data-i18n="rating.title">Hodnocení</h3>
+                <div class="rating-display-large">
+                    <span class="rating-value-large">${avgRating}</span>
+                    <span class="rating-stars-large">${'★'.repeat(Math.round(flavor.avg_rating || 0))}${'☆'.repeat(5 - Math.round(flavor.avg_rating || 0))}</span>
+                    <span class="rating-count">(${ratingCount} ${t('rating.votes', 'hlasů')})</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="user-rating-section">
+            <h3 class="detail-section-title" data-i18n="flavor_database.your_rating">Vaše hodnocení</h3>
+            <div class="rating-input flavor-rating-input">
+                <span class="rating-star" data-rating="1" onclick="rateFlavorStar(1)">☆</span>
+                <span class="rating-star" data-rating="2" onclick="rateFlavorStar(2)">☆</span>
+                <span class="rating-star" data-rating="3" onclick="rateFlavorStar(3)">☆</span>
+                <span class="rating-star" data-rating="4" onclick="rateFlavorStar(4)">☆</span>
+                <span class="rating-star" data-rating="5" onclick="rateFlavorStar(5)">☆</span>
+            </div>
+        </div>
+    `;
+}
+
+// Hodnotit příchuť hvězdičkou
+async function rateFlavorStar(rating) {
+    const clerkId = window.Clerk?.user?.id;
+    if (!clerkId) {
+        showLoginRequiredModal();
+        return;
+    }
+    
+    if (!currentFlavorDetail) return;
+    
+    try {
+        const result = await window.LiquiMixerDB.addFlavorRating(clerkId, currentFlavorDetail.id, rating);
+        
+        if (result.error) {
+            showNotification(t('common.error', 'Chyba při hodnocení'), 'error');
+            return;
+        }
+        
+        highlightFlavorRatingStars(rating);
+        showNotification(t('rating.thank_you', 'Děkujeme za hodnocení!'), 'success');
+        
+        // Aktualizovat zobrazení průměru (znovu načíst příchuť)
+        const updatedFlavor = await window.LiquiMixerDB.getFlavorById(currentFlavorDetail.id);
+        if (updatedFlavor) {
+            currentFlavorDetail = updatedFlavor;
+            // Aktualizovat pouze rating display
+            const avgRating = updatedFlavor.avg_rating ? parseFloat(updatedFlavor.avg_rating).toFixed(1) : '0.0';
+            const ratingValueEl = document.querySelector('.rating-value-large');
+            const ratingStarsEl = document.querySelector('.rating-stars-large');
+            const ratingCountEl = document.querySelector('.rating-count');
+            if (ratingValueEl) ratingValueEl.textContent = avgRating;
+            if (ratingStarsEl) ratingStarsEl.textContent = '★'.repeat(Math.round(updatedFlavor.avg_rating || 0)) + '☆'.repeat(5 - Math.round(updatedFlavor.avg_rating || 0));
+            if (ratingCountEl) ratingCountEl.textContent = `(${updatedFlavor.rating_count || 0} ${t('rating.votes', 'hlasů')})`;
+        }
+    } catch (error) {
+        console.error('Error rating flavor:', error);
+        showNotification(t('common.error', 'Chyba při hodnocení'), 'error');
+    }
+}
+
+// Zvýraznit hvězdičky hodnocení příchutě
+function highlightFlavorRatingStars(rating) {
+    const stars = document.querySelectorAll('.flavor-rating-input .rating-star');
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.textContent = '★';
+            star.classList.add('active');
+        } else {
+            star.textContent = '☆';
+            star.classList.remove('active');
+        }
+    });
+}
+
+// Uložit aktuální příchuť do oblíbených
+async function saveCurrentFlavorToFavorites() {
+    const clerkId = window.Clerk?.user?.id;
+    if (!clerkId) {
+        showLoginRequiredModal();
+        return;
+    }
+    
+    if (!currentFlavorDetail) return;
+    
+    try {
+        const result = await window.LiquiMixerDB.saveFlavorToFavorites(clerkId, currentFlavorDetail.id);
+        
+        if (result.error) {
+            if (result.error.message?.includes('duplicate')) {
+                showNotification(t('products.already_saved', 'Produkt je již uložen'), 'info');
+            } else {
+                showNotification(t('common.error', 'Chyba při ukládání'), 'error');
+            }
+            return;
+        }
+        
+        showNotification(t('flavor_database.saved_to_favorites', 'Uloženo do oblíbených!'), 'success');
+    } catch (error) {
+        console.error('Error saving flavor to favorites:', error);
+        showNotification(t('common.error', 'Chyba při ukládání'), 'error');
+    }
+}
+
+// =============================================
+// FLAVOR AUTOCOMPLETE PRO RECEPTY
+// =============================================
+
+let flavorAutocompleteTimeout = null;
+let activeAutocompleteInput = null;
+
+// Inicializace flavor autocomplete pro input element
+function initFlavorAutocomplete(inputId, recipeType, onSelectCallback) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    
+    // Vytvořit dropdown kontejner
+    const dropdownId = `${inputId}-autocomplete`;
+    let dropdown = document.getElementById(dropdownId);
+    if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.id = dropdownId;
+        dropdown.className = 'flavor-autocomplete-dropdown hidden';
+        input.parentNode.appendChild(dropdown);
+    }
+    
+    // Event listenery
+    input.addEventListener('focus', () => {
+        activeAutocompleteInput = inputId;
+        searchFlavorsForInput(inputId, recipeType, onSelectCallback);
+    });
+    
+    input.addEventListener('input', () => {
+        clearTimeout(flavorAutocompleteTimeout);
+        flavorAutocompleteTimeout = setTimeout(() => {
+            searchFlavorsForInput(inputId, recipeType, onSelectCallback);
+        }, 250);
+    });
+    
+    input.addEventListener('blur', () => {
+        // Delay pro umožnění kliknutí na položku
+        setTimeout(() => {
+            if (activeAutocompleteInput === inputId) {
+                dropdown.classList.add('hidden');
+            }
+        }, 200);
+    });
+}
+
+// Vyhledat příchutě pro autocomplete
+async function searchFlavorsForInput(inputId, recipeType, onSelectCallback) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(`${inputId}-autocomplete`);
+    if (!input || !dropdown) return;
+    
+    const searchTerm = input.value.trim();
+    const clerkId = window.Clerk?.user?.id;
+    
+    try {
+        const results = await window.LiquiMixerDB.searchFlavorsForAutocomplete(
+            clerkId, 
+            searchTerm, 
+            recipeType, 
+            10
+        );
+        
+        renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSelectCallback);
+    } catch (e) {
+        console.error('Flavor autocomplete error:', e);
+    }
+}
+
+// Vykreslit dropdown s výsledky
+function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSelectCallback) {
+    const { favorites, database } = results;
+    
+    let html = '';
+    
+    // Vždy na konci: "Nezadat konkrétní příchuť"
+    html += `<div class="autocomplete-section">`;
+    
+    // Oblíbené příchutě uživatele
+    if (favorites.length > 0) {
+        html += `<div class="autocomplete-header">${t('flavor_autocomplete.from_favorites', 'Z mých příchutí')}</div>`;
+        favorites.forEach(f => {
+            const typeClass = f.product_type === 'vape' ? 'type-vape' : 'type-shisha';
+            const percentInfo = f.min_percent && f.max_percent ? `${f.min_percent}-${f.max_percent}%` : '';
+            html += `
+                <div class="autocomplete-item" onclick="selectFlavorFromAutocomplete('${inputId}', ${JSON.stringify(f).replace(/"/g, '&quot;')}, '${recipeType}')">
+                    <span class="flavor-name">${escapeHtml(f.name)}</span>
+                    ${f.manufacturer ? `<span class="flavor-manufacturer">${escapeHtml(f.manufacturer)}</span>` : ''}
+                    ${percentInfo ? `<span class="flavor-percent">${percentInfo}</span>` : ''}
+                    <span class="flavor-type-badge small ${typeClass}">${f.product_type === 'vape' ? 'V' : 'S'}</span>
+                </div>
+            `;
+        });
+    }
+    
+    // Veřejná databáze
+    if (database.length > 0) {
+        html += `<div class="autocomplete-header">${t('flavor_autocomplete.from_database', 'Veřejná databáze')}</div>`;
+        database.forEach(f => {
+            const typeClass = f.product_type === 'vape' ? 'type-vape' : 'type-shisha';
+            const percentInfo = f.min_percent && f.max_percent ? `${f.min_percent}-${f.max_percent}%` : '';
+            html += `
+                <div class="autocomplete-item" onclick="selectFlavorFromAutocomplete('${inputId}', ${JSON.stringify(f).replace(/"/g, '&quot;')}, '${recipeType}')">
+                    <span class="flavor-name">${escapeHtml(f.name)}</span>
+                    ${f.manufacturer ? `<span class="flavor-manufacturer">${escapeHtml(f.manufacturer)}</span>` : ''}
+                    ${percentInfo ? `<span class="flavor-percent">${percentInfo}</span>` : ''}
+                    <span class="flavor-type-badge small ${typeClass}">${f.product_type === 'vape' ? 'V' : 'S'}</span>
+                </div>
+            `;
+        });
+    }
+    
+    // Prázdný výsledek
+    if (favorites.length === 0 && database.length === 0) {
+        html += `<div class="autocomplete-empty">${t('flavor_autocomplete.no_results', 'Žádné odpovídající příchutě')}</div>`;
+    }
+    
+    // "Nezadat konkrétní příchuť" vždy na konci
+    html += `
+        <div class="autocomplete-item no-specific" onclick="selectNoSpecificFlavor('${inputId}')">
+            <span>${t('flavor_autocomplete.no_specific', 'Nezadat konkrétní příchuť')}</span>
+        </div>
+    `;
+    
+    html += '</div>';
+    
+    dropdown.innerHTML = html;
+    dropdown.classList.remove('hidden');
+}
+
+// Vybrat příchuť z autocomplete
+function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(`${inputId}-autocomplete`);
+    
+    if (!input) return;
+    
+    // Zkontrolovat konflikt typu
+    const isVapeRecipe = ['liquid', 'liquid_pro', 'shakevape', 'shortfill'].includes(recipeType);
+    const isShishaRecipe = recipeType === 'shisha';
+    
+    if ((isVapeRecipe && flavorData.product_type === 'shisha') || 
+        (isShishaRecipe && flavorData.product_type === 'vape')) {
+        const typeLabel = flavorData.product_type === 'vape' ? 'vape' : 'shisha';
+        const warningMsg = t('flavor_form.type_conflict_warning', 'Tato příchuť je určena pro {type}. Opravdu ji chcete použít v tomto receptu?')
+            .replace('{type}', typeLabel);
+        
+        if (!confirm(warningMsg)) {
+            return;
+        }
+    }
+    
+    // Nastavit hodnotu do inputu
+    input.value = flavorData.name;
+    input.dataset.flavorId = flavorData.id || '';
+    input.dataset.flavorSource = flavorData.source || 'manual';
+    input.dataset.flavorData = JSON.stringify(flavorData);
+    
+    // Skrýt dropdown
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+    }
+    
+    // Aktualizovat doporučené procento pokud existuje
+    if (flavorData.min_percent && flavorData.max_percent) {
+        updateRecommendedFlavorPercent(inputId, flavorData);
+    }
+    
+    // Aktualizovat steep time pokud existuje
+    if (flavorData.steep_days) {
+        updateRecipeSteepTime(flavorData.steep_days);
+    }
+}
+
+// Vybrat "Nezadat konkrétní příchuť"
+function selectNoSpecificFlavor(inputId) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(`${inputId}-autocomplete`);
+    
+    if (input) {
+        input.value = '';
+        input.dataset.flavorId = '';
+        input.dataset.flavorSource = 'generic';
+        input.dataset.flavorData = '';
+    }
+    
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+    }
+}
+
+// Aktualizovat doporučené procento příchutě
+function updateRecommendedFlavorPercent(inputId, flavorData) {
+    // Najít související slider/input pro procento
+    const percentMatch = inputId.match(/Flavor(\d+)/);
+    if (!percentMatch) return;
+    
+    const flavorIndex = percentMatch[1];
+    
+    // Zkusit najít slider (PRO liquid nebo liquid)
+    const possibleSliders = [
+        `proFlavorStrength${flavorIndex}`,
+        `flavorStrength${flavorIndex}`,
+        `shFlavorStrength${flavorIndex}`
+    ];
+    
+    for (const sliderId of possibleSliders) {
+        const slider = document.getElementById(sliderId);
+        if (slider) {
+            // Použít doporučené procento nebo střed rozsahu
+            const recommendedPercent = flavorData.recommended_percent || 
+                ((flavorData.min_percent + flavorData.max_percent) / 2);
+            slider.value = recommendedPercent;
+            slider.dispatchEvent(new Event('input'));
+            break;
+        }
+    }
+}
+
+// Aktualizovat steep time receptu
+function updateRecipeSteepTime(steepDays) {
+    // Najít aktuální stránku a příslušný steep time input
+    const currentPage = document.querySelector('.page:not(.hidden)');
+    if (!currentPage) return;
+    
+    const steepInput = currentPage.querySelector('input[id*="steep"], input[id*="Steep"]');
+    if (steepInput) {
+        const currentSteep = parseInt(steepInput.value) || 0;
+        // Aktualizovat pouze pokud nový steep je delší
+        if (steepDays > currentSteep) {
+            steepInput.value = steepDays;
+            steepInput.dispatchEvent(new Event('input'));
+        }
     }
 }
 
