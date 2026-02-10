@@ -877,9 +877,21 @@ async function getFavoriteProducts(clerkId) {
     }
     
     try {
+        // JOIN na flavors tabulku pro získání kompletních parametrů příchutí
         const { data, error } = await supabaseClient
             .from('favorite_products')
-            .select('*')
+            .select(`
+                *,
+                flavors:flavor_id (
+                    min_percent,
+                    max_percent,
+                    recommended_percent,
+                    steep_days,
+                    vg_ratio,
+                    manufacturer_code,
+                    flavor_manufacturers (name)
+                )
+            `)
             .eq('clerk_id', clerkId)
             .order('created_at', { ascending: false })
             .limit(100);
@@ -889,7 +901,25 @@ async function getFavoriteProducts(clerkId) {
             return [];
         }
         
-        return data || [];
+        // Rozbalit data z joinované flavors tabulky do hlavního objektu
+        return (data || []).map(p => {
+            if (p.flavors && p.product_type === 'flavor') {
+                const flavorData = p.flavors;
+                return {
+                    ...p,
+                    // Přidat parametry z veřejné databáze příchutí
+                    flavor_min_percent: flavorData.min_percent,
+                    flavor_max_percent: flavorData.max_percent,
+                    flavor_recommended_percent: flavorData.recommended_percent,
+                    flavor_steep_days: flavorData.steep_days || p.steep_days,
+                    flavor_vg_ratio: flavorData.vg_ratio,
+                    // Výrobce - preferovat z favorite_products, fallback na flavors
+                    manufacturer: p.manufacturer || flavorData.flavor_manufacturers?.name || flavorData.manufacturer_code,
+                    flavors: undefined // Odstranit vnořený objekt
+                };
+            }
+            return p;
+        });
     } catch (err) {
         console.error('Database error:', err);
         return [];
@@ -2242,10 +2272,21 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
     try {
         // 1. Hledat v oblíbených produktech uživatele (pokud je přihlášen)
         if (clerkId && isValidClerkId(clerkId)) {
-            // Načíst oblíbené příchutě - filtrovat dle typu, ale zahrnout i ty bez typu
+            // Načíst oblíbené příchutě - filtrovat dle typu, JOIN na flavors pro získání parametrů
             let favQuery = supabaseClient
                 .from('favorite_products')
-                .select('*')
+                .select(`
+                    *,
+                    flavors:flavor_id (
+                        min_percent,
+                        max_percent,
+                        recommended_percent,
+                        steep_days,
+                        vg_ratio,
+                        manufacturer_code,
+                        flavor_manufacturers (name)
+                    )
+                `)
                 .eq('clerk_id', clerkId)
                 .eq('product_type', 'flavor')
                 .limit(limit);
@@ -2266,19 +2307,25 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                 // Filtrovat na klientovi - zahrnout příchutě odpovídajícího typu NEBO bez typu
                 results.favorites = favData
                     .filter(p => !p.flavor_product_type || p.flavor_product_type === productType)
-                    .map(p => ({
-                        id: p.id,
-                        name: p.name,
-                        manufacturer: p.manufacturer || null,
-                        manufacturer_code: null,
-                        product_type: p.flavor_product_type || productType,
-                        category: p.flavor_category || null,
-                        min_percent: p.flavor_min_percent,
-                        max_percent: p.flavor_max_percent,
-                        steep_days: p.steep_days,
-                        source: 'favorites',
-                        flavor_id: p.flavor_id
-                    }));
+                    .map(p => {
+                        // Získat data z joinované flavors tabulky, fallback na data v favorite_products
+                        const flavorData = p.flavors || {};
+                        return {
+                            id: p.id,
+                            name: p.name,
+                            manufacturer: p.manufacturer || flavorData.flavor_manufacturers?.name || flavorData.manufacturer_code || null,
+                            manufacturer_code: flavorData.manufacturer_code || null,
+                            product_type: p.flavor_product_type || productType,
+                            category: p.flavor_category || null,
+                            min_percent: flavorData.min_percent || null,
+                            max_percent: flavorData.max_percent || null,
+                            recommended_percent: flavorData.recommended_percent || null,
+                            steep_days: p.steep_days || flavorData.steep_days || null,
+                            vg_ratio: flavorData.vg_ratio,
+                            source: 'favorites',
+                            flavor_id: p.flavor_id
+                        };
+                    });
             }
         }
         
@@ -2648,7 +2695,7 @@ async function getLinkedFlavors(recipeId) {
             .from('recipe_flavors')
             .select(`
                 *,
-                flavors (
+                flavors:flavor_id (
                     id,
                     name,
                     manufacturer_code,
@@ -2656,18 +2703,25 @@ async function getLinkedFlavors(recipeId) {
                     min_percent,
                     max_percent,
                     recommended_percent,
+                    steep_days,
                     vg_ratio,
                     flavor_manufacturers (name)
                 ),
-                favorite_products (
+                favorite_products:favorite_product_id (
                     id,
                     name,
-                    flavor_manufacturer,
+                    manufacturer,
                     flavor_category,
-                    flavor_min_percent,
-                    flavor_max_percent,
-                    flavor_recommended_percent,
-                    flavor_vg_ratio
+                    steep_days,
+                    flavor_id,
+                    flavors:flavor_id (
+                        min_percent,
+                        max_percent,
+                        recommended_percent,
+                        steep_days,
+                        vg_ratio,
+                        flavor_manufacturers (name)
+                    )
                 )
             `)
             .eq('recipe_id', recipeId)
@@ -2679,37 +2733,53 @@ async function getLinkedFlavors(recipeId) {
         }
         
         // Transformovat data pro snadnější použití
-        return (data || []).map(item => ({
-            id: item.id,
-            position: item.position,
-            percentage: item.percentage,
-            flavor_name: item.flavor_name,
-            flavor_manufacturer: item.flavor_manufacturer,
-            generic_flavor_type: item.generic_flavor_type,
-            // Data z konkrétní příchutě (veřejná DB)
-            flavor: item.flavors ? {
-                id: item.flavors.id,
-                name: item.flavors.name,
-                manufacturer_code: item.flavors.manufacturer_code,
-                manufacturer_name: item.flavors.flavor_manufacturers?.name,
-                category: item.flavors.category,
-                min_percent: item.flavors.min_percent,
-                max_percent: item.flavors.max_percent,
-                recommended_percent: item.flavors.recommended_percent,
-                vg_ratio: item.flavors.vg_ratio
-            } : null,
-            // Data z oblíbené příchutě uživatele
-            favorite: item.favorite_products ? {
-                id: item.favorite_products.id,
-                name: item.favorite_products.name,
-                manufacturer: item.favorite_products.flavor_manufacturer,
-                category: item.favorite_products.flavor_category,
-                min_percent: item.favorite_products.flavor_min_percent,
-                max_percent: item.favorite_products.flavor_max_percent,
-                recommended_percent: item.favorite_products.flavor_recommended_percent,
-                vg_ratio: item.favorite_products.flavor_vg_ratio
-            } : null
-        }));
+        return (data || []).map(item => {
+            // Získat parametry příchutě - prioritně z flavors, pak z favorite_products.flavors
+            let flavorParams = null;
+            
+            if (item.flavors) {
+                // Přímý odkaz na veřejnou DB příchutí
+                flavorParams = {
+                    id: item.flavors.id,
+                    name: item.flavors.name,
+                    manufacturer_code: item.flavors.manufacturer_code,
+                    manufacturer_name: item.flavors.flavor_manufacturers?.name,
+                    category: item.flavors.category,
+                    min_percent: item.flavors.min_percent,
+                    max_percent: item.flavors.max_percent,
+                    recommended_percent: item.flavors.recommended_percent,
+                    steep_days: item.flavors.steep_days,
+                    vg_ratio: item.flavors.vg_ratio
+                };
+            } else if (item.favorite_products) {
+                // Odkaz přes oblíbené produkty - získat parametry z vnořené flavors relace
+                const favFlavorData = item.favorite_products.flavors;
+                flavorParams = {
+                    id: item.favorite_products.flavor_id,
+                    name: item.favorite_products.name,
+                    manufacturer_name: item.favorite_products.manufacturer || favFlavorData?.flavor_manufacturers?.name,
+                    category: item.favorite_products.flavor_category,
+                    min_percent: favFlavorData?.min_percent,
+                    max_percent: favFlavorData?.max_percent,
+                    recommended_percent: favFlavorData?.recommended_percent,
+                    steep_days: item.favorite_products.steep_days || favFlavorData?.steep_days,
+                    vg_ratio: favFlavorData?.vg_ratio
+                };
+            }
+            
+            return {
+                id: item.id,
+                position: item.position,
+                percentage: item.percentage,
+                flavor_name: item.flavor_name,
+                flavor_manufacturer: item.flavor_manufacturer,
+                generic_flavor_type: item.generic_flavor_type,
+                flavor_id: item.flavor_id,
+                favorite_product_id: item.favorite_product_id,
+                // Konsolidovaná data příchutě
+                flavor: flavorParams
+            };
+        });
     } catch (err) {
         console.error('getLinkedFlavors: Database error:', err);
         return [];

@@ -4978,6 +4978,42 @@ async function saveSharedRecipe() {
             console.error('Error loading shared recipe products:', err);
         }
         
+        // Načíst a zobrazit příchutě ze sdíleného receptu
+        try {
+            const sharedFlavors = await window.LiquiMixerDB.getLinkedFlavors(recipe.id);
+            if (sharedFlavors && sharedFlavors.length > 0) {
+                // Vyčistit seznam příchutí
+                const flavorsList = document.getElementById('selectedFlavorsList');
+                if (flavorsList) {
+                    flavorsList.innerHTML = '';
+                }
+                
+                for (const flavorLink of sharedFlavors) {
+                    // Vytvořit data příchutě pro zobrazení
+                    const flavorInfo = {
+                        name: flavorLink.flavor_name || flavorLink.flavor?.name || null,
+                        manufacturer: flavorLink.flavor_manufacturer || flavorLink.flavor?.manufacturer_name || null,
+                        category: flavorLink.generic_flavor_type || flavorLink.flavor?.category || 'fruit',
+                        percent: flavorLink.percentage || 0,
+                        // Pro uložení do databáze
+                        flavorId: flavorLink.flavor_id || flavorLink.flavor?.id || null,
+                        flavorSource: flavorLink.flavor_id ? 'database' : 'generic',
+                        // Parametry příchutě pro kopírování
+                        min_percent: flavorLink.flavor?.min_percent || null,
+                        max_percent: flavorLink.flavor?.max_percent || null,
+                        steep_days: flavorLink.flavor?.steep_days || null
+                    };
+                    
+                    // Přidat řádek pouze pokud má název (konkrétní příchuť)
+                    if (flavorInfo.name) {
+                        addFlavorRowToModal(flavorInfo, flavorLink.position - 1);
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Error loading shared recipe flavors:', err);
+        }
+        
         // Uložit UUID původního receptu pro zkopírování produktů po uložení
         window.pendingSharedRecipeUUID = recipe.id;
     }
@@ -6659,22 +6695,24 @@ function updateFlavorDisplay() {
     
     // Zkontrolovat zda je vybraná konkrétní příchuť
     const flavorAutocomplete = document.getElementById('flavorAutocomplete');
-    const hasSpecificFlavor = flavorAutocomplete && 
-        flavorAutocomplete.dataset.flavorId && 
-        flavorAutocomplete.dataset.flavorData;
+    let hasSpecificFlavor = false;
+    let flavorDataParsed = null;
     
-    if (hasSpecificFlavor) {
-        // Použít rozsah z konkrétní příchutě
+    if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
         try {
-            const flavorData = JSON.parse(flavorAutocomplete.dataset.flavorData);
-            minPercent = flavorData.min_percent || 5;
-            maxPercent = flavorData.max_percent || 20;
-            note = flavorData.name || '';
+            flavorDataParsed = JSON.parse(flavorAutocomplete.dataset.flavorData);
+            // Konkrétní příchuť má jméno
+            hasSpecificFlavor = !!(flavorDataParsed && flavorDataParsed.name);
         } catch (e) {
-            minPercent = 5;
-            maxPercent = 20;
-            note = '';
+            hasSpecificFlavor = false;
         }
+    }
+    
+    if (hasSpecificFlavor && flavorDataParsed) {
+        // Použít rozsah z konkrétní příchutě
+        minPercent = flavorDataParsed.min_percent || 5;
+        maxPercent = flavorDataParsed.max_percent || 20;
+        note = flavorDataParsed.name || '';
     } else {
         // Použít rozsah z číselníku
         const flavor = flavorDatabase[type] || flavorDatabase.fruit;
@@ -13967,6 +14005,7 @@ function updateShishaFlavorStrength(index) {
     const track = document.getElementById(`shFlavorTrack${index}`);
     const select = document.getElementById(`shFlavorType${index}`);
     const strengthDisplay = document.getElementById(`shFlavorStrengthDisplay${index}`);
+    const autocomplete = document.getElementById(`shFlavorAutocomplete${index}`);
     
     if (!slider) return;
     
@@ -13976,47 +14015,70 @@ function updateShishaFlavorStrength(index) {
     // Plná šířka track jako v liquid formuláři
     if (track) track.style.width = '100%';
     
-    // Zobrazení doporučení síly příchutě (jako u Liquid formu)
-    if (select) {
-        const flavorType = select.value;
-        const flavor = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
-        
-        let color, text;
-        if (value < flavor.min) {
-            color = '#ffaa00';
-            text = t('shisha.flavor_weak', 'Slabá chuť - pro shisha doporučeno {min}–{max}%')
-                .replace('{min}', flavor.min)
-                .replace('{max}', flavor.max);
-            if (track) track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
-        } else if (value > flavor.max) {
-            color = '#ff0044';
-            text = t('shisha.flavor_strong', 'Příliš silná chuť - doporučeno max {max}%')
-                .replace('{min}', flavor.min)
-                .replace('{max}', flavor.max);
-            if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
-        } else {
-            color = '#00cc66';
-            const note = getShishaFlavorNote(flavorType);
-            text = t('shisha.flavor_ideal', 'Ideální pro shisha ({min}–{max}%) - {note}')
-                .replace('{min}', flavor.min)
-                .replace('{max}', flavor.max)
-                .replace('{note}', note);
-            if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+    // Zkontrolovat zda je vybraná konkrétní příchuť z databáze
+    let hasSpecificFlavor = false;
+    let specificFlavorName = null;
+    let specificMin = null;
+    let specificMax = null;
+    
+    if (autocomplete && autocomplete.dataset.flavorData) {
+        try {
+            const flavorData = JSON.parse(autocomplete.dataset.flavorData);
+            if (flavorData && flavorData.name) {
+                hasSpecificFlavor = true;
+                specificFlavorName = flavorData.name;
+                specificMin = flavorData.min_percent;
+                specificMax = flavorData.max_percent;
+            }
+        } catch (e) {
+            console.log('Error parsing shisha flavor data:', e);
         }
-        
-        // Barva čísla a % pod sliderem
-        if (displayContainer) {
-            displayContainer.style.color = color;
-            displayContainer.style.textShadow = `0 0 15px ${color}`;
-        }
-        
-        if (strengthDisplay) {
-            strengthDisplay.innerHTML = `
-                <div class="flavor-strength-info" style="border-left-color: ${color}; color: ${color};">
-                    ${text}
-                </div>
-            `;
-        }
+    }
+    
+    // Zobrazení doporučení síly příchutě
+    const flavorType = select?.value || 'custom';
+    const flavor = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
+    
+    // Použít rozsah z konkrétní příchutě nebo z databáze typů
+    const minPercent = hasSpecificFlavor && specificMin !== null ? specificMin : flavor.min;
+    const maxPercent = hasSpecificFlavor && specificMax !== null ? specificMax : flavor.max;
+    
+    let color, text;
+    if (value < minPercent) {
+        color = '#ffaa00';
+        text = t('shisha.flavor_weak', 'Slabá chuť - pro shisha doporučeno {min}–{max}%')
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
+        if (track) track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
+    } else if (value > maxPercent) {
+        color = '#ff0044';
+        text = t('shisha.flavor_strong', 'Příliš silná chuť - doporučeno max {max}%')
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent);
+        if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
+    } else {
+        color = '#00cc66';
+        // Použít název konkrétní příchutě nebo generickou poznámku
+        const note = hasSpecificFlavor ? specificFlavorName : getShishaFlavorNote(flavorType);
+        text = t('shisha.flavor_ideal', 'Ideální pro shisha ({min}–{max}%) - {note}')
+            .replace('{min}', minPercent)
+            .replace('{max}', maxPercent)
+            .replace('{note}', note);
+        if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+    }
+    
+    // Barva čísla a % pod sliderem
+    if (displayContainer) {
+        displayContainer.style.color = color;
+        displayContainer.style.textShadow = `0 0 15px ${color}`;
+    }
+    
+    if (strengthDisplay) {
+        strengthDisplay.innerHTML = `
+            <div class="flavor-strength-info" style="border-left-color: ${color}; color: ${color};">
+                ${text}
+            </div>
+        `;
     }
     
     updateShishaTotalFlavorPercent();
@@ -14288,7 +14350,10 @@ function getShishaFlavorsData() {
                 if (flavorData && flavorData.name) {
                     specificFlavorName = flavorData.name;
                     specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                    specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
+                    // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), jinak id
+                    const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
+                    specificFlavorId = isFavorite ? (flavorData.flavor_id || flavorData.id) : flavorData.id;
+                    specificFlavorId = specificFlavorId || autocomplete.dataset.flavorId || null;
                     specificFlavorSource = autocomplete.dataset.flavorSource || 'database';
                 }
             } catch (e) {

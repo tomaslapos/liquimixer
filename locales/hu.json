@@ -439,7 +439,12 @@
     "select_product": "-- Válasszon terméket --",
     "search_product": "Termék keresése...",
     "products_linked": "Kapcsolt termekek",
-    "save_as_new": "MENTES UJKENT"
+    "save_as_new": "MENTES UJKENT",
+    "flavors_label": "Használt aromák",
+    "no_flavors": "A recept nem tartalmaz aromákat",
+    "make_public": "Megosztás a nyilvános recept-adatbázisban",
+    "public_hint": "A recept látható és értékelhető lesz más felhasználók számára",
+    "public_disabled_shared": "Nem osztható meg - a recept már a nyilvános adatbázisból származik"
   },
   "share": {
     "copied": "Link a vágólapra másolva!",
