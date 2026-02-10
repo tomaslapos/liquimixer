@@ -429,7 +429,8 @@
     "recommended_range": "Doporučený rozsah",
     "min_percent": "Min. procento",
     "max_percent": "Max. procento",
-    "steep_time": "Doba zrání"
+    "steep_time": "Doba zrání",
+    "product_code": "Kód produktu"
   },
   "product_form": {
     "add_title": "Přidat produkt",
@@ -997,6 +998,9 @@
     "steep_days_label": "Doba zrání (dny)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Kód produktu",
+    "product_code_placeholder": "např. TFA-001, CAP-VAN",
+    "product_code_hint": "Kód výrobce pro snadnější identifikaci příchutě",
     "category_label": "Kategorie příchutě *",
     "category_placeholder": "-- Vyberte kategorii --",
     "type_conflict_warning": "Tato příchuť je určena pro {type}. Opravdu ji chcete použít v tomto receptu?",

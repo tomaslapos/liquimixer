@@ -521,7 +521,8 @@
     "recommended_range": "Recommended Range",
     "min_percent": "Min Percent",
     "max_percent": "Max Percent",
-    "steep_time": "Steep Time"
+    "steep_time": "Steep Time",
+    "product_code": "Product Code"
   },
   "product_form": {
     "add_title": "Add Product",
@@ -958,6 +959,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Product code",
+    "product_code_placeholder": "e.g. TFA-001, CAP-VAN",
+    "product_code_hint": "Manufacturer code for easier flavor identification",
     "category_label": "Flavor category *",
     "category_placeholder": "-- Select category --",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"

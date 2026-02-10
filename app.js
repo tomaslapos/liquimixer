@@ -4147,10 +4147,20 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         const displayName = manufacturer ? `${flavorName} (${manufacturer})` : flavorName;
                         const percentDisplay = flavorLink.percentage ? ` - ${flavorLink.percentage}%` : '';
                         
-                        // Pokud má favorite_product_id, lze na něj kliknout
-                        const hasLink = flavorLink.favorite_product_id;
-                        const clickAttr = hasLink ? `onclick="${flavorClickHandler}('${escapeHtml(flavorLink.favorite_product_id)}')"` : '';
-                        const cursorClass = hasLink ? 'clickable' : '';
+                        // Kliknutelný odkaz - prioritně favorite_product_id, pak flavor_id pro veřejnou DB
+                        let clickAttr = '';
+                        let cursorClass = '';
+                        
+                        if (flavorLink.favorite_product_id) {
+                            // Link na oblíbený produkt uživatele
+                            clickAttr = `onclick="${flavorClickHandler}('${escapeHtml(flavorLink.favorite_product_id)}')"`;
+                            cursorClass = 'clickable';
+                        } else if (flavorLink.flavor_id || flavorLink.flavor?.id) {
+                            // Link na veřejnou databázi příchutí
+                            const flavorId = flavorLink.flavor_id || flavorLink.flavor?.id;
+                            clickAttr = `onclick="showFlavorDetail('${escapeHtml(flavorId)}')"`;
+                            cursorClass = 'clickable';
+                        }
                         
                         return `
                             <div class="linked-flavor-item ${cursorClass}" ${clickAttr}>
@@ -5480,9 +5490,20 @@ function displayProductDetail(product, linkedRecipes = []) {
         const maxPercent = product.flavor_max_percent || product.max_percent || null;
         const steepDays = product.flavor_steep_days || product.steep_days || null;
         const manufacturer = product.flavor_manufacturer || product.manufacturer || null;
+        const productCode = product.product_code || null;
         
         // Sestavit HTML pouze pro parametry které existují
         const paramItems = [];
+        
+        // Kód produktu jako první
+        if (productCode) {
+            paramItems.push(`
+                <div class="flavor-param-item">
+                    <span class="flavor-param-label">${t('product_detail.product_code', 'Kód produktu')}:</span>
+                    <span class="flavor-param-value">${escapeHtml(productCode)}</span>
+                </div>
+            `);
+        }
         
         if (manufacturer) {
             paramItems.push(`
@@ -5776,6 +5797,12 @@ function editProduct() {
         productTypeSelect.title = t('product_form.type_locked', 'Typ produktu nelze změnit po vytvoření');
     }
     
+    // Pro příchutě nastavit product_code
+    const productCodeInput = document.getElementById('productFlavorCode');
+    if (productCodeInput) {
+        productCodeInput.value = currentViewingProduct.product_code || '';
+    }
+    
     selectedProductRating = currentViewingProduct.rating || 0;
     updateProductStarDisplay(selectedProductRating);
     initProductStarRating();
@@ -5947,6 +5974,7 @@ async function saveProduct(event) {
         productData.flavor_min_percent = parseFloat(document.getElementById('productFlavorMinPercent').value) || null;
         productData.flavor_max_percent = parseFloat(document.getElementById('productFlavorMaxPercent').value) || null;
         productData.steep_days = parseInt(document.getElementById('productFlavorSteepDays').value) || 7;
+        productData.product_code = document.getElementById('productFlavorCode')?.value?.trim() || null;
         
         // Získat název výrobce pro uložení
         const manufacturerSelect = document.getElementById('productFlavorManufacturer');
@@ -13792,6 +13820,7 @@ window.saveProduct = saveProduct;
 window.viewProductDetail = viewProductDetail;
 window.updateProductStockUI = updateProductStockUI;
 window.viewSharedProductDetail = viewSharedProductDetail;
+window.showFlavorDetail = showFlavorDetail;
 window.copySharedProductToUser = copySharedProductToUser;
 window.goBackFromSharedProduct = goBackFromSharedProduct;
 window.editProduct = editProduct;

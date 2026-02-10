@@ -2125,9 +2125,10 @@ async function searchFlavors(filters = {}, page = 1, limit = 20) {
             query = query.gte('avg_rating', filters.min_rating);
         }
         
-        // Fulltext vyhledávání
+        // Fulltext vyhledávání - v názvu NEBO v product_code
         if (filters.search && filters.search.trim().length >= 2) {
-            query = query.ilike('name', `%${filters.search.trim()}%`);
+            const searchTerm = filters.search.trim();
+            query = query.or(`name.ilike.%${searchTerm}%,product_code.ilike.%${searchTerm}%`);
         }
         
         // Řazení
@@ -2391,8 +2392,8 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
             
             if (searchTerm && searchTerm.trim().length >= 2) {
                 const term = searchTerm.trim();
-                // Hledat v názvu NEBO výrobci
-                favQuery = favQuery.or(`name.ilike.%${term}%,manufacturer.ilike.%${term}%`);
+                // Hledat v názvu, výrobci NEBO product_code
+                favQuery = favQuery.or(`name.ilike.%${term}%,manufacturer.ilike.%${term}%,product_code.ilike.%${term}%`);
             }
             
             const { data: favData, error: favError } = await favQuery;
@@ -2413,6 +2414,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                             name: p.name,
                             manufacturer: p.manufacturer || flavorData.flavor_manufacturers?.name || flavorData.manufacturer_code || null,
                             manufacturer_code: flavorData.manufacturer_code || null,
+                            product_code: p.product_code || null,
                             product_type: p.flavor_product_type || productType,
                             category: p.flavor_category || null,
                             min_percent: flavorData.min_percent || null,
@@ -2442,14 +2444,15 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
         if (!dbError && dbData) {
             let filteredData = dbData;
             
-            // Filtrovat na klientovi - case-insensitive hledání v názvu, kódu i jménu výrobce
+            // Filtrovat na klientovi - case-insensitive hledání v názvu, kódu, jménu výrobce NEBO product_code
             if (searchTerm && searchTerm.trim().length >= 2) {
                 const term = searchTerm.trim().toLowerCase();
                 filteredData = dbData.filter(f => {
                     const nameMatch = f.name?.toLowerCase().includes(term);
                     const codeMatch = f.manufacturer_code?.toLowerCase().includes(term);
                     const manufacturerMatch = f.flavor_manufacturers?.name?.toLowerCase().includes(term);
-                    return nameMatch || codeMatch || manufacturerMatch;
+                    const productCodeMatch = f.product_code?.toLowerCase().includes(term);
+                    return nameMatch || codeMatch || manufacturerMatch || productCodeMatch;
                 });
             }
             
@@ -2459,6 +2462,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                 name: f.name,
                 manufacturer: f.flavor_manufacturers?.name || f.manufacturer_code,
                 manufacturer_code: f.manufacturer_code,
+                product_code: f.product_code || null,
                 product_type: f.product_type,
                 category: f.category,
                 min_percent: f.min_percent,
@@ -2518,7 +2522,9 @@ async function saveFlavorToFavorites(clerkId, flavorId) {
         // Vytvořit nový oblíbený produkt
         const shareId = generateShareId();
         const shareUrl = `${SHARE_BASE_URL}/?product=${shareId}`;
-        const productCode = generateProductCode();
+        // Použít product_code z veřejné databáze příchutí, pokud existuje
+        // Uživatel může tento kód později změnit
+        const productCode = flavor.product_code || null;
         
         const { data, error } = await supabaseClient
             .from('favorite_products')
