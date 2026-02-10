@@ -957,9 +957,9 @@
   "flavor_autocomplete": {
     "from_favorites": "From my flavors",
     "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "no_specific": "Angiv ikke smag",
+    "no_results": "Ingen matchende smage",
+    "search_placeholder": "Søg på engelsk efter navn, producent eller kode (f.eks. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

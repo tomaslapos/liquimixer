@@ -971,7 +971,7 @@
     "from_database": "Public database",
     "no_specific": "Don't specify flavor",
     "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "search_placeholder": "Search in English by name, manufacturer or code (e.g. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

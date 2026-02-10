@@ -7582,10 +7582,26 @@ async function refreshProductDetail() {
     // Znovu načíst recepty a překreslit detail
     if (window.Clerk && window.Clerk.user && window.LiquiMixerDB) {
         try {
-            const linkedRecipes = await window.LiquiMixerDB.getRecipesByProductId(
+            let linkedRecipes = await window.LiquiMixerDB.getRecipesByProductId(
                 window.Clerk.user.id, 
                 currentViewingProduct.id
             );
+            
+            // Pro příchutě načíst i recepty propojené přes recipe_flavors
+            if (currentViewingProduct.product_type === 'flavor') {
+                const flavorLinkedRecipes = await window.LiquiMixerDB.getRecipesByFlavorProductId(
+                    window.Clerk.user.id, 
+                    currentViewingProduct.id
+                );
+                // Sloučit a deduplikovat
+                const existingIds = new Set(linkedRecipes.map(r => r.id));
+                for (const recipe of flavorLinkedRecipes) {
+                    if (recipe && !existingIds.has(recipe.id)) {
+                        linkedRecipes.push(recipe);
+                    }
+                }
+            }
+            
             displayProductDetail(currentViewingProduct, linkedRecipes || []);
         } catch (err) {
             console.error('Error refreshing product detail:', err);
