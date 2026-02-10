@@ -519,7 +519,8 @@
     "recommended_range": "Suositeltu alue",
     "min_percent": "Min prosentti",
     "max_percent": "Max prosentti",
-    "steep_time": "Hautumisaika"
+    "steep_time": "Hautumisaika",
+    "product_code": "Tuotekoodi"
   },
   "product_form": {
     "add_title": "Lisää tuote",
@@ -963,6 +964,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Tuotekoodi",
+    "product_code_placeholder": "esim. TFA-001, CAP-VAN",
+    "product_code_hint": "Valmistajan koodi makun helpompaan tunnistamiseen",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

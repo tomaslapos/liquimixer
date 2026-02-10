@@ -512,7 +512,14 @@
     "delete_confirm": "Er du sikker på, at du vil slette dette produkt?",
     "delete_success": "Produktet er blevet slettet.",
     "delete_error": "Fejl ved sletning af produkt.",
-    "used_in_recipes": "Brugt i opskrifter"
+    "used_in_recipes": "Brugt i opskrifter",
+    "flavor_params": "Smagsparametre",
+    "manufacturer": "Producent",
+    "recommended_range": "Anbefalet interval",
+    "min_percent": "Min procent",
+    "max_percent": "Max procent",
+    "steep_time": "Modningsperiode",
+    "product_code": "Produktkode"
   },
   "product_form": {
     "add_title": "Tilføj produkt",
@@ -951,6 +958,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Produktkode",
+    "product_code_placeholder": "f.eks. TFA-001, CAP-VAN",
+    "product_code_hint": "Producentkode for nemmere smagsidentifikation",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

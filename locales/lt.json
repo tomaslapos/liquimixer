@@ -512,7 +512,14 @@
     "delete_confirm": "Ar tikrai norite ištrinti šį produktą?",
     "delete_success": "Produktas ištrintas.",
     "delete_error": "Klaida trinant produktą.",
-    "used_in_recipes": "Naudojama receptuose"
+    "used_in_recipes": "Naudojama receptuose",
+    "flavor_params": "Skonio parametrai",
+    "manufacturer": "Gamintojas",
+    "recommended_range": "Rekomenduojamas diapazonas",
+    "min_percent": "Min procentas",
+    "max_percent": "Max procentas",
+    "steep_time": "Brandinimo laikas",
+    "product_code": "Produkto kodas"
   },
   "product_form": {
     "add_title": "Pridėti produktą",
@@ -951,6 +958,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Produkto kodas",
+    "product_code_placeholder": "pvz. TFA-001, CAP-VAN",
+    "product_code_hint": "Gamintojo kodas lengvesnei skonio identifikacijai",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

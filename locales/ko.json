@@ -512,7 +512,14 @@
     "delete_confirm": "이 제품을 삭제하시겠습니까?",
     "delete_success": "제품이 삭제되었습니다.",
     "delete_error": "제품 삭제 오류.",
-    "used_in_recipes": "레시피에서 사용"
+    "used_in_recipes": "레시피에서 사용",
+    "flavor_params": "향료 매개변수",
+    "manufacturer": "제조사",
+    "recommended_range": "권장 범위",
+    "min_percent": "최소 퍼센트",
+    "max_percent": "최대 퍼센트",
+    "steep_time": "숙성 시간",
+    "product_code": "제품 코드"
   },
   "product_form": {
     "add_title": "제품 추가",
@@ -949,6 +956,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "제품 코드",
+    "product_code_placeholder": "예: TFA-001, CAP-VAN",
+    "product_code_hint": "향료 식별을 위한 제조사 코드",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

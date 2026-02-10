@@ -512,7 +512,14 @@
     "delete_confirm": "您确定要删除此产品吗？",
     "delete_success": "产品已删除。",
     "delete_error": "删除产品出错。",
-    "used_in_recipes": "用于配方"
+    "used_in_recipes": "用于配方",
+    "flavor_params": "香精参数",
+    "manufacturer": "制造商",
+    "recommended_range": "推荐范围",
+    "min_percent": "最小百分比",
+    "max_percent": "最大百分比",
+    "steep_time": "醒香时间",
+    "product_code": "产品代码"
   },
   "product_form": {
     "add_title": "添加产品",
@@ -951,15 +958,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "产品代码",
+    "product_code_placeholder": "例如 TFA-001, CAP-VAN",
+    "product_code_hint": "制造商代码，便于识别香精",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
-    "from_favorites": "From my flavors",
-    "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "from_favorites": "从我的香精",
+    "from_database": "公共数据库",
+    "no_specific": "不指定香精",
+    "no_results": "没有匹配的香精",
+    "search_placeholder": "用英文按名称、制造商或代码搜索（例如 TPA, CAP, Strawberry...）"
   },
   "flavor_categories": {
     "fruit": "Fruit",

@@ -489,7 +489,14 @@
     "delete_confirm": "Weet je zeker dat je dit product wilt verwijderen?",
     "delete_success": "Product is verwijderd.",
     "delete_error": "Fout bij verwijderen van product.",
-    "used_in_recipes": "Gebruikt in recepten"
+    "used_in_recipes": "Gebruikt in recepten",
+    "flavor_params": "Smaakparameters",
+    "manufacturer": "Fabrikant",
+    "recommended_range": "Aanbevolen bereik",
+    "min_percent": "Min. percentage",
+    "max_percent": "Max. percentage",
+    "steep_time": "Rijptijd",
+    "product_code": "Productcode"
   },
   "product_form": {
     "add_title": "Product Toevoegen",
@@ -928,15 +935,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Productcode",
+    "product_code_placeholder": "bijv. TFA-001, CAP-VAN",
+    "product_code_hint": "Fabrikantcode voor eenvoudigere smaakidentificatie",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
     "from_favorites": "From my flavors",
     "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "no_specific": "Geen specifieke smaak",
+    "no_results": "Geen overeenkomende smaken",
+    "search_placeholder": "Zoek in het Engels op naam, fabrikant of code (bijv. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

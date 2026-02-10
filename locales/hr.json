@@ -512,7 +512,14 @@
     "delete_confirm": "Jeste li sigurni da želite obrisati ovaj proizvod?",
     "delete_success": "Proizvod je obrisan.",
     "delete_error": "Greška pri brisanju proizvoda.",
-    "used_in_recipes": "Koristi se u receptima"
+    "used_in_recipes": "Koristi se u receptima",
+    "flavor_params": "Parametri arome",
+    "manufacturer": "Proizvođač",
+    "recommended_range": "Preporučeni raspon",
+    "min_percent": "Min postotak",
+    "max_percent": "Max postotak",
+    "steep_time": "Vrijeme zrenja",
+    "product_code": "Šifra proizvoda"
   },
   "product_form": {
     "add_title": "Dodaj proizvod",
@@ -951,6 +958,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Šifra proizvoda",
+    "product_code_placeholder": "npr. TFA-001, CAP-VAN",
+    "product_code_hint": "Šifra proizvođača za lakšu identifikaciju arome",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

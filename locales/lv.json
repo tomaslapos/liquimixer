@@ -512,7 +512,14 @@
     "delete_confirm": "Vai tiešām vēlaties dzēst šo produktu?",
     "delete_success": "Produkts ir dzēsts.",
     "delete_error": "Kļūda, dzēšot produktu.",
-    "used_in_recipes": "Izmantots receptēs"
+    "used_in_recipes": "Izmantots receptēs",
+    "flavor_params": "Garšas parametri",
+    "manufacturer": "Ražotājs",
+    "recommended_range": "Ieteicamais diapazons",
+    "min_percent": "Min procents",
+    "max_percent": "Max procents",
+    "steep_time": "Nogatavināšanas laiks",
+    "product_code": "Produkta kods"
   },
   "product_form": {
     "add_title": "Pievienot produktu",
@@ -951,6 +958,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Produkta kods",
+    "product_code_placeholder": "piem. TFA-001, CAP-VAN",
+    "product_code_hint": "Ražotāja kods vieglākai garšas identifikācijai",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

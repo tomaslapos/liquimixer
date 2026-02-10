@@ -498,7 +498,8 @@
     "recommended_range": "Ajánlott tartomány",
     "min_percent": "Min százalék",
     "max_percent": "Max százalék",
-    "steep_time": "Érlelési idő"
+    "steep_time": "Érlelési idő",
+    "product_code": "Termékkód"
   },
   "product_form": {
     "add_title": "Termék hozzáadása",
@@ -931,6 +932,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Termékkód",
+    "product_code_placeholder": "pl. TFA-001, CAP-VAN",
+    "product_code_hint": "Gyártói kód az aroma könnyebb azonosításához",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
