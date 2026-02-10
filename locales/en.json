@@ -675,6 +675,7 @@
     "weak": "Weak or no flavor (recommended {min}–{max}%)",
     "strong": "Strong or overly sweet flavor (recommended {min}–{max}%)",
     "ideal": "Ideal flavor ({min}–{max}%) - {note}",
+    "no_percentage_warning": "The manufacturer does not provide recommended dosage for this flavor. Check the packaging or manufacturer/retailer website for correct information.",
     "note_none": "Pure PG/VG base + nicotine",
     "note_fruit": "Optimum: 10%, steeping 3–7 days",
     "note_citrus": "Strong acids, less is more",

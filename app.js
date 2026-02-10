@@ -6739,8 +6739,23 @@ function updateFlavorType(forceReset = false) {
 }
 
 function adjustFlavor(change) {
-    let newValue = parseInt(flavorStrengthSlider.value) + change;
-    newValue = Math.max(0, Math.min(30, newValue));
+    // Dynamický krok podle rozsahu slideru
+    const minVal = parseFloat(flavorStrengthSlider.min) || 0;
+    const maxVal = parseFloat(flavorStrengthSlider.max) || 30;
+    const range = maxVal - minVal;
+    
+    // Pokud je rozsah malý (např. 2-3%), použít menší absolutní krok
+    let actualChange = change;
+    if (range <= 5 && Math.abs(change) === 1) {
+        actualChange = change > 0 ? 0.5 : -0.5;
+    } else if (range <= 5 && Math.abs(change) === 0.1) {
+        actualChange = change > 0 ? 0.1 : -0.1;
+    }
+    
+    let newValue = parseFloat(flavorStrengthSlider.value) + actualChange;
+    newValue = Math.max(minVal, Math.min(maxVal, newValue));
+    // Zaokrouhlit na 1 desetinné místo
+    newValue = Math.round(newValue * 10) / 10;
     flavorStrengthSlider.value = newValue;
     updateFlavorDisplay();
 }
@@ -6883,14 +6898,15 @@ function getIngredientName(ingredient) {
 }
 
 function updateFlavorDisplay() {
-    const value = parseInt(flavorStrengthSlider.value);
+    const value = parseFloat(flavorStrengthSlider.value);
     const type = flavorTypeSelect.value;
     const descEl = document.getElementById('flavorDescription');
     const displayEl = document.getElementById('flavorValue');
     const displayContainer = displayEl.parentElement;
     const trackEl = document.getElementById('flavorTrack');
     
-    displayEl.textContent = value;
+    // Zobrazit s 1 desetinným místem, pokud není celé číslo
+    displayEl.textContent = Number.isInteger(value) ? value : value.toFixed(1);
     
     // Zjistit rozsah - buď z konkrétní příchutě nebo z číselníku
     let minPercent, maxPercent, note;
@@ -8997,8 +9013,24 @@ function updateProFlavorType(flavorIndex = 1) {
 // Upravit sílu příchutě
 function adjustProFlavor(flavorIndex, change) {
     const slider = document.getElementById(`proFlavorStrength${flavorIndex}`);
-    let newValue = parseInt(slider.value) + change;
-    newValue = Math.max(0, Math.min(30, newValue));
+    
+    // Dynamický krok podle rozsahu slideru
+    const minVal = parseFloat(slider.min) || 0;
+    const maxVal = parseFloat(slider.max) || 30;
+    const range = maxVal - minVal;
+    
+    // Pokud je rozsah malý (např. 2-3%), použít menší absolutní krok
+    let actualChange = change;
+    if (range <= 5 && Math.abs(change) === 1) {
+        actualChange = change > 0 ? 0.5 : -0.5;
+    } else if (range <= 5 && Math.abs(change) === 0.1) {
+        actualChange = change > 0 ? 0.1 : -0.1;
+    }
+    
+    let newValue = parseFloat(slider.value) + actualChange;
+    newValue = Math.max(minVal, Math.min(maxVal, newValue));
+    // Zaokrouhlit na 1 desetinné místo
+    newValue = Math.round(newValue * 10) / 10;
     slider.value = newValue;
     updateProFlavorDisplay(flavorIndex);
     updateProTotalFlavorPercent();
@@ -9019,7 +9051,7 @@ function updateProFlavorDisplay(flavorIndex = 1) {
     
     if (!slider) return;
     
-    const value = parseInt(slider.value);
+    const value = parseFloat(slider.value);
     
     // Zkontrolovat zda máme konkrétní příchuť z autocomplete
     const autocomplete = document.getElementById(`proFlavorAutocomplete${flavorIndex}`);
@@ -9045,7 +9077,8 @@ function updateProFlavorDisplay(flavorIndex = 1) {
 
     if (!displayEl) return;
     
-    displayEl.textContent = value;
+    // Zobrazit s 1 desetinným místem, pokud není celé číslo
+    displayEl.textContent = Number.isInteger(value) ? value : value.toFixed(1);
 
     let color;
     if (value < minPercent) {
@@ -9153,12 +9186,14 @@ function addProFlavor() {
                 </select>
                 <div id="proFlavorStrengthContainer${proFlavorCount}" class="hidden">
                     <div class="slider-container small">
-                        <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, -1)">◀</button>
+                        <button class="slider-btn small double" onclick="adjustProFlavor(${proFlavorCount}, -1)" title="-1%">◀◀</button>
+                        <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, -0.1)" title="-0.1%">◀</button>
                         <div class="slider-wrapper">
-                            <input type="range" id="proFlavorStrength${proFlavorCount}" min="0" max="30" value="10" class="flavor-slider pro-flavor-slider" data-flavor-index="${proFlavorCount}" oninput="updateProFlavorStrength(${proFlavorCount})">
+                            <input type="range" id="proFlavorStrength${proFlavorCount}" min="0" max="30" value="10" step="0.1" class="flavor-slider pro-flavor-slider" data-flavor-index="${proFlavorCount}" oninput="updateProFlavorStrength(${proFlavorCount})">
                             <div class="slider-track flavor-track" id="proFlavorTrack${proFlavorCount}"></div>
                         </div>
-                        <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, 1)">▶</button>
+                        <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, 0.1)" title="+0.1%">▶</button>
+                        <button class="slider-btn small double" onclick="adjustProFlavor(${proFlavorCount}, 1)" title="+1%">▶▶</button>
                     </div>
                     <div class="flavor-display">
                         <span id="proFlavorValue${proFlavorCount}">10</span>%
@@ -14207,9 +14242,24 @@ function adjustShishaFlavor(index, change) {
     const slider = document.getElementById(`shFlavorStrength${index}`);
     if (!slider) return;
     
-    let currentValue = parseInt(slider.value);
-    let newValue = currentValue + change;
-    newValue = Math.max(0, Math.min(30, newValue));
+    // Dynamický krok podle rozsahu slideru
+    const minVal = parseFloat(slider.min) || 0;
+    const maxVal = parseFloat(slider.max) || 30;
+    const range = maxVal - minVal;
+    
+    // Pokud je rozsah malý (např. 2-3%), použít menší absolutní krok
+    let actualChange = change;
+    if (range <= 5 && Math.abs(change) === 1) {
+        actualChange = change > 0 ? 0.5 : -0.5;
+    } else if (range <= 5 && Math.abs(change) === 0.1) {
+        actualChange = change > 0 ? 0.1 : -0.1;
+    }
+    
+    let currentValue = parseFloat(slider.value);
+    let newValue = currentValue + actualChange;
+    newValue = Math.max(minVal, Math.min(maxVal, newValue));
+    // Zaokrouhlit na 1 desetinné místo
+    newValue = Math.round(newValue * 10) / 10;
     slider.value = newValue;
     updateShishaFlavorStrength(index);
 }
@@ -14225,8 +14275,9 @@ function updateShishaFlavorStrength(index) {
     
     if (!slider) return;
     
-    const value = parseInt(slider.value);
-    if (display) display.textContent = value;
+    const value = parseFloat(slider.value);
+    // Zobrazit s 1 desetinným místem, pokud není celé číslo
+    if (display) display.textContent = Number.isInteger(value) ? value : value.toFixed(1);
     
     // Plná šířka track jako v liquid formuláři
     if (track) track.style.width = '100%';
@@ -14459,12 +14510,14 @@ function addShishaFlavor() {
                 </select>
                 <div id="shFlavorStrengthContainer${shFlavorCount}" class="hidden">
                     <div class="slider-container small">
-                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -1)">◀</button>
+                        <button class="slider-btn small double" onclick="adjustShishaFlavor(${shFlavorCount}, -1)" title="-1%">◀◀</button>
+                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -0.1)" title="-0.1%">◀</button>
                         <div class="slider-wrapper">
-                            <input type="range" id="shFlavorStrength${shFlavorCount}" min="0" max="30" value="15" class="flavor-slider sh-flavor-slider" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorStrength(${shFlavorCount})">
+                            <input type="range" id="shFlavorStrength${shFlavorCount}" min="0" max="30" value="15" step="0.1" class="flavor-slider sh-flavor-slider" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorStrength(${shFlavorCount})">
                             <div class="slider-track flavor-track" id="shFlavorTrack${shFlavorCount}"></div>
                         </div>
-                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, 1)">▶</button>
+                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, 0.1)" title="+0.1%">▶</button>
+                        <button class="slider-btn small double" onclick="adjustShishaFlavor(${shFlavorCount}, 1)" title="+1%">▶▶</button>
                     </div>
                     <div class="flavor-display">
                         <span id="shFlavorValue${shFlavorCount}">15</span>%

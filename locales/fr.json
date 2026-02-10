@@ -647,6 +647,7 @@
     "weak": "Saveur faible ou absente (recommandé {min}–{max}%)",
     "strong": "Saveur forte ou trop sucrée (recommandé {min}–{max}%)",
     "ideal": "Saveur idéale ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Le fabricant n'indique pas le dosage recommandé pour cet arôme. Vérifiez l'emballage ou le site du fabricant/vendeur pour obtenir les informations correctes.",
     "note_none": "Base PG/VG pure + nicotine",
     "note_fruit": "Optimal : 10%, maturation 3–7 jours",
     "note_citrus": "Acides forts, moins c'est plus",

@@ -680,6 +680,7 @@
     "weak": "Slabá až žiadna chuť (odporúčané {min}–{max}%)",
     "strong": "Výrazná alebo presladená chuť (odporúčané {min}–{max}%)",
     "ideal": "Ideálna chuť ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Výrobca neuvádza odporúčané dávkovanie pre túto príchuť. Skontrolujte obal alebo stránky predajcu/výrobcu pre získanie správnych informácií.",
     "note_none": "Čistá báza PG/VG + nikotín",
     "note_fruit": "Optimum: 10%, zrenie 3–7 dní",
     "note_citrus": "Silné kyseliny, menej stačí",

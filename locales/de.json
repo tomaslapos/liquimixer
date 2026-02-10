@@ -667,6 +667,7 @@
     "weak": "Schwacher oder kein Geschmack (empfohlen {min}–{max}%)",
     "strong": "Starker oder übersüßer Geschmack (empfohlen {min}–{max}%)",
     "ideal": "Idealer Geschmack ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Der Hersteller gibt keine empfohlene Dosierung für dieses Aroma an. Überprüfen Sie die Verpackung oder die Website des Herstellers/Verkäufers für korrekte Informationen.",
     "note_none": "Reine PG/VG-Basis + Nikotin",
     "note_fruit": "Optimal: 10%, Reifung 3–7 Tage",
     "note_citrus": "Starke Säuren, weniger ist mehr",

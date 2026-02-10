@@ -642,6 +642,7 @@
     "weak": "Gyenge vagy nincs íz (ajánlott {min}–{max}%)",
     "strong": "Erős vagy túl édes íz (ajánlott {min}–{max}%)",
     "ideal": "Ideális íz ({min}–{max}%) - {note}",
+    "no_percentage_warning": "A gyártó nem ad meg ajánlott adagolást ehhez az aromához. Ellenőrizze a csomagolást vagy a gyártó/eladó weboldalát a helyes információkért.",
     "note_none": "Tiszta PG/VG bázis + nikotin",
     "note_fruit": "Optimális: 10%, érlelés 3–7 nap",
     "note_citrus": "Erős savak, a kevesebb több",

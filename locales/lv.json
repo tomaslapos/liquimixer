@@ -668,6 +668,7 @@
     "weak": "Vāja vai nav garšas (ieteicams {min}–{max}%)",
     "strong": "Spēcīga vai pārāk salda garša (ieteicams {min}–{max}%)",
     "ideal": "Ideāla garša ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Ražotājs nesniedz ieteicamo devu šai aromātai. Pārbaudiet iepakojumu vai ražotāja/pārdevēja vietni, lai iegūtu pareizu informāciju.",
     "note_none": "Tīra PG/VG bāze + nikotīns",
     "note_fruit": "Optimāli: 10%, nogatavināšana 3–7 dienas",
     "note_citrus": "Stipras skābes, mazāk ir vairāk",

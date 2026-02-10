@@ -668,6 +668,7 @@
     "weak": "Silpnas arba jokio skonio (rekomenduojama {min}–{max}%)",
     "strong": "Stiprus arba per saldus skonis (rekomenduojama {min}–{max}%)",
     "ideal": "Idealus skonis ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Gamintojas nenurodo rekomenduojamos šio aromato dozės. Patikrinkite pakuotę arba gamintojo/pardavėjo svetainę, kad gautumėte teisingą informaciją.",
     "note_none": "Gryna PG/VG bazė + nikotinas",
     "note_fruit": "Optimaliai: 10%, brandinimas 3–7 dienas",
     "note_citrus": "Stiprios rūgštys, mažiau yra daugiau",

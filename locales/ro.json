@@ -663,6 +663,7 @@
     "weak": "Aromă slabă sau inexistentă (recomandat {min}–{max}%)",
     "strong": "Aromă puternică sau prea dulce (recomandat {min}–{max}%)",
     "ideal": "Aromă ideală ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Producătorul nu furnizează dozajul recomandat pentru această aromă. Verificați ambalajul sau site-ul producătorului/vânzătorului pentru informații corecte.",
     "note_none": "Bază PG/VG pură + nicotină",
     "note_fruit": "Optim: 10%, macerare 3–7 zile",
     "note_citrus": "Acizi puternici, mai puțin înseamnă mai mult",
