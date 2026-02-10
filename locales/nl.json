@@ -645,6 +645,7 @@
     "weak": "Zwakke of geen smaak (aanbevolen {min}–{max}%)",
     "strong": "Sterke of te zoete smaak (aanbevolen {min}–{max}%)",
     "ideal": "Ideale smaak ({min}–{max}%) - {note}",
+    "no_percentage_warning": "De fabrikant geeft geen aanbevolen dosering voor deze smaak. Controleer de verpakking of de website van de fabrikant/verkoper voor correcte informatie.",
     "note_none": "Pure PG/VG-basis + nicotine",
     "note_fruit": "Optimaal: 10%, steeping 3–7 dagen",
     "note_citrus": "Sterke zuren, minder is meer",

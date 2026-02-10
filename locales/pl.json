@@ -656,6 +656,7 @@
     "weak": "Słaby lub brak smaku (zalecane {min}–{max}%)",
     "strong": "Mocny lub zbyt słodki smak (zalecane {min}–{max}%)",
     "ideal": "Idealny smak ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Producent nie podaje zalecanego dawkowania dla tego aromatu. Sprawdź opakowanie lub stronę producenta/sprzedawcy, aby uzyskać prawidłowe informacje.",
     "note_none": "Czysta baza PG/VG + nikotyna",
     "note_fruit": "Optymalne: 10%, leżakowanie 3–7 dni",
     "note_citrus": "Silne kwasy, mniej znaczy więcej",

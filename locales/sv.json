@@ -668,6 +668,7 @@
     "weak": "Svag eller ingen smak (rekommenderat {min}–{max}%)",
     "strong": "Stark eller för söt smak (rekommenderat {min}–{max}%)",
     "ideal": "Idealisk smak ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Tillverkaren anger inte rekommenderad dosering för denna smak. Kontrollera förpackningen eller tillverkarens/säljarens webbplats för korrekt information.",
     "note_none": "Ren PG/VG-bas + nikotin",
     "note_fruit": "Optimalt: 10%, steeping 3–7 dagar",
     "note_citrus": "Starka syror, mindre är mer",

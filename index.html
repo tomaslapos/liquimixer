@@ -1154,12 +1154,14 @@
                         </select>
                         <div id="flavorStrengthContainer" class="hidden">
                             <div class="slider-container small">
-                                <button class="slider-btn small" onclick="adjustFlavor(-1)">◀</button>
+                                <button class="slider-btn small double" onclick="adjustFlavor(-1)" title="-1%">◀◀</button>
+                                <button class="slider-btn small" onclick="adjustFlavor(-0.1)" title="-0.1%">◀</button>
                                 <div class="slider-wrapper">
-                                    <input type="range" id="flavorStrength" min="0" max="30" value="10" class="flavor-slider">
+                                    <input type="range" id="flavorStrength" min="0" max="30" value="10" step="0.1" class="flavor-slider">
                                     <div class="slider-track flavor-track" id="flavorTrack"></div>
                                 </div>
-                                <button class="slider-btn small" onclick="adjustFlavor(1)">▶</button>
+                                <button class="slider-btn small" onclick="adjustFlavor(0.1)" title="+0.1%">▶</button>
+                                <button class="slider-btn small double" onclick="adjustFlavor(1)" title="+1%">▶▶</button>
                             </div>
                             <div class="flavor-display">
                                 <span id="flavorValue">10</span>%
@@ -1535,12 +1537,14 @@
                         </select>
                         <div id="proFlavorStrengthContainer1" class="hidden">
                             <div class="slider-container small">
-                                <button class="slider-btn small" onclick="adjustProFlavor(1, -1)">◀</button>
+                                <button class="slider-btn small double" onclick="adjustProFlavor(1, -1)" title="-1%">◀◀</button>
+                                <button class="slider-btn small" onclick="adjustProFlavor(1, -0.1)" title="-0.1%">◀</button>
                                 <div class="slider-wrapper">
-                                    <input type="range" id="proFlavorStrength1" min="0" max="30" value="10" class="flavor-slider pro-flavor-slider" data-flavor-index="1" oninput="updateProFlavorStrength(1)">
+                                    <input type="range" id="proFlavorStrength1" min="0" max="30" value="10" step="0.1" class="flavor-slider pro-flavor-slider" data-flavor-index="1" oninput="updateProFlavorStrength(1)">
                                     <div class="slider-track flavor-track" id="proFlavorTrack1"></div>
                                 </div>
-                                <button class="slider-btn small" onclick="adjustProFlavor(1, 1)">▶</button>
+                                <button class="slider-btn small" onclick="adjustProFlavor(1, 0.1)" title="+0.1%">▶</button>
+                                <button class="slider-btn small double" onclick="adjustProFlavor(1, 1)" title="+1%">▶▶</button>
                             </div>
                             <div class="flavor-display">
                                 <span id="proFlavorValue1">10</span>%
@@ -1930,12 +1934,14 @@
                         </select>
                         <div id="shFlavorStrengthContainer1" class="hidden">
                             <div class="slider-container small">
-                                <button class="slider-btn small" onclick="adjustShishaFlavor(1, -1)">◀</button>
+                                <button class="slider-btn small double" onclick="adjustShishaFlavor(1, -1)" title="-1%">◀◀</button>
+                                <button class="slider-btn small" onclick="adjustShishaFlavor(1, -0.1)" title="-0.1%">◀</button>
                                 <div class="slider-wrapper">
-                                    <input type="range" id="shFlavorStrength1" min="0" max="30" value="15" class="flavor-slider sh-flavor-slider" data-flavor-index="1" oninput="updateShishaFlavorStrength(1)">
+                                    <input type="range" id="shFlavorStrength1" min="0" max="30" value="15" step="0.1" class="flavor-slider sh-flavor-slider" data-flavor-index="1" oninput="updateShishaFlavorStrength(1)">
                                     <div class="slider-track flavor-track" id="shFlavorTrack1"></div>
                                 </div>
-                                <button class="slider-btn small" onclick="adjustShishaFlavor(1, 1)">▶</button>
+                                <button class="slider-btn small" onclick="adjustShishaFlavor(1, 0.1)" title="+0.1%">▶</button>
+                                <button class="slider-btn small double" onclick="adjustShishaFlavor(1, 1)" title="+1%">▶▶</button>
                             </div>
                             <div class="flavor-display">
                                 <span id="shFlavorValue1">15</span>%

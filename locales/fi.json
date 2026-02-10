@@ -668,6 +668,7 @@
     "weak": "Heikko tai ei makua (suositeltu {min}–{max}%)",
     "strong": "Vahva tai liian makea maku (suositeltu {min}–{max}%)",
     "ideal": "Ihanteellinen maku ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Valmistaja ei anna suositeltua annostusta tälle aromille. Tarkista pakkaus tai valmistajan/myyjän verkkosivusto oikean tiedon saamiseksi.",
     "ideal_specific": "Ihanteellinen maku ({min}–{max}%) - {note}",
     "note_none": "Puhdas PG/VG-pohja + nikotiini",
     "note_fruit": "Optimaalinen: 10%, hautominen 3–7 päivää",

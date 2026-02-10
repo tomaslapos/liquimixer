@@ -3779,6 +3779,20 @@ button.locked {
     font-size: 0.8rem;
 }
 
+.slider-btn.small.double {
+    width: 30px;
+    height: 30px;
+    font-size: 0.65rem;
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+}
+
+.slider-btn.small.double:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--neon-cyan);
+}
+
 .slider-btn:hover {
     background: var(--neon-pink);
     color: var(--bg-dark);

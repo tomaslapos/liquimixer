@@ -584,6 +584,7 @@
     "strong": "Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)",
     "ideal": "Ideální chuť ({min}–{max}%) - {note}",
     "ideal_specific": "Ideální chuť ({min}–{max}%) - {note}",
+    "no_percentage_warning": "Výrobce neuvádí doporučené dávkování pro tuto příchuť. Zkontrolujte obal nebo stránky prodejce/výrobce pro získání správných informací.",
     "note_none": "Čistá báze PG/VG + nikotin",
     "note_fruit": "Optimum: 10%, zrání 3–7 dní",
     "note_citrus": "Silné kyseliny, méně stačí",

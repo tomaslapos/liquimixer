@@ -669,6 +669,7 @@
     "weak": "弱或不存在的香精（推薦 {min}–{max}%）",
     "strong": "強或過甜的香精（推薦 {min}–{max}%）",
     "ideal": "理想香精（{min}–{max}%）- {note}",
+    "no_percentage_warning": "製造商未提供此香精的建議用量。請查看包裝或製造商/銷售商網站以獲取正確資訊。",
     "note_none": "純 PG/VG 基液 + 尼古丁",
     "note_fruit": "最佳：10%，熟化 3-7 天",
     "note_citrus": "酸味強，少即是多",
