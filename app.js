@@ -4025,7 +4025,15 @@ async function viewRecipeDetail(recipeId) {
         // Načíst propojené produkty
         const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(window.Clerk.user.id, recipeId);
         
-        displayRecipeDetail(recipe, 'recipeDetailTitle', 'recipeDetailContent', linkedProducts);
+        // Načíst propojené příchutě
+        let linkedFlavors = [];
+        try {
+            linkedFlavors = await window.LiquiMixerDB.getLinkedFlavors(recipeId);
+        } catch (err) {
+            console.error('Error loading linked flavors:', err);
+        }
+        
+        displayRecipeDetail(recipe, 'recipeDetailTitle', 'recipeDetailContent', linkedProducts, false, linkedFlavors);
         showPage('recipe-detail');
         
     } catch (error) {
@@ -4036,7 +4044,7 @@ async function viewRecipeDetail(recipeId) {
 
 // Zobrazit detail receptu (sdílené funkce)
 // isShared = true znamená, že jde o sdílený recept jiného uživatele
-function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], isShared = false) {
+function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], isShared = false, linkedFlavors = []) {
     const titleEl = document.getElementById(titleId);
     const contentEl = document.getElementById(contentId);
     
@@ -4123,6 +4131,39 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         `;
     }
     
+    // Propojené příchutě
+    let linkedFlavorsHtml = '';
+    if (linkedFlavors && linkedFlavors.length > 0) {
+        const flavorClickHandler = isShared ? 'viewSharedProductDetail' : 'viewProductDetail';
+        
+        linkedFlavorsHtml = `
+            <div class="recipe-linked-flavors">
+                <h4 class="recipe-ingredients-title">${t('recipe_detail.linked_flavors', 'Použité příchutě')}</h4>
+                <div class="linked-flavors-list">
+                    ${linkedFlavors.map(flavorLink => {
+                        // Získat název a výrobce
+                        const flavorName = flavorLink.flavor_name || flavorLink.flavor?.name || '?';
+                        const manufacturer = flavorLink.flavor?.manufacturer_name || flavorLink.flavor?.manufacturer_code || '';
+                        const displayName = manufacturer ? `${flavorName} (${manufacturer})` : flavorName;
+                        const percentDisplay = flavorLink.percentage ? ` - ${flavorLink.percentage}%` : '';
+                        
+                        // Pokud má favorite_product_id, lze na něj kliknout
+                        const hasLink = flavorLink.favorite_product_id;
+                        const clickAttr = hasLink ? `onclick="${flavorClickHandler}('${escapeHtml(flavorLink.favorite_product_id)}')"` : '';
+                        const cursorClass = hasLink ? 'clickable' : '';
+                        
+                        return `
+                            <div class="linked-flavor-item ${cursorClass}" ${clickAttr}>
+                                <span class="linked-flavor-icon">🍓</span>
+                                <span class="linked-flavor-name">${escapeHtml(displayName)}${percentDisplay}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
     // SECURITY: Escapování všech hodnot z databáze
     const safeTotal = escapeHtml(data.totalAmount || '?');
     const safeVg = escapeHtml(data.vgPercent || '?');
@@ -4154,6 +4195,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         
         ${ingredientsHtml}
         ${linkedProductsHtml}
+        ${linkedFlavorsHtml}
         
         <div class="recipe-meta-info">
             <p class="recipe-date">${t('recipe_detail.created', 'Vytvořeno')}: ${date}</p>
@@ -4866,15 +4908,17 @@ async function loadSharedRecipeContent(shareId) {
             
             // Načíst propojené produkty (bez ověření vlastníka)
             let linkedProducts = [];
+            let linkedFlavors = [];
             try {
                 linkedProducts = await window.LiquiMixerDB.getLinkedProductsByRecipeId(recipe.id);
+                linkedFlavors = await window.LiquiMixerDB.getLinkedFlavors(recipe.id);
             } catch (err) {
-                console.error('Error loading linked products for shared recipe:', err);
+                console.error('Error loading linked products/flavors for shared recipe:', err);
             }
             
-            // Zobrazit detail receptu s propojenými produkty
+            // Zobrazit detail receptu s propojenými produkty a příchutěmi
             // Použít speciální režim pro sdílené recepty (isShared = true)
-            displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', linkedProducts, true);
+            displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', linkedProducts, true, linkedFlavors);
             showPage('shared-recipe');
             return true;
         } else {
@@ -5339,6 +5383,18 @@ async function viewProductDetail(productId) {
         let linkedRecipes = [];
         try {
             linkedRecipes = await window.LiquiMixerDB.getRecipesByProductId(window.Clerk.user.id, productId);
+            
+            // Pro příchutě načíst i recepty propojené přes recipe_flavors
+            if (product.product_type === 'flavor') {
+                const flavorLinkedRecipes = await window.LiquiMixerDB.getRecipesByFlavorProductId(window.Clerk.user.id, productId);
+                // Sloučit a deduplikovat
+                const existingIds = new Set(linkedRecipes.map(r => r.id));
+                for (const recipe of flavorLinkedRecipes) {
+                    if (recipe && !existingIds.has(recipe.id)) {
+                        linkedRecipes.push(recipe);
+                    }
+                }
+            }
         } catch (err) {
             console.error('Error loading linked recipes:', err);
         }
@@ -7469,22 +7525,22 @@ function refreshResultsTable() {
 }
 
 // Překreslit detail receptu při změně jazyka
-function refreshRecipeDetail() {
+async function refreshRecipeDetail() {
     if (!window.currentViewingRecipe) return;
     
     const contentEl = document.getElementById('recipeDetailContent');
     if (!contentEl) return;
     
-    // Znovu načíst propojené produkty a zobrazit detail
+    // Znovu načíst propojené produkty a příchutě a zobrazit detail
     if (window.Clerk && window.Clerk.user && window.LiquiMixerDB) {
-        window.LiquiMixerDB.getLinkedProducts(window.Clerk.user.id, window.currentViewingRecipe.id)
-            .then(linkedProducts => {
-                displayRecipeDetail(window.currentViewingRecipe, 'recipeDetailTitle', 'recipeDetailContent', linkedProducts || []);
-            })
-            .catch(err => {
-                console.error('Error refreshing recipe detail:', err);
-                displayRecipeDetail(window.currentViewingRecipe, 'recipeDetailTitle', 'recipeDetailContent', []);
-            });
+        try {
+            const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(window.Clerk.user.id, window.currentViewingRecipe.id);
+            const linkedFlavors = await window.LiquiMixerDB.getLinkedFlavors(window.currentViewingRecipe.id);
+            displayRecipeDetail(window.currentViewingRecipe, 'recipeDetailTitle', 'recipeDetailContent', linkedProducts || [], false, linkedFlavors || []);
+        } catch (err) {
+            console.error('Error refreshing recipe detail:', err);
+            displayRecipeDetail(window.currentViewingRecipe, 'recipeDetailTitle', 'recipeDetailContent', [], false, []);
+        }
     }
 }
 
@@ -12151,8 +12207,16 @@ async function loadPublicRecipeDetail(recipeId) {
             userRating = await window.LiquiMixerDB.getUserRatingForRecipe(window.Clerk.user.id, recipeId);
         }
         
+        // Načíst příchutě pro veřejný recept
+        let linkedFlavors = [];
+        try {
+            linkedFlavors = await window.LiquiMixerDB.getLinkedFlavors(recipeId);
+        } catch (err) {
+            console.error('Error loading linked flavors for public recipe:', err);
+        }
+        
         // Zobrazit detail
-        displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', [], true);
+        displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', [], true, linkedFlavors);
         
         // Přidat sekci hodnocení
         appendRatingSection(recipeId, recipe.public_rating_avg || 0, recipe.public_rating_count || 0, userRating);
@@ -12298,7 +12362,7 @@ function removeBackToDatabaseButton() {
 }
 
 // Překreslit detail veřejného receptu při změně jazyka
-function refreshPublicRecipeDetail() {
+async function refreshPublicRecipeDetail() {
     // Zkontrolovat, zda je stránka shared-recipe zobrazená a máme data receptu
     const sharedRecipePage = document.getElementById('shared-recipe');
     if (!sharedRecipePage || sharedRecipePage.classList.contains('hidden')) return;
@@ -12306,8 +12370,18 @@ function refreshPublicRecipeDetail() {
     
     const recipe = window.currentSharedRecipe;
     
+    // Načíst příchutě
+    let linkedFlavors = [];
+    try {
+        if (recipe.id) {
+            linkedFlavors = await window.LiquiMixerDB.getLinkedFlavors(recipe.id);
+        }
+    } catch (err) {
+        console.error('Error loading linked flavors for refresh:', err);
+    }
+    
     // Znovu vykreslit detail
-    displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', [], true);
+    displayRecipeDetail(recipe, 'sharedRecipeTitle', 'sharedRecipeContent', [], true, linkedFlavors);
     
     // Znovu přidat sekci hodnocení
     if (recipe.id) {
