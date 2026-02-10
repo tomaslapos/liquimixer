@@ -1605,7 +1605,8 @@ function calculateActualVgPgRatio(formType) {
         // Flavor in S&V is by volume, not percent
         flavorVolume = parseFloat(document.getElementById('svFlavorVolume')?.value) || 0;
         const svFlavorRatio = document.getElementById('svFlavorRatio')?.value || '0/100';
-        flavorVgPercent = svFlavorRatio === '80/20' ? 80 : (svFlavorRatio === '70/30' ? 70 : 0);
+        // Dynamické parsování VG ratio z formátu "VG/PG"
+        flavorVgPercent = parseInt(svFlavorRatio.split('/')[0]) || 0;
         
         const premixedRatio = document.getElementById('svPremixedRatio')?.value || '50/50';
         premixedVgPercent = parseInt(premixedRatio.split('/')[0]) || 50;
@@ -1618,10 +1619,16 @@ function calculateActualVgPgRatio(formType) {
         const nicRatio = document.getElementById('nicotineRatio')?.value || '50/50';
         nicVgPercent = nicRatio === '70/30' ? 70 : 50;
         
+        // Kontrola konkrétní příchutě z autocomplete
+        const flavorAutocomplete = document.getElementById('flavorAutocomplete');
+        const hasSpecificFlavor = flavorAutocomplete?.dataset.flavorId && flavorAutocomplete.dataset.flavorSource !== 'generic';
         const flavorType = document.getElementById('flavorType')?.value || 'none';
-        const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('flavorStrength')?.value) || 0 : 0;
+        // Příchuť je aktivní pokud je vybraná konkrétní NEBO je zvolena kategorie
+        const hasFlavor = hasSpecificFlavor || (flavorType !== 'none' && flavorType !== '');
+        const flavorPercent = hasFlavor ? parseFloat(document.getElementById('flavorStrength')?.value) || 0 : 0;
         const flavorRatio = document.getElementById('flavorRatio')?.value || '0/100';
-        flavorVgPercent = flavorRatio === '80/20' ? 80 : (flavorRatio === '70/30' ? 70 : 0);
+        // Dynamické parsování VG ratio z formátu "VG/PG"
+        flavorVgPercent = parseInt(flavorRatio.split('/')[0]) || 0;
         flavorVolume = (flavorPercent / 100) * totalAmount;
         
         const premixedRatio = document.getElementById('premixedRatio')?.value || '50/50';
@@ -6388,11 +6395,10 @@ function updateVgPgRatioLimits() {
     const nicotineType = nicotineTypeSelect.value;
     const targetNicotine = parseFloat(targetNicotineSlider.value) || 0;
     const baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength').value) || 0;
-    const flavorType = flavorTypeSelect.value;
-    const flavorPercent = flavorType !== 'none' ? parseFloat(flavorStrengthSlider.value) : 0;
     
     // Získat informace o konkrétní příchuti (pokud je vybraná)
     const flavorAutocomplete = document.getElementById('flavorAutocomplete');
+    const hasSpecificFlavor = flavorAutocomplete?.dataset.flavorId && flavorAutocomplete.dataset.flavorSource !== 'generic';
     let specificFlavorName = null;
     let specificFlavorManufacturer = null;
     let specificFlavorVgRatio = null;
@@ -6415,6 +6421,11 @@ function updateVgPgRatioLimits() {
             console.log('Error parsing flavor data:', e);
         }
     }
+    
+    // Příchuť je aktivní pokud je vybraná konkrétní NEBO je zvolena kategorie
+    const flavorType = flavorTypeSelect.value;
+    const hasFlavor = hasSpecificFlavor || (flavorType !== 'none' && flavorType !== '');
+    const flavorPercent = hasFlavor ? parseFloat(flavorStrengthSlider.value) : 0;
     
     // Calculate nicotine volume
     let nicotineVolume = 0;
@@ -6439,21 +6450,14 @@ function updateVgPgRatioLimits() {
         }
     }
 
-    // Get flavor VG/PG ratio
+    // Get flavor VG/PG ratio - dynamické parsování z formátu "VG/PG"
     let flavorVgPercent = 0;
     let flavorPgPercent = 100;
-    if (flavorType !== 'none') {
-        const flavorRatio = document.getElementById('flavorRatio').value;
-        if (flavorRatio === '0/100') {
-            flavorVgPercent = 0;
-            flavorPgPercent = 100;
-        } else if (flavorRatio === '80/20') {
-            flavorVgPercent = 80;
-            flavorPgPercent = 20;
-        } else if (flavorRatio === '70/30') {
-            flavorVgPercent = 70;
-            flavorPgPercent = 30;
-        }
+    if (hasFlavor) {
+        const flavorRatio = document.getElementById('flavorRatio').value || '0/100';
+        const ratioParts = flavorRatio.split('/');
+        flavorVgPercent = parseInt(ratioParts[0]) || 0;
+        flavorPgPercent = parseInt(ratioParts[1]) || (100 - flavorVgPercent);
     }
 
     // Calculate VG and PG from nicotine
@@ -6985,11 +6989,10 @@ function calculateMix() {
     const nicotineType = document.getElementById('nicotineType').value;
     const targetNicotine = parseFloat(document.getElementById('targetNicotine').value) || 0;
     const baseNicotine = parseFloat(document.getElementById('nicotineBaseStrength').value) || 0;
-    const flavorType = document.getElementById('flavorType').value;
-    const flavorPercent = flavorType !== 'none' ? parseFloat(document.getElementById('flavorStrength').value) : 0;
     
     // Získat informace o konkrétní příchuti (pokud je vybraná)
     const flavorAutocomplete = document.getElementById('flavorAutocomplete');
+    const hasSpecificFlavor = flavorAutocomplete?.dataset.flavorId && flavorAutocomplete.dataset.flavorSource !== 'generic';
     let specificFlavorName = null;
     let specificFlavorManufacturer = null;
     let specificFlavorId = null;
@@ -7011,6 +7014,11 @@ function calculateMix() {
             console.log('Error parsing flavor data:', e);
         }
     }
+    
+    // Příchuť je aktivní pokud je vybraná konkrétní NEBO je zvolena kategorie
+    const flavorType = document.getElementById('flavorType').value;
+    const hasFlavor = hasSpecificFlavor || (flavorType !== 'none' && flavorType !== '');
+    const flavorPercent = hasFlavor ? parseFloat(document.getElementById('flavorStrength').value) : 0;
     
     // Get base type (separate or premixed)
     const baseType = document.getElementById('baseType')?.value || 'separate';
@@ -7055,21 +7063,14 @@ function calculateMix() {
         nicotinePgContent = nicotineVolume * ((100 - nicVgPercent) / 100);
     }
 
-    // 5. Flavor VG/PG content based on selected ratio
+    // 5. Flavor VG/PG content based on selected ratio - dynamické parsování
     let flavorVgContent = 0;
     let flavorPgContent = flavorVolume; // Default to 100% PG
     
-    if (flavorType !== 'none' && flavorVolume > 0) {
-        const flavorRatio = document.getElementById('flavorRatio').value;
-        let flavorVgPercent = 0;
-        
-        if (flavorRatio === '0/100') {
-            flavorVgPercent = 0;
-        } else if (flavorRatio === '80/20') {
-            flavorVgPercent = 80;
-        } else if (flavorRatio === '70/30') {
-            flavorVgPercent = 70;
-        }
+    if (hasFlavor && flavorVolume > 0) {
+        const flavorRatio = document.getElementById('flavorRatio').value || '0/100';
+        // Dynamické parsování VG ratio z formátu "VG/PG"
+        const flavorVgPercent = parseInt(flavorRatio.split('/')[0]) || 0;
         
         flavorVgContent = flavorVolume * (flavorVgPercent / 100);
         flavorPgContent = flavorVolume * ((100 - flavorVgPercent) / 100);
@@ -8464,20 +8465,11 @@ function updateSvVgPgLimits() {
     const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
 
-    // Get flavor VG/PG ratio
-    let flavorVgPercent = 0;
-    let flavorPgPercent = 100;
-    const svFlavorRatio = document.getElementById('svFlavorRatio').value;
-    if (svFlavorRatio === '0/100') {
-        flavorVgPercent = 0;
-        flavorPgPercent = 100;
-    } else if (svFlavorRatio === '80/20') {
-        flavorVgPercent = 80;
-        flavorPgPercent = 20;
-    } else if (svFlavorRatio === '70/30') {
-        flavorVgPercent = 70;
-        flavorPgPercent = 30;
-    }
+    // Get flavor VG/PG ratio - dynamické parsování z formátu "VG/PG"
+    const svFlavorRatio = document.getElementById('svFlavorRatio').value || '0/100';
+    const svRatioParts = svFlavorRatio.split('/');
+    const flavorVgPercent = parseInt(svRatioParts[0]) || 0;
+    const flavorPgPercent = parseInt(svRatioParts[1]) || (100 - flavorVgPercent);
 
     const flavorVgVolume = flavorVolume * (flavorVgPercent / 100);
     const flavorPgVolume = flavorVolume * (flavorPgPercent / 100);
@@ -8574,20 +8566,11 @@ function calculateShakeVape() {
     const nicotineVgContent = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
     
-    // Get flavor VG/PG ratio
-    let flavorVgPercent = 0;
-    let flavorPgPercent = 100;
-    const svFlavorRatio = document.getElementById('svFlavorRatio').value;
-    if (svFlavorRatio === '0/100') {
-        flavorVgPercent = 0;
-        flavorPgPercent = 100;
-    } else if (svFlavorRatio === '80/20') {
-        flavorVgPercent = 80;
-        flavorPgPercent = 20;
-    } else if (svFlavorRatio === '70/30') {
-        flavorVgPercent = 70;
-        flavorPgPercent = 30;
-    }
+    // Get flavor VG/PG ratio - dynamické parsování z formátu "VG/PG"
+    const svFlavorRatio = document.getElementById('svFlavorRatio').value || '0/100';
+    const svRatioParts = svFlavorRatio.split('/');
+    const flavorVgPercent = parseInt(svRatioParts[0]) || 0;
+    const flavorPgPercent = parseInt(svRatioParts[1]) || (100 - flavorVgPercent);
     
     const flavorVgContent = flavorVolume * (flavorVgPercent / 100);
     const flavorPgContent = flavorVolume * (flavorPgPercent / 100);
