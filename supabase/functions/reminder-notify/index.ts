@@ -45,10 +45,14 @@ async function getAccessToken(serviceAccount: any): Promise<string> {
 
   // Import private key and sign
   const privateKeyPem = serviceAccount.private_key;
+  // Handle both actual newlines and escaped \n sequences in the PEM key
   const pemContents = privateKeyPem
     .replace("-----BEGIN PRIVATE KEY-----", "")
     .replace("-----END PRIVATE KEY-----", "")
-    .replace(/\n/g, "");
+    .replace(/\\n/g, "")  // Remove escaped \n (literal backslash-n)
+    .replace(/\n/g, "")   // Remove actual newlines
+    .replace(/\r/g, "")   // Remove carriage returns
+    .replace(/\s/g, "");  // Remove any remaining whitespace
 
   const binaryKey = Uint8Array.from(atob(pemContents), (c) => c.charCodeAt(0));
 
