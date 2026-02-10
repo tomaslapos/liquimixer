@@ -955,9 +955,9 @@
   "flavor_autocomplete": {
     "from_favorites": "From my flavors",
     "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "no_specific": "향료 미지정",
+    "no_results": "일치하는 향료 없음",
+    "search_placeholder": "영어로 이름, 제조사 또는 코드 검색 (예: TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

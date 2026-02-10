@@ -1012,7 +1012,7 @@
     "from_database": "Veřejná databáze",
     "no_specific": "Nezadat konkrétní příchuť",
     "no_results": "Žádné odpovídající příchutě",
-    "search_placeholder": "Hledat dle názvu nebo výrobce (např. TPA, CAP, Strawberry...)"
+    "search_placeholder": "Hledat v angličtině dle názvu, výrobce nebo kódu (např. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Ovocná",
