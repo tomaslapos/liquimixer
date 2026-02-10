@@ -1450,6 +1450,45 @@ body {
     border-radius: var(--border-radius);
 }
 
+/* Flavor parameters in product detail */
+.product-flavor-params {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+}
+
+.flavor-params-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.flavor-param-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius-small);
+}
+
+.flavor-param-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-cyan);
+    opacity: 0.8;
+}
+
+.flavor-param-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--neon-green);
+    text-shadow: 0 0 8px var(--neon-green);
+}
+
 .product-section-title {
     font-family: 'Orbitron', monospace;
     font-size: 1rem;
@@ -3944,6 +3983,19 @@ button.locked {
 .flavor-strength-info {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+/* Flavor description color classes */
+.flavor-description.warning {
+    color: #ffaa00 !important;
+    border-left-color: #ffaa00 !important;
+    text-shadow: 0 0 10px #ffaa00;
+}
+
+.flavor-description.ideal {
+    color: #00cc66 !important;
+    border-left-color: #00cc66 !important;
+    text-shadow: 0 0 10px #00cc66;
 }
 
 /* Nicotine styles */
