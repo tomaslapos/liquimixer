@@ -423,7 +423,13 @@
     "delete_confirm": "Opravdu chcete smazat tento produkt?",
     "delete_success": "Produkt byl smazán.",
     "delete_error": "Chyba při mazání produktu.",
-    "used_in_recipes": "Použito v receptech"
+    "used_in_recipes": "Použito v receptech",
+    "flavor_params": "Parametry příchutě",
+    "manufacturer": "Výrobce",
+    "recommended_range": "Doporučený rozsah",
+    "min_percent": "Min. procento",
+    "max_percent": "Max. procento",
+    "steep_time": "Doba zrání"
   },
   "product_form": {
     "add_title": "Přidat produkt",

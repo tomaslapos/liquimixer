@@ -5416,6 +5416,73 @@ function displayProductDetail(product, linkedRecipes = []) {
     const stockQuantity = product.stock_quantity || 0;
     const stockDisplay = stockQuantity % 1 === 0 ? stockQuantity : stockQuantity.toFixed(1);
     
+    // Parametry příchutě - zobrazit pokud je produkt typu 'flavor'
+    let flavorParamsHtml = '';
+    if (product.product_type === 'flavor') {
+        // Získat parametry z produktu nebo z připojených flavor dat
+        const minPercent = product.flavor_min_percent || product.min_percent || null;
+        const maxPercent = product.flavor_max_percent || product.max_percent || null;
+        const steepDays = product.flavor_steep_days || product.steep_days || null;
+        const manufacturer = product.flavor_manufacturer || product.manufacturer || null;
+        
+        // Sestavit HTML pouze pro parametry které existují
+        const paramItems = [];
+        
+        if (manufacturer) {
+            paramItems.push(`
+                <div class="flavor-param-item">
+                    <span class="flavor-param-label">${t('product_detail.manufacturer', 'Výrobce')}:</span>
+                    <span class="flavor-param-value">${escapeHtml(manufacturer)}</span>
+                </div>
+            `);
+        }
+        
+        if (minPercent !== null && maxPercent !== null) {
+            paramItems.push(`
+                <div class="flavor-param-item">
+                    <span class="flavor-param-label">${t('product_detail.recommended_range', 'Doporučený rozsah')}:</span>
+                    <span class="flavor-param-value">${minPercent}% – ${maxPercent}%</span>
+                </div>
+            `);
+        } else if (minPercent !== null) {
+            paramItems.push(`
+                <div class="flavor-param-item">
+                    <span class="flavor-param-label">${t('product_detail.min_percent', 'Min. procento')}:</span>
+                    <span class="flavor-param-value">${minPercent}%</span>
+                </div>
+            `);
+        } else if (maxPercent !== null) {
+            paramItems.push(`
+                <div class="flavor-param-item">
+                    <span class="flavor-param-label">${t('product_detail.max_percent', 'Max. procento')}:</span>
+                    <span class="flavor-param-value">${maxPercent}%</span>
+                </div>
+            `);
+        }
+        
+        if (steepDays !== null && steepDays > 0) {
+            const daysText = steepDays === 1 ? t('common.day', 'den') : 
+                (steepDays >= 2 && steepDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+            paramItems.push(`
+                <div class="flavor-param-item">
+                    <span class="flavor-param-label">${t('product_detail.steep_time', 'Doba zrání')}:</span>
+                    <span class="flavor-param-value">${steepDays} ${daysText}</span>
+                </div>
+            `);
+        }
+        
+        if (paramItems.length > 0) {
+            flavorParamsHtml = `
+                <div class="product-flavor-params">
+                    <h4 class="product-section-title">${t('product_detail.flavor_params', 'Parametry příchutě')}</h4>
+                    <div class="flavor-params-list">
+                        ${paramItems.join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
     contentEl.innerHTML = `
         ${imageHtml}
         <div class="product-detail-header">
@@ -5425,6 +5492,7 @@ function displayProductDetail(product, linkedRecipes = []) {
             <div class="product-detail-rating">${stars}</div>
             ${safeDescription ? `<p class="product-detail-description">${safeDescription}</p>` : ''}
         </div>
+        ${flavorParamsHtml}
         <div class="product-detail-stock">
             <span class="stock-label">${t('reminder.stock_label', 'Sklad')}:</span>
             <div class="product-stock-controls">

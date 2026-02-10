@@ -191,6 +191,7 @@
     "target_nicotine_label": "Kuinka vahvan lopullisen nikotiinin haluan höyrystämiseen?",
     "target_nicotine_desc_0": "Ei nikotiinia - sopii tupakoimattomille tai asteittaiseen lopettamiseen.",
     "flavor_label": "Maku",
+    "flavor_category_label": "Tai valitse kategoria (ilman tiettyä makua):",
     "flavor_none": "Ei (ilman makua)",
     "flavor_fruit": "Hedelmä (mansikka, omena)",
     "flavor_citrus": "Sitrus (sitruuna, lime)",
@@ -354,6 +355,13 @@
     "notes_2": "Lisää sitten maut",
     "notes_3": "Lisää lopuksi PG ja VG",
     "notes_4": "Ravista huolellisesti ja anna hautua 1-2 viikkoa",
+    "notes_flavors_first": "Lisää ensin maut.",
+    "notes_nicotine": "Lisää sitten nikotiini (käytä käsineitä!).",
+    "notes_premixed": "Lisää esisekoitettu pohja.",
+    "notes_adjustment": "Tarvittaessa säädä puhtaalla PG:llä tai VG:llä.",
+    "notes_pg_vg": "Lisää lopuksi PG ja VG.",
+    "notes_shake": "Ravista huolellisesti (2-3 minuuttia).",
+    "notes_steep": "Anna hautua {days} päivää.",
     "dilute_notes_title": "Laimennusmuistiinpanot:",
     "dilute_notes_1": "Työskentele käsineet kädessä - nikotiini imeytyy ihon läpi!",
     "dilute_notes_2": "Kaada ensin nikotiinipohja",
@@ -505,7 +513,13 @@
     "delete_confirm": "Haluatko varmasti poistaa tämän tuotteen?",
     "delete_success": "Tuote on poistettu.",
     "delete_error": "Virhe tuotteen poistamisessa.",
-    "used_in_recipes": "Käytetään resepteissä"
+    "used_in_recipes": "Käytetään resepteissä",
+    "flavor_params": "Maun parametrit",
+    "manufacturer": "Valmistaja",
+    "recommended_range": "Suositeltu alue",
+    "min_percent": "Min prosentti",
+    "max_percent": "Max prosentti",
+    "steep_time": "Hautumisaika"
   },
   "product_form": {
     "add_title": "Lisää tuote",
@@ -653,6 +667,7 @@
     "weak": "Heikko tai ei makua (suositeltu {min}–{max}%)",
     "strong": "Vahva tai liian makea maku (suositeltu {min}–{max}%)",
     "ideal": "Ihanteellinen maku ({min}–{max}%) - {note}",
+    "ideal_specific": "Ihanteellinen maku ({min}–{max}%) - {note}",
     "note_none": "Puhdas PG/VG-pohja + nikotiini",
     "note_fruit": "Optimaalinen: 10%, hautominen 3–7 päivää",
     "note_citrus": "Vahvat hapot, vähemmän on enemmän",
@@ -668,6 +683,11 @@
     "note_tobaccosweet": "Yhdistelmä vaatii 2+ viikon hautomista",
     "note_nuts": "Kermainen, vaatii 1–2 viikon hautomista",
     "note_spice": "Maustettu, varovainen pitoisuuden kanssa"
+  },
+  "flavor_description": {
+    "too_low": "Suositellun alueen alapuolella ({min}-{max}%)",
+    "too_high": "Suositellun alueen yläpuolella ({min}-{max}%)",
+    "ideal_range": "Ihanteellinen alue ({min}-{max}%)"
   },
   "subscription": {
     "title": "LiquiMixer-tilaus",

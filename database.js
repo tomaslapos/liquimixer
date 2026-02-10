@@ -942,7 +942,20 @@ async function getFavoriteProductById(clerkId, productId) {
     try {
         const { data, error } = await supabaseClient
             .from('favorite_products')
-            .select('*')
+            .select(`
+                *,
+                flavors:flavor_id (
+                    min_percent,
+                    max_percent,
+                    recommended_percent,
+                    steep_days,
+                    vg_ratio,
+                    manufacturer_code,
+                    flavor_manufacturers (
+                        name
+                    )
+                )
+            `)
             .eq('id', productId)
             .eq('clerk_id', clerkId)
             .single();
@@ -950,6 +963,19 @@ async function getFavoriteProductById(clerkId, productId) {
         if (error) {
             console.error('Error fetching product:', error);
             return null;
+        }
+        
+        // Rozbalit parametry z připojené flavors tabulky
+        if (data && data.flavors) {
+            data.flavor_min_percent = data.flavors.min_percent;
+            data.flavor_max_percent = data.flavors.max_percent;
+            data.flavor_recommended_percent = data.flavors.recommended_percent;
+            data.flavor_steep_days = data.flavors.steep_days;
+            data.flavor_vg_ratio = data.flavors.vg_ratio;
+            data.flavor_manufacturer_code = data.flavors.manufacturer_code;
+            if (data.flavors.flavor_manufacturers) {
+                data.flavor_manufacturer = data.flavors.flavor_manufacturers.name;
+            }
         }
         
         return data;
