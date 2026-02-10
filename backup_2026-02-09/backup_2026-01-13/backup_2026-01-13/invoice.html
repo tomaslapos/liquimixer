@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faktura - LiquiMixer</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #d32f2f;
+        }
+        .invoice-container {
+            background: #fff;
+            border: 2px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #333;
+        }
+        .invoice-header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .invoice-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .invoice-meta-left, .invoice-meta-right {
+            flex: 1;
+        }
+        .invoice-meta-right {
+            text-align: right;
+        }
+        .paid-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .parties {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .party {
+            flex: 1;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .party-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .items-table th {
+            background: #333;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        .items-table th:last-child {
+            text-align: right;
+        }
+        .items-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .items-table td:last-child {
+            text-align: right;
+        }
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .total-box {
+            background: #f5f5f5;
+            padding: 15px 30px;
+            min-width: 250px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+        .total-row.total-final {
+            border-top: 2px solid #333;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .status-section {
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .status-paid {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+        .actions {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .print-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .print-btn:hover {
+            background: #1565c0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-left: 15px;
+            color: #1976d2;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .actions {
+                display: none;
+            }
+            .invoice-container {
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div class="loading" id="loadingState">
+            Načítání faktury...
+        </div>
+        <div class="error" id="errorState" style="display: none;">
+            <h2>Faktura nenalezena</h2>
+            <p>Požadovaná faktura neexistuje nebo k ní nemáte přístup.</p>
+            <p><a href="/" class="back-link">Zpět na hlavní stránku</a></p>
+        </div>
+        <div id="invoiceContent" style="display: none;">
+            <div class="actions">
+                <button class="print-btn" onclick="window.print()" id="printButton">🖨️ Print Invoice</button>
+                <a href="/" class="back-link" id="backLink">← Back to App</a>
+            </div>
+            <div class="invoice-container">
+                <div class="invoice-header">
+                    <h1 id="invoiceTitle">Faktura</h1>
+                </div>
+                <div class="invoice-meta">
+                    <div class="invoice-meta-left">
+                        <p><strong id="labelInvoiceNumber">Číslo faktury:</strong> <span id="invoiceNumber"></span></p>
+                        <p><strong id="labelIssueDate">Datum vystavení:</strong> <span id="issueDate"></span></p>
+                        <p><strong id="labelDueDate">Datum splatnosti:</strong> <span id="dueDate"></span></p>
+                    </div>
+                    <div class="invoice-meta-right">
+                        <span class="paid-badge" id="paidBadge">ZAPLACENO</span>
+                    </div>
+                </div>
+                <div class="parties">
+                    <div class="party">
+                        <div class="party-title" id="labelSupplier">Dodavatel</div>
+                        <div id="supplierInfo"></div>
+                    </div>
+                    <div class="party">
+                        <div class="party-title" id="labelCustomer">Odběratel</div>
+                        <div id="customerInfo"></div>
+                    </div>
+                </div>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th id="labelItem">Položka</th>
+                            <th id="labelQuantity">Množství</th>
+                            <th id="labelTotal">Celkem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody"></tbody>
+                </table>
+                <div class="total-section">
+                    <div class="total-box">
+                        <div class="total-row">
+                            <span id="labelSubtotal">Základ bez DPH:</span> 
+                            <span id="subtotalAmount"></span>
+                        </div>
+                        <div class="total-row">
+                            <span id="labelVatAmount">DPH (<span id="vatRateText">21</span>%):</span> 
+                            <span id="vatAmount"></span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span id="labelTotalToPay">Celkem k úhradě:</span> 
+                            <span id="totalAmount"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-section">
+                    <p><strong id="labelStatus">Stav:</strong> <span class="status-paid" id="statusText">Zaplaceno</span></p>
+                    <p id="paymentDateRow"><strong id="labelPaymentDate">Datum úhrady:</strong> <span id="paymentDate"></span></p>
+                </div>
+                <div class="footer" id="invoiceFooter"></div>
+            </div>
+
+            <!-- ODDĚLOVAČ JAZYKOVÝCH VERZÍ -->
+            <div id="languageSeparator" style="display: none; text-align: center; margin: 30px 0; padding: 15px; background: #f0f0f0; border-radius: 4px;">
+                <strong style="color: #666;">English version / Anglická verze</strong>
+            </div>
+
+            <!-- ANGLICKÁ VERZE FAKTURY -->
+            <div class="invoice-container" id="invoiceContainerEn" style="display: none;">
+                <div class="invoice-header">
+                    <h1 id="invoiceTitleEn">Invoice</h1>
+                </div>
+                <div class="invoice-meta">
+                    <div class="invoice-meta-left">
+                        <p><strong id="labelInvoiceNumberEn">Invoice Number:</strong> <span id="invoiceNumberEn"></span></p>
+                        <p><strong id="labelIssueDateEn">Issue Date:</strong> <span id="issueDateEn"></span></p>
+                        <p><strong id="labelDueDateEn">Due Date:</strong> <span id="dueDateEn"></span></p>
+                    </div>
+                    <div class="invoice-meta-right">
+                        <span class="paid-badge" id="paidBadgeEn">PAID</span>
+                    </div>
+                </div>
+                <div class="parties">
+                    <div class="party">
+                        <div class="party-title" id="labelSupplierEn">Supplier</div>
+                        <div id="supplierInfoEn"></div>
+                    </div>
+                    <div class="party">
+                        <div class="party-title" id="labelCustomerEn">Customer</div>
+                        <div id="customerInfoEn"></div>
+                    </div>
+                </div>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th id="labelItemEn">Item</th>
+                            <th id="labelQuantityEn">Quantity</th>
+                            <th id="labelTotalEn">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBodyEn"></tbody>
+                </table>
+                <div class="total-section">
+                    <div class="total-box">
+                        <div class="total-row">
+                            <span id="labelSubtotalEn">Subtotal (excl. VAT):</span> 
+                            <span id="subtotalAmountEn"></span>
+                        </div>
+                        <div class="total-row">
+                            <span id="labelVatAmountEn">VAT (<span id="vatRateTextEn">21</span>%):</span> 
+                            <span id="vatAmountEn"></span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span id="labelTotalToPayEn">Total to Pay:</span> 
+                            <span id="totalAmountEn"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-section">
+                    <p><strong id="labelStatusEn">Status:</strong> <span class="status-paid" id="statusTextEn">Paid</span></p>
+                    <p id="paymentDateRowEn"><strong id="labelPaymentDateEn">Payment Date:</strong> <span id="paymentDateEn"></span></p>
+                </div>
+                <div class="footer" id="invoiceFooterEn"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Konfigurace
+        const SUPABASE_URL = 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd2RmeG52aG54dGtodGtiYWRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MTczNTMsImV4cCI6MjA1MjA5MzM1M30.5p87u59YPrHsje0E-GK3lnBKGfEdE3rD2kzxNcEfa5w';
+
+        // Cache pro překlady
+        let translationsCache = {};
+
+        // Načíst překlady z JSON souboru
+        async function loadTranslations(locale) {
+            // Zkusit cache
+            if (translationsCache[locale]) {
+                return translationsCache[locale];
+            }
+
+            try {
+                const response = await fetch(`/locales/${locale}.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    translationsCache[locale] = data;
+                    return data;
+                }
+            } catch (e) {
+                console.error('Error loading translations for', locale, e);
+            }
+
+            // Fallback na angličtinu
+            if (locale !== 'en') {
+                return loadTranslations('en');
+            }
+
+            // Pokud ani angličtina nefunguje, vrátit prázdný objekt
+            return {};
+        }
+
+        // Získat překlad z objektu
+        function t(translations, key, fallback = '') {
+            const keys = key.split('.');
+            let value = translations;
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    return fallback || key;
+                }
+            }
+            return value || fallback || key;
+        }
+
+        function formatDate(dateStr, locale) {
+            if (!dateStr) return '-';
+            try {
+                const dateLocale = locale === 'cs' ? 'cs-CZ' : locale === 'sk' ? 'sk-SK' : locale === 'ko' ? 'ko-KR' : 'en-GB';
+                return new Date(dateStr).toLocaleDateString(dateLocale);
+            } catch {
+                return dateStr;
+            }
+        }
+
+        // Podporované jazyky
+        const SUPPORTED_LOCALES = ['cs', 'sk', 'en', 'de', 'fr', 'es', 'it', 'pl', 'pt', 'nl', 'ru', 'uk', 'ja', 'ko', 'zh-CN', 'zh-TW', 'ar-SA', 'tr', 'sv', 'da', 'no', 'fi', 'hu', 'ro', 'bg', 'hr', 'sr', 'el', 'et', 'lv', 'lt'];
+        
+        // Detekce jazyka prohlížeče
+        function detectBrowserLocale() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            // Zkusit přesnou shodu (např. zh-CN)
+            if (SUPPORTED_LOCALES.includes(browserLang)) {
+                return browserLang;
+            }
+            // Zkusit shodu základního jazyka (např. en z en-US)
+            const baseLang = browserLang.split('-')[0];
+            if (SUPPORTED_LOCALES.includes(baseLang)) {
+                return baseLang;
+            }
+            // Fallback na angličtinu
+            return 'en';
+        }
+
+        async function loadInvoice() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const invoiceId = urlParams.get('id');
+            
+            // Priorita jazyka: 1. localStorage (uživatelské nastavení), 2. jazyk prohlížeče, 3. čeština
+            const locale = localStorage.getItem('liquimixer_locale') || detectBrowserLocale() || 'en';
+            
+            // Načíst překlady pro loading a error state
+            const translations = await loadTranslations(locale);
+            const tr = (key, fallback) => t(translations, key, fallback);
+            
+            // Aktualizovat loading text
+            document.getElementById('loadingState').textContent = tr('invoice.loading', 'Loading invoice...');
+            
+            if (!invoiceId) {
+                showError(tr);
+                return;
+            }
+
+            try {
+                console.log('Loading invoice with ID:', invoiceId);
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/invoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'apikey': SUPABASE_ANON_KEY,
+                    },
+                    body: JSON.stringify({
+                        action: 'getInvoice',
+                        data: { 
+                            invoiceId: invoiceId
+                        }
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    showError(tr);
+                    return;
+                }
+
+                const result = await response.json();
+                console.log('Invoice result:', result);
+                
+                if (!result.success || !result.invoice) {
+                    console.error('Invalid response:', result);
+                    showError(tr);
+                    return;
+                }
+
+                displayInvoice(result.invoice);
+            } catch (error) {
+                console.error('Error loading invoice:', error);
+                showError(tr);
+            }
+        }
+
+        function showError(tr) {
+            const errorState = document.getElementById('errorState');
+            if (tr) {
+                errorState.querySelector('h2').textContent = tr('invoice.not_found', 'Invoice not found');
+                errorState.querySelector('p').textContent = tr('invoice.no_access', 'The requested invoice does not exist.');
+                errorState.querySelector('.back-link').textContent = tr('invoice.back_home', 'Back to Home');
+            }
+            document.getElementById('loadingState').style.display = 'none';
+            errorState.style.display = 'block';
+        }
+
+        async function displayInvoice(invoice) {
+            // Priorita jazyka: 1. jazyk z faktury (uživatelské nastavení v DB), 2. localStorage, 3. prohlížeč, 4. angličtina
+            const locale = invoice.locale || localStorage.getItem('liquimixer_locale') || detectBrowserLocale() || 'en';
+            console.log('Using locale for invoice:', locale, '(invoice.locale:', invoice.locale, ')');
+            const translations = await loadTranslations(locale);
+            const currency = invoice.currency || 'CZK';
+
+            // Helper pro překlady
+            const tr = (key, fallback) => t(translations, key, fallback);
+
+            // Aktualizovat HTML text podle jazyka
+            document.getElementById('invoiceTitle').textContent = tr('invoice.title', 'Invoice');
+            document.getElementById('labelInvoiceNumber').textContent = tr('invoice.number', 'Invoice Number') + ':';
+            document.getElementById('labelIssueDate').textContent = tr('invoice.date', 'Issue Date') + ':';
+            document.getElementById('labelDueDate').textContent = tr('invoice.due_date', 'Due Date') + ':';
+            document.getElementById('labelSupplier').textContent = tr('invoice.supplier', 'Supplier');
+            document.getElementById('labelCustomer').textContent = tr('invoice.customer', 'Customer');
+            document.getElementById('labelItem').textContent = tr('invoice.item', 'Item');
+            document.getElementById('labelQuantity').textContent = tr('invoice.quantity', 'Quantity');
+            document.getElementById('labelTotal').textContent = tr('invoice.total', 'Total');
+            document.getElementById('labelSubtotal').textContent = tr('invoice.subtotal', 'Subtotal (excl. VAT)') + ':';
+            document.getElementById('labelTotalToPay').textContent = tr('invoice.total_to_pay', 'Total to Pay') + ':';
+            document.getElementById('labelStatus').textContent = tr('invoice.status', 'Status') + ':';
+            document.getElementById('labelPaymentDate').textContent = tr('invoice.payment_date', 'Payment Date') + ':';
+            document.getElementById('paidBadge').textContent = tr('invoice.paid', 'Paid').toUpperCase();
+            document.getElementById('statusText').textContent = tr('invoice.paid', 'Paid');
+            document.getElementById('printButton').innerHTML = '🖨️ ' + tr('invoice.print', 'Print Invoice');
+            document.getElementById('backLink').textContent = '← ' + tr('invoice.back', 'Back to App');
+
+            // Aktualizovat chybové stavy
+            document.querySelector('#errorState h2').textContent = tr('invoice.not_found', 'Invoice not found');
+            document.querySelector('#errorState p').textContent = tr('invoice.no_access', 'The requested invoice does not exist.');
+            document.querySelector('#errorState .back-link').textContent = tr('invoice.back_home', 'Back to Home');
+
+            // Vyplnit data
+            document.getElementById('invoiceNumber').textContent = invoice.number;
+            document.getElementById('issueDate').textContent = formatDate(invoice.dateOfIssue, locale);
+            document.getElementById('dueDate').textContent = formatDate(invoice.dateOfMaturity, locale);
+            document.getElementById('paymentDate').textContent = formatDate(invoice.dateOfPayment, locale);
+            
+            // Výpočet DPH - pokud není v invoice, dopočítat
+            const totalWithVat = Number(invoice.totalWithVat) || 0;
+            const vatRate = Number(invoice.vatRate) || 21;
+            const subtotal = invoice.totalWithoutVat ? Number(invoice.totalWithoutVat) : Math.round((totalWithVat / (1 + vatRate / 100)) * 100) / 100;
+            const vatAmount = invoice.vatAmount ? Number(invoice.vatAmount) : Math.round((totalWithVat - subtotal) * 100) / 100;
+            
+            document.getElementById('subtotalAmount').textContent = subtotal.toFixed(2) + ' ' + currency;
+            document.getElementById('vatRateText').textContent = vatRate.toString();
+            document.getElementById('labelVatAmount').innerHTML = tr('invoice.vat', 'VAT') + ' (' + vatRate + '%)' + ':';
+            document.getElementById('vatAmount').textContent = vatAmount.toFixed(2) + ' ' + currency;
+            document.getElementById('totalAmount').textContent = totalWithVat.toFixed(2) + ' ' + currency;
+
+            // Dodavatel
+            const supplier = invoice.supplier || {};
+            document.getElementById('supplierInfo').innerHTML = `
+                <strong>${supplier.name || 'WOOs, s. r. o.'}</strong><br>
+                ${supplier.street || 'Brloh 12'}<br>
+                ${supplier.zip || '397 01'} ${supplier.city || 'Drhovle'}<br><br>
+                ${tr('invoice.ico', 'IČO')}: ${supplier.ico || '05117810'}<br>
+                ${tr('invoice.dic', 'DIČ')}: ${supplier.dic || 'CZ05117810'}
+            `;
+
+            // Zákazník
+            document.getElementById('customerInfo').innerHTML = `
+                <strong>${invoice.customerName || '-'}</strong><br>
+                ${invoice.customerEmail || '-'}
+            `;
+
+            // Položky - VŽDY použít přeložený název z locale souboru
+            // DB může obsahovat české názvy, ale na online faktuře chceme překlad podle jazyka uživatele
+            const itemName = tr('invoice.subscription_item', 'LiquiMixer Annual Subscription');
+            const itemsBody = document.getElementById('itemsBody');
+            const items = invoice.items || [{ amount: 1, totalWithVat: invoice.totalWithVat }];
+            itemsBody.innerHTML = items.map(item => `
+                <tr>
+                    <td>${itemName}</td>
+                    <td style="text-align: center;">${item.amount || 1}</td>
+                    <td>${Number(item.totalWithVat || item.unitPrice || invoice.totalWithVat).toFixed(2)} ${currency}</td>
+                </tr>
+            `).join('');
+
+            // Footer
+            document.getElementById('invoiceFooter').textContent = 
+                `${supplier.name || 'WOOs, s. r. o.'} | ${tr('invoice.vat_payer', 'VAT Payer')} | ${tr('invoice.dic', 'VAT ID')}: ${supplier.dic || 'CZ05117810'}`;
+
+            // ============================================
+            // ANGLICKÁ VERZE FAKTURY (pokud není angličtina primární)
+            // ============================================
+            if (locale !== 'en') {
+                const translationsEn = await loadTranslations('en');
+                const trEn = (key, fallback) => t(translationsEn, key, fallback);
+
+                // Zobrazit oddělovač a anglickou verzi
+                document.getElementById('languageSeparator').style.display = 'block';
+                document.getElementById('invoiceContainerEn').style.display = 'block';
+
+                // Aktualizovat anglické texty
+                document.getElementById('invoiceTitleEn').textContent = trEn('invoice.title', 'Invoice');
+                document.getElementById('labelInvoiceNumberEn').textContent = trEn('invoice.number', 'Invoice Number') + ':';
+                document.getElementById('labelIssueDateEn').textContent = trEn('invoice.date', 'Issue Date') + ':';
+                document.getElementById('labelDueDateEn').textContent = trEn('invoice.due_date', 'Due Date') + ':';
+                document.getElementById('labelSupplierEn').textContent = trEn('invoice.supplier', 'Supplier');
+                document.getElementById('labelCustomerEn').textContent = trEn('invoice.customer', 'Customer');
+                document.getElementById('labelItemEn').textContent = trEn('invoice.item', 'Item');
+                document.getElementById('labelQuantityEn').textContent = trEn('invoice.quantity', 'Quantity');
+                document.getElementById('labelTotalEn').textContent = trEn('invoice.total', 'Total');
+                document.getElementById('labelSubtotalEn').textContent = trEn('invoice.subtotal', 'Subtotal (excl. VAT)') + ':';
+                document.getElementById('labelTotalToPayEn').textContent = trEn('invoice.total_to_pay', 'Total to Pay') + ':';
+                document.getElementById('labelStatusEn').textContent = trEn('invoice.status', 'Status') + ':';
+                document.getElementById('labelPaymentDateEn').textContent = trEn('invoice.payment_date', 'Payment Date') + ':';
+                document.getElementById('paidBadgeEn').textContent = trEn('invoice.paid', 'Paid').toUpperCase();
+                document.getElementById('statusTextEn').textContent = trEn('invoice.paid', 'Paid');
+
+                // Anglické formátování dat
+                document.getElementById('invoiceNumberEn').textContent = invoice.number;
+                document.getElementById('issueDateEn').textContent = formatDate(invoice.dateOfIssue, 'en');
+                document.getElementById('dueDateEn').textContent = formatDate(invoice.dateOfMaturity, 'en');
+                document.getElementById('paymentDateEn').textContent = formatDate(invoice.dateOfPayment, 'en');
+                
+                document.getElementById('subtotalAmountEn').textContent = subtotal.toFixed(2) + ' ' + currency;
+                document.getElementById('vatRateTextEn').textContent = vatRate.toString();
+                document.getElementById('labelVatAmountEn').innerHTML = trEn('invoice.vat', 'VAT') + ' (' + vatRate + '%)' + ':';
+                document.getElementById('vatAmountEn').textContent = vatAmount.toFixed(2) + ' ' + currency;
+                document.getElementById('totalAmountEn').textContent = totalWithVat.toFixed(2) + ' ' + currency;
+
+                // Anglický dodavatel
+                document.getElementById('supplierInfoEn').innerHTML = `
+                    <strong>${supplier.name || 'WOOs, s. r. o.'}</strong><br>
+                    ${supplier.street || 'Brloh 12'}<br>
+                    ${supplier.zip || '397 01'} ${supplier.city || 'Drhovle'}<br><br>
+                    ${trEn('invoice.ico', 'Company ID')}: ${supplier.ico || '05117810'}<br>
+                    ${trEn('invoice.dic', 'VAT ID')}: ${supplier.dic || 'CZ05117810'}
+                `;
+
+                // Anglický zákazník
+                document.getElementById('customerInfoEn').innerHTML = `
+                    <strong>${invoice.customerName || '-'}</strong><br>
+                    ${invoice.customerEmail || '-'}
+                `;
+
+                // Anglické položky - VŽDY použít přeložený název
+                const itemNameEn = trEn('invoice.subscription_item', 'LiquiMixer Annual Subscription');
+                const itemsBodyEn = document.getElementById('itemsBodyEn');
+                itemsBodyEn.innerHTML = items.map(item => `
+                    <tr>
+                        <td>${itemNameEn}</td>
+                        <td style="text-align: center;">${item.amount || 1}</td>
+                        <td>${Number(item.totalWithVat || item.unitPrice || invoice.totalWithVat).toFixed(2)} ${currency}</td>
+                    </tr>
+                `).join('');
+
+                // Anglický footer
+                document.getElementById('invoiceFooterEn').textContent = 
+                    `${supplier.name || 'WOOs, s. r. o.'} | ${trEn('invoice.vat_payer', 'VAT Payer')} | ${trEn('invoice.dic', 'VAT ID')}: ${supplier.dic || 'CZ05117810'}`;
+            }
+
+            // Zobrazit fakturu
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('invoiceContent').style.display = 'block';
+
+            // Aktualizovat titul stránky
+            document.title = `${tr('invoice.title', 'Invoice')} ${invoice.number} - LiquiMixer`;
+        }
+
+        // Načíst fakturu při načtení stránky
+        loadInvoice();
+    </script>
+</body>
+</html>

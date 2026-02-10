@@ -6628,6 +6628,17 @@ function getIngredientName(ingredient) {
             return `${t('shisha.sweetener_label', 'Sladidlo')}: ${sweetName}`;
         case 'water':
             return t('form.water', 'Voda');
+        case 'sweetener':
+            // Fallback pro starší recepty kde sweetener nebyl jako additive
+            const sweetenerTypeFallback = ingredient.sweetenerType || 'sucralose';
+            if (sweetenerDatabase && sweetenerDatabase[sweetenerTypeFallback]) {
+                const sweetenerData = sweetenerDatabase[sweetenerTypeFallback];
+                return `${t('shisha.sweetener_label', 'Sladidlo')}: ${t(`shisha.sweetener_${sweetenerTypeFallback}`, sweetenerData.name)}`;
+            }
+            return t('additive.sweetener', 'Sladidlo (Sukralóza)');
+        case 'shortfill_base':
+            // Fallback pro starší recepty
+            return t('ingredients.shortfill_base', 'Shortfill báze');
         default:
             return ingredient.name || key;
     }
@@ -13036,6 +13047,49 @@ function showFlavorSliderWithRange(inputId, flavorData) {
     // Aktualizovat zobrazení hodnoty
     if (valueDisplay) {
         valueDisplay.textContent = Math.round(recommendedPercent);
+    }
+    
+    // Najít track element a nastavit počáteční barvu
+    const trackIdMap = {
+        'flavorAutocomplete': 'flavorTrack',
+        'proFlavorAutocomplete1': 'proFlavorTrack1',
+        'proFlavorAutocomplete2': 'proFlavorTrack2',
+        'proFlavorAutocomplete3': 'proFlavorTrack3',
+        'proFlavorAutocomplete4': 'proFlavorTrack4',
+        'shFlavorAutocomplete1': 'shFlavorTrack1',
+        'shFlavorAutocomplete2': 'shFlavorTrack2',
+        'shFlavorAutocomplete3': 'shFlavorTrack3',
+        'shFlavorAutocomplete4': 'shFlavorTrack4'
+    };
+    
+    const trackId = trackIdMap[inputId];
+    const trackEl = trackId ? document.getElementById(trackId) : null;
+    
+    // Nastavit barvu tracku dle aktuální hodnoty a rozsahu
+    if (trackEl) {
+        const currentValue = parseFloat(recommendedPercent);
+        if (currentValue < minPercent) {
+            trackEl.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
+        } else if (currentValue > maxPercent) {
+            trackEl.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
+        } else {
+            // Ideální rozsah - zelená/modrá
+            trackEl.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+        }
+    }
+    
+    // Nastavit barvu hodnoty pod sliderem
+    if (valueDisplay && valueDisplay.parentElement) {
+        const currentValue = parseFloat(recommendedPercent);
+        let color;
+        if (currentValue < minPercent) {
+            color = '#ffaa00';
+        } else if (currentValue > maxPercent) {
+            color = '#ff0044';
+        } else {
+            color = '#00cc66';
+        }
+        valueDisplay.parentElement.style.color = color;
     }
     
     // Aktualizovat popis - přidat upozornění pokud hodnoty nejsou od výrobce

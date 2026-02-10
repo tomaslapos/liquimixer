@@ -2372,6 +2372,7 @@ async function saveFlavorToFavorites(clerkId, flavorId) {
         
         // Vytvořit nový oblíbený produkt
         const shareId = generateShareId();
+        const shareUrl = `${SHARE_BASE_URL}/?product=${shareId}`;
         const productCode = generateProductCode();
         
         const { data, error } = await supabaseClient
@@ -2384,12 +2385,10 @@ async function saveFlavorToFavorites(clerkId, flavorId) {
                 flavor_product_type: flavor.product_type,
                 flavor_category: flavor.category,
                 manufacturer: flavor.flavor_manufacturers?.name || flavor.manufacturer_code,
-                flavor_type: flavor.category,
-                flavor_min_percent: flavor.min_percent,
-                flavor_max_percent: flavor.max_percent,
                 steep_days: flavor.steep_days,
                 rating: 0,
                 share_id: shareId,
+                share_url: shareUrl,
                 product_code: productCode,
                 created_at: new Date().toISOString()
             })
