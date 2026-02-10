@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="privacy.title">Ochrana osobních údajů | LiquiMixer</title>
+    <meta name="description" content="Zásady ochrany osobních údajů (GDPR) služby LiquiMixer - e-liquid kalkulátor">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://www.liquimixer.com/privacy.html">
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #1a1a2e;
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+        }
+        
+        .last-updated {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        section {
+            margin-bottom: 30px;
+        }
+        
+        section:last-child {
+            margin-bottom: 0;
+        }
+        
+        h2 {
+            color: var(--neon-cyan);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        p, li {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .contact-info {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid var(--neon-cyan);
+        }
+        
+        .contact-info p {
+            margin-bottom: 5px;
+        }
+        
+        .highlight-box {
+            background: rgba(255, 0, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid var(--neon-pink);
+            margin: 20px 0;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: var(--neon-cyan);
+            color: var(--bg-dark);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+        }
+        
+        a {
+            color: var(--neon-cyan);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">LIQUIMIXER</div>
+            <h1 data-i18n="privacy.title">Ochrana osobních údajů</h1>
+            <p class="last-updated" data-i18n="privacy.last_updated">Poslední aktualizace: 20. ledna 2026</p>
+        </header>
+        
+        <div class="content">
+            <section>
+                <h2 data-i18n="privacy.section1_title">1. Správce osobních údajů</h2>
+                <div class="contact-info">
+                    <p><strong data-i18n="privacy.section1_company">WOOs, s. r. o.</strong></p>
+                    <p data-i18n="privacy.section1_address">Brloh 12, 397 01 Drhovle</p>
+                    <p data-i18n="privacy.section1_country">Česká republika</p>
+                    <p data-i18n="privacy.section1_ico">IČ: 05117810</p>
+                    <p data-i18n="privacy.section1_dic">DIČ: CZ05117810</p>
+                    <p style="margin-top: 10px;" data-i18n="privacy.section1_contact"><strong>Kontakt:</strong> prostřednictvím kontaktního formuláře v aplikaci (Menu → Kontakt)</p>
+                </div>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section2_title">2. Jaké údaje zpracováváme</h2>
+                <p data-i18n="privacy.section2_intro">V rámci poskytování služby LiquiMixer zpracováváme následující osobní údaje:</p>
+                <ul>
+                    <li data-i18n="privacy.section2_list1">Registrační údaje: email, jméno (volitelné)</li>
+                    <li data-i18n="privacy.section2_list2">Platební údaje: údaje o transakci (zpracovává platební brána GP WebPay)</li>
+                    <li data-i18n="privacy.section2_list3">Uživatelská data: uložené recepty, produkty, nastavení aplikace</li>
+                    <li data-i18n="privacy.section2_list4">Technické údaje: IP adresa, typ prohlížeče, jazyk</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section3_title">3. Účel zpracování</h2>
+                <p data-i18n="privacy.section3_intro">Vaše osobní údaje zpracováváme pro následující účely:</p>
+                <ul>
+                    <li data-i18n="privacy.section3_list1">Poskytování služby LiquiMixer a správa uživatelského účtu</li>
+                    <li data-i18n="privacy.section3_list2">Zpracování plateb a vystavování faktur</li>
+                    <li data-i18n="privacy.section3_list3">Zasílání důležitých informací o službě (změny podmínek, technické upozornění)</li>
+                    <li data-i18n="privacy.section3_list4">Zlepšování služby a uživatelského zážitku</li>
+                    <li data-i18n="privacy.section3_list5">Plnění právních povinností (účetnictví, daňové povinnosti)</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section4_title">4. Právní základ zpracování</h2>
+                <p data-i18n="privacy.section4_intro">Osobní údaje zpracováváme na základě:</p>
+                <ul>
+                    <li data-i18n="privacy.section4_list1">Plnění smlouvy - poskytování služby LiquiMixer</li>
+                    <li data-i18n="privacy.section4_list2">Právní povinnost - účetní a daňové předpisy</li>
+                    <li data-i18n="privacy.section4_list3">Oprávněný zájem - zlepšování služby, bezpečnost</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section5_title">5. Doba uchovávání údajů</h2>
+                <ul>
+                    <li data-i18n="privacy.section5_list1">Uživatelský účet: po dobu trvání účtu + 3 měsíce po jeho zrušení</li>
+                    <li data-i18n="privacy.section5_list2">Faktury a platební údaje: 10 let (zákonná povinnost)</li>
+                    <li data-i18n="privacy.section5_list3">Uložené recepty: po dobu trvání účtu</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section6_title">6. Sdílení údajů s třetími stranami</h2>
+                <p data-i18n="privacy.section6_intro">Vaše údaje sdílíme pouze s:</p>
+                <ul>
+                    <li data-i18n="privacy.section6_list1">GP WebPay - zpracování plateb kartou</li>
+                    <li data-i18n="privacy.section6_list2">Clerk - autentizace a správa uživatelských účtů</li>
+                    <li data-i18n="privacy.section6_list3">Supabase - hostování databáze</li>
+                    <li data-i18n="privacy.section6_list4">iDoklad - vystavování faktur</li>
+                </ul>
+                <p data-i18n="privacy.section6_outro">Všichni tito poskytovatelé splňují požadavky GDPR.</p>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section7_title">7. Vaše práva</h2>
+                <p data-i18n="privacy.section7_intro">Podle GDPR máte následující práva:</p>
+                <ul>
+                    <li data-i18n="privacy.section7_list1">Právo na přístup - získat informace o zpracovávaných údajích</li>
+                    <li data-i18n="privacy.section7_list2">Právo na opravu - opravit nesprávné údaje</li>
+                    <li data-i18n="privacy.section7_list3">Právo na výmaz - požádat o smazání vašich údajů</li>
+                    <li data-i18n="privacy.section7_list4">Právo na omezení zpracování - omezit způsob zpracování</li>
+                    <li data-i18n="privacy.section7_list5">Právo na přenositelnost - získat údaje ve strojově čitelném formátu</li>
+                    <li data-i18n="privacy.section7_list6">Právo podat stížnost - u Úřadu pro ochranu osobních údajů (ÚOOÚ)</li>
+                </ul>
+                
+                <div class="highlight-box">
+                    <p><strong data-i18n="privacy.section7_how_title">Jak uplatnit svá práva?</strong></p>
+                    <p data-i18n="privacy.section7_how_text">Pro uplatnění jakéhokoliv práva nás kontaktujte prostřednictvím kontaktního formuláře v aplikaci (Menu → Kontakt → GDPR / Smazání údajů).</p>
+                </div>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section8_title">8. Smazání účtu a údajů</h2>
+                <p data-i18n="privacy.section8_intro">Svůj účet a všechny související údaje můžete smazat:</p>
+                <ul>
+                    <li data-i18n="privacy.section8_list1">Kontaktováním podpory přes kontaktní formulář (Menu → Kontakt → GDPR / Smazání údajů)</li>
+                    <li data-i18n="privacy.section8_list2">Kontaktováním podpory přes kontaktní formulář s žádostí o smazání</li>
+                </ul>
+                <p data-i18n="privacy.section8_outro">Po smazání účtu budou vaše údaje odstraněny do 30 dnů, s výjimkou údajů, které jsme povinni uchovávat ze zákona (faktury).</p>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section9_title">9. Cookies a sledování</h2>
+                <p data-i18n="privacy.section9_intro">Aplikace LiquiMixer používá pouze nezbytné technické cookies pro:</p>
+                <ul>
+                    <li data-i18n="privacy.section9_list1">Udržení přihlášení uživatele</li>
+                    <li data-i18n="privacy.section9_list2">Ukládání jazykových preferencí</li>
+                    <li data-i18n="privacy.section9_list3">Fungování offline režimu (PWA)</li>
+                </ul>
+                <p data-i18n="privacy.section9_outro">Nepoužíváme analytické ani reklamní cookies.</p>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section10_title">10. Zabezpečení údajů</h2>
+                <p data-i18n="privacy.section10_intro">Vaše údaje chráníme pomocí:</p>
+                <ul>
+                    <li data-i18n="privacy.section10_list1">Šifrování přenosu dat (HTTPS/TLS)</li>
+                    <li data-i18n="privacy.section10_list2">Šifrování citlivých údajů v databázi</li>
+                    <li data-i18n="privacy.section10_list3">Pravidelných bezpečnostních auditů</li>
+                    <li data-i18n="privacy.section10_list4">Omezení přístupu k údajům pouze na oprávněné osoby</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2 data-i18n="privacy.section11_title">11. Kontakt</h2>
+                <p data-i18n="privacy.section11_intro">V případě dotazů ohledně ochrany osobních údajů nás kontaktujte:</p>
+                <div class="contact-info">
+                    <p data-i18n="privacy.section11_contact">Kontaktní formulář: Menu → Kontakt → GDPR / Smazání údajů</p>
+                    <p style="margin-top: 10px;" data-i18n="privacy.section11_delete">Pro smazání účtu použijte kontaktní formulář (Menu → Kontakt → GDPR / Smazání údajů).</p>
+                </div>
+            </section>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="/" class="back-link" data-i18n="privacy.back_button">← Zpět na LiquiMixer</a>
+        </div>
+        
+        <footer class="footer">
+            <p>© 2026 LiquiMixer | <a href="/privacy.html" data-i18n="footer.privacy_policy">Ochrana osobních údajů</a> | <a href="/terms.html" data-i18n="footer.terms_of_service">Obchodní podmínky</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        // Supported locales
+        const SUPPORTED_LOCALES = [
+            'cs', 'sk', 'en', 'de', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'uk',
+            'bg', 'hr', 'da', 'et', 'fi', 'el', 'hu', 'lv', 'lt', 'no', 'ro', 'sr',
+            'sv', 'tr', 'ar-SA', 'ja', 'ko', 'zh-CN', 'zh-TW'
+        ];
+        
+        let translations = {};
+        
+        // Detect browser locale
+        function detectBrowserLocale() {
+            const browserLangs = navigator.languages || [navigator.language];
+            for (const lang of browserLangs) {
+                const fullLang = lang;
+                const shortLang = lang.split('-')[0];
+                if (SUPPORTED_LOCALES.includes(fullLang)) return fullLang;
+                if (SUPPORTED_LOCALES.includes(shortLang)) return shortLang;
+            }
+            return 'cs'; // Fallback to Czech
+        }
+        
+        // Get current locale
+        function getCurrentLocale() {
+            const savedLocale = localStorage.getItem('liquimixer_locale');
+            if (savedLocale && SUPPORTED_LOCALES.includes(savedLocale)) {
+                return savedLocale;
+            }
+            return detectBrowserLocale();
+        }
+        
+        // Load translations
+        async function loadTranslations(locale) {
+            try {
+                const response = await fetch(`/locales/${locale}.json`);
+                if (!response.ok) throw new Error('Failed to load translations');
+                translations = await response.json();
+            } catch (error) {
+                console.error('Error loading translations:', error);
+                // Try fallback to Czech
+                if (locale !== 'cs') {
+                    try {
+                        const response = await fetch('/locales/cs.json');
+                        if (response.ok) translations = await response.json();
+                    } catch (e) {
+                        console.error('Fallback also failed:', e);
+                    }
+                }
+            }
+        }
+        
+        // Get translation by key
+        function t(key, fallback = '') {
+            const keys = key.split('.');
+            let value = translations;
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    return fallback;
+                }
+            }
+            return typeof value === 'string' ? value : fallback;
+        }
+        
+        // Apply translations to page
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = t(key);
+                if (translation) {
+                    el.textContent = translation;
+                }
+            });
+            
+            // Update page title
+            const pageTitle = t('privacy.title', 'Privacy Policy');
+            document.title = `${pageTitle} | LiquiMixer`;
+            
+            // Update html lang attribute
+            const locale = getCurrentLocale();
+            document.documentElement.lang = locale;
+        }
+        
+        // Initialize
+        async function init() {
+            const locale = getCurrentLocale();
+            await loadTranslations(locale);
+            applyTranslations();
+        }
+        
+        // Run on page load
+        init();
+    </script>
+</body>
+</html>
