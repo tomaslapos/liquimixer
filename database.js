@@ -1314,6 +1314,45 @@ async function getRecipesByProductId(clerkId, productId) {
     }
 }
 
+// Získat recepty, ve kterých je oblíbená příchuť použita (přes recipe_flavors)
+async function getRecipesByFlavorProductId(clerkId, favoriteProductId) {
+    if (!supabaseClient || !clerkId || !favoriteProductId) return [];
+    
+    if (!isValidUUID(favoriteProductId)) {
+        console.error('getRecipesByFlavorProductId: Invalid favorite product ID format');
+        return [];
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('recipe_flavors')
+            .select(`
+                recipe_id,
+                recipes (
+                    id,
+                    clerk_id,
+                    name,
+                    rating,
+                    created_at
+                )
+            `)
+            .eq('favorite_product_id', favoriteProductId);
+        
+        if (error) {
+            console.error('getRecipesByFlavorProductId: Error fetching recipes:', error);
+            return [];
+        }
+        
+        // Extrahovat recepty z výsledku a filtrovat pouze recepty vlastníka
+        return (data || [])
+            .map(item => item.recipes)
+            .filter(r => r !== null && r.clerk_id === clerkId);
+    } catch (err) {
+        console.error('getRecipesByFlavorProductId: Database error:', err);
+        return [];
+    }
+}
+
 // Získat produkt podle ID (bez ověření vlastníka - pro sdílené recepty, read-only)
 async function getProductByIdPublic(productId) {
     if (!supabaseClient || !productId) return null;
@@ -2843,6 +2882,7 @@ window.LiquiMixerDB = {
     getLinkedProducts: getLinkedProducts,
     getLinkedProductsByRecipeId: getLinkedProductsByRecipeId,
     getRecipesByProductId: getRecipesByProductId,
+    getRecipesByFlavorProductId: getRecipesByFlavorProductId,
     getProductByIdPublic: getProductByIdPublic,
     copyProductToUser: copyProductToUser,
     // Připomínky
