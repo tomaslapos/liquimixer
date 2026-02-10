@@ -159,21 +159,49 @@ function initSupabase() {
 }
 
 // Nastavit Clerk JWT token pro supabaseClient (pro RLS)
+// DŮLEŽITÉ: Toto nastaví JWT token pro všechny Supabase REST API požadavky
+// JWT token obsahuje 'sub' claim s Clerk user ID, který se používá v RLS policies
 async function setSupabaseAuth() {
-    if (!supabaseClient || typeof Clerk === 'undefined' || !Clerk.user) return false;
+    if (!supabaseClient || typeof Clerk === 'undefined' || !Clerk.user) {
+        console.log('setSupabaseAuth: Missing supabaseClient or Clerk user');
+        return false;
+    }
     
     try {
-        // Získat JWT token z Clerk pro supabaseClient
-        const token = await Clerk.session?.getToken({ template: 'supabaseClient' });
+        // Získat JWT token z Clerk pro Supabase
+        // Nejprve zkusit template 'supabase', pak fallback na standardní token
+        let token = null;
+        
+        try {
+            token = await Clerk.session?.getToken({ template: 'supabase' });
+            if (token) {
+                console.log('setSupabaseAuth: Got token from supabase template');
+            }
+        } catch (templateError) {
+            console.log('setSupabaseAuth: Supabase template not found, trying default...');
+        }
+        
+        // Fallback na standardní token
+        if (!token) {
+            token = await Clerk.session?.getToken();
+            if (token) {
+                console.log('setSupabaseAuth: Got default Clerk token');
+            }
+        }
+        
         if (token) {
             // Nastavit token pro všechny následující požadavky
+            // Toto umožní RLS policies používat auth.jwt()->>'sub'
             supabaseClient.realtime.setAuth(token);
-            // Alternativně pro REST API
             supabaseClient.rest.headers['Authorization'] = `Bearer ${token}`;
+            console.log('setSupabaseAuth: Token set successfully for Supabase client');
+            return true;
+        } else {
+            console.warn('setSupabaseAuth: No token available');
+            return false;
         }
-        return true;
     } catch (err) {
-        // Pokud Clerk nemá supabaseClient template, pokračujeme bez JWT
+        console.error('setSupabaseAuth: Error getting token:', err);
         return false;
     }
 }
@@ -1459,6 +1487,11 @@ async function onClerkSignIn(clerkUser) {
     if (!supabaseClient) {
         initSupabase();
     }
+    
+    // DŮLEŽITÉ: Nastavit JWT token pro Supabase RLS policies
+    // Toto umožní RLS policies ověřovat uživatele pomocí auth.jwt()->>'sub'
+    const authSet = await setSupabaseAuth();
+    console.log('onClerkSignIn: Supabase auth set:', authSet);
     
     // Ulož uživatele do databáze
     await saveUserToDatabase(clerkUser);
@@ -2855,6 +2888,7 @@ async function getLinkedFlavors(recipeId) {
 console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
     init: initSupabase,
+    setAuth: setSupabaseAuth,  // Nastavení JWT tokenu pro RLS
     saveUser: saveUserToDatabase,
     getUser: getUserFromDatabase,
     saveTermsAcceptance: saveTermsAcceptance,
