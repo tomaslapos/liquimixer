@@ -523,7 +523,14 @@
     "delete_confirm": "Naozaj chcete zmazať tento produkt?",
     "delete_success": "Produkt bol zmazaný.",
     "delete_error": "Chyba pri mazaní produktu.",
-    "used_in_recipes": "Použité v receptoch"
+    "used_in_recipes": "Použité v receptoch",
+    "flavor_params": "Parametre príchute",
+    "manufacturer": "Výrobca",
+    "recommended_range": "Odporúčaný rozsah",
+    "min_percent": "Min. percento",
+    "max_percent": "Max. percento",
+    "steep_time": "Doba zrenia",
+    "product_code": "Kód produktu"
   },
   "product_form": {
     "add_title": "Pridať produkt",
@@ -956,6 +963,9 @@
     "steep_days_label": "Doba zrenia (dni)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Kód produktu",
+    "product_code_placeholder": "napr. TFA-001, CAP-VAN",
+    "product_code_hint": "Kód výrobcu pre jednoduchšiu identifikáciu príchute",
     "category_label": "Kategória príchute *",
     "category_placeholder": "-- Vyberte kategóriu --",
     "type_conflict_warning": "Táto príchuť je určená pre {type}. Naozaj ju chcete použiť v tomto recepte?"
@@ -965,7 +975,7 @@
     "from_database": "Verejná databáza",
     "no_specific": "Nezadať konkrétnu príchuť",
     "no_results": "Žiadne zodpovedajúce príchute",
-    "search_placeholder": "Hľadať alebo vybrať príchuť..."
+    "search_placeholder": "Hľadať v angličtine podľa názvu, výrobcu alebo kódu (napr. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Ovocná",

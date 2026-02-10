@@ -512,7 +512,14 @@
     "delete_confirm": "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το προϊόν;",
     "delete_success": "Το προϊόν διαγράφηκε.",
     "delete_error": "Σφάλμα κατά τη διαγραφή προϊόντος.",
-    "used_in_recipes": "Χρησιμοποιείται σε συνταγές"
+    "used_in_recipes": "Χρησιμοποιείται σε συνταγές",
+    "flavor_params": "Παράμετροι γεύσης",
+    "manufacturer": "Κατασκευαστής",
+    "recommended_range": "Προτεινόμενο εύρος",
+    "min_percent": "Ελάχ. ποσοστό",
+    "max_percent": "Μέγ. ποσοστό",
+    "steep_time": "Χρόνος ωρίμανσης",
+    "product_code": "Κωδικός προϊόντος"
   },
   "product_form": {
     "add_title": "Προσθήκη προϊόντος",
@@ -951,6 +958,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Κωδικός προϊόντος",
+    "product_code_placeholder": "π.χ. TFA-001, CAP-VAN",
+    "product_code_hint": "Κωδικός κατασκευαστή για ευκολότερη αναγνώριση γεύσης",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

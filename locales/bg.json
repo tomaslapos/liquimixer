@@ -512,7 +512,14 @@
     "delete_confirm": "Сигурни ли сте, че искате да изтриете този продукт?",
     "delete_success": "Продуктът беше изтрит.",
     "delete_error": "Грешка при изтриване на продукт.",
-    "used_in_recipes": "Използва се в рецепти"
+    "used_in_recipes": "Използва се в рецепти",
+    "flavor_params": "Параметри на аромата",
+    "manufacturer": "Производител",
+    "recommended_range": "Препоръчителен диапазон",
+    "min_percent": "Мин. процент",
+    "max_percent": "Макс. процент",
+    "steep_time": "Време за зреене",
+    "product_code": "Код на продукта"
   },
   "product_form": {
     "add_title": "Добави продукт",
@@ -950,6 +957,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Код на продукта",
+    "product_code_placeholder": "напр. TFA-001, CAP-VAN",
+    "product_code_hint": "Код на производителя за по-лесна идентификация на аромата",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

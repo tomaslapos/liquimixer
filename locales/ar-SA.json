@@ -513,7 +513,14 @@
     "delete_confirm": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
     "delete_success": "تم حذف المنتج.",
     "delete_error": "خطأ في حذف المنتج.",
-    "used_in_recipes": "مستخدم في الوصفات"
+    "used_in_recipes": "مستخدم في الوصفات",
+    "flavor_params": "معلمات النكهة",
+    "manufacturer": "الشركة المصنعة",
+    "recommended_range": "النطاق الموصى به",
+    "min_percent": "الحد الأدنى %",
+    "max_percent": "الحد الأقصى %",
+    "steep_time": "وقت النضج",
+    "product_code": "رمز المنتج"
   },
   "product_form": {
     "add_title": "إضافة منتج",
@@ -951,15 +958,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "رمز المنتج",
+    "product_code_placeholder": "مثال TFA-001, CAP-VAN",
+    "product_code_hint": "رمز الشركة المصنعة لتسهيل التعرف على النكهة",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
-    "from_favorites": "From my flavors",
-    "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "from_favorites": "من نكهاتي",
+    "from_database": "قاعدة البيانات العامة",
+    "no_specific": "لا تحدد نكهة",
+    "no_results": "لا توجد نكهات مطابقة",
+    "search_placeholder": "ابحث بالإنجليزية حسب الاسم أو الشركة المصنعة أو الرمز (مثل TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

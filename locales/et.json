@@ -512,7 +512,14 @@
     "delete_confirm": "Kas oled kindel, et soovid selle toote kustutada?",
     "delete_success": "Toode kustutatud.",
     "delete_error": "Viga toote kustutamisel.",
-    "used_in_recipes": "Kasutatakse retseptides"
+    "used_in_recipes": "Kasutatakse retseptides",
+    "flavor_params": "Maitse parameetrid",
+    "manufacturer": "Tootja",
+    "recommended_range": "Soovituslik vahemik",
+    "min_percent": "Min protsent",
+    "max_percent": "Max protsent",
+    "steep_time": "Küpsemisaeg",
+    "product_code": "Toote kood"
   },
   "product_form": {
     "add_title": "Lisa toode",
@@ -951,6 +958,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Toote kood",
+    "product_code_placeholder": "nt TFA-001, CAP-VAN",
+    "product_code_hint": "Tootja kood maitse lihtsamaks tuvastamiseks",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

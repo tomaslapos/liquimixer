@@ -512,7 +512,14 @@
     "delete_confirm": "この製品を削除してもよろしいですか？",
     "delete_success": "製品が削除されました。",
     "delete_error": "製品削除エラー。",
-    "used_in_recipes": "レシピで使用"
+    "used_in_recipes": "レシピで使用",
+    "flavor_params": "フレーバーパラメータ",
+    "manufacturer": "メーカー",
+    "recommended_range": "推奨範囲",
+    "min_percent": "最小%",
+    "max_percent": "最大%",
+    "steep_time": "熟成時間",
+    "product_code": "製品コード"
   },
   "product_form": {
     "add_title": "製品を追加",
@@ -950,15 +957,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "製品コード",
+    "product_code_placeholder": "例：TFA-001, CAP-VAN",
+    "product_code_hint": "フレーバーを識別しやすくするためのメーカーコード",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
-    "from_favorites": "From my flavors",
-    "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "from_favorites": "マイフレーバーから",
+    "from_database": "公開データベース",
+    "no_specific": "フレーバーを指定しない",
+    "no_results": "該当するフレーバーがありません",
+    "search_placeholder": "英語で名前、メーカー、コードで検索（例：TPA, CAP, Strawberry...）"
   },
   "flavor_categories": {
     "fruit": "Fruit",

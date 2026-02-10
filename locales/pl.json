@@ -500,7 +500,14 @@
     "delete_confirm": "Czy na pewno chcesz usunąć ten produkt?",
     "delete_success": "Produkt został usunięty.",
     "delete_error": "Błąd podczas usuwania produktu.",
-    "used_in_recipes": "Używane w przepisach"
+    "used_in_recipes": "Używane w przepisach",
+    "flavor_params": "Parametry aromatu",
+    "manufacturer": "Producent",
+    "recommended_range": "Zalecany zakres",
+    "min_percent": "Min. procent",
+    "max_percent": "Maks. procent",
+    "steep_time": "Czas dojrzewania",
+    "product_code": "Kod produktu"
   },
   "product_form": {
     "add_title": "Dodaj produkt",
@@ -937,6 +944,9 @@
     "steep_days_label": "Czas leżakowania (dni)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Kod produktu",
+    "product_code_placeholder": "np. TFA-001, CAP-VAN",
+    "product_code_hint": "Kod producenta dla łatwiejszej identyfikacji aromatu",
     "category_label": "Kategoria aromatu *",
     "category_placeholder": "-- Wybierz kategorię --",
     "type_conflict_warning": "Ten aromat jest przeznaczony dla {type}. Czy na pewno chcesz go użyć w tym przepisie?"
@@ -946,7 +956,7 @@
     "from_database": "Publiczna baza",
     "no_specific": "Nie określaj aromatu",
     "no_results": "Brak pasujących aromatów",
-    "search_placeholder": "Szukaj lub wybierz aromat..."
+    "search_placeholder": "Szukaj po angielsku według nazwy, producenta lub kodu (np. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Owocowy",

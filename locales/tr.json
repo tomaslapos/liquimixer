@@ -513,7 +513,14 @@
     "delete_confirm": "Bu ürünü silmek istediğinizden emin misiniz?",
     "delete_success": "Ürün silindi.",
     "delete_error": "Ürün silinirken hata.",
-    "used_in_recipes": "Tariflerde kullanılıyor"
+    "used_in_recipes": "Tariflerde kullanılıyor",
+    "flavor_params": "Aroma parametreleri",
+    "manufacturer": "Üretici",
+    "recommended_range": "Önerilen aralık",
+    "min_percent": "Min. yüzde",
+    "max_percent": "Maks. yüzde",
+    "steep_time": "Olgunlaşma süresi",
+    "product_code": "Ürün Kodu"
   },
   "product_form": {
     "add_title": "Ürün Ekle",
@@ -952,15 +959,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Ürün kodu",
+    "product_code_placeholder": "örn. TFA-001, CAP-VAN",
+    "product_code_hint": "Daha kolay aroma tanımlaması için üretici kodu",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
-    "from_favorites": "From my flavors",
-    "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "from_favorites": "Aromalarımdan",
+    "from_database": "Genel veritabanı",
+    "no_specific": "Aroma belirtme",
+    "no_results": "Eşleşen aroma yok",
+    "search_placeholder": "İngilizce ada, üreticiye veya koda göre ara (örn. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

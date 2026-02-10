@@ -5797,10 +5797,56 @@ function editProduct() {
         productTypeSelect.title = t('product_form.type_locked', 'Typ produktu nelze změnit po vytvoření');
     }
     
-    // Pro příchutě nastavit product_code
+    // Pro příchutě nastavit product_code a rozbalit podformulář
     const productCodeInput = document.getElementById('productFlavorCode');
     if (productCodeInput) {
         productCodeInput.value = currentViewingProduct.product_code || '';
+    }
+    
+    // Pokud je typ produktu 'flavor', rozbalit podformulář příchutě
+    if (currentViewingProduct.product_type === 'flavor') {
+        toggleFlavorFields();
+        
+        // Předvyplnit hodnoty podformulář příchutě
+        const flavorProductType = document.getElementById('productFlavorProductType');
+        if (flavorProductType) {
+            flavorProductType.value = currentViewingProduct.flavor_product_type || 'vape';
+        }
+        
+        const flavorCategory = document.getElementById('productFlavorCategory');
+        if (flavorCategory) {
+            flavorCategory.value = currentViewingProduct.flavor_category || 'mix';
+        }
+        
+        const flavorMinPercent = document.getElementById('productFlavorMinPercent');
+        if (flavorMinPercent) {
+            flavorMinPercent.value = currentViewingProduct.flavor_min_percent || '';
+        }
+        
+        const flavorMaxPercent = document.getElementById('productFlavorMaxPercent');
+        if (flavorMaxPercent) {
+            flavorMaxPercent.value = currentViewingProduct.flavor_max_percent || '';
+        }
+        
+        const flavorSteepDays = document.getElementById('productFlavorSteepDays');
+        if (flavorSteepDays) {
+            flavorSteepDays.value = currentViewingProduct.steep_days || '7';
+        }
+        
+        // Nastavit výrobce v selectu - použít manufacturer_code nebo najít podle názvu
+        const flavorManufacturer = document.getElementById('productFlavorManufacturer');
+        if (flavorManufacturer && currentViewingProduct.manufacturer) {
+            // Počkat na načtení výrobců a pak nastavit hodnotu
+            setTimeout(() => {
+                // Zkusit najít výrobce podle názvu
+                for (let option of flavorManufacturer.options) {
+                    if (option.textContent.includes(currentViewingProduct.manufacturer)) {
+                        flavorManufacturer.value = option.value;
+                        break;
+                    }
+                }
+            }, 100);
+        }
     }
     
     selectedProductRating = currentViewingProduct.rating || 0;

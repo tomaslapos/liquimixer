@@ -513,7 +513,14 @@
     "delete_confirm": "Да ли сте сигурни да желите да обришете овај производ?",
     "delete_success": "Производ је обрисан.",
     "delete_error": "Грешка при брисању производа.",
-    "used_in_recipes": "Користи се у рецептима"
+    "used_in_recipes": "Користи се у рецептима",
+    "flavor_params": "Параметри укуса",
+    "manufacturer": "Произвођач",
+    "recommended_range": "Препоручени опсег",
+    "min_percent": "Мин. проценат",
+    "max_percent": "Макс. проценат",
+    "steep_time": "Време зрења",
+    "product_code": "Шифра производа"
   },
   "product_form": {
     "add_title": "Додај производ",
@@ -952,15 +959,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Шифра производа",
+    "product_code_placeholder": "нпр. TFA-001, CAP-VAN",
+    "product_code_hint": "Шифра произвођача за лакшу идентификацију укуса",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
-    "from_favorites": "From my flavors",
-    "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "from_favorites": "Из мојих укуса",
+    "from_database": "Јавна база",
+    "no_specific": "Не наводи укус",
+    "no_results": "Нема одговарајућих укуса",
+    "search_placeholder": "Претражуј на енглеском по имену, произвођачу или шифри (нпр. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

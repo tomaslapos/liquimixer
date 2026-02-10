@@ -513,7 +513,14 @@
     "delete_confirm": "Вы уверены, что хотите удалить этот продукт?",
     "delete_success": "Продукт удален.",
     "delete_error": "Ошибка удаления продукта.",
-    "used_in_recipes": "Используется в рецептах"
+    "used_in_recipes": "Используется в рецептах",
+    "flavor_params": "Параметры ароматизатора",
+    "manufacturer": "Производитель",
+    "recommended_range": "Рекомендуемый диапазон",
+    "min_percent": "Мин. процент",
+    "max_percent": "Макс. процент",
+    "steep_time": "Время настаивания",
+    "product_code": "Код продукта"
   },
   "product_form": {
     "add_title": "Добавить продукт",
@@ -952,15 +959,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Код продукта",
+    "product_code_placeholder": "напр. TFA-001, CAP-VAN",
+    "product_code_hint": "Код производителя для упрощённой идентификации ароматизатора",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
-    "from_favorites": "From my flavors",
-    "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "from_favorites": "Из моих ароматов",
+    "from_database": "Публичная база",
+    "no_specific": "Не указывать аромат",
+    "no_results": "Подходящих ароматов не найдено",
+    "search_placeholder": "Поиск на английском по названию, производителю или коду (напр. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

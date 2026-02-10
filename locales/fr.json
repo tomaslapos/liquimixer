@@ -491,7 +491,14 @@
     "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce produit ?",
     "delete_success": "Le produit a été supprimé.",
     "delete_error": "Erreur lors de la suppression du produit.",
-    "used_in_recipes": "Utilisé dans les recettes"
+    "used_in_recipes": "Utilisé dans les recettes",
+    "flavor_params": "Paramètres d'arôme",
+    "manufacturer": "Fabricant",
+    "recommended_range": "Plage recommandée",
+    "min_percent": "Pourcentage min.",
+    "max_percent": "Pourcentage max.",
+    "steep_time": "Temps de maturation",
+    "product_code": "Code produit"
   },
   "product_form": {
     "add_title": "Ajouter un produit",
@@ -930,15 +937,18 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Code produit",
+    "product_code_placeholder": "ex. TFA-001, CAP-VAN",
+    "product_code_hint": "Code fabricant pour une identification plus facile de l'arôme",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
   "flavor_autocomplete": {
     "from_favorites": "From my flavors",
     "from_database": "Public database",
-    "no_specific": "Don't specify flavor",
-    "no_results": "No matching flavors",
-    "search_placeholder": "Search or select flavor..."
+    "no_specific": "Ne pas spécifier d'arôme",
+    "no_results": "Aucun arôme correspondant",
+    "search_placeholder": "Rechercher en anglais par nom, fabricant ou code (ex. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
     "fruit": "Fruit",

@@ -498,7 +498,14 @@
     "delete_confirm": "Sei sicuro di voler eliminare questo prodotto?",
     "delete_success": "Il prodotto è stato eliminato.",
     "delete_error": "Errore nell'eliminazione del prodotto.",
-    "used_in_recipes": "Usato nelle ricette"
+    "used_in_recipes": "Usato nelle ricette",
+    "flavor_params": "Parametri aroma",
+    "manufacturer": "Produttore",
+    "recommended_range": "Intervallo consigliato",
+    "min_percent": "Min percentuale",
+    "max_percent": "Max percentuale",
+    "steep_time": "Tempo di maturazione",
+    "product_code": "Codice prodotto"
   },
   "product_form": {
     "add_title": "Aggiungi prodotto",
@@ -937,6 +944,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Codice prodotto",
+    "product_code_placeholder": "es. TFA-001, CAP-VAN",
+    "product_code_hint": "Codice produttore per identificare più facilmente l'aroma",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },

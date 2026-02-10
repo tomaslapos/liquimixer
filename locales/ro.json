@@ -507,7 +507,14 @@
     "delete_confirm": "Sigur doriți să ștergeți acest produs?",
     "delete_success": "Produsul a fost șters.",
     "delete_error": "Eroare la ștergerea produsului.",
-    "used_in_recipes": "Folosit în rețete"
+    "used_in_recipes": "Folosit în rețete",
+    "flavor_params": "Parametrii aromei",
+    "manufacturer": "Producător",
+    "recommended_range": "Interval recomandat",
+    "min_percent": "Min procent",
+    "max_percent": "Max procent",
+    "steep_time": "Timp de maturare",
+    "product_code": "Cod produs"
   },
   "product_form": {
     "add_title": "Adăugați produs",
@@ -946,6 +953,9 @@
     "steep_days_label": "Steep time (days)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
+    "product_code_label": "Cod produs",
+    "product_code_placeholder": "ex. TFA-001, CAP-VAN",
+    "product_code_hint": "Codul producătorului pentru identificarea mai ușoară a aromei",
     "category_label": "Flavor category",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
   },
