@@ -2754,7 +2754,21 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
             } 
             // Pokud už má favorite_product_id (z oblíbených)
             else if (f.favorite_product_id && isValidUUID(f.favorite_product_id)) {
-                link.favorite_product_id = f.favorite_product_id;
+                // Ověřit že favorite_product stále existuje
+                const { data: existsCheck } = await supabaseClient
+                    .from('favorite_products')
+                    .select('id')
+                    .eq('id', f.favorite_product_id)
+                    .single();
+                
+                if (existsCheck) {
+                    link.favorite_product_id = f.favorite_product_id;
+                    console.log('linkFlavorsToRecipe: Using existing favorite_product_id:', f.favorite_product_id);
+                } else {
+                    // Produkt byl smazán - uložit pouze název bez propojení
+                    console.warn('linkFlavorsToRecipe: favorite_product_id not found, saving without link:', f.favorite_product_id);
+                    // Ponechat pouze flavor_name a flavor_manufacturer (již nastaveno výše)
+                }
             }
             
             links.push(link);
