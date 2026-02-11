@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Dohány + édes (vaníliás dohány)",
     "flavor_nuts": "Diós (mogyoró, mogyoró)",
     "flavor_spice": "Fűszeres (fahéj, mézeskalács)",
+    "flavor_cream": "Krémes (vanília, tejszín)",
+    "flavor_mix": "Mix / Keverék",
     "add_flavor": "+ Másik aroma hozzáadása",
     "remove_flavor": "Aroma eltávolítása",
     "flavor_count_hint": "(max 4 aroma)",

@@ -208,6 +208,8 @@
     "flavor_tobaccosweet": "Tupakka + makea (vaniljatupakka)",
     "flavor_nuts": "Pähkinä (maapähkinä, hasselpähkinä)",
     "flavor_spice": "Maustettu (kaneli, piparkakku)",
+    "flavor_cream": "Kermainen (vanilja, kerma)",
+    "flavor_mix": "Mix / Sekoitus",
     "add_flavor": "+ Lisää toinen maku",
     "remove_flavor": "Poista maku",
     "flavor_count_hint": "(max 4 makua)",

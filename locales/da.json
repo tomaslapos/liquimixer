@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tobak + sød (vaniljetobak)",
     "flavor_nuts": "Nødder (jordnød, hasselnød)",
     "flavor_spice": "Krydret (kanel, honningkage)",
+    "flavor_cream": "Cremet (vanilje, fløde)",
+    "flavor_mix": "Mix / Blanding",
     "add_flavor": "+ Tilføj en anden smag",
     "remove_flavor": "Fjern smag",
     "flavor_count_hint": "(maks 4 smagsstoffer)",

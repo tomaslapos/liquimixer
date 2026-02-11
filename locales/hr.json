@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Duhan + slatko (duhan s vanilijom)",
     "flavor_nuts": "Orašasti plodovi (kikiriki, lješnjak)",
     "flavor_spice": "Začinjeno (cimet, medenjak)",
+    "flavor_cream": "Kremasto (vanilija, vrhnje)",
+    "flavor_mix": "Mix / Mješavina",
     "add_flavor": "+ Dodaj drugi okus",
     "remove_flavor": "Ukloni okus",
     "flavor_count_hint": "(max 4 okusa)",

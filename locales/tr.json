@@ -195,6 +195,8 @@
     "flavor_tobaccosweet": "Tütün + tatlı (vanilyalı tütün)",
     "flavor_nuts": "Kuruyemiş (fıstık, fındık)",
     "flavor_spice": "Baharatlı (tarçın, zencefilli kurabiye)",
+    "flavor_cream": "Kremalı (vanilya, krema)",
+    "flavor_mix": "Mix / Karışım",
     "add_flavor": "+ Başka bir aroma ekle",
     "remove_flavor": "Aromayı kaldır",
     "flavor_count_hint": "(maks 4 aroma)",

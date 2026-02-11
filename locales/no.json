@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tobakk + søt (vaniljetobakk)",
     "flavor_nuts": "Nøtter (peanøtt, hasselnøtt)",
     "flavor_spice": "Krydret (kanel, pepperkake)",
+    "flavor_cream": "Kremaktig (vanilje, fløte)",
+    "flavor_mix": "Mix / Blanding",
     "add_flavor": "+ Legg til en annen smak",
     "remove_flavor": "Fjern smak",
     "flavor_count_hint": "(maks 4 smaker)",

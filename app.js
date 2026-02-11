@@ -5303,7 +5303,7 @@ function renderProductsList(products) {
         
         const safeName = escapeHtml(product.name);
         const safeDescription = escapeHtml(product.description);
-        const typeLabel = productTypeLabels[product.product_type] || 'Příchuť';
+        const typeLabel = getProductTypeLabel(product.product_type);
         const typeIcon = productTypeIcons[product.product_type] || '🍓';
         
         const stockQuantity = product.stock_quantity || 0;
@@ -12670,7 +12670,9 @@ async function loadFlavors() {
 function renderFlavorCard(flavor) {
     const manufacturerName = flavor.flavor_manufacturers?.name || flavor.manufacturer_code;
     const categoryTranslation = t(`form.flavor_${flavor.category}`, flavor.category);
-    const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
+    const typeLabel = flavor.product_type === 'vape' 
+        ? t('flavor_database.filter_type_vape', 'Vape') 
+        : t('flavor_database.filter_type_shisha', 'Shisha');
     const typeClass = flavor.product_type === 'vape' ? 'type-vape' : 'type-shisha';
     
     // Procento - zobrazit přesné hodnoty z DB
@@ -12819,7 +12821,9 @@ async function showFlavorDetail(flavorId) {
 function renderFlavorDetailContent(flavor) {
     const manufacturerName = flavor.flavor_manufacturers?.name || flavor.manufacturer_code;
     const categoryTranslation = t(`form.flavor_${flavor.category}`, flavor.category);
-    const typeLabel = flavor.product_type === 'vape' ? 'Vape' : 'Shisha';
+    const typeLabel = flavor.product_type === 'vape' 
+        ? t('flavor_database.filter_type_vape', 'Vape') 
+        : t('flavor_database.filter_type_shisha', 'Shisha');
     
     // Procento
     // Zkontrolovat zda má příchuť přesné hodnoty od výrobce
@@ -13619,28 +13623,30 @@ function unlockFlavorVgPgRatio(inputId) {
 function updateFlavorSliderDescription(value, minPercent, maxPercent, descriptionElement) {
     const percent = parseFloat(value);
     let description = '';
-    let className = '';
+    let color = '#00cc66'; // default green
     
     if (percent < minPercent) {
         description = t('flavor_description.too_low', 'Pod doporučeným rozsahem ({min}-{max}%)')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
-        className = 'warning';
+        color = '#ffaa00'; // orange
     } else if (percent > maxPercent) {
         description = t('flavor_description.too_high', 'Nad doporučeným rozsahem ({min}-{max}%)')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
-        className = 'warning';
+        color = '#ff0044'; // red
     } else {
         description = t('flavor_description.ideal_range', 'Ideální rozsah ({min}-{max}%)')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
-        className = 'ideal';
+        color = '#00cc66'; // green
     }
     
     if (descriptionElement) {
         descriptionElement.textContent = description;
-        descriptionElement.className = 'flavor-description ' + className;
+        descriptionElement.style.color = color;
+        descriptionElement.style.borderLeftColor = color;
+        descriptionElement.style.textShadow = `0 0 10px ${color}`;
     }
 }
 

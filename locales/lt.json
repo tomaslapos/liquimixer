@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tabakas + saldus (vanilinis tabakas)",
     "flavor_nuts": "Riešutai (žemės riešutas, lazdyno riešutas)",
     "flavor_spice": "Prieskoniniai (cinamonas, meduolis)",
+    "flavor_cream": "Kreminis (vanilė, grietinėlė)",
+    "flavor_mix": "Mix / Mišinys",
     "add_flavor": "+ Pridėti kitą skonį",
     "remove_flavor": "Pašalinti skonį",
     "flavor_count_hint": "(maks. 4 skoniai)",
