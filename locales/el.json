@@ -420,7 +420,8 @@
     "add_reminder": "Προσθήκη νέας ανάμειξης",
     "show_all_reminders": "Εμφάνιση όλων",
     "show_less": "Εμφάνιση λιγότερων",
-    "reminders_error": "Σφάλμα κατά τη φόρτωση υπενθυμίσεων."
+    "reminders_error": "Σφάλμα κατά τη φόρτωση υπενθυμίσεων.",
+    "used_flavors": "Χρησιμοποιημένα αρώματα"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ΑΠΟΘΗΚΕΥΣΗ ΣΤΙΣ ΣΥΝΤΑΓΕΣ ΜΟΥ",
@@ -940,7 +941,9 @@
     "loading": "Φόρτωση αρωμάτων...",
     "results_count": "Βρέθηκαν {count} αρώματα",
     "back_to_database": "◀ ΕΠΙΣΤΡΟΦΗ ΣΤΗ ΒΑΣΗ",
-    "login_required": "Συνδεθείτε για πρόσβαση στη βάση αρωμάτων"
+    "login_required": "Συνδεθείτε για πρόσβαση στη βάση αρωμάτων",
+    "values_from_category": "ανά κατηγορία - κατασκευαστής δεν προσδιορίστηκε",
+    "filter_rating_all": "Όλα"
   },
   "flavor_suggestion": {
     "toggle_label": "Πρότεινε προσθήκη στη βάση",
@@ -969,7 +972,9 @@
     "category_label": "Κατηγορία αρώματος",
     "type_conflict_warning": "Αυτό το άρωμα είναι για {type}. Είστε σίγουροι ότι θέλετε να το χρησιμοποιήσετε σε αυτή τη συνταγή;",
     "section_title": "Ρυθμίσεις αρώματος",
-    "category_placeholder": "-- Επιλέξτε κατηγορία --"
+    "category_placeholder": "-- Επιλέξτε κατηγορία --",
+    "ratio_locked": "Αναλογία VG/PG ορισμένη από τον κατασκευαστή",
+    "percent_from_category": "Συνιστώμενο % ανά κατηγορία - ο κατασκευαστής δεν προσδιόρισε ακριβείς τιμές"
   },
   "flavor_autocomplete": {
     "from_favorites": "Από τα αρώματά μου",

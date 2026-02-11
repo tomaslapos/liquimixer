@@ -420,7 +420,8 @@
     "add_reminder": "Legg til ny blanding",
     "show_all_reminders": "Vis alle",
     "show_less": "Vis mindre",
-    "reminders_error": "Feil ved lasting av påminnelser."
+    "reminders_error": "Feil ved lasting av påminnelser.",
+    "used_flavors": "Brukte aromaer"
   },
   "shared_recipe": {
     "save_to_my_recipes": "LAGRE TIL MINE OPPSKRIFTER",
@@ -940,7 +941,9 @@
     "loading": "Laster aromaer...",
     "results_count": "{count} aromaer funnet",
     "back_to_database": "◀ TILBAKE TIL DATABASEN",
-    "login_required": "Logg inn for å få tilgang til aromadatabasen"
+    "login_required": "Logg inn for å få tilgang til aromadatabasen",
+    "values_from_category": "etter kategori - produsent ikke spesifisert",
+    "filter_rating_all": "Alle"
   },
   "flavor_suggestion": {
     "toggle_label": "Foreslå tillegg til databasen",
@@ -969,7 +972,9 @@
     "category_label": "Aromakategori",
     "type_conflict_warning": "Denne aromaen er for {type}. Er du sikker på at du vil bruke den i denne oppskriften?",
     "section_title": "Aromainnstillinger",
-    "category_placeholder": "-- Velg kategori --"
+    "category_placeholder": "-- Velg kategori --",
+    "ratio_locked": "VG/PG-forhold satt av produsenten",
+    "percent_from_category": "Anbefalt % etter kategori - produsent spesifiserte ikke eksakte verdier"
   },
   "flavor_autocomplete": {
     "from_favorites": "Fra mine aromaer",

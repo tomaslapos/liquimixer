@@ -420,7 +420,8 @@
     "add_reminder": "새 조합 추가",
     "show_all_reminders": "모두 보기",
     "show_less": "간략히 보기",
-    "reminders_error": "알림 로딩 오류."
+    "reminders_error": "알림 로딩 오류.",
+    "used_flavors": "사용된 향료"
   },
   "shared_recipe": {
     "save_to_my_recipes": "내 레시피에 저장",
@@ -938,7 +939,9 @@
     "loading": "향료 로딩 중...",
     "results_count": "{count}개 향료 발견",
     "back_to_database": "◀ 데이터베이스로 돌아가기",
-    "login_required": "향료 데이터베이스에 접근하려면 로그인하세요"
+    "login_required": "향료 데이터베이스에 접근하려면 로그인하세요",
+    "values_from_category": "카테고리별 - 제조사 미지정",
+    "filter_rating_all": "전체"
   },
   "flavor_suggestion": {
     "toggle_label": "데이터베이스에 추가 제안",
@@ -967,7 +970,9 @@
     "category_label": "향료 카테고리",
     "type_conflict_warning": "이 향료는 {type}용입니다. 이 레시피에 사용하시겠습니까?",
     "section_title": "향료 설정",
-    "category_placeholder": "-- 카테고리 선택 --"
+    "category_placeholder": "-- 카테고리 선택 --",
+    "ratio_locked": "제조사가 설정한 VG/PG 비율",
+    "percent_from_category": "카테고리별 권장 % - 제조사가 정확한 값을 지정하지 않음"
   },
   "flavor_autocomplete": {
     "from_favorites": "내 향료에서",

@@ -415,7 +415,8 @@
     "add_reminder": "Adicionar nova mistura",
     "show_all_reminders": "Mostrar todos",
     "show_less": "Mostrar menos",
-    "reminders_error": "Erro ao carregar lembretes."
+    "reminders_error": "Erro ao carregar lembretes.",
+    "used_flavors": "Sabores usados"
   },
   "shared_recipe": {
     "save_to_my_recipes": "GUARDAR NAS MINHAS RECEITAS",
@@ -932,7 +933,9 @@
     "loading": "Carregando sabores...",
     "results_count": "{count} sabores encontrados",
     "back_to_database": "◀ VOLTAR À BASE DE DADOS",
-    "login_required": "Faça login para acessar o banco de dados de sabores"
+    "login_required": "Faça login para acessar o banco de dados de sabores",
+    "values_from_category": "por categoria - fabricante não especificado",
+    "filter_rating_all": "Todos"
   },
   "flavor_suggestion": {
     "toggle_label": "Sugerir adicionar ao banco de dados",
@@ -961,7 +964,9 @@
     "category_label": "Categoria de sabor",
     "type_conflict_warning": "Este sabor é para {type}. Tem certeza de que deseja usá-lo nesta receita?",
     "section_title": "Configurações de sabor",
-    "category_placeholder": "-- Selecionar categoria --"
+    "category_placeholder": "-- Selecionar categoria --",
+    "ratio_locked": "Proporção VG/PG definida pelo fabricante",
+    "percent_from_category": "% recomendada por categoria - o fabricante não especificou valores exatos"
   },
   "flavor_autocomplete": {
     "from_favorites": "Dos meus sabores",

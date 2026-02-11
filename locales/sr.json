@@ -420,7 +420,8 @@
     "add_reminder": "Додај ново мешање",
     "show_all_reminders": "Прикажи све",
     "show_less": "Прикажи мање",
-    "reminders_error": "Грешка при учитавању подсетника."
+    "reminders_error": "Грешка при учитавању подсетника.",
+    "used_flavors": "Коришћене ароме"
   },
   "shared_recipe": {
     "save_to_my_recipes": "САЧУВАЈ У МОЈЕ РЕЦЕПТЕ",
@@ -940,7 +941,9 @@
     "loading": "Учитавање арома...",
     "results_count": "Пронађено {count} арома",
     "back_to_database": "◀ НАЗАД У БАЗУ",
-    "login_required": "Пријавите се за приступ бази арома"
+    "login_required": "Пријавите се за приступ бази арома",
+    "values_from_category": "по категорији - произвођач није навео",
+    "filter_rating_all": "Све"
   },
   "flavor_suggestion": {
     "toggle_label": "Предложи додавање у базу",
@@ -969,7 +972,9 @@
     "category_label": "Категорија ароме",
     "type_conflict_warning": "Ова арома је за {type}. Да ли сте сигурни да желите да је користите у овом рецепту?",
     "section_title": "Подешавања ароме",
-    "category_placeholder": "-- Изаберите категорију --"
+    "category_placeholder": "-- Изаберите категорију --",
+    "ratio_locked": "VG/PG однос постављен од произвођача",
+    "percent_from_category": "Препоручени % по категорији - произвођач није навео тачне вредности"
   },
   "flavor_autocomplete": {
     "from_favorites": "Из мојих арома",

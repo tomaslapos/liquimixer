@@ -420,7 +420,8 @@
     "add_reminder": "Добави ново смесване",
     "show_all_reminders": "Покажи всички",
     "show_less": "Покажи по-малко",
-    "reminders_error": "Грешка при зареждане на напомнянията."
+    "reminders_error": "Грешка при зареждане на напомнянията.",
+    "used_flavors": "Използвани аромати"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ЗАПАЗИ В МОИТЕ РЕЦЕПТИ",
@@ -939,7 +940,9 @@
     "loading": "Зареждане на аромати...",
     "results_count": "Намерени {count} аромати",
     "back_to_database": "◀ НАЗАД КЪМ БАЗАТА",
-    "login_required": "Влезте за достъп до базата с аромати"
+    "login_required": "Влезте за достъп до базата с аромати",
+    "values_from_category": "по категория - производителят не е посочил",
+    "filter_rating_all": "Всички"
   },
   "flavor_suggestion": {
     "toggle_label": "Предложи добавяне в базата",
@@ -968,7 +971,9 @@
     "category_label": "Категория аромат",
     "type_conflict_warning": "Този аромат е за {type}. Сигурни ли сте, че искате да го използвате в тази рецепта?",
     "section_title": "Настройки на аромата",
-    "category_placeholder": "-- Изберете категория --"
+    "category_placeholder": "-- Изберете категория --",
+    "ratio_locked": "VG/PG съотношение зададено от производителя",
+    "percent_from_category": "Препоръчителен % по категория - производителят не е посочил точни стойности"
   },
   "flavor_autocomplete": {
     "from_favorites": "От моите аромати",

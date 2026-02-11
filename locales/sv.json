@@ -420,7 +420,8 @@
     "add_reminder": "Lägg till ny blandning",
     "show_all_reminders": "Visa alla",
     "show_less": "Visa mindre",
-    "reminders_error": "Fel vid laddning av påminnelser."
+    "reminders_error": "Fel vid laddning av påminnelser.",
+    "used_flavors": "Använda aromer"
   },
   "shared_recipe": {
     "save_to_my_recipes": "SPARA TILL MINA RECEPT",
@@ -940,7 +941,9 @@
     "loading": "Laddar aromer...",
     "results_count": "{count} aromer hittades",
     "back_to_database": "◀ TILLBAKA TILL DATABASEN",
-    "login_required": "Logga in för att komma åt aromdatabasen"
+    "login_required": "Logga in för att komma åt aromdatabasen",
+    "values_from_category": "efter kategori - tillverkaren angav inte",
+    "filter_rating_all": "Alla"
   },
   "flavor_suggestion": {
     "toggle_label": "Föreslå tillägg till databasen",
@@ -969,7 +972,9 @@
     "category_label": "Aromkategori",
     "type_conflict_warning": "Detta arom är för {type}. Är du säker på att du vill använda det i detta recept?",
     "section_title": "Arominställningar",
-    "category_placeholder": "-- Välj kategori --"
+    "category_placeholder": "-- Välj kategori --",
+    "ratio_locked": "VG/PG-förhållande inställt av tillverkaren",
+    "percent_from_category": "Rekommenderad % efter kategori - tillverkaren angav inte exakta värden"
   },
   "flavor_autocomplete": {
     "from_favorites": "Från mina aromer",

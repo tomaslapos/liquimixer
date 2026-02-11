@@ -408,7 +408,8 @@
     "add_reminder": "Dodaj nowe mieszanie",
     "show_all_reminders": "Pokaż wszystkie",
     "show_less": "Pokaż mniej",
-    "reminders_error": "Błąd podczas ładowania przypomnień."
+    "reminders_error": "Błąd podczas ładowania przypomnień.",
+    "used_flavors": "Użyte aromaty"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ZAPISZ DO MOICH PRZEPISÓW",
@@ -925,7 +926,9 @@
     "loading": "Ładowanie aromatów...",
     "results_count": "Znaleziono {count} aromatów",
     "back_to_database": "◀ POWRÓT DO BAZY",
-    "login_required": "Zaloguj się, aby uzyskać dostęp do bazy aromatów"
+    "login_required": "Zaloguj się, aby uzyskać dostęp do bazy aromatów",
+    "values_from_category": "wg kategorii - producent nie podał",
+    "filter_rating_all": "Wszystkie"
   },
   "flavor_suggestion": {
     "toggle_label": "Zaproponuj dodanie do bazy",
@@ -954,7 +957,9 @@
     "product_code_hint": "Kod producenta dla łatwiejszej identyfikacji aromatu",
     "category_label": "Kategoria aromatu",
     "category_placeholder": "-- Wybierz kategorię --",
-    "type_conflict_warning": "Ten aromat jest do {type}. Czy na pewno chcesz go użyć w tym przepisie?"
+    "type_conflict_warning": "Ten aromat jest do {type}. Czy na pewno chcesz go użyć w tym przepisie?",
+    "ratio_locked": "Proporcja VG/PG ustawiona przez producenta",
+    "percent_from_category": "Zalecany % wg kategorii - producent nie podał dokładnych wartości"
   },
   "flavor_autocomplete": {
     "from_favorites": "Z moich aromatów",

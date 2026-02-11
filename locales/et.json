@@ -420,7 +420,8 @@
     "add_reminder": "Lisa uus segamine",
     "show_all_reminders": "Näita kõiki",
     "show_less": "Näita vähem",
-    "reminders_error": "Viga meeldetuletuste laadimisel."
+    "reminders_error": "Viga meeldetuletuste laadimisel.",
+    "used_flavors": "Kasutatud aroomid"
   },
   "shared_recipe": {
     "save_to_my_recipes": "SALVESTA MINU RETSEPTIDESSE",
@@ -940,7 +941,9 @@
     "loading": "Aroomide laadimine...",
     "results_count": "Leiti {count} aroomi",
     "back_to_database": "◀ TAGASI ANDMEBAASI",
-    "login_required": "Logige sisse aroomide andmebaasi kasutamiseks"
+    "login_required": "Logige sisse aroomide andmebaasi kasutamiseks",
+    "values_from_category": "kategooria järgi - tootja ei täpsustanud",
+    "filter_rating_all": "Kõik"
   },
   "flavor_suggestion": {
     "toggle_label": "Soovita lisada andmebaasi",
@@ -969,7 +972,9 @@
     "category_label": "Aroomi kategooria",
     "type_conflict_warning": "See aroom on {type} jaoks. Kas soovite seda selles retseptis kasutada?",
     "section_title": "Aroomi seaded",
-    "category_placeholder": "-- Valige kategooria --"
+    "category_placeholder": "-- Valige kategooria --",
+    "ratio_locked": "VG/PG suhe tootja poolt seadistatud",
+    "percent_from_category": "Soovituslik % kategooria järgi - tootja ei täpsustanud täpseid väärtusi"
   },
   "flavor_autocomplete": {
     "from_favorites": "Minu aroomidest",

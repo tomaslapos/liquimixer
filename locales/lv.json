@@ -420,7 +420,8 @@
     "add_reminder": "Pievienot jaunu sajaukšanu",
     "show_all_reminders": "Rādīt visus",
     "show_less": "Rādīt mazāk",
-    "reminders_error": "Kļūda, ielādējot atgādinājumus."
+    "reminders_error": "Kļūda, ielādējot atgādinājumus.",
+    "used_flavors": "Izmantotie aromāti"
   },
   "shared_recipe": {
     "save_to_my_recipes": "SAGLABĀT MANOS RECEPTES",
@@ -940,7 +941,9 @@
     "loading": "Ielādē aromātus...",
     "results_count": "Atrasti {count} aromāti",
     "back_to_database": "◀ ATPAKAĻ UZ DATUBĀZI",
-    "login_required": "Lūdzu, piesakieties, lai piekļūtu aromātu datubāzei"
+    "login_required": "Lūdzu, piesakieties, lai piekļūtu aromātu datubāzei",
+    "values_from_category": "pēc kategorijas - ražotājs nav norādījis",
+    "filter_rating_all": "Visi"
   },
   "flavor_suggestion": {
     "toggle_label": "Ieteikt pievienot datubāzei",
@@ -969,7 +972,9 @@
     "category_label": "Aromāta kategorija",
     "type_conflict_warning": "Šis aromāts ir paredzēts {type}. Vai tiešām vēlaties to izmantot šajā receptē?",
     "section_title": "Aromāta iestatījumi",
-    "category_placeholder": "-- Izvēlieties kategoriju --"
+    "category_placeholder": "-- Izvēlieties kategoriju --",
+    "ratio_locked": "VG/PG attiecība noteikta no ražotāja",
+    "percent_from_category": "Ieteicamais % pēc kategorijas - ražotājs nav norādījis precīzas vērtības"
   },
   "flavor_autocomplete": {
     "from_favorites": "No maniem aromātiem",

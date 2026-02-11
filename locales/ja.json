@@ -420,7 +420,8 @@
     "add_reminder": "新しい調合を追加",
     "show_all_reminders": "すべて表示",
     "show_less": "表示を減らす",
-    "reminders_error": "リマインダーの読み込みエラー。"
+    "reminders_error": "リマインダーの読み込みエラー。",
+    "used_flavors": "使用フレーバー"
   },
   "shared_recipe": {
     "save_to_my_recipes": "マイレシピに保存",
@@ -939,7 +940,9 @@
     "loading": "フレーバーを読み込み中...",
     "results_count": "{count}件のフレーバーが見つかりました",
     "back_to_database": "◀ データベースに戻る",
-    "login_required": "フレーバーデータベースにアクセスするにはログインしてください"
+    "login_required": "フレーバーデータベースにアクセスするにはログインしてください",
+    "values_from_category": "カテゴリー別 - メーカー未指定",
+    "filter_rating_all": "すべて"
   },
   "flavor_suggestion": {
     "toggle_label": "データベースへの追加を提案",
@@ -968,7 +971,9 @@
     "category_label": "フレーバーカテゴリー",
     "type_conflict_warning": "このフレーバーは{type}用です。このレシピで使用しますか？",
     "section_title": "フレーバー設定",
-    "category_placeholder": "-- カテゴリーを選択 --"
+    "category_placeholder": "-- カテゴリーを選択 --",
+    "ratio_locked": "メーカー設定のVG/PG比率",
+    "percent_from_category": "カテゴリー別の推奨% - メーカーは正確な値を指定していません"
   },
   "flavor_autocomplete": {
     "from_favorites": "マイフレーバーから",

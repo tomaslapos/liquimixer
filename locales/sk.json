@@ -422,7 +422,8 @@
     "add_reminder": "Pridať nové miešanie",
     "show_all_reminders": "Zobraziť všetky",
     "show_less": "Zobraziť menej",
-    "reminders_error": "Chyba pri načítaní pripomienok."
+    "reminders_error": "Chyba pri načítaní pripomienok.",
+    "used_flavors": "Použité príchute"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ULOŽIŤ K SEBE",
@@ -944,7 +945,9 @@
     "loading": "Načítavanie príchutí...",
     "results_count": "Nájdených {count} príchutí",
     "back_to_database": "◀ SPÄŤ DO DATABÁZY",
-    "login_required": "Pre prístup k databáze príchutí sa prihláste"
+    "login_required": "Pre prístup k databáze príchutí sa prihláste",
+    "values_from_category": "podľa kategórie - výrobca neuviedol",
+    "filter_rating_all": "Všetky"
   },
   "flavor_suggestion": {
     "toggle_label": "Navrhnúť pridanie do databázy",
@@ -973,7 +976,9 @@
     "product_code_hint": "Kód výrobcu pre jednoduchšiu identifikáciu príchute",
     "category_label": "Kategória príchute",
     "category_placeholder": "-- Vyberte kategóriu --",
-    "type_conflict_warning": "Táto príchuť je pre {type}. Naozaj ju chcete použiť v tomto recepte?"
+    "type_conflict_warning": "Táto príchuť je pre {type}. Naozaj ju chcete použiť v tomto recepte?",
+    "ratio_locked": "Pomer VG/PG nastavený výrobcom",
+    "percent_from_category": "Odporúčané % podľa kategórie - výrobca neuviedol presné hodnoty"
   },
   "flavor_autocomplete": {
     "from_favorites": "Z mojich príchutí",

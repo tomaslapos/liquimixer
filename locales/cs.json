@@ -365,7 +365,8 @@
     "add_reminder": "Přidat nové míchání",
     "show_all_reminders": "Zobrazit všechny",
     "show_less": "Zobrazit méně",
-    "reminders_error": "Chyba při načítání připomínek."
+    "reminders_error": "Chyba při načítání připomínek.",
+    "used_flavors": "Použité příchutě"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ULOŽIT K SOBĚ",
@@ -976,7 +977,8 @@
     "results_count": "Nalezeno {count} příchutí",
     "back_to_database": "◀ ZPĚT DO DATABÁZE",
     "login_required": "Pro přístup k databázi příchutí se přihlaste",
-    "values_from_category": "dle kategorie - výrobce neuvedl"
+    "values_from_category": "dle kategorie - výrobce neuvedl",
+    "filter_rating_all": "Všechny"
   },
   "flavor_suggestion": {
     "toggle_label": "Navrhnout přidání do databáze",

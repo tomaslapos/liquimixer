@@ -415,7 +415,8 @@
     "add_reminder": "Adaugă amestecare nouă",
     "show_all_reminders": "Afișează toate",
     "show_less": "Afișează mai puțin",
-    "reminders_error": "Eroare la încărcarea memento-urilor."
+    "reminders_error": "Eroare la încărcarea memento-urilor.",
+    "used_flavors": "Arome folosite"
   },
   "shared_recipe": {
     "save_to_my_recipes": "SALVAȚI ÎN REȚETELE MELE",
@@ -935,7 +936,9 @@
     "loading": "Se încarcă aromele...",
     "results_count": "{count} arome găsite",
     "back_to_database": "◀ ÎNAPOI LA BAZĂ",
-    "login_required": "Conectați-vă pentru a accesa baza de date de arome"
+    "login_required": "Conectați-vă pentru a accesa baza de date de arome",
+    "values_from_category": "după categorie - producătorul nu a specificat",
+    "filter_rating_all": "Toate"
   },
   "flavor_suggestion": {
     "toggle_label": "Sugerează adăugarea în bază",
@@ -964,7 +967,9 @@
     "category_label": "Categorie aromă",
     "type_conflict_warning": "Această aromă este pentru {type}. Sunteți sigur că doriți să o utilizați în această rețetă?",
     "section_title": "Setări aromă",
-    "category_placeholder": "-- Selectați categoria --"
+    "category_placeholder": "-- Selectați categoria --",
+    "ratio_locked": "Raport VG/PG setat de producător",
+    "percent_from_category": "% recomandat după categorie - producătorul nu a specificat valori exacte"
   },
   "flavor_autocomplete": {
     "from_favorites": "Din aromele mele",

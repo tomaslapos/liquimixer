@@ -409,7 +409,8 @@
     "add_reminder": "Add new mixing",
     "show_all_reminders": "Show all",
     "show_less": "Show less",
-    "reminders_error": "Error loading reminders."
+    "reminders_error": "Error loading reminders.",
+    "used_flavors": "Used flavors"
   },
   "shared_recipe": {
     "save_to_my_recipes": "SAVE TO MY RECIPES",
@@ -936,7 +937,9 @@
     "loading": "Loading flavors...",
     "results_count": "Found {count} flavors",
     "back_to_database": "◀ BACK TO DATABASE",
-    "login_required": "Please log in to access the flavor database"
+    "login_required": "Please log in to access the flavor database",
+    "values_from_category": "by category - manufacturer not specified",
+    "filter_rating_all": "All"
   },
   "flavor_suggestion": {
     "toggle_label": "Suggest adding to database",
@@ -965,7 +968,9 @@
     "product_code_hint": "Manufacturer code for easier flavor identification",
     "category_label": "Flavor category",
     "category_placeholder": "-- Select category --",
-    "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?"
+    "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?",
+    "ratio_locked": "VG/PG ratio set by manufacturer",
+    "percent_from_category": "Recommended % set by category - manufacturer did not specify exact values"
   },
   "flavor_autocomplete": {
     "from_favorites": "From my flavors",
