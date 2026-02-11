@@ -1166,9 +1166,7 @@
                             <div class="flavor-display">
                                 <span id="flavorValue">10</span>%
                             </div>
-                            <div class="flavor-description" id="flavorDescription">
-                                Ideální chuť
-                            </div>
+                            <div class="flavor-description" id="flavorDescription"></div>
                             <div class="form-group-sub">
                                 <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v příchuti</label>
                                 <div class="ratio-toggle-buttons">
@@ -2454,7 +2452,7 @@
                         <div class="filter-group">
                             <label data-i18n="recipe_database.filter_method">Metoda přípravy:</label>
                             <select id="dbFilterFormType" class="neon-select" onchange="loadPublicRecipes()">
-                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="" data-i18n="recipe_database.all">All</option>
                                 <option value="liquid" data-i18n="form.tab_liquid">Liquid</option>
                                 <option value="shakevape" data-i18n="form.tab_shakevape">Shake & Vape</option>
                                 <option value="shortfill" data-i18n="form.tab_shortfill">Shortfill</option>
@@ -2466,7 +2464,7 @@
                         <div class="filter-group">
                             <label data-i18n="recipe_database.filter_flavor">Typ příchutě:</label>
                             <select id="dbFilterFlavorType" class="neon-select" onchange="loadPublicRecipes()">
-                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="" data-i18n="recipe_database.all">All</option>
                                 <!-- Generováno z flavorDatabase v app.js -->
                             </select>
                         </div>
@@ -2522,7 +2520,7 @@
                         <div class="filter-group">
                             <label data-i18n="recipe_database.filter_rating">Minimální hodnocení:</label>
                             <select id="dbFilterMinRating" class="neon-select" onchange="loadPublicRecipes()">
-                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="" data-i18n="recipe_database.all">All</option>
                                 <option value="1">★ (1+)</option>
                                 <option value="2">★★ (2+)</option>
                                 <option value="3">★★★ (3+)</option>
@@ -2535,7 +2533,7 @@
                         <div class="filter-group">
                             <label data-i18n="recipe_database.filter_difficulty">Obtížnost:</label>
                             <select id="dbFilterDifficulty" class="neon-select" onchange="loadPublicRecipes()">
-                                <option value="" data-i18n="recipe_database.all">Všechny</option>
+                                <option value="" data-i18n="recipe_database.all">All</option>
                                 <option value="beginner" data-i18n="difficulty.beginner">Začátečník</option>
                                 <option value="intermediate" data-i18n="difficulty.intermediate">Pokročilý</option>
                                 <option value="expert" data-i18n="difficulty.expert">Expert</option>
@@ -2618,7 +2616,7 @@
                         <div class="filter-group">
                             <label data-i18n="flavor_database.filter_type">Typ:</label>
                             <select id="flavorFilterType" class="neon-select" onchange="loadFlavors()">
-                                <option value="all" data-i18n="flavor_database.filter_type_all">Všechny typy</option>
+                                <option value="all" data-i18n="flavor_database.filter_type_all">All types</option>
                                 <option value="vape" data-i18n="flavor_database.filter_type_vape">Vape</option>
                                 <option value="shisha" data-i18n="flavor_database.filter_type_shisha">Shisha</option>
                             </select>
@@ -2628,7 +2626,7 @@
                         <div class="filter-group">
                             <label data-i18n="flavor_database.filter_manufacturer">Výrobce:</label>
                             <select id="flavorFilterManufacturer" class="neon-select" onchange="loadFlavors()">
-                                <option value="all" data-i18n="flavor_database.filter_manufacturer_all">Všichni výrobci</option>
+                                <option value="all" data-i18n="flavor_database.filter_manufacturer_all">All manufacturers</option>
                                 <!-- Generováno z flavor_manufacturers -->
                             </select>
                         </div>
@@ -2637,7 +2635,7 @@
                         <div class="filter-group">
                             <label data-i18n="flavor_database.filter_category">Kategorie:</label>
                             <select id="flavorFilterCategory" class="neon-select" onchange="loadFlavors()">
-                                <option value="all" data-i18n="flavor_database.filter_category_all">Všechny kategorie</option>
+                                <option value="all" data-i18n="flavor_database.filter_category_all">All categories</option>
                                 <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
                                 <option value="citrus" data-i18n="form.flavor_citrus">Citrónové (citron, limeta)</option>
                                 <option value="berry" data-i18n="form.flavor_berry">Bobulové (borůvka, malina)</option>
@@ -2661,12 +2659,7 @@
                         <div class="filter-group">
                             <label data-i18n="flavor_database.filter_rating">Minimální hodnocení:</label>
                             <select id="flavorFilterRating" class="neon-select" onchange="loadFlavors()">
-                                <option value="">Všechny</option>
-                                <option value="1">★ (1+)</option>
-                                <option value="2">★★ (2+)</option>
-                                <option value="3">★★★ (3+)</option>
-                                <option value="4">★★★★ (4+)</option>
-                                <option value="5">★★★★★ (5)</option>
+                                <!-- Options generovány dynamicky v initFlavorDatabaseFilters() -->
                             </select>
                         </div>
                         
@@ -2753,7 +2746,7 @@
                     <div class="search-field search-type">
                         <label for="productSearchType" data-i18n="products.type_label">📦 Typ</label>
                         <select id="productSearchType" onchange="filterProducts()">
-                            <option value="" data-i18n="products.type_all">Všechny typy</option>
+                            <option value="" data-i18n="products.type_all">All types</option>
                             <option value="vg" data-i18n="products.type_vg">VG (Glycerin)</option>
                             <option value="pg" data-i18n="products.type_pg">PG (Propylenglykol)</option>
                             <option value="flavor" data-i18n="products.type_flavor">Příchuť</option>

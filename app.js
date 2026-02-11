@@ -1288,6 +1288,19 @@ window.addEventListener('localeChanged', () => {
     if (subscriptionData) {
         updateSubscriptionStatusUI(subscriptionData);
     }
+    
+    // Překreslit databázi příchutí pokud je zobrazena
+    const flavorDbPage = document.getElementById('flavor-database');
+    if (flavorDbPage && !flavorDbPage.classList.contains('hidden')) {
+        // Znovu inicializovat filtry s aktuálními překlady
+        initFlavorDatabaseFilters();
+        // Znovu načíst příchutě s aktuálními překlady
+        loadFlavors();
+        // Překreslit detail příchutě pokud je zobrazen
+        if (currentFlavorDetail) {
+            showFlavorDetail(currentFlavorDetail.id);
+        }
+    }
 });
 
 function initializeSliders() {
@@ -12567,6 +12580,30 @@ async function initFlavorDatabaseFilters() {
     // Kategorie jsou nyní staticky definované v HTML (stejný číselník jako formuláře)
     // Nepotřebujeme dynamické načítání z databáze
     
+    // Naplnit dropdown hodnocení dynamicky
+    const ratingSelect = document.getElementById('flavorFilterRating');
+    if (ratingSelect) {
+        const currentRatingValue = ratingSelect.value;
+        ratingSelect.innerHTML = '';
+        
+        // První option "Všechny"
+        const allOption = document.createElement('option');
+        allOption.value = 'all';
+        allOption.textContent = t('flavor_database.filter_rating_all', 'All');
+        ratingSelect.appendChild(allOption);
+        
+        // Hvězdičky 1-5
+        for (let i = 1; i <= 5; i++) {
+            const option = document.createElement('option');
+            option.value = i.toString();
+            option.textContent = '★'.repeat(i) + ' (' + i + '+)';
+            ratingSelect.appendChild(option);
+        }
+        
+        // Obnovit hodnotu
+        if (currentRatingValue) ratingSelect.value = currentRatingValue;
+    }
+    
     // Aplikovat překlady
     if (window.i18n?.applyTranslations) {
         window.i18n.applyTranslations();
@@ -12597,7 +12634,7 @@ function resetFlavorDatabaseFilters() {
     document.getElementById('flavorFilterType').value = 'all';
     document.getElementById('flavorFilterManufacturer').value = 'all';
     document.getElementById('flavorFilterCategory').value = 'all';
-    document.getElementById('flavorFilterRating').value = '';
+    document.getElementById('flavorFilterRating').value = 'all';
     currentFlavorPage = 1;
     loadFlavors();
 }
