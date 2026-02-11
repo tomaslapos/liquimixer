@@ -1077,13 +1077,13 @@ function showUpdateNotification() {
         <div class="update-notification-content">
             <span class="update-notification-icon">🔄</span>
             <div class="update-notification-text">
-                <strong>${t('update.new_version_title', 'Nová verze aplikace')}</strong>
-                <p>${t('update.new_version_text', 'Je k dispozici nová verze LiquiMixer. Klikněte pro aktualizaci.')}</p>
+                <strong>${t('update.new_version_title', 'New version available')}</strong>
+                <p>${t('update.new_version_text', 'A new version of LiquiMixer is available. Click to update.')}</p>
             </div>
         </div>
         <div class="update-notification-actions">
             <button class="update-btn-refresh" onclick="refreshApp()">${t('update.refresh', 'Aktualizovat')}</button>
-            <button class="update-btn-dismiss" onclick="dismissUpdateNotification()">${t('update.dismiss', 'Později')}</button>
+            <button class="update-btn-dismiss" onclick="dismissUpdateNotification()">${t('update.dismiss', 'Later')}</button>
         </div>
     `;
     document.body.appendChild(notification);
@@ -1957,7 +1957,7 @@ function updateAuthUIActual() {
             window.Clerk.user.firstName || 
             window.Clerk.user.username ||
             window.Clerk.user.emailAddresses?.[0]?.emailAddress || 
-            t('auth.user_default', 'Uživatel')
+            t('auth.user_default', 'User')
         );
         loginBtn.innerHTML = `<span class="nav-icon">👤</span><span class="nav-text">${userName}</span>`;
         loginBtn.onclick = showUserProfileModal;
@@ -1965,7 +1965,7 @@ function updateAuthUIActual() {
     } else {
         // User is signed out
         console.log('User signed out');
-        const loginText = t('nav.login', 'Přihlášení');
+        const loginText = t('nav.login', 'Login');
         loginBtn.innerHTML = `<span class="nav-icon">👤</span><span class="nav-text" data-i18n="nav.login">${loginText}</span>`;
         // Zobrazit rozhodovací modal (Mám účet / Chci se registrovat) místo přímého Clerk SignIn
         loginBtn.onclick = showAuthChoiceModal;
@@ -2102,13 +2102,13 @@ async function showLoginModal(mode = 'signIn') {
                 modalTitle.setAttribute('data-i18n', 'auth.register_title');
                 modalSubtitle.setAttribute('data-i18n', 'auth.register_subtitle');
                 modalTitle.textContent = t('auth.register_title', 'Registrace');
-                modalSubtitle.textContent = t('auth.register_subtitle', 'Vytvořte si účet pro přístup ke všem funkcím');
+                modalSubtitle.textContent = t('auth.register_subtitle', 'Create an account to access all features');
             } else {
                 // Změnit data-i18n atribut a text
                 modalTitle.setAttribute('data-i18n', 'auth.login_title');
                 modalSubtitle.setAttribute('data-i18n', 'auth.login_subtitle');
-                modalTitle.textContent = t('auth.login_title', 'Přihlášení');
-                modalSubtitle.textContent = t('auth.login_subtitle', 'Přihlaste se pro přístup k uloženým receptům a produktům');
+                modalTitle.textContent = t('auth.login_title', 'Login');
+                modalSubtitle.textContent = t('auth.login_subtitle', 'Sign in to access your saved recipes and products');
             }
         }
         
@@ -2554,7 +2554,7 @@ function showUserProfileModal() {
                 profileInfoDiv.innerHTML = `
                     ${avatarHtml}
                     <div class="profile-details">
-                        <div class="profile-name">${safeName || t('auth.user', 'Uživatel')}</div>
+                        <div class="profile-name">${safeName || t('auth.user', 'User')}</div>
                         <div class="profile-email">${safeEmail}</div>
                     </div>
                 `;
@@ -2823,15 +2823,15 @@ async function showSaveRecipeModal() {
         // Resetovat nadpis a tlačítko na "nový recept" (mohl být změněn úpravou)
         const modalTitle = modal.querySelector('.menu-title');
         if (modalTitle) {
-            modalTitle.textContent = t('save_recipe.title', 'Uložit recept');
+            modalTitle.textContent = t('save_recipe.title', 'Save Recipe');
         }
         const submitBtn = modal.querySelector('button[type="submit"]');
         if (submitBtn) {
             const spanElement = submitBtn.querySelector('span[data-i18n]');
             if (spanElement) {
-                spanElement.textContent = t('save_recipe.save_button', 'Uložit recept');
+                spanElement.textContent = t('save_recipe.save_button', 'Save Recipe');
             } else {
-                submitBtn.textContent = t('save_recipe.save_button', 'Uložit recept');
+                submitBtn.textContent = t('save_recipe.save_button', 'Save Recipe');
             }
         }
         
@@ -2934,13 +2934,13 @@ async function showSaveAsNewModal() {
     // Nastavit nadpis a tlačítko
     const modalTitle = modal.querySelector('.menu-title');
     if (modalTitle) {
-        modalTitle.textContent = t('save_recipe.save_as_new', 'Uložit jako nový');
+        modalTitle.textContent = t('save_recipe.save_as_new', 'Save as new');
     }
     const submitBtn = modal.querySelector('button[type="submit"]');
     if (submitBtn) {
         const spanElement = submitBtn.querySelector('span[data-i18n]');
         if (spanElement) {
-            spanElement.textContent = t('save_recipe.save_as_new', 'Uložit jako nový');
+            spanElement.textContent = t('save_recipe.save_as_new', 'Save as new');
         }
     }
     
@@ -3015,13 +3015,13 @@ async function showSaveChangesModal() {
     // Nastavit nadpis a tlačítko
     const modalTitle = modal.querySelector('.menu-title');
     if (modalTitle) {
-        modalTitle.textContent = t('save_recipe.save_changes', 'Uložit změny');
+        modalTitle.textContent = t('save_recipe.save_changes', 'Save changes');
     }
     const submitBtn = modal.querySelector('button[type="submit"]');
     if (submitBtn) {
         const spanElement = submitBtn.querySelector('span[data-i18n]');
         if (spanElement) {
-            spanElement.textContent = t('save_recipe.save_changes', 'Uložit změny');
+            spanElement.textContent = t('save_recipe.save_changes', 'Save changes');
         }
     }
     
@@ -3084,14 +3084,14 @@ function populateRecipeFlavors() {
     selectedFlavorRows = 0;
     
     if (!currentRecipeData) {
-        listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recept neobsahuje příchutě')}</div>`;
+        listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recipe contains no flavors')}</div>`;
         return;
     }
     
     const flavors = extractRecipeFlavorsForDisplay(currentRecipeData);
     
     if (flavors.length === 0) {
-        listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recept neobsahuje příchutě')}</div>`;
+        listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recipe contains no flavors')}</div>`;
         return;
     }
     
@@ -3224,7 +3224,7 @@ function removeFlavorRow(rowId) {
         // Pokud nezbyly žádné příchutě, zobrazit zprávu
         const listContainer = document.getElementById('selectedFlavorsList');
         if (listContainer && listContainer.children.length === 0) {
-            listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recept neobsahuje příchutě')}</div>`;
+            listContainer.innerHTML = `<div class="no-flavors-message">${t('save_recipe.no_flavors', 'Recipe contains no flavors')}</div>`;
         }
     }
 }
@@ -3257,7 +3257,7 @@ function getSelectedRecipeFlavors() {
 // Přidat řádek pro výběr produktu
 function addProductRow() {
     if (availableProductsForRecipe.length === 0) {
-        alert(t('save_recipe.no_products', 'Nemáte žádné oblíbené produkty. Nejprve je přidejte v sekci Oblíbené produkty.'));
+        alert(t('save_recipe.no_products', 'You have no favorite products. Add them first in the Favorite Products section.'));
         return;
     }
     
@@ -3382,16 +3382,16 @@ function hideSaveRecipeModal() {
         // Obnovit původní nadpis a tlačítko
         const modalTitle = modal.querySelector('.menu-title');
         if (modalTitle) {
-            modalTitle.textContent = t('save_recipe.title', 'Uložit recept');
+            modalTitle.textContent = t('save_recipe.title', 'Save Recipe');
         }
         
         const submitBtn = modal.querySelector('button[type="submit"]');
         if (submitBtn) {
             const spanElement = submitBtn.querySelector('span[data-i18n]');
             if (spanElement) {
-                spanElement.textContent = t('save_recipe.save_button', 'Uložit recept');
+                spanElement.textContent = t('save_recipe.save_button', 'Save Recipe');
             } else {
-                submitBtn.textContent = t('save_recipe.save_button', 'Uložit recept');
+                submitBtn.textContent = t('save_recipe.save_button', 'Save Recipe');
             }
         }
         
@@ -3543,7 +3543,7 @@ async function saveRecipe(event) {
     event.preventDefault();
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert(t('alert.login_required_recipe', 'Pro uložení receptu se prosím přihlaste.'));
+        alert(t('alert.login_required_recipe', 'Please sign in to save the recipe.'));
         return false;
     }
     
@@ -3557,7 +3557,7 @@ async function saveRecipe(event) {
     
     // Pro nový recept potřebujeme data receptu
     if (!isEditing && !currentRecipeData) {
-        alert(t('recipes.nothing_to_save', 'Chyba: Není co uložit. Prosím vytvořte recept.'));
+        alert(t('recipes.nothing_to_save', 'Error: Nothing to save. Please create a recipe.'));
         return false;
     }
     
@@ -3692,7 +3692,7 @@ async function saveRecipe(event) {
                     );
                     if (reminderSaved) {
                         const remindDate = new Date(reminderData.remind_at).toLocaleDateString();
-                        reminderInfo = `\n🔔 ${t('reminder.reminder_set', 'Připomínka nastavena na')} ${remindDate}`;
+                        reminderInfo = `\n🔔 ${t('reminder.reminder_set', 'Reminder set for')} ${remindDate}`;
                     }
                 }
             }
@@ -3700,14 +3700,14 @@ async function saveRecipe(event) {
             // Zobrazit zprávu
             let productInfo = '';
             if (allProductIds.length > 0) {
-                productInfo = `\n📦 ${t('save_recipe.products_linked', 'Propojené produkty')}: ${allProductIds.length}`;
+                productInfo = `\n📦 ${t('save_recipe.products_linked', 'Linked products')}: ${allProductIds.length}`;
                 if (copiedProductIds.length > 0) {
-                    productInfo += ` (${t('shared_recipe.products_copied', 'zkopírováno')}: ${copiedProductIds.length})`;
+                    productInfo += ` (${t('shared_recipe.products_copied', 'copied')}: ${copiedProductIds.length})`;
                 }
             }
             
             if (isEditing) {
-                alert(t('save_recipe.updated', 'Recept byl úspěšně upraven!') + productInfo);
+                alert(t('save_recipe.updated', 'Recipe updated successfully!') + productInfo);
                 // Obnovit detail receptu
                 await viewRecipeDetail(window.editingRecipeId);
             } else {
@@ -3719,7 +3719,7 @@ async function saveRecipe(event) {
                     window.currentSharedRecipe = null;
                     
                     // Zobrazit krátkou notifikaci a přejít na detail
-                    showNotification(t('save_recipe.success', 'Recept byl úspěšně uložen!') + productInfo, 'success');
+                    showNotification(t('save_recipe.success', 'Recipe saved successfully!') + productInfo, 'success');
                     hideSaveRecipeModal();
                     resetReminderFields();
                     
@@ -3729,19 +3729,19 @@ async function saveRecipe(event) {
                 }
                 
                 const shareUrl = saved.share_url || SHARE_DOMAIN + '/?recipe=' + saved.share_id;
-                const successMessage = t('save_recipe.success', 'Recept byl úspěšně uložen!') + '\n\n' +
-                    t('save_recipe.share_link', 'Odkaz pro sdílení:') + '\n' + shareUrl + productInfo + reminderInfo;
+                const successMessage = t('save_recipe.success', 'Recipe saved successfully!') + '\n\n' +
+                    t('save_recipe.share_link', 'Share link:') + '\n' + shareUrl + productInfo + reminderInfo;
                 alert(successMessage);
             }
             
             hideSaveRecipeModal();
             resetReminderFields();
         } else {
-            alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
+            alert(t('recipes.save_error', 'Error saving recipe.'));
         }
     } catch (error) {
         console.error('Error saving recipe:', error);
-        alert(t('recipes.save_error', 'Chyba při ukládání receptu.'));
+        alert(t('recipes.save_error', 'Error saving recipe.'));
     }
     
     return false;
@@ -3770,7 +3770,7 @@ async function showMyRecipes() {
     }
     
     const container = document.getElementById('recipesListContainer');
-    container.innerHTML = `<p class="no-recipes-text">${t('recipes.loading', 'Načítám recepty...')}</p>`;
+    container.innerHTML = `<p class="no-recipes-text">${t('recipes.loading', 'Loading recipes...')}</p>`;
     
     // Reset vyhledávacích filtrů
     resetRecipeFilters();
@@ -3787,7 +3787,7 @@ async function showMyRecipes() {
         renderRecipesList(allUserRecipes);
     } catch (error) {
         console.error('Error loading recipes:', error);
-        container.innerHTML = `<p class="no-recipes-text" style="color: var(--neon-pink);">${t('recipes.load_error', 'Chyba při načítání receptů.')}</p>`;
+        container.innerHTML = `<p class="no-recipes-text" style="color: var(--neon-pink);">${t('recipes.load_error', 'Error loading recipes.')}</p>`;
     }
 }
 
@@ -3939,12 +3939,12 @@ function filterRecipes() {
         if (hasFilters) {
             if (filtered.length === 0) {
                 const noResultsText = showMaturedOnly 
-                    ? t('recipes.no_matured', 'Žádné vyzrálé liquidy.')
-                    : t('recipes.no_filter_results', 'Žádné recepty neodpovídají filtrům.');
+                    ? t('recipes.no_matured', 'No matured liquids.')
+                    : t('recipes.no_filter_results', 'No recipes match the filters.');
                 resultsInfo.textContent = noResultsText;
                 resultsInfo.className = 'search-results-info no-results';
             } else {
-                resultsInfo.textContent = `${t('recipes.found', 'Nalezeno')} ${filtered.length} ${t('recipes.of', 'z')} ${allUserRecipes.length} ${t('recipes.recipes_count', 'receptů')}.`;
+                resultsInfo.textContent = `${t('recipes.found', 'Found')} ${filtered.length} ${t('recipes.of', 'of')} ${allUserRecipes.length} ${t('recipes.recipes_count', 'recipes')}.`;
                 resultsInfo.className = 'search-results-info has-results';
             }
         } else {
@@ -3961,7 +3961,7 @@ function renderRecipesList(recipes) {
     const container = document.getElementById('recipesListContainer');
 
     if (!recipes || recipes.length === 0) {
-        container.innerHTML = `<p class="no-recipes-text">${t('recipes.no_recipes', 'Zatím nemáte žádné uložené recepty.')}</p>`;
+        container.innerHTML = `<p class="no-recipes-text">${t('recipes.no_recipes', 'You have no saved recipes yet.')}</p>`;
         return;
     }
     
@@ -3978,7 +3978,7 @@ function renderRecipesList(recipes) {
         
         // Zkontrolovat zda je recept vyzrálý
         const isMatured = maturedRecipeIds.has(recipe.id);
-        const maturedBadge = isMatured ? `<span class="recipe-matured-badge">${t('reminder.matured', 'Vyzrálo')}</span>` : '';
+        const maturedBadge = isMatured ? `<span class="recipe-matured-badge">${t('reminder.matured', 'Matured')}</span>` : '';
         
         // SECURITY: Escapování všech uživatelských dat
         const safeName = escapeHtml(recipe.name);
@@ -4045,7 +4045,7 @@ async function viewRecipeDetail(recipeId) {
         
     } catch (error) {
         console.error('Error loading recipe:', error);
-        alert(t('recipes.load_error', 'Chyba při načítání receptu.'));
+        alert(t('recipes.load_error', 'Error loading recipe.'));
     }
 }
 
@@ -4072,14 +4072,14 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     const ingredients = data.ingredients || [];
     if (ingredients && Array.isArray(ingredients) && ingredients.length > 0) {
         ingredientsHtml = `
-            <h4 class="recipe-ingredients-title">${t('recipe_detail.ingredients_title', 'Složky')}</h4>
+            <h4 class="recipe-ingredients-title">${t('recipe_detail.ingredients_title', 'Ingredients')}</h4>
             <div class="results-table-container">
                 <table class="results-table">
                     <thead>
                         <tr>
-                            <th>${t('recipe_detail.table_component', 'Složka')}</th>
-                            <th>${t('recipe_detail.table_volume', 'Objem (ml)')}</th>
-                            <th>${t('recipe_detail.table_grams', 'Gramy')}</th>
+                            <th>${t('recipe_detail.table_component', 'Component')}</th>
+                            <th>${t('recipe_detail.table_volume', 'Volume (ml)')}</th>
+                            <th>${t('recipe_detail.table_grams', 'Grams')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -4119,7 +4119,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         
         linkedProductsHtml = `
             <div class="recipe-linked-products">
-                <h4 class="recipe-ingredients-title">${t('recipe_detail.linked_products', 'Použité produkty')}</h4>
+                <h4 class="recipe-ingredients-title">${t('recipe_detail.linked_products', 'Linked products')}</h4>
                 <div class="linked-products-list">
                     ${linkedProducts.map(product => {
                         const icon = typeIcons[product.product_type] || '📦';
@@ -4145,7 +4145,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         
         linkedFlavorsHtml = `
             <div class="recipe-linked-flavors">
-                <h4 class="recipe-ingredients-title">${t('recipe_detail.linked_flavors', 'Použité příchutě')}</h4>
+                <h4 class="recipe-ingredients-title">${t('recipe_detail.used_flavors', 'Used flavors')}</h4>
                 <div class="linked-flavors-list">
                     ${linkedFlavors.map(flavorLink => {
                         // Získat název a výrobce
@@ -4197,11 +4197,11 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         
         <div class="recipe-detail-info">
             <div class="recipe-info-item total-volume-highlight">
-                <div class="recipe-info-label volume-label">${t('recipe_detail.total_volume', 'Celkový objem')}</div>
+                <div class="recipe-info-label volume-label">${t('recipe_detail.total_volume', 'Total volume')}</div>
                 <div class="recipe-info-value volume-value">${safeTotal} ml</div>
             </div>
             <div class="recipe-info-item">
-                <div class="recipe-info-label">${t('recipe_detail.ratio', 'Poměr VG/PG')}</div>
+                <div class="recipe-info-label">${t('recipe_detail.ratio', 'VG/PG Ratio')}</div>
                 <div class="recipe-info-value">${safeVg}:${safePg}</div>
             </div>
             <div class="recipe-info-item">
@@ -4215,18 +4215,18 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         ${linkedFlavorsHtml}
         
         <div class="recipe-meta-info">
-            <p class="recipe-date">${t('recipe_detail.created', 'Vytvořeno')}: ${date}</p>
+            <p class="recipe-date">${t('recipe_detail.created', 'Created')}: ${date}</p>
         </div>
         
         <!-- Sekce připomínek zrání - pouze pro vlastní recepty -->
         ${contentId === 'recipeDetailContent' ? `
         <div class="reminders-section">
-            <h4 class="reminders-title">${t('recipe_detail.reminders_title', 'Připomínky zrání')}</h4>
+            <h4 class="reminders-title">${t('recipe_detail.reminders_title', 'Steeping reminders')}</h4>
             <div class="reminders-list" id="remindersList-${escapeHtml(recipe.id)}">
-                <div class="no-reminders">${t('recipe_detail.no_reminders', 'Žádné připomínky. Klikněte na tlačítko níže pro přidání.')}</div>
+                <div class="no-reminders">${t('recipe_detail.no_reminders', 'No reminders. Click button below to add.')}</div>
             </div>
             <button type="button" class="add-reminder-btn" onclick="showAddReminderModal('${escapeHtml(recipe.id)}')">
-                + ${t('recipe_detail.add_reminder', 'Přidat nové míchání')}
+                + ${t('recipe_detail.add_reminder', 'Add new mixing')}
             </button>
         </div>
         ` : ''}
@@ -4243,7 +4243,7 @@ async function editSavedRecipe() {
     if (!currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert(t('alert.login_required_edit', 'Pro úpravu receptu se prosím přihlaste.'));
+        alert(t('alert.login_required_edit', 'Please sign in to edit the recipe.'));
         return;
     }
     
@@ -4645,9 +4645,9 @@ async function showEditRecipeForm() {
     if (submitBtn) {
         const spanElement = submitBtn.querySelector('span[data-i18n]');
         if (spanElement) {
-            spanElement.textContent = t('save_recipe.save_changes', 'Uložit změny');
+            spanElement.textContent = t('save_recipe.save_changes', 'Save changes');
         } else {
-            submitBtn.textContent = t('save_recipe.save_changes', 'Uložit změny');
+            submitBtn.textContent = t('save_recipe.save_changes', 'Save changes');
         }
     }
     
@@ -4702,7 +4702,7 @@ const SHARE_DOMAIN = 'https://www.liquimixer.com';
 // Sdílet recept
 function shareRecipe() {
     if (!currentViewingRecipe || !currentViewingRecipe.share_id) {
-        alert(t('share.cannot_share_recipe', 'Tento recept nelze sdílet.'));
+        alert(t('share.cannot_share_recipe', 'This recipe cannot be shared.'));
         return;
     }
 
@@ -4731,7 +4731,7 @@ function shareRecipe() {
 
 function copyShareLink(url) {
     navigator.clipboard.writeText(url).then(() => {
-        alert(t('recipes.share_copied', 'Odkaz byl zkopírován do schránky!') + '\n\n' + url);
+        alert(t('recipes.share_copied', 'Link copied to clipboard!') + '\n\n' + url);
     }).catch(() => {
         prompt('Zkopírujte tento odkaz:', url);
     });
@@ -4740,7 +4740,7 @@ function copyShareLink(url) {
 // Sdílet oblíbený produkt
 function shareProduct() {
     if (!currentViewingProduct || !currentViewingProduct.share_id) {
-        alert(t('share.cannot_share_product', 'Tento produkt nelze sdílet.'));
+        alert(t('share.cannot_share_product', 'This product cannot be shared.'));
         return;
     }
 
@@ -4771,7 +4771,7 @@ async function deleteRecipe() {
     if (!currentViewingRecipe) return;
     
     if (!window.Clerk || !window.Clerk.user) {
-        alert(t('alert.login_required', 'Pro smazání receptu se prosím přihlaste.'));
+        alert(t('alert.login_required', 'Please sign in to delete the recipe.'));
         return;
     }
     
@@ -4788,15 +4788,15 @@ async function deleteRecipe() {
         );
         
         if (success) {
-            alert(t('recipe_detail.delete_success', 'Recept byl smazán.'));
+            alert(t('recipe_detail.delete_success', 'Recipe deleted.'));
             currentViewingRecipe = null;
             showMyRecipes();
         } else {
-            alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
+            alert(t('recipe_detail.delete_error', 'Error deleting recipe.'));
         }
     } catch (error) {
         console.error('Error deleting recipe:', error);
-        alert(t('recipe_detail.delete_error', 'Chyba při mazání receptu.'));
+        alert(t('recipe_detail.delete_error', 'Error deleting recipe.'));
     }
 }
 
@@ -4854,7 +4854,7 @@ async function loadSharedRecipe() {
         
     } catch (error) {
         console.error('Error loading shared recipe:', error);
-        showNotification(t('recipes.load_error', 'Chyba při načítání receptu.'), 'error');
+        showNotification(t('recipes.load_error', 'Error loading recipe.'), 'error');
         showPage('intro');
         return false;
     }
@@ -4889,13 +4889,13 @@ function showSharedRecipeLoginPrompt() {
     const contentEl = document.getElementById('sharedRecipeContent');
     const titleEl = document.getElementById('sharedRecipeTitle');
     
-    titleEl.textContent = t('recipe_detail.shared_title', 'Sdílený recept');
+    titleEl.textContent = t('recipe_detail.shared_title', 'Shared recipe');
     contentEl.innerHTML = `
         <div class="login-prompt">
             <div class="login-prompt-icon">🔒</div>
-            <h3 class="login-prompt-title">${t('shared_recipe.pro_login_title', 'Pro zobrazení receptu se přihlaste')}</h3>
-            <p class="login-prompt-text">${t('shared_recipe.pro_login_text', 'Recepty vytvářené v režimu Liquid PRO jsou dostupné jenom pro přihlášené uživatele.')}</p>
-            <button class="neon-button" onclick="window.handleSharedRecipeLogin()">${t('shared_recipe.login_button', 'PŘIHLÁSIT SE')}</button>
+            <h3 class="login-prompt-title">${t('shared_recipe.pro_login_title', 'Sign in to view the recipe')}</h3>
+            <p class="login-prompt-text">${t('shared_recipe.pro_login_text', 'Recipes created in Liquid PRO mode are only available for logged-in users.')}</p>
+            <button class="neon-button" onclick="window.handleSharedRecipeLogin()">${t('shared_recipe.login_button', 'SIGN IN')}</button>
         </div>
     `;
     
@@ -4940,7 +4940,7 @@ async function loadSharedRecipeContent(shareId) {
             return true;
         } else {
             const contentEl = document.getElementById('sharedRecipeContent');
-            contentEl.innerHTML = `<p class="no-recipes-text">${t('recipe_detail.not_found', 'Recept nebyl nalezen nebo byl smazán.')}</p>`;
+            contentEl.innerHTML = `<p class="no-recipes-text">${t('recipe_detail.not_found', 'Recipe not found or has been deleted.')}</p>`;
             showPage('shared-recipe');
             return true;
         }
@@ -4971,7 +4971,7 @@ async function saveSharedRecipe() {
     // Zkontrolovat, že máme načtený sdílený recept
     const recipe = window.currentSharedRecipe;
     if (!recipe || !recipe.recipe_data) {
-        showNotification(t('recipes.nothing_to_save', 'Není co uložit.'), 'error');
+        showNotification(t('recipes.nothing_to_save', 'Nothing to save.'), 'error');
         return;
     }
     
@@ -5000,7 +5000,7 @@ async function saveSharedRecipe() {
         // Nastavit nadpis a tlačítko
         const modalTitle = modal.querySelector('.menu-title');
         if (modalTitle) {
-            modalTitle.textContent = t('shared_recipe.save_to_my_recipes', 'Uložit k sobě');
+            modalTitle.textContent = t('shared_recipe.save_to_my_recipes', 'Save to my recipes');
         }
         
         // Blokovat "Sdílet do veřejné databáze" při ukládání ze sdílené databáze (prevence duplikátů)
@@ -5012,7 +5012,7 @@ async function saveSharedRecipe() {
         }
         if (publicToggle) {
             publicToggle.classList.add('disabled');
-            publicToggle.title = t('save_recipe.public_disabled_shared', 'Nelze sdílet recept zkopírovaný z veřejné databáze');
+            publicToggle.title = t('save_recipe.public_disabled_shared', 'Cannot share a recipe copied from public database');
         }
         
         // Inicializovat připomínku
@@ -5104,7 +5104,7 @@ function addSharedProductRow(productId, productName, productType) {
         <div class="shared-product-display">
             <span class="shared-product-icon">${icon}</span>
             <span class="shared-product-name">${escapeHtml(productName)}</span>
-            <span class="shared-product-badge">${t('shared_recipe.from_shared', 'ze sdíleného')}</span>
+            <span class="shared-product-badge">${t('shared_recipe.from_shared', 'from shared')}</span>
         </div>
         <input type="hidden" name="sharedProducts" value="${escapeHtml(productId)}">
         <button type="button" class="reminder-btn delete" onclick="removeSharedProductRow('${rowId}')" title="${t('common.remove', 'Odstranit')}">${reminderDeleteIcon}</button>
@@ -5144,7 +5144,7 @@ async function showFavoriteProducts() {
     }
     
     const container = document.getElementById('productsListContainer');
-    container.innerHTML = `<p class="no-products-text">${t('products.loading', 'Načítám produkty...')}</p>`;
+    container.innerHTML = `<p class="no-products-text">${t('products.loading', 'Loading products...')}</p>`;
     
     // Reset vyhledávacích filtrů
     resetProductFilters();
@@ -5288,7 +5288,7 @@ function renderProductsList(products) {
     const container = document.getElementById('productsListContainer');
 
     if (!products || products.length === 0) {
-        container.innerHTML = `<p class="no-products-text">${t('products.no_products', 'Zatím nemáte žádné oblíbené produkty.')}</p>`;
+        container.innerHTML = `<p class="no-products-text">${t('products.no_products', 'You have no favorite products yet.')}</p>`;
         return;
     }
     
@@ -5478,7 +5478,7 @@ function displayProductDetail(product, linkedRecipes = []) {
         
         recipesHtml = `
             <div class="product-linked-recipes">
-                <h4 class="product-section-title">${t('product_detail.used_in_recipes', 'Použito v receptech')}</h4>
+                <h4 class="product-section-title">${t('product_detail.used_in_recipes', 'Used in recipes')}</h4>
                 <div class="linked-recipes-list">
                     ${recipeItems}
                 </div>
@@ -5691,7 +5691,7 @@ async function copySharedProductToUser() {
         const copied = await window.LiquiMixerDB.copyProductToUser(product.id, window.Clerk.user.id);
         
         if (copied) {
-            showNotification(t('shared_recipe.product_saved', 'Produkt byl uložen do vašich oblíbených!'), 'success');
+            showNotification(t('shared_recipe.product_saved', 'Product saved to your favorites!'), 'success');
             // Přejít na detail nového produktu
             currentViewingProduct = copied;
             displayProductDetail(copied);
@@ -5725,16 +5725,16 @@ function getProductTypeLabel(type) {
         'nicotine_salt': 'products.type_nicotine_salt'
     };
     const key = typeKeys[type] || 'products.type_flavor';
-    return t(key, productTypeLabels[type] || 'Příchuť');
+    return t(key, productTypeLabels[type] || 'Flavor');
 }
 
 // Mapování typů produktů na názvy
 const productTypeLabels = {
     'vg': 'VG (Glycerin)',
-    'pg': 'PG (Propylenglykol)',
-    'flavor': 'Příchuť',
-    'nicotine_booster': 'Nikotin booster',
-    'nicotine_salt': 'Nikotinová sůl'
+    'pg': 'PG (Propylene Glycol)',
+    'flavor': 'Flavor',
+    'nicotine_booster': 'Nicotine Booster',
+    'nicotine_salt': 'Nicotine Salt'
 };
 
 // Mapování typů produktů na ikony
@@ -5954,11 +5954,11 @@ async function updateFlavorSuggestionHint() {
         const remaining = Math.max(0, 5 - count);
         
         if (remaining === 0) {
-            hintEl.textContent = t('flavor_suggestion.rate_limit_reached', 'Dosažen týdenní limit návrhů');
+            hintEl.textContent = t('flavor_suggestion.rate_limit_reached', 'Weekly suggestion limit reached');
             hintEl.classList.add('error');
             document.getElementById('productSuggestToDatabase').disabled = true;
         } else {
-            hintEl.textContent = t('flavor_suggestion.rate_limit', 'Můžete navrhnout max 5 příchutí týdně').replace('5', remaining);
+            hintEl.textContent = t('flavor_suggestion.rate_limit', 'You can suggest max 5 flavors per week').replace('5', remaining);
             hintEl.classList.remove('error');
             document.getElementById('productSuggestToDatabase').disabled = false;
         }
@@ -6054,7 +6054,7 @@ async function saveProduct(event) {
                 await submitFlavorSuggestionFromProduct(productData);
             }
             
-            alert(editingId ? t('product_form.updated', 'Produkt byl aktualizován!') : t('product_form.success', 'Produkt byl uložen!'));
+            alert(editingId ? t('product_form.updated', 'Product updated!') : t('product_form.success', 'Product saved!'));
             showFavoriteProducts();
         } else {
             alert(t('product_form.error', 'Chyba při ukládání produktu.'));
@@ -6087,7 +6087,7 @@ async function submitFlavorSuggestionFromProduct(productData) {
         
         if (result.error) {
             if (result.error.message?.includes('limit')) {
-                showNotification(t('flavor_suggestion.rate_limit_reached', 'Dosažen týdenní limit návrhů'), 'warning');
+                showNotification(t('flavor_suggestion.rate_limit_reached', 'Weekly suggestion limit reached'), 'warning');
             } else {
                 console.error('Flavor suggestion error:', result.error);
             }
@@ -6164,7 +6164,7 @@ function previewProductImage(event) {
 function captureProductPhoto() {
     // Zkontrolovat podporu kamery
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert(t('product_form.camera_error', 'Váš prohlížeč nepodporuje přístup ke kameře.'));
+        alert(t('product_form.camera_error', 'Your browser does not support camera access.'));
         return;
     }
     
@@ -6548,7 +6548,7 @@ function updateVgPgRatioLimits() {
                 reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                const flavorReason = t('ratio_warning.reason_flavor_percent', 'příchuť ({percent}%, VG/PG {vg}/{pg})')
+                const flavorReason = t('ratio_warning.reason_flavor_percent', 'flavor ({percent}%, VG/PG {vg}/{pg})')
                     .replace('{percent}', flavorPercent)
                     .replace('{vg}', flavorVgPercent)
                     .replace('{pg}', flavorPgPercent);
@@ -6821,15 +6821,15 @@ function getIngredientName(ingredient) {
                 displayFlavorName = getFlavorName(ingredient.flavorType || 'fruit');
             }
             // Vždy přidat prefix "Příchuť" - s číslem pokud je více příchutí
-            const flavorPrefix = t('ingredients.flavor', 'Příchuť');
+            const flavorPrefix = t('ingredients.flavor', 'Flavor');
             if (ingredient.flavorNumber && ingredient.flavorNumber > 1) {
                 return `${flavorPrefix} ${ingredient.flavorNumber}: ${displayFlavorName} (VG/PG ${params.vgpg})`;
             }
             return `${flavorPrefix}: ${displayFlavorName} (VG/PG ${params.vgpg})`;
         case 'shakevape_flavor':
             // Shake & Vape - příchuť již v lahvičce
-            const svFlavorLabel = t('ingredients.flavor', 'Příchuť');
-            const inBottleLabel = t('shakevape.in_bottle', 'již v lahvičce');
+            const svFlavorLabel = t('ingredients.flavor', 'Flavor');
+            const inBottleLabel = t('shakevape.in_bottle', 'already in bottle');
             return `${svFlavorLabel} (${inBottleLabel}, VG/PG ${params.vgpg})`;
         case 'vg':
             return t('ingredients.vg', 'VG (Glycerin)');
@@ -6872,15 +6872,15 @@ function getIngredientName(ingredient) {
                 const shishaFlavorData = shishaFlavorDatabase[shishaFlavorType] || shishaFlavorDatabase.custom;
                 shishaDisplayName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
             }
-            return `${t('ingredients.flavor', 'Příchuť')} ${ingredient.flavorNumber || 1}: ${shishaDisplayName}`;
+            return `${t('ingredients.flavor', 'Flavor')} ${ingredient.flavorNumber || 1}: ${shishaDisplayName}`;
         case 'shisha_sweetener':
             // Shisha sweetener - přeložit název sladidla
             const sweetType = ingredient.sweetenerType || 'sucralose';
             const sweetData = sweetenerDatabase[sweetType] || sweetenerDatabase.sucralose;
             const sweetName = t(`shisha.sweetener_${sweetType}`, sweetData.name);
-            return `${t('shisha.sweetener_label', 'Sladidlo')}: ${sweetName}`;
+            return `${t('shisha.sweetener_label', 'Sweetener')}: ${sweetName}`;
         case 'water':
-            return t('form.water', 'Voda');
+            return t('form.water', 'Water');
         case 'sweetener':
             // Fallback pro starší recepty kde sweetener nebyl jako additive
             const sweetenerTypeFallback = ingredient.sweetenerType || 'sucralose';
@@ -6942,25 +6942,25 @@ function updateFlavorDisplay() {
     let color, text;
     if (value < minPercent) {
         color = '#ffaa00';
-        text = t('flavor_descriptions.weak', 'Slabá až žádná chuť (doporučeno {min}–{max}%)')
+        text = t('flavor_descriptions.weak', 'Weak or no flavor (recommended {min}–{max}%)')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
         trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
     } else if (value > maxPercent) {
         color = '#ff0044';
-        text = t('flavor_descriptions.strong', 'Výrazná nebo přeslazená chuť (doporučeno {min}–{max}%)')
+        text = t('flavor_descriptions.strong', 'Strong or too sweet flavor (recommended {min}–{max}%)')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
         trackEl.style.background = `linear-gradient(90deg, #00cc66, #ff0044)`;
     } else {
         color = '#00cc66';
         if (hasSpecificFlavor && note) {
-            text = t('flavor_descriptions.ideal_specific', 'Ideální chuť ({min}–{max}%) - {note}')
+            text = t('flavor_descriptions.ideal_specific', 'Ideal flavor ({min}–{max}%) - {name}')
                 .replace('{min}', minPercent)
                 .replace('{max}', maxPercent)
-                .replace('{note}', note);
+                .replace('{name}', note);
         } else {
-            text = t('flavor_descriptions.ideal', 'Ideální chuť ({min}–{max}%) - {note}')
+            text = t('flavor_descriptions.ideal', 'Ideal flavor ({min}–{max}%) - {note}')
                 .replace('{min}', minPercent)
                 .replace('{max}', maxPercent)
                 .replace('{note}', note);
@@ -8015,7 +8015,7 @@ function updateDiluteCalculation() {
     
     if (targetStrength > baseStrength && baseStrength > 0) {
         if (warningEl) {
-            const warningText = t('dilute.target_too_high', 'Cílová síla nemůže být vyšší než zdrojová ({strength} mg/ml).')
+            const warningText = t('dilute.target_too_high', 'Target strength cannot be higher than source ({strength} mg/ml).')
                 .replace('{strength}', baseStrength);
             warningEl.textContent = warningText;
             warningEl.classList.remove('hidden');
@@ -8524,7 +8524,7 @@ function updateSvVgPgLimits() {
                 reasons.push(nicReason);
             }
             if (flavorVolume > 0) {
-                const flavorReason = t('ratio_warning.reason_flavor_volume', 'příchuť ({volume} ml, VG/PG {vg}/{pg})')
+                const flavorReason = t('ratio_warning.reason_flavor_volume', 'flavor ({volume} ml, VG/PG {vg}/{pg})')
                     .replace('{volume}', flavorVolume)
                     .replace('{vg}', flavorVgPercent)
                     .replace('{pg}', flavorPgPercent);
@@ -10860,7 +10860,7 @@ async function startPayment() {
 
     } catch (error) {
         console.error('Payment error:', error);
-        showSubscriptionError(t('subscription.error_generic', 'Při zpracování platby došlo k chybě. Zkuste to prosím znovu.'));
+        showSubscriptionError(t('subscription.error_generic', 'An error occurred while processing payment. Please try again.'));
         if (payBtn) {
             payBtn.disabled = false;
             const spanEl = payBtn.querySelector('span');
@@ -10966,7 +10966,7 @@ async function processPayment() {
 
     } catch (error) {
         console.error('Payment processing error:', error);
-        showSubscriptionError(t('subscription.error_generic', 'Při zpracování platby došlo k chybě. Zkuste to prosím znovu.'));
+        showSubscriptionError(t('subscription.error_generic', 'An error occurred while processing payment. Please try again.'));
         if (payBtn) {
             payBtn.disabled = false;
             payBtn.querySelector('span').textContent = t('subscription.pay_button', 'Zaplatit a aktivovat');
@@ -11146,7 +11146,7 @@ function updateReminderDate() {
 
     if (infoText) {
         if (maxSteepingDays === 0) {
-            infoText.textContent = t('save_recipe.reminder_no_steeping', 'Tato příchuť nevyžaduje zrání.');
+            infoText.textContent = t('save_recipe.reminder_no_steeping', 'This flavor does not require steeping.');
         } else {
             const daysText = maxSteepingDays === 1 ? t('common.day', 'den') : 
                 (maxSteepingDays >= 2 && maxSteepingDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
@@ -11299,7 +11299,7 @@ async function requestNotificationPermissionWithPrompt() {
     }
     
     if (Notification.permission === 'denied') {
-        alert(t('notification.denied', 'Notifikace byly zablokovány. Povolte je v nastavení prohlížeče.'));
+        alert(t('notification.denied', 'Notifications blocked. Enable them in browser settings.'));
         return false;
     }
     
@@ -11343,7 +11343,7 @@ async function loadRecipeReminders(recipeId, showAll = false) {
     try {
         const reminders = await window.LiquiMixerDB.getRecipeReminders(window.Clerk.user.id, recipeId);
         if (!reminders || reminders.length === 0) {
-            listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.no_reminders', 'Žádné připomínky. Klikněte na tlačítko níže pro přidání.')}</div>`;
+            listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.no_reminders', 'No reminders. Click button below to add.')}</div>`;
             return;
         }
 
@@ -11360,7 +11360,7 @@ async function loadRecipeReminders(recipeId, showAll = false) {
 
         if (!showAll && activeReminders.length > 3) {
             const safeRecipeId = escapeHtml(recipeId);
-            html += `<button type="button" class="show-all-reminders-btn" data-recipe-id="${safeRecipeId}" data-show-all="true" onclick="loadRecipeReminders(this.dataset.recipeId, true)">${t('recipe_detail.show_all_reminders', 'Zobrazit všechny')} (${activeReminders.length})</button>`;
+            html += `<button type="button" class="show-all-reminders-btn" data-recipe-id="${safeRecipeId}" data-show-all="true" onclick="loadRecipeReminders(this.dataset.recipeId, true)">${t('recipe_detail.show_all_reminders', 'Show all')} (${activeReminders.length})</button>`;
         } else if (showAll && activeReminders.length > 3) {
             const safeRecipeId = escapeHtml(recipeId);
             html += `<button type="button" class="show-all-reminders-btn" data-recipe-id="${safeRecipeId}" data-show-all="false" onclick="loadRecipeReminders(this.dataset.recipeId, false)">${t('recipe_detail.show_less', 'Zobrazit méně')}</button>`;
@@ -11368,7 +11368,7 @@ async function loadRecipeReminders(recipeId, showAll = false) {
         
         // Pokud nejsou žádné aktivní připomínky, zobrazit zprávu
         if (activeReminders.length === 0) {
-            listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.no_reminders', 'Žádné připomínky. Klikněte na tlačítko níže pro přidání.')}</div>`;
+            listContainer.innerHTML = `<div class="no-reminders">${t('recipe_detail.no_reminders', 'No reminders. Click button below to add.')}</div>`;
             return;
         }
 
@@ -11419,9 +11419,9 @@ function renderReminderItem(reminder, recipeId) {
     if (reminder.status === 'sent') {
         statusBadge = `<span class="reminder-status-badge sent">✓ ${t('reminder.sent', 'Odesláno')}</span>`;
     } else if (reminder.status === 'cancelled') {
-        statusBadge = `<span class="reminder-status-badge cancelled">✕ ${t('reminder.cancelled', 'Zrušeno')}</span>`;
+        statusBadge = `<span class="reminder-status-badge cancelled">✕ ${t('reminder.cancelled', 'Cancelled')}</span>`;
     } else if (isMatured) {
-        statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Vyzrálo')}</span>`;
+        statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Matured')}</span>`;
     }
 
     return `
@@ -11575,9 +11575,9 @@ function showMaturedLiquidsNotification(maturedReminders) {
     if (!maturedReminders || maturedReminders.length === 0) return;
     
     // Získat překlady
-    const title = t('reminder.matured_title', 'Vaše liquidy jsou vyzrálé!');
-    const singleLiquid = t('reminder.matured_single', 'Váš liquid "{name}" je vyzrálý a připraven k použití.');
-    const multipleLiquids = t('reminder.matured_multiple', '{count} liquidů je vyzrálých a připravených k použití.');
+    const title = t('reminder.matured_title', 'Your liquids are ready!');
+    const singleLiquid = t('reminder.matured_single', 'Your liquid "{name}" is matured and ready to use.');
+    const multipleLiquids = t('reminder.matured_multiple', '{count} liquids are matured and ready to use.');
     const viewButton = t('reminder.view_recipes', 'Zobrazit recepty');
     const dismissButton = t('common.dismiss', 'Zavřít');
     
@@ -11819,7 +11819,7 @@ async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavor
     };
     try {
         const saved = await window.LiquiMixerDB.saveReminder(window.Clerk.user.id, reminderData);
-        if (saved) { alert(t('reminder.saved', 'Připomínka byla uložena!')); return true; }
+        if (saved) { alert(t('reminder.saved', 'Reminder saved!')); return true; }
         return false;
     } catch (error) {
         console.error('Error saving reminder:', error);
@@ -12065,7 +12065,7 @@ function initFlavorFilterOptions(forceRegenerate = false) {
     
     // Aktualizovat překlad první option
     if (select.options[0]) {
-        select.options[0].textContent = t('recipe_database.all', 'Všechny');
+        select.options[0].textContent = t('recipe_database.all', 'All');
     }
     
     // Přidat typy z flavorDatabase
@@ -12183,7 +12183,7 @@ async function loadPublicRecipes() {
         const result = await window.LiquiMixerDB.getPublicRecipes(filters, currentDbPage, 50);
         
         if (!result.recipes || result.recipes.length === 0) {
-            listEl.innerHTML = `<div class="no-recipes-message">${t('recipe_database.no_recipes', 'Žádné recepty nenalezeny')}</div>`;
+            listEl.innerHTML = `<div class="no-recipes-message">${t('recipe_database.no_recipes', 'No recipes found')}</div>`;
             if (paginationEl) paginationEl.innerHTML = '';
             return;
         }
@@ -12521,6 +12521,10 @@ function showFlavorDatabase() {
     }
     
     showPage('flavor-database');
+    // Aplikovat překlady ihned po zobrazení stránky
+    if (window.i18n?.applyTranslations) {
+        window.i18n.applyTranslations();
+    }
     initFlavorDatabaseFilters();
     loadFlavors();
 }
@@ -12632,7 +12636,7 @@ async function loadFlavors() {
         const result = await window.LiquiMixerDB.searchFlavors(filters, currentFlavorPage, 20);
         
         if (!result.data || result.data.length === 0) {
-            listContainer.innerHTML = `<div class="empty-message"><span data-i18n="flavor_database.no_results">${t('flavor_database.no_results', 'Žádné příchutě nenalezeny')}</span></div>`;
+            listContainer.innerHTML = `<div class="empty-message"><span data-i18n="flavor_database.no_results">${t('flavor_database.no_results', 'No flavors found')}</span></div>`;
             if (countContainer) countContainer.innerHTML = '';
             if (paginationContainer) paginationContainer.innerHTML = '';
             return;
@@ -12776,7 +12780,7 @@ async function showFlavorDetail(flavorId) {
     try {
         const flavor = await window.LiquiMixerDB.getFlavorById(flavorId);
         if (!flavor) {
-            showNotification(t('common.error', 'Příchuť nenalezena'), 'error');
+            showNotification(t('common.error', 'Flavor not found'), 'error');
             return;
         }
         
@@ -12971,14 +12975,14 @@ async function saveCurrentFlavorToFavorites() {
         
         if (result.error) {
             if (result.error.message?.includes('duplicate')) {
-                showNotification(t('products.already_saved', 'Produkt je již uložen'), 'info');
+                showNotification(t('products.already_saved', 'Product already saved'), 'info');
             } else {
                 showNotification(t('common.error', 'Chyba při ukládání'), 'error');
             }
             return;
         }
         
-        showNotification(t('flavor_database.saved_to_favorites', 'Uloženo do oblíbených!'), 'success');
+        showNotification(t('flavor_database.saved_to_favorites', 'Saved to favorites!'), 'success');
     } catch (error) {
         console.error('Error saving flavor to favorites:', error);
         showNotification(t('common.error', 'Chyba při ukládání'), 'error');
@@ -13063,7 +13067,7 @@ function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSe
     // "Nezadat konkrétní příchuť" VŽDY JAKO PRVNÍ A PŘEDNASTAVENÁ VOLBA
     html += `
         <div class="autocomplete-item no-specific highlighted" onclick="selectNoSpecificFlavor('${inputId}')">
-            <span>${t('flavor_autocomplete.no_specific', 'Nezadat konkrétní příchuť')}</span>
+            <span>${t('flavor_autocomplete.no_specific', 'No specific flavor')}</span>
         </div>
     `;
     
@@ -13113,7 +13117,7 @@ function renderAutocompleteDropdown(dropdown, results, inputId, recipeType, onSe
     
     // Prázdný výsledek (jen pokud žádné oblíbené ani z databáze)
     if (favorites.length === 0 && database.length === 0) {
-        html += `<div class="autocomplete-empty">${t('flavor_autocomplete.no_results', 'Žádné odpovídající příchutě')}</div>`;
+        html += `<div class="autocomplete-empty">${t('flavor_autocomplete.no_results', 'No matching flavors')}</div>`;
     }
     
     html += '</div>';
@@ -13136,7 +13140,7 @@ function selectFlavorFromAutocomplete(inputId, flavorData, recipeType) {
     if ((isVapeRecipe && flavorData.product_type === 'shisha') || 
         (isShishaRecipe && flavorData.product_type === 'vape')) {
         const typeLabel = flavorData.product_type === 'vape' ? 'vape' : 'shisha';
-        const warningMsg = t('flavor_form.type_conflict_warning', 'Tato příchuť je určena pro {type}. Opravdu ji chcete použít v tomto receptu?')
+        const warningMsg = t('flavor_form.type_conflict_warning', 'This flavor is for {type}. Are you sure you want to use it in this recipe?')
             .replace('{type}', typeLabel);
         
         if (!confirm(warningMsg)) {
@@ -13179,7 +13183,7 @@ function selectNoSpecificFlavor(inputId) {
     const dropdown = document.getElementById(`${inputId}-autocomplete`);
     
     if (input) {
-        input.value = t('flavor_autocomplete.no_specific', 'Nezadat konkrétní příchuť');
+        input.value = t('flavor_autocomplete.no_specific', 'No specific flavor');
         input.dataset.flavorId = '';
         input.dataset.flavorSource = 'generic';
         input.dataset.flavorData = '';
@@ -14313,13 +14317,13 @@ function updateShishaFlavorStrength(index) {
     let color, text;
     if (value < minPercent) {
         color = '#ffaa00';
-        text = t('shisha.flavor_weak', 'Slabá chuť - pro shisha doporučeno {min}–{max}%')
+        text = t('shisha.flavor_weak', 'Weak flavor - recommended {min}–{max}% for shisha')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
         if (track) track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
     } else if (value > maxPercent) {
         color = '#ff0044';
-        text = t('shisha.flavor_strong', 'Příliš silná chuť - doporučeno max {max}%')
+        text = t('shisha.flavor_strong', 'Too strong flavor - recommended max {max}%')
             .replace('{min}', minPercent)
             .replace('{max}', maxPercent);
         if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
@@ -14474,7 +14478,7 @@ function addShishaFlavor() {
     const container = document.getElementById('shAdditionalFlavorsContainer');
     
     // Clone flavor 1 structure - použít t() pro překlad
-    const flavorLabel = t('shisha.flavor_label', 'Příchuť');
+    const flavorLabel = t('shisha.flavor_label', 'Flavor');
     const flavorHtml = `
         <div class="form-group sh-flavor-group" id="shFlavorGroup${shFlavorCount}">
             <label class="form-label">
@@ -14485,7 +14489,7 @@ function addShishaFlavor() {
             <div class="flavor-container">
                 <!-- Autocomplete pro konkrétní příchuť - PRVNÍ -->
                 <div class="flavor-autocomplete-wrapper">
-                    <input type="text" id="shFlavorAutocomplete${shFlavorCount}" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="${t('flavor_autocomplete.search_placeholder', 'Hledat konkrétní příchuť...')}" autocomplete="off">
+                    <input type="text" id="shFlavorAutocomplete${shFlavorCount}" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="${t('flavor_autocomplete.search_placeholder', 'Search for specific flavor...')}" autocomplete="off">
                 </div>
                 <!-- Kategorie příchutě - DRUHÁ -->
                 <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
@@ -14857,15 +14861,15 @@ function updateShishaRatioDisplay() {
     if (vg >= 70 && vg <= 80) {
         // Optimální rozsah - zlatá
         color = 'var(--neon-gold)';
-        descText = t('shisha.ratio_optimal', 'Optimální poměr pro shisha - vyvážený dým i chuť');
+        descText = t('shisha.ratio_optimal', 'Optimal ratio for shisha - balanced smoke and flavor');
     } else if (vg > 80) {
         // Více VG - hodně dýmu
         color = '#ffaa00';
-        descText = t('shisha.ratio_more_vg', 'Více dýmu, méně intenzivní chuť');
+        descText = t('shisha.ratio_more_vg', 'More smoke, less intense flavor');
     } else {
         // Více PG - intenzivnější chuť
         color = '#00ccff';
-        descText = t('shisha.ratio_more_pg', 'Řidší liquid, intenzivnější chuť');
+        descText = t('shisha.ratio_more_pg', 'Thinner liquid, more intense flavor');
     }
     
     if (track) {
@@ -15235,7 +15239,7 @@ function calculateShishaMix() {
         }
         
         results.push({
-            name: `${t('ingredients.flavor', 'Příchuť')} ${index + 1}: ${displayName}`,
+            name: `${t('ingredients.flavor', 'Flavor')} ${index + 1}: ${displayName}`,
             volume: flavorVolume.toFixed(2),
             grams: mlToGrams(flavorVolume, flavorDensity),
             type: 'flavor'
