@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v201';
+const CACHE_NAME = 'liquimixer-v202';
 
 // Soubory pro precaching
 const urlsToCache = [
@@ -77,8 +77,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
-  // Pro JS a HTML soubory použít network-first strategii
-  const isNetworkFirst = networkFirstFiles.some(file => url.pathname.endsWith(file));
+  // Pro JS, HTML a lokalizační soubory použít network-first strategii
+  const isNetworkFirst = networkFirstFiles.some(file => 
+    url.pathname.endsWith(file) || url.pathname.includes(file)
+  );
   
   if (isNetworkFirst) {
     // Network-first: zkusit síť, pak cache
