@@ -77,7 +77,8 @@
     "contact_cat_suggestion": "Návrh na vylepšenie",
     "contact_cat_gdpr": "GDPR / Zmazanie údajov",
     "contact_cat_other": "Iné",
-    "recipe_database": "Databáza receptov"
+    "recipe_database": "Databáza receptov",
+    "flavor_database": "Databáza príchutí"
   },
   "recipe_database": {
     "title": "Databáza receptov",
@@ -476,7 +477,9 @@
     "products_linked": "Prepojene produkty",
     "save_as_new": "ULOZIT AKO NOVY",
     "make_public": "Zdieľať do verejnej databázy receptov",
-    "public_hint": "Recept bude viditeľný a hodnotiteľný ostatnými užívateľmi"
+    "public_hint": "Recept bude viditeľný a hodnotiteľný ostatnými užívateľmi",
+    "flavors_label": "Použité príchute",
+    "no_flavors": "Recept neobsahuje príchute"
   },
   "share": {
     "copied": "Odkaz skopírovaný do schránky!",
@@ -914,7 +917,7 @@
   "flavor_database": {
     "title": "Databáza príchutí",
     "menu_item": "Databáza príchutí",
-    "search_placeholder": "Hľadať príchuť...",
+    "search_placeholder": "Hľadať príchute...",
     "filter_type": "Typ",
     "filter_type_all": "Všetky typy",
     "filter_type_vape": "Vape",
@@ -945,55 +948,56 @@
   },
   "flavor_suggestion": {
     "toggle_label": "Navrhnúť pridanie do databázy",
-    "rate_limit": "Môžete navrhnúť max 5 príchutí týždenne",
+    "rate_limit": "Môžete navrhnúť max. 5 príchutí týždenne",
     "rate_limit_reached": "Dosiahnutý týždenný limit návrhov",
-    "submitted": "Návrh odoslaný na schválenie",
+    "submitted": "Návrh odoslaný na kontrolu",
     "approved_subject": "Váš návrh príchute bol schválený",
     "approved_body": "Vaša príchuť {name} bola pridaná do databázy.",
     "rejected_subject": "Váš návrh príchute bol zamietnutý",
     "rejected_body": "Vaša príchuť {name} nebola pridaná. Dôvod: {reason}"
   },
   "flavor_form": {
-    "section_title": "Nastavenie príchute",
+    "section_title": "Nastavenia príchute",
     "manufacturer_label": "Výrobca *",
     "manufacturer_placeholder": "Vyberte výrobcu",
-    "manufacturer_required": "Vyberte prosím výrobcu",
-    "product_type_label": "Určené pre *",
-    "product_type_vape": "Vape liquid",
-    "product_type_shisha": "Shisha zmes",
-    "product_type_required": "Vyberte prosím určenie príchute",
+    "manufacturer_required": "Prosím vyberte výrobcu",
+    "product_type_label": "Typ príchute *",
+    "product_type_vape": "Príchuť pre vape",
+    "product_type_shisha": "Príchuť pre shishu",
+    "product_type_required": "Prosím vyberte typ príchute",
     "steep_days_label": "Doba zrenia (dni)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
     "product_code_label": "Kód produktu",
     "product_code_placeholder": "napr. TFA-001, CAP-VAN",
     "product_code_hint": "Kód výrobcu pre jednoduchšiu identifikáciu príchute",
-    "category_label": "Kategória príchute *",
+    "category_label": "Kategória príchute",
     "category_placeholder": "-- Vyberte kategóriu --",
-    "type_conflict_warning": "Táto príchuť je určená pre {type}. Naozaj ju chcete použiť v tomto recepte?"
+    "type_conflict_warning": "Táto príchuť je pre {type}. Naozaj ju chcete použiť v tomto recepte?"
   },
   "flavor_autocomplete": {
     "from_favorites": "Z mojich príchutí",
     "from_database": "Verejná databáza",
-    "no_specific": "Nezadať konkrétnu príchuť",
+    "no_specific": "Neurčovať príchuť",
     "no_results": "Žiadne zodpovedajúce príchute",
-    "search_placeholder": "Hľadať v angličtine podľa názvu, výrobcu alebo kódu (napr. TPA, CAP, Strawberry...)"
+    "search_placeholder": "Hľadať podľa názvu, výrobcu alebo kódu (napr. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
-    "fruit": "Ovocná",
-    "citrus": "Citrusová",
-    "berry": "Lesné plody",
-    "tropical": "Tropická",
-    "cream": "Krémová",
-    "dessert": "Dezertná",
-    "bakery": "Pečivo",
-    "candy": "Sladkosti",
-    "tobacco": "Tabaková",
+    "fruit": "Ovocie (jahoda, jablko)",
+    "citrus": "Citrus (citrón, limetka)",
+    "berry": "Bobule (čučoriedka, malina)",
+    "tropical": "Tropické (ananás, mango)",
+    "cream": "Krémové (vanilka, smotana)",
+    "dessert": "Dezert (torta, puding)",
+    "bakery": "Pečivo (chlieb, šiška)",
+    "candy": "Cukríky (sladkosti, karamel)",
+    "tobacco": "Tabak (klasický, kubánsky)",
     "menthol": "Mentol / Mäta",
-    "drink": "Nápoje",
-    "nuts": "Oriešková",
-    "spice": "Korenistá",
-    "mix": "Mix / Zmes"
+    "drink": "Nápoj (kola, čaj)",
+    "nuts": "Orechy (arašidy, lieskový orech)",
+    "spice": "Korenie (škorica, perník)",
+    "mix": "Mix / Zmes",
+    "additive": "Prísada"
   },
   "flavor_description": {
     "too_low": "Pod odporúčaným rozsahom ({min}-{max}%)",
