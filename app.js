@@ -1291,15 +1291,17 @@ window.addEventListener('localeChanged', () => {
     
     // Překreslit databázi příchutí pokud je zobrazena
     const flavorDbPage = document.getElementById('flavor-database');
-    if (flavorDbPage && !flavorDbPage.classList.contains('hidden')) {
+    if (flavorDbPage && flavorDbPage.classList.contains('active')) {
         // Znovu inicializovat filtry s aktuálními překlady
         initFlavorDatabaseFilters();
         // Znovu načíst příchutě s aktuálními překlady
         loadFlavors();
-        // Překreslit detail příchutě pokud je zobrazen
-        if (currentFlavorDetail) {
-            showFlavorDetail(currentFlavorDetail.id);
-        }
+    }
+    
+    // Překreslit detail příchutě pokud je zobrazen
+    const flavorDetailPage = document.getElementById('flavor-detail');
+    if (flavorDetailPage && flavorDetailPage.classList.contains('active') && currentFlavorDetail) {
+        showFlavorDetail(currentFlavorDetail.id);
     }
 });
 
@@ -7653,7 +7655,7 @@ async function refreshProductDetail() {
     if (!currentViewingProduct) return;
     
     const productDetailPage = document.getElementById('product-detail');
-    if (!productDetailPage || productDetailPage.classList.contains('hidden')) return;
+    if (!productDetailPage || !productDetailPage.classList.contains('active')) return;
     
     // Znovu načíst recepty a překreslit detail
     if (window.Clerk && window.Clerk.user && window.LiquiMixerDB) {
@@ -12486,7 +12488,7 @@ function removeBackToDatabaseButton() {
 async function refreshPublicRecipeDetail() {
     // Zkontrolovat, zda je stránka shared-recipe zobrazená a máme data receptu
     const sharedRecipePage = document.getElementById('shared-recipe');
-    if (!sharedRecipePage || sharedRecipePage.classList.contains('hidden')) return;
+    if (!sharedRecipePage || !sharedRecipePage.classList.contains('active')) return;
     if (!window.currentSharedRecipe) return;
     
     const recipe = window.currentSharedRecipe;
