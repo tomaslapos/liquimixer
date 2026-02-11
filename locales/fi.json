@@ -420,7 +420,8 @@
     "add_reminder": "Lisää uusi sekoitus",
     "show_all_reminders": "Näytä kaikki",
     "show_less": "Näytä vähemmän",
-    "reminders_error": "Virhe muistutusten lataamisessa."
+    "reminders_error": "Virhe muistutusten lataamisessa.",
+    "used_flavors": "Käytetyt aromit"
   },
   "shared_recipe": {
     "save_to_my_recipes": "TALLENNA RESEPTEIHINI",
@@ -945,7 +946,9 @@
     "loading": "Ladataan aromeja...",
     "results_count": "{count} aromia löydetty",
     "back_to_database": "◀ TAKAISIN TIETOKANTAAN",
-    "login_required": "Kirjaudu sisään päästäksesi aromikirjastoon"
+    "login_required": "Kirjaudu sisään päästäksesi aromikirjastoon",
+    "values_from_category": "kategorian mukaan - valmistaja ei määritellyt",
+    "filter_rating_all": "Kaikki"
   },
   "flavor_suggestion": {
     "toggle_label": "Ehdota lisäämistä tietokantaan",
@@ -974,7 +977,9 @@
     "category_label": "Aromikategoria",
     "type_conflict_warning": "Tämä aromi on {type}-käyttöön. Haluatko varmasti käyttää sitä tässä reseptissä?",
     "section_title": "Aromiasetukset",
-    "category_placeholder": "-- Valitse kategoria --"
+    "category_placeholder": "-- Valitse kategoria --",
+    "ratio_locked": "VG/PG-suhde valmistajan asettama",
+    "percent_from_category": "Suositeltu % kategorian mukaan - valmistaja ei määritellyt tarkkoja arvoja"
   },
   "flavor_autocomplete": {
     "from_favorites": "Omista aromeistani",

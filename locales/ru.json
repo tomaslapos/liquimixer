@@ -420,7 +420,8 @@
     "add_reminder": "Добавить новый замес",
     "show_all_reminders": "Показать все",
     "show_less": "Показать меньше",
-    "reminders_error": "Ошибка загрузки напоминаний."
+    "reminders_error": "Ошибка загрузки напоминаний.",
+    "used_flavors": "Использованные ароматизаторы"
   },
   "shared_recipe": {
     "save_to_my_recipes": "СОХРАНИТЬ В МОИ РЕЦЕПТЫ",
@@ -940,7 +941,9 @@
     "loading": "Загрузка ароматизаторов...",
     "results_count": "Найдено {count} ароматизаторов",
     "back_to_database": "◀ НАЗАД В БАЗУ",
-    "login_required": "Войдите для доступа к базе ароматизаторов"
+    "login_required": "Войдите для доступа к базе ароматизаторов",
+    "values_from_category": "по категории - производитель не указал",
+    "filter_rating_all": "Все"
   },
   "flavor_suggestion": {
     "toggle_label": "Предложить добавить в базу",
@@ -969,7 +972,9 @@
     "category_label": "Категория ароматизатора",
     "type_conflict_warning": "Этот ароматизатор для {type}. Вы уверены, что хотите использовать его в этом рецепте?",
     "section_title": "Настройки ароматизатора",
-    "category_placeholder": "-- Выберите категорию --"
+    "category_placeholder": "-- Выберите категорию --",
+    "ratio_locked": "Соотношение VG/PG установлено производителем",
+    "percent_from_category": "Рекомендуемый % по категории - производитель не указал точные значения"
   },
   "flavor_autocomplete": {
     "from_favorites": "Из моих ароматизаторов",

@@ -382,7 +382,8 @@
     "add_reminder": "إضافة خلط جديد",
     "show_all_reminders": "عرض الكل",
     "show_less": "عرض أقل",
-    "reminders_error": "خطأ في تحميل التذكيرات."
+    "reminders_error": "خطأ في تحميل التذكيرات.",
+    "used_flavors": "النكهات المستخدمة"
   },
   "shared_recipe": {
     "save_to_my_recipes": "حفظ في وصفاتي",
@@ -940,7 +941,9 @@
     "loading": "جاري تحميل النكهات...",
     "results_count": "تم العثور على {count} نكهات",
     "back_to_database": "◀ العودة إلى قاعدة البيانات",
-    "login_required": "يرجى تسجيل الدخول للوصول إلى قاعدة بيانات النكهات"
+    "login_required": "يرجى تسجيل الدخول للوصول إلى قاعدة بيانات النكهات",
+    "values_from_category": "حسب الفئة - الشركة المصنعة غير محددة",
+    "filter_rating_all": "الكل"
   },
   "flavor_suggestion": {
     "toggle_label": "اقتراح الإضافة إلى قاعدة البيانات",
@@ -969,7 +972,9 @@
     "product_code_hint": "رمز الشركة المصنعة لتسهيل التعرف على النكهة",
     "category_label": "فئة النكهة",
     "category_placeholder": "-- اختر الفئة --",
-    "type_conflict_warning": "هذه النكهة لـ {type}. هل تريد استخدامها في هذه الوصفة؟"
+    "type_conflict_warning": "هذه النكهة لـ {type}. هل تريد استخدامها في هذه الوصفة؟",
+    "ratio_locked": "نسبة VG/PG محددة من الشركة المصنعة",
+    "percent_from_category": "النسبة المئوية الموصى بها حسب الفئة - الشركة المصنعة لم تحدد قيمًا دقيقة"
   },
   "flavor_autocomplete": {
     "from_favorites": "من نكهاتي",

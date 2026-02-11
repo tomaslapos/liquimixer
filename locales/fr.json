@@ -399,7 +399,8 @@
     "add_reminder": "Ajouter un nouveau mélange",
     "show_all_reminders": "Afficher tout",
     "show_less": "Afficher moins",
-    "reminders_error": "Erreur lors du chargement des rappels."
+    "reminders_error": "Erreur lors du chargement des rappels.",
+    "used_flavors": "Arômes utilisés"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ENREGISTRER DANS MES RECETTES",
@@ -919,7 +920,9 @@
     "loading": "Chargement des arômes...",
     "results_count": "{count} arômes trouvés",
     "back_to_database": "◀ RETOUR À LA BASE DE DONNÉES",
-    "login_required": "Veuillez vous connecter pour accéder à la base de données d'arômes"
+    "login_required": "Veuillez vous connecter pour accéder à la base de données d'arômes",
+    "values_from_category": "par catégorie - fabricant non spécifié",
+    "filter_rating_all": "Tous"
   },
   "flavor_suggestion": {
     "toggle_label": "Suggérer l'ajout à la base de données",
@@ -948,7 +951,9 @@
     "category_label": "Catégorie d'arôme",
     "type_conflict_warning": "Cet arôme est pour {type}. Voulez-vous l'utiliser dans cette recette?",
     "section_title": "Paramètres d'arôme",
-    "category_placeholder": "-- Sélectionner une catégorie --"
+    "category_placeholder": "-- Sélectionner une catégorie --",
+    "ratio_locked": "Ratio VG/PG défini par le fabricant",
+    "percent_from_category": "% recommandé par catégorie - le fabricant n'a pas spécifié de valeurs exactes"
   },
   "flavor_autocomplete": {
     "from_favorites": "De mes arômes",

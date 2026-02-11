@@ -397,7 +397,8 @@
     "add_reminder": "Új keverés hozzáadása",
     "show_all_reminders": "Összes megjelenítése",
     "show_less": "Kevesebb megjelenítése",
-    "reminders_error": "Hiba az emlékeztetők betöltésekor."
+    "reminders_error": "Hiba az emlékeztetők betöltésekor.",
+    "used_flavors": "Használt aromák"
   },
   "shared_recipe": {
     "save_to_my_recipes": "MENTÉS A RECEPTJEIMHEZ",
@@ -912,7 +913,9 @@
     "loading": "Aromák betöltése...",
     "results_count": "{count} aroma található",
     "back_to_database": "◀ VISSZA AZ ADATBÁZISHOZ",
-    "login_required": "Jelentkezzen be az aroma adatbázis eléréséhez"
+    "login_required": "Jelentkezzen be az aroma adatbázis eléréséhez",
+    "values_from_category": "kategória szerint - gyártó nem adta meg",
+    "filter_rating_all": "Összes"
   },
   "flavor_suggestion": {
     "toggle_label": "Javaslom hozzáadását az adatbázishoz",
@@ -941,7 +944,9 @@
     "category_label": "Aroma kategória",
     "type_conflict_warning": "Ez az aroma {type}-hoz való. Biztosan ezt szeretné használni ebben a receptben?",
     "section_title": "Aroma beállítások",
-    "category_placeholder": "-- Válasszon kategóriát --"
+    "category_placeholder": "-- Válasszon kategóriát --",
+    "ratio_locked": "VG/PG arány a gyártó által beállítva",
+    "percent_from_category": "Ajánlott % kategória szerint - a gyártó nem adott meg pontos értékeket"
   },
   "flavor_autocomplete": {
     "from_favorites": "Az aromáimból",

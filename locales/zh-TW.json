@@ -420,7 +420,8 @@
     "add_reminder": "新增調配",
     "show_all_reminders": "顯示全部",
     "show_less": "顯示較少",
-    "reminders_error": "載入提醒時出錯。"
+    "reminders_error": "載入提醒時出錯。",
+    "used_flavors": "使用的香料"
   },
   "shared_recipe": {
     "save_to_my_recipes": "儲存到我的配方",
@@ -940,7 +941,9 @@
     "loading": "載入香料中...",
     "results_count": "找到 {count} 種香料",
     "back_to_database": "◀ 返回資料庫",
-    "login_required": "請登入以存取香料資料庫"
+    "login_required": "請登入以存取香料資料庫",
+    "values_from_category": "按類別 - 製造商未指定",
+    "filter_rating_all": "全部"
   },
   "flavor_suggestion": {
     "toggle_label": "建議添加到資料庫",
@@ -969,7 +972,9 @@
     "category_label": "香料類別",
     "type_conflict_warning": "此香料適用於{type}。確定要在此配方中使用嗎？",
     "section_title": "香料設定",
-    "category_placeholder": "-- 選擇類別 --"
+    "category_placeholder": "-- 選擇類別 --",
+    "ratio_locked": "VG/PG比例由製造商設定",
+    "percent_from_category": "按類別設置推薦% - 製造商未指定準確值"
   },
   "flavor_autocomplete": {
     "from_favorites": "來自我的香料",

@@ -420,7 +420,8 @@
     "add_reminder": "Yeni karışım ekle",
     "show_all_reminders": "Tümünü göster",
     "show_less": "Daha az göster",
-    "reminders_error": "Hatırlatıcılar yüklenirken hata."
+    "reminders_error": "Hatırlatıcılar yüklenirken hata.",
+    "used_flavors": "Kullanılan aromalar"
   },
   "shared_recipe": {
     "save_to_my_recipes": "TARİFLERİME KAYDET",
@@ -940,7 +941,9 @@
     "loading": "Aromalar yükleniyor...",
     "results_count": "{count} aroma bulundu",
     "back_to_database": "◀ VERİTABANINA DÖN",
-    "login_required": "Aroma veritabanına erişmek için giriş yapın"
+    "login_required": "Aroma veritabanına erişmek için giriş yapın",
+    "values_from_category": "kategoriye göre - üretici belirtmedi",
+    "filter_rating_all": "Tümü"
   },
   "flavor_suggestion": {
     "toggle_label": "Veritabanına ekleme öner",
@@ -969,7 +972,9 @@
     "category_label": "Aroma kategorisi",
     "type_conflict_warning": "Bu aroma {type} içindir. Bu tarifte kullanmak istediğinizden emin misiniz?",
     "section_title": "Aroma ayarları",
-    "category_placeholder": "-- Kategori seçin --"
+    "category_placeholder": "-- Kategori seçin --",
+    "ratio_locked": "VG/PG oranı üretici tarafından ayarlandı",
+    "percent_from_category": "Kategoriye göre önerilen % - üretici kesin değerleri belirtmedi"
   },
   "flavor_autocomplete": {
     "from_favorites": "Aromalarımdan",

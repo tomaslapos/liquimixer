@@ -420,7 +420,8 @@
     "add_reminder": "Pridėti naują maišymą",
     "show_all_reminders": "Rodyti visus",
     "show_less": "Rodyti mažiau",
-    "reminders_error": "Klaida įkeliant priminimus."
+    "reminders_error": "Klaida įkeliant priminimus.",
+    "used_flavors": "Naudojami aromatai"
   },
   "shared_recipe": {
     "save_to_my_recipes": "IŠSAUGOTI MANO RECEPTUOSE",
@@ -940,7 +941,9 @@
     "loading": "Kraunami aromatai...",
     "results_count": "Rasta {count} aromatų",
     "back_to_database": "◀ GRĮŽTI Į DUOMENŲ BAZĘ",
-    "login_required": "Prisijunkite, norėdami pasiekti aromatų duomenų bazę"
+    "login_required": "Prisijunkite, norėdami pasiekti aromatų duomenų bazę",
+    "values_from_category": "pagal kategoriją - gamintojas nenurodė",
+    "filter_rating_all": "Visi"
   },
   "flavor_suggestion": {
     "toggle_label": "Siūlyti pridėti į duomenų bazę",
@@ -969,7 +972,9 @@
     "category_label": "Aromato kategorija",
     "type_conflict_warning": "Šis aromatas skirtas {type}. Ar tikrai norite jį naudoti šiame recepte?",
     "section_title": "Aromato nustatymai",
-    "category_placeholder": "-- Pasirinkite kategoriją --"
+    "category_placeholder": "-- Pasirinkite kategoriją --",
+    "ratio_locked": "VG/PG santykis nustatytas gamintojo",
+    "percent_from_category": "Rekomenduojamas % pagal kategoriją - gamintojas nenurodė tikslių reikšmių"
   },
   "flavor_autocomplete": {
     "from_favorites": "Iš mano aromatų",

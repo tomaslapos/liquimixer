@@ -397,7 +397,8 @@
     "add_reminder": "Nieuw mengsel toevoegen",
     "show_all_reminders": "Alles tonen",
     "show_less": "Minder tonen",
-    "reminders_error": "Fout bij laden van herinneringen."
+    "reminders_error": "Fout bij laden van herinneringen.",
+    "used_flavors": "Gebruikte aroma's"
   },
   "shared_recipe": {
     "save_to_my_recipes": "OPSLAAN IN MIJN RECEPTEN",
@@ -917,7 +918,9 @@
     "loading": "Aroma's laden...",
     "results_count": "{count} aroma's gevonden",
     "back_to_database": "◀ TERUG NAAR DATABASE",
-    "login_required": "Log in om de aroma database te openen"
+    "login_required": "Log in om de aroma database te openen",
+    "values_from_category": "per categorie - fabrikant niet gespecificeerd",
+    "filter_rating_all": "Alle"
   },
   "flavor_suggestion": {
     "toggle_label": "Voorstellen om toe te voegen aan database",
@@ -946,7 +949,9 @@
     "category_label": "Aroma categorie",
     "type_conflict_warning": "Dit aroma is voor {type}. Weet u zeker dat u het in dit recept wilt gebruiken?",
     "section_title": "Aroma-instellingen",
-    "category_placeholder": "-- Selecteer categorie --"
+    "category_placeholder": "-- Selecteer categorie --",
+    "ratio_locked": "VG/PG-verhouding ingesteld door fabrikant",
+    "percent_from_category": "Aanbevolen % per categorie - fabrikant heeft geen exacte waarden opgegeven"
   },
   "flavor_autocomplete": {
     "from_favorites": "Uit mijn aroma's",

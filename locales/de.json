@@ -409,7 +409,8 @@
     "add_reminder": "Neue Mischung hinzufügen",
     "show_all_reminders": "Alle anzeigen",
     "show_less": "Weniger anzeigen",
-    "reminders_error": "Fehler beim Laden der Erinnerungen."
+    "reminders_error": "Fehler beim Laden der Erinnerungen.",
+    "used_flavors": "Verwendete Aromen"
   },
   "shared_recipe": {
     "save_to_my_recipes": "ZU MEINEN REZEPTEN SPEICHERN",
@@ -927,7 +928,9 @@
     "loading": "Aromen werden geladen...",
     "results_count": "{count} Aromen gefunden",
     "back_to_database": "◀ ZURÜCK ZUR DATENBANK",
-    "login_required": "Bitte melden Sie sich an, um auf die Aromendatenbank zuzugreifen"
+    "login_required": "Bitte melden Sie sich an, um auf die Aromendatenbank zuzugreifen",
+    "values_from_category": "nach Kategorie - Hersteller nicht angegeben",
+    "filter_rating_all": "Alle"
   },
   "flavor_suggestion": {
     "toggle_label": "Zur Datenbank hinzufügen vorschlagen",
@@ -956,7 +959,9 @@
     "product_code_hint": "Herstellercode zur einfacheren Aromaidentifikation",
     "category_label": "Aroma-Kategorie",
     "category_placeholder": "-- Kategorie auswählen --",
-    "type_conflict_warning": "Dieses Aroma ist für {type}. Möchten Sie es in diesem Rezept verwenden?"
+    "type_conflict_warning": "Dieses Aroma ist für {type}. Möchten Sie es in diesem Rezept verwenden?",
+    "ratio_locked": "VG/PG-Verhältnis vom Hersteller festgelegt",
+    "percent_from_category": "Empfohlener % nach Kategorie - Hersteller hat keine genauen Werte angegeben"
   },
   "flavor_autocomplete": {
     "from_favorites": "Aus meinen Aromen",
