@@ -220,7 +220,8 @@
     "pg_label": "Okus (PG)",
     "ratio_balanced": "Uravnotežen omjer između pare i okusa, prikladan za većinu uređaja.",
     "back": "◀ NATRAG",
-    "mix_button": "MIJEŠAJ!"
+    "mix_button": "MIJEŠAJ!",
+    "flavor_category_label": "Ili odaberite kategoriju (bez specifične arome):"
   },
   "dilute": {
     "title": "Razrjeđivanje nikotinske baze",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Ispod preporučenog raspona ({min}-{max}%)",
+    "too_high": "Iznad preporučenog raspona ({min}-{max}%)",
+    "ideal_range": "Idealni raspon ({min}-{max}%)"
   }
 }

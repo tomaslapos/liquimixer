@@ -222,7 +222,8 @@
     "pg_label": "Chuť (PG)",
     "ratio_balanced": "Vyvážený pomer pary a chuti, vhodný pre väčšinu zariadení.",
     "back": "◀ SPÄŤ",
-    "mix_button": "MIXUJ!"
+    "mix_button": "MIXUJ!",
+    "flavor_category_label": "Alebo vyberte kategóriu (bez konkrétnej príchute):"
   },
   "dilute": {
     "title": "Riedenie nikotínovej bázy",
@@ -993,5 +994,10 @@
     "nuts": "Oriešková",
     "spice": "Korenistá",
     "mix": "Mix / Zmes"
+  },
+  "flavor_description": {
+    "too_low": "Pod odporúčaným rozsahom ({min}-{max}%)",
+    "too_high": "Nad odporúčaným rozsahom ({min}-{max}%)",
+    "ideal_range": "Ideálny rozsah ({min}-{max}%)"
   }
 }

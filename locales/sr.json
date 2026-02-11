@@ -220,7 +220,8 @@
     "additive_select": "Изаберите тип...",
     "percent": "Проценат",
     "back": "◀ НАЗАД",
-    "mix_button": "МЕШАЊЕ!"
+    "mix_button": "МЕШАЊЕ!",
+    "flavor_category_label": "Или изаберите категорију (без специфичне ароме):"
   },
   "dilute": {
     "title": "Разблаживање никотинске базе",
@@ -360,7 +361,6 @@
     "dilute_notes_3": "Затим додајте VG и PG",
     "dilute_notes_4": "Добро промућкајте",
     "actual_ratio": "Стварни однос VG/PG у смеси",
-    "notes_title": "Напомене за мешање:",
     "notes_flavors_first": "Прво додајте ароме.",
     "notes_nicotine": "Затим додајте никотин (радите са рукавицама!).",
     "notes_premixed": "Додајте премешану базу.",
@@ -988,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Испод препорученог опсега ({min}-{max}%)",
+    "too_high": "Изнад препорученог опсега ({min}-{max}%)",
+    "ideal_range": "Идеални опсег ({min}-{max}%)"
   }
 }

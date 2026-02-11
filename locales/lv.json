@@ -220,7 +220,8 @@
     "pg_label": "Garša (PG)",
     "ratio_balanced": "Līdzsvarota attiecība starp tvaiku un garšu, piemērota vairumam ierīču.",
     "back": "◀ ATPAKAĻ",
-    "mix_button": "SAJAUKT!"
+    "mix_button": "SAJAUKT!",
+    "flavor_category_label": "Vai izvēlieties kategoriju (bez konkrētas garšas):"
   },
   "dilute": {
     "title": "Nikotīna bāzes atšķaidīšana",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Zem ieteicamā diapazona ({min}-{max}%)",
+    "too_high": "Virs ieteicamā diapazona ({min}-{max}%)",
+    "ideal_range": "Ideāls diapazons ({min}-{max}%)"
   }
 }

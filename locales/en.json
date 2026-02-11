@@ -218,6 +218,7 @@
     "flavor_total_warning": "(recommended max 25%)",
     "flavor_total_error": "(too many flavors!)",
     "flavor_ratio_label": "VG/PG ratio in flavor",
+    "flavor_category_label": "Or select a category (without specific flavor):",
     "vgpg_label": "VG/PG ratio in final liquid",
     "vg_label": "Vapor (VG)",
     "pg_label": "Flavor (PG)",
@@ -979,7 +980,7 @@
     "citrus": "Citrus",
     "berry": "Berry",
     "tropical": "Tropical",
-    "cream": "Cream",
+    "cream": "Cream (vanilla, cream)",
     "dessert": "Dessert",
     "bakery": "Bakery",
     "candy": "Candy",
@@ -988,6 +989,12 @@
     "drink": "Beverage",
     "nuts": "Nuts",
     "spice": "Spice",
-    "mix": "Mix / Blend"
+    "mix": "Mix / Blend",
+    "additive": "Additive"
+  },
+  "flavor_description": {
+    "too_low": "Below recommended range ({min}-{max}%)",
+    "too_high": "Above recommended range ({min}-{max}%)",
+    "ideal_range": "Ideal range ({min}-{max}%)"
   }
 }

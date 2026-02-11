@@ -220,7 +220,8 @@
     "pg_label": "Íz (PG)",
     "ratio_balanced": "Kiegyensúlyozott gőz és íz arány, a legtöbb készülékhez megfelelő.",
     "back": "◀ VISSZA",
-    "mix_button": "KEVERÉS!"
+    "mix_button": "KEVERÉS!",
+    "flavor_category_label": "Vagy válasszon kategóriát (konkrét íz nélkül):"
   },
   "dilute": {
     "title": "Nikotinos bázis hígítása",
@@ -961,5 +962,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Az ajánlott tartomány alatt ({min}-{max}%)",
+    "too_high": "Az ajánlott tartomány felett ({min}-{max}%)",
+    "ideal_range": "Ideális tartomány ({min}-{max}%)"
   }
 }
