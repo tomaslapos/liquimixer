@@ -77,7 +77,8 @@
     "contact_cat_suggestion": "Verbesserungsvorschlag",
     "contact_cat_gdpr": "DSGVO / Datenlöschung",
     "contact_cat_other": "Sonstiges",
-    "recipe_database": "Rezeptdatenbank"
+    "recipe_database": "Rezeptdatenbank",
+    "flavor_database": "Aromendatenbank"
   },
   "recipe_database": {
     "title": "Rezeptdatenbank",
@@ -463,7 +464,9 @@
     "products_linked": "Verknupfte Produkte",
     "save_as_new": "ALS NEU SPEICHERN",
     "make_public": "In öffentliche Rezeptdatenbank teilen",
-    "public_hint": "Rezept wird für andere Benutzer sichtbar und bewertbar"
+    "public_hint": "Rezept wird für andere Benutzer sichtbar und bewertbar",
+    "flavors_label": "Verwendete Aromen",
+    "no_flavors": "Rezept enthält keine Aromen"
   },
   "share": {
     "copied": "Link in die Zwischenablage kopiert!",
@@ -927,56 +930,57 @@
     "login_required": "Bitte melden Sie sich an, um auf die Aromendatenbank zuzugreifen"
   },
   "flavor_suggestion": {
-    "toggle_label": "Zur Datenbank vorschlagen",
-    "rate_limit": "Sie können max. 5 Aromen pro Woche vorschlagen",
+    "toggle_label": "Zur Datenbank hinzufügen vorschlagen",
+    "rate_limit": "Sie können maximal 5 Aromen pro Woche vorschlagen",
     "rate_limit_reached": "Wöchentliches Vorschlagslimit erreicht",
     "submitted": "Vorschlag zur Überprüfung eingereicht",
-    "approved_subject": "Ihr Aromavorschlag wurde genehmigt",
+    "approved_subject": "Ihr Aroma-Vorschlag wurde genehmigt",
     "approved_body": "Ihr Aroma {name} wurde zur Datenbank hinzugefügt.",
-    "rejected_subject": "Ihr Aromavorschlag wurde abgelehnt",
+    "rejected_subject": "Ihr Aroma-Vorschlag wurde abgelehnt",
     "rejected_body": "Ihr Aroma {name} wurde nicht hinzugefügt. Grund: {reason}"
   },
   "flavor_form": {
-    "section_title": "Aromaeinstellungen",
+    "section_title": "Aroma-Einstellungen",
     "manufacturer_label": "Hersteller *",
     "manufacturer_placeholder": "Hersteller auswählen",
     "manufacturer_required": "Bitte wählen Sie einen Hersteller",
-    "product_type_label": "Bestimmt für *",
-    "product_type_vape": "Vape-Liquid",
-    "product_type_shisha": "Shisha-Mischung",
-    "product_type_required": "Bitte wählen Sie die Verwendung",
+    "product_type_label": "Aroma-Typ *",
+    "product_type_vape": "Vape-Aroma",
+    "product_type_shisha": "Shisha-Aroma",
+    "product_type_required": "Bitte wählen Sie einen Aroma-Typ",
     "steep_days_label": "Reifezeit (Tage)",
     "min_percent_label": "Min %",
     "max_percent_label": "Max %",
     "product_code_label": "Produktcode",
     "product_code_placeholder": "z.B. TFA-001, CAP-VAN",
     "product_code_hint": "Herstellercode zur einfacheren Aromaidentifikation",
-    "category_label": "Aromakategorie *",
-    "category_placeholder": "-- Kategorie wählen --",
-    "type_conflict_warning": "Dieses Aroma ist für {type}. Möchten Sie es wirklich in diesem Rezept verwenden?"
+    "category_label": "Aroma-Kategorie",
+    "category_placeholder": "-- Kategorie auswählen --",
+    "type_conflict_warning": "Dieses Aroma ist für {type}. Möchten Sie es in diesem Rezept verwenden?"
   },
   "flavor_autocomplete": {
     "from_favorites": "Aus meinen Aromen",
     "from_database": "Öffentliche Datenbank",
-    "no_specific": "Kein bestimmtes Aroma",
+    "no_specific": "Aroma nicht angeben",
     "no_results": "Keine passenden Aromen",
-    "search_placeholder": "Suche auf Englisch nach Name, Hersteller oder Code (z.B. TPA, CAP, Strawberry...)"
+    "search_placeholder": "Nach Name, Hersteller oder Code suchen (z.B. TPA, CAP, Strawberry...)"
   },
   "flavor_categories": {
-    "fruit": "Frucht",
-    "citrus": "Zitrus",
-    "berry": "Beeren",
-    "tropical": "Tropisch",
-    "cream": "Sahne",
-    "dessert": "Dessert",
-    "bakery": "Gebäck",
-    "candy": "Süßigkeiten",
-    "tobacco": "Tabak",
+    "fruit": "Frucht (Erdbeere, Apfel)",
+    "citrus": "Zitrus (Zitrone, Limette)",
+    "berry": "Beere (Blaubeere, Himbeere)",
+    "tropical": "Tropisch (Ananas, Mango)",
+    "cream": "Cremig (Vanille, Sahne)",
+    "dessert": "Dessert (Kuchen, Pudding)",
+    "bakery": "Bäckerei (Brot, Donut)",
+    "candy": "Süßigkeiten (Bonbons, Karamell)",
+    "tobacco": "Tabak (klassisch, kubanisch)",
     "menthol": "Menthol / Minze",
-    "drink": "Getränk",
-    "nuts": "Nüsse",
-    "spice": "Gewürz",
-    "mix": "Mix / Mischung"
+    "drink": "Getränk (Cola, Tee)",
+    "nuts": "Nuss (Erdnuss, Haselnuss)",
+    "spice": "Gewürz (Zimt, Lebkuchen)",
+    "mix": "Mix / Mischung",
+    "additive": "Zusatz"
   },
   "flavor_description": {
     "too_low": "Unter empfohlenem Bereich ({min}-{max}%)",
