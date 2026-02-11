@@ -220,7 +220,8 @@
     "pg_label": "Smak (PG)",
     "ratio_balanced": "Balansert forhold mellom damp og smak, egnet for de fleste enheter.",
     "back": "◀ TILBAKE",
-    "mix_button": "BLAND!"
+    "mix_button": "BLAND!",
+    "flavor_category_label": "Eller velg en kategori (uten spesifikk smak):"
   },
   "dilute": {
     "title": "Fortynning av nikotinbase",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Under anbefalt område ({min}-{max}%)",
+    "too_high": "Over anbefalt område ({min}-{max}%)",
+    "ideal_range": "Ideelt område ({min}-{max}%)"
   }
 }

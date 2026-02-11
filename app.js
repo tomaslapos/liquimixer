@@ -9189,7 +9189,7 @@ function addProFlavor() {
                         <button class="slider-btn small double" onclick="adjustProFlavor(${proFlavorCount}, -1)" title="-1%">◀◀</button>
                         <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, -0.1)" title="-0.1%">◀</button>
                         <div class="slider-wrapper">
-                            <input type="range" id="proFlavorStrength${proFlavorCount}" min="0" max="30" value="10" step="0.1" class="flavor-slider pro-flavor-slider" data-flavor-index="${proFlavorCount}" oninput="updateProFlavorStrength(${proFlavorCount})">
+                            <input type="range" id="proFlavorStrength${proFlavorCount}" min="0" max="35" value="10" step="0.1" class="flavor-slider pro-flavor-slider" data-flavor-index="${proFlavorCount}" oninput="updateProFlavorStrength(${proFlavorCount})">
                             <div class="slider-track flavor-track" id="proFlavorTrack${proFlavorCount}"></div>
                         </div>
                         <button class="slider-btn small" onclick="adjustProFlavor(${proFlavorCount}, 0.1)" title="+0.1%">▶</button>
@@ -14513,7 +14513,7 @@ function addShishaFlavor() {
                         <button class="slider-btn small double" onclick="adjustShishaFlavor(${shFlavorCount}, -1)" title="-1%">◀◀</button>
                         <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -0.1)" title="-0.1%">◀</button>
                         <div class="slider-wrapper">
-                            <input type="range" id="shFlavorStrength${shFlavorCount}" min="0" max="30" value="15" step="0.1" class="flavor-slider sh-flavor-slider" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorStrength(${shFlavorCount})">
+                            <input type="range" id="shFlavorStrength${shFlavorCount}" min="0" max="35" value="15" step="0.1" class="flavor-slider sh-flavor-slider" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorStrength(${shFlavorCount})">
                             <div class="slider-track flavor-track" id="shFlavorTrack${shFlavorCount}"></div>
                         </div>
                         <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, 0.1)" title="+0.1%">▶</button>

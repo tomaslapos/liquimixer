@@ -220,7 +220,8 @@
     "pg_label": "Smaak (PG)",
     "ratio_balanced": "Gebalanceerde verhouding tussen damp en smaak, geschikt voor de meeste apparaten.",
     "back": "◀ TERUG",
-    "mix_button": "MENG!"
+    "mix_button": "MENG!",
+    "flavor_category_label": "Of selecteer een categorie (zonder specifieke smaak):"
   },
   "dilute": {
     "title": "Nicotinebasis Verdunnen",
@@ -964,5 +965,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Onder aanbevolen bereik ({min}-{max}%)",
+    "too_high": "Boven aanbevolen bereik ({min}-{max}%)",
+    "ideal_range": "Ideaal bereik ({min}-{max}%)"
   }
 }

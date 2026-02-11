@@ -220,7 +220,8 @@
     "additive_select": "選擇類型...",
     "percent": "百分比",
     "back": "◀ 返回",
-    "mix_button": "調配！"
+    "mix_button": "調配！",
+    "flavor_category_label": "或選擇一個類別（不指定具體口味）："
   },
   "dilute": {
     "title": "稀釋尼古丁基液",
@@ -360,7 +361,6 @@
     "dilute_notes_3": "然後添加 VG 和 PG",
     "dilute_notes_4": "充分搖勻",
     "actual_ratio": "調配中的實際 VG/PG 比例",
-    "notes_title": "調配說明：",
     "notes_flavors_first": "首先添加香精。",
     "notes_nicotine": "然後添加尼古丁（戴手套操作！）。",
     "notes_premixed": "添加預混基液。",
@@ -988,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "低於推薦範圍 ({min}-{max}%)",
+    "too_high": "高於推薦範圍 ({min}-{max}%)",
+    "ideal_range": "理想範圍 ({min}-{max}%)"
   }
 }

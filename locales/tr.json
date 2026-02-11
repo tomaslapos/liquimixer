@@ -220,7 +220,8 @@
     "additive_select": "Tür seçin...",
     "percent": "Yüzde",
     "back": "◀ GERİ",
-    "mix_button": "KARIŞTIR!"
+    "mix_button": "KARIŞTIR!",
+    "flavor_category_label": "Veya bir kategori seçin (belirli aroma olmadan):"
   },
   "dilute": {
     "title": "Nikotin Bazı Seyreltme",
@@ -349,7 +350,7 @@
     "component_flavor": "Aroma",
     "component_vg": "VG (Gliserin)",
     "component_pg": "PG (Propilen Glikol)",
-    "notes_title": "Karıştırma notları:",
+    "notes_title": "Karıştırma Notları:",
     "notes_1": "Önce nikotini ekleyin (kullanıyorsanız)",
     "notes_2": "Sonra aromaları ekleyin",
     "notes_3": "Son olarak PG ve VG ekleyin",
@@ -360,7 +361,6 @@
     "dilute_notes_3": "Sonra VG ve PG ekleyin",
     "dilute_notes_4": "İyice çalkalayın",
     "actual_ratio": "Karışımdaki gerçek VG/PG oranı",
-    "notes_title": "Karıştırma Notları:",
     "notes_flavors_first": "Önce aromaları ekleyin.",
     "notes_nicotine": "Sonra nikotini ekleyin (eldivenle çalışın!).",
     "notes_premixed": "Önceden karıştırılmış bazı ekleyin.",
@@ -988,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Önerilen aralığın altında ({min}-{max}%)",
+    "too_high": "Önerilen aralığın üstünde ({min}-{max}%)",
+    "ideal_range": "İdeal aralık ({min}-{max}%)"
   }
 }

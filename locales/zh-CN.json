@@ -220,7 +220,8 @@
     "additive_select": "选择类型...",
     "percent": "百分比",
     "back": "◀ 返回",
-    "mix_button": "调配！"
+    "mix_button": "调配！",
+    "flavor_category_label": "或选择一个类别（不指定具体口味）："
   },
   "dilute": {
     "title": "稀释尼古丁基液",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "低于推荐范围 ({min}-{max}%)",
+    "too_high": "高于推荐范围 ({min}-{max}%)",
+    "ideal_range": "理想范围 ({min}-{max}%)"
   }
 }

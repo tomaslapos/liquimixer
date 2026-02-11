@@ -215,7 +215,8 @@
     "pg_label": "Aromă (PG)",
     "ratio_balanced": "Raport echilibrat între vapori și aromă, potrivit pentru majoritatea dispozitivelor.",
     "back": "◀ ÎNAPOI",
-    "mix_button": "AMESTECĂ!"
+    "mix_button": "AMESTECĂ!",
+    "flavor_category_label": "Sau selectează o categorie (fără aromă specifică):"
   },
   "dilute": {
     "title": "Diluarea bazei de nicotină",
@@ -982,5 +983,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Sub intervalul recomandat ({min}-{max}%)",
+    "too_high": "Peste intervalul recomandat ({min}-{max}%)",
+    "ideal_range": "Interval ideal ({min}-{max}%)"
   }
 }

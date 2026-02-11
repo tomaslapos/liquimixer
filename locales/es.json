@@ -220,7 +220,8 @@
     "pg_label": "Sabor (PG)",
     "ratio_balanced": "Proporción equilibrada de vapor y sabor, adecuada para la mayoría de dispositivos.",
     "back": "◀ ATRÁS",
-    "mix_button": "¡MEZCLAR!"
+    "mix_button": "¡MEZCLAR!",
+    "flavor_category_label": "O selecciona una categoría (sin sabor específico):"
   },
   "dilute": {
     "title": "Dilución de base de nicotina",
@@ -973,5 +974,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Por debajo del rango recomendado ({min}-{max}%)",
+    "too_high": "Por encima del rango recomendado ({min}-{max}%)",
+    "ideal_range": "Rango ideal ({min}-{max}%)"
   }
 }

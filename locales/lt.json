@@ -220,7 +220,8 @@
     "pg_label": "Skonis (PG)",
     "ratio_balanced": "Subalansuotas garo ir skonio santykis, tinkamas daugumai įrenginių.",
     "back": "◀ ATGAL",
-    "mix_button": "MAIŠYTI!"
+    "mix_button": "MAIŠYTI!",
+    "flavor_category_label": "Arba pasirinkite kategoriją (be konkretaus skonio):"
   },
   "dilute": {
     "title": "Nikotino bazės skiedimas",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Žemiau rekomenduojamo diapazono ({min}-{max}%)",
+    "too_high": "Virš rekomenduojamo diapazono ({min}-{max}%)",
+    "ideal_range": "Idealus diapazonas ({min}-{max}%)"
   }
 }

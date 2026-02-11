@@ -220,7 +220,8 @@
     "pg_label": "Smak (PG)",
     "ratio_balanced": "Balanserat förhållande mellan ånga och smak, lämpligt för de flesta enheter.",
     "back": "◀ TILLBAKA",
-    "mix_button": "BLANDA!"
+    "mix_button": "BLANDA!",
+    "flavor_category_label": "Eller välj en kategori (utan specifik smak):"
   },
   "dilute": {
     "title": "Utspädning av nikotinbas",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Under rekommenderat intervall ({min}-{max}%)",
+    "too_high": "Över rekommenderat intervall ({min}-{max}%)",
+    "ideal_range": "Idealiskt intervall ({min}-{max}%)"
   }
 }

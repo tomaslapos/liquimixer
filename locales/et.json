@@ -220,7 +220,8 @@
     "pg_label": "Maitse (PG)",
     "ratio_balanced": "Tasakaalustatud suhe auru ja maitse vahel, sobib enamikule seadmetele.",
     "back": "◀ TAGASI",
-    "mix_button": "SEGA!"
+    "mix_button": "SEGA!",
+    "flavor_category_label": "Või vali kategooria (ilma konkreetse maitseta):"
   },
   "dilute": {
     "title": "Nikotiinibaasi lahjendamine",
@@ -987,5 +988,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "Alla soovitatud vahemikku ({min}-{max}%)",
+    "too_high": "Üle soovitatud vahemiku ({min}-{max}%)",
+    "ideal_range": "Ideaalne vahemik ({min}-{max}%)"
   }
 }

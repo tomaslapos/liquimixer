@@ -223,7 +223,8 @@
     "pg_label": "Geschmack (PG)",
     "ratio_balanced": "Ausgewogenes Verhältnis von Dampf und Geschmack, geeignet für die meisten Geräte.",
     "back": "◀ ZURÜCK",
-    "mix_button": "MISCHEN!"
+    "mix_button": "MISCHEN!",
+    "flavor_category_label": "Oder wähle eine Kategorie (ohne bestimmtes Aroma):"
   },
   "dilute": {
     "title": "Nikotinbasis-Verdünnung",
@@ -976,5 +977,10 @@
     "nuts": "Nüsse",
     "spice": "Gewürz",
     "mix": "Mix / Mischung"
+  },
+  "flavor_description": {
+    "too_low": "Unter empfohlenem Bereich ({min}-{max}%)",
+    "too_high": "Über empfohlenem Bereich ({min}-{max}%)",
+    "ideal_range": "Idealer Bereich ({min}-{max}%)"
   }
 }

@@ -220,7 +220,8 @@
     "additive_select": "タイプを選択...",
     "percent": "パーセント",
     "back": "◀ 戻る",
-    "mix_button": "ミキシング！"
+    "mix_button": "ミキシング！",
+    "flavor_category_label": "またはカテゴリを選択（特定のフレーバーなし）："
   },
   "dilute": {
     "title": "ニコチンベースの希釈",
@@ -986,5 +987,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "推奨範囲以下 ({min}-{max}%)",
+    "too_high": "推奨範囲以上 ({min}-{max}%)",
+    "ideal_range": "理想的な範囲 ({min}-{max}%)"
   }
 }

@@ -222,7 +222,8 @@
     "pg_label": "Smak (PG)",
     "ratio_balanced": "Zrównoważony stosunek pary i smaku, odpowiedni dla większości urządzeń.",
     "back": "◀ WSTECZ",
-    "mix_button": "MIESZAJ!"
+    "mix_button": "MIESZAJ!",
+    "flavor_category_label": "Lub wybierz kategorię (bez konkretnego aromatu):"
   },
   "dilute": {
     "title": "Rozcieńczanie bazy nikotynowej",
@@ -974,5 +975,10 @@
     "nuts": "Orzechowy",
     "spice": "Przyprawy",
     "mix": "Mix / Mieszanka"
+  },
+  "flavor_description": {
+    "too_low": "Poniżej zalecanego zakresu ({min}-{max}%)",
+    "too_high": "Powyżej zalecanego zakresu ({min}-{max}%)",
+    "ideal_range": "Idealny zakres ({min}-{max}%)"
   }
 }

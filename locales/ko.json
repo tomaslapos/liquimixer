@@ -220,7 +220,8 @@
     "additive_select": "유형 선택...",
     "percent": "퍼센트",
     "back": "◀ 뒤로",
-    "mix_button": "믹싱!"
+    "mix_button": "믹싱!",
+    "flavor_category_label": "또는 카테고리 선택 (특정 향 없이):"
   },
   "dilute": {
     "title": "니코틴 베이스 희석",
@@ -985,5 +986,10 @@
     "nuts": "Nuts",
     "spice": "Spice",
     "mix": "Mix / Blend"
+  },
+  "flavor_description": {
+    "too_low": "권장 범위 미만 ({min}-{max}%)",
+    "too_high": "권장 범위 초과 ({min}-{max}%)",
+    "ideal_range": "이상적인 범위 ({min}-{max}%)"
   }
 }
