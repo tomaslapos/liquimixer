@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tobak + söt (vaniljtobak)",
     "flavor_nuts": "Nötter (jordnöt, hasselnöt)",
     "flavor_spice": "Kryddad (kanel, pepparkaka)",
+    "flavor_cream": "Krämig (vanilj, grädde)",
+    "flavor_mix": "Mix / Blandning",
     "add_flavor": "+ Lägg till en annan smak",
     "remove_flavor": "Ta bort smak",
     "flavor_count_hint": "(max 4 smaker)",

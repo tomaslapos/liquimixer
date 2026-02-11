@@ -202,6 +202,8 @@
     "flavor_tobaccosweet": "Tutun + dulce (tutun cu vanilie)",
     "flavor_nuts": "Nuci (arahide, alune)",
     "flavor_spice": "Condimentat (scorțișoară, turtă dulce)",
+    "flavor_cream": "Cremos (vanilie, frișcă)",
+    "flavor_mix": "Mix / Amestec",
     "add_flavor": "+ Adăugați altă aromă",
     "remove_flavor": "Eliminați aroma",
     "flavor_count_hint": "(max 4 arome)",

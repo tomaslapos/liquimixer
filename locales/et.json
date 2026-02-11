@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tubakas + magus (vaniljetubakas)",
     "flavor_nuts": "Pähklid (maapähkel, sarapuu)",
     "flavor_spice": "Vürtsine (kaneel, piparkook)",
+    "flavor_cream": "Kreemjas (vanilje, koor)",
+    "flavor_mix": "Mix / Segu",
     "add_flavor": "+ Lisa teine maitse",
     "remove_flavor": "Eemalda maitse",
     "flavor_count_hint": "(max 4 maitset)",

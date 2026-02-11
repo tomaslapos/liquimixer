@@ -207,6 +207,8 @@
     "flavor_tobaccosweet": "Tabaka + salds (vaniļas tabaka)",
     "flavor_nuts": "Rieksti (zemesrieksts, lazdu rieksts)",
     "flavor_spice": "Garšvielots (kanēlis, piparkūka)",
+    "flavor_cream": "Krēmīgs (vaniļa, krējums)",
+    "flavor_mix": "Mix / Maisījums",
     "add_flavor": "+ Pievienot citu garšu",
     "remove_flavor": "Noņemt garšu",
     "flavor_count_hint": "(maks. 4 garšas)",
