@@ -3512,10 +3512,10 @@ function extractRecipeFlavors(recipeData, formType) {
                     generic_flavor_type: flavor.type
                 };
                 
-                // Pokud má konkrétní příchuť
-                if (flavor.name) {
-                    flavorEntry.flavor_name = flavor.name;
-                    flavorEntry.flavor_manufacturer = flavor.manufacturer || null;
+                // Pokud má konkrétní příchuť (podporovat oba formáty: flavorName i name)
+                if (flavor.flavorName || flavor.name) {
+                    flavorEntry.flavor_name = flavor.flavorName || flavor.name;
+                    flavorEntry.flavor_manufacturer = flavor.flavorManufacturer || flavor.manufacturer || null;
                     if (flavor.flavorId) {
                         if (flavor.flavorSource === 'favorite') {
                             flavorEntry.favorite_product_id = flavor.flavorId;
@@ -7633,7 +7633,7 @@ function generateMixingNotes(recipeData) {
         notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
         
         // 4. Sweetener if present
-        if (recipeData.sweetener > 0) {
+        if (recipeData.sweetener && recipeData.sweetener.percent > 0) {
             notes.push(t('shisha.note_add_sweetener', 'Přidejte sladidlo a důkladně promíchejte.'));
         }
         
@@ -15669,9 +15669,13 @@ function calculateShishaMix() {
     notesList.innerHTML = '';
     
     const notes = [
-        t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'),
-        t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).')
+        t('results.notes_flavors_first', 'Nejprve přidejte příchutě.')
     ];
+    
+    // Add nicotine note only if nicotine is present
+    if (nicotineVolume > 0) {
+        notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
+    }
     
     // Add base note based on type
     if (baseType === 'premixed') {
@@ -15805,7 +15809,7 @@ function calculateShishaMix() {
         totalAmount: totalAmount,
         vgPercent: vgPercent,
         pgPercent: pgPercent,
-        nicotineStrength: targetNicotine,
+        nicotine: targetNicotine,
         baseType: baseType,
         premixedRatio: premixedRatio,
         flavors: flavorsData,
