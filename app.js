@@ -6680,11 +6680,44 @@ function updateVgPgRatioLimits() {
     const fixedPgVolume = nicotinePgVolume + flavorPgVolume;
     const fixedVgVolume = nicotineVgVolume + flavorVgVolume;
     
-    // Calculate percentage limits
-    // Minimum VG% = (fixed VG / total) * 100
-    // Maximum VG% = 100 - (fixed PG / total) * 100
-    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
-    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    // Zbývající objem pro bázi
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    
+    // Zkontrolovat jestli je vybraný premixed režim
+    const baseType = document.getElementById('baseType')?.value || 'separate';
+    const premixedRatio = document.getElementById('premixedRatio')?.value || '60/40';
+    
+    let minVgPercent, maxVgPercent;
+    
+    if (baseType === 'premixed' && remainingVolume > 0) {
+        // PREMIXED režim - limity jsou ovlivněny poměrem báze
+        const premixedParts = premixedRatio.split('/');
+        const premixedVgPercent = parseInt(premixedParts[0]) || 50;
+        
+        // VG/PG z premixed báze (pokud použijeme celý zbývající objem)
+        const premixedVgVolume = remainingVolume * (premixedVgPercent / 100);
+        const premixedPgVolume = remainingVolume * ((100 - premixedVgPercent) / 100);
+        
+        // Minimální a maximální VG% závisí na tom, jestli přidáme čisté VG nebo PG
+        // Min VG = báze + čisté PG (vše zbývající jako PG) = fixedVg + 0 (nelze méně než fixedVg)
+        // Max VG = báze + čisté VG (vše zbývající jako VG) = fixedVg + remainingVolume
+        
+        // S premixed bází:
+        // Pokud chceme MIN VG: použijeme bázi + čisté PG místo čistého VG
+        // Pokud chceme MAX VG: použijeme bázi + čisté VG místo čistého PG
+        
+        // Ale pozor - bez doladění je poměr fixní na poměr báze + fixní složky
+        // S doladěním můžeme dosáhnout rozsahu od fixedVg do fixedVg + remainingVolume
+        
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(((fixedVgVolume + remainingVolume) / totalAmount) * 100);
+    } else {
+        // SEPARATE režim - původní logika
+        // Minimum VG% = (fixed VG / total) * 100
+        // Maximum VG% = 100 - (fixed PG / total) * 100
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    }
     
     // Ensure valid range
     const effectiveMinVg = Math.max(0, minVgPercent);
@@ -7475,9 +7508,30 @@ function calculateMix() {
             });
         }
         
-        // Přidat doladění VG/PG
-        pureVgNeeded = adjustmentVg;
-        purePgNeeded = adjustmentPg;
+        // Přidat doladění VG/PG s 1.5% threshold
+        const adjustmentThreshold = totalAmount * 0.015;
+        
+        if (adjustmentVg > adjustmentThreshold) {
+            pureVgNeeded = adjustmentVg;
+            ingredients.push({
+                ingredientKey: 'vg_adjustment',
+                volume: adjustmentVg,
+                percent: (adjustmentVg / totalAmount) * 100
+            });
+        } else {
+            pureVgNeeded = 0;
+        }
+        
+        if (adjustmentPg > adjustmentThreshold) {
+            purePgNeeded = adjustmentPg;
+            ingredients.push({
+                ingredientKey: 'pg_adjustment',
+                volume: adjustmentPg,
+                percent: (adjustmentPg / totalAmount) * 100
+            });
+        } else {
+            purePgNeeded = 0;
+        }
         
     } else {
         // SEPARATE PG/VG MODE (original logic)
@@ -10321,8 +10375,34 @@ function updateProVgPgLimits() {
     const fixedPgVolume = nicotinePgVolume + totalFlavorPgVolume;
     const fixedVgVolume = nicotineVgVolume + totalFlavorVgVolume;
     
-    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
-    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    // Získat data aditiv pro výpočet zbývajícího objemu
+    const additivesData = typeof getProAdditivesData === 'function' ? getProAdditivesData() : [];
+    const totalAdditivePercent = additivesData.reduce((sum, a) => sum + a.percent, 0);
+    const totalFlavorVolume = (totalFlavorPercent / 100) * totalAmount;
+    const totalAdditiveVolume = (totalAdditivePercent / 100) * totalAmount;
+    
+    // Zbývající objem pro bázi
+    const remainingVolume = totalAmount - nicotineVolume - totalFlavorVolume - totalAdditiveVolume;
+    
+    // Zkontrolovat jestli je vybraný premixed režim
+    const baseType = document.getElementById('proBaseType')?.value || 'separate';
+    const premixedRatio = document.getElementById('proPremixedRatio')?.value || '60/40';
+    
+    let minVgPercent, maxVgPercent;
+    
+    if (baseType === 'premixed' && remainingVolume > 0) {
+        // PREMIXED režim - limity jsou ovlivněny poměrem báze
+        const premixedParts = premixedRatio.split('/');
+        const premixedVgPercent = parseInt(premixedParts[0]) || 50;
+        
+        // S doladěním můžeme dosáhnout rozsahu od fixedVg do fixedVg + remainingVolume
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(((fixedVgVolume + remainingVolume) / totalAmount) * 100);
+    } else {
+        // SEPARATE režim - původní logika
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    }
     
     proVgPgLimits.min = Math.max(0, minVgPercent);
     proVgPgLimits.max = Math.min(100, maxVgPercent);
@@ -15631,8 +15711,59 @@ function updateShishaVgPgLimits() {
     const fixedPgVolume = nicotinePgVolume + totalFlavorPgVolume;
     const fixedVgVolume = nicotineVgVolume + totalFlavorVgVolume;
     
-    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
-    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    // Získat sweetener a water pro výpočet zbývajícího objemu
+    let sweetenerVolume = 0;
+    const sweetenerSelect = document.getElementById('shSweetenerSelect');
+    if (sweetenerSelect && sweetenerSelect.value !== 'none') {
+        const sweetenerPercent = parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0;
+        sweetenerVolume = (sweetenerPercent / 100) * totalAmount;
+    }
+    
+    let waterVolume = 0;
+    const waterPercent = parseFloat(document.getElementById('shWaterPercent')?.value) || 0;
+    if (waterPercent > 0) {
+        waterVolume = (waterPercent / 100) * totalAmount;
+    }
+    
+    // Získat nikotin objem
+    let nicotineVolume = 0;
+    const nicToggleCheck = document.getElementById('shNicotineToggle');
+    if (nicToggleCheck && nicToggleCheck.checked) {
+        const nicStrengthVal = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
+        const targetNicVal = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
+        if (targetNicVal > 0 && nicStrengthVal > 0) {
+            nicotineVolume = (targetNicVal / nicStrengthVal) * totalAmount;
+        }
+    }
+    
+    // Zbývající objem pro bázi
+    const totalFlavorVolume = flavorsData.reduce((sum, f) => sum + (f.percent / 100) * totalAmount, 0);
+    const remainingVolume = totalAmount - nicotineVolume - totalFlavorVolume - sweetenerVolume - waterVolume;
+    
+    // Zkontrolovat jestli je vybraný premixed režim
+    const baseType = document.getElementById('shBaseType')?.value || 'premixed';
+    const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
+    
+    let minVgPercent, maxVgPercent;
+    
+    if (baseType === 'premixed' && remainingVolume > 0) {
+        // PREMIXED režim - limity jsou ovlivněny poměrem báze
+        let premixedVgPercent;
+        if (premixedRatio === 'custom') {
+            premixedVgPercent = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 80;
+        } else {
+            const parts = premixedRatio.split('/');
+            premixedVgPercent = parseInt(parts[0]) || 80;
+        }
+        
+        // S doladěním můžeme dosáhnout rozsahu od fixedVg do fixedVg + remainingVolume
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(((fixedVgVolume + remainingVolume) / totalAmount) * 100);
+    } else {
+        // SEPARATE režim - původní logika
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    }
     
     shVgPgLimits.min = Math.max(0, minVgPercent);
     shVgPgLimits.max = Math.min(100, maxVgPercent);
@@ -16088,6 +16219,24 @@ function calculateShishaMix() {
             percent: ((premixedBaseVolume / totalAmount) * 100).toFixed(1),
             grams: parseFloat(results.find(r => r.type === 'base')?.grams || 0)
         });
+        
+        // Přidat doladění VG/PG pokud existuje (premixed režim)
+        if (pureVgVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'vg_adjustment',
+                volume: pureVgVolume,
+                percent: ((pureVgVolume / totalAmount) * 100).toFixed(1),
+                grams: parseFloat(results.find(r => r.type === 'vg_adjustment')?.grams || 0)
+            });
+        }
+        if (purePgVolume > 0.01) {
+            ingredients.push({
+                ingredientKey: 'pg_adjustment',
+                volume: purePgVolume,
+                percent: ((purePgVolume / totalAmount) * 100).toFixed(1),
+                grams: parseFloat(results.find(r => r.type === 'pg_adjustment')?.grams || 0)
+            });
+        }
     } else if (baseType === 'separate') {
         // Pure VG
         if (pureVgVolume > 0.01) {

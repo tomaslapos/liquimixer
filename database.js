@@ -844,14 +844,8 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
         if (updates.flavor_category !== undefined) {
             updateData.flavor_category = sanitizeInput(updates.flavor_category);
         }
-        if (updates.flavor_min_percent !== undefined) {
-            updateData.flavor_min_percent = updates.flavor_min_percent !== null ? 
-                Math.min(Math.max(parseFloat(updates.flavor_min_percent) || 0, 0), 100) : null;
-        }
-        if (updates.flavor_max_percent !== undefined) {
-            updateData.flavor_max_percent = updates.flavor_max_percent !== null ?
-                Math.min(Math.max(parseFloat(updates.flavor_max_percent) || 0, 0), 100) : null;
-        }
+        // Poznámka: flavor_min_percent a flavor_max_percent neexistují v tabulce favorite_products
+        // Tyto hodnoty jsou uloženy v tabulce flavors a jsou read-only
         if (updates.steep_days !== undefined) {
             updateData.steep_days = Math.min(Math.max(parseInt(updates.steep_days) || 0, 0), 365);
         }
