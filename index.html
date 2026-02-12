@@ -2708,6 +2708,24 @@
             </div>
         </section>
 
+        <!-- Detail příchutě z receptu (s jinými tlačítky) -->
+        <section id="flavor-detail-from-recipe" class="page">
+            <h2 class="page-title" id="flavorDetailFromRecipeTitle">Detail příchutě</h2>
+            
+            <div class="flavor-detail-content" id="flavorDetailFromRecipeContent">
+                <!-- Naplní se JavaScriptem -->
+            </div>
+            
+            <div class="button-group">
+                <button class="neon-button btn-green" onclick="saveFlavorFromRecipeToFavorites()">
+                    <span data-i18n="shared_recipe.save_to_my_favorites">ULOŽIT K SOBĚ</span>
+                </button>
+                <button class="neon-button secondary" onclick="goBackFromFlavorDetailFromRecipe()">
+                    <span data-i18n="common.back">ZPĚT</span>
+                </button>
+            </div>
+        </section>
+
         <!-- Sdílený recept stránka -->
         <section id="shared-recipe" class="page">
             <h2 class="page-title" id="sharedRecipeTitle" data-i18n="recipe_detail.shared_title">Sdílený recept</h2>

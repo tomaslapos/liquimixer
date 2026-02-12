@@ -27,6 +27,9 @@
     "premium_access_text": "Přihlas se nebo se zaregistruj a odemkni všechny prémiové funkce LiquiMixer!",
     "login_button": "Přihlásit se",
     "register_button": "Registrovat se",
+    "pro_required_title": "PRO funkce",
+    "pro_required_text": "Tato funkce je dostupná pouze pro PRO předplatitele.",
+    "subscribe_button": "Předplatit PRO",
     "welcome_title": "Vítejte v LiquiMixer",
     "welcome_subtitle": "Ukládejte recepty, sdílejte s přáteli a mějte vše po ruce",
     "yearly_subscription": "Roční předplatné",
@@ -978,7 +981,9 @@
     "back_to_database": "◀ ZPĚT DO DATABÁZE",
     "login_required": "Pro přístup k databázi příchutí se přihlaste",
     "values_from_category": "dle kategorie - výrobce neuvedl",
-    "filter_rating_all": "Všechny"
+    "filter_rating_all": "Všechny",
+    "detail_used_percent": "Použité %",
+    "not_in_public_db": "Tato příchuť není ve veřejné databázi."
   },
   "flavor_suggestion": {
     "toggle_label": "Navrhnout přidání do databáze",

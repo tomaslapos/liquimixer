@@ -675,6 +675,7 @@
     "weak": "Svag eller ingen smag (anbefalet {min}–{max}%)",
     "strong": "Stærk eller for sød smag (anbefalet {min}–{max}%)",
     "ideal": "Ideel smag ({min}–{max}%) - {note}",
+    "ideal_specific": "Ideel smag ({min}–{max}%) - {name}",
     "no_percentage_warning": "Producenten angiver ikke anbefalet dosering for denne smag. Tjek emballagen eller producentens/forhandlerens hjemmeside for korrekt information.",
     "note_none": "Ren PG/VG-base + nikotin",
     "note_fruit": "Optimalt: 10%, steeping 3–7 dage",
