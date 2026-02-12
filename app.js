@@ -1303,6 +1303,13 @@ window.addEventListener('localeChanged', () => {
     if (flavorDetailPage && flavorDetailPage.classList.contains('active') && currentFlavorDetail) {
         showFlavorDetail(currentFlavorDetail.id);
     }
+    
+    // Překreslit databázi receptů pokud je zobrazena
+    const recipeDbPage = document.getElementById('recipe-database');
+    if (recipeDbPage && recipeDbPage.classList.contains('active')) {
+        // Znovu načíst recepty s aktuálními překlady
+        loadPublicRecipes();
+    }
 });
 
 function initializeSliders() {
@@ -4254,13 +4261,13 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     
     // SECURITY: Escapování všech hodnot z databáze
     const safeTotal = escapeHtml(data.totalAmount || '?');
-    // VG/PG: podporuj vgPercent/pgPercent i vgRatio z databáze receptů
-    const vgVal = data.vgPercent ?? data.vgRatio ?? data.ratio;
+    // VG/PG: po migraci používáme jednotný klíč vgPercent
+    const vgVal = data.vgPercent ?? data.ratio;
     const pgVal = data.pgPercent ?? (vgVal != null ? (100 - vgVal) : undefined);
     const safeVg = escapeHtml(vgVal != null ? String(vgVal) : '?');
     const safePg = escapeHtml(pgVal != null ? String(pgVal) : '?');
-    // Zaokrouhlit nikotin na 2 desetinná místa - podporuj nicotine i nicStrength z databáze
-    const nicotineValue = parseFloat(data.nicotine ?? data.nicStrength ?? 0);
+    // Zaokrouhlit nikotin na 2 desetinná místa - po migraci používáme jednotný klíč nicotine
+    const nicotineValue = parseFloat(data.nicotine ?? 0);
     const safeNicotine = escapeHtml(nicotineValue.toFixed(2));
     
     contentEl.innerHTML = `
@@ -4516,8 +4523,9 @@ function prefillShishaForm(data, linkedFlavors = []) {
         updateShishaBaseType('separate');
     }
     
-    // Nikotin
-    if (data.nicotineStrength !== undefined && data.nicotineStrength > 0) {
+    // Nikotin (po migraci používáme klíč nicotine)
+    const nicValue = data.nicotine ?? 0;
+    if (nicValue > 0) {
         const toggle = document.getElementById('shNicotineToggle');
         if (toggle) {
             toggle.checked = true;
@@ -4525,7 +4533,7 @@ function prefillShishaForm(data, linkedFlavors = []) {
         }
         const nicEl = document.getElementById('shTargetNicotine');
         if (nicEl) {
-            nicEl.value = data.nicotineStrength;
+            nicEl.value = nicValue;
             updateShishaNicotineDisplay();
         }
     }
@@ -12434,17 +12442,24 @@ async function loadPublicRecipes() {
         sortBy: document.getElementById('dbSortBy')?.value || 'rating_desc'
     };
     
+    console.log('loadPublicRecipes: filters =', filters);
+    
     try {
         const result = await window.LiquiMixerDB.getPublicRecipes(filters, currentDbPage, 50);
+        console.log('loadPublicRecipes: result =', result);
         
-        if (!result.recipes || result.recipes.length === 0) {
+        // VG/PG a nikotin filtry jsou nyní aplikovány v database.js (getPublicRecipes)
+        // Po migraci databáze používáme jednotné klíče vgPercent a nicotine
+        const filteredRecipes = result.recipes || [];
+        
+        if (filteredRecipes.length === 0) {
             listEl.innerHTML = `<div class="no-recipes-message">${t('recipe_database.no_recipes', 'No recipes found')}</div>`;
             if (paginationEl) paginationEl.innerHTML = '';
             return;
         }
         
         // Render karty receptů
-        listEl.innerHTML = result.recipes.map(recipe => renderPublicRecipeCard(recipe)).join('');
+        listEl.innerHTML = filteredRecipes.map(recipe => renderPublicRecipeCard(recipe)).join('');
         
         // Render paginace
         if (paginationEl) {
@@ -12468,9 +12483,9 @@ function renderPublicRecipeCard(recipe) {
     const formType = recipe.form_type || 'liquid';
     const recipeData = recipe.recipe_data || {};
     
-    // VG/PG a nikotin z recipe_data
-    const vgRatio = recipeData.vgRatio || recipeData.ratio || 70;
-    const nicStrength = recipeData.nicStrength || 0;
+    // VG/PG a nikotin z recipe_data (po migraci používáme vgPercent a nicotine)
+    const vgRatio = recipeData.vgPercent ?? 70;
+    const nicStrength = recipeData.nicotine ?? 0;
     const flavorType = recipeData.flavorType || '';
     
     // Render hvězdiček
