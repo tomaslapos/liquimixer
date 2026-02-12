@@ -2964,6 +2964,9 @@ async function showSaveAsNewModal() {
         window.i18n.applyTranslations();
     }
     
+    // Naplnit použité příchutě z receptu
+    populateRecipeFlavors();
+    
     modal.classList.remove('hidden');
 }
 
@@ -3049,6 +3052,9 @@ async function showSaveChangesModal() {
     if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
         window.i18n.applyTranslations();
     }
+    
+    // Naplnit použité příchutě z receptu
+    populateRecipeFlavors();
     
     modal.classList.remove('hidden');
 }
@@ -3607,8 +3613,9 @@ async function saveRecipe(event) {
         difficulty_level: difficultyLevel
     };
     
-    // Přidat data receptu pouze při vytváření nového
-    if (!isEditing) {
+    // Přidat data receptu při vytváření nového i při úpravě
+    // (při úpravě mohly být změněny hodnoty formuláře)
+    if (currentRecipeData) {
         recipeData.data = currentRecipeData;
     }
     
@@ -6440,11 +6447,28 @@ function updateHomeButtonVisibility(pageId) {
 
 // Přejít na úvodní stránku
 function goHome() {
+    // Reset stavu editace receptu
+    clearRecipeEditingState();
     showPage('intro');
+}
+
+// Vyčistit stav editace receptu
+function clearRecipeEditingState() {
+    window.editingRecipeFromDetail = null;
+    window.editingRecipeId = null;
+    window.allowTabSwitch = true;
+    
+    // Obnovit stav záložek formuláře
+    updateFormTabsState();
+    
+    console.log('[clearRecipeEditingState] Editing state cleared');
 }
 
 // Navigace zpět v historii pomocí Browser History API
 function goBack() {
+    // Reset stavu editace receptu
+    clearRecipeEditingState();
+    
     // Použít nativní history.back() pro navigaci zpět
     if (history.length > 1) {
         history.back();
@@ -9908,7 +9932,7 @@ function updateProTotalFlavorPercent() {
         const strengthEl = document.getElementById(`proFlavorStrength${i}`);
         
         if (typeEl && strengthEl && typeEl.value !== 'none') {
-            total += parseInt(strengthEl.value) || 0;
+            total += parseFloat(strengthEl.value) || 0;
         }
     }
     
@@ -9976,7 +10000,7 @@ function getProFlavorsData() {
             const flavorEntry = {
                 index: i,
                 type: typeEl?.value || 'fruit',
-                percent: parseInt(strengthEl?.value) || 10,
+                percent: parseFloat(strengthEl?.value) || 10,
                 vgRatio: parseInt(ratioEl?.value) || 0
             };
             
@@ -14201,6 +14225,7 @@ window.handleSignOut = handleSignOut;
 window.showPage = showPage;
 window.goHome = goHome;
 window.goBack = goBack;
+window.clearRecipeEditingState = clearRecipeEditingState;
 window.calculateMixture = calculateMix;
 window.storeCurrentRecipe = storeCurrentRecipe;
 window.showSaveRecipeModal = showSaveRecipeModal;
@@ -14778,7 +14803,7 @@ function updateShishaTotalFlavorPercent() {
         const slider = document.getElementById(`shFlavorStrength${i}`);
         
         if (select && slider && select.value !== 'none') {
-            total += parseInt(slider.value) || 0;
+            total += parseFloat(slider.value) || 0;
         }
     }
     
@@ -14975,7 +15000,7 @@ function getShishaFlavorsData() {
             
             const flavorEntry = {
                 type: flavorType,
-                percent: parseInt(slider.value) || 0,
+                percent: parseFloat(slider.value) || 0,
                 vgRatio: parseInt(ratioSlider?.value) || 0,
                 data: flavorData
             };
