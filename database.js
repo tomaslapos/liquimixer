@@ -1902,6 +1902,8 @@ async function markReminderConsumed(clerkId, reminderId) {
 async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
     if (!supabaseClient) return { recipes: [], total: 0, page: 1, limit: 50 };
     
+    console.log('getPublicRecipes: received filters =', filters);
+    
     try {
         let query = supabaseClient
             .from('recipes')
@@ -1918,29 +1920,25 @@ async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
             query = query.ilike('name', `%${filters.search}%`);
         }
         
-        // Filtr: Typ příchutě (v recipe_data.flavorType)
+        // Filtr: Typ příchutě (v recipe_data.flavorType) - použij contains pro JSONB match
         if (filters.flavorType) {
-            query = query.eq('recipe_data->flavorType', filters.flavorType);
+            query = query.contains('recipe_data', { flavorType: filters.flavorType });
         }
         
-        // Filtr: VG poměr - min
-        if (filters.vgMin !== undefined && filters.vgMin !== '' && !isNaN(filters.vgMin)) {
-            query = query.gte('recipe_data->vgRatio', parseInt(filters.vgMin));
+        // VG/PG filtr - po migraci používáme jednotný klíč vgPercent
+        if (filters.vgMin !== undefined && filters.vgMin !== '') {
+            query = query.gte('recipe_data->vgPercent', parseInt(filters.vgMin));
+        }
+        if (filters.vgMax !== undefined && filters.vgMax !== '') {
+            query = query.lte('recipe_data->vgPercent', parseInt(filters.vgMax));
         }
         
-        // Filtr: VG poměr - max
-        if (filters.vgMax !== undefined && filters.vgMax !== '' && !isNaN(filters.vgMax)) {
-            query = query.lte('recipe_data->vgRatio', parseInt(filters.vgMax));
+        // Nikotin filtr - po migraci používáme jednotný klíč nicotine
+        if (filters.nicMin !== undefined && filters.nicMin !== '') {
+            query = query.gte('recipe_data->nicotine', parseInt(filters.nicMin));
         }
-        
-        // Filtr: Síla nikotinu - min
-        if (filters.nicMin !== undefined && filters.nicMin !== '' && !isNaN(filters.nicMin)) {
-            query = query.gte('recipe_data->nicStrength', parseInt(filters.nicMin));
-        }
-        
-        // Filtr: Síla nikotinu - max
-        if (filters.nicMax !== undefined && filters.nicMax !== '' && !isNaN(filters.nicMax)) {
-            query = query.lte('recipe_data->nicStrength', parseInt(filters.nicMax));
+        if (filters.nicMax !== undefined && filters.nicMax !== '') {
+            query = query.lte('recipe_data->nicotine', parseInt(filters.nicMax));
         }
         
         // Filtr: Obsahuje aditiva
