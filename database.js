@@ -825,18 +825,48 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
     const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt'];
     const productType = validTypes.includes(updates.product_type) ? updates.product_type : 'flavor';
     
+    // Základní data pro všechny produkty
+    const updateData = {
+        name: sanitizeInput(updates.name),
+        product_type: productType,
+        description: sanitizeInput(updates.description),
+        rating: Math.min(Math.max(parseInt(updates.rating) || 0, 0), 5),
+        image_url: updates.image_url || '',
+        product_url: sanitizeInput(updates.product_url) || '',
+        updated_at: new Date().toISOString()
+    };
+    
+    // Přidat flavor-specifická data pokud jde o příchuť
+    if (productType === 'flavor') {
+        if (updates.manufacturer !== undefined) {
+            updateData.manufacturer = sanitizeInput(updates.manufacturer);
+        }
+        if (updates.flavor_category !== undefined) {
+            updateData.flavor_category = sanitizeInput(updates.flavor_category);
+        }
+        if (updates.flavor_min_percent !== undefined) {
+            updateData.flavor_min_percent = updates.flavor_min_percent !== null ? 
+                Math.min(Math.max(parseFloat(updates.flavor_min_percent) || 0, 0), 100) : null;
+        }
+        if (updates.flavor_max_percent !== undefined) {
+            updateData.flavor_max_percent = updates.flavor_max_percent !== null ?
+                Math.min(Math.max(parseFloat(updates.flavor_max_percent) || 0, 0), 100) : null;
+        }
+        if (updates.steep_days !== undefined) {
+            updateData.steep_days = Math.min(Math.max(parseInt(updates.steep_days) || 0, 0), 365);
+        }
+        if (updates.product_code !== undefined) {
+            updateData.product_code = updates.product_code ? sanitizeInput(updates.product_code) : null;
+        }
+        if (updates.flavor_product_type !== undefined) {
+            updateData.flavor_product_type = sanitizeInput(updates.flavor_product_type);
+        }
+    }
+    
     try {
         const { data, error } = await supabaseClient
             .from('favorite_products')
-            .update({
-                name: sanitizeInput(updates.name),
-                product_type: productType,
-                description: sanitizeInput(updates.description),
-                rating: Math.min(Math.max(parseInt(updates.rating) || 0, 0), 5),
-                image_url: updates.image_url || '',
-                product_url: sanitizeInput(updates.product_url) || '',
-                updated_at: new Date().toISOString()
-            })
+            .update(updateData)
             .eq('id', productId)
             .eq('clerk_id', clerkId)
             .select()

@@ -3143,6 +3143,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
                         category: ingredient.flavorType || 'fruit',
                         percent: ingredient.percent || 0,
                         flavorId: ingredient.flavorId || null,
+                        favoriteProductId: ingredient.favoriteProductId || null,
                         flavorSource: ingredient.flavorSource || 'database'
                     };
                     flavors.push(flavorInfo);
@@ -3163,6 +3164,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
                     category: flavor.type,
                     percent: flavor.percent || 0,
                     flavorId: flavor.flavorId || null,
+                    favoriteProductId: flavor.favoriteProductId || null,
                     flavorSource: flavor.flavorSource || flavor.source || 'database'
                 };
                 flavors.push(flavorInfo);
@@ -3178,6 +3180,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
             category: recipeData.flavorType || 'fruit',
             percent: recipeData.flavorPercent || 0,
             flavorId: recipeData.specificFlavorId || null,
+            favoriteProductId: recipeData.specificFavoriteProductId || null,
             flavorSource: recipeData.specificFlavorSource || 'database'
         });
     }
@@ -3216,6 +3219,7 @@ function addFlavorRowToModal(flavor, index) {
         category: flavor.category,
         percent: flavor.percent,
         flavorId: flavor.flavorId,
+        favoriteProductId: flavor.favoriteProductId,
         flavorSource: flavor.flavorSource
     });
     
@@ -3258,14 +3262,35 @@ function getSelectedRecipeFlavors() {
     inputs.forEach((input, index) => {
         try {
             const data = JSON.parse(input.value);
+            
+            // Určit flavor_id a favorite_product_id
+            let flavorId = null;
+            let favoriteProductId = null;
+            
+            // Přednostně použít explicitní favoriteProductId pokud existuje
+            if (data.favoriteProductId) {
+                favoriteProductId = data.favoriteProductId;
+                // Pokud má i flavorId (veřejná DB), uložit také
+                if (data.flavorId) {
+                    flavorId = data.flavorId;
+                }
+            } else if (data.flavorId) {
+                // Fallback na starou logiku
+                if (data.flavorSource === 'favorite') {
+                    favoriteProductId = data.flavorId;
+                } else {
+                    flavorId = data.flavorId;
+                }
+            }
+            
             flavors.push({
                 position: index + 1,
                 percentage: data.percent || 0,
                 flavor_name: data.name || null,
                 flavor_manufacturer: data.manufacturer || null,
                 generic_flavor_type: data.category || 'fruit',
-                flavor_id: data.flavorSource === 'database' ? data.flavorId : null,
-                favorite_product_id: data.flavorSource === 'favorite' ? data.flavorId : null
+                flavor_id: flavorId,
+                favorite_product_id: favoriteProductId
             });
         } catch (e) {
             console.error('Error parsing flavor data:', e);
@@ -4708,7 +4733,7 @@ function resetAndPrefillShishaFlavors(flavors, linkedFlavors = []) {
     if (!flavors || flavors.length === 0) return;
     
     // Resetovat stav
-    shishaFlavorCount = 1;
+    shFlavorCount = 1;
     const container = document.getElementById('shAdditionalFlavorsContainer');
     if (container) container.innerHTML = '';
     
@@ -6568,6 +6593,7 @@ function updateVgPgRatioLimits() {
     let specificFlavorManufacturer = null;
     let specificFlavorVgRatio = null;
     let specificFlavorId = null;
+    let specificFavoriteProductId = null;
     let specificFlavorSource = 'generic';
     
     if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
@@ -6579,8 +6605,14 @@ function updateVgPgRatioLimits() {
                 // Většina aromat je 100% PG (0% VG)
                 specificFlavorVgRatio = flavorData.vg_ratio !== undefined ? flavorData.vg_ratio : 0;
                 // ID a zdroj příchutě
-                specificFlavorId = flavorData.id || flavorAutocomplete.dataset.flavorId || null;
-                specificFlavorSource = flavorAutocomplete.dataset.flavorSource || 'database';
+                const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
+                if (isFavorite) {
+                    specificFavoriteProductId = flavorData.favorite_product_id || flavorData.id || null;
+                    specificFlavorId = flavorData.flavor_id || null;
+                } else {
+                    specificFlavorId = flavorData.flavor_id || flavorData.id || flavorAutocomplete.dataset.flavorId || null;
+                }
+                specificFlavorSource = flavorAutocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
             }
         } catch (e) {
             console.log('Error parsing flavor data:', e);
@@ -7177,6 +7209,7 @@ function calculateMix() {
     let specificFlavorName = null;
     let specificFlavorManufacturer = null;
     let specificFlavorId = null;
+    let specificFavoriteProductId = null;
     let specificFlavorSource = 'generic';
     
     if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
@@ -7185,11 +7218,15 @@ function calculateMix() {
             if (flavorData && flavorData.name) {
                 specificFlavorName = flavorData.name;
                 specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), jinak id
+                // Pro oblíbené příchutě použít favorite_product_id, jinak flavor_id
                 const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
-                specificFlavorId = isFavorite ? (flavorData.flavor_id || flavorData.id) : flavorData.id;
-                specificFlavorId = specificFlavorId || flavorAutocomplete.dataset.flavorId || null;
-                specificFlavorSource = flavorAutocomplete.dataset.flavorSource || 'database';
+                if (isFavorite) {
+                    specificFavoriteProductId = flavorData.favorite_product_id || flavorData.id || null;
+                    specificFlavorId = flavorData.flavor_id || null;
+                } else {
+                    specificFlavorId = flavorData.flavor_id || flavorData.id || flavorAutocomplete.dataset.flavorId || null;
+                }
+                specificFlavorSource = flavorAutocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
             }
         } catch (e) {
             console.log('Error parsing flavor data:', e);
@@ -7342,6 +7379,7 @@ function calculateMix() {
                 flavorIngredient.flavorName = specificFlavorName;
                 flavorIngredient.flavorManufacturer = specificFlavorManufacturer;
                 flavorIngredient.flavorId = specificFlavorId;
+                flavorIngredient.favoriteProductId = specificFavoriteProductId;
                 flavorIngredient.flavorSource = specificFlavorSource;
             }
             
@@ -7415,6 +7453,7 @@ function calculateMix() {
                 flavorIngredient.flavorName = specificFlavorName;
                 flavorIngredient.flavorManufacturer = specificFlavorManufacturer;
                 flavorIngredient.flavorId = specificFlavorId;
+                flavorIngredient.favoriteProductId = specificFavoriteProductId;
                 flavorIngredient.flavorSource = specificFlavorSource;
             }
             
@@ -7460,6 +7499,7 @@ function calculateMix() {
         specificFlavorName: specificFlavorName,
         specificFlavorManufacturer: specificFlavorManufacturer,
         specificFlavorId: specificFlavorId,
+        specificFavoriteProductId: specificFavoriteProductId,
         specificFlavorSource: specificFlavorSource,
         flavorPercent: flavorPercent
     });
@@ -7541,6 +7581,7 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
         recipeData.specificFlavorName = extraData.specificFlavorName;
         recipeData.specificFlavorManufacturer = extraData.specificFlavorManufacturer;
         recipeData.specificFlavorId = extraData.specificFlavorId;
+        recipeData.specificFavoriteProductId = extraData.specificFavoriteProductId;
         recipeData.specificFlavorSource = extraData.specificFlavorSource;
     }
     if (extraData.flavorPercent !== undefined) {
@@ -10345,6 +10386,7 @@ function calculateProMix() {
                 flavorIngredient.flavorName = flavor.flavorName;
                 flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
                 flavorIngredient.flavorId = flavor.flavorId;
+                flavorIngredient.favoriteProductId = flavor.favoriteProductId;
                 flavorIngredient.flavorSource = flavor.flavorSource;
             }
             
@@ -10364,7 +10406,7 @@ function calculateProMix() {
             });
         });
         
-        // Add premixed base
+        // Add premixed base (FIRST BRANCH)
         if (premixedBaseVolume > 0.01) {
             ingredients.push({
                 ingredientKey: 'premixedBase',
@@ -10423,7 +10465,7 @@ function calculateProMix() {
             });
         }
         
-        // Add all flavors
+        // Add all flavors (SECOND BRANCH - no premixed base)
         flavorsData.forEach((flavor, index) => {
             const flavorVolume = (flavor.percent / 100) * totalAmount;
             const flavorVgPercent = flavor.vgRatio;
@@ -10446,13 +10488,14 @@ function calculateProMix() {
                 flavorIngredient.flavorName = flavor.flavorName;
                 flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
                 flavorIngredient.flavorId = flavor.flavorId;
+                flavorIngredient.favoriteProductId = flavor.favoriteProductId;
                 flavorIngredient.flavorSource = flavor.flavorSource;
             }
             
             ingredients.push(flavorIngredient);
         });
         
-        // Add all additives
+        // Add all additives (SECOND BRANCH)
         additivesData.forEach((additive) => {
             const additiveVolume = (additive.percent / 100) * totalAmount;
             
@@ -15812,6 +15855,7 @@ function calculateShishaMix() {
             flavorIngredient.flavorName = flavor.flavorName;
             flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
             flavorIngredient.flavorId = flavor.flavorId;
+            flavorIngredient.favoriteProductId = flavor.favoriteProductId;
             flavorIngredient.flavorSource = flavor.flavorSource;
         }
         
