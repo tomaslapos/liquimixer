@@ -105,7 +105,8 @@
     "no_recipes": "Retsepte ei leitud",
     "login_required": "Palun logi sisse, et pääseda ligi andmebaasile",
     "loading": "Retseptide laadimine...",
-    "results_count": "Leitud {count} retsepti"
+    "results_count": "Leitud {count} retsepti",
+    "back_to_database": "◀ TAGASI ANDMEBAASI"
   },
   "difficulty": {
     "beginner": "Algaja",
@@ -470,6 +471,7 @@
     "save_as_new": "SALVESTA UUENA",
     "make_public": "Jaga avalikus retseptide andmebaasis",
     "public_hint": "Retsept on nähtav ja hinnatav teiste kasutajate poolt",
+    "public_disabled_shared": "Ei saa jagada - retsept on juba avalikust andmebaasist",
     "flavors_label": "Kasutatud aroomid",
     "no_flavors": "Retsept ei sisalda aroome"
   },
@@ -551,6 +553,7 @@
     "login_required": "Toote salvestamiseks palun logi sisse.",
     "name_required": "Toote nimi on nõutav.",
     "type_required": "Palun vali toote tüüp.",
+    "type_locked": "Toote tüüpi ei saa pärast loomist muuta",
     "image_format": "Lubatud formaadid: JPEG, PNG, WebP, GIF",
     "image_size": "Maksimaalne pildi suurus on 5MB.",
     "camera_error": "Sinu brauser ei toeta kaamerale juurdepääsu."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} vedelikku on küpsenud ja kasutamiseks valmis.",
     "view_recipes": "Vaata retsepte",
     "stock_label": "Laoseis",
+    "auto_note_steeping": "Küpsemine {days} {daysUnit}",
     "consumed_title": "Vedelik kasutatud?",
     "consumed_text": "Kas soovid märkida selle vedeliku kasutatud? Meeldetuletus eemaldatakse loendist.",
     "mark_consumed": "Jah, kasutatud",
@@ -652,6 +656,8 @@
     "premixed_base": "Eelnevalt segatud baas",
     "nicotine_base": "Nikotiinibaas",
     "additive": "Lisaaine",
+    "shortfill_liquid": "Shortfill vedelik",
+    "shortfill_base": "Shortfill baas",
     "total": "KOKKU"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Maksa",
     "redirect_info": "Sind suunatakse GP WebPay makseväravasse",
     "payment_success": "Makse õnnestus! Sinu tellimus on aktiveeritud.",
+    "payment_success_login_required": "Makse õnnestus! Logi sisse, et pääseda oma tellimusele.",
     "payment_failed": "Makse ebaõnnestus. Palun proovi uuesti.",
     "payment_declined": "Makse lükati sinu panga poolt tagasi. Proovi teist makseviisi."
   },
@@ -780,6 +787,7 @@
     "price": "Hind ilma käibemaksuta",
     "vat": "Käibemaks",
     "total": "Kokku koos käibemaksuga",
+    "subtotal": "Vahesumma ilma käibemaksuta",
     "paid": "Makstud",
     "subscription_item": "LiquiMixer aastatellimus (365 päeva)",
     "status": "Olek",
@@ -977,7 +985,8 @@
     "section_title": "Aroomi seaded",
     "category_placeholder": "-- Valige kategooria --",
     "ratio_locked": "VG/PG suhe tootja poolt seadistatud",
-    "percent_from_category": "Soovituslik % kategooria järgi - tootja ei täpsustanud täpseid väärtusi"
+    "percent_from_category": "Soovituslik % kategooria järgi - tootja ei täpsustanud täpseid väärtusi",
+    "percent_not_set": "Soovituslik % pole seatud, kinnitatud andmed puuduvad. Seadistage vastavalt tootja soovitustele."
   },
   "flavor_autocomplete": {
     "from_favorites": "Minu aroomidest",

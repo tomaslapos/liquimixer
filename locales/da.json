@@ -105,7 +105,8 @@
     "no_recipes": "Ingen opskrifter fundet",
     "login_required": "Log venligst ind for at få adgang til databasen",
     "loading": "Indlæser opskrifter...",
-    "results_count": "Fundet {count} opskrifter"
+    "results_count": "Fundet {count} opskrifter",
+    "back_to_database": "◀ TILBAGE TIL DATABASEN"
   },
   "difficulty": {
     "beginner": "Begynder",
@@ -470,6 +471,7 @@
     "save_as_new": "GEM SOM NY",
     "make_public": "Del til offentlig opskriftsdatabase",
     "public_hint": "Opskriften vil være synlig og vurderbar af andre brugere",
+    "public_disabled_shared": "Kan ikke deles - opskriften er allerede fra offentlig database",
     "flavors_label": "Brugte aromaer",
     "no_flavors": "Opskriften indeholder ikke aromaer"
   },
@@ -551,6 +553,7 @@
     "login_required": "Log venligst ind for at gemme produktet.",
     "name_required": "Produktnavn er påkrævet.",
     "type_required": "Vælg venligst en produkttype.",
+    "type_locked": "Produkttype kan ikke ændres efter oprettelse",
     "image_format": "Tilladte formater: JPEG, PNG, WebP, GIF",
     "image_size": "Maksimal billedstørrelse er 5MB.",
     "camera_error": "Din browser understøtter ikke kameraadgang."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} væsker er modnet og klar til brug.",
     "view_recipes": "Se opskrifter",
     "stock_label": "Lager",
+    "auto_note_steeping": "Modning {days} {daysUnit}",
     "consumed_title": "Væske konsumeret?",
     "consumed_text": "Vil du markere denne væske som konsumeret? Påmindelsen vil blive fjernet fra listen.",
     "mark_consumed": "Ja, konsumeret",
@@ -652,6 +656,8 @@
     "premixed_base": "Forblandet base",
     "nicotine_base": "Nikotinbase",
     "additive": "Tilsætningsstof",
+    "shortfill_liquid": "Shortfill-væske",
+    "shortfill_base": "Shortfill-base",
     "total": "TOTAL"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Betal",
     "redirect_info": "Du vil blive omdirigeret til GP WebPay betalingsgateway",
     "payment_success": "Betaling gennemført! Dit abonnement er aktiveret.",
+    "payment_success_login_required": "Betaling gennemført! Log ind for at få adgang til dit abonnement.",
     "payment_failed": "Betalingen mislykkedes. Prøv venligst igen.",
     "payment_declined": "Betalingen blev afvist af din bank. Prøv en anden betalingsmetode."
   },
@@ -780,6 +787,7 @@
     "price": "Pris ekskl. moms",
     "vat": "Moms",
     "total": "Total inkl. moms",
+    "subtotal": "Subtotal ekskl. moms",
     "paid": "Betalt",
     "subscription_item": "LiquiMixer årsabonnement (365 dage)",
     "status": "Status",
@@ -977,7 +985,8 @@
     "section_title": "Aromaindstillinger",
     "category_placeholder": "-- Vælg kategori --",
     "ratio_locked": "VG/PG-forhold indstillet af producenten",
-    "percent_from_category": "Anbefalet % efter kategori - producent specificerede ikke eksakte værdier"
+    "percent_from_category": "Anbefalet % efter kategori - producent specificerede ikke eksakte værdier",
+    "percent_not_set": "Anbefalet % ikke indstillet, verificerede data mangler. Indstil i henhold til producentens anbefalinger."
   },
   "flavor_autocomplete": {
     "from_favorites": "Fra mine aromaer",

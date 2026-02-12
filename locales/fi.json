@@ -105,7 +105,8 @@
     "no_recipes": "Reseptejä ei löytynyt",
     "login_required": "Kirjaudu sisään päästäksesi tietokantaan",
     "loading": "Ladataan reseptejä...",
-    "results_count": "Löytyi {count} reseptiä"
+    "results_count": "Löytyi {count} reseptiä",
+    "back_to_database": "◀ TAKAISIN TIETOKANTAAN"
   },
   "difficulty": {
     "beginner": "Aloittelija",
@@ -470,6 +471,7 @@
     "save_as_new": "TALLENNA UUTENA",
     "make_public": "Jaa julkiseen reseptitietokantaan",
     "public_hint": "Resepti on näkyvissä ja arvioitavissa muiden käyttäjien toimesta",
+    "public_disabled_shared": "Ei voi jakaa - resepti on jo julkisesta tietokannasta",
     "flavors_label": "Käytetyt aromit",
     "no_flavors": "Resepti ei sisällä aromeja"
   },
@@ -551,6 +553,7 @@
     "login_required": "Kirjaudu sisään tallentaaksesi tuotteen.",
     "name_required": "Tuotteen nimi vaaditaan.",
     "type_required": "Valitse tuotetyyppi.",
+    "type_locked": "Tuotetyyppiä ei voi muuttaa luomisen jälkeen",
     "image_format": "Sallitut muodot: JPEG, PNG, WebP, GIF",
     "image_size": "Kuvan maksimikoko on 5MB.",
     "camera_error": "Selaimesi ei tue kameran käyttöä."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} nestettä on kypsynyt ja valmis käytettäväksi.",
     "view_recipes": "Näytä reseptit",
     "stock_label": "Varasto",
+    "auto_note_steeping": "Kypsytys {days} {daysUnit}",
     "consumed_title": "Neste kulutettu?",
     "consumed_text": "Haluatko merkitä tämän nesteen kulutetuksi? Muistutus poistetaan listalta.",
     "mark_consumed": "Kyllä, kulutettu",
@@ -651,6 +655,9 @@
     "pg_adjustment": "PG (säätö)",
     "premixed_base": "Esisekoitettu pohja",
     "nicotine_base": "Nikotiinipohja",
+    "additive": "Lisäaine",
+    "shortfill_liquid": "Shortfill-neste",
+    "shortfill_base": "Shortfill-pohja",
     "total": "YHTEENSÄ"
   },
   "nicotine_descriptions": {
@@ -748,6 +755,7 @@
     "pay_button_simple": "Maksa",
     "redirect_info": "Sinut ohjataan GP WebPay -maksuyhdyskäytävään",
     "payment_success": "Maksu onnistui! Tilauksesi on aktivoitu.",
+    "payment_success_login_required": "Maksu onnistui! Kirjaudu sisään päästäksesi tilauksellesi.",
     "payment_failed": "Maksu epäonnistui. Yritä uudelleen.",
     "payment_declined": "Pankkisi hylkäsi maksun. Kokeile toista maksutapaa."
   },
@@ -784,6 +792,7 @@
     "price": "Hinta ilman ALV",
     "vat": "ALV",
     "total": "Yhteensä sis. ALV",
+    "subtotal": "Välisumma ilman ALV",
     "paid": "Maksettu",
     "subscription_item": "LiquiMixer vuositilaus (365 päivää)",
     "status": "Tila",
@@ -981,7 +990,8 @@
     "section_title": "Aromiasetukset",
     "category_placeholder": "-- Valitse kategoria --",
     "ratio_locked": "VG/PG-suhde valmistajan asettama",
-    "percent_from_category": "Suositeltu % kategorian mukaan - valmistaja ei määritellyt tarkkoja arvoja"
+    "percent_from_category": "Suositeltu % kategorian mukaan - valmistaja ei määritellyt tarkkoja arvoja",
+    "percent_not_set": "Suositeltua % ei ole asetettu, vahvistetut tiedot puuttuvat. Aseta valmistajan suositusten mukaan."
   },
   "flavor_autocomplete": {
     "from_favorites": "Omista aromeistani",

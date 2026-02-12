@@ -105,7 +105,8 @@
     "no_recipes": "Geen recepten gevonden",
     "login_required": "Log in om toegang te krijgen tot de database",
     "loading": "Recepten laden...",
-    "results_count": "{count} recepten gevonden"
+    "results_count": "{count} recepten gevonden",
+    "back_to_database": "◀ TERUG NAAR DATABASE"
   },
   "difficulty": {
     "beginner": "Beginner",
@@ -316,6 +317,29 @@
     "note_rose": "bloemig, zacht",
     "note_custom": "eigen mix"
   },
+  "additive": {
+    "coolant": "Koelmiddel (WS-23, Koolada)",
+    "coolant_desc": "Voegt een koelend effect toe zonder mentholsmaak.",
+    "sweetener": "Zoetstof (Sucralose)",
+    "sweetener_desc": "Voegt zoetheid toe zonder calorieën.",
+    "enhancer": "Versterker (Smooth, TH)",
+    "enhancer_desc": "Smooth vermindert keelirritatie, Throat Hit verhoogt het.",
+    "terpene": "Terpenen",
+    "terpene_desc": "Natuurlijke aromatische verbindingen."
+  },
+  "shortfill": {
+    "info": "Shortfill is een fles met nicotinevrije e-liquid met lege ruimte voor het toevoegen van nicotine shots.",
+    "bottle_volume": "Shortfill flesvolume",
+    "bottle_hint": "Totale flescapaciteit",
+    "liquid_volume": "Hoeveelheid vloeistof in fles",
+    "nic_shot": "Nicotine shot",
+    "shot_count": "Aantal nicotine shots",
+    "results_title": "Resultaat",
+    "result_total": "Totaal volume:",
+    "result_nic": "Resultaat nicotine:",
+    "result_space": "Vrije ruimte na vullen:",
+    "overflow_warning": "⚠️ Let op: Inhoud overschrijdt flescapaciteit!"
+  },
   "results": {
     "title": "Je Recept",
     "dilute_title": "Verdunningsrecept",
@@ -447,6 +471,7 @@
     "save_as_new": "OPSLAAN ALS NIEUW",
     "make_public": "Delen met openbare receptendatabase",
     "public_hint": "Recept wordt zichtbaar en beoordeelbaar door andere gebruikers",
+    "public_disabled_shared": "Kan niet delen - recept is al van openbare database",
     "flavors_label": "Gebruikte aroma's",
     "no_flavors": "Recept bevat geen aroma's"
   },
@@ -528,6 +553,7 @@
     "login_required": "Log in om het product op te slaan.",
     "name_required": "Productnaam is vereist.",
     "type_required": "Selecteer een producttype.",
+    "type_locked": "Producttype kan niet worden gewijzigd na aanmaken",
     "image_format": "Toegestane formaten: JPEG, PNG, WebP, GIF",
     "image_size": "Maximale afbeeldingsgrootte is 5MB.",
     "camera_error": "Je browser ondersteunt geen cameratoegang."
@@ -586,6 +612,7 @@
     "matured_multiple": "{count} vloeistoffen zijn gerijpt en klaar voor gebruik.",
     "view_recipes": "Recepten bekijken",
     "stock_label": "Voorraad",
+    "auto_note_steeping": "Rijping {days} {daysUnit}",
     "consumed_title": "Vloeistof verbruikt?",
     "consumed_text": "Wil je deze vloeistof als verbruikt markeren? De herinnering wordt verwijderd uit de lijst.",
     "mark_consumed": "Ja, verbruikt",
@@ -629,6 +656,8 @@
     "premixed_base": "Voorgemengde basis",
     "nicotine_base": "Nicotinebasis",
     "additive": "Additief",
+    "shortfill_liquid": "Shortfill vloeistof",
+    "shortfill_base": "Shortfill basis",
     "total": "TOTAAL"
   },
   "nicotine_descriptions": {
@@ -721,6 +750,7 @@
     "pay_button_simple": "Betalen",
     "redirect_info": "U wordt doorgestuurd naar de GP WebPay betaalgateway",
     "payment_success": "Betaling geslaagd! Uw abonnement is geactiveerd.",
+    "payment_success_login_required": "Betaling geslaagd! Log in om toegang te krijgen tot uw abonnement.",
     "payment_failed": "Betaling mislukt. Probeer het opnieuw.",
     "payment_declined": "De betaling is geweigerd door uw bank. Probeer een andere betaalmethode."
   },
@@ -757,6 +787,7 @@
     "price": "Prijs excl. BTW",
     "vat": "BTW",
     "total": "Totaal incl. BTW",
+    "subtotal": "Subtotaal excl. BTW",
     "paid": "Betaald",
     "subscription_item": "LiquiMixer jaarabonnement (365 dagen)",
     "status": "Status",
@@ -954,7 +985,8 @@
     "section_title": "Aroma-instellingen",
     "category_placeholder": "-- Selecteer categorie --",
     "ratio_locked": "VG/PG-verhouding ingesteld door fabrikant",
-    "percent_from_category": "Aanbevolen % per categorie - fabrikant heeft geen exacte waarden opgegeven"
+    "percent_from_category": "Aanbevolen % per categorie - fabrikant heeft geen exacte waarden opgegeven",
+    "percent_not_set": "Aanbevolen % niet ingesteld, geverifieerde gegevens ontbreken. Stel in volgens aanbevelingen van de fabrikant."
   },
   "flavor_autocomplete": {
     "from_favorites": "Uit mijn aroma's",

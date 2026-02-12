@@ -105,7 +105,8 @@
     "no_recipes": "Inga recept hittades",
     "login_required": "Vänligen logga in för att komma åt databasen",
     "loading": "Laddar recept...",
-    "results_count": "Hittade {count} recept"
+    "results_count": "Hittade {count} recept",
+    "back_to_database": "◀ TILLBAKA TILL DATABASEN"
   },
   "difficulty": {
     "beginner": "Nybörjare",
@@ -470,6 +471,7 @@
     "save_as_new": "SPARA SOM NY",
     "make_public": "Dela till offentlig receptdatabas",
     "public_hint": "Receptet kommer att vara synligt och betygsättbart av andra användare",
+    "public_disabled_shared": "Kan inte delas - receptet är redan från offentlig databas",
     "flavors_label": "Använda aromer",
     "no_flavors": "Receptet innehåller inga aromer"
   },
@@ -551,6 +553,7 @@
     "login_required": "Vänligen logga in för att spara produkten.",
     "name_required": "Produktnamn krävs.",
     "type_required": "Vänligen välj en produkttyp.",
+    "type_locked": "Produkttyp kan inte ändras efter skapande",
     "image_format": "Tillåtna format: JPEG, PNG, WebP, GIF",
     "image_size": "Maximal bildstorlek är 5MB.",
     "camera_error": "Din webbläsare stöder inte kameraåtkomst."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} vätskor har mognat och är redo att användas.",
     "view_recipes": "Visa recept",
     "stock_label": "Lager",
+    "auto_note_steeping": "Mognad {days} {daysUnit}",
     "consumed_title": "Vätska konsumerad?",
     "consumed_text": "Vill du markera denna vätska som konsumerad? Påminnelsen kommer att tas bort från listan.",
     "mark_consumed": "Ja, konsumerad",
@@ -652,6 +656,8 @@
     "premixed_base": "Förblandad bas",
     "nicotine_base": "Nikotinbas",
     "additive": "Tillsats",
+    "shortfill_liquid": "Shortfill-vätska",
+    "shortfill_base": "Shortfill-bas",
     "total": "TOTALT"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Betala",
     "redirect_info": "Du kommer att omdirigeras till GP WebPay betalningsgateway",
     "payment_success": "Betalning lyckades! Din prenumeration har aktiverats.",
+    "payment_success_login_required": "Betalning lyckades! Logga in för att komma åt din prenumeration.",
     "payment_failed": "Betalningen misslyckades. Försök igen.",
     "payment_declined": "Betalningen avvisades av din bank. Prova en annan betalningsmetod."
   },
@@ -780,6 +787,7 @@
     "price": "Pris exkl. moms",
     "vat": "Moms",
     "total": "Totalt inkl. moms",
+    "subtotal": "Delsumma exkl. moms",
     "paid": "Betald",
     "subscription_item": "LiquiMixer årsprenumeration (365 dagar)",
     "status": "Status",
@@ -977,7 +985,8 @@
     "section_title": "Arominställningar",
     "category_placeholder": "-- Välj kategori --",
     "ratio_locked": "VG/PG-förhållande inställt av tillverkaren",
-    "percent_from_category": "Rekommenderad % efter kategori - tillverkaren angav inte exakta värden"
+    "percent_from_category": "Rekommenderad % efter kategori - tillverkaren angav inte exakta värden",
+    "percent_not_set": "Rekommenderad % inte inställd, verifierade data saknas. Ställ in enligt tillverkarens rekommendationer."
   },
   "flavor_autocomplete": {
     "from_favorites": "Från mina aromer",

@@ -7111,6 +7111,7 @@ function updateFlavorDisplay() {
     // Zkontrolovat zda je vybraná konkrétní příchuť
     const flavorAutocomplete = document.getElementById('flavorAutocomplete');
     let hasSpecificFlavor = false;
+    let hasVerifiedData = false;
     let flavorDataParsed = null;
     
     if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
@@ -7118,16 +7119,25 @@ function updateFlavorDisplay() {
             flavorDataParsed = JSON.parse(flavorAutocomplete.dataset.flavorData);
             // Konkrétní příchuť má jméno
             hasSpecificFlavor = !!(flavorDataParsed && flavorDataParsed.name);
+            // Ověřená data = má min_percent a max_percent nastavené (ne null, ne 0)
+            hasVerifiedData = flavorDataParsed.min_percent && flavorDataParsed.max_percent && flavorDataParsed.min_percent > 0;
         } catch (e) {
             hasSpecificFlavor = false;
         }
     }
     
     if (hasSpecificFlavor && flavorDataParsed) {
-        // Použít rozsah z konkrétní příchutě
-        minPercent = flavorDataParsed.min_percent || 5;
-        maxPercent = flavorDataParsed.max_percent || 20;
-        note = flavorDataParsed.name || '';
+        if (hasVerifiedData) {
+            // Použít rozsah z konkrétní příchutě
+            minPercent = flavorDataParsed.min_percent;
+            maxPercent = flavorDataParsed.max_percent;
+            note = flavorDataParsed.name || '';
+        } else {
+            // Konkrétní příchuť bez ověřených dat
+            minPercent = 0;
+            maxPercent = 100;
+            note = '';
+        }
     } else {
         // Použít rozsah z číselníku
         const flavor = flavorDatabase[type] || flavorDatabase.fruit;
@@ -7137,7 +7147,13 @@ function updateFlavorDisplay() {
     }
     
     let color, text;
-    if (value < minPercent) {
+    
+    // Pokud je konkrétní příchuť bez ověřených dat, nezobrazovat doporučení
+    if (hasSpecificFlavor && !hasVerifiedData) {
+        color = '#888888';
+        text = ''; // Žádný text - upozornění je již zobrazeno výše
+        trackEl.style.background = `linear-gradient(90deg, #666666, #888888)`;
+    } else if (value < minPercent) {
         color = '#ffaa00';
         text = t('flavor_descriptions.weak', 'Weak or no flavor (recommended {min}–{max}%)')
             .replace('{min}', minPercent)
@@ -9263,12 +9279,23 @@ function updateProFlavorDisplay(flavorIndex = 1) {
     const autocomplete = document.getElementById(`proFlavorAutocomplete${flavorIndex}`);
     let flavor = flavorDatabase[type];
     let minPercent = 5, maxPercent = 15;
+    let hasSpecificFlavor = false;
+    let hasVerifiedData = false;
     
     if (autocomplete?.dataset.flavorData) {
         try {
             const flavorData = JSON.parse(autocomplete.dataset.flavorData);
-            minPercent = flavorData.min_percent || 5;
-            maxPercent = flavorData.max_percent || 20;
+            hasSpecificFlavor = flavorData && flavorData.name;
+            // Ověřená data = má min_percent a max_percent nastavené (ne null, ne 0)
+            hasVerifiedData = flavorData.min_percent && flavorData.max_percent && flavorData.min_percent > 0;
+            if (hasVerifiedData) {
+                minPercent = flavorData.min_percent;
+                maxPercent = flavorData.max_percent;
+            } else if (hasSpecificFlavor) {
+                // Konkrétní příchuť bez ověřených dat
+                minPercent = 0;
+                maxPercent = 100;
+            }
         } catch (e) {}
     } else if (flavor) {
         minPercent = flavor.min || 5;
@@ -9287,7 +9314,11 @@ function updateProFlavorDisplay(flavorIndex = 1) {
     displayEl.textContent = Number.isInteger(value) ? value : value.toFixed(1);
 
     let color;
-    if (value < minPercent) {
+    // Pokud je konkrétní příchuť bez ověřených dat, použít neutrální barvu
+    if (hasSpecificFlavor && !hasVerifiedData) {
+        color = '#888888';
+        if (trackEl) trackEl.style.background = `linear-gradient(90deg, #666666, #888888)`;
+    } else if (value < minPercent) {
         color = '#ffaa00';
         if (trackEl) trackEl.style.background = `linear-gradient(90deg, #ff6600, #ffaa00)`;
     } else if (value > maxPercent) {
@@ -13734,13 +13765,10 @@ function showFlavorSliderWithRange(inputId, flavorData) {
         maxPercent = flavorData.max_percent;
         recommendedPercent = flavorData.recommended_percent || ((minPercent + maxPercent) / 2);
     } else {
-        // Fallback dle kategorie
-        const category = flavorData.category || 'fruit';
-        const isShisha = flavorData.product_type === 'shisha';
-        const defaultFlavorData = flavorDatabase[category] || flavorDatabase.fruit;
-        minPercent = isShisha ? (defaultFlavorData.shishaMin || 15) : (defaultFlavorData.min || 5);
-        maxPercent = isShisha ? (defaultFlavorData.shishaMax || 25) : (defaultFlavorData.max || 15);
-        recommendedPercent = Math.round((minPercent + maxPercent) / 2);
+        // Chybí ověřená data - nastavit na 0% a nechat uživatele zvolit
+        minPercent = 0;
+        maxPercent = 100;
+        recommendedPercent = 0;
     }
     
     // Uložit původní min/max do data atributů
@@ -13858,7 +13886,7 @@ function showPercentFallbackWarning(inputId, hasExactPercent) {
             // Vložit na začátek kontejneru
             container.insertBefore(warningEl, container.firstChild);
         }
-        warningEl.innerHTML = `<span class="warning-icon">⚠</span> ${t('flavor_form.percent_from_category', 'Doporučené % nastaveno dle kategorie - výrobce neuvedl přesné hodnoty')}`;
+        warningEl.innerHTML = `<span class="warning-icon">⚠</span> ${t('flavor_form.percent_not_set', 'Doporučené % není nastaveno, chybí ověřená data. Nastavte dle doporučení výrobce.')}`;
         warningEl.classList.remove('hidden');
     } else {
         // Skrýt upozornění
@@ -14032,10 +14060,21 @@ function unlockFlavorVgPgRatio(inputId) {
 }
 
 // Aktualizovat popis slideru dle rozsahu konkrétní příchutě
-function updateFlavorSliderDescription(value, minPercent, maxPercent, descriptionElement) {
+function updateFlavorSliderDescription(value, minPercent, maxPercent, descriptionElement, hasExactPercent = true) {
     const percent = parseFloat(value);
     let description = '';
     let color = '#00cc66'; // default green
+    
+    // Pokud chybí ověřená data, nezobrazovat žádný popis rozsahu
+    if (!hasExactPercent || (minPercent === 0 && maxPercent === 100)) {
+        if (descriptionElement) {
+            descriptionElement.textContent = '';
+            descriptionElement.style.color = '';
+            descriptionElement.style.borderLeftColor = '';
+            descriptionElement.style.textShadow = '';
+        }
+        return;
+    }
     
     if (percent < minPercent) {
         description = t('flavor_description.too_low', 'Pod doporučeným rozsahem ({min}-{max}%)')
@@ -14732,12 +14771,32 @@ function updateShishaFlavorStrength(index) {
     const flavorType = select?.value || 'custom';
     const flavor = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
     
-    // Použít rozsah z konkrétní příchutě nebo z databáze typů
-    const minPercent = hasSpecificFlavor && specificMin !== null ? specificMin : flavor.min;
-    const maxPercent = hasSpecificFlavor && specificMax !== null ? specificMax : flavor.max;
+    // Zjistit, zda máme ověřená data od výrobce
+    const hasVerifiedData = hasSpecificFlavor && specificMin !== null && specificMax !== null && specificMin > 0;
+    
+    // Použít rozsah z konkrétní příchutě nebo z databáze typů (pokud není konkrétní příchuť)
+    let minPercent, maxPercent;
+    if (hasVerifiedData) {
+        minPercent = specificMin;
+        maxPercent = specificMax;
+    } else if (!hasSpecificFlavor) {
+        // Generická kategorie - použít hodnoty z databáze typů
+        minPercent = flavor.min;
+        maxPercent = flavor.max;
+    } else {
+        // Konkrétní příchuť bez ověřených dat - nezobrazovat doporučení
+        minPercent = 0;
+        maxPercent = 100;
+    }
     
     let color, text;
-    if (value < minPercent) {
+    
+    // Pokud je konkrétní příchuť bez ověřených dat, nezobrazovat doporučení rozsahu
+    if (hasSpecificFlavor && !hasVerifiedData) {
+        color = '#888888'; // šedá - neutrální
+        text = ''; // Žádný text - upozornění je již zobrazeno výše
+        if (track) track.style.background = 'linear-gradient(90deg, #666666, #888888)';
+    } else if (value < minPercent) {
         color = '#ffaa00';
         text = t('shisha.flavor_weak', 'Weak flavor - recommended {min}–{max}% for shisha')
             .replace('{min}', minPercent)

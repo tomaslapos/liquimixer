@@ -373,6 +373,7 @@
   },
   "shared_recipe": {
     "save_to_my_recipes": "ULOŽIT K SOBĚ",
+    "save_to_my_favorites": "ULOŽIT K SOBĚ",
     "product_readonly": "Toto je produkt jiného uživatele. Můžete si jej uložit do svých oblíbených.",
     "save_product": "ULOŽIT K SOBĚ",
     "products_copied": "zkopírováno",
@@ -1014,7 +1015,8 @@
     "category_placeholder": "-- Vyberte kategorii --",
     "type_conflict_warning": "Tato příchuť je pro {type}. Opravdu ji chcete použít v tomto receptu?",
     "ratio_locked": "Poměr VG/PG je nastaven dle výrobce",
-    "percent_from_category": "Doporučené % nastaveno dle kategorie - výrobce neuvedl přesné hodnoty"
+    "percent_from_category": "Doporučené % nastaveno dle kategorie - výrobce neuvedl přesné hodnoty",
+    "percent_not_set": "Doporučené % není nastaveno, chybí ověřená data. Nastavte dle doporučení výrobce."
   },
   "flavor_autocomplete": {
     "from_favorites": "Z mých příchutí",

@@ -105,7 +105,8 @@
     "no_recipes": "Tarif bulunamadı",
     "login_required": "Veritabanına erişmek için lütfen giriş yapın",
     "loading": "Tarifler yükleniyor...",
-    "results_count": "{count} tarif bulundu"
+    "results_count": "{count} tarif bulundu",
+    "back_to_database": "◀ VERİTABANINA GERİ DÖN"
   },
   "difficulty": {
     "beginner": "Başlangıç",
@@ -470,6 +471,7 @@
     "save_as_new": "YENI OLARAK KAYDET",
     "make_public": "Halka açık tarif veritabanına paylaş",
     "public_hint": "Tarif diğer kullanıcılar tarafından görülebilir ve puanlanabilir",
+    "public_disabled_shared": "Paylaşılamaz - tarif zaten herkese açık veritabanından",
     "flavors_label": "Kullanılan aromalar",
     "no_flavors": "Tarif aroma içermiyor"
   },
@@ -551,6 +553,7 @@
     "login_required": "Ürünü kaydetmek için lütfen giriş yapın.",
     "name_required": "Ürün adı gereklidir.",
     "type_required": "Lütfen bir ürün türü seçin.",
+    "type_locked": "Ürün türü oluşturulduktan sonra değiştirilemez",
     "image_format": "İzin verilen formatlar: JPEG, PNG, WebP, GIF",
     "image_size": "Maksimum resim boyutu 5MB.",
     "camera_error": "Tarayıcınız kamera erişimini desteklemiyor."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} sıvı olgunlaştı ve kullanıma hazır.",
     "view_recipes": "Tarifleri görüntüle",
     "stock_label": "Stok",
+    "auto_note_steeping": "Olgunlaşma {days} {daysUnit}",
     "consumed_title": "Sıvı tüketildi mi?",
     "consumed_text": "Bu sıvıyı tüketildi olarak işaretlemek istiyor musunuz? Hatırlatıcı listeden kaldırılacak.",
     "mark_consumed": "Evet, tüketildi",
@@ -652,6 +656,8 @@
     "premixed_base": "Önceden Karıştırılmış Baz",
     "nicotine_base": "Nikotin Bazı",
     "additive": "Katkı Maddesi",
+    "shortfill_liquid": "Shortfill sıvısı",
+    "shortfill_base": "Shortfill bazı",
     "total": "TOPLAM"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Öde",
     "redirect_info": "GP WebPay ödeme ağ geçidine yönlendirileceksiniz",
     "payment_success": "Ödeme başarılı! Aboneliğiniz etkinleştirildi.",
+    "payment_success_login_required": "Ödeme başarılı! Aboneliğinize erişmek için giriş yapın.",
     "payment_failed": "Ödeme başarısız. Lütfen tekrar deneyin.",
     "payment_declined": "Ödeme bankanız tarafından reddedildi. Başka bir ödeme yöntemi deneyin."
   },
@@ -780,6 +787,7 @@
     "price": "KDV hariç fiyat",
     "vat": "KDV",
     "total": "KDV dahil toplam",
+    "subtotal": "KDV hariç ara toplam",
     "paid": "Ödendi",
     "subscription_item": "LiquiMixer yıllık abonelik (365 gün)",
     "status": "Durum",
@@ -977,7 +985,8 @@
     "section_title": "Aroma ayarları",
     "category_placeholder": "-- Kategori seçin --",
     "ratio_locked": "VG/PG oranı üretici tarafından ayarlandı",
-    "percent_from_category": "Kategoriye göre önerilen % - üretici kesin değerleri belirtmedi"
+    "percent_from_category": "Kategoriye göre önerilen % - üretici kesin değerleri belirtmedi",
+    "percent_not_set": "Önerilen % ayarlanmadı, doğrulanmış veriler eksik. Üretici önerilerine göre ayarlayın."
   },
   "flavor_autocomplete": {
     "from_favorites": "Aromalarımdan",

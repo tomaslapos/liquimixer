@@ -105,7 +105,8 @@
     "no_recipes": "Receptų nerasta",
     "login_required": "Prisijunkite, kad pasiektumėte duomenų bazę",
     "loading": "Kraunami receptai...",
-    "results_count": "Rasta {count} receptų"
+    "results_count": "Rasta {count} receptų",
+    "back_to_database": "◀ GRĮŽTI Į DUOMENŲ BAZĘ"
   },
   "difficulty": {
     "beginner": "Pradedantysis",
@@ -470,6 +471,7 @@
     "save_as_new": "ISSAUGOTI KAIP NAUJA",
     "make_public": "Dalintis viešoje receptų duomenų bazėje",
     "public_hint": "Receptas bus matomas ir vertinamas kitų vartotojų",
+    "public_disabled_shared": "Negalima dalintis - receptas jau iš viešos duomenų bazės",
     "flavors_label": "Naudojami aromatai",
     "no_flavors": "Receptas neturi aromatų"
   },
@@ -551,6 +553,7 @@
     "login_required": "Prisijunkite, kad išsaugotumėte produktą.",
     "name_required": "Būtinas produkto pavadinimas.",
     "type_required": "Pasirinkite produkto tipą.",
+    "type_locked": "Produkto tipas negali būti pakeistas po sukūrimo",
     "image_format": "Leidžiami formatai: JPEG, PNG, WebP, GIF",
     "image_size": "Maksimalus nuotraukos dydis 5MB.",
     "camera_error": "Jūsų naršyklė nepalaiko kameros prieigos."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} skysčių subrandinta ir paruošta naudojimui.",
     "view_recipes": "Žiūrėti receptus",
     "stock_label": "Atsargos",
+    "auto_note_steeping": "Brandinimas {days} {daysUnit}",
     "consumed_title": "Skystis sunaudotas?",
     "consumed_text": "Ar norite pažymėti šį skystį kaip sunaudotą? Priminimas bus pašalintas iš sąrašo.",
     "mark_consumed": "Taip, sunaudotas",
@@ -652,6 +656,8 @@
     "premixed_base": "Sumaišyta bazė",
     "nicotine_base": "Nikotino bazė",
     "additive": "Priedas",
+    "shortfill_liquid": "Shortfill skystis",
+    "shortfill_base": "Shortfill bazė",
     "total": "IŠ VISO"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Mokėti",
     "redirect_info": "Būsite nukreipti į GP WebPay mokėjimo vartus",
     "payment_success": "Mokėjimas sėkmingas! Jūsų prenumerata aktyvuota.",
+    "payment_success_login_required": "Mokėjimas sėkmingas! Prisijunkite, kad pasiektumėte prenumeratą.",
     "payment_failed": "Mokėjimas nepavyko. Bandykite dar kartą.",
     "payment_declined": "Mokėjimą atmetė jūsų bankas. Išbandykite kitą mokėjimo būdą."
   },
@@ -780,6 +787,7 @@
     "price": "Kaina be PVM",
     "vat": "PVM",
     "total": "Iš viso su PVM",
+    "subtotal": "Tarpinė suma be PVM",
     "paid": "Apmokėta",
     "subscription_item": "LiquiMixer metinė prenumerata (365 dienos)",
     "status": "Būsena",
@@ -977,7 +985,8 @@
     "section_title": "Aromato nustatymai",
     "category_placeholder": "-- Pasirinkite kategoriją --",
     "ratio_locked": "VG/PG santykis nustatytas gamintojo",
-    "percent_from_category": "Rekomenduojamas % pagal kategoriją - gamintojas nenurodė tikslių reikšmių"
+    "percent_from_category": "Rekomenduojamas % pagal kategoriją - gamintojas nenurodė tikslių reikšmių",
+    "percent_not_set": "Rekomenduojamas % nenustatytas, trūksta patikrintų duomenų. Nustatykite pagal gamintojo rekomendacijas."
   },
   "flavor_autocomplete": {
     "from_favorites": "Iš mano aromatų",

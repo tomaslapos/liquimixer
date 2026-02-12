@@ -105,7 +105,8 @@
     "no_recipes": "未找到配方",
     "login_required": "请登录以访问数据库",
     "loading": "正在加载配方...",
-    "results_count": "找到 {count} 个配方"
+    "results_count": "找到 {count} 个配方",
+    "back_to_database": "◀ 返回数据库"
   },
   "difficulty": {
     "beginner": "初学者",
@@ -470,6 +471,7 @@
     "save_as_new": "另存为新配方",
     "make_public": "分享到公共配方数据库",
     "public_hint": "配方将对其他用户可见并可评分",
+    "public_disabled_shared": "无法分享 - 配方已来自公共数据库",
     "flavors_label": "使用的香料",
     "no_flavors": "配方不包含香料"
   },
@@ -551,6 +553,7 @@
     "login_required": "请登录以保存产品。",
     "name_required": "产品名称为必填项。",
     "type_required": "请选择产品类型。",
+    "type_locked": "产品类型创建后无法更改",
     "image_format": "允许的格式：JPEG、PNG、WebP、GIF",
     "image_size": "最大图片大小为 5MB。",
     "camera_error": "您的浏览器不支持相机访问。"
@@ -609,6 +612,7 @@
     "matured_multiple": "{count}款烟油已醒发完成，可以使用了。",
     "view_recipes": "查看配方",
     "stock_label": "库存",
+    "auto_note_steeping": "熟化 {days} {daysUnit}",
     "consumed_title": "烟油已消耗？",
     "consumed_text": "您要将此烟油标记为已消耗吗？提醒将从列表中移除。",
     "mark_consumed": "是，已消耗",
@@ -652,6 +656,8 @@
     "premixed_base": "预混基液",
     "nicotine_base": "尼古丁基液",
     "additive": "添加剂",
+    "shortfill_liquid": "短填液体",
+    "shortfill_base": "短填基液",
     "total": "总计"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "付款",
     "redirect_info": "您将被重定向到 GP WebPay 支付网关",
     "payment_success": "付款成功！您的订阅已激活。",
+    "payment_success_login_required": "付款成功！请登录以访问您的订阅。",
     "payment_failed": "付款失败。请重试。",
     "payment_declined": "您的银行拒绝了付款。请尝试其他付款方式。"
   },
@@ -780,6 +787,7 @@
     "price": "税前价格",
     "vat": "增值税",
     "total": "含税总计",
+    "subtotal": "税前小计",
     "paid": "已付款",
     "subscription_item": "LiquiMixer 年度订阅（365 天）",
     "status": "状态",
@@ -977,7 +985,8 @@
     "section_title": "香料设置",
     "category_placeholder": "-- 选择类别 --",
     "ratio_locked": "VG/PG比例由制造商设定",
-    "percent_from_category": "按类别设置推荐% - 制造商未指定准确值"
+    "percent_from_category": "按类别设置推荐% - 制造商未指定准确值",
+    "percent_not_set": "推荐%未设置，缺少验证数据。请根据制造商建议设置。"
   },
   "flavor_autocomplete": {
     "from_favorites": "来自我的香料",

@@ -105,7 +105,8 @@
     "no_recipes": "Nie znaleziono przepisów",
     "login_required": "Zaloguj się, aby uzyskać dostęp do bazy",
     "loading": "Ładowanie przepisów...",
-    "results_count": "Znaleziono {count} przepisów"
+    "results_count": "Znaleziono {count} przepisów",
+    "back_to_database": "◀ POWRÓT DO BAZY"
   },
   "difficulty": {
     "beginner": "Początkujący",
@@ -456,6 +457,7 @@
     "save_as_new": "ZAPISZ JAKO NOWY",
     "make_public": "Udostępnij do publicznej bazy przepisów",
     "public_hint": "Przepis będzie widoczny i możliwy do oceny przez innych użytkowników",
+    "public_disabled_shared": "Nie można udostępnić - przepis pochodzi już z publicznej bazy",
     "flavors_label": "Użyte aromaty",
     "no_flavors": "Przepis nie zawiera aromatów"
   },
@@ -537,6 +539,7 @@
     "login_required": "Proszę się zalogować, aby zapisać produkt.",
     "name_required": "Nazwa produktu jest wymagana.",
     "type_required": "Proszę wybrać typ produktu.",
+    "type_locked": "Typ produktu nie może być zmieniony po utworzeniu",
     "image_format": "Dozwolone formaty: JPEG, PNG, WebP, GIF",
     "image_size": "Maksymalny rozmiar obrazu to 5 MB.",
     "camera_error": "Twoja przeglądarka nie obsługuje dostępu do kamery."
@@ -595,6 +598,7 @@
     "matured_multiple": "{count} liquidów jest dojrzałych i gotowych do użycia.",
     "view_recipes": "Zobacz przepisy",
     "stock_label": "Zapas",
+    "auto_note_steeping": "Dojrzewanie {days} {daysUnit}",
     "consumed_title": "Liquid zużyty?",
     "consumed_text": "Czy chcesz oznaczyć ten liquid jako zużyty? Przypomnienie zostanie usunięte z listy.",
     "mark_consumed": "Tak, zużyty",
@@ -638,6 +642,8 @@
     "pg_adjustment": "PG (korekta)",
     "premixed_base": "Baza wstępnie zmieszana",
     "additive": "Dodatek",
+    "shortfill_liquid": "Płyn shortfill",
+    "shortfill_base": "Baza shortfill",
     "total": "RAZEM"
   },
   "nicotine_descriptions": {
@@ -728,7 +734,11 @@
     "already_have_account": "Masz już konto?",
     "logged_in_as": "Jesteś zalogowany jako:",
     "pay_button_simple": "Zapłać",
-    "redirect_info": "Zostaniesz przekierowany do bramki płatniczej GP WebPay"
+    "redirect_info": "Zostaniesz przekierowany do bramki płatniczej GP WebPay",
+    "payment_success": "Płatność zakończona sukcesem! Twoja subskrypcja została aktywowana.",
+    "payment_success_login_required": "Płatność zakończona sukcesem! Zaloguj się, aby uzyskać dostęp do subskrypcji.",
+    "payment_failed": "Płatność nie powiodła się. Spróbuj ponownie.",
+    "payment_declined": "Płatność została odrzucona przez bank. Spróbuj innej metody płatności."
   },
   "terms": {
     "title": "Regulamin",
@@ -763,6 +773,7 @@
     "price": "Cena netto",
     "vat": "VAT",
     "total": "Razem brutto",
+    "subtotal": "Suma netto",
     "paid": "Zapłacono",
     "subscription_item": "Roczna subskrypcja LiquiMixer (365 dni)",
     "status": "Status",
@@ -960,7 +971,8 @@
     "category_placeholder": "-- Wybierz kategorię --",
     "type_conflict_warning": "Ten aromat jest do {type}. Czy na pewno chcesz go użyć w tym przepisie?",
     "ratio_locked": "Proporcja VG/PG ustawiona przez producenta",
-    "percent_from_category": "Zalecany % wg kategorii - producent nie podał dokładnych wartości"
+    "percent_from_category": "Zalecany % wg kategorii - producent nie podał dokładnych wartości",
+    "percent_not_set": "Zalecany % nie ustawiony, brak zweryfikowanych danych. Ustaw zgodnie z zaleceniami producenta."
   },
   "flavor_autocomplete": {
     "from_favorites": "Z moich aromatów",

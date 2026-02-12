@@ -108,6 +108,12 @@
     "results_count": "S-au găsit {count} rețete",
     "back_to_database": "◀ ÎNAPOI LA BAZĂ"
   },
+  "rating": {
+    "title": "Evaluare",
+    "votes": "voturi",
+    "your_rating": "Evaluarea dumneavoastră",
+    "thank_you": "Vă mulțumim pentru evaluare!"
+  },
   "difficulty": {
     "beginner": "Începător",
     "intermediate": "Intermediar",
@@ -465,6 +471,7 @@
     "save_as_new": "SALVARE CA NOU",
     "make_public": "Partajați cu baza de rețete publică",
     "public_hint": "Rețeta va fi vizibilă și poate fi evaluată de alți utilizatori",
+    "public_disabled_shared": "Nu se poate partaja - rețeta este deja din baza de date publică",
     "flavors_label": "Arome folosite",
     "no_flavors": "Rețeta nu conține arome"
   },
@@ -546,6 +553,7 @@
     "login_required": "Autentificați-vă pentru a salva produsul.",
     "name_required": "Numele produsului este obligatoriu.",
     "type_required": "Selectați un tip de produs.",
+    "type_locked": "Tipul produsului nu poate fi modificat după creare",
     "image_format": "Formate permise: JPEG, PNG, WebP, GIF",
     "image_size": "Dimensiunea maximă a imaginii este 5MB.",
     "camera_error": "Browserul dvs. nu suportă accesul la cameră."
@@ -604,6 +612,7 @@
     "matured_multiple": "{count} lichide s-au maturat și sunt gata de utilizare.",
     "view_recipes": "Vezi rețetele",
     "stock_label": "Stoc",
+    "auto_note_steeping": "Maturare {days} {daysUnit}",
     "consumed_title": "Lichid consumat?",
     "consumed_text": "Doriți să marcați acest lichid ca fiind consumat? Memento-ul va fi eliminat din listă.",
     "mark_consumed": "Da, consumat",
@@ -647,6 +656,8 @@
     "premixed_base": "Bază premixată",
     "nicotine_base": "Bază de nicotină",
     "additive": "Aditiv",
+    "shortfill_liquid": "Lichid shortfill",
+    "shortfill_base": "Bază shortfill",
     "total": "TOTAL"
   },
   "nicotine_descriptions": {
@@ -739,6 +750,7 @@
     "pay_button_simple": "Plătește",
     "redirect_info": "Veți fi redirecționat către gateway-ul de plată GP WebPay",
     "payment_success": "Plată reușită! Abonamentul dvs. a fost activat.",
+    "payment_success_login_required": "Plată reușită! Vă rugăm să vă conectați pentru a accesa abonamentul.",
     "payment_failed": "Plata a eșuat. Vă rugăm să încercați din nou.",
     "payment_declined": "Plata a fost refuzată de banca dvs. Încercați o altă metodă de plată."
   },
@@ -775,6 +787,7 @@
     "price": "Preț fără TVA",
     "vat": "TVA",
     "total": "Total cu TVA",
+    "subtotal": "Subtotal fără TVA",
     "paid": "Plătit",
     "subscription_item": "Abonament anual LiquiMixer (365 zile)",
     "status": "Stare",
@@ -972,7 +985,8 @@
     "section_title": "Setări aromă",
     "category_placeholder": "-- Selectați categoria --",
     "ratio_locked": "Raport VG/PG setat de producător",
-    "percent_from_category": "% recomandat după categorie - producătorul nu a specificat valori exacte"
+    "percent_from_category": "% recomandat după categorie - producătorul nu a specificat valori exacte",
+    "percent_not_set": "% recomandat nu este setat, lipsesc date verificate. Setați conform recomandărilor producătorului."
   },
   "flavor_autocomplete": {
     "from_favorites": "Din aromele mele",

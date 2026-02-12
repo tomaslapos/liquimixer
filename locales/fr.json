@@ -105,7 +105,8 @@
     "no_recipes": "Aucune recette trouvée",
     "login_required": "Connectez-vous pour accéder",
     "loading": "Chargement...",
-    "results_count": "{count} recettes trouvées"
+    "results_count": "{count} recettes trouvées",
+    "back_to_database": "◀ RETOUR À LA BASE"
   },
   "difficulty": {
     "beginner": "Débutant",
@@ -340,6 +341,13 @@
     "component_vg": "VG (Glycérine)",
     "component_pg": "PG (Propylène Glycol)",
     "notes_title": "Notes de mélange :",
+    "notes_flavors_first": "Ajoutez d'abord les arômes.",
+    "notes_nicotine": "Ensuite ajoutez la nicotine (avec des gants !).",
+    "notes_premixed": "Ajoutez la base prémélangée.",
+    "notes_adjustment": "Si nécessaire, ajustez avec du PG ou VG pur.",
+    "notes_pg_vg": "Enfin ajoutez le PG et le VG.",
+    "notes_shake": "Secouez vigoureusement (2-3 minutes).",
+    "notes_steep": "Laissez maturer pendant {days} jours.",
     "notes_1": "Ajoutez d'abord la nicotine (si utilisée)",
     "notes_2": "Ensuite ajoutez les arômes",
     "notes_3": "Enfin ajoutez le PG et le VG",
@@ -449,6 +457,7 @@
     "save_as_new": "ENREGISTRER COMME NOUVEAU",
     "make_public": "Partager dans la base publique",
     "public_hint": "La recette sera visible et évaluable par les autres",
+    "public_disabled_shared": "Impossible de partager - la recette provient déjà de la base publique",
     "flavors_label": "Arômes utilisés",
     "no_flavors": "La recette ne contient pas d'arômes"
   },
@@ -530,6 +539,7 @@
     "login_required": "Veuillez vous connecter pour enregistrer le produit.",
     "name_required": "Le nom du produit est requis.",
     "type_required": "Veuillez sélectionner un type de produit.",
+    "type_locked": "Le type de produit ne peut pas être modifié après la création",
     "image_format": "Formats autorisés : JPEG, PNG, WebP, GIF",
     "image_size": "La taille maximale de l'image est de 5 Mo.",
     "camera_error": "Votre navigateur ne prend pas en charge l'accès à la caméra."
@@ -588,6 +598,7 @@
     "matured_multiple": "{count} liquides sont mûris et prêts à l'emploi.",
     "view_recipes": "Voir les recettes",
     "stock_label": "Stock",
+    "auto_note_steeping": "Maturation {days} {daysUnit}",
     "consumed_title": "Liquid consommé?",
     "consumed_text": "Voulez-vous marquer ce liquid comme consommé?",
     "mark_consumed": "Oui, consommé",
@@ -631,6 +642,8 @@
     "pg_adjustment": "PG (ajustement)",
     "premixed_base": "Base pré-mélangée",
     "additive": "Additif",
+    "shortfill_liquid": "Liquide shortfill",
+    "shortfill_base": "Base shortfill",
     "total": "TOTAL"
   },
   "nicotine_descriptions": {
@@ -723,6 +736,7 @@
     "pay_button_simple": "Payer",
     "redirect_info": "Vous serez redirigé vers la passerelle de paiement GP WebPay",
     "payment_success": "Paiement réussi ! Votre abonnement a été activé.",
+    "payment_success_login_required": "Paiement réussi ! Veuillez vous connecter pour accéder à votre abonnement.",
     "payment_failed": "Le paiement a échoué. Veuillez réessayer.",
     "payment_declined": "Le paiement a été refusé par votre banque. Essayez un autre moyen de paiement."
   },
@@ -759,6 +773,7 @@
     "price": "Prix HT",
     "vat": "TVA",
     "total": "Total TTC",
+    "subtotal": "Sous-total HT",
     "paid": "Payé",
     "subscription_item": "Abonnement annuel LiquiMixer (365 jours)",
     "status": "Statut",
@@ -956,7 +971,8 @@
     "section_title": "Paramètres d'arôme",
     "category_placeholder": "-- Sélectionner une catégorie --",
     "ratio_locked": "Ratio VG/PG défini par le fabricant",
-    "percent_from_category": "% recommandé par catégorie - le fabricant n'a pas spécifié de valeurs exactes"
+    "percent_from_category": "% recommandé par catégorie - le fabricant n'a pas spécifié de valeurs exactes",
+    "percent_not_set": "% recommandé non défini, données vérifiées manquantes. Réglez selon les recommandations du fabricant."
   },
   "flavor_autocomplete": {
     "from_favorites": "De mes arômes",

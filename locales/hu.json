@@ -105,7 +105,8 @@
     "no_recipes": "Nincs találat",
     "login_required": "Kérjük, jelentkezz be az adatbázis eléréséhez",
     "loading": "Receptek betöltése...",
-    "results_count": "{count} recept található"
+    "results_count": "{count} recept található",
+    "back_to_database": "◀ VISSZA AZ ADATBÁZISHOZ"
   },
   "difficulty": {
     "beginner": "Kezdő",
@@ -315,6 +316,29 @@
     "note_gum": "édes, rágógumi",
     "note_rose": "virágos, lágy",
     "note_custom": "saját keverék"
+  },
+  "additive": {
+    "coolant": "Hűtőanyag (WS-23, Koolada)",
+    "coolant_desc": "Hűsítő hatást ad mentol íz nélkül.",
+    "sweetener": "Édesítőszer (Szukralóz)",
+    "sweetener_desc": "Kalóriamentes édességet ad.",
+    "enhancer": "Erősítő (Smooth, TH)",
+    "enhancer_desc": "Smooth csökkenti a torokirritációt, Throat Hit növeli.",
+    "terpene": "Terpének",
+    "terpene_desc": "Természetes aromás vegyületek."
+  },
+  "shortfill": {
+    "info": "A shortfill egy nikotinmentes e-liquid palack üres hellyel a nikotin shotok hozzáadásához.",
+    "bottle_volume": "Shortfill palack térfogata",
+    "bottle_hint": "A palack teljes kapacitása",
+    "liquid_volume": "Folyadék mennyisége a palackban",
+    "nic_shot": "Nikotin shot",
+    "shot_count": "Nikotin shotok száma",
+    "results_title": "Eredmény",
+    "result_total": "Teljes térfogat:",
+    "result_nic": "Eredmény nikotin:",
+    "result_space": "Szabad hely feltöltés után:",
+    "overflow_warning": "⚠️ Figyelem: A tartalom meghaladja a palack kapacitását!"
   },
   "results": {
     "title": "A recepted",
@@ -529,6 +553,7 @@
     "login_required": "Kérjük, jelentkezz be a termék mentéséhez.",
     "name_required": "A termék neve kötelező.",
     "type_required": "Kérjük, válassz termék típust.",
+    "type_locked": "A termék típusa a létrehozás után nem módosítható",
     "image_format": "Engedélyezett formátumok: JPEG, PNG, WebP, GIF",
     "image_size": "Maximális képméret 5MB.",
     "camera_error": "A böngésződ nem támogatja a kamera hozzáférést."
@@ -585,7 +610,13 @@
     "matured_title": "A liquidjeid készek!",
     "matured_single": "A \"{name}\" liquidod beérett és használatra kész.",
     "matured_multiple": "{count} liquid beérett és használatra kész.",
-    "view_recipes": "Receptek megtekintése"
+    "view_recipes": "Receptek megtekintése",
+    "stock_label": "Készlet",
+    "auto_note_steeping": "Érlelés {days} {daysUnit}",
+    "consumed_title": "Liquid elfogyott?",
+    "consumed_text": "Szeretnéd megjelölni ezt a liquidot elfogyottként? Az emlékeztető eltávolításra kerül a listából.",
+    "mark_consumed": "Igen, elfogyott",
+    "consumed_success": "Liquid elfogyottként megjelölve!"
   },
   "alert": {
     "login_required": "Kérjük, jelentkezz be ehhez a művelethez.",
@@ -624,6 +655,9 @@
     "pg_adjustment": "PG (beállítás)",
     "premixed_base": "Előkevert bázis",
     "nicotine_base": "Nikotinos bázis",
+    "additive": "Adalékanyag",
+    "shortfill_liquid": "Shortfill folyadék",
+    "shortfill_base": "Shortfill bázis",
     "total": "ÖSSZESEN"
   },
   "nicotine_descriptions": {
@@ -716,6 +750,7 @@
     "pay_button_simple": "Fizetés",
     "redirect_info": "Átirányításra kerülsz a GP WebPay fizetési kapura",
     "payment_success": "Sikeres fizetés! Az előfizetésed aktiválva lett.",
+    "payment_success_login_required": "Sikeres fizetés! Az előfizetésed eléréséhez jelentkezz be.",
     "payment_failed": "A fizetés sikertelen. Kérjük, próbáld újra.",
     "payment_declined": "A fizetést a bankod elutasította. Próbálj más fizetési módot."
   },
@@ -752,6 +787,7 @@
     "price": "Ár ÁFA nélkül",
     "vat": "ÁFA",
     "total": "Összesen ÁFA-val",
+    "subtotal": "Részösszeg ÁFA nélkül",
     "paid": "Fizetve",
     "subscription_item": "LiquiMixer éves előfizetés (365 nap)",
     "status": "Állapot",
@@ -949,7 +985,8 @@
     "section_title": "Aroma beállítások",
     "category_placeholder": "-- Válasszon kategóriát --",
     "ratio_locked": "VG/PG arány a gyártó által beállítva",
-    "percent_from_category": "Ajánlott % kategória szerint - a gyártó nem adott meg pontos értékeket"
+    "percent_from_category": "Ajánlott % kategória szerint - a gyártó nem adott meg pontos értékeket",
+    "percent_not_set": "Ajánlott % nincs beállítva, hiányoznak az ellenőrzött adatok. Állítsa be a gyártó ajánlásai szerint."
   },
   "flavor_autocomplete": {
     "from_favorites": "Az aromáimból",

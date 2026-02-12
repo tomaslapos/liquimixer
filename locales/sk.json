@@ -105,7 +105,8 @@
     "no_recipes": "Žiadne recepty nenájdené",
     "login_required": "Pre prístup k databáze sa prihláste",
     "loading": "Načítavam recepty...",
-    "results_count": "Nájdených {count} receptov"
+    "results_count": "Nájdených {count} receptov",
+    "back_to_database": "◀ SPÄŤ DO DATABÁZY"
   },
   "difficulty": {
     "beginner": "Začiatočník",
@@ -479,6 +480,7 @@
     "save_as_new": "ULOZIT AKO NOVY",
     "make_public": "Zdieľať do verejnej databázy receptov",
     "public_hint": "Recept bude viditeľný a hodnotiteľný ostatnými užívateľmi",
+    "public_disabled_shared": "Nie je možné zdieľať - recept je už z verejnej databázy",
     "flavors_label": "Použité príchute",
     "no_flavors": "Recept neobsahuje príchute"
   },
@@ -619,6 +621,7 @@
     "matured_multiple": "{count} liquidov je vyzretých a pripravených na použitie.",
     "view_recipes": "Zobraziť recepty",
     "stock_label": "Zásoba",
+    "auto_note_steeping": "Zrenie {days} {daysUnit}",
     "consumed_title": "Liquid spotrebovaný?",
     "consumed_text": "Chcete označiť tento liquid ako spotrebovaný? Pripomienka bude odstránená zo zoznamu.",
     "mark_consumed": "Áno, spotrebovaný",
@@ -662,6 +665,8 @@
     "pg_adjustment": "PG (doladenie)",
     "premixed_base": "Predmiešaná báza",
     "additive": "Aditívum",
+    "shortfill_liquid": "Shortfill liquid",
+    "shortfill_base": "Shortfill báza",
     "total": "CELKOM"
   },
   "nicotine_descriptions": {
@@ -754,6 +759,7 @@
     "pay_button_simple": "Zaplatiť",
     "redirect_info": "Budete presmerovaný na platobnú bránu GP WebPay",
     "payment_success": "Platba prebehla úspešne! Vaše predplatné bolo aktivované.",
+    "payment_success_login_required": "Platba prebehla úspešne! Pre prístup k predplatnému sa prihláste.",
     "payment_failed": "Platba sa nepodarila. Skúste to prosím znova.",
     "payment_declined": "Platba bola zamietnutá vašou bankou. Skúste iný spôsob platby."
   },
@@ -979,7 +985,8 @@
     "category_placeholder": "-- Vyberte kategóriu --",
     "type_conflict_warning": "Táto príchuť je pre {type}. Naozaj ju chcete použiť v tomto recepte?",
     "ratio_locked": "Pomer VG/PG nastavený výrobcom",
-    "percent_from_category": "Odporúčané % podľa kategórie - výrobca neuviedol presné hodnoty"
+    "percent_from_category": "Odporúčané % podľa kategórie - výrobca neuviedol presné hodnoty",
+    "percent_not_set": "Odporúčané % nie je nastavené, chýbajú overené údaje. Nastavte podľa odporúčaní výrobcu."
   },
   "flavor_autocomplete": {
     "from_favorites": "Z mojich príchutí",

@@ -105,7 +105,8 @@
     "no_recipes": "Nema pronađenih recepata",
     "login_required": "Prijavite se za pristup bazi podataka",
     "loading": "Učitavanje recepata...",
-    "results_count": "Pronađeno {count} recepata"
+    "results_count": "Pronađeno {count} recepata",
+    "back_to_database": "◀ NAZAD NA BAZU"
   },
   "difficulty": {
     "beginner": "Početnik",
@@ -470,6 +471,7 @@
     "save_as_new": "SPREMI KAO NOVI",
     "make_public": "Podijeli u javnu bazu recepata",
     "public_hint": "Recept će biti vidljiv i ocjenjiv od strane drugih korisnika",
+    "public_disabled_shared": "Nije moguće dijeliti - recept je već iz javne baze",
     "flavors_label": "Korištene arome",
     "no_flavors": "Recept ne sadrži arome"
   },
@@ -551,6 +553,7 @@
     "login_required": "Prijavite se za spremanje proizvoda.",
     "name_required": "Naziv proizvoda je obavezan.",
     "type_required": "Odaberite tip proizvoda.",
+    "type_locked": "Tip proizvoda se ne može promijeniti nakon kreiranja",
     "image_format": "Dopušteni formati: JPEG, PNG, WebP, GIF",
     "image_size": "Maksimalna veličina slike je 5MB.",
     "camera_error": "Vaš preglednik ne podržava pristup kameri."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} tekućina je dozrelo i spremno za upotrebu.",
     "view_recipes": "Prikaži recepte",
     "stock_label": "Zalihe",
+    "auto_note_steeping": "Dozrijevanje {days} {daysUnit}",
     "consumed_title": "Je li tekućina potrošena?",
     "consumed_text": "Želite li označiti ovu tekućinu kao potrošenu? Podsjetnik će biti uklonjen s popisa.",
     "mark_consumed": "Da, potrošeno",
@@ -652,6 +656,8 @@
     "premixed_base": "Premiješana baza",
     "nicotine_base": "Nikotinska baza",
     "additive": "Aditiv",
+    "shortfill_liquid": "Shortfill tekućina",
+    "shortfill_base": "Shortfill baza",
     "total": "UKUPNO"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Plati",
     "redirect_info": "Bit ćete preusmjereni na GP WebPay platni sustav",
     "payment_success": "Plaćanje uspješno! Vaša pretplata je aktivirana.",
+    "payment_success_login_required": "Plaćanje uspješno! Prijavite se za pristup pretplati.",
     "payment_failed": "Plaćanje nije uspjelo. Molimo pokušajte ponovo.",
     "payment_declined": "Plaćanje je odbijeno od strane vaše banke. Pokušajte drugi način plaćanja."
   },
@@ -780,6 +787,7 @@
     "price": "Cijena bez PDV-a",
     "vat": "PDV",
     "total": "Ukupno s PDV-om",
+    "subtotal": "Međuzbroj bez PDV-a",
     "paid": "Plaćeno",
     "subscription_item": "LiquiMixer godišnja pretplata (365 dana)",
     "status": "Status",
@@ -977,7 +985,8 @@
     "section_title": "Postavke arome",
     "category_placeholder": "-- Odaberite kategoriju --",
     "ratio_locked": "VG/PG omjer postavljen od proizvođača",
-    "percent_from_category": "Preporučeni % po kategoriji - proizvođač nije naveo točne vrijednosti"
+    "percent_from_category": "Preporučeni % po kategoriji - proizvođač nije naveo točne vrijednosti",
+    "percent_not_set": "Preporučeni % nije postavljen, nedostaju verificirani podaci. Postavite prema preporukama proizvođača."
   },
   "flavor_autocomplete": {
     "from_favorites": "Iz mojih aroma",
