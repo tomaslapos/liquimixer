@@ -3516,7 +3516,15 @@ function extractRecipeFlavors(recipeData, formType) {
                 if (flavor.flavorName || flavor.name) {
                     flavorEntry.flavor_name = flavor.flavorName || flavor.name;
                     flavorEntry.flavor_manufacturer = flavor.flavorManufacturer || flavor.manufacturer || null;
-                    if (flavor.flavorId) {
+                    
+                    // Přednostně použít favorite_product_id pokud existuje
+                    if (flavor.favoriteProductId) {
+                        flavorEntry.favorite_product_id = flavor.favoriteProductId;
+                        // Pokud má i flavor_id (veřejná DB), uložit také
+                        if (flavor.flavorId) {
+                            flavorEntry.flavor_id = flavor.flavorId;
+                        }
+                    } else if (flavor.flavorId) {
                         if (flavor.flavorSource === 'favorite') {
                             flavorEntry.favorite_product_id = flavor.flavorId;
                         } else {
@@ -4614,7 +4622,9 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
     
     // Uložit kompletní data příchutě
     const flavorData = {
-        id: flavorId,
+        id: isFavorite ? favoriteProductId : flavorId,  // ID záznamu (favorite_products nebo flavors)
+        flavor_id: flavorId,  // ID ve veřejné tabulce flavors (pokud existuje)
+        favorite_product_id: favoriteProductId,  // ID v tabulce favorite_products (pokud je oblíbená)
         name: flavorName,
         manufacturer: manufacturer,
         manufacturer_code: manufacturer,
@@ -9975,17 +9985,26 @@ function getProFlavorsData() {
         let specificFlavorId = null;
         let specificFlavorSource = 'generic';
         
+        // Získat favorite_product_id přímo z datasetu (důležité pro správné párování)
+        let specificFavoriteProductId = autocomplete?.dataset.favoriteProductId || null;
+        
         if (autocomplete && autocomplete.dataset.flavorData) {
             try {
                 const flavorData = JSON.parse(autocomplete.dataset.flavorData);
                 if (flavorData && flavorData.name) {
                     specificFlavorName = flavorData.name;
                     specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                    // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), jinak id
+                    // Pro oblíbené příchutě použít favorite_product_id, jinak flavor_id
                     const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
-                    specificFlavorId = isFavorite ? (flavorData.flavor_id || flavorData.id) : flavorData.id;
-                    specificFlavorId = specificFlavorId || autocomplete.dataset.flavorId || null;
-                    specificFlavorSource = autocomplete.dataset.flavorSource || 'database';
+                    if (isFavorite) {
+                        // Oblíbená příchuť - přednostně favorite_product_id
+                        specificFavoriteProductId = flavorData.favorite_product_id || flavorData.id || specificFavoriteProductId;
+                        specificFlavorId = flavorData.flavor_id || null;  // flavor_id může být null pro vlastní příchutě
+                    } else {
+                        // Příchuť z veřejné databáze
+                        specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
+                    }
+                    specificFlavorSource = autocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
                 }
             } catch (e) {
                 console.log('Error parsing PRO flavor data:', e);
@@ -10010,6 +10029,10 @@ function getProFlavorsData() {
                 flavorEntry.flavorManufacturer = specificFlavorManufacturer;
                 flavorEntry.flavorId = specificFlavorId;
                 flavorEntry.flavorSource = specificFlavorSource;
+                // Přidat favorite_product_id pro správné párování při ukládání
+                if (specificFavoriteProductId) {
+                    flavorEntry.favoriteProductId = specificFavoriteProductId;
+                }
             }
             
             flavors.push(flavorEntry);
@@ -14973,17 +14996,26 @@ function getShishaFlavorsData() {
         let specificFlavorId = null;
         let specificFlavorSource = 'generic';
         
+        // Získat favorite_product_id přímo z datasetu (důležité pro správné párování)
+        let specificFavoriteProductId = autocomplete?.dataset.favoriteProductId || null;
+        
         if (autocomplete && autocomplete.dataset.flavorData) {
             try {
                 const flavorData = JSON.parse(autocomplete.dataset.flavorData);
                 if (flavorData && flavorData.name) {
                     specificFlavorName = flavorData.name;
                     specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                    // Pro oblíbené příchutě použít flavor_id (ID v tabulce flavors), jinak id
+                    // Pro oblíbené příchutě použít favorite_product_id, jinak flavor_id
                     const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
-                    specificFlavorId = isFavorite ? (flavorData.flavor_id || flavorData.id) : flavorData.id;
-                    specificFlavorId = specificFlavorId || autocomplete.dataset.flavorId || null;
-                    specificFlavorSource = autocomplete.dataset.flavorSource || 'database';
+                    if (isFavorite) {
+                        // Oblíbená příchuť - přednostně favorite_product_id
+                        specificFavoriteProductId = flavorData.favorite_product_id || flavorData.id || specificFavoriteProductId;
+                        specificFlavorId = flavorData.flavor_id || null;  // flavor_id může být null pro vlastní příchutě
+                    } else {
+                        // Příchuť z veřejné databáze
+                        specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
+                    }
+                    specificFlavorSource = autocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
                 }
             } catch (e) {
                 console.log('Error parsing Shisha flavor data:', e);
@@ -15011,6 +15043,10 @@ function getShishaFlavorsData() {
                 flavorEntry.flavorManufacturer = specificFlavorManufacturer;
                 flavorEntry.flavorId = specificFlavorId;
                 flavorEntry.flavorSource = specificFlavorSource;
+                // Přidat favorite_product_id pro správné párování při ukládání
+                if (specificFavoriteProductId) {
+                    flavorEntry.favoriteProductId = specificFavoriteProductId;
+                }
             }
             
             flavors.push(flavorEntry);
