@@ -4254,10 +4254,13 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     
     // SECURITY: Escapování všech hodnot z databáze
     const safeTotal = escapeHtml(data.totalAmount || '?');
-    const safeVg = escapeHtml(data.vgPercent || '?');
-    const safePg = escapeHtml(data.pgPercent || '?');
-    // Zaokrouhlit nikotin na 2 desetinná místa
-    const nicotineValue = parseFloat(data.nicotine || 0);
+    // VG/PG: podporuj vgPercent/pgPercent i vgRatio z databáze receptů
+    const vgVal = data.vgPercent ?? data.vgRatio ?? data.ratio;
+    const pgVal = data.pgPercent ?? (vgVal != null ? (100 - vgVal) : undefined);
+    const safeVg = escapeHtml(vgVal != null ? String(vgVal) : '?');
+    const safePg = escapeHtml(pgVal != null ? String(pgVal) : '?');
+    // Zaokrouhlit nikotin na 2 desetinná místa - podporuj nicotine i nicStrength z databáze
+    const nicotineValue = parseFloat(data.nicotine ?? data.nicStrength ?? 0);
     const safeNicotine = escapeHtml(nicotineValue.toFixed(2));
     
     contentEl.innerHTML = `
@@ -12483,7 +12486,7 @@ function renderPublicRecipeCard(recipe) {
                     <span class="rating-count">(${ratingCount})</span>
                 </div>
             </div>
-            <div class="recipe-card-type">${formType.toUpperCase()}</div>
+            <div class="recipe-card-type">${t(`form.tab_${formType}`, formType.toUpperCase())}</div>
             <div class="recipe-card-meta">
                 <span class="recipe-card-badge vg-pg">${vgRatio}/${100 - vgRatio} VG/PG</span>
                 ${nicStrength > 0 ? `<span class="recipe-card-badge nicotine">${nicStrength} mg</span>` : ''}
