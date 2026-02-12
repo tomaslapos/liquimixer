@@ -108,6 +108,12 @@
     "results_count": "Encontradas {count} receitas",
     "back_to_database": "◀ VOLTAR À BASE"
   },
+  "rating": {
+    "title": "Avaliação",
+    "votes": "votos",
+    "your_rating": "A sua avaliação",
+    "thank_you": "Obrigado pela avaliação!"
+  },
   "difficulty": {
     "beginner": "Iniciante",
     "intermediate": "Intermediário",
@@ -463,6 +469,9 @@
     "search_product": "Pesquisar produto...",
     "products_linked": "Produtos vinculados",
     "save_as_new": "SALVAR COMO NOVO",
+    "make_public": "Partilhar na base de dados pública",
+    "public_hint": "A receita será visível e avaliável por outros utilizadores",
+    "public_disabled_shared": "Não é possível partilhar - a receita já é da base de dados pública",
     "flavors_label": "Sabores usados",
     "no_flavors": "A receita não contém sabores"
   },
@@ -544,6 +553,7 @@
     "login_required": "Por favor, entre para guardar o produto.",
     "name_required": "O nome do produto é obrigatório.",
     "type_required": "Por favor, selecione um tipo de produto.",
+    "type_locked": "O tipo de produto não pode ser alterado após a criação",
     "image_format": "Formatos permitidos: JPEG, PNG, WebP, GIF",
     "image_size": "Tamanho máximo da imagem: 5MB.",
     "camera_error": "O seu navegador não suporta acesso à câmara."
@@ -602,6 +612,7 @@
     "matured_multiple": "{count} líquidos estão maturados e prontos a usar.",
     "view_recipes": "Ver receitas",
     "stock_label": "Stock",
+    "auto_note_steeping": "Cura {days} {daysUnit}",
     "consumed_title": "Líquido consumido?",
     "consumed_text": "Deseja marcar este líquido como consumido? O lembrete será removido da lista.",
     "mark_consumed": "Sim, consumido",
@@ -644,6 +655,9 @@
     "pg_adjustment": "PG (ajuste)",
     "premixed_base": "Base pré-misturada",
     "nicotine_base": "Base de nicotina",
+    "additive": "Aditivo",
+    "shortfill_liquid": "Líquido shortfill",
+    "shortfill_base": "Base shortfill",
     "total": "TOTAL"
   },
   "nicotine_descriptions": {
@@ -736,6 +750,7 @@
     "pay_button_simple": "Pagar",
     "redirect_info": "Será redirecionado para o gateway de pagamento GP WebPay",
     "payment_success": "Pagamento bem-sucedido! A sua subscrição foi ativada.",
+    "payment_success_login_required": "Pagamento bem-sucedido! Por favor, inicie sessão para aceder à sua subscrição.",
     "payment_failed": "O pagamento falhou. Por favor, tente novamente.",
     "payment_declined": "O pagamento foi recusado pelo seu banco. Experimente outro método de pagamento."
   },
@@ -772,6 +787,7 @@
     "price": "Preço sem IVA",
     "vat": "IVA",
     "total": "Total com IVA",
+    "subtotal": "Subtotal sem IVA",
     "paid": "Pago",
     "subscription_item": "Subscrição anual LiquiMixer (365 dias)",
     "status": "Estado",
@@ -969,7 +985,8 @@
     "section_title": "Configurações de sabor",
     "category_placeholder": "-- Selecionar categoria --",
     "ratio_locked": "Proporção VG/PG definida pelo fabricante",
-    "percent_from_category": "% recomendada por categoria - o fabricante não especificou valores exatos"
+    "percent_from_category": "% recomendada por categoria - o fabricante não especificou valores exatos",
+    "percent_not_set": "% recomendada não definida, faltam dados verificados. Configure conforme recomendações do fabricante."
   },
   "flavor_autocomplete": {
     "from_favorites": "Dos meus sabores",

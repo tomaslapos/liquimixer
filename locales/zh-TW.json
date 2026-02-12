@@ -105,7 +105,8 @@
     "no_recipes": "未找到配方",
     "login_required": "請登入以存取資料庫",
     "loading": "正在載入配方...",
-    "results_count": "找到 {count} 個配方"
+    "results_count": "找到 {count} 個配方",
+    "back_to_database": "◀ 返回資料庫"
   },
   "difficulty": {
     "beginner": "初學者",
@@ -470,6 +471,7 @@
     "save_as_new": "另存為新配方",
     "make_public": "分享到公開配方資料庫",
     "public_hint": "配方將對其他使用者可見並可評分",
+    "public_disabled_shared": "無法分享 - 配方已來自公開資料庫",
     "flavors_label": "使用的香料",
     "no_flavors": "配方不包含香料"
   },
@@ -551,6 +553,7 @@
     "login_required": "請登入以儲存產品。",
     "name_required": "產品名稱為必填項。",
     "type_required": "請選擇產品類型。",
+    "type_locked": "產品類型創建後無法更改",
     "image_format": "允許的格式：JPEG、PNG、WebP、GIF",
     "image_size": "最大圖片大小為 5MB。",
     "camera_error": "您的瀏覽器不支援相機存取。"
@@ -609,6 +612,7 @@
     "matured_multiple": "{count}款煙油已醒發完成，可以使用了。",
     "view_recipes": "查看配方",
     "stock_label": "庫存",
+    "auto_note_steeping": "熟化 {days} {daysUnit}",
     "consumed_title": "煙油已消耗？",
     "consumed_text": "您要將此煙油標記為已消耗嗎？提醒將從列表中移除。",
     "mark_consumed": "是，已消耗",
@@ -652,6 +656,8 @@
     "premixed_base": "預混基液",
     "nicotine_base": "尼古丁基液",
     "additive": "添加劑",
+    "shortfill_liquid": "短填液體",
+    "shortfill_base": "短填基液",
     "total": "總計"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "付款",
     "redirect_info": "您將被重新導向至 GP WebPay 付款閘道",
     "payment_success": "付款成功！您的訂閱已啟用。",
+    "payment_success_login_required": "付款成功！請登入以存取您的訂閱。",
     "payment_failed": "付款失敗。請重試。",
     "payment_declined": "您的銀行拒絕了付款。請嘗試其他付款方式。"
   },
@@ -780,6 +787,7 @@
     "price": "稅前價格",
     "vat": "營業稅",
     "total": "含稅總計",
+    "subtotal": "稅前小計",
     "paid": "已付款",
     "subscription_item": "LiquiMixer 年度訂閱（365 天）",
     "status": "狀態",
@@ -977,7 +985,8 @@
     "section_title": "香料設定",
     "category_placeholder": "-- 選擇類別 --",
     "ratio_locked": "VG/PG比例由製造商設定",
-    "percent_from_category": "按類別設置推薦% - 製造商未指定準確值"
+    "percent_from_category": "按類別設置推薦% - 製造商未指定準確值",
+    "percent_not_set": "推薦%未設置，缺少驗證數據。請根據製造商建議設置。"
   },
   "flavor_autocomplete": {
     "from_favorites": "來自我的香料",

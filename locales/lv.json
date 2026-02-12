@@ -105,7 +105,8 @@
     "no_recipes": "Receptes nav atrastas",
     "login_required": "Lūdzu, pieslēdzieties, lai piekļūtu datubāzei",
     "loading": "Recepšu ielāde...",
-    "results_count": "Atrastas {count} receptes"
+    "results_count": "Atrastas {count} receptes",
+    "back_to_database": "◀ ATPAKAĻ UZ DATUBĀZI"
   },
   "difficulty": {
     "beginner": "Iesācējs",
@@ -470,6 +471,7 @@
     "save_as_new": "SAGLABAT KA JAUNU",
     "make_public": "Kopīgot publiskajā recepšu datubāzē",
     "public_hint": "Recepte būs redzama un novērtējama citiem lietotājiem",
+    "public_disabled_shared": "Nevar kopīgot - recepte jau ir no publiskās datubāzes",
     "flavors_label": "Izmantotie aromāti",
     "no_flavors": "Recepte nesatur aromātus"
   },
@@ -551,6 +553,7 @@
     "login_required": "Lūdzu, pieslēdzieties, lai saglabātu produktu.",
     "name_required": "Produkta nosaukums ir obligāts.",
     "type_required": "Lūdzu, izvēlieties produkta veidu.",
+    "type_locked": "Produkta veidu nevar mainīt pēc izveides",
     "image_format": "Atļautie formāti: JPEG, PNG, WebP, GIF",
     "image_size": "Maksimālais attēla izmērs ir 5MB.",
     "camera_error": "Jūsu pārlūks neatbalsta piekļuvi kamerai."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count} šķidrumi ir nogatavināti un gatavi lietošanai.",
     "view_recipes": "Skatīt receptes",
     "stock_label": "Krājums",
+    "auto_note_steeping": "Nogatavināšana {days} {daysUnit}",
     "consumed_title": "Šķidrums izlietots?",
     "consumed_text": "Vai vēlaties atzīmēt šo šķidrumu kā izlietotu? Atgādinājums tiks noņemts no saraksta.",
     "mark_consumed": "Jā, izlietots",
@@ -652,6 +656,8 @@
     "premixed_base": "Sajaucīta bāze",
     "nicotine_base": "Nikotīna bāze",
     "additive": "Piedeva",
+    "shortfill_liquid": "Shortfill šķidrums",
+    "shortfill_base": "Shortfill bāze",
     "total": "KOPĀ"
   },
   "nicotine_descriptions": {
@@ -744,6 +750,7 @@
     "pay_button_simple": "Maksāt",
     "redirect_info": "Jūs tiksiet novirzīts uz GP WebPay maksājumu vārteju",
     "payment_success": "Maksājums veiksmīgs! Jūsu abonements ir aktivizēts.",
+    "payment_success_login_required": "Maksājums veiksmīgs! Piesakieties, lai piekļūtu savam abonementam.",
     "payment_failed": "Maksājums neizdevās. Lūdzu, mēģiniet vēlreiz.",
     "payment_declined": "Jūsu banka noraidīja maksājumu. Izmēģiniet citu maksājuma veidu."
   },
@@ -780,6 +787,7 @@
     "price": "Cena bez PVN",
     "vat": "PVN",
     "total": "Kopā ar PVN",
+    "subtotal": "Starpsumma bez PVN",
     "paid": "Samaksāts",
     "subscription_item": "LiquiMixer gada abonements (365 dienas)",
     "status": "Statuss",
@@ -977,7 +985,8 @@
     "section_title": "Aromāta iestatījumi",
     "category_placeholder": "-- Izvēlieties kategoriju --",
     "ratio_locked": "VG/PG attiecība noteikta no ražotāja",
-    "percent_from_category": "Ieteicamais % pēc kategorijas - ražotājs nav norādījis precīzas vērtības"
+    "percent_from_category": "Ieteicamais % pēc kategorijas - ražotājs nav norādījis precīzas vērtības",
+    "percent_not_set": "Ieteicamais % nav iestatīts, trūkst pārbaudītu datu. Iestatiet saskaņā ar ražotāja ieteikumiem."
   },
   "flavor_autocomplete": {
     "from_favorites": "No maniem aromātiem",

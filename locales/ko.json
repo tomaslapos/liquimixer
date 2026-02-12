@@ -105,7 +105,8 @@
     "no_recipes": "레시피를 찾을 수 없습니다",
     "login_required": "데이터베이스에 접근하려면 로그인하세요",
     "loading": "레시피 로딩 중...",
-    "results_count": "{count}개의 레시피를 찾았습니다"
+    "results_count": "{count}개의 레시피를 찾았습니다",
+    "back_to_database": "◀ 데이터베이스로 돌아가기"
   },
   "difficulty": {
     "beginner": "초보자",
@@ -470,6 +471,7 @@
     "save_as_new": "새로 저장",
     "make_public": "공개 레시피 데이터베이스에 공유",
     "public_hint": "레시피가 다른 사용자에게 표시되고 평가 가능합니다",
+    "public_disabled_shared": "공유할 수 없음 - 레시피가 이미 공개 데이터베이스에 있습니다",
     "flavors_label": "사용된 향료",
     "no_flavors": "레시피에 향료가 없습니다"
   },
@@ -551,6 +553,7 @@
     "login_required": "제품을 저장하려면 로그인하세요.",
     "name_required": "제품 이름은 필수입니다.",
     "type_required": "제품 유형을 선택하세요.",
+    "type_locked": "제품 유형은 생성 후 변경할 수 없습니다",
     "image_format": "허용 형식: JPEG, PNG, WebP, GIF",
     "image_size": "최대 이미지 크기는 5MB입니다.",
     "camera_error": "브라우저가 카메라 접근을 지원하지 않습니다."
@@ -609,6 +612,7 @@
     "matured_multiple": "{count}개의 리퀴드가 숙성되어 사용할 준비가 되었습니다.",
     "view_recipes": "레시피 보기",
     "stock_label": "재고",
+    "auto_note_steeping": "숙성 {days} {daysUnit}",
     "consumed_title": "리퀴드를 소비했나요?",
     "consumed_text": "이 리퀴드를 소비한 것으로 표시하시겠습니까? 알림이 목록에서 제거됩니다.",
     "mark_consumed": "예, 소비했습니다",
@@ -652,6 +656,8 @@
     "premixed_base": "프리믹스 베이스",
     "nicotine_base": "니코틴 베이스",
     "additive": "첨가제",
+    "shortfill_liquid": "쇼트필 리퀴드",
+    "shortfill_base": "쇼트필 베이스",
     "total": "합계"
   },
   "nicotine_descriptions": {
@@ -736,12 +742,15 @@
     "promo_price_eu": "단 2.40 € / 년",
     "promo_price_usd": "단 $2.90 / 년",
     "feature_pro_multiflavor": "최대 4개 향료로 완벽한 설정",
+    "register_first": "구독을 활성화하려면 먼저 등록하거나 로그인하세요.",
+    "error_not_logged_in": "결제를 완료하려면 로그인하세요.",
     "register_and_pay": "등록 및 결제",
     "already_have_account": "이미 계정이 있으신가요?",
     "logged_in_as": "로그인 상태:",
     "pay_button_simple": "결제",
     "redirect_info": "GP WebPay 결제 게이트웨이로 리디렉션됩니다",
     "payment_success": "결제가 성공적으로 완료되었습니다! 구독이 활성화되었습니다.",
+    "payment_success_login_required": "결제가 성공적으로 완료되었습니다! 구독에 액세스하려면 로그인하세요.",
     "payment_failed": "결제가 실패했습니다. 다시 시도해 주세요.",
     "payment_declined": "은행에서 결제가 거부되었습니다. 다른 결제 방법을 시도해 주세요."
   },
@@ -778,6 +787,7 @@
     "price": "세전 가격",
     "vat": "부가세",
     "total": "세후 합계",
+    "subtotal": "세전 소계",
     "paid": "결제됨",
     "subscription_item": "LiquiMixer 연간 구독 (365일)",
     "status": "상태",
@@ -975,7 +985,8 @@
     "section_title": "향료 설정",
     "category_placeholder": "-- 카테고리 선택 --",
     "ratio_locked": "제조사가 설정한 VG/PG 비율",
-    "percent_from_category": "카테고리별 권장 % - 제조사가 정확한 값을 지정하지 않음"
+    "percent_from_category": "카테고리별 권장 % - 제조사가 정확한 값을 지정하지 않음",
+    "percent_not_set": "권장 % 미설정, 검증된 데이터 없음. 제조사 권장 사항에 따라 설정하세요."
   },
   "flavor_autocomplete": {
     "from_favorites": "내 향료에서",

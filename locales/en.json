@@ -973,7 +973,8 @@
     "category_placeholder": "-- Select category --",
     "type_conflict_warning": "This flavor is for {type}. Are you sure you want to use it in this recipe?",
     "ratio_locked": "VG/PG ratio set by manufacturer",
-    "percent_from_category": "Recommended % set by category - manufacturer did not specify exact values"
+    "percent_from_category": "Recommended % set by category - manufacturer did not specify exact values",
+    "percent_not_set": "Recommended % not set, verified data missing. Set according to manufacturer recommendations."
   },
   "flavor_autocomplete": {
     "from_favorites": "From my flavors",

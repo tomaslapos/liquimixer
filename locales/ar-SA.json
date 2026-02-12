@@ -432,6 +432,7 @@
     "save_as_new": "حفظ كوصفة جديدة",
     "make_public": "مشاركة في قاعدة البيانات العامة",
     "public_hint": "ستكون الوصفة مرئية وقابلة للتقييم من قبل الآخرين",
+    "public_disabled_shared": "لا يمكن المشاركة - الوصفة موجودة بالفعل في قاعدة البيانات العامة",
     "flavors_label": "النكهات المستخدمة",
     "no_flavors": "الوصفة لا تحتوي على نكهات"
   },
@@ -471,7 +472,8 @@
     "no_recipes": "لم يتم العثور على وصفات",
     "login_required": "يرجى تسجيل الدخول للوصول",
     "loading": "جاري تحميل الوصفات...",
-    "results_count": "تم العثور على {count} وصفة"
+    "results_count": "تم العثور على {count} وصفة",
+    "back_to_database": "◀ العودة إلى قاعدة البيانات"
   },
   "difficulty": {
     "beginner": "مبتدئ",
@@ -552,6 +554,7 @@
     "login_required": "سجّل الدخول لحفظ المنتج.",
     "name_required": "اسم المنتج مطلوب.",
     "type_required": "اختر نوع المنتج.",
+    "type_locked": "لا يمكن تغيير نوع المنتج بعد الإنشاء",
     "image_format": "التنسيقات المسموحة: JPEG، PNG، WebP، GIF",
     "image_size": "الحجم الأقصى للصورة هو 5 ميغابايت.",
     "camera_error": "متصفحك لا يدعم الوصول للكاميرا."
@@ -610,6 +613,7 @@
     "matured_multiple": "{count} سوائل نضجت وجاهزة للاستخدام.",
     "view_recipes": "عرض الوصفات",
     "stock_label": "المخزون",
+    "auto_note_steeping": "نضج {days} {daysUnit}",
     "consumed_title": "هل تم استهلاك السائل؟",
     "consumed_text": "هل تريد تحديد هذا السائل على أنه مستهلك؟",
     "mark_consumed": "نعم، تم استهلاكه",
@@ -652,6 +656,9 @@
     "pg_adjustment": "PG (تعديل)",
     "premixed_base": "قاعدة مخلوطة مسبقاً",
     "nicotine_base": "قاعدة النيكوتين",
+    "additive": "إضافة",
+    "shortfill_liquid": "سائل شورتفيل",
+    "shortfill_base": "قاعدة شورتفيل",
     "total": "المجموع"
   },
   "nicotine_descriptions": {
@@ -744,6 +751,7 @@
     "pay_button_simple": "ادفع",
     "redirect_info": "سيتم توجيهك إلى بوابة الدفع GP WebPay",
     "payment_success": "تم الدفع بنجاح! تم تفعيل اشتراكك.",
+    "payment_success_login_required": "تم الدفع بنجاح! يرجى تسجيل الدخول للوصول إلى اشتراكك.",
     "payment_failed": "فشل الدفع. يرجى المحاولة مرة أخرى.",
     "payment_declined": "تم رفض الدفع من قبل البنك. جرب طريقة دفع أخرى."
   },
@@ -780,6 +788,7 @@
     "price": "السعر بدون الضريبة",
     "vat": "الضريبة",
     "total": "الإجمالي مع الضريبة",
+    "subtotal": "المجموع الفرعي بدون الضريبة",
     "paid": "مدفوع",
     "subscription_item": "اشتراك LiquiMixer السنوي (365 يومًا)",
     "status": "الحالة",
@@ -977,7 +986,8 @@
     "category_placeholder": "-- اختر الفئة --",
     "type_conflict_warning": "هذه النكهة لـ {type}. هل تريد استخدامها في هذه الوصفة؟",
     "ratio_locked": "نسبة VG/PG محددة من الشركة المصنعة",
-    "percent_from_category": "النسبة المئوية الموصى بها حسب الفئة - الشركة المصنعة لم تحدد قيمًا دقيقة"
+    "percent_from_category": "النسبة المئوية الموصى بها حسب الفئة - الشركة المصنعة لم تحدد قيمًا دقيقة",
+    "percent_not_set": "النسبة المئوية الموصى بها غير محددة، البيانات الموثقة مفقودة. اضبط وفقًا لتوصيات الشركة المصنعة."
   },
   "flavor_autocomplete": {
     "from_favorites": "من نكهاتي",

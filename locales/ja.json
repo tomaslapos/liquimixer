@@ -105,7 +105,8 @@
     "no_recipes": "レシピが見つかりません",
     "login_required": "データベースにアクセスするにはログインしてください",
     "loading": "レシピを読み込み中...",
-    "results_count": "{count}件のレシピが見つかりました"
+    "results_count": "{count}件のレシピが見つかりました",
+    "back_to_database": "◀ データベースに戻る"
   },
   "difficulty": {
     "beginner": "初心者",
@@ -470,6 +471,7 @@
     "save_as_new": "新規として保存",
     "make_public": "公開レシピデータベースに共有",
     "public_hint": "レシピは他のユーザーに表示され、評価可能になります",
+    "public_disabled_shared": "共有できません - レシピは既に公開データベースからのものです",
     "flavors_label": "使用フレーバー",
     "no_flavors": "レシピにフレーバーが含まれていません"
   },
@@ -551,6 +553,7 @@
     "login_required": "製品を保存するにはログインしてください。",
     "name_required": "製品名は必須です。",
     "type_required": "製品タイプを選択してください。",
+    "type_locked": "製品タイプは作成後に変更できません",
     "image_format": "許可されるフォーマット：JPEG、PNG、WebP、GIF",
     "image_size": "画像の最大サイズは5MBです。",
     "camera_error": "お使いのブラウザはカメラへのアクセスをサポートしていません。"
@@ -609,6 +612,7 @@
     "matured_multiple": "{count}本のリキッドが熟成し、使用準備ができました。",
     "view_recipes": "レシピを見る",
     "stock_label": "在庫",
+    "auto_note_steeping": "熟成 {days} {daysUnit}",
     "consumed_title": "リキッドを消費しましたか？",
     "consumed_text": "このリキッドを消費済みとしてマークしますか？リマインダーはリストから削除されます。",
     "mark_consumed": "はい、消費しました",
@@ -651,6 +655,9 @@
     "pg_adjustment": "PG（調整）",
     "premixed_base": "プレミックスベース",
     "nicotine_base": "ニコチンベース",
+    "additive": "添加物",
+    "shortfill_liquid": "ショートフィルリキッド",
+    "shortfill_base": "ショートフィルベース",
     "total": "合計"
   },
   "nicotine_descriptions": {
@@ -743,6 +750,7 @@
     "pay_button_simple": "支払う",
     "redirect_info": "GP WebPay決済ゲートウェイにリダイレクトされます",
     "payment_success": "支払いが完了しました！サブスクリプションが有効になりました。",
+    "payment_success_login_required": "支払いが完了しました！サブスクリプションにアクセスするにはログインしてください。",
     "payment_failed": "支払いに失敗しました。もう一度お試しください。",
     "payment_declined": "お支払いが銀行により拒否されました。別の支払い方法をお試しください。"
   },
@@ -779,6 +787,7 @@
     "price": "税抜価格",
     "vat": "消費税",
     "total": "税込合計",
+    "subtotal": "税抜小計",
     "paid": "支払済",
     "subscription_item": "LiquiMixer年間購読（365日）",
     "status": "ステータス",
@@ -976,7 +985,8 @@
     "section_title": "フレーバー設定",
     "category_placeholder": "-- カテゴリーを選択 --",
     "ratio_locked": "メーカー設定のVG/PG比率",
-    "percent_from_category": "カテゴリー別の推奨% - メーカーは正確な値を指定していません"
+    "percent_from_category": "カテゴリー別の推奨% - メーカーは正確な値を指定していません",
+    "percent_not_set": "推奨%未設定、検証データがありません。メーカーの推奨に従って設定してください。"
   },
   "flavor_autocomplete": {
     "from_favorites": "マイフレーバーから",

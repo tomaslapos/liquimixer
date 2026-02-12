@@ -466,6 +466,7 @@
     "save_as_new": "ALS NEU SPEICHERN",
     "make_public": "In öffentliche Rezeptdatenbank teilen",
     "public_hint": "Rezept wird für andere Benutzer sichtbar und bewertbar",
+    "public_disabled_shared": "Teilen nicht möglich - Rezept stammt bereits aus öffentlicher Datenbank",
     "flavors_label": "Verwendete Aromen",
     "no_flavors": "Rezept enthält keine Aromen"
   },
@@ -606,6 +607,7 @@
     "matured_multiple": "{count} Liquids sind gereift und einsatzbereit.",
     "view_recipes": "Rezepte anzeigen",
     "stock_label": "Bestand",
+    "auto_note_steeping": "Reifezeit {days} {daysUnit}",
     "consumed_title": "Liquid verbraucht?",
     "consumed_text": "Möchten Sie dieses Liquid als verbraucht markieren? Die Erinnerung wird aus der Liste entfernt.",
     "mark_consumed": "Ja, verbraucht",
@@ -649,6 +651,8 @@
     "pg_adjustment": "PG (Anpassung)",
     "premixed_base": "Vorgemischte Basis",
     "additive": "Zusatzstoff",
+    "shortfill_liquid": "Shortfill-Liquid",
+    "shortfill_base": "Shortfill-Basis",
     "total": "GESAMT"
   },
   "nicotine_descriptions": {
@@ -739,7 +743,11 @@
     "already_have_account": "Haben Sie bereits ein Konto?",
     "logged_in_as": "Sie sind angemeldet als:",
     "pay_button_simple": "Bezahlen",
-    "redirect_info": "Sie werden zur GP WebPay Zahlungsgateway weitergeleitet"
+    "redirect_info": "Sie werden zur GP WebPay Zahlungsgateway weitergeleitet",
+    "payment_success": "Zahlung erfolgreich! Ihr Abonnement wurde aktiviert.",
+    "payment_success_login_required": "Zahlung erfolgreich! Bitte melden Sie sich an, um auf Ihr Abonnement zuzugreifen.",
+    "payment_failed": "Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "payment_declined": "Zahlung wurde von Ihrer Bank abgelehnt. Bitte versuchen Sie eine andere Zahlungsmethode."
   },
   "terms": {
     "title": "Allgemeine Geschäftsbedingungen",
@@ -774,6 +782,7 @@
     "price": "Preis exkl. MwSt.",
     "vat": "MwSt.",
     "total": "Gesamt inkl. MwSt.",
+    "subtotal": "Zwischensumme exkl. MwSt.",
     "paid": "Bezahlt",
     "subscription_item": "LiquiMixer Jahresabonnement (365 Tage)",
     "status": "Status",
@@ -962,7 +971,8 @@
     "category_placeholder": "-- Kategorie auswählen --",
     "type_conflict_warning": "Dieses Aroma ist für {type}. Möchten Sie es in diesem Rezept verwenden?",
     "ratio_locked": "VG/PG-Verhältnis vom Hersteller festgelegt",
-    "percent_from_category": "Empfohlener % nach Kategorie - Hersteller hat keine genauen Werte angegeben"
+    "percent_from_category": "Empfohlener % nach Kategorie - Hersteller hat keine genauen Werte angegeben",
+    "percent_not_set": "Empfohlener % nicht eingestellt, verifizierte Daten fehlen. Stellen Sie gemäß Herstellerempfehlungen ein."
   },
   "flavor_autocomplete": {
     "from_favorites": "Aus meinen Aromen",
