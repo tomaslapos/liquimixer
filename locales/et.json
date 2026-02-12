@@ -675,6 +675,7 @@
     "weak": "Nõrk või maitse puudub (soovitatav {min}–{max}%)",
     "strong": "Tugev või liiga magus maitse (soovitatav {min}–{max}%)",
     "ideal": "Ideaalne maitse ({min}–{max}%) - {note}",
+    "ideal_specific": "Ideaalne maitse ({min}–{max}%) - {name}",
     "no_percentage_warning": "Tootja ei anna selle aroomi jaoks soovitatud annust. Kontrollige pakendit või tootja/müüja veebisaiti õige teabe saamiseks.",
     "note_none": "Puhas PG/VG baas + nikotiin",
     "note_fruit": "Optimaalne: 10%, järelejäämine 3–7 päeva",

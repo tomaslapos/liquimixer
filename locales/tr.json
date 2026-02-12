@@ -675,6 +675,7 @@
     "weak": "Zayıf veya aroma yok (önerilen {min}–{max}%)",
     "strong": "Güçlü veya çok tatlı aroma (önerilen {min}–{max}%)",
     "ideal": "İdeal aroma ({min}–{max}%) - {note}",
+    "ideal_specific": "İdeal aroma ({min}–{max}%) - {name}",
     "no_percentage_warning": "Üretici bu aroma için önerilen dozajı belirtmiyor. Doğru bilgi için ambalajı veya üretici/satıcı web sitesini kontrol edin.",
     "note_none": "Saf PG/VG bazı + nikotin",
     "note_fruit": "Optimal: %10, olgunlaştırma 3–7 gün",

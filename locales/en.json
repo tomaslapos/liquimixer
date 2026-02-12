@@ -940,7 +940,9 @@
     "back_to_database": "◀ BACK TO DATABASE",
     "login_required": "Please log in to access the flavor database",
     "values_from_category": "by category - manufacturer not specified",
-    "filter_rating_all": "All"
+    "filter_rating_all": "All",
+    "detail_used_percent": "Used %",
+    "not_in_public_db": "This flavor is not in the public database."
   },
   "flavor_suggestion": {
     "toggle_label": "Suggest adding to database",

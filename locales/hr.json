@@ -675,6 +675,7 @@
     "weak": "Slab ili nepostojeći okus (preporučeno {min}–{max}%)",
     "strong": "Jak ili presladak okus (preporučeno {min}–{max}%)",
     "ideal": "Idealan okus ({min}–{max}%) - {note}",
+    "ideal_specific": "Idealan okus ({min}–{max}%) - {name}",
     "no_percentage_warning": "Proizvođač ne navodi preporučeno doziranje za ovu aromu. Provjerite ambalažu ili web stranicu proizvođača/prodavača za ispravne informacije.",
     "note_none": "Čista PG/VG baza + nikotin",
     "note_fruit": "Optimalno: 10%, odležavanje 3–7 dana",
