@@ -4484,7 +4484,12 @@ function prefillLiquidForm(data, linkedFlavors = []) {
         updateRatioDisplay();
     }
     if (data.nicotine !== undefined && data.nicotine > 0) {
-        document.getElementById('nicotineType').value = 'booster';
+        // Zjistit typ nikotinu z ingredients (salt vs booster)
+        const nicIng = (data.ingredients || []).find(ing => 
+            ing.ingredientKey === 'nicotine_salt' || ing.ingredientKey === 'nicotine_booster'
+        );
+        const nicType = nicIng?.ingredientKey === 'nicotine_salt' ? 'salt' : 'booster';
+        document.getElementById('nicotineType').value = nicType;
         document.getElementById('targetNicotine').value = data.nicotine;
         updateNicotineType();
     }
@@ -4753,7 +4758,7 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
     input.dataset.favoriteProductId = favoriteProductId || '';
     input.dataset.flavorSource = isFavorite ? 'favorite' : (flavorId ? 'database' : '');
     
-    // Uložit kompletní data příchutě
+    // Uložit kompletní data příchutě (včetně uložené percentage pro prefill)
     const flavorData = {
         id: isFavorite ? favoriteProductId : flavorId,  // ID záznamu (favorite_products nebo flavors)
         flavor_id: flavorId,  // ID ve veřejné tabulce flavors (pokud existuje)
@@ -4767,7 +4772,8 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
         max_percent: flavorLink.flavor?.max_percent,
         steep_days: flavorLink.flavor?.steep_days,
         vg_ratio: flavorLink.flavor?.vg_ratio,
-        source: isFavorite ? 'favorite' : 'database'
+        source: isFavorite ? 'favorite' : 'database',
+        saved_percentage: percentage  // Uložená hodnota z receptu pro prefill
     };
     input.dataset.flavorData = JSON.stringify(flavorData);
     
@@ -4776,7 +4782,7 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
         updateFlavorCategoryState(inputId, true);
     }
     
-    // Zobrazit slider a nastavit rozsah dle příchutě
+    // Zobrazit slider a nastavit rozsah dle příchutě (s uloženou percentage)
     if (typeof showFlavorSliderWithRange === 'function') {
         showFlavorSliderWithRange(inputId, flavorData);
     }
@@ -14291,12 +14297,20 @@ function showFlavorSliderWithRange(inputId, flavorData) {
     slider.dataset.flavorRecommended = recommendedPercent;
     slider.dataset.hasExactPercent = hasExactPercent ? 'true' : 'false';
     
-    // Nastavit hodnotu na doporučenou
-    slider.value = recommendedPercent;
+    // Použít uloženou percentage hodnotu z receptu (pokud existuje), jinak doporučenou
+    const savedPercent = flavorData.saved_percentage;
+    const sliderValue = (savedPercent !== undefined && savedPercent !== null && savedPercent > 0) 
+        ? savedPercent 
+        : recommendedPercent;
     
-    // Aktualizovat zobrazení hodnoty
+    // Nastavit hodnotu slideru
+    slider.value = sliderValue;
+    
+    // Aktualizovat zobrazení hodnoty (bez zaokrouhlení pro přesnost)
     if (valueDisplay) {
-        valueDisplay.textContent = Math.round(recommendedPercent);
+        // Zobrazit s 1 desetinným místem pokud není celé číslo
+        const displayValue = Number.isInteger(sliderValue) ? sliderValue : sliderValue.toFixed(1);
+        valueDisplay.textContent = displayValue;
     }
     
     // Najít track element a nastavit počáteční barvu
@@ -14317,7 +14331,7 @@ function showFlavorSliderWithRange(inputId, flavorData) {
     
     // Nastavit barvu tracku dle aktuální hodnoty a rozsahu
     if (trackEl) {
-        const currentValue = parseFloat(recommendedPercent);
+        const currentValue = parseFloat(sliderValue);
         if (currentValue < minPercent) {
             trackEl.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
         } else if (currentValue > maxPercent) {
@@ -14330,7 +14344,7 @@ function showFlavorSliderWithRange(inputId, flavorData) {
     
     // Nastavit barvu hodnoty pod sliderem
     if (valueDisplay && valueDisplay.parentElement) {
-        const currentValue = parseFloat(recommendedPercent);
+        const currentValue = parseFloat(sliderValue);
         let color;
         if (currentValue < minPercent) {
             color = '#ffaa00';
@@ -15495,40 +15509,39 @@ function addShishaFlavor() {
     shFlavorCount++;
     const container = document.getElementById('shAdditionalFlavorsContainer');
     
-    // Clone flavor 1 structure - použít t() pro překlad
-    const flavorLabel = t('shisha.flavor_label', 'Flavor');
+    // Clone flavor 1 structure - použít window.i18n?.t() pro překlad (jako v addProFlavor)
     const flavorHtml = `
         <div class="form-group sh-flavor-group" id="shFlavorGroup${shFlavorCount}">
             <label class="form-label">
-                <span>${flavorLabel}</span>
+                <span data-i18n="shisha.flavor_label">${window.i18n?.t('shisha.flavor_label') || 'Příchuť'}</span>
                 <span class="flavor-number"> ${shFlavorCount}</span>
-                <button type="button" class="remove-flavor-btn" onclick="removeShishaFlavor(${shFlavorCount})">✕</button>
+                <button type="button" class="remove-flavor-btn" onclick="removeShishaFlavor(${shFlavorCount})" title="${window.i18n?.t('form.remove_flavor') || 'Odebrat příchuť'}">✕</button>
             </label>
             <div class="flavor-container">
                 <!-- Autocomplete pro konkrétní příchuť - PRVNÍ -->
                 <div class="flavor-autocomplete-wrapper">
-                    <input type="text" id="shFlavorAutocomplete${shFlavorCount}" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="${t('flavor_autocomplete.search_placeholder', 'Search for specific flavor...')}" autocomplete="off">
+                    <input type="text" id="shFlavorAutocomplete${shFlavorCount}" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="${window.i18n?.t('flavor_autocomplete.search_placeholder') || 'Hledat konkrétní příchuť...'}" autocomplete="off">
                 </div>
                 <!-- Kategorie příchutě - DRUHÁ -->
                 <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
-                    ${t('form.flavor_category_label', 'Nebo vyberte kategorii (bez konkrétní příchutě):')}
+                    ${window.i18n?.t('form.flavor_category_label') || 'Nebo vyberte kategorii (bez konkrétní příchutě):'}
                 </label>
                 <select id="shFlavorType${shFlavorCount}" class="neon-select sh-flavor-select" data-flavor-index="${shFlavorCount}" onchange="updateShishaFlavorType(${shFlavorCount})">
-                    <option value="none" data-i18n="form.flavor_none">Žádná</option>
-                    <option value="double_apple" data-i18n="shisha.flavor_double_apple">Double Apple</option>
-                    <option value="mint" data-i18n="shisha.flavor_mint">Máta</option>
-                    <option value="grape" data-i18n="shisha.flavor_grape">Hrozno</option>
-                    <option value="watermelon" data-i18n="shisha.flavor_watermelon">Meloun</option>
-                    <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">Citrón a máta</option>
-                    <option value="blueberry" data-i18n="shisha.flavor_blueberry">Borůvka</option>
-                    <option value="peach" data-i18n="shisha.flavor_peach">Broskev</option>
-                    <option value="mango" data-i18n="shisha.flavor_mango">Mango</option>
-                    <option value="strawberry" data-i18n="shisha.flavor_strawberry">Jahoda</option>
-                    <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">Ovocný mix</option>
-                    <option value="cola" data-i18n="shisha.flavor_cola">Kola</option>
-                    <option value="gum" data-i18n="shisha.flavor_gum">Žvýkačka</option>
-                    <option value="rose" data-i18n="shisha.flavor_rose">Růže</option>
-                    <option value="custom" data-i18n="form.custom">Vlastní</option>
+                    <option value="none" data-i18n="form.flavor_none">${window.i18n?.t('form.flavor_none') || 'Žádná'}</option>
+                    <option value="double_apple" data-i18n="shisha.flavor_double_apple">${window.i18n?.t('shisha.flavor_double_apple') || 'Double Apple'}</option>
+                    <option value="mint" data-i18n="shisha.flavor_mint">${window.i18n?.t('shisha.flavor_mint') || 'Máta'}</option>
+                    <option value="grape" data-i18n="shisha.flavor_grape">${window.i18n?.t('shisha.flavor_grape') || 'Hrozno'}</option>
+                    <option value="watermelon" data-i18n="shisha.flavor_watermelon">${window.i18n?.t('shisha.flavor_watermelon') || 'Meloun'}</option>
+                    <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">${window.i18n?.t('shisha.flavor_lemon_mint') || 'Citrón a máta'}</option>
+                    <option value="blueberry" data-i18n="shisha.flavor_blueberry">${window.i18n?.t('shisha.flavor_blueberry') || 'Borůvka'}</option>
+                    <option value="peach" data-i18n="shisha.flavor_peach">${window.i18n?.t('shisha.flavor_peach') || 'Broskev'}</option>
+                    <option value="mango" data-i18n="shisha.flavor_mango">${window.i18n?.t('shisha.flavor_mango') || 'Mango'}</option>
+                    <option value="strawberry" data-i18n="shisha.flavor_strawberry">${window.i18n?.t('shisha.flavor_strawberry') || 'Jahoda'}</option>
+                    <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">${window.i18n?.t('shisha.flavor_mixed_fruit') || 'Ovocný mix'}</option>
+                    <option value="cola" data-i18n="shisha.flavor_cola">${window.i18n?.t('shisha.flavor_cola') || 'Kola'}</option>
+                    <option value="gum" data-i18n="shisha.flavor_gum">${window.i18n?.t('shisha.flavor_gum') || 'Žvýkačka'}</option>
+                    <option value="rose" data-i18n="shisha.flavor_rose">${window.i18n?.t('shisha.flavor_rose') || 'Růže'}</option>
+                    <option value="custom" data-i18n="form.custom">${window.i18n?.t('form.custom') || 'Vlastní'}</option>
                 </select>
                 <div id="shFlavorStrengthContainer${shFlavorCount}" class="hidden">
                     <div class="slider-container small">
@@ -15547,11 +15560,11 @@ function addShishaFlavor() {
                     <!-- Zobrazení doporučení síly příchutě (pod sliderem jako u Liquid) -->
                     <div id="shFlavorStrengthDisplay${shFlavorCount}" class="flavor-strength-display"></div>
                     <div class="form-group-sub">
-                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
+                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG v koncentrátu příchutě'}</label>
                         <div class="ratio-container compact">
                             <div class="ratio-labels">
-                                <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
-                                <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                                <span class="ratio-label left" data-i18n="form.vg_label">${window.i18n?.t('form.vg_label') || 'Dým (VG)'}</span>
+                                <span class="ratio-label right" data-i18n="form.pg_label">${window.i18n?.t('form.pg_label') || 'Chuť (PG)'}</span>
                             </div>
                             <div class="slider-container">
                                 <button class="slider-btn small" onclick="adjustShishaFlavorRatio(${shFlavorCount}, -5)">◀</button>
@@ -15576,7 +15589,8 @@ function addShishaFlavor() {
     // Update hint
     const hint = document.getElementById('shFlavorCountHint');
     if (hint) {
-        hint.textContent = `(${shFlavorCount}/4 příchutí)`;
+        const flavorsText = window.i18n?.t('shisha.flavors_count') || 'příchutí';
+        hint.textContent = `(${shFlavorCount}/4 ${flavorsText})`;
     }
     
     // Hide add button if max reached
@@ -15613,7 +15627,8 @@ function removeShishaFlavor(index) {
     // Update hint
     const hint = document.getElementById('shFlavorCountHint');
     if (hint) {
-        hint.textContent = `(${shFlavorCount}/4 příchutí)`;
+        const flavorsText = window.i18n?.t('shisha.flavors_count') || 'příchutí';
+        hint.textContent = `(${shFlavorCount}/4 ${flavorsText})`;
     }
     
     updateShishaTotalFlavorPercent();
