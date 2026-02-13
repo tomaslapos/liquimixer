@@ -1349,6 +1349,7 @@ function initShakeVapeListeners() {
     const svFlavorVolume = document.getElementById('svFlavorVolume');
     const svTargetNicotine = document.getElementById('svTargetNicotine');
     const svNicotineBaseStrength = document.getElementById('svNicotineBaseStrength');
+    const svVgPgRatio = document.getElementById('svVgPgRatio');
     
     if (svTotalAmount) {
         svTotalAmount.addEventListener('input', updateSvVgPgLimits);
@@ -1362,6 +1363,13 @@ function initShakeVapeListeners() {
     if (svNicotineBaseStrength) {
         svNicotineBaseStrength.addEventListener('input', updateSvVgPgLimits);
     }
+    // Přidat listener pro ruční změnu VG/PG slideru
+    if (svVgPgRatio) {
+        svVgPgRatio.addEventListener('input', () => {
+            shakevapeUserManuallyChangedRatio = true;
+            updateSvRatioDisplay();
+        });
+    }
 }
 
 function initLiquidProListeners() {
@@ -1369,6 +1377,7 @@ function initLiquidProListeners() {
     const proTargetNicotine = document.getElementById('proTargetNicotine');
     const proFlavorStrength = document.getElementById('proFlavorStrength');
     const proNicotineBaseStrength = document.getElementById('proNicotineBaseStrength');
+    const proVgPgRatio = document.getElementById('proVgPgRatio');
     
     if (proTotalAmount) {
         proTotalAmount.addEventListener('input', updateProVgPgLimits);
@@ -1381,6 +1390,13 @@ function initLiquidProListeners() {
     }
     if (proNicotineBaseStrength) {
         proNicotineBaseStrength.addEventListener('input', updateProVgPgLimits);
+    }
+    // Přidat listener pro ruční změnu VG/PG slideru
+    if (proVgPgRatio) {
+        proVgPgRatio.addEventListener('input', () => {
+            proUserManuallyChangedRatio = true;
+            updateProRatioDisplay();
+        });
     }
 }
 
@@ -1485,6 +1501,9 @@ function updateBaseType(type) {
     
     if (baseTypeInput) baseTypeInput.value = type;
     
+    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
+    liquidUserManuallyChangedRatio = false;
+    
     if (type === 'premixed') {
         separateBtn.classList.remove('active');
         premixedBtn.classList.add('active');
@@ -1522,11 +1541,14 @@ function updatePremixedRatio(ratio) {
     });
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-    const actualVg = calculateActualVgPgRatio('liquid');
-    const slider = document.getElementById('vgPgRatio');
-    if (slider) {
-        slider.value = actualVg;
-        updateRatioDisplay();
+    // POUZE pokud uživatel ručně neměnil poměr
+    if (!liquidUserManuallyChangedRatio) {
+        const actualVg = calculateActualVgPgRatio('liquid');
+        const slider = document.getElementById('vgPgRatio');
+        if (slider) {
+            slider.value = actualVg;
+            updateRatioDisplay();
+        }
     }
     
     updateVgPgRatioLimits();
@@ -1542,7 +1564,8 @@ function getPremixedVgPercent() {
 // Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode) - LIQUID form
 function autoRecalculateLiquidVgPgRatio() {
     const baseType = document.getElementById('baseType')?.value || 'separate';
-    if (baseType === 'premixed') {
+    // Přepočítat POUZE pokud uživatel ručně neměnil poměr
+    if (baseType === 'premixed' && !liquidUserManuallyChangedRatio) {
         const actualVg = calculateActualVgPgRatio('liquid');
         const slider = document.getElementById('vgPgRatio');
         if (slider) {
@@ -1562,6 +1585,12 @@ function calculateActualVgPgRatio(formType) {
     let totalAmount, nicotineType, targetNicotine, baseNicotine, nicVgPercent;
     let flavorVolume = 0, flavorVgPercent = 0;
     let premixedVgPercent = 50;
+    
+    // Extra volume pro složky, které se nezapočítávají do VG/PG (voda, sladidlo, aditiva)
+    let extraNonVgPgVolume = 0;
+    
+    // Přímý VG objem z příchutí (pro PRO formulář s detailní kompozicí)
+    let directFlavorVgVolume = null;
     
     if (formType === 'shisha') {
         // Shisha form
@@ -1584,6 +1613,20 @@ function calculateActualVgPgRatio(formType) {
             flavorVolume = (totalFlavorPercent / 100) * totalAmount;
         }
         
+        // OPRAVA: Přidat sladidlo a vodu do výpočtu zbývajícího objemu
+        // Sweetener - nezapočítává se do VG/PG
+        const sweetenerSelect = document.getElementById('shSweetenerSelect');
+        if (sweetenerSelect && sweetenerSelect.value !== 'none') {
+            const sweetenerPercent = parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0;
+            extraNonVgPgVolume += (sweetenerPercent / 100) * totalAmount;
+        }
+        
+        // Water - nezapočítává se do VG/PG
+        const waterPercent = parseFloat(document.getElementById('shWaterPercent')?.value) || 0;
+        if (waterPercent > 0) {
+            extraNonVgPgVolume += (waterPercent / 100) * totalAmount;
+        }
+        
         // Get premixed ratio
         const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
         if (premixedRatio === 'custom') {
@@ -1598,19 +1641,38 @@ function calculateActualVgPgRatio(formType) {
         baseNicotine = parseFloat(document.getElementById('proNicotineBaseStrength')?.value) || 0;
         nicVgPercent = parseInt(document.getElementById('proNicotineRatioSlider')?.value) || 50;
         
-        // Get flavors data
+        // Get flavors data - použít detailní kompozici pro přesný výpočet
         const flavorsData = typeof getProFlavorsData === 'function' ? getProFlavorsData() : [];
+        let totalFlavorVgVolume = 0;
+        let totalFlavorPgVolume = 0;
+        let totalFlavorOtherVolume = 0; // alkohol, voda, ostatní - nezapočítávají se do VG/PG
+        
         flavorsData.forEach(flavor => {
             const vol = (flavor.percent / 100) * totalAmount;
             flavorVolume += vol;
-            // Weighted average for VG
+            
+            // Použít detailní kompozici pro přesný výpočet VG/PG
+            const comp = flavor.customComposition || { vg: flavor.vgRatio, pg: 100 - flavor.vgRatio, alcohol: 0, water: 0, other: 0 };
+            totalFlavorVgVolume += vol * (comp.vg / 100);
+            totalFlavorPgVolume += vol * (comp.pg / 100);
+            // Alkohol, voda, ostatní - jdou do objemu ale ne do VG/PG poměru
+            totalFlavorOtherVolume += vol * ((comp.alcohol + comp.water + comp.other) / 100);
         });
-        // Simplified: use average VG from all flavors
-        if (flavorsData.length > 0) {
-            const totalFlavorVg = flavorsData.reduce((sum, f) => sum + (f.vgRatio * f.percent), 0);
-            const totalFlavorPercent = flavorsData.reduce((sum, f) => sum + f.percent, 0);
-            flavorVgPercent = totalFlavorPercent > 0 ? totalFlavorVg / totalFlavorPercent : 0;
-            flavorVolume = (totalFlavorPercent / 100) * totalAmount;
+        
+        // Nastavit přímý VG objem z příchutí pro použití ve finálním výpočtu
+        directFlavorVgVolume = totalFlavorVgVolume;
+        
+        // Vypočítat vážený průměr VG% pro zpětnou kompatibilitu
+        if (flavorsData.length > 0 && flavorVolume > 0) {
+            // Skutečný VG% z příchutí (pouze VG část, ne celý objem)
+            flavorVgPercent = (totalFlavorVgVolume / flavorVolume) * 100;
+        }
+        
+        // OPRAVA: Přidat aditiva do výpočtu zbývajícího objemu
+        const additivesData = typeof getProAdditivesData === 'function' ? getProAdditivesData() : [];
+        if (additivesData.length > 0) {
+            const totalAdditivePercent = additivesData.reduce((sum, a) => sum + a.percent, 0);
+            extraNonVgPgVolume += (totalAdditivePercent / 100) * totalAmount;
         }
         
         const premixedRatio = document.getElementById('proPremixedRatio')?.value || '50/50';
@@ -1663,13 +1725,17 @@ function calculateActualVgPgRatio(formType) {
         nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
     }
     
-    // Remaining volume for carrier (premixed base)
-    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    // Remaining volume for carrier (premixed base) - OPRAVA: zahrnout extraNonVgPgVolume
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume - extraNonVgPgVolume;
     
     // Calculate VG from each component
     const vgFromNicotine = nicotineVolume * (nicVgPercent / 100);
-    const vgFromFlavor = flavorVolume * (flavorVgPercent / 100);
-    const vgFromBase = remainingVolume * (premixedVgPercent / 100);
+    // Použít přímý VG objem pokud je k dispozici (PRO formulář s detailní kompozicí)
+    // jinak vypočítat ze zjednodušeného flavorVgPercent
+    const vgFromFlavor = directFlavorVgVolume !== null 
+        ? directFlavorVgVolume 
+        : flavorVolume * (flavorVgPercent / 100);
+    const vgFromBase = Math.max(0, remainingVolume) * (premixedVgPercent / 100);
     
     // Total VG
     const totalVg = vgFromNicotine + vgFromFlavor + vgFromBase;
@@ -1692,6 +1758,9 @@ function updateProBaseType(type) {
     const premixedBtn = document.getElementById('proBasePremixed');
     
     if (baseTypeInput) baseTypeInput.value = type;
+    
+    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
+    proUserManuallyChangedRatio = false;
     
     if (type === 'premixed') {
         separateBtn.classList.remove('active');
@@ -1741,12 +1810,15 @@ function updateProPremixedRatio(ratio) {
     }
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr (po nastavení proPremixedRatio)
+    // POUZE pokud uživatel ručně neměnil poměr
     setTimeout(() => {
-        const actualVg = calculateActualVgPgRatio('pro');
-        const slider = document.getElementById('proVgPgRatio');
-        if (slider) {
-            slider.value = actualVg;
-            updateProRatioDisplay();
+        if (!proUserManuallyChangedRatio) {
+            const actualVg = calculateActualVgPgRatio('pro');
+            const slider = document.getElementById('proVgPgRatio');
+            if (slider) {
+                slider.value = actualVg;
+                updateProRatioDisplay();
+            }
         }
         updateProVgPgLimits();
     }, 0);
@@ -6584,6 +6656,13 @@ function updateRatioDisplay() {
 // Store current VG/PG limits
 let vgPgLimits = { min: 0, max: 100 };
 
+// Flagy pro ruční změnu VG/PG slideru uživatelem
+// Když je true, automatické přenastavení slideru při změně báze se neprovede
+let liquidUserManuallyChangedRatio = false;
+let proUserManuallyChangedRatio = false;
+let shishaUserManuallyChangedRatio = false;
+let shakevapeUserManuallyChangedRatio = false;
+
 // Calculate and update VG/PG slider limits based on nicotine and flavor settings
 function updateVgPgRatioLimits() {
     const slider = document.getElementById('vgPgRatio');
@@ -6820,6 +6899,9 @@ function clampVgPgValue() {
     } else if (value > vgPgLimits.max) {
         slider.value = vgPgLimits.max;
     }
+    
+    // Nastavit flag že uživatel ručně změnil poměr
+    liquidUserManuallyChangedRatio = true;
     
     updateRatioDisplay();
 }
@@ -7434,10 +7516,33 @@ function calculateMix() {
                 adjustmentVg = adjustVgB;
                 adjustmentPg = 0;
             } else {
-                // Ani jedna varianta není realizovatelná - použijeme celý zbývající objem jako bázi
+                // Ani jedna varianta není ideální - použijeme celý zbývající objem jako bázi
+                // a přidáme doladění podle toho, co chybí pro dosažení cílového poměru
                 premixedBaseVolume = remainingVolume;
-                adjustmentVg = 0;
-                adjustmentPg = 0;
+                
+                // VG/PG z celé báze
+                const vgFromBase = remainingVolume * (premixedVgPercent / 100);
+                const pgFromBase = remainingVolume * (premixedPgPercent / 100);
+                
+                // Celkové VG/PG včetně báze
+                const totalVgWithBase = providedVg + vgFromBase;
+                const totalPgWithBase = providedPg + pgFromBase;
+                
+                // Kolik VG/PG ještě potřebujeme doladit?
+                const needMoreVg = targetVgTotal - totalVgWithBase;
+                const needMorePg = targetPgTotal - totalPgWithBase;
+                
+                // Můžeme doladit pouze jednu složku (VG nebo PG), ne obě
+                if (needMoreVg > 0.01) {
+                    adjustmentVg = needMoreVg;
+                    adjustmentPg = 0;
+                } else if (needMorePg > 0.01) {
+                    adjustmentVg = 0;
+                    adjustmentPg = needMorePg;
+                } else {
+                    adjustmentVg = 0;
+                    adjustmentPg = 0;
+                }
             }
         }
         
@@ -8579,6 +8684,9 @@ function updateFormTabsState() {
 let svVgPgLimits = { min: 0, max: 100 };
 
 function initShakeVapeForm() {
+    // Resetovat flag při inicializaci formuláře (nová kalkulace)
+    shakevapeUserManuallyChangedRatio = false;
+    
     setupSvNicotineRatioToggle();
     updateSvRatioDisplay();
     updateSvNicotineDisplay();
@@ -8619,6 +8727,9 @@ function updateSvBaseType(type) {
     
     if (baseTypeInput) baseTypeInput.value = type;
     
+    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
+    shakevapeUserManuallyChangedRatio = false;
+    
     if (type === 'premixed') {
         separateBtn.classList.remove('active');
         premixedBtn.classList.add('active');
@@ -8656,12 +8767,15 @@ function updateSvPremixedRatio(ratio) {
     });
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
+    // POUZE pokud uživatel ručně neměnil poměr
     setTimeout(() => {
-        const actualVg = calculateActualVgPgRatio('shakevape');
-        const slider = document.getElementById('svVgPgRatio');
-        if (slider) {
-            slider.value = actualVg;
-            updateSvRatioDisplay();
+        if (!shakevapeUserManuallyChangedRatio) {
+            const actualVg = calculateActualVgPgRatio('shakevape');
+            const slider = document.getElementById('svVgPgRatio');
+            if (slider) {
+                slider.value = actualVg;
+                updateSvRatioDisplay();
+            }
         }
     }, 0);
     
@@ -8678,7 +8792,8 @@ function getSvPremixedVgPercent() {
 // Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode) - SHAKE & VAPE form
 function autoRecalculateSvVgPgRatio() {
     const baseType = document.getElementById('svBaseType')?.value || 'separate';
-    if (baseType === 'premixed') {
+    // Přepočítat POUZE pokud uživatel ručně neměnil poměr
+    if (baseType === 'premixed' && !shakevapeUserManuallyChangedRatio) {
         const actualVg = calculateActualVgPgRatio('shakevape');
         const slider = document.getElementById('svVgPgRatio');
         if (slider) {
@@ -8827,9 +8942,26 @@ function updateSvVgPgLimits() {
 
     const fixedPgVolume = nicotinePgVolume + flavorPgVolume;
     const fixedVgVolume = nicotineVgVolume + flavorVgVolume;
-
-    const minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
-    const maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    
+    // Zbývající objem pro bázi
+    const remainingVolume = totalAmount - nicotineVolume - flavorVolume;
+    
+    // Zkontrolovat jestli je vybraný premixed režim
+    const baseType = document.getElementById('svBaseType')?.value || 'separate';
+    const premixedRatio = document.getElementById('svPremixedRatio')?.value || '50/50';
+    
+    let minVgPercent, maxVgPercent;
+    
+    if (baseType === 'premixed' && remainingVolume > 0) {
+        // PREMIXED režim - limity jsou ovlivněny poměrem báze + možnost doladění
+        // S doladěním můžeme dosáhnout rozsahu od fixedVg do fixedVg + remainingVolume
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(((fixedVgVolume + remainingVolume) / totalAmount) * 100);
+    } else {
+        // SEPARATE režim - původní logika
+        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
+        maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+    }
 
     svVgPgLimits.min = Math.max(0, minVgPercent);
     svVgPgLimits.max = Math.min(100, maxVgPercent);
@@ -9018,10 +9150,33 @@ function calculateShakeVape() {
                 adjustmentVg = adjustVgB;
                 adjustmentPg = 0;
             } else {
-                // Ani jedna varianta není realizovatelná - použijeme celý zbývající objem jako bázi
+                // Ani jedna varianta není ideální - použijeme celý zbývající objem jako bázi
+                // a přidáme doladění podle toho, co chybí pro dosažení cílového poměru
                 premixedBaseVolume = remainingVolume;
-                adjustmentVg = 0;
-                adjustmentPg = 0;
+                
+                // VG/PG z celé báze
+                const vgFromBase = remainingVolume * (premixedVgPercent / 100);
+                const pgFromBase = remainingVolume * (premixedPgPercent / 100);
+                
+                // Celkové VG/PG včetně báze
+                const totalVgWithBase = providedVg + vgFromBase;
+                const totalPgWithBase = providedPg + pgFromBase;
+                
+                // Kolik VG/PG ještě potřebujeme doladit?
+                const needMoreVg = targetVgTotal - totalVgWithBase;
+                const needMorePg = targetPgTotal - totalPgWithBase;
+                
+                // Můžeme doladit pouze jednu složku (VG nebo PG), ne obě
+                if (needMoreVg > 0.01) {
+                    adjustmentVg = needMoreVg;
+                    adjustmentPg = 0;
+                } else if (needMorePg > 0.01) {
+                    adjustmentVg = 0;
+                    adjustmentPg = needMorePg;
+                } else {
+                    adjustmentVg = 0;
+                    adjustmentPg = 0;
+                }
             }
         }
         
@@ -9276,6 +9431,9 @@ function autoRecalculateProVgPgRatio() {
 }
 
 function initLiquidProForm() {
+    // Resetovat flag při inicializaci formuláře (nová kalkulace)
+    proUserManuallyChangedRatio = false;
+    
     updateProVgPgLimits();
     updateProRatioDisplay();
     updateProNicotineDisplay();
@@ -10265,11 +10423,27 @@ function getProFlavorsData() {
         const hasSpecific = specificFlavorName !== null;
         
         if (hasCategory || hasSpecific) {
+            const vgRatioValue = parseInt(ratioEl?.value) || 0;
+            
+            // Načíst detailní kompozici příchutě pokud je zadaná
+            const customComposition = typeof getFlavorCustomComposition === 'function' 
+                ? getFlavorCustomComposition(i) 
+                : null;
+            
             const flavorEntry = {
                 index: i,
                 type: typeEl?.value || 'fruit',
                 percent: parseFloat(strengthEl?.value) || 10,
-                vgRatio: parseInt(ratioEl?.value) || 0
+                vgRatio: vgRatioValue,
+                // Detailní kompozice: buď vlastní nebo odvozená ze slideru
+                // customComposition obsahuje { pg, vg, alcohol, water, other }
+                customComposition: customComposition || { 
+                    pg: 100 - vgRatioValue, 
+                    vg: vgRatioValue, 
+                    alcohol: 0, 
+                    water: 0, 
+                    other: 0 
+                }
             };
             
             // Přidat info o konkrétní příchuti
@@ -10360,16 +10534,17 @@ function updateProVgPgLimits() {
     const nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
     const nicotinePgVolume = nicotineVolume * (nicPgPercent / 100);
     
-    // Spočítat VG/PG ze všech příchutí
+    // Spočítat VG/PG ze všech příchutí - použít detailní kompozici
     let totalFlavorVgVolume = 0;
     let totalFlavorPgVolume = 0;
     
     flavorsData.forEach(flavor => {
         const flavorVolume = (flavor.percent / 100) * totalAmount;
-        const flavorVg = flavor.vgRatio;
-        const flavorPg = 100 - flavorVg;
-        totalFlavorVgVolume += flavorVolume * (flavorVg / 100);
-        totalFlavorPgVolume += flavorVolume * (flavorPg / 100);
+        // OPRAVA: Použít detailní kompozici místo zjednodušeného vgRatio
+        const comp = flavor.customComposition || { vg: flavor.vgRatio, pg: 100 - flavor.vgRatio };
+        totalFlavorVgVolume += flavorVolume * (comp.vg / 100);
+        totalFlavorPgVolume += flavorVolume * (comp.pg / 100);
+        // Poznámka: alkohol, voda, ostatní jdou do objemu ale ne do VG/PG fixních složek
     });
     
     const fixedPgVolume = nicotinePgVolume + totalFlavorPgVolume;
@@ -10518,14 +10693,17 @@ function calculateProMix() {
         nicotinePgContent = nicotineVolume * (nicPgPercent / 100);
     }
     
-    // Spočítat VG/PG obsah ze všech příchutí
+    // Spočítat VG/PG obsah ze všech příchutí - použít detailní kompozici
     let totalFlavorVgContent = 0;
     let totalFlavorPgContent = 0;
     
     flavorsData.forEach(flavor => {
         const flavorVolume = (flavor.percent / 100) * totalAmount;
-        totalFlavorVgContent += flavorVolume * (flavor.vgRatio / 100);
-        totalFlavorPgContent += flavorVolume * ((100 - flavor.vgRatio) / 100);
+        // OPRAVA: Použít detailní kompozici místo zjednodušeného vgRatio
+        const comp = flavor.customComposition || { vg: flavor.vgRatio, pg: 100 - flavor.vgRatio };
+        totalFlavorVgContent += flavorVolume * (comp.vg / 100);
+        totalFlavorPgContent += flavorVolume * (comp.pg / 100);
+        // Poznámka: alkohol, voda, ostatní jdou do objemu ale ne do VG/PG obsahu
     });
     
     // Spočítat VG/PG obsah z aditiv
@@ -10601,10 +10779,33 @@ function calculateProMix() {
                 adjustmentVg = adjustVgB;
                 adjustmentPg = 0;
             } else {
-                // Ani jedna varianta není realizovatelná - použijeme celý zbývající objem jako bázi
+                // Ani jedna varianta není ideální - použijeme celý zbývající objem jako bázi
+                // a přidáme doladění podle toho, co chybí pro dosažení cílového poměru
                 premixedBaseVolume = remainingVolume;
-                adjustmentVg = 0;
-                adjustmentPg = 0;
+                
+                // VG/PG z celé báze
+                const vgFromBase = remainingVolume * (premixedVgPercent / 100);
+                const pgFromBase = remainingVolume * (premixedPgPercent / 100);
+                
+                // Celkové VG/PG včetně báze
+                const totalVgWithBase = providedVg + vgFromBase;
+                const totalPgWithBase = providedPg + pgFromBase;
+                
+                // Kolik VG/PG ještě potřebujeme doladit?
+                const needMoreVg = targetVgTotal - totalVgWithBase;
+                const needMorePg = targetPgTotal - totalPgWithBase;
+                
+                // Můžeme doladit pouze jednu složku (VG nebo PG), ne obě
+                if (needMoreVg > 0.01) {
+                    adjustmentVg = needMoreVg;
+                    adjustmentPg = 0;
+                } else if (needMorePg > 0.01) {
+                    adjustmentVg = 0;
+                    adjustmentPg = needMorePg;
+                } else {
+                    adjustmentVg = 0;
+                    adjustmentPg = 0;
+                }
             }
         }
         
@@ -14671,6 +14872,9 @@ let shFlavorCount = 1;
 
 // Initialize Shisha form
 function initShishaForm() {
+    // Resetovat flag při inicializaci formuláře (nová kalkulace)
+    shishaUserManuallyChangedRatio = false;
+    
     updateShishaVgPgLimits();
     updateShishaRatioDisplay();
     updateShishaFlavorType(1);
@@ -14681,6 +14885,16 @@ function initShishaForm() {
     updateShishaNicotineDisplay();
     updateShishaSweetenerDisplay();
     updateShishaWaterDisplay();
+    
+    // Přidat listener pro ruční změnu VG/PG slideru (jen pokud ještě není přidán)
+    const shVgPgRatio = document.getElementById('shVgPgRatio');
+    if (shVgPgRatio && !shVgPgRatio.dataset.listenerAdded) {
+        shVgPgRatio.addEventListener('input', () => {
+            shishaUserManuallyChangedRatio = true;
+            updateShishaRatioDisplay();
+        });
+        shVgPgRatio.dataset.listenerAdded = 'true';
+    }
     
     // Apply translations
     if (window.i18n && window.i18n.applyTranslations) {
@@ -14730,6 +14944,9 @@ function updateShishaBaseType(type) {
     } else {
         console.error('updateShishaBaseType: shBaseType element not found!');
     }
+    
+    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
+    shishaUserManuallyChangedRatio = false;
     
     // Update active button
     document.getElementById('shBaseSeparate')?.classList.toggle('active', type === 'separate');
@@ -15645,7 +15862,8 @@ function autoRecalculateShishaVgPgRatio() {
     // Get base type - only auto-recalculate for premixed mode
     const baseType = document.getElementById('shBaseType')?.value || 'premixed';
     
-    if (baseType === 'premixed') {
+    // Přepočítat POUZE pokud uživatel ručně neměnil poměr
+    if (baseType === 'premixed' && !shishaUserManuallyChangedRatio) {
         // In premixed mode, slider follows the premixed base ratio
         const result = calculateActualVgPgRatio('shisha');
         
@@ -15961,10 +16179,33 @@ function calculateShishaMix() {
                     adjustmentVg = adjustVgB;
                     adjustmentPg = 0;
                 } else {
-                    // Ani jedna varianta není realizovatelná - použijeme celý zbývající objem jako bázi
+                    // Ani jedna varianta není ideální - použijeme celý zbývající objem jako bázi
+                    // a přidáme doladění podle toho, co chybí pro dosažení cílového poměru
                     premixedBaseVolume = baseVolume;
-                    adjustmentVg = 0;
-                    adjustmentPg = 0;
+                    
+                    // VG/PG z celé báze
+                    const vgFromBase = baseVolume * (premixedVg / 100);
+                    const pgFromBase = baseVolume * (premixedPg / 100);
+                    
+                    // Celkové VG/PG včetně báze
+                    const totalVgWithBase = providedVg + vgFromBase;
+                    const totalPgWithBase = providedPg + pgFromBase;
+                    
+                    // Kolik VG/PG ještě potřebujeme doladit?
+                    const needMoreVg = targetVgVolume - totalVgWithBase;
+                    const needMorePg = targetPgVolume - totalPgWithBase;
+                    
+                    // Můžeme doladit pouze jednu složku (VG nebo PG), ne obě
+                    if (needMoreVg > 0.01) {
+                        adjustmentVg = needMoreVg;
+                        adjustmentPg = 0;
+                    } else if (needMorePg > 0.01) {
+                        adjustmentVg = 0;
+                        adjustmentPg = needMorePg;
+                    } else {
+                        adjustmentVg = 0;
+                        adjustmentPg = 0;
+                    }
                 }
             }
             
