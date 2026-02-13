@@ -206,6 +206,38 @@ async function setSupabaseAuth() {
     }
 }
 
+// Pouze obnovit JWT token pro Supabase (bez plné re-inicializace)
+// Volá se při Clerk token refresh pro udržení aktivní session
+async function refreshSupabaseToken() {
+    if (!supabaseClient || typeof Clerk === 'undefined' || !Clerk.user) {
+        return false;
+    }
+    
+    try {
+        let token = null;
+        
+        try {
+            token = await Clerk.session?.getToken({ template: 'supabase' });
+        } catch (templateError) {
+            // Template neexistuje, zkusit default
+        }
+        
+        if (!token) {
+            token = await Clerk.session?.getToken();
+        }
+        
+        if (token) {
+            supabaseClient.realtime.setAuth(token);
+            supabaseClient.rest.headers['Authorization'] = `Bearer ${token}`;
+            return true;
+        }
+        return false;
+    } catch (err) {
+        console.error('refreshSupabaseToken: Error:', err);
+        return false;
+    }
+}
+
 // ============================================
 // UŽIVATELSKÉ FUNKCE
 // ============================================
@@ -3097,6 +3129,7 @@ console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
     init: initSupabase,
     setAuth: setSupabaseAuth,  // Nastavení JWT tokenu pro RLS
+    refreshToken: refreshSupabaseToken,  // Pouze obnovit JWT token (bez re-inicializace)
     saveUser: saveUserToDatabase,
     getUser: getUserFromDatabase,
     saveTermsAcceptance: saveTermsAcceptance,

@@ -1898,26 +1898,38 @@ window.addEventListener('load', async function() {
             }
             
             // Listen for auth changes (OAuth callback, sign in/out)
-            // Guard pro detekci skutečné změny uživatele vs. pouhého token refresh
+            // Oddělená logika pro: (1) odhlášení, (2) token refresh, (3) skutečné přihlášení/změna uživatele
             let lastAuthUserId = window.Clerk.user?.id || null;
+            let isFullyInitialized = !!window.Clerk.user; // Pokud je user při startu, jsme inicializováni
             
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
                 
                 const currentUserId = window.Clerk.user?.id || null;
                 
-                // Pokud se nezměnil user (jen token refresh), přeskočit plnou re-inicializaci
-                if (currentUserId === lastAuthUserId && currentUserId !== null) {
-                    console.log('Clerk: Token refresh only, skipping full re-init');
+                // ====== 1. ODHLÁŠENÍ ======
+                if (!currentUserId && lastAuthUserId) {
+                    console.log('Clerk: User signed out');
+                    lastAuthUserId = null;
+                    isFullyInitialized = false;
+                    updateAuthUI();
                     return;
                 }
                 
-                // Aktualizovat lastAuthUserId
-                lastAuthUserId = currentUserId;
-
-                // Zpracovat přihlášení uživatele
+                // ====== 2. TOKEN REFRESH (stejný user, již inicializován) ======
+                if (currentUserId && currentUserId === lastAuthUserId && isFullyInitialized) {
+                    console.log('Clerk: Token refresh only, refreshing Supabase token...');
+                    // Pouze obnovit JWT token pro Supabase, žádná re-inicializace
+                    if (window.LiquiMixerDB?.refreshToken) {
+                        await window.LiquiMixerDB.refreshToken();
+                    }
+                    return;
+                }
+                
+                // ====== 3. SKUTEČNÉ PŘIHLÁŠENÍ NEBO ZMĚNA UŽIVATELE ======
                 if (window.Clerk.user) {
-                    console.log('User signed in:', window.Clerk.user.id);
+                    console.log('Clerk: Full sign-in flow for user:', window.Clerk.user.id);
+                    lastAuthUserId = currentUserId;
                     
                     // Save user to database on sign in
                     if (window.LiquiMixerDB) {
@@ -1954,6 +1966,7 @@ window.addEventListener('load', async function() {
                         console.log('New user detected via OAuth - showing subscription modal for terms acceptance...');
                         await new Promise(r => setTimeout(r, 500));
                         showSubscriptionModal();
+                        isFullyInitialized = true;
                         return; // Nepokračovat - uživatel musí souhlasit s OP a zaplatit
                     }
                     
@@ -1976,6 +1989,7 @@ window.addEventListener('load', async function() {
                         // Krátká pauza pro stabilizaci UI a Clerk session
                         await new Promise(r => setTimeout(r, 500));
                         showSubscriptionModal();
+                        isFullyInitialized = true;
                         return; // Nepokračovat dál - uživatel musí zaplatit
                     }
                     
@@ -1987,11 +2001,9 @@ window.addEventListener('load', async function() {
                     
                     // Zkontrolovat vyzrálé liquidy a zobrazit in-app notifikaci
                     await checkMaturedReminders();
-                }
-                
-                // Pokud se uživatel odhlásil, aktualizovat UI
-                if (!window.Clerk.user) {
-                    updateAuthUI();
+                    
+                    // Označit jako plně inicializován
+                    isFullyInitialized = true;
                 }
             });
             
@@ -6121,11 +6133,25 @@ function editProduct() {
         if (flavorManufacturer && currentViewingProduct.manufacturer) {
             // Počkat na načtení výrobců a pak nastavit hodnotu
             setTimeout(() => {
-                // Zkusit najít výrobce podle názvu
+                const manufacturerValue = currentViewingProduct.manufacturer;
+                let found = false;
+                
+                // 1. Zkusit přímou shodu s option.value (manufacturer_code)
                 for (let option of flavorManufacturer.options) {
-                    if (option.textContent.includes(currentViewingProduct.manufacturer)) {
+                    if (option.value === manufacturerValue) {
                         flavorManufacturer.value = option.value;
+                        found = true;
                         break;
+                    }
+                }
+                
+                // 2. Fallback: hledat podle názvu v textContent
+                if (!found) {
+                    for (let option of flavorManufacturer.options) {
+                        if (option.textContent.toLowerCase().includes(manufacturerValue.toLowerCase())) {
+                            flavorManufacturer.value = option.value;
+                            break;
+                        }
                     }
                 }
             }, 100);
@@ -15019,14 +15045,18 @@ function updateShishaPremixedRatio(ratio) {
         }
     });
     
-    document.getElementById('shPremixedRatio').value = ratio;
-    
-    // Show/hide custom container
+    const premixedRatioInput = document.getElementById('shPremixedRatio');
     const customContainer = document.getElementById('shCustomPremixedContainer');
+    
+    // OPRAVA: Pro custom režim číst hodnotu z inputu a nastavit správný poměr
     if (ratio === 'custom') {
-        customContainer.classList.remove('hidden');
+        if (customContainer) customContainer.classList.remove('hidden');
+        // Získat hodnotu z custom inputu
+        const customVg = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 70;
+        if (premixedRatioInput) premixedRatioInput.value = `${customVg}/${100 - customVg}`;
     } else {
-        customContainer.classList.add('hidden');
+        if (customContainer) customContainer.classList.add('hidden');
+        if (premixedRatioInput) premixedRatioInput.value = ratio;
     }
     
     autoRecalculateShishaVgPgRatio();
