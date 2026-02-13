@@ -4529,10 +4529,11 @@ function prefillProForm(data, linkedFlavors = []) {
             if (standardRatios.includes(data.premixedRatio)) {
                 updateProPremixedRatio(data.premixedRatio);
             } else {
-                updateProPremixedRatio('custom');
+                // DŮLEŽITÉ: Nejdříve nastavit hodnotu VG, pak teprve volat updateProPremixedRatio
                 const parts = data.premixedRatio.split('/');
                 const vgEl = document.getElementById('proCustomPremixedVg');
                 if (vgEl) vgEl.value = parseInt(parts[0]) || 65;
+                updateProPremixedRatio('custom');
                 updateProCustomPremixedPg();
             }
         }
@@ -4580,10 +4581,11 @@ function prefillShishaForm(data, linkedFlavors = []) {
         if (standardRatios.includes(data.premixedRatio)) {
             updateShishaPremixedRatio(data.premixedRatio);
         } else {
-            updateShishaPremixedRatio('custom');
+            // DŮLEŽITÉ: Nejdříve nastavit hodnotu VG, pak teprve volat updateShishaPremixedRatio
             const parts = data.premixedRatio.split('/');
             const vgEl = document.getElementById('shCustomPremixedVg');
             if (vgEl) vgEl.value = parseInt(parts[0]) || 70;
+            updateShishaPremixedRatio('custom');
             updateShishaCustomPremixedPg();
         }
     } else {
@@ -5744,9 +5746,16 @@ function displayProductDetail(product, linkedRecipes = []) {
     let flavorParamsHtml = '';
     if (product.product_type === 'flavor') {
         // Získat parametry z produktu nebo z připojených flavor dat
-        const minPercent = product.flavor_min_percent || product.min_percent || null;
-        const maxPercent = product.flavor_max_percent || product.max_percent || null;
-        const steepDays = product.flavor_steep_days || product.steep_days || null;
+        // OPRAVA: Použít explicitní kontrolu pro hodnotu 0 (která je validní)
+        const minPercent = (product.flavor_min_percent !== undefined && product.flavor_min_percent !== null) 
+            ? product.flavor_min_percent 
+            : ((product.min_percent !== undefined && product.min_percent !== null) ? product.min_percent : null);
+        const maxPercent = (product.flavor_max_percent !== undefined && product.flavor_max_percent !== null) 
+            ? product.flavor_max_percent 
+            : ((product.max_percent !== undefined && product.max_percent !== null) ? product.max_percent : null);
+        const steepDays = (product.flavor_steep_days !== undefined && product.flavor_steep_days !== null) 
+            ? product.flavor_steep_days 
+            : ((product.steep_days !== undefined && product.steep_days !== null) ? product.steep_days : null);
         const manufacturer = product.flavor_manufacturer || product.manufacturer || null;
         const productCode = product.product_code || null;
         
