@@ -821,6 +821,22 @@ async function saveFavoriteProduct(clerkId, product) {
         created_at: new Date().toISOString()
     };
     
+    // Přidat flavor-specifická data pokud jde o příchuť
+    if (productType === 'flavor') {
+        if (product.manufacturer) {
+            productData.manufacturer = sanitizeInput(product.manufacturer);
+        }
+        if (product.flavor_category) {
+            productData.flavor_category = sanitizeInput(product.flavor_category);
+        }
+        if (product.flavor_product_type) {
+            productData.flavor_product_type = sanitizeInput(product.flavor_product_type);
+        }
+        if (product.steep_days !== undefined) {
+            productData.steep_days = Math.min(Math.max(parseInt(product.steep_days) || 0, 0), 365);
+        }
+    }
+    
     try {
         const { data, error } = await supabaseClient
             .from('favorite_products')
