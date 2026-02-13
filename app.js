@@ -1898,8 +1898,22 @@ window.addEventListener('load', async function() {
             }
             
             // Listen for auth changes (OAuth callback, sign in/out)
+            // Guard pro detekci skutečné změny uživatele vs. pouhého token refresh
+            let lastAuthUserId = window.Clerk.user?.id || null;
+            
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
+                
+                const currentUserId = window.Clerk.user?.id || null;
+                
+                // Pokud se nezměnil user (jen token refresh), přeskočit plnou re-inicializaci
+                if (currentUserId === lastAuthUserId && currentUserId !== null) {
+                    console.log('Clerk: Token refresh only, skipping full re-init');
+                    return;
+                }
+                
+                // Aktualizovat lastAuthUserId
+                lastAuthUserId = currentUserId;
 
                 // Zpracovat přihlášení uživatele
                 if (window.Clerk.user) {
@@ -3341,21 +3355,23 @@ function getSelectedRecipeFlavors() {
             let flavorId = null;
             let favoriteProductId = null;
             
-            // Přednostně použít explicitní favoriteProductId pokud existuje
+            // OPRAVA: Správně rozlišit flavor_id (veřejná DB) vs favorite_product_id (uživatelské oblíbené)
+            // flavorId je VŽDY UUID z veřejné tabulky 'flavors'
+            // favoriteProductId je VŽDY UUID z tabulky 'favorite_products' (uživatelské)
+            
+            // 1. Přednostně použít explicitní favoriteProductId pokud existuje
             if (data.favoriteProductId) {
                 favoriteProductId = data.favoriteProductId;
-                // Pokud má i flavorId (veřejná DB), uložit také
-                if (data.flavorId) {
-                    flavorId = data.flavorId;
-                }
-            } else if (data.flavorId) {
-                // Fallback na starou logiku
-                if (data.flavorSource === 'favorite') {
-                    favoriteProductId = data.flavorId;
-                } else {
-                    flavorId = data.flavorId;
-                }
             }
+            
+            // 2. flavorId je vždy z veřejné databáze - NIKDY ho nepoužívat jako favoriteProductId
+            if (data.flavorId) {
+                flavorId = data.flavorId;
+            }
+            
+            // Poznámka: Pokud máme pouze flavorId a source je 'favorite', znamená to že
+            // oblíbená příchuť byla vytvořena z veřejné DB - linkFlavorsToRecipe to vyřeší
+            // vyhledáním existujícího záznamu v favorite_products podle flavor_id
             
             flavors.push({
                 position: index + 1,
@@ -10371,6 +10387,9 @@ function updateProTotalFlavorPercent() {
         }
     }
     
+    // OPRAVA: Zaokrouhlit na 2 desetinná místa
+    total = Math.round(total * 100) / 100;
+    
     const totalEl = document.getElementById('proTotalFlavorPercent');
     const warningEl = document.getElementById('proFlavorTotalWarning');
     
@@ -15416,6 +15435,9 @@ function updateShishaTotalFlavorPercent() {
             total += parseFloat(slider.value) || 0;
         }
     }
+    
+    // OPRAVA: Zaokrouhlit na 2 desetinná místa
+    total = Math.round(total * 100) / 100;
     
     const totalDisplay = document.getElementById('shTotalFlavorPercent');
     const warningDisplay = document.getElementById('shFlavorTotalWarning');
