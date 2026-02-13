@@ -1734,7 +1734,13 @@ function calculateActualVgPgRatio(formType) {
     
     // Total VG
     const totalVg = vgFromNicotine + vgFromFlavor + vgFromBase;
-    const actualVgPercent = Math.round((totalVg / totalAmount) * 100);
+    
+    // OPRAVA: Dělit VG+PG objemem, ne celkovým objemem
+    // extraNonVgPgVolume obsahuje složky které nejsou VG ani PG (sladidlo, voda, aditiva s alkoholem)
+    const vgPgVolume = totalAmount - extraNonVgPgVolume;
+    const actualVgPercent = vgPgVolume > 0 
+        ? Math.round((totalVg / vgPgVolume) * 100)
+        : Math.round((totalVg / totalAmount) * 100);
     const clampedVg = Math.max(0, Math.min(100, actualVgPercent));
     
     // For shisha, return object with actualVg
@@ -15970,6 +15976,9 @@ function updateShishaVgPgLimits() {
     
     let minVgPercent, maxVgPercent;
     
+    // OPRAVA: VG+PG objem = celkový objem mínus složky které nejsou VG ani PG
+    const vgPgVolume = totalAmount - sweetenerVolume - waterVolume;
+    
     if (baseType === 'premixed' && remainingVolume > 0) {
         // PREMIXED režim - limity jsou ovlivněny poměrem báze
         let premixedVgPercent;
@@ -15981,12 +15990,14 @@ function updateShishaVgPgLimits() {
         }
         
         // S doladěním můžeme dosáhnout rozsahu od fixedVg do fixedVg + remainingVolume
-        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
-        maxVgPercent = Math.floor(((fixedVgVolume + remainingVolume) / totalAmount) * 100);
+        // OPRAVA: Dělit vgPgVolume místo totalAmount
+        minVgPercent = vgPgVolume > 0 ? Math.ceil((fixedVgVolume / vgPgVolume) * 100) : 0;
+        maxVgPercent = vgPgVolume > 0 ? Math.floor(((fixedVgVolume + remainingVolume) / vgPgVolume) * 100) : 100;
     } else {
         // SEPARATE režim - původní logika
-        minVgPercent = Math.ceil((fixedVgVolume / totalAmount) * 100);
-        maxVgPercent = Math.floor(100 - (fixedPgVolume / totalAmount) * 100);
+        // OPRAVA: Dělit vgPgVolume místo totalAmount
+        minVgPercent = vgPgVolume > 0 ? Math.ceil((fixedVgVolume / vgPgVolume) * 100) : 0;
+        maxVgPercent = vgPgVolume > 0 ? Math.floor(100 - (fixedPgVolume / vgPgVolume) * 100) : 100;
     }
     
     shVgPgLimits.min = Math.max(0, minVgPercent);
@@ -16127,10 +16138,13 @@ function calculateShishaMix() {
     const usedVolume = nicotineVolume + totalFlavorVolume + sweetenerVolume + waterVolume;
     const baseVolume = totalAmount - usedVolume;
     
+    // OPRAVA: VG+PG objem = celkový objem mínus složky které nejsou VG ani PG
+    const vgPgVolume = totalAmount - sweetenerVolume - waterVolume;
+    
     // Calculate VG and PG needed from base
-    // Target VG/PG minus what we already have from nicotine, flavors
-    const targetVgVolume = (vgPercent / 100) * totalAmount;
-    const targetPgVolume = (pgPercent / 100) * totalAmount;
+    // Target VG/PG z VG+PG objemu (ne z celkového objemu)
+    const targetVgVolume = (vgPercent / 100) * vgPgVolume;
+    const targetPgVolume = (pgPercent / 100) * vgPgVolume;
     
     // VG/PG already provided by nicotine and flavors
     const providedVg = nicotineVgVolume + totalFlavorVgVolume;
