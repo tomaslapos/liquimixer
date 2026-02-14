@@ -1,7 +1,7 @@
 {
-  "name": "LiquiMixer - Profesionální E-liquid Kalkulátor",
+  "name": "LiquiMixer - E-liquid & Shisha Kalkulátor | DIY Vape Mixing",
   "short_name": "LiquiMixer",
-  "description": "Profesionální kalkulátor pro míchání e-liquidů. Přesné výpočty nikotinu, PG/VG poměru a až 4 příchutí v Liquid PRO režimu. Sdílení receptů, oblíbené produkty, připomínky zrání. Online nástroj ve 31 jazycích.",
+  "description": "Nejjednodušší kalkulátor pro míchání e-liquidů a shisha melasy. Ideální pro začátečníky i pokročilé. Výpočet nikotinu, PG/VG, shortfill, Shake & Vape, hookah. 5000+ příchutí, 230+ receptů, offline režim, 31 jazyků. Ušetřete až 80% nákladů na vapování!",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
@@ -54,7 +54,7 @@
       "label": "LiquiMixer - E-liquid Calculator Mobile View"
     }
   ],
-  "categories": ["utilities", "lifestyle", "productivity"],
+  "categories": ["utilities", "lifestyle", "productivity", "health-fitness"],
   "iarc_rating_id": "",
   "shortcuts": [
     {
@@ -83,6 +83,13 @@
       "short_name": "Produkty",
       "description": "Správa oblíbených příchutí a bází",
       "url": "/?action=products",
+      "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Shisha / Hookah",
+      "short_name": "Shisha",
+      "description": "Kalkulátor pro míchání shisha melasy a hookah směsí",
+      "url": "/?action=shisha",
       "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]
     }
   ],
