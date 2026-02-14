@@ -146,6 +146,7 @@ async function getAccessToken(serviceAccount: any): Promise<string> {
 }
 
 // Send notification using FCM V1 API
+// Returns: 'sent' | 'not_found' | 'error'
 async function sendNotification(
   accessToken: string,
   projectId: string,
@@ -153,7 +154,7 @@ async function sendNotification(
   title: string,
   body: string,
   data?: Record<string, string>
-): Promise<boolean> {
+): Promise<'sent' | 'not_found' | 'error'> {
   const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
   const message = {
@@ -187,15 +188,23 @@ async function sendNotification(
     const responseData = await response.json();
 
     if (!response.ok) {
+      // Check if token is invalid/expired (NOT_FOUND or UNREGISTERED)
+      const errorStatus = responseData?.error?.status || '';
+      const errorMessage = responseData?.error?.message || '';
+      if (response.status === 404 || errorStatus === 'NOT_FOUND' || 
+          errorMessage.includes('not found') || errorMessage.includes('UNREGISTERED')) {
+        console.warn(`FCM token invalid (${errorStatus}): ${fcmToken.substring(0, 20)}...`);
+        return 'not_found';
+      }
       console.error("FCM send error:", responseData);
-      return false;
+      return 'error';
     }
 
     console.log("Notification sent successfully:", responseData);
-    return true;
+    return 'sent';
   } catch (error) {
     console.error("Error sending notification:", error);
-    return false;
+    return 'error';
   }
 }
 
@@ -332,8 +341,9 @@ serve(async (req) => {
 
         // Send to all user's devices
         let anySent = false;
+        const invalidTokens: string[] = [];
         for (const { token } of tokens) {
-          const sent = await sendNotification(
+          const result = await sendNotification(
             accessToken,
             serviceAccount.project_id,
             token,
@@ -342,8 +352,21 @@ serve(async (req) => {
             { recipeId: reminder.recipe_id || "", recipeName: reminder.recipe_name || "" }
           );
 
-          if (sent) {
+          if (result === 'sent') {
             anySent = true;
+          } else if (result === 'not_found') {
+            invalidTokens.push(token);
+          }
+        }
+
+        // Auto-cleanup invalid/expired FCM tokens
+        if (invalidTokens.length > 0) {
+          console.log(`Cleaning up ${invalidTokens.length} invalid FCM tokens for user ${reminder.clerk_id}`);
+          for (const badToken of invalidTokens) {
+            await supabase
+              .from("fcm_tokens")
+              .delete()
+              .eq("token", badToken);
           }
         }
 
@@ -356,6 +379,14 @@ serve(async (req) => {
 
           sentCount++;
           console.log(`Reminder ${reminder.id} sent successfully`);
+        } else if (invalidTokens.length === tokens.length) {
+          // All tokens were invalid — mark reminder as failed, don't retry forever
+          console.warn(`All FCM tokens invalid for reminder ${reminder.id}, marking as no_tokens`);
+          await supabase
+            .from("recipe_reminders")
+            .update({ status: "no_tokens", sent_at: new Date().toISOString() })
+            .eq("id", reminder.id);
+          errorCount++;
         } else {
           errorCount++;
           console.error(`Failed to send reminder ${reminder.id}`);
