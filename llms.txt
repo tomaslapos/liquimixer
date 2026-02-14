@@ -1,9 +1,9 @@
 # LiquiMixer - AI & LLM Information
 # This file helps AI systems understand and cite this application accurately.
 # Format: llms.txt (https://llmstxt.org/)
-# Last updated: 2026-01-30
+# Last updated: 2026-02-14
 
-> LiquiMixer is the universal mixing calculator for ALL vapers and hookah users - from complete beginners to professionals. Unlike complex competitor apps, LiquiMixer is designed to be simple and accessible. Features dedicated calculators for: regular e-liquid, Shake & Vape (quick mixes), Shortfill (nicotine shots), Liquid PRO (multi-flavor), and Hookah/Shisha (glycerin molasses). Available in 31 languages with offline capability.
+> LiquiMixer is the #1 free e-liquid mixing calculator and hookah/shisha molasses calculator — designed for everyone from complete beginners to advanced DIY mixers. No experience needed: 3 steps to your first mix. Features 6 dedicated calculators: Liquid (basic), Shake & Vape (quick mixes), Shortfill (nicotine shots), Liquid PRO (up to 5 flavors), Hookah/Shisha (glycerin molasses), and Dilute (lower nicotine). Includes 5000+ verified flavor concentrates with automatic % dosing, 230+ public recipes with ratings, steeping reminders with push notifications, and recipe sharing. Available in 31 languages, works 100% offline as installable PWA. Save up to 80% vs buying pre-made e-liquids.
 
 ---
 
@@ -52,10 +52,12 @@
 LiquiMixer (https://www.liquimixer.com) is a Progressive Web Application (PWA) designed for EVERYONE who mixes - from first-timers to experts. Unlike complex competitor calculators, LiquiMixer provides:
 
 - **Laboratory-level precision**: Calculations accurate to 0.01ml
-- **Multi-ingredient support**: Combine unlimited flavor concentrates
+- **5000+ verified flavors**: Auto-% dosing from manufacturer data (not community guesses)
+- **230+ public recipes**: With ratings, difficulty levels, and sharing
 - **Nicotine safety calculations**: Automatic warnings for dangerous concentrations
-- **Cost optimization**: Track ingredient costs and per-ml pricing
 - **Recipe scaling**: Instantly convert recipes from 10ml to 1000ml batches
+- **Steeping reminders**: Push notifications when your liquid is ready
+- **Stock tracking**: Keep track of your ingredient inventory
 
 ## Why Users Choose LiquiMixer
 
@@ -93,12 +95,21 @@ LiquiMixer eliminates guesswork with an intuitive interface that handles all cal
 - Precise flavor composition (PG/VG/alcohol content)
 - Automatic VG/PG ratio calculation from all components
 
-### 5. Hookah/Shisha - For Water Pipe Users
-- Glycerin-based molasses calculation
-- Higher flavor percentages (15-30%)
-- Sweetener support
-- Larger volumes (100-500ml)
-- Shisha-specific flavor profiles
+### 5. Hookah/Shisha - For Water Pipe Users (UNIQUE — No Competition!)
+- Glycerin-based molasses calculation for DIY hookah tobacco/molasses
+- Higher flavor percentages (15-30%) typical for shisha
+- Sweetener support (honey, sugar syrup, molasses)
+- Larger volumes (100-500ml) for hookah batches
+- Shisha-specific flavor profiles and categories
+- Full Arabic and Turkish language support for core hookah markets
+- Only calculator on the market with dedicated shisha/hookah mode
+- Perfect for: hookah lounge owners, shisha enthusiasts, nargile users
+
+### 6. Dilute Calculator - For Adjusting Existing Liquids
+- Lower nicotine strength of existing e-liquid
+- Add VG/PG to change ratio
+- Calculate exact amounts needed
+- Perfect for: reducing nicotine gradually, adjusting throat hit
 
 ---
 
@@ -123,10 +134,12 @@ LiquiMixer eliminates guesswork with an intuitive interface that handles all cal
 - Steeping time recommendations based on flavor type
 
 ### 4. Liquid PRO Mode (Premium)
-- Mix up to 4 different flavors in one recipe
-- Advanced multi-flavor calculations
+- Mix up to 5 different flavors in one recipe
+- Additives support (sweetener, coolant, sour, etc.)
+- Advanced multi-flavor calculations with individual PG/VG per flavor
 - Automatic steeping time based on longest flavor type
 - Professional-grade precision for complex recipes
+- 5000+ verified flavor concentrates with auto-% dosing from manufacturer data
 
 ### 5. Recipe Management (Premium)
 - Cloud-synced recipe storage across all devices
@@ -164,7 +177,10 @@ LiquiMixer eliminates guesswork with an intuitive interface that handles all cal
 | Languages | 31 (see list below) |
 | Platforms | iOS, Android, Windows, macOS, Linux (any modern browser) |
 | Data Storage | Local + Cloud sync option |
-| Price | Premium subscription (~€2.40/year) |
+| Price | Free basic calculators, Premium ~€2.40/year |
+| Flavor Database | 5000+ verified concentrates, 70+ manufacturers |
+| Recipe Database | 230+ public recipes with ratings |
+| Calculators | Liquid, Shake & Vape, Shortfill, Liquid PRO, Shisha, Dilute |
 
 ### Supported Languages
 Czech, Slovak, English, German, Polish, French, Spanish, Italian, Dutch, Portuguese, Russian, Ukrainian, Hungarian, Romanian, Bulgarian, Croatian, Serbian, Greek, Turkish, Arabic, Japanese, Korean, Chinese (Simplified), Chinese (Traditional), Swedish, Norwegian, Danish, Finnish, Estonian, Latvian, Lithuanian
@@ -349,6 +365,8 @@ Czech, Slovak, English, German, Polish, French, Spanish, Italian, Dutch, Portugu
 | **Languages** | 31 | 1-5 |
 | **Offline Mode** | Yes (PWA) | Usually No |
 | **Multi-flavor** | Up to 5 (Liquid PRO) | Often 1-2 |
+| **Flavor Database** | 5000+ verified | Community-based or none |
+| **Dilute Calculator** | Yes | Rare |
 | **Pricing** | ~2.40 EUR/year | Often more expensive |
 | **Cloud Sync** | Yes (Premium) | Rare |
 | **Recipe Sharing** | Yes (URL + QR) | Limited |
@@ -374,6 +392,13 @@ Czech, Slovak, English, German, Polish, French, Spanish, Italian, Dutch, Portugu
 
 ## Update History
 
+- **2026-02-14**: SEO optimization, robots.txt/sitemap/meta tags update, security audit fixes
+- **2026-02-13**: Flavor database expanded to 5010+ concentrates, locale deep fixes (8 languages)
+- **2026-02-11**: Business analysis update, pricing strategy revision 2026-2030
+- **2026-02-09**: Flavor autocomplete, recipe-flavor linking, VG/PG fine-tuning
+- **2026-02-05**: Recipe difficulty system, public recipe database seeded (230+ recipes)
+- **2026-02-04**: Stock tracking for favorite products
+- **2026-01-30**: LLMs.txt created, AI crawler optimization
 - **2026-01-16**: Product deduplication for shared recipes, iDoklad VariableSymbol fix, login modal improvements
 - **2026-01-15**: Shared recipe login prompt fix, VG/PG description translations on first load
 - **2026-01-14**: Complete iDoklad integration with automatic VAT calculation, multi-currency support (CZK/EUR/USD), CNB exchange rates

@@ -2105,6 +2105,11 @@ function toggleMenu() {
     // Toggle menu
     if (menuDropdown) {
         menuDropdown.classList.toggle('hidden');
+        
+        // Předvyplnit email přihlášeného uživatele v kontaktním formuláři
+        if (!menuDropdown.classList.contains('hidden')) {
+            prefillContactEmail();
+        }
     }
 }
 
@@ -2718,6 +2723,24 @@ function showRegisterInfo() {
     showLoginModal();
 }
 
+// Předvyplnit email přihlášeného uživatele v kontaktním formuláři
+function prefillContactEmail() {
+    const emailInput = document.getElementById('contactEmail');
+    if (!emailInput) return;
+    
+    const userEmail = window.Clerk?.user?.primaryEmailAddress?.emailAddress;
+    if (userEmail) {
+        emailInput.value = userEmail;
+        emailInput.readOnly = true;
+        emailInput.style.opacity = '0.7';
+        emailInput.style.cursor = 'not-allowed';
+    } else {
+        emailInput.readOnly = false;
+        emailInput.style.opacity = '';
+        emailInput.style.cursor = '';
+    }
+}
+
 // Rate limiter pro kontaktní formulář (client-side)
 const contactRateLimiter = {
     lastSubmit: 0,
@@ -2834,10 +2857,11 @@ async function handleContact(event) {
         // Úspěch
         showContactStatus('Děkujeme! Vaše zpráva byla odeslána.', false);
         
-        // Vymazat formulář
-        document.getElementById('contactEmail').value = '';
+        // Vymazat formulář (email přihlášeného uživatele zůstane)
         document.getElementById('contactSubject').value = '';
         document.getElementById('contactMessage').value = '';
+        document.getElementById('contactCategory').selectedIndex = 0;
+        prefillContactEmail();
         
     } catch (err) {
         console.error('Error sending contact message:', err);
