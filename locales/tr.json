@@ -507,7 +507,9 @@
     "load_error": "Ürün yüklenirken hata.",
     "deleted": "Ürün silindi.",
     "delete_error": "Ürün silinirken hata.",
-    "stock_unit": "adet"
+    "stock_unit": "adet",
+    "no_filter_results": "Filtrelere uyan ürün bulunamadı.",
+    "filter_results": "{total} üründen {found} tanesi bulundu."
   },
   "product_detail": {
     "title": "Ürün Ayrıntıları",

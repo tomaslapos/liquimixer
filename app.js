@@ -5555,10 +5555,10 @@ function filterProducts() {
     if (resultsInfo) {
         if (searchText || searchType || searchRatingFilter > 0) {
             if (filtered.length === 0) {
-                resultsInfo.textContent = 'Žádné produkty neodpovídají filtrům.';
+                resultsInfo.textContent = t('products.no_filter_results', 'No products match the filters.');
                 resultsInfo.className = 'search-results-info no-results';
             } else {
-                resultsInfo.textContent = `Nalezeno ${filtered.length} z ${allUserProducts.length} produktů.`;
+                resultsInfo.textContent = t('products.filter_results', 'Found {found} of {total} products.').replace('{found}', filtered.length).replace('{total}', allUserProducts.length);
                 resultsInfo.className = 'search-results-info has-results';
             }
         } else {
@@ -5617,7 +5617,7 @@ function renderProductsList(products) {
                             <button type="button" class="stock-btn minus" onclick="updateProductStockUI('${product.id}', -0.5)">−</button>
                             <span class="stock-quantity" id="product-stock-${product.id}">${stockQuantity % 1 === 0 ? stockQuantity : stockQuantity.toFixed(1)}</span>
                             <span class="stock-unit">${t('products.stock_unit', 'ks')}</span>
-                            <button type="button" class="stock-btn plus" onclick="updateProductStockUI('${product.id}', +0.5)">+</button>
+                            <button type="button" class="stock-btn plus" onclick="updateProductStockUI('${product.id}', +1)">+</button>
                         </div>
                     </div>
                 </div>
@@ -5877,7 +5877,7 @@ function displayProductDetail(product, linkedRecipes = []) {
                 <button type="button" class="stock-btn minus large" onclick="updateProductStockUI('${product.id}', -0.5)">−</button>
                 <span class="stock-quantity large" id="product-stock-${product.id}">${stockDisplay}</span>
                 <span class="stock-unit">${t('products.stock_unit', 'ks')}</span>
-                <button type="button" class="stock-btn plus large" onclick="updateProductStockUI('${product.id}', +0.5)">+</button>
+                <button type="button" class="stock-btn plus large" onclick="updateProductStockUI('${product.id}', +1)">+</button>
             </div>
         </div>
         ${urlHtml}
@@ -6072,7 +6072,7 @@ function showAddProductForm() {
 }
 
 // Upravit produkt
-function editProduct() {
+async function editProduct() {
     if (!currentViewingProduct) return;
     
     document.getElementById('productFormTitle').textContent = t('product_form.edit_title', 'Upravit produkt');
@@ -6108,6 +6108,9 @@ function editProduct() {
     if (currentViewingProduct.product_type === 'flavor') {
         toggleFlavorFields();
         
+        // Počkat na načtení výrobců do dropdownu (async operace)
+        await initFlavorManufacturersSelect();
+        
         // Předvyplnit hodnoty podformulář příchutě
         const flavorProductType = document.getElementById('productFlavorProductType');
         if (flavorProductType) {
@@ -6137,30 +6140,27 @@ function editProduct() {
         // Nastavit výrobce v selectu - použít manufacturer_code nebo najít podle názvu
         const flavorManufacturer = document.getElementById('productFlavorManufacturer');
         if (flavorManufacturer && currentViewingProduct.manufacturer) {
-            // Počkat na načtení výrobců a pak nastavit hodnotu
-            setTimeout(() => {
-                const manufacturerValue = currentViewingProduct.manufacturer;
-                let found = false;
-                
-                // 1. Zkusit přímou shodu s option.value (manufacturer_code)
+            const manufacturerValue = currentViewingProduct.manufacturer;
+            let found = false;
+            
+            // 1. Zkusit přímou shodu s option.value (manufacturer_code)
+            for (let option of flavorManufacturer.options) {
+                if (option.value === manufacturerValue) {
+                    flavorManufacturer.value = option.value;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // 2. Fallback: hledat podle názvu v textContent
+            if (!found) {
                 for (let option of flavorManufacturer.options) {
-                    if (option.value === manufacturerValue) {
+                    if (option.textContent.toLowerCase().includes(manufacturerValue.toLowerCase())) {
                         flavorManufacturer.value = option.value;
-                        found = true;
                         break;
                     }
                 }
-                
-                // 2. Fallback: hledat podle názvu v textContent
-                if (!found) {
-                    for (let option of flavorManufacturer.options) {
-                        if (option.textContent.toLowerCase().includes(manufacturerValue.toLowerCase())) {
-                            flavorManufacturer.value = option.value;
-                            break;
-                        }
-                    }
-                }
-            }, 100);
+            }
         }
     }
     

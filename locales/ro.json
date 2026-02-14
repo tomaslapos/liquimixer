@@ -507,7 +507,9 @@
     "load_error": "Eroare la încărcarea produsului.",
     "deleted": "Produsul a fost șters.",
     "delete_error": "Eroare la ștergerea produsului.",
-    "stock_unit": "buc"
+    "stock_unit": "buc",
+    "no_filter_results": "Niciun produs nu corespunde filtrelor.",
+    "filter_results": "Găsite {found} din {total} produse."
   },
   "product_detail": {
     "title": "Detalii produs",

@@ -351,7 +351,7 @@
     "table_grams": "Gram",
     "component_nicotine_booster": "Nicotine Booster",
     "component_nicotine_salt": "Nicotinezout",
-    "component_flavor": "Smaak",
+    "component_flavor": "Aroma",
     "component_vg": "VG (Glycerine)",
     "component_pg": "PG (Propyleenglycol)",
     "notes_title": "Mengnotities:",
@@ -496,7 +496,7 @@
     "type_all": "Alle typen",
     "type_vg": "VG (Glycerine)",
     "type_pg": "PG (Propyleenglycol)",
-    "type_flavor": "Smaak",
+    "type_flavor": "Aroma",
     "type_nicotine_booster": "Nicotine Booster",
     "type_nicotine_salt": "Nicotinezout",
     "no_products": "Je hebt nog geen favoriete producten.",
@@ -507,7 +507,9 @@
     "load_error": "Fout bij laden van product.",
     "deleted": "Product is verwijderd.",
     "delete_error": "Fout bij verwijderen van product.",
-    "stock_unit": "st"
+    "stock_unit": "st",
+    "no_filter_results": "Geen producten komen overeen met de filters.",
+    "filter_results": "{found} van {total} producten gevonden."
   },
   "product_detail": {
     "title": "Productdetails",

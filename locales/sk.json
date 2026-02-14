@@ -516,7 +516,9 @@
     "load_error": "Chyba pri načítaní produktu.",
     "deleted": "Produkt bol zmazaný.",
     "delete_error": "Chyba pri mazaní produktu.",
-    "stock_unit": "ks"
+    "stock_unit": "ks",
+    "no_filter_results": "Žiadne produkty nezodpovedajú filtrom.",
+    "filter_results": "Nájdených {found} z {total} produktov."
   },
   "product_detail": {
     "title": "Detail produktu",

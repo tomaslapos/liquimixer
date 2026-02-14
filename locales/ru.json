@@ -507,7 +507,9 @@
     "load_error": "Ошибка загрузки продукта.",
     "deleted": "Продукт удален.",
     "delete_error": "Ошибка удаления продукта.",
-    "stock_unit": "шт"
+    "stock_unit": "шт",
+    "no_filter_results": "Нет продуктов, соответствующих фильтрам.",
+    "filter_results": "Найдено {found} из {total} продуктов."
   },
   "product_detail": {
     "title": "Детали продукта",

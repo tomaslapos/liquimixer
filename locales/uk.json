@@ -84,7 +84,7 @@
     "title": "База рецептів",
     "filters": "Фільтри",
     "filter_method": "Спосіб приготування",
-    "filter_flavor": "Тип смаку",
+    "filter_flavor": "Тип аромату",
     "filter_vg_pg": "Співвідношення VG/PG",
     "filter_nicotine": "Міцність нікотину",
     "filter_has_additive": "Тільки з добавками",
@@ -507,7 +507,9 @@
     "load_error": "Помилка завантаження продукту.",
     "deleted": "Продукт видалено.",
     "delete_error": "Помилка видалення продукту.",
-    "stock_unit": "шт."
+    "stock_unit": "шт",
+    "no_filter_results": "Жодні продукти не відповідають фільтрам.",
+    "filter_results": "Знайдено {found} з {total} продуктів."
   },
   "product_detail": {
     "title": "Деталі продукту",

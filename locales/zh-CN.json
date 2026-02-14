@@ -507,7 +507,9 @@
     "load_error": "加载产品出错。",
     "deleted": "产品已删除。",
     "delete_error": "删除产品出错。",
-    "stock_unit": "件"
+    "stock_unit": "件",
+    "no_filter_results": "没有产品符合筛选条件。",
+    "filter_results": "找到 {found} / {total} 个产品。"
   },
   "product_detail": {
     "title": "产品详情",

@@ -84,7 +84,7 @@
     "title": "Retseptide andmebaas",
     "filters": "Filtrid",
     "filter_method": "Valmistamise meetod",
-    "filter_flavor": "Maitse tüüp",
+    "filter_flavor": "Aroomi tüüp",
     "filter_vg_pg": "VG/PG suhe",
     "filter_nicotine": "Nikotiini tugevus",
     "filter_has_additive": "Ainult lisanditega",
@@ -351,7 +351,7 @@
     "table_grams": "Grammid",
     "component_nicotine_booster": "Nikotiinibooster",
     "component_nicotine_salt": "Nikotiinisool",
-    "component_flavor": "Maitse",
+    "component_flavor": "Aroom",
     "component_vg": "VG (glütseriin)",
     "component_pg": "PG (propüleenglükool)",
     "notes_title": "Segamise märkmed:",
@@ -496,7 +496,7 @@
     "type_all": "Kõik tüübid",
     "type_vg": "VG (glütseriin)",
     "type_pg": "PG (propüleenglükool)",
-    "type_flavor": "Maitse",
+    "type_flavor": "Aroom",
     "type_nicotine_booster": "Nikotiinibooster",
     "type_nicotine_salt": "Nikotiinisool",
     "no_products": "Sul pole veel lemmiktooteid.",
@@ -507,7 +507,9 @@
     "load_error": "Viga toote laadimisel.",
     "deleted": "Toode kustutatud.",
     "delete_error": "Viga toote kustutamisel.",
-    "stock_unit": "tk"
+    "stock_unit": "tk",
+    "no_filter_results": "Ükski toode ei vasta filtritele.",
+    "filter_results": "Leitud {found} / {total} toodet."
   },
   "product_detail": {
     "title": "Toote üksikasjad",

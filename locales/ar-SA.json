@@ -508,7 +508,9 @@
     "load_error": "خطأ في تحميل المنتج.",
     "deleted": "تم حذف المنتج.",
     "delete_error": "خطأ في حذف المنتج.",
-    "stock_unit": "قطعة"
+    "stock_unit": "قطعة",
+    "no_filter_results": "لا توجد منتجات تطابق الفلاتر.",
+    "filter_results": "تم العثور على {found} من {total} منتج."
   },
   "product_detail": {
     "title": "تفاصيل المنتج",

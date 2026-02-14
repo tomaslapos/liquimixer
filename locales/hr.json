@@ -84,7 +84,7 @@
     "title": "Baza recepata",
     "filters": "Filteri",
     "filter_method": "Način pripreme",
-    "filter_flavor": "Vrsta okusa",
+    "filter_flavor": "Vrsta arome",
     "filter_vg_pg": "Omjer VG/PG",
     "filter_nicotine": "Jačina nikotina",
     "filter_has_additive": "Samo s aditivima",
@@ -351,7 +351,7 @@
     "table_grams": "Grami",
     "component_nicotine_booster": "Nikotinski pojačivač",
     "component_nicotine_salt": "Nikotinska sol",
-    "component_flavor": "Okus",
+    "component_flavor": "Aroma",
     "component_vg": "VG (Glicerin)",
     "component_pg": "PG (Propilen glikol)",
     "notes_title": "Napomene za miješanje:",
@@ -496,7 +496,7 @@
     "type_all": "Svi tipovi",
     "type_vg": "VG (Glicerin)",
     "type_pg": "PG (Propilen glikol)",
-    "type_flavor": "Okus",
+    "type_flavor": "Aroma",
     "type_nicotine_booster": "Nikotinski pojačivač",
     "type_nicotine_salt": "Nikotinska sol",
     "no_products": "Još nemate omiljenih proizvoda.",
@@ -507,7 +507,9 @@
     "load_error": "Greška pri učitavanju proizvoda.",
     "deleted": "Proizvod je obrisan.",
     "delete_error": "Greška pri brisanju proizvoda.",
-    "stock_unit": "kom"
+    "stock_unit": "kom",
+    "no_filter_results": "Nijedan proizvod ne odgovara filterima.",
+    "filter_results": "Pronađeno {found} od {total} proizvoda."
   },
   "product_detail": {
     "title": "Detalji proizvoda",

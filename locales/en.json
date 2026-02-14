@@ -502,7 +502,9 @@
     "load_error": "Error loading product.",
     "deleted": "Product has been deleted.",
     "delete_error": "Error deleting product.",
-    "stock_unit": "pcs"
+    "stock_unit": "pcs",
+    "no_filter_results": "No products match the filters.",
+    "filter_results": "Found {found} of {total} products."
   },
   "product_detail": {
     "title": "Product Detail",

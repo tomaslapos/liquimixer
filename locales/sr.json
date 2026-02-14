@@ -84,7 +84,7 @@
     "title": "База рецепата",
     "filters": "Филтери",
     "filter_method": "Начин припреме",
-    "filter_flavor": "Врста укуса",
+    "filter_flavor": "Врста ароме",
     "filter_vg_pg": "Однос VG/PG",
     "filter_nicotine": "Јачина никотина",
     "filter_has_additive": "Само са адитивима",
@@ -351,7 +351,7 @@
     "table_grams": "Грами",
     "component_nicotine_booster": "Никотински бустер",
     "component_nicotine_salt": "Никотинска со",
-    "component_flavor": "Укус",
+    "component_flavor": "Арома",
     "component_vg": "VG (Глицерин)",
     "component_pg": "PG (Пропилен гликол)",
     "notes_title": "Напомене за мешање:",
@@ -496,7 +496,7 @@
     "type_all": "Сви типови",
     "type_vg": "VG (Глицерин)",
     "type_pg": "PG (Пропилен гликол)",
-    "type_flavor": "Укус",
+    "type_flavor": "Арома",
     "type_nicotine_booster": "Никотински бустер",
     "type_nicotine_salt": "Никотинска со",
     "no_products": "Још немате омиљених производа.",
@@ -507,7 +507,9 @@
     "load_error": "Грешка при учитавању производа.",
     "deleted": "Производ је обрисан.",
     "delete_error": "Грешка при брисању производа.",
-    "stock_unit": "ком"
+    "stock_unit": "ком",
+    "no_filter_results": "Ниједан производ не одговара филтерима.",
+    "filter_results": "Пронађено {found} од {total} производа."
   },
   "product_detail": {
     "title": "Детаљи производа",

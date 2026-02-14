@@ -11,6 +11,52 @@ import {
   rateLimitResponse 
 } from '../_shared/cors.ts'
 
+// Localized notification messages for all 31 supported languages
+const NOTIFICATION_TEXTS: Record<string, { title: string; body: (flavor: string, date: string) => string; unknownFlavor: string }> = {
+  cs: { title: '\u{1F9EA} Váš liquid je vyzrálý!', body: (f, d) => `Váš liquid s příchutí ${f} namíchaný dne ${d} je vyzrálý a připraven.`, unknownFlavor: 'neznámá' },
+  sk: { title: '\u{1F9EA} Váš liquid je vyzretý!', body: (f, d) => `Váš liquid s príchuťou ${f} namiešaný dňa ${d} je vyzretý a pripravený.`, unknownFlavor: 'neznáma' },
+  en: { title: '\u{1F9EA} Your liquid is steeped!', body: (f, d) => `Your liquid with ${f} flavor mixed on ${d} is steeped and ready.`, unknownFlavor: 'unknown' },
+  de: { title: '\u{1F9EA} Ihr Liquid ist gereift!', body: (f, d) => `Ihr Liquid mit ${f} Aroma, gemischt am ${d}, ist gereift und bereit.`, unknownFlavor: 'unbekannt' },
+  fr: { title: '\u{1F9EA} Votre liquide a mûri !', body: (f, d) => `Votre liquide avec l'arôme ${f} mélangé le ${d} a mûri et est prêt.`, unknownFlavor: 'inconnu' },
+  es: { title: '\u{1F9EA} ¡Tu líquido ha madurado!', body: (f, d) => `Tu líquido con aroma ${f} mezclado el ${d} ha madurado y está listo.`, unknownFlavor: 'desconocido' },
+  it: { title: '\u{1F9EA} Il tuo liquido è maturato!', body: (f, d) => `Il tuo liquido con aroma ${f} miscelato il ${d} è maturato e pronto.`, unknownFlavor: 'sconosciuto' },
+  pl: { title: '\u{1F9EA} Twój liquid dojrzał!', body: (f, d) => `Twój liquid z aromatem ${f} zmieszany ${d} dojrzał i jest gotowy.`, unknownFlavor: 'nieznany' },
+  pt: { title: '\u{1F9EA} O seu líquido maturou!', body: (f, d) => `O seu líquido com aroma ${f} misturado em ${d} maturou e está pronto.`, unknownFlavor: 'desconhecido' },
+  nl: { title: '\u{1F9EA} Je liquid is gerijpt!', body: (f, d) => `Je liquid met ${f} aroma gemengd op ${d} is gerijpt en klaar.`, unknownFlavor: 'onbekend' },
+  ru: { title: '\u{1F9EA} Ваш жидкость созрела!', body: (f, d) => `Ваша жидкость с ароматом ${f}, смешанная ${d}, созрела и готова.`, unknownFlavor: 'неизвестный' },
+  uk: { title: '\u{1F9EA} Ваш рідина дозріла!', body: (f, d) => `Ваша рідина з ароматом ${f}, змішана ${d}, дозріла та готова.`, unknownFlavor: 'невідомий' },
+  ja: { title: '\u{1F9EA} リキッドが熟成しました！', body: (f, d) => `${d}に混合した${f}フレーバーのリキッドが熟成し、準備完了です。`, unknownFlavor: '不明' },
+  ko: { title: '\u{1F9EA} 리퀴드가 숙성되었습니다!', body: (f, d) => `${d}에 혼합한 ${f} 향의 리퀴드가 숙성되어 준비되었습니다.`, unknownFlavor: '알 수 없음' },
+  'zh-CN': { title: '\u{1F9EA} 您的烟液已熟化！', body: (f, d) => `您在${d}混合的${f}口味烟液已熟化并准备就绪。`, unknownFlavor: '未知' },
+  'zh-TW': { title: '\u{1F9EA} 您的煙液已熟化！', body: (f, d) => `您在${d}混合的${f}口味煙液已熟化並準備就緒。`, unknownFlavor: '未知' },
+  'ar-SA': { title: '\u{1F9EA} السائل الخاص بك جاهز!', body: (f, d) => `السائل بنكهة ${f} المخلوط في ${d} قد نضج وجاهز.`, unknownFlavor: 'غير معروف' },
+  sv: { title: '\u{1F9EA} Din vätska har mognat!', body: (f, d) => `Din vätska med ${f} arom blandad den ${d} har mognat och är klar.`, unknownFlavor: 'okänd' },
+  da: { title: '\u{1F9EA} Din væske er modnet!', body: (f, d) => `Din væske med ${f} aroma blandet den ${d} er modnet og klar.`, unknownFlavor: 'ukendt' },
+  fi: { title: '\u{1F9EA} Nesteesi on kypsynyt!', body: (f, d) => `${d} sekoitettu ${f}-aromi nesteesi on kypsynyt ja valmis.`, unknownFlavor: 'tuntematon' },
+  no: { title: '\u{1F9EA} Væsken din er modnet!', body: (f, d) => `Væsken din med ${f} aroma blandet den ${d} er modnet og klar.`, unknownFlavor: 'ukjent' },
+  hr: { title: '\u{1F9EA} Vaš liquid je sazrio!', body: (f, d) => `Vaš liquid s aromom ${f} miješan ${d} je sazrio i spreman.`, unknownFlavor: 'nepoznato' },
+  sr: { title: '\u{1F9EA} Ваш liquid је сазрео!', body: (f, d) => `Ваш liquid са аромом ${f} мешан ${d} је сазрео и спреман.`, unknownFlavor: 'непознато' },
+  bg: { title: '\u{1F9EA} Вашият течност узря!', body: (f, d) => `Вашият течност с аромат ${f}, смесен на ${d}, узря и е готов.`, unknownFlavor: 'неизвестен' },
+  ro: { title: '\u{1F9EA} Lichidul tău s-a maturat!', body: (f, d) => `Lichidul tău cu aroma ${f} amestecat pe ${d} s-a maturat și este gata.`, unknownFlavor: 'necunoscut' },
+  lt: { title: '\u{1F9EA} Jūsų skystis subrandino!', body: (f, d) => `Jūsų skystis su ${f} aromatu, sumaišytas ${d}, subrandino ir paruoštas.`, unknownFlavor: 'nežinomas' },
+  lv: { title: '\u{1F9EA} Jūsu šķidrums ir nogatavināts!', body: (f, d) => `Jūsu šķidrums ar ${f} aromātu, sajaukts ${d}, ir nogatavināts un gatavs.`, unknownFlavor: 'nezināms' },
+  et: { title: '\u{1F9EA} Teie vedelik on küpsenud!', body: (f, d) => `Teie ${d} segatud ${f} aroomiga vedelik on küpsenud ja valmis.`, unknownFlavor: 'tundmatu' },
+  hu: { title: '\u{1F9EA} A liquidod megérett!', body: (f, d) => `A ${d}-n kevert ${f} aromájú liquidod megérett és kész.`, unknownFlavor: 'ismeretlen' },
+  el: { title: '\u{1F9EA} Το υγρό σας ωρίμασε!', body: (f, d) => `Το υγρό σας με άρωμα ${f} που αναμίχθηκε στις ${d} ωρίμασε και είναι έτοιμο.`, unknownFlavor: 'άγνωστο' },
+  tr: { title: '\u{1F9EA} Sıvınız olgunlaştı!', body: (f, d) => `${d} tarihinde karıştırılan ${f} aromalı sıvınız olgunlaştı ve hazır.`, unknownFlavor: 'bilinmeyen' },
+};
+
+// Get notification text for a given locale
+function getNotificationText(locale: string | null): typeof NOTIFICATION_TEXTS['en'] {
+  if (locale && NOTIFICATION_TEXTS[locale]) return NOTIFICATION_TEXTS[locale];
+  // Try base language (e.g. 'ar' from 'ar-SA')
+  if (locale) {
+    const base = locale.split('-')[0];
+    if (NOTIFICATION_TEXTS[base]) return NOTIFICATION_TEXTS[base];
+  }
+  return NOTIFICATION_TEXTS['en'];
+}
+
 // Get access token for FCM V1 API using Service Account
 async function getAccessToken(serviceAccount: any): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
@@ -243,6 +289,15 @@ serve(async (req) => {
           continue;
         }
         
+        // Get user locale for localized notifications
+        const { data: userData } = await supabase
+          .from("users")
+          .select("locale")
+          .eq("clerk_id", reminder.clerk_id)
+          .single();
+        
+        const userLocale = userData?.locale || null;
+        
         // Get FCM tokens for this user
         const { data: tokens, error: tokensError } = await supabase
           .from("fcm_tokens")
@@ -269,9 +324,11 @@ serve(async (req) => {
         const mixedDate = new Date(reminder.mixed_at);
         const formattedDate = `${mixedDate.getDate().toString().padStart(2, "0")}.${(mixedDate.getMonth() + 1).toString().padStart(2, "0")}.${mixedDate.getFullYear()}`;
 
-        // Create notification message
-        const title = "🧪 Váš liquid je vyzrálý!";
-        const body = `Váš liquid s příchutí ${reminder.flavor_name || "neznámá"} namíchaný dne ${formattedDate} je vyzrálý a připraven.`;
+        // Create localized notification message
+        const texts = getNotificationText(userLocale);
+        const flavorName = reminder.flavor_name || texts.unknownFlavor;
+        const title = texts.title;
+        const body = texts.body(flavorName, formattedDate);
 
         // Send to all user's devices
         let anySent = false;
