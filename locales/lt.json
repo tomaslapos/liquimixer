@@ -84,7 +84,7 @@
     "title": "Receptų duomenų bazė",
     "filters": "Filtrai",
     "filter_method": "Paruošimo metodas",
-    "filter_flavor": "Skonio tipas",
+    "filter_flavor": "Aromato tipas",
     "filter_vg_pg": "VG/PG santykis",
     "filter_nicotine": "Nikotino stiprumas",
     "filter_has_additive": "Tik su priedais",
@@ -351,7 +351,7 @@
     "table_grams": "Gramai",
     "component_nicotine_booster": "Nikotino stiprintuvas",
     "component_nicotine_salt": "Nikotino druska",
-    "component_flavor": "Skonis",
+    "component_flavor": "Aromatas",
     "component_vg": "VG (glicerinas)",
     "component_pg": "PG (propilenglikolis)",
     "notes_title": "Maišymo pastabos:",
@@ -496,7 +496,7 @@
     "type_all": "Visi tipai",
     "type_vg": "VG (glicerinas)",
     "type_pg": "PG (propilenglikolis)",
-    "type_flavor": "Skonis",
+    "type_flavor": "Aromatas",
     "type_nicotine_booster": "Nikotino stiprintuvas",
     "type_nicotine_salt": "Nikotino druska",
     "no_products": "Dar neturite mėgstamų produktų.",
@@ -507,7 +507,9 @@
     "load_error": "Klaida kraunant produktą.",
     "deleted": "Produktas ištrintas.",
     "delete_error": "Klaida trinant produktą.",
-    "stock_unit": "vnt"
+    "stock_unit": "vnt",
+    "no_filter_results": "Joks produktas neatitinka filtrų.",
+    "filter_results": "Rasta {found} iš {total} produktų."
   },
   "product_detail": {
     "title": "Produkto detalės",

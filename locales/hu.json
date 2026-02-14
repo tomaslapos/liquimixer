@@ -507,7 +507,9 @@
     "load_error": "Hiba a termék betöltésekor.",
     "deleted": "A termék törölve lett.",
     "delete_error": "Hiba a termék törlésekor.",
-    "stock_unit": "db"
+    "stock_unit": "db",
+    "no_filter_results": "Egyetlen termék sem felel meg a szűrőknek.",
+    "filter_results": "{found} / {total} termék találva."
   },
   "product_detail": {
     "title": "Termék részletei",

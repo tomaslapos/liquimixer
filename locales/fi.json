@@ -84,7 +84,7 @@
     "title": "Reseptitietokanta",
     "filters": "Suodattimet",
     "filter_method": "Valmistusmenetelmä",
-    "filter_flavor": "Makutyyppi",
+    "filter_flavor": "Aromityyppi",
     "filter_vg_pg": "VG/PG-suhde",
     "filter_nicotine": "Nikotiinivahvuus",
     "filter_has_additive": "Vain lisäaineilla",
@@ -351,7 +351,7 @@
     "table_grams": "Grammaa",
     "component_nicotine_booster": "Nikotiiniboosteri",
     "component_nicotine_salt": "Nikotiinisuola",
-    "component_flavor": "Maku",
+    "component_flavor": "Aromi",
     "component_vg": "VG (Glyseroli)",
     "component_pg": "PG (Propyleeniglykoli)",
     "notes_title": "Sekoitusmuistiinpanot:",
@@ -496,7 +496,7 @@
     "type_all": "Kaikki tyypit",
     "type_vg": "VG (Glyseroli)",
     "type_pg": "PG (Propyleeniglykoli)",
-    "type_flavor": "Maku",
+    "type_flavor": "Aromi",
     "type_nicotine_booster": "Nikotiiniboosteri",
     "type_nicotine_salt": "Nikotiinisuola",
     "no_products": "Sinulla ei ole vielä suosikkituotteita.",
@@ -507,7 +507,9 @@
     "load_error": "Virhe tuotteen lataamisessa.",
     "deleted": "Tuote on poistettu.",
     "delete_error": "Virhe tuotteen poistamisessa.",
-    "stock_unit": "kpl"
+    "stock_unit": "kpl",
+    "no_filter_results": "Yksikään tuote ei vastaa suodattimia.",
+    "filter_results": "Löytyi {found} / {total} tuotetta."
   },
   "product_detail": {
     "title": "Tuotteen tiedot",

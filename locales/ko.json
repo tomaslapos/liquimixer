@@ -507,7 +507,9 @@
     "load_error": "제품 로딩 오류.",
     "deleted": "제품이 삭제되었습니다.",
     "delete_error": "제품 삭제 오류.",
-    "stock_unit": "개"
+    "stock_unit": "개",
+    "no_filter_results": "필터에 일치하는 제품이 없습니다.",
+    "filter_results": "{total}개 중 {found}개 제품을 찾았습니다."
   },
   "product_detail": {
     "title": "제품 상세",

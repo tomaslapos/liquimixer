@@ -84,7 +84,7 @@
     "title": "Βάση συνταγών",
     "filters": "Φίλτρα",
     "filter_method": "Μέθοδος προετοιμασίας",
-    "filter_flavor": "Τύπος γεύσης",
+    "filter_flavor": "Τύπος αρώματος",
     "filter_vg_pg": "Αναλογία VG/PG",
     "filter_nicotine": "Ισχύς νικοτίνης",
     "filter_has_additive": "Μόνο με πρόσθετα",
@@ -351,7 +351,7 @@
     "table_grams": "Γραμμάρια",
     "component_nicotine_booster": "Ενισχυτής νικοτίνης",
     "component_nicotine_salt": "Άλας νικοτίνης",
-    "component_flavor": "Γεύση",
+    "component_flavor": "Άρωμα",
     "component_vg": "VG (Γλυκερίνη)",
     "component_pg": "PG (Προπυλενογλυκόλη)",
     "notes_title": "Σημειώσεις ανάμειξης:",
@@ -496,7 +496,7 @@
     "type_all": "Όλοι οι τύποι",
     "type_vg": "VG (Γλυκερίνη)",
     "type_pg": "PG (Προπυλενογλυκόλη)",
-    "type_flavor": "Γεύση",
+    "type_flavor": "Άρωμα",
     "type_nicotine_booster": "Ενισχυτής νικοτίνης",
     "type_nicotine_salt": "Άλας νικοτίνης",
     "no_products": "Δεν έχετε αγαπημένα προϊόντα ακόμα.",
@@ -507,7 +507,9 @@
     "load_error": "Σφάλμα κατά τη φόρτωση προϊόντος.",
     "deleted": "Το προϊόν διαγράφηκε.",
     "delete_error": "Σφάλμα κατά τη διαγραφή προϊόντος.",
-    "stock_unit": "τεμ"
+    "stock_unit": "τεμ",
+    "no_filter_results": "Κανένα προϊόν δεν ταιριάζει με τα φίλτρα.",
+    "filter_results": "Βρέθηκαν {found} από {total} προϊόντα."
   },
   "product_detail": {
     "title": "Λεπτομέρειες προϊόντος",

@@ -84,7 +84,7 @@
     "title": "Receptu datubāze",
     "filters": "Filtri",
     "filter_method": "Pagatavošanas metode",
-    "filter_flavor": "Garšas veids",
+    "filter_flavor": "Aromāta veids",
     "filter_vg_pg": "VG/PG attiecība",
     "filter_nicotine": "Nikotīna stiprums",
     "filter_has_additive": "Tikai ar piedevām",
@@ -351,7 +351,7 @@
     "table_grams": "Grami",
     "component_nicotine_booster": "Nikotīna pastiprinātājs",
     "component_nicotine_salt": "Nikotīna sāls",
-    "component_flavor": "Garša",
+    "component_flavor": "Aromāts",
     "component_vg": "VG (glicerīns)",
     "component_pg": "PG (propilēnglikols)",
     "notes_title": "Sajaukšanas piezīmes:",
@@ -496,7 +496,7 @@
     "type_all": "Visi veidi",
     "type_vg": "VG (glicerīns)",
     "type_pg": "PG (propilēnglikols)",
-    "type_flavor": "Garša",
+    "type_flavor": "Aromāts",
     "type_nicotine_booster": "Nikotīna pastiprinātājs",
     "type_nicotine_salt": "Nikotīna sāls",
     "no_products": "Jums vēl nav mīļāko produktu.",
@@ -507,7 +507,9 @@
     "load_error": "Kļūda, ielādējot produktu.",
     "deleted": "Produkts ir dzēsts.",
     "delete_error": "Kļūda, dzēšot produktu.",
-    "stock_unit": "gab"
+    "stock_unit": "gab",
+    "no_filter_results": "Neviens produkts neatbilst filtriem.",
+    "filter_results": "Atrasti {found} no {total} produktiem."
   },
   "product_detail": {
     "title": "Produkta detaļas",

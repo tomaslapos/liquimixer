@@ -493,7 +493,9 @@
     "load_error": "Error al cargar el producto.",
     "deleted": "El producto ha sido eliminado.",
     "delete_error": "Error al eliminar el producto.",
-    "stock_unit": "uds"
+    "stock_unit": "uds",
+    "no_filter_results": "Ningún producto coincide con los filtros.",
+    "filter_results": "Encontrados {found} de {total} productos."
   },
   "product_detail": {
     "title": "Detalles del producto",

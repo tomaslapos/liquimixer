@@ -502,7 +502,9 @@
     "load_error": "Fehler beim Laden des Produkts.",
     "deleted": "Produkt wurde gelöscht.",
     "delete_error": "Fehler beim Löschen des Produkts.",
-    "stock_unit": "Stk"
+    "stock_unit": "Stk",
+    "no_filter_results": "Keine Produkte entsprechen den Filtern.",
+    "filter_results": "{found} von {total} Produkten gefunden."
   },
   "product_detail": {
     "title": "Produktdetails",

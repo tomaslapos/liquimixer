@@ -14,6 +14,14 @@ GPWebpay/
 supabase/.temp/
 supabase/setup_secrets.cmd
 
+# Backups
+backup_*/
+backup_*.sql
+current_flavors*.sql
+
+# Cursor notes
+.cursor_notes.md
+
 
 
 

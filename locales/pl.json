@@ -493,7 +493,9 @@
     "load_error": "Błąd podczas ładowania produktu.",
     "deleted": "Produkt został usunięty.",
     "delete_error": "Błąd podczas usuwania produktu.",
-    "stock_unit": "szt."
+    "stock_unit": "szt.",
+    "no_filter_results": "Żadne produkty nie pasują do filtrów.",
+    "filter_results": "Znaleziono {found} z {total} produktów."
   },
   "product_detail": {
     "title": "Szczegóły produktu",

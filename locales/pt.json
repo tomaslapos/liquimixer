@@ -84,7 +84,7 @@
     "title": "Base de Receitas",
     "filters": "Filtros",
     "filter_method": "Método de preparação",
-    "filter_flavor": "Tipo de sabor",
+    "filter_flavor": "Tipo de aroma",
     "filter_vg_pg": "Proporção VG/PG",
     "filter_nicotine": "Concentração de nicotina",
     "filter_has_additive": "Apenas com aditivos",
@@ -507,7 +507,9 @@
     "load_error": "Erro ao carregar o produto.",
     "deleted": "O produto foi eliminado.",
     "delete_error": "Erro ao eliminar o produto.",
-    "stock_unit": "un"
+    "stock_unit": "un",
+    "no_filter_results": "Nenhum produto corresponde aos filtros.",
+    "filter_results": "Encontrados {found} de {total} produtos."
   },
   "product_detail": {
     "title": "Detalhes do produto",

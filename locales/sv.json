@@ -84,7 +84,7 @@
     "title": "Receptdatabas",
     "filters": "Filter",
     "filter_method": "Tillagningsmetod",
-    "filter_flavor": "Smaktyp",
+    "filter_flavor": "Aromtyp",
     "filter_vg_pg": "VG/PG-förhållande",
     "filter_nicotine": "Nikotinstyrka",
     "filter_has_additive": "Endast med tillsatser",
@@ -351,7 +351,7 @@
     "table_grams": "Gram",
     "component_nicotine_booster": "Nikotinbooster",
     "component_nicotine_salt": "Nikotinsalt",
-    "component_flavor": "Smak",
+    "component_flavor": "Arom",
     "component_vg": "VG (Glycerin)",
     "component_pg": "PG (Propylenglykol)",
     "notes_title": "Blandningsanteckningar:",
@@ -496,7 +496,7 @@
     "type_all": "Alla typer",
     "type_vg": "VG (Glycerin)",
     "type_pg": "PG (Propylenglykol)",
-    "type_flavor": "Smak",
+    "type_flavor": "Arom",
     "type_nicotine_booster": "Nikotinbooster",
     "type_nicotine_salt": "Nikotinsalt",
     "no_products": "Du har inga favoritprodukter ännu.",
@@ -507,7 +507,9 @@
     "load_error": "Fel vid laddning av produkt.",
     "deleted": "Produkten har raderats.",
     "delete_error": "Fel vid radering av produkt.",
-    "stock_unit": "st"
+    "stock_unit": "st",
+    "no_filter_results": "Inga produkter matchar filtren.",
+    "filter_results": "Hittade {found} av {total} produkter."
   },
   "product_detail": {
     "title": "Produktdetaljer",
