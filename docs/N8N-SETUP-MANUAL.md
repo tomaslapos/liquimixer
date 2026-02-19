@@ -154,48 +154,113 @@ curl "https://api.supabase.com/v1/projects/krwdfxnvhnxtkhtkbadi/secrets" \
 
 ---
 
-## KROK 6: Instalace Supabase CLI (doporučeno)
+## KROK 6: Supabase CLI (FUNGUJE — npx supabase)
 
-Pro plný deploy edge funkcí je CLI nejspolehlivější:
+CLI je dostupné přes `npx supabase` (verze 2.76.10). Projekt je linkovaný.
 
+Cascade deployuje přímo:
 ```bash
-# Windows (PowerShell jako admin)
-npm install -g supabase
-
-# Ověření
-supabase --version
-
-# Přihlášení (otevře prohlížeč)
-supabase login
-
-# Propojení s projektem
-supabase link --project-ref krwdfxnvhnxtkhtkbadi
-
-# Deploy VŠECH edge funkcí
-supabase functions deploy
-
-# Deploy jedné funkce
-supabase functions deploy contact
-```
-
-Po instalaci CLI mohu z Cascade deployovat přímo:
-```bash
-cmd /c "cd C:\Users\TOMLAP~1\Liquimixer && supabase functions deploy contact"
+cmd /c "cd C:\Users\TOMLAP~1\Liquimixer && npx supabase functions deploy contact 2>&1"
+cmd /c "cd C:\Users\TOMLAP~1\Liquimixer && npx supabase db push --linked 2>&1"
 ```
 
 ---
 
-## SOUHRN — CO JE POTŘEBA OD VÁS:
+## KROK 7: N8N API PROPOJENÍ (pro přímé nahrávání z Cascade)
 
-1. ✅ **Spustit SQL migraci** — zkopírovat `n8n_dashboard_schema.sql` do Supabase SQL Editor
-2. ✅ **Deploy contact edge funkce** — přes CLI nebo Dashboard
-3. ⚙️ **Nainstalovat Supabase CLI** — `npm install -g supabase` (volitelné, ale doporučené)
-4. ⚙️ **Vygenerovat Supabase Access Token** — pro automatizaci z Cascade (volitelné)
-5. ⚙️ **Zvolit N8N hosting** — n8n.cloud / Railway / Zeabur / VPS
-6. ⚙️ **Nastavit N8N secrets** — webhook URL + secret v Supabase
+Aby Cascade mohl přímo komunikovat s N8N (vytvářet/upravovat workflows),
+potřebuji N8N API přístup. V N8N to nastavíte takto:
+
+### 7.1 Kde v N8N vytvořit API klíč:
+
+1. Otevřete N8N Dashboard (web UI vaší N8N instance)
+2. Klikněte na **ikonu uživatele** (vlevo dole) → **Settings**
+3. V menu zvolte **API** (nebo **API Keys**)
+4. Klikněte **Create an API key**
+5. Název: `cascade-deploy` (nebo cokoliv)
+6. Zkopírujte vygenerovaný API klíč
+
+### 7.2 Co mi sdělíte:
+
+```
+N8N_BASE_URL = https://your-n8n-instance.com  (URL vaší N8N instance)
+N8N_API_KEY  = n8n_api_xxxxxxxxxxxxxxxxx       (API klíč z kroku 7.1)
+```
+
+### 7.3 Co s tím Cascade může dělat:
+
+S N8N API klíčem mohu přímo z Cascade:
+
+**Vytvářet workflows:**
+```bash
+curl -X POST "$N8N_BASE_URL/api/v1/workflows" \
+  -H "X-N8N-API-KEY: $N8N_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "WF1 - Contact Ingestion", "nodes": [...], "connections": {...}}'
+```
+
+**Aktivovat/deaktivovat workflows:**
+```bash
+curl -X PATCH "$N8N_BASE_URL/api/v1/workflows/{id}/activate" \
+  -H "X-N8N-API-KEY: $N8N_API_KEY"
+```
+
+**Spouštět workflows manuálně:**
+```bash
+curl -X POST "$N8N_BASE_URL/api/v1/workflows/{id}/run" \
+  -H "X-N8N-API-KEY: $N8N_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"data": {...}}'
+```
+
+**Listovat existující workflows:**
+```bash
+curl "$N8N_BASE_URL/api/v1/workflows" \
+  -H "X-N8N-API-KEY: $N8N_API_KEY"
+```
+
+### 7.4 Credentials v N8N (musíte vytvořit ručně v UI):
+
+Tyto credentials nelze vytvořit přes API — musíte je nastavit v N8N UI:
+
+| Credential | Typ | Kde v N8N | Hodnoty |
+|---|---|---|---|
+| **Supabase** | Supabase API | Credentials → New → Supabase | URL: `https://krwdfxnvhnxtkhtkbadi.supabase.co`, Service Role Key |
+| **OpenAI** | OpenAI API | Credentials → New → OpenAI | Váš OpenAI API klíč (GPT-4o-mini) |
+| **SMTP** | SMTP Email | Credentials → New → SMTP | Host: smtp.active24.com, Port: 465, SSL: true |
+| **Clerk** | HTTP Header Auth | Credentials → New → Header Auth | Name: `Authorization`, Value: `Bearer sk_live_xxx` (Clerk Secret Key) |
+
+**Postup v N8N UI:**
+1. Levé menu → **Credentials**
+2. **Add Credential** → vyberte typ
+3. Vyplňte hodnoty
+4. **Save**
+5. Credential se pak vybírá v jednotlivých nodes
+
+### 7.5 Webhook URL pro Supabase:
+
+Po vytvoření WF1 v N8N se vygeneruje webhook URL. Ten pak nastavíte:
+```bash
+npx supabase secrets set N8N_CONTACT_WEBHOOK_URL=https://your-n8n.com/webhook/xxxxx
+npx supabase secrets set N8N_WEBHOOK_SECRET=your-strong-secret-min-32-chars
+```
+
+---
+
+## SOUHRN STAVU (19.02.2026):
+
+1. ✅ **SQL migrace** — spuštěna přes `npx supabase db push` (20260219_n8n_dashboard_schema.sql)
+2. ✅ **Deploy contact edge funkce** — spuštěn přes `npx supabase functions deploy contact`
+3. ✅ **Supabase CLI** — funguje přes `npx supabase` (v2.76.10, projekt linkovaný)
+4. ⚙️ **Zvolit N8N hosting** — n8n.cloud / Railway / Zeabur / VPS
+5. ⚙️ **Vytvořit N8N API klíč** — Settings → API → Create (viz krok 7.1)
+6. ⚙️ **Vytvořit credentials v N8N** — Supabase, OpenAI, SMTP, Clerk (viz krok 7.4)
+7. ⚙️ **Nastavit webhook secrets** — po vytvoření WF1 v N8N (viz krok 7.5)
 
 ---
 
 *Vytvořeno: 19.02.2026*
-*Soubory k migraci: `supabase/migrations/n8n_dashboard_schema.sql`*
+*Aktualizováno: 19.02.2026 — migrace + deploy hotové, N8N API guide přidán*
+*Pravidla AI agentů: `docs/ai-rules.md`*
+*Migrace: `supabase/migrations/20260219_n8n_dashboard_schema.sql`*
 *Edge funkce: `supabase/functions/contact/index.ts`*
