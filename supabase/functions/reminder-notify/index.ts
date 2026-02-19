@@ -167,8 +167,8 @@ async function sendNotification(
       data: data || {},
       webpush: {
         notification: {
-          icon: "/icons/icon-192x192.png",
-          badge: "/icons/icon-72x72.png",
+          icon: "/icons/icon-192.png",
+          badge: "/icons/icon-192.png",
           requireInteraction: true,
         },
       },

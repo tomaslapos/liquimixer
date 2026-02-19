@@ -29,8 +29,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || 'Liquimixer';
     const notificationOptions = {
         body: payload.notification?.body || 'Máte novou zprávu',
-        icon: '/icons/icon-192x192.png',
-        badge: '/icons/icon-72x72.png',
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
         tag: 'liquimixer-maturity-reminder',
         data: payload.data || {},
         actions: [

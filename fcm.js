@@ -79,9 +79,9 @@ async function getFcmToken() {
     }
     
     try {
-        // Register service worker first
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        console.log('Service Worker registered:', registration);
+        // Use existing sw.js registration (which now includes FCM handling)
+        const registration = await navigator.serviceWorker.ready;
+        console.log('Using existing Service Worker for FCM:', registration.scope);
         
         // Get FCM token
         const token = await messaging.getToken({
@@ -161,8 +161,8 @@ function setupForegroundMessageHandler() {
         const notificationTitle = payload.notification?.title || 'Liquimixer';
         const notificationOptions = {
             body: payload.notification?.body || '',
-            icon: '/icons/icon-192x192.png',
-            badge: '/icons/icon-72x72.png',
+            icon: '/icons/icon-192.png',
+            badge: '/icons/icon-192.png',
             tag: 'liquimixer-notification',
             data: payload.data
         };
@@ -218,15 +218,29 @@ document.addEventListener('DOMContentLoaded', () => {
             initializeFirebase();
             setupForegroundMessageHandler();
             
-            // Auto-request permission if user is logged in
-            if (typeof Clerk !== 'undefined') {
-                Clerk.addListener(({ user }) => {
-                    if (user && Notification.permission === 'default') {
-                        // Optionally auto-request, or wait for user action
-                        // requestNotificationPermission();
+            // Auto-register FCM token for logged-in users
+            const waitForClerk = setInterval(() => {
+                if (typeof Clerk !== 'undefined' && Clerk.loaded) {
+                    clearInterval(waitForClerk);
+                    
+                    // If user is already logged in, register token
+                    if (Clerk.user) {
+                        if (Notification.permission === 'granted') {
+                            getFcmToken();
+                        }
                     }
-                });
-            }
+                    
+                    // Listen for sign-in/sign-out
+                    Clerk.addListener(({ user }) => {
+                        if (user && Notification.permission === 'granted') {
+                            getFcmToken();
+                        }
+                    });
+                }
+            }, 200);
+            
+            // Timeout Clerk check after 15 seconds
+            setTimeout(() => clearInterval(waitForClerk), 15000);
         }
     }, 100);
     
