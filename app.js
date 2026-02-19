@@ -2830,28 +2830,49 @@ async function handleContact(event) {
         return false;
     }
     
+    // Získat kategorii
+    const categorySelect = document.getElementById('contactCategory');
+    const category = categorySelect ? categorySelect.value : 'other';
+    
+    if (!category) {
+        showContactStatus('Vyberte prosím kategorii.', true);
+        return false;
+    }
+    
     setContactLoading(true);
     
     try {
-        // Uložit do databáze
-        const client = window.supabaseClient;
-        if (!client) {
-            throw new Error('Database not available');
-        }
+        // Získat Clerk token (pokud přihlášen)
+        const clerkToken = window.Clerk?.user ? await getClerkToken() : null;
         
-        const { error } = await client
-            .from('contact_messages')
-            .insert({
-                email: email,
-                subject: subject,
-                message: message,
-                clerk_id: window.Clerk?.user?.id || null,
-                user_agent: navigator.userAgent.substring(0, 500)
-            });
+        // Získat aktuální locale
+        const locale = (window.i18n && window.i18n.getLocale) ? window.i18n.getLocale() : 'cs';
         
-        if (error) {
-            console.error('Contact form error:', error);
-            throw error;
+        // Volat edge funkci contact (triggeruje N8N webhook)
+        const response = await fetch(`${getSupabaseUrl()}/functions/v1/contact`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getSupabaseAnonKey()}`,
+                ...(clerkToken ? { 'x-clerk-token': clerkToken } : {})
+            },
+            body: JSON.stringify({
+                action: 'submit',
+                data: {
+                    email: email,
+                    category: category,
+                    subject: subject,
+                    message: message,
+                    locale: locale
+                }
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok || result.error) {
+            console.error('Contact form error:', result.error);
+            throw new Error(result.error || 'Failed to send message');
         }
         
         // Úspěch

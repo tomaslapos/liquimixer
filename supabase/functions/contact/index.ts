@@ -22,10 +22,15 @@ const N8N_WEBHOOK_SECRET = Deno.env.get('N8N_WEBHOOK_SECRET') || ''
 const VALID_CATEGORIES = [
   'technical',   // Technický problém / Chyba aplikace
   'payment',     // Platba / Předplatné / Fakturace
+  'refund',      // Požadavek na vrácení peněz
   'recipe',      // Dotaz k receptům / Míchání
   'account',     // Můj účet / Přihlášení
-  'suggestion',  // Návrh na vylepšení
   'gdpr',        // GDPR / Smazání údajů
+  'suggestion',  // Návrh na vylepšení
+  'bug',         // Bug report
+  'business',    // Obchodní nabídka
+  'partnership', // Affiliate / Partnerství
+  'media',       // Média / PR
   'other'        // Jiné
 ]
 
@@ -157,7 +162,7 @@ serve(async (req) => {
             subject: sanitizedSubject,
             message: sanitizedMessage,
             status: 'new',
-            priority: category === 'payment' ? 'high' : 'normal',
+            priority: ['payment', 'gdpr', 'bug', 'business', 'partnership', 'media'].includes(category) ? 'high' : 'normal',
             ip_address: ipAddress,
             user_agent: req.headers.get('user-agent') || 'unknown',
             locale: locale || 'cs'
@@ -252,22 +257,47 @@ serve(async (req) => {
           )
         }
 
+        // Build update object with only provided fields
+        const updateData: Record<string, unknown> = {
+          n8n_processed: true,
+          n8n_processed_at: new Date().toISOString(),
+          processed_at: new Date().toISOString()
+        }
+
+        // Core AI fields
+        if (updates.status !== undefined) updateData.status = updates.status
+        if (updates.priority !== undefined) updateData.priority = updates.priority
+        if (updates.ai_analysis !== undefined) updateData.ai_analysis = updates.ai_analysis
+        if (updates.ai_priority !== undefined) updateData.ai_priority = updates.ai_priority
+        if (updates.ai_category !== undefined) updateData.ai_category = updates.ai_category
+        if (updates.ai_suggested_response !== undefined) updateData.ai_suggested_response = updates.ai_suggested_response
+        if (updates.ai_is_refund_request !== undefined) updateData.ai_is_refund_request = updates.ai_is_refund_request
+        if (updates.ai_confidence !== undefined) updateData.ai_confidence = updates.ai_confidence
+        if (updates.workflow_id !== undefined) updateData.n8n_workflow_id = updates.workflow_id
+
+        // Dashboard / translation fields
+        if (updates.detected_language !== undefined) updateData.detected_language = updates.detected_language
+        if (updates.subject_cs !== undefined) updateData.subject_cs = updates.subject_cs
+        if (updates.message_cs !== undefined) updateData.message_cs = updates.message_cs
+        if (updates.ai_sentiment !== undefined) updateData.ai_sentiment = updates.ai_sentiment
+        if (updates.ai_notes !== undefined) updateData.ai_notes = updates.ai_notes
+        if (updates.ai_auto_resolved !== undefined) updateData.ai_auto_resolved = updates.ai_auto_resolved
+        if (updates.ai_response_sent !== undefined) updateData.ai_response_sent = updates.ai_response_sent
+        if (updates.is_business_offer !== undefined) updateData.is_business_offer = updates.is_business_offer
+        if (updates.thread_id !== undefined) updateData.thread_id = updates.thread_id
+
+        // Admin reply fields (from dashboard)
+        if (updates.admin_reply_cs !== undefined) updateData.admin_reply_cs = updates.admin_reply_cs
+        if (updates.admin_reply_formatted !== undefined) updateData.admin_reply_formatted = updates.admin_reply_formatted
+        if (updates.admin_reply_translated !== undefined) updateData.admin_reply_translated = updates.admin_reply_translated
+        if (updates.email_sent_at !== undefined) updateData.email_sent_at = updates.email_sent_at
+        if (updates.email_message_id !== undefined) updateData.email_message_id = updates.email_message_id
+        if (updates.resolved_at !== undefined) updateData.resolved_at = updates.resolved_at
+        if (updates.resolved_by !== undefined) updateData.resolved_by = updates.resolved_by
+
         const { error } = await supabaseAdmin
           .from('contact_messages')
-          .update({
-            status: updates.status,
-            priority: updates.priority,
-            ai_analysis: updates.ai_analysis,
-            ai_priority: updates.ai_priority,
-            ai_category: updates.ai_category,
-            ai_suggested_response: updates.ai_suggested_response,
-            ai_is_refund_request: updates.ai_is_refund_request,
-            ai_confidence: updates.ai_confidence,
-            n8n_processed: true,
-            n8n_processed_at: new Date().toISOString(),
-            n8n_workflow_id: updates.workflow_id,
-            processed_at: new Date().toISOString()
-          })
+          .update(updateData)
           .eq('id', messageId)
 
         if (error) {
