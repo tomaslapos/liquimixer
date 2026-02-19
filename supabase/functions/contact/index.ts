@@ -123,14 +123,15 @@ serve(async (req) => {
           )
         }
 
-        // 5. Rate limiting by IP
+        // 5. Rate limiting by IP (already checked globally above, this is per-IP for contact)
         const ipAddress = req.headers.get('x-forwarded-for') || 
                          req.headers.get('cf-connecting-ip') || 
                          'unknown'
         
-        if (!checkRateLimit(ipAddress)) {
+        const ipRateCheck = checkRateLimit(ipAddress, 'contact')
+        if (!ipRateCheck.allowed) {
           return new Response(
-            JSON.stringify({ error: 'Too many messages. Please wait 5 minutes.' }),
+            JSON.stringify({ error: 'Too many messages. Please wait before sending another.' }),
             { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
