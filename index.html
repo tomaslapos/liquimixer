@@ -470,6 +470,10 @@
                             <span id="contactSubmitLoader" class="btn-loader hidden"></span>
                         </button>
                     </form>
+                    <button class="neon-button menu-terms-btn" onclick="toggleMenu(); showManualModal();" style="margin-top: 20px;">
+                        <span data-i18n="menu.manual_button">Manuál</span>
+                        <div class="button-glow"></div>
+                    </button>
                     <button class="neon-button menu-terms-btn" onclick="toggleMenu(); showTermsModal();" style="margin-top: 20px;">
                         <span data-i18n="menu.terms_button">Zobrazit obchodní podmínky</span>
                         <div class="button-glow"></div>
@@ -689,6 +693,82 @@
         </div>
 
         <!-- Terms and Conditions Modal -->
+        <div id="manualModal" class="login-modal hidden" onclick="handleManualModalBackdropClick(event)">
+            <div class="login-content terms-modal-content manual-modal-content">
+                <button class="menu-close" onclick="hideManualModal()">✕</button>
+                <h3 class="menu-title" data-i18n="manual.title">Manuál LiquiMixer</h3>
+                
+                <div class="terms-content manual-content">
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.basics_title">Jak LiquiMixer funguje</h4>
+                        <p data-i18n="manual.basics_text">LiquiMixer je kalkulátor pro míchání e-liquidů, shisha melasy a dalších směsí. Stačí zadat požadované hodnoty (objem, sílu nikotinu, poměr PG/VG a příchutě) a kalkulátor automaticky vypočítá přesné množství každé ingredience v mililitrech.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.pgvg_title">Co je PG a VG?</h4>
+                        <p data-i18n="manual.pgvg_text">PG (propylenglykol) a VG (vegetable glycerin) jsou dvě základní složky každého liquidu. PG přenáší chuť a vytváří „throat hit" (pocit v krku). VG vytváří hustý dým/páru. Poměr PG/VG ovlivňuje výsledný zážitek — více VG = více páry, více PG = silnější chuť. Běžné poměry jsou 50/50, 30/70 nebo 20/80 (PG/VG).</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.calc_title">Jak funguje výpočet</h4>
+                        <p data-i18n="manual.calc_text">Kalkulátor pracuje s celkovým objemem, který chcete namíchat. Z tohoto objemu nejprve vypočítá množství nikotinové báze potřebné pro dosažení cílové síly nikotinu. Poté odečte objem příchutí (zadáváte v procentech z celku). Zbytek doplní čistým PG a VG tak, aby výsledný poměr odpovídal vašemu nastavení. Důležité je, že příchutě jsou většinou na PG bázi — kalkulátor toto automaticky zohledňuje ve výsledném poměru.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.nic_title">Nikotinová báze</h4>
+                        <p data-i18n="manual.nic_text">Nikotinová báze je koncentrovaný roztok nikotinu v PG, VG nebo jejich směsi. Zadáváte její sílu (mg/ml) a poměr PG/VG. Kalkulátor z toho vypočítá, kolik báze potřebujete pro dosažení cílové síly nikotinu ve výsledném liquidu. Pokud míchate bez nikotinu, jednoduše nastavte cílovou sílu na 0.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.flavors_title">Příchutě a dávkování</h4>
+                        <p data-i18n="manual.flavors_text">Příchutě se zadávají v procentech z celkového objemu. Například 10 % příchutě v 100ml směsi = 10 ml příchutě. Databáze LiquiMixer obsahuje tisíce příchutí s doporučeným dávkováním od výrobce, takže nemusíte hádat. Doporučené procento se automaticky předvyplní při výběru příchutě z databáze.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.calculators_title">Typy kalkulátorů</h4>
+                        <p data-i18n="manual.calculators_text"><strong>Liquid</strong> — základní kalkulátor pro jednu příchuť. Ideální pro začátečníky.<br><strong>Liquid PRO</strong> — pokročilý kalkulátor až pro 5 příchutí současně. Pro složitější recepty.<br><strong>Shake &amp; Vape</strong> — pro směsi bez doby zrání. Výpočet je stejný, ale bez připomínky zrání.<br><strong>Shortfill</strong> — pro přidání nikotinových shotů do hotových liquidů. Vypočítá kolik shotů potřebujete.<br><strong>Shisha / Hookah</strong> — kalkulátor pro míchání glycerinové melasy pro vodní dýmku.<br><strong>Dilute</strong> — pro ředění příliš silného liquidu na nižší sílu nikotinu.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.steeping_title">Zrání (steeping)</h4>
+                        <p data-i18n="manual.steeping_text">Většina liquidů potřebuje po namíchání čas na zrání — příchutě se lépe propojí a výsledná chuť je plnější. Doba zrání závisí na typu příchutě: ovocné příchutě 1–3 dny, krémové a tabákové 1–3 týdny. LiquiMixer umí nastavit připomínku, která vás upozorní push notifikací, až bude liquid vyzrálý.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.recipes_title">Recepty</h4>
+                        <p data-i18n="manual.recipes_text">Každý výpočet můžete uložit jako recept pro pozdější použití. Recepty lze sdílet s ostatními uživateli do veřejné databáze, kde je mohou hodnotit. Při sdílení prochází recept automatickou kontrolou obsahu. Recepty můžete také sdílet přímo přes odkaz nebo QR kód.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.products_title">Oblíbené produkty</h4>
+                        <p data-i18n="manual.products_text">V sekci produktů si můžete uložit ingredience, které používáte (báze, příchutě, VG, PG). Ke každému produktu můžete sledovat stav skladu a propojit ho s recepty, abyste viděli, co potřebujete dokoupit.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.subscription_title">Předplatné PRO</h4>
+                        <p data-i18n="manual.subscription_text">Základní kalkulátory (Liquid, Shake &amp; Vape, Shortfill, Shisha, Dilute) jsou zdarma. Předplatné PRO odemkne: Liquid PRO kalkulátor (až 5 příchutí), ukládání receptů do cloudu, přístup k databázi tisíců příchutí s doporučeným dávkováním, připomínky zrání s push notifikacemi a sledování skladu produktů.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.tips_title">Tipy pro začátečníky</h4>
+                        <p data-i18n="manual.tips_text">1. Začněte s jednoduchými recepty — jedna příchuť, 10 %, poměr 50/50.<br>2. Vždy používejte ochranné rukavice při práci s nikotinem.<br>3. Míchejte v čistých nádobách a skladujte na tmavém, chladném místě.<br>4. Nechte liquid vyzrát — chuť se výrazně zlepší.<br>5. Zapisujte si recepty — i malá změna v procentech může výrazně změnit chuť.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.offline_title">Offline režim</h4>
+                        <p data-i18n="manual.offline_text">LiquiMixer funguje i bez připojení k internetu. Po prvním načtení se aplikace uloží do zařízení a můžete ji používat kdykoliv. Na mobilu si ji můžete přidat na plochu jako běžnou aplikaci.</p>
+                    </section>
+                </div>
+                
+                <div class="terms-footer">
+                    <button class="neon-button" onclick="hideManualModal()">
+                        <span data-i18n="manual.close">Zavřít</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="termsModal" class="login-modal hidden" onclick="handleTermsModalBackdropClick(event)">
             <div class="login-content terms-modal-content">
                 <button class="menu-close" onclick="hideTermsModal()">✕</button>

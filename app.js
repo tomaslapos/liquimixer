@@ -11825,6 +11825,29 @@ async function renewSubscription() {
     showSubscriptionModal();
 }
 
+// Zobrazit modal manuálu
+function showManualModal() {
+    const modal = document.getElementById('manualModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+// Skrýt modal manuálu
+function hideManualModal() {
+    const modal = document.getElementById('manualModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Handler pro backdrop click - manual modal
+function handleManualModalBackdropClick(event) {
+    if (event.target === event.currentTarget) {
+        hideManualModal();
+    }
+}
+
 // Zobrazit modal obchodních podmínek
 function showTermsModal() {
     const modal = document.getElementById('termsModal');
@@ -14942,6 +14965,9 @@ window.goToLoginFromSubscription = goToLoginFromSubscription;
 window.startRegistrationAndPayment = startRegistrationAndPayment;
 window.updateGuestPayButton = updateGuestPayButton;
 window.renewSubscription = renewSubscription;
+window.showManualModal = showManualModal;
+window.hideManualModal = hideManualModal;
+window.handleManualModalBackdropClick = handleManualModalBackdropClick;
 window.showTermsModal = showTermsModal;
 window.hideTermsModal = hideTermsModal;
 window.handleTermsModalBackdropClick = handleTermsModalBackdropClick;
