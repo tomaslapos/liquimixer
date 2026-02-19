@@ -1,6 +1,72 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v219';
+const CACHE_NAME = 'liquimixer-v220';
+
+// Firebase Cloud Messaging - background push notifications
+importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyARRacfElsLSyVm2B3v1WohYgArLwerNEo",
+  authDomain: "liquimixer.firebaseapp.com",
+  projectId: "liquimixer",
+  storageBucket: "liquimixer.firebasestorage.app",
+  messagingSenderId: "729409229192",
+  appId: "1:729409229192:web:0c0679dcd6b75de8416a3d"
+});
+
+const fcmMessaging = firebase.messaging();
+
+// Handle background push notifications (when app is closed/minimized)
+fcmMessaging.onBackgroundMessage((payload) => {
+  console.log('[sw.js] FCM background message:', payload);
+  
+  const notificationTitle = payload.notification?.title || 'LiquiMixer';
+  const notificationOptions = {
+    body: payload.notification?.body || '',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    tag: 'liquimixer-maturity-reminder',
+    data: payload.data || {},
+    actions: [
+      { action: 'open', title: 'Open' },
+      { action: 'dismiss', title: 'Dismiss' }
+    ],
+    requireInteraction: true,
+    vibrate: [200, 100, 200]
+  };
+  
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+  console.log('[sw.js] Notification clicked:', event.action);
+  event.notification.close();
+  
+  if (event.action === 'dismiss') return;
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windowClients) => {
+        for (let client of windowClients) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            client.focus();
+            if (event.notification.data?.recipeId) {
+              client.postMessage({
+                type: 'OPEN_RECIPE',
+                recipeId: event.notification.data.recipeId
+              });
+            }
+            return;
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow('/');
+        }
+      })
+  );
+});
 
 // Soubory pro precaching
 const urlsToCache = [
