@@ -73,12 +73,34 @@ ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS processed_at TIMESTAMPTZ;
 ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS resolved_at TIMESTAMPTZ;
 ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS resolved_by TEXT;
 
+-- N8N Dashboard rozšíření (19.02.2026)
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS detected_language TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS subject_cs TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS message_cs TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS ai_sentiment TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS ai_notes TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS ai_auto_resolved BOOLEAN DEFAULT false;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS ai_response_sent TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS admin_reply_cs TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS admin_reply_formatted TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS admin_reply_translated TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS email_sent_at TIMESTAMPTZ;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS email_message_id TEXT;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS is_business_offer BOOLEAN DEFAULT false;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS thread_id UUID;
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS parent_message_id UUID;
+
 -- Nyní vytvořit indexy (sloupce už existují)
 CREATE INDEX IF NOT EXISTS idx_contact_messages_clerk_id ON contact_messages(clerk_id);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages(status);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_category ON contact_messages(category);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON contact_messages(created_at);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_refund ON contact_messages(ai_is_refund_request) WHERE ai_is_refund_request = true;
+CREATE INDEX IF NOT EXISTS idx_contact_messages_detected_language ON contact_messages(detected_language);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_ai_auto_resolved ON contact_messages(ai_auto_resolved);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_is_business ON contact_messages(is_business_offer) WHERE is_business_offer = true;
+CREATE INDEX IF NOT EXISTS idx_contact_messages_thread ON contact_messages(thread_id);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_email ON contact_messages(email);
 
 -- RLS politiky
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
@@ -98,8 +120,74 @@ DROP POLICY IF EXISTS "Service role can update messages" ON contact_messages;
 CREATE POLICY "Service role can update messages" ON contact_messages
     FOR UPDATE USING (auth.role() = 'service_role');
 
-COMMENT ON TABLE contact_messages IS 'Kontaktní zprávy s AI analýzou a N8N integrací';
-COMMENT ON COLUMN contact_messages.category IS 'Kategorie: technical, payment, recipe, account, suggestion, gdpr, other';
+COMMENT ON TABLE contact_messages IS 'Kontaktní zprávy s AI analýzou, N8N integrací a dashboard workflow';
+COMMENT ON COLUMN contact_messages.category IS 'Kategorie: technical, payment, refund, recipe, account, gdpr, suggestion, bug, business, partnership, media, other';
+COMMENT ON COLUMN contact_messages.status IS 'Stavy: new, ai_processing, auto_resolved, needs_human, admin_replied, sent, closed, spam, duplicate_resolved';
+
+-- ============================================
+-- ČÁST 2B: GDPR DELETION REQUESTS
+-- Automatický flow smazání účtu s potvrzovacím tokenem
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS gdpr_deletion_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    clerk_id TEXT NOT NULL,
+    email TEXT NOT NULL,
+    token UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+    status TEXT DEFAULT 'pending',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '24 hours'),
+    confirmed_at TIMESTAMPTZ,
+    cancelled_at TIMESTAMPTZ,
+    deleted_data JSONB,
+    contact_message_id UUID REFERENCES contact_messages(id),
+    ip_address TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_gdpr_token ON gdpr_deletion_requests(token);
+CREATE INDEX IF NOT EXISTS idx_gdpr_clerk_id ON gdpr_deletion_requests(clerk_id);
+CREATE INDEX IF NOT EXISTS idx_gdpr_status ON gdpr_deletion_requests(status);
+CREATE INDEX IF NOT EXISTS idx_gdpr_expires ON gdpr_deletion_requests(expires_at);
+
+ALTER TABLE gdpr_deletion_requests ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role manages GDPR requests" ON gdpr_deletion_requests;
+CREATE POLICY "Service role manages GDPR requests" ON gdpr_deletion_requests
+    FOR ALL USING (auth.role() = 'service_role');
+
+COMMENT ON TABLE gdpr_deletion_requests IS 'GDPR požadavky na smazání účtu s potvrzovacím tokenem (24h platnost)';
+COMMENT ON COLUMN gdpr_deletion_requests.status IS 'Stavy: pending, confirmed, cancelled, expired';
+
+-- ============================================
+-- ČÁST 2C: SUGGESTION FEATURES
+-- Agregované návrhy na vylepšení (deduplikované)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS suggestion_features (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    feature_name TEXT NOT NULL,
+    feature_category TEXT DEFAULT 'other',
+    description TEXT,
+    request_count INTEGER DEFAULT 1,
+    first_requested_at TIMESTAMPTZ DEFAULT NOW(),
+    last_requested_at TIMESTAMPTZ DEFAULT NOW(),
+    contact_message_ids UUID[] DEFAULT '{}',
+    languages TEXT[] DEFAULT '{}',
+    status TEXT DEFAULT 'collected'
+);
+
+CREATE INDEX IF NOT EXISTS idx_suggestion_feature_name ON suggestion_features(feature_name);
+CREATE INDEX IF NOT EXISTS idx_suggestion_request_count ON suggestion_features(request_count DESC);
+CREATE INDEX IF NOT EXISTS idx_suggestion_category ON suggestion_features(feature_category);
+
+ALTER TABLE suggestion_features ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role manages suggestions" ON suggestion_features;
+CREATE POLICY "Service role manages suggestions" ON suggestion_features
+    FOR ALL USING (auth.role() = 'service_role');
+
+COMMENT ON TABLE suggestion_features IS 'Agregované návrhy na vylepšení od uživatelů';
+COMMENT ON COLUMN suggestion_features.feature_category IS 'Kategorie: ux, calculator, recipes, flavors, products, subscription, other';
 
 -- ============================================
 -- ČÁST 3: REFUND POŽADAVKY
