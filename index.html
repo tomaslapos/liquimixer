@@ -701,17 +701,32 @@
                 <div class="terms-content manual-content">
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.basics_title">Jak LiquiMixer funguje</h4>
-                        <p data-i18n="manual.basics_text">LiquiMixer je kalkulátor pro míchání e-liquidů, shisha melasy a dalších směsí. Stačí zadat požadované hodnoty (objem, sílu nikotinu, poměr PG/VG a příchutě) a kalkulátor automaticky vypočítá přesné množství každé ingredience v mililitrech.</p>
+                        <p data-i18n="manual.basics_text">LiquiMixer je kalkulátor pro míchání e-liquidů, shisha melasy a dalších směsí. Stačí zadat požadované hodnoty (objem, sílu nikotinu, poměr PG/VG a příchutě) a kalkulátor automaticky vypočítá přesné množství každé ingredience v mililitrech. Výsledek zobrazí přehlednou tabulku s přesnými objemy v ml pro každou složku, takže stačí jen odměřit a smíchat.</p>
                     </section>
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.pgvg_title">Co je PG a VG?</h4>
-                        <p data-i18n="manual.pgvg_text">PG (propylenglykol) a VG (vegetable glycerin) jsou dvě základní složky každého liquidu. PG přenáší chuť a vytváří „throat hit" (pocit v krku). VG vytváří hustý dým/páru. Poměr PG/VG ovlivňuje výsledný zážitek — více VG = více páry, více PG = silnější chuť. Běžné poměry jsou 50/50, 30/70 nebo 20/80 (PG/VG).</p>
+                        <p data-i18n="manual.pgvg_text">PG (propylenglykol) a VG (vegetable glycerin) jsou dvě základní nosné kapaliny každého liquidu. PG je řidší, lépe přenáší chuť příchutí a vytváří výraznější pocit v krku (throat hit). VG je hustší, sladší a vytváří velké množství páry. Poměr těchto dvou složek zásadně ovlivňuje výsledný zážitek z vapování.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.pgvg_ratios_title">Běžné poměry PG/VG v praxi</h4>
+                        <p data-i18n="manual.pgvg_ratios_text"><strong>50/50</strong> — univerzální poměr, vyvážená chuť i pára. Vhodný pro většinu zařízení.<br><strong>30/70 (PG/VG)</strong> — více páry, jemnější throat hit. Oblíbený pro sub-ohm vapování.<br><strong>20/80 (PG/VG)</strong> — maximální pára, velmi jemný. Pro výkonná zařízení s nízkým odporem.<br><strong>70/30 (PG/VG)</strong> — silná chuť a výrazný throat hit. Pro MTL (mouth-to-lung) zařízení a pod systémy.<br>Poměr si volíte podle svého zařízení a preferencí. Kalkulátor automaticky dopočítá správné množství čistého PG a VG.</p>
                     </section>
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.calc_title">Jak funguje výpočet</h4>
-                        <p data-i18n="manual.calc_text">Kalkulátor pracuje s celkovým objemem, který chcete namíchat. Z tohoto objemu nejprve vypočítá množství nikotinové báze potřebné pro dosažení cílové síly nikotinu. Poté odečte objem příchutí (zadáváte v procentech z celku). Zbytek doplní čistým PG a VG tak, aby výsledný poměr odpovídal vašemu nastavení. Důležité je, že příchutě jsou většinou na PG bázi — kalkulátor toto automaticky zohledňuje ve výsledném poměru.</p>
+                        <p data-i18n="manual.calc_text">Kalkulátor pracuje s celkovým objemem, který chcete namíchat. Z tohoto objemu nejprve vypočítá množství nikotinové báze potřebné pro dosažení cílové síly nikotinu. Poté odečte objem příchutí (zadáváte v procentech z celku). Zbytek doplní čistým PG a VG tak, aby výsledný poměr odpovídal vašemu nastavení.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.calc_flavor_title">Jak se příchutě promítají do poměru PG/VG</h4>
+                        <p data-i18n="manual.calc_flavor_text">Příchutě nejsou čisté PG — obsahují směs různých složek: propylenglykol (PG), glycerin (VG), ale také alkohol, vodu a další nosné látky. Kalkulátor proto nezapočítává celý objem příchutě do PG. Místo toho rozloží každou příchuť na její skutečné složky — PG část započítá do celkového PG, VG část do VG, a ostatní složky (alkohol, voda) se odečtou z celkového objemu, ale nezapočítávají se do poměru VG/PG. Díky tomu je výsledný poměr přesný i při použití více příchutí s různým složením.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.calc_nic_title">Vliv nikotinové báze na poměr</h4>
+                        <p data-i18n="manual.calc_nic_text">Stejný princip platí i pro nikotinovou bázi — ta má svůj vlastní poměr PG/VG (např. 50/50 nebo 100% PG). Kalkulátor její PG a VG obsah započítá do celkového poměru a zbývající objem doplní čistým PG a VG tak, aby se výsledek co nejvíce blížil vašemu požadovanému poměru. Pokud nikotinová báze nebo příchutě obsahují příliš mnoho PG, kalkulátor vás upozorní, že požadovaný poměr nelze přesně dosáhnout.</p>
                     </section>
 
                     <section class="terms-section-content">
@@ -726,17 +741,17 @@
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.calculators_title">Typy kalkulátorů</h4>
-                        <p data-i18n="manual.calculators_text"><strong>Liquid</strong> — základní kalkulátor pro jednu příchuť. Ideální pro začátečníky.<br><strong>Liquid PRO</strong> — pokročilý kalkulátor až pro 5 příchutí současně. Pro složitější recepty.<br><strong>Shake &amp; Vape</strong> — pro směsi bez doby zrání. Výpočet je stejný, ale bez připomínky zrání.<br><strong>Shortfill</strong> — pro přidání nikotinových shotů do hotových liquidů. Vypočítá kolik shotů potřebujete.<br><strong>Shisha / Hookah</strong> — kalkulátor pro míchání glycerinové melasy pro vodní dýmku.<br><strong>Dilute</strong> — pro ředění příliš silného liquidu na nižší sílu nikotinu.</p>
+                        <p data-i18n="manual.calculators_text"><strong>Liquid</strong> — základní kalkulátor pro jednu příchuť. Zadáte objem, sílu nikotinu, poměr PG/VG a procento příchutě. Ideální pro začátečníky a jednoduché recepty.<br><br><strong>Liquid PRO</strong> — pokročilý kalkulátor až pro 4 příchutě současně. Každá příchuť může mít jiné procento a jiný poměr VG/PG. Pro složitější recepty a zkušenější míchače.<br><br><strong>Shake &amp; Vape</strong> — pro hotové příchutě v lahvičce (tzv. shake and vape). Koupíte lahvičku s koncentrovanou příchutí a dolijete nikotinovou bázi a nosnou kapalinu dle svých preferencí. Kalkulátor vypočítá kolik čeho dolít.<br><br><strong>Shortfill</strong> — pro přidání nikotinových shotů do hotových liquidů bez nikotinu. Zadáte objem lahvičky, sílu shotů a cílovou sílu nikotinu. Kalkulátor vypočítá kolik shotů potřebujete.<br><br><strong>Shisha / Hookah</strong> — kalkulátor pro míchání glycerinové melasy pro vodní dýmku. Pracuje s glycerinem jako hlavní nosnou kapalinou.<br><br><strong>Ředění nikotinové báze</strong> — pro ředění příliš silné nikotinové báze na nižší koncentraci. Užitečné když máte silnou bázi (např. 72 mg/ml) a potřebujete ji zředit na pracovní sílu.</p>
                     </section>
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.steeping_title">Zrání (steeping)</h4>
-                        <p data-i18n="manual.steeping_text">Většina liquidů potřebuje po namíchání čas na zrání — příchutě se lépe propojí a výsledná chuť je plnější. Doba zrání závisí na typu příchutě: ovocné příchutě 1–3 dny, krémové a tabákové 1–3 týdny. LiquiMixer umí nastavit připomínku, která vás upozorní push notifikací, až bude liquid vyzrálý.</p>
+                        <p data-i18n="manual.steeping_text">Většina liquidů potřebuje po namíchání čas na zrání — příchutě se lépe propojí a výsledná chuť je plnější. Doba zrání závisí na typu příchutě:<br><br><strong>Ovocné příchutě:</strong> 1–3 dny. Často jsou dobré i hned po namíchání.<br><strong>Nápojové příchutě:</strong> 3–7 dní.<br><strong>Krémové a dezertní:</strong> 1–2 týdny. Chuť se výrazně zlepší po vyzrání.<br><strong>Tabákové příchutě:</strong> 2–4 týdny. Potřebují nejdelší dobu zrání.<br><br>Během zrání skladujte liquid na tmavém místě při pokojové teplotě. Občas lahvičku protřepejte. LiquiMixer umí nastavit připomínku, která vás upozorní push notifikací, až bude liquid vyzrálý.</p>
                     </section>
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.recipes_title">Recepty</h4>
-                        <p data-i18n="manual.recipes_text">Každý výpočet můžete uložit jako recept pro pozdější použití. Recepty lze sdílet s ostatními uživateli do veřejné databáze, kde je mohou hodnotit. Při sdílení prochází recept automatickou kontrolou obsahu. Recepty můžete také sdílet přímo přes odkaz nebo QR kód.</p>
+                        <p data-i18n="manual.recipes_text">Každý výpočet můžete uložit jako recept pro pozdější použití. Uložený recept obsahuje všechny ingredience, jejich přesné objemy a nastavení. Recepty lze sdílet s ostatními uživateli do veřejné databáze, kde je mohou hodnotit a komentovat. Při sdílení prochází recept automatickou kontrolou obsahu. Recepty můžete také sdílet přímo přes odkaz nebo QR kód — příjemce si recept otevře v LiquiMixeru a může si ho rovnou namíchat.</p>
                     </section>
 
                     <section class="terms-section-content">
@@ -746,17 +761,22 @@
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.subscription_title">Předplatné PRO</h4>
-                        <p data-i18n="manual.subscription_text">Základní kalkulátory (Liquid, Shake &amp; Vape, Shortfill, Shisha, Dilute) jsou zdarma. Předplatné PRO odemkne: Liquid PRO kalkulátor (až 5 příchutí), ukládání receptů do cloudu, přístup k databázi tisíců příchutí s doporučeným dávkováním, připomínky zrání s push notifikacemi a sledování skladu produktů.</p>
+                        <p data-i18n="manual.subscription_text">Základní kalkulátory (Liquid, Shake &amp; Vape, Shortfill, Shisha, Ředění báze) jsou zdarma pro všechny uživatele. Předplatné PRO odemkne pokročilé funkce: Liquid PRO kalkulátor (až 4 příchutě současně), ukládání receptů do cloudu se synchronizací mezi zařízeními, přístup k databázi tisíců příchutí s doporučeným dávkováním od výrobce, připomínky zrání s push notifikacemi, sledování skladu produktů a prioritní podporu.</p>
                     </section>
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.tips_title">Tipy pro začátečníky</h4>
-                        <p data-i18n="manual.tips_text">1. Začněte s jednoduchými recepty — jedna příchuť, 10 %, poměr 50/50.<br>2. Vždy používejte ochranné rukavice při práci s nikotinem.<br>3. Míchejte v čistých nádobách a skladujte na tmavém, chladném místě.<br>4. Nechte liquid vyzrát — chuť se výrazně zlepší.<br>5. Zapisujte si recepty — i malá změna v procentech může výrazně změnit chuť.</p>
+                        <p data-i18n="manual.tips_text">1. Začněte s jednoduchými recepty — jedna příchuť, 8–12 %, poměr 50/50.<br>2. Vždy používejte ochranné rukavice při práci s nikotinem — nikotin se vstřebává kůží.<br>3. Míchejte v čistých nádobách a skladujte na tmavém, chladném místě mimo dosah dětí.<br>4. Nechte liquid vyzrát — chuť se výrazně zlepší, zejména u krémových a tabákových příchutí.<br>5. Zapisujte si recepty — i malá změna v procentech může výrazně změnit chuť.<br>6. Nepřekračujte doporučené dávkování příchutí — více neznamená silnější chuť, naopak může dojít k přesycení.<br>7. Při míchání více příchutí začněte s nižšími procenty a postupně upravujte.</p>
+                    </section>
+
+                    <section class="terms-section-content">
+                        <h4 data-i18n="manual.safety_title">Bezpečnost při míchání</h4>
+                        <p data-i18n="manual.safety_text">Nikotin je jedovatá látka — při práci s koncentrovanou nikotinovou bází (zejména 72 mg/ml a výše) vždy používejte ochranné rukavice a pracujte v dobře větraném prostoru. Při potřísnění kůže ihned omyjte vodou a mýdlem. Nikotinovou bázi skladujte mimo dosah dětí a zvířat v uzamčené skříňce. Hotové liquidy skladujte v lahvičkách s dětským bezpečnostním uzávěrem. LiquiMixer je výpočetní nástroj — veškerou odpovědnost za bezpečné míchání a manipulaci s ingrediencemi nese uživatel.</p>
                     </section>
 
                     <section class="terms-section-content">
                         <h4 data-i18n="manual.offline_title">Offline režim</h4>
-                        <p data-i18n="manual.offline_text">LiquiMixer funguje i bez připojení k internetu. Po prvním načtení se aplikace uloží do zařízení a můžete ji používat kdykoliv. Na mobilu si ji můžete přidat na plochu jako běžnou aplikaci.</p>
+                        <p data-i18n="manual.offline_text">LiquiMixer funguje i bez připojení k internetu. Po prvním načtení se aplikace uloží do zařízení a můžete ji používat kdykoliv. Na mobilu si ji můžete přidat na plochu jako běžnou aplikaci — stačí v prohlížeči zvolit 'Přidat na plochu' nebo 'Nainstalovat'. Aplikace se pak chová jako nativní appka s vlastní ikonou.</p>
                     </section>
                 </div>
                 
