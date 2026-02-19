@@ -19,8 +19,7 @@ backup_*/
 backup_*.sql
 current_flavors*.sql
 
-# Cursor notes
-.cursor_notes.md
+# Cursor notes - nyní editovatelné přes Cascade (součást repo)
 
 
 
