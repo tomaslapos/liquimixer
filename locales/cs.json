@@ -1034,7 +1034,7 @@
     "basics_title": "Jak LiquiMixer funguje",
     "basics_text": "LiquiMixer je kalkulátor pro míchání e-liquidů, shisha melasy a dalších směsí. Stačí zadat požadované hodnoty (objem, sílu nikotinu, poměr PG/VG a příchutě) a kalkulátor automaticky vypočítá přesné množství každé ingredience v mililitrech.",
     "pgvg_title": "Co je PG a VG?",
-    "pgvg_text": "PG (propylenglykol) a VG (vegetable glycerin) jsou dvě základní složky každého liquidu. PG přenáší chuť a vytváří „throat hit" (pocit v krku). VG vytváří hustý dým/páru. Poměr PG/VG ovlivňuje výsledný zážitek — více VG = více páry, více PG = silnější chuť. Běžné poměry jsou 50/50, 30/70 nebo 20/80 (PG/VG).",
+    "pgvg_text": "PG (propylenglykol) a VG (vegetable glycerin) jsou dvě základní složky každého liquidu. PG přenáší chuť a vytváří \\\"throat hit\\\" (pocit v krku). VG vytváří hustý dým/páru. Poměr PG/VG ovlivňuje výsledný zážitek — více VG = více páry, více PG = silnější chuť. Běžné poměry jsou 50/50, 30/70 nebo 20/80 (PG/VG).",
     "calc_title": "Jak funguje výpočet",
     "calc_text": "Kalkulátor pracuje s celkovým objemem, který chcete namíchat. Z tohoto objemu nejprve vypočítá množství nikotinové báze potřebné pro dosažení cílové síly nikotinu. Poté odečte objem příchutí (zadáváte v procentech z celku). Zbytek doplní čistým PG a VG tak, aby výsledný poměr odpovídal vašemu nastavení. Důležité je, že příchutě jsou většinou na PG bázi — kalkulátor toto automaticky zohledňuje ve výsledném poměru.",
     "nic_title": "Nikotinová báze",
