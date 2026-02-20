@@ -996,54 +996,205 @@ function handleGdprResult() {
     if (!gdprResult) return;
 
     const lang = params.get('lang') || document.documentElement.lang || 'en';
+    const S = '#00ff88', W = '#ffaa00', E = '#ff4444';
     const msgs = {
         deleted: {
-            cs: { h: 'Váš účet byl smazán', m: 'Všechna vaše data byla nenávratně odstraněna v souladu s GDPR.', icon: '✓', color: '#00ff88' },
-            sk: { h: 'Váš účet bol zmazaný', m: 'Všetky vaše dáta boli nenávratne odstránené v súlade s GDPR.', icon: '✓', color: '#00ff88' },
-            en: { h: 'Your account has been deleted', m: 'All your data has been permanently removed in compliance with GDPR.', icon: '✓', color: '#00ff88' },
-            de: { h: 'Ihr Konto wurde gelöscht', m: 'Alle Ihre Daten wurden gemäß DSGVO dauerhaft entfernt.', icon: '✓', color: '#00ff88' },
-            fr: { h: 'Votre compte a été supprimé', m: 'Toutes vos données ont été définitivement supprimées conformément au RGPD.', icon: '✓', color: '#00ff88' },
-            es: { h: 'Tu cuenta ha sido eliminada', m: 'Todos tus datos han sido eliminados permanentemente de acuerdo con el RGPD.', icon: '✓', color: '#00ff88' }
+            cs: { h: 'Váš účet byl smazán', m: 'Všechna vaše data byla nenávratně odstraněna v souladu s GDPR.', icon: '✓', color: S },
+            sk: { h: 'Váš účet bol zmazaný', m: 'Všetky vaše dáta boli nenávratne odstránené v súlade s GDPR.', icon: '✓', color: S },
+            en: { h: 'Your account has been deleted', m: 'All your data has been permanently removed in compliance with GDPR.', icon: '✓', color: S },
+            de: { h: 'Ihr Konto wurde gelöscht', m: 'Alle Ihre Daten wurden gemäß DSGVO dauerhaft entfernt.', icon: '✓', color: S },
+            fr: { h: 'Votre compte a été supprimé', m: 'Toutes vos données ont été définitivement supprimées conformément au RGPD.', icon: '✓', color: S },
+            es: { h: 'Tu cuenta ha sido eliminada', m: 'Todos tus datos han sido eliminados permanentemente de acuerdo con el RGPD.', icon: '✓', color: S },
+            it: { h: 'Il tuo account è stato eliminato', m: 'Tutti i tuoi dati sono stati rimossi permanentemente in conformità con il GDPR.', icon: '✓', color: S },
+            pt: { h: 'A sua conta foi eliminada', m: 'Todos os seus dados foram permanentemente removidos em conformidade com o RGPD.', icon: '✓', color: S },
+            pl: { h: 'Twoje konto zostało usunięte', m: 'Wszystkie Twoje dane zostały trwale usunięte zgodnie z RODO.', icon: '✓', color: S },
+            nl: { h: 'Uw account is verwijderd', m: 'Al uw gegevens zijn permanent verwijderd in overeenstemming met de AVG.', icon: '✓', color: S },
+            ru: { h: 'Ваш аккаунт удалён', m: 'Все ваши данные были безвозвратно удалены в соответствии с GDPR.', icon: '✓', color: S },
+            uk: { h: 'Ваш акаунт видалено', m: 'Усі ваші дані було безповоротно видалено відповідно до GDPR.', icon: '✓', color: S },
+            ro: { h: 'Contul dvs. a fost șters', m: 'Toate datele dvs. au fost șterse permanent în conformitate cu GDPR.', icon: '✓', color: S },
+            hu: { h: 'Fiókja törölve', m: 'Minden adata véglegesen eltávolításra került a GDPR-nek megfelelően.', icon: '✓', color: S },
+            bg: { h: 'Акаунтът ви е изтрит', m: 'Всички ваши данни са окончателно премахнати в съответствие с GDPR.', icon: '✓', color: S },
+            hr: { h: 'Vaš račun je izbrisan', m: 'Svi vaši podaci trajno su uklonjeni u skladu s GDPR-om.', icon: '✓', color: S },
+            sr: { h: 'Ваш налог је обрисан', m: 'Сви ваши подаци су трајно уклоњени у складу са ГДПР-ом.', icon: '✓', color: S },
+            el: { h: 'Ο λογαριασμός σας διαγράφηκε', m: 'Όλα τα δεδομένα σας αφαιρέθηκαν μόνιμα σύμφωνα με τον GDPR.', icon: '✓', color: S },
+            tr: { h: 'Hesabınız silindi', m: 'Tüm verileriniz KVKK uyarınca kalıcı olarak kaldırıldı.', icon: '✓', color: S },
+            fi: { h: 'Tilisi on poistettu', m: 'Kaikki tietosi on poistettu pysyvästi GDPR:n mukaisesti.', icon: '✓', color: S },
+            sv: { h: 'Ditt konto har raderats', m: 'All din data har permanent tagits bort i enlighet med GDPR.', icon: '✓', color: S },
+            no: { h: 'Kontoen din er slettet', m: 'Alle dine data er permanent fjernet i samsvar med GDPR.', icon: '✓', color: S },
+            da: { h: 'Din konto er slettet', m: 'Alle dine data er permanent fjernet i overensstemmelse med GDPR.', icon: '✓', color: S },
+            lt: { h: 'Jūsų paskyra ištrinta', m: 'Visi jūsų duomenys buvo negrįžtamai pašalinti pagal BDAR.', icon: '✓', color: S },
+            lv: { h: 'Jūsu konts ir dzēsts', m: 'Visi jūsu dati ir neatgriezeniski dzēsti saskaņā ar VDAR.', icon: '✓', color: S },
+            et: { h: 'Teie konto on kustutatud', m: 'Kõik teie andmed on jäädavalt eemaldatud vastavalt GDPR-ile.', icon: '✓', color: S },
+            ja: { h: 'アカウントが削除されました', m: 'GDPRに準拠して、すべてのデータが完全に削除されました。', icon: '✓', color: S },
+            ko: { h: '계정이 삭제되었습니다', m: 'GDPR에 따라 모든 데이터가 영구적으로 삭제되었습니다.', icon: '✓', color: S },
+            'zh-CN': { h: '您的账户已删除', m: '根据GDPR，您的所有数据已被永久删除。', icon: '✓', color: S },
+            'zh-TW': { h: '您的帳戶已刪除', m: '根據GDPR，您的所有資料已被永久刪除。', icon: '✓', color: S },
+            'ar-SA': { h: 'تم حذف حسابك', m: 'تم حذف جميع بياناتك نهائيًا وفقًا للائحة GDPR.', icon: '✓', color: S }
         },
         cancelled: {
-            cs: { h: 'Váš účet zůstává aktivní', m: 'Děkujeme, že zůstáváte s LiquiMixer! Požadavek na smazání byl zrušen.', icon: '✓', color: '#00ff88' },
-            sk: { h: 'Váš účet zostáva aktívny', m: 'Ďakujeme, že zostávate s LiquiMixer! Požiadavka na zmazanie bola zrušená.', icon: '✓', color: '#00ff88' },
-            en: { h: 'Your account remains active', m: 'Thank you for staying with LiquiMixer! The deletion request has been cancelled.', icon: '✓', color: '#00ff88' },
-            de: { h: 'Ihr Konto bleibt aktiv', m: 'Danke, dass Sie bei LiquiMixer bleiben! Der Löschantrag wurde storniert.', icon: '✓', color: '#00ff88' },
-            fr: { h: 'Votre compte reste actif', m: 'Merci de rester avec LiquiMixer ! La demande de suppression a été annulée.', icon: '✓', color: '#00ff88' },
-            es: { h: 'Tu cuenta sigue activa', m: '¡Gracias por quedarte con LiquiMixer! La solicitud de eliminación ha sido cancelada.', icon: '✓', color: '#00ff88' }
+            cs: { h: 'Váš účet zůstává aktivní', m: 'Děkujeme, že zůstáváte s LiquiMixer! Požadavek na smazání byl zrušen.', icon: '✓', color: S },
+            sk: { h: 'Váš účet zostáva aktívny', m: 'Ďakujeme, že zostávate s LiquiMixer! Požiadavka na zmazanie bola zrušená.', icon: '✓', color: S },
+            en: { h: 'Your account remains active', m: 'Thank you for staying with LiquiMixer! The deletion request has been cancelled.', icon: '✓', color: S },
+            de: { h: 'Ihr Konto bleibt aktiv', m: 'Danke, dass Sie bei LiquiMixer bleiben! Der Löschantrag wurde storniert.', icon: '✓', color: S },
+            fr: { h: 'Votre compte reste actif', m: 'Merci de rester avec LiquiMixer ! La demande de suppression a été annulée.', icon: '✓', color: S },
+            es: { h: 'Tu cuenta sigue activa', m: '¡Gracias por quedarte con LiquiMixer! La solicitud de eliminación ha sido cancelada.', icon: '✓', color: S },
+            it: { h: 'Il tuo account resta attivo', m: 'Grazie per restare con LiquiMixer! La richiesta di cancellazione è stata annullata.', icon: '✓', color: S },
+            pt: { h: 'A sua conta permanece ativa', m: 'Obrigado por ficar com o LiquiMixer! O pedido de eliminação foi cancelado.', icon: '✓', color: S },
+            pl: { h: 'Twoje konto pozostaje aktywne', m: 'Dziękujemy, że zostajesz z LiquiMixer! Żądanie usunięcia zostało anulowane.', icon: '✓', color: S },
+            nl: { h: 'Uw account blijft actief', m: 'Bedankt dat u bij LiquiMixer blijft! Het verwijderingsverzoek is geannuleerd.', icon: '✓', color: S },
+            ru: { h: 'Ваш аккаунт остаётся активным', m: 'Спасибо, что остаётесь с LiquiMixer! Запрос на удаление отменён.', icon: '✓', color: S },
+            uk: { h: 'Ваш акаунт залишається активним', m: 'Дякуємо, що залишаєтесь з LiquiMixer! Запит на видалення скасовано.', icon: '✓', color: S },
+            ro: { h: 'Contul dvs. rămâne activ', m: 'Vă mulțumim că rămâneți cu LiquiMixer! Cererea de ștergere a fost anulată.', icon: '✓', color: S },
+            hu: { h: 'Fiókja aktív marad', m: 'Köszönjük, hogy marad a LiquiMixerrel! A törlési kérelem visszavonva.', icon: '✓', color: S },
+            bg: { h: 'Акаунтът ви остава активен', m: 'Благодарим, че оставате с LiquiMixer! Заявката за изтриване е отменена.', icon: '✓', color: S },
+            hr: { h: 'Vaš račun ostaje aktivan', m: 'Hvala što ostajete s LiquiMixerom! Zahtjev za brisanje je otkazan.', icon: '✓', color: S },
+            sr: { h: 'Ваш налог остаје активан', m: 'Хвала што остајете са LiquiMixer-ом! Захтев за брисање је отказан.', icon: '✓', color: S },
+            el: { h: 'Ο λογαριασμός σας παραμένει ενεργός', m: 'Ευχαριστούμε που μένετε με το LiquiMixer! Το αίτημα διαγραφής ακυρώθηκε.', icon: '✓', color: S },
+            tr: { h: 'Hesabınız aktif kalıyor', m: 'LiquiMixer ile kaldığınız için teşekkürler! Silme talebi iptal edildi.', icon: '✓', color: S },
+            fi: { h: 'Tilisi pysyy aktiivisena', m: 'Kiitos että pysyt LiquiMixerin käyttäjänä! Poistopyyntö on peruutettu.', icon: '✓', color: S },
+            sv: { h: 'Ditt konto förblir aktivt', m: 'Tack för att du stannar med LiquiMixer! Raderingsbegäran har avbrutits.', icon: '✓', color: S },
+            no: { h: 'Kontoen din forblir aktiv', m: 'Takk for at du blir med LiquiMixer! Sletteforespørselen er kansellert.', icon: '✓', color: S },
+            da: { h: 'Din konto forbliver aktiv', m: 'Tak fordi du bliver hos LiquiMixer! Sletteanmodningen er annulleret.', icon: '✓', color: S },
+            lt: { h: 'Jūsų paskyra lieka aktyvi', m: 'Ačiū, kad liekate su LiquiMixer! Ištrynimo užklausa atšaukta.', icon: '✓', color: S },
+            lv: { h: 'Jūsu konts paliek aktīvs', m: 'Paldies, ka paliekat ar LiquiMixer! Dzēšanas pieprasījums ir atcelts.', icon: '✓', color: S },
+            et: { h: 'Teie konto jääb aktiivseks', m: 'Täname, et jääte LiquiMixeriga! Kustutamistaotlus on tühistatud.', icon: '✓', color: S },
+            ja: { h: 'アカウントは有効です', m: 'LiquiMixerをご利用いただきありがとうございます！削除リクエストはキャンセルされました。', icon: '✓', color: S },
+            ko: { h: '계정이 활성 상태입니다', m: 'LiquiMixer를 계속 이용해 주셔서 감사합니다! 삭제 요청이 취소되었습니다.', icon: '✓', color: S },
+            'zh-CN': { h: '您的账户保持活跃', m: '感谢您继续使用LiquiMixer！删除请求已取消。', icon: '✓', color: S },
+            'zh-TW': { h: '您的帳戶保持活躍', m: '感謝您繼續使用LiquiMixer！刪除請求已取消。', icon: '✓', color: S },
+            'ar-SA': { h: 'حسابك لا يزال نشطًا', m: 'شكرًا لبقائك مع LiquiMixer! تم إلغاء طلب الحذف.', icon: '✓', color: S }
         },
         expired: {
-            cs: { h: 'Odkaz vypršel', m: 'Platnost tohoto odkazu vypršela (24 hodin). Pokud si stále přejete smazat účet, podejte nový požadavek.', icon: '⚠', color: '#ffaa00' },
-            sk: { h: 'Odkaz vypršal', m: 'Platnosť tohto odkazu vypršala (24 hodín). Ak si stále prajete zmazať účet, podajte novú požiadavku.', icon: '⚠', color: '#ffaa00' },
-            en: { h: 'Link expired', m: 'This link has expired (24 hours). If you still wish to delete your account, please submit a new request.', icon: '⚠', color: '#ffaa00' },
-            de: { h: 'Link abgelaufen', m: 'Dieser Link ist abgelaufen (24 Stunden). Stellen Sie bitte einen neuen Antrag.', icon: '⚠', color: '#ffaa00' },
-            fr: { h: 'Lien expiré', m: 'Ce lien a expiré (24 heures). Veuillez soumettre une nouvelle demande.', icon: '⚠', color: '#ffaa00' },
-            es: { h: 'Enlace caducado', m: 'Este enlace ha caducado (24 horas). Envía una nueva solicitud.', icon: '⚠', color: '#ffaa00' }
+            cs: { h: 'Odkaz vypršel', m: 'Platnost tohoto odkazu vypršela (24 hodin). Pokud si stále přejete smazat účet, podejte nový požadavek.', icon: '⚠', color: W },
+            sk: { h: 'Odkaz vypršal', m: 'Platnosť tohto odkazu vypršala (24 hodín). Ak si stále prajete zmazať účet, podajte novú požiadavku.', icon: '⚠', color: W },
+            en: { h: 'Link expired', m: 'This link has expired (24 hours). If you still wish to delete your account, please submit a new request.', icon: '⚠', color: W },
+            de: { h: 'Link abgelaufen', m: 'Dieser Link ist abgelaufen (24 Stunden). Stellen Sie bitte einen neuen Antrag.', icon: '⚠', color: W },
+            fr: { h: 'Lien expiré', m: 'Ce lien a expiré (24 heures). Veuillez soumettre une nouvelle demande.', icon: '⚠', color: W },
+            es: { h: 'Enlace caducado', m: 'Este enlace ha caducado (24 horas). Envía una nueva solicitud.', icon: '⚠', color: W },
+            it: { h: 'Link scaduto', m: 'Questo link è scaduto (24 ore). Invia una nuova richiesta.', icon: '⚠', color: W },
+            pt: { h: 'Link expirado', m: 'Este link expirou (24 horas). Envie um novo pedido.', icon: '⚠', color: W },
+            pl: { h: 'Link wygasł', m: 'Ten link wygasł (24 godziny). Złóż nowe żądanie.', icon: '⚠', color: W },
+            nl: { h: 'Link verlopen', m: 'Deze link is verlopen (24 uur). Dien een nieuw verzoek in.', icon: '⚠', color: W },
+            ru: { h: 'Ссылка истекла', m: 'Срок действия ссылки истёк (24 часа). Подайте новый запрос.', icon: '⚠', color: W },
+            uk: { h: 'Посилання прострочене', m: 'Термін дії посилання минув (24 години). Подайте новий запит.', icon: '⚠', color: W },
+            ro: { h: 'Link expirat', m: 'Acest link a expirat (24 ore). Trimiteți o nouă cerere.', icon: '⚠', color: W },
+            hu: { h: 'A link lejárt', m: 'Ez a link lejárt (24 óra). Kérjük, küldjön új kérelmet.', icon: '⚠', color: W },
+            bg: { h: 'Линкът е изтекъл', m: 'Този линк е изтекъл (24 часа). Подайте нова заявка.', icon: '⚠', color: W },
+            hr: { h: 'Poveznica je istekla', m: 'Ova poveznica je istekla (24 sata). Pošaljite novi zahtjev.', icon: '⚠', color: W },
+            sr: { h: 'Линк је истекао', m: 'Овај линк је истекао (24 сата). Поднесите нови захтев.', icon: '⚠', color: W },
+            el: { h: 'Ο σύνδεσμος έληξε', m: 'Αυτός ο σύνδεσμος έληξε (24 ώρες). Υποβάλετε νέο αίτημα.', icon: '⚠', color: W },
+            tr: { h: 'Bağlantı süresi doldu', m: 'Bu bağlantının süresi doldu (24 saat). Yeni bir talep gönderin.', icon: '⚠', color: W },
+            fi: { h: 'Linkki vanhentunut', m: 'Tämä linkki on vanhentunut (24 tuntia). Lähetä uusi pyyntö.', icon: '⚠', color: W },
+            sv: { h: 'Länken har gått ut', m: 'Denna länk har gått ut (24 timmar). Skicka en ny begäran.', icon: '⚠', color: W },
+            no: { h: 'Lenken er utløpt', m: 'Denne lenken er utløpt (24 timer). Send en ny forespørsel.', icon: '⚠', color: W },
+            da: { h: 'Linket er udløbet', m: 'Dette link er udløbet (24 timer). Indsend en ny anmodning.', icon: '⚠', color: W },
+            lt: { h: 'Nuoroda nebegalioja', m: 'Ši nuoroda nebegalioja (24 val.). Pateikite naują užklausą.', icon: '⚠', color: W },
+            lv: { h: 'Saite ir beigusies', m: 'Šī saite ir beigusies (24 stundas). Iesniedziet jaunu pieprasījumu.', icon: '⚠', color: W },
+            et: { h: 'Link on aegunud', m: 'See link on aegunud (24 tundi). Esitage uus taotlus.', icon: '⚠', color: W },
+            ja: { h: 'リンクの有効期限切れ', m: 'このリンクは期限切れです（24時間）。新しいリクエストを送信してください。', icon: '⚠', color: W },
+            ko: { h: '링크가 만료되었습니다', m: '이 링크는 만료되었습니다(24시간). 새 요청을 제출하세요.', icon: '⚠', color: W },
+            'zh-CN': { h: '链接已过期', m: '此链接已过期（24小时）。请提交新的请求。', icon: '⚠', color: W },
+            'zh-TW': { h: '連結已過期', m: '此連結已過期（24小時）。請提交新的請求。', icon: '⚠', color: W },
+            'ar-SA': { h: 'انتهت صلاحية الرابط', m: 'انتهت صلاحية هذا الرابط (24 ساعة). يرجى تقديم طلب جديد.', icon: '⚠', color: W }
         },
         invalid: {
-            cs: { h: 'Neplatný odkaz', m: 'Tento odkaz je neplatný nebo byl již použit.', icon: '✕', color: '#ff4444' },
-            sk: { h: 'Neplatný odkaz', m: 'Tento odkaz je neplatný alebo bol už použitý.', icon: '✕', color: '#ff4444' },
-            en: { h: 'Invalid link', m: 'This link is invalid or has already been used.', icon: '✕', color: '#ff4444' },
-            de: { h: 'Ungültiger Link', m: 'Dieser Link ist ungültig oder wurde bereits verwendet.', icon: '✕', color: '#ff4444' },
-            fr: { h: 'Lien invalide', m: 'Ce lien est invalide ou a déjà été utilisé.', icon: '✕', color: '#ff4444' },
-            es: { h: 'Enlace inválido', m: 'Este enlace es inválido o ya ha sido utilizado.', icon: '✕', color: '#ff4444' }
+            cs: { h: 'Neplatný odkaz', m: 'Tento odkaz je neplatný nebo byl již použit.', icon: '✕', color: E },
+            sk: { h: 'Neplatný odkaz', m: 'Tento odkaz je neplatný alebo bol už použitý.', icon: '✕', color: E },
+            en: { h: 'Invalid link', m: 'This link is invalid or has already been used.', icon: '✕', color: E },
+            de: { h: 'Ungültiger Link', m: 'Dieser Link ist ungültig oder wurde bereits verwendet.', icon: '✕', color: E },
+            fr: { h: 'Lien invalide', m: 'Ce lien est invalide ou a déjà été utilisé.', icon: '✕', color: E },
+            es: { h: 'Enlace inválido', m: 'Este enlace es inválido o ya ha sido utilizado.', icon: '✕', color: E },
+            it: { h: 'Link non valido', m: 'Questo link non è valido o è già stato utilizzato.', icon: '✕', color: E },
+            pt: { h: 'Link inválido', m: 'Este link é inválido ou já foi utilizado.', icon: '✕', color: E },
+            pl: { h: 'Nieprawidłowy link', m: 'Ten link jest nieprawidłowy lub został już użyty.', icon: '✕', color: E },
+            nl: { h: 'Ongeldige link', m: 'Deze link is ongeldig of is al gebruikt.', icon: '✕', color: E },
+            ru: { h: 'Недействительная ссылка', m: 'Эта ссылка недействительна или уже была использована.', icon: '✕', color: E },
+            uk: { h: 'Недійсне посилання', m: 'Це посилання недійсне або вже було використане.', icon: '✕', color: E },
+            ro: { h: 'Link invalid', m: 'Acest link este invalid sau a fost deja utilizat.', icon: '✕', color: E },
+            hu: { h: 'Érvénytelen link', m: 'Ez a link érvénytelen vagy már felhasználták.', icon: '✕', color: E },
+            bg: { h: 'Невалиден линк', m: 'Този линк е невалиден или вече е бил използван.', icon: '✕', color: E },
+            hr: { h: 'Nevažeća poveznica', m: 'Ova poveznica nije važeća ili je već korištena.', icon: '✕', color: E },
+            sr: { h: 'Неважећи линк', m: 'Овај линк је неважећи или је већ коришћен.', icon: '✕', color: E },
+            el: { h: 'Μη έγκυρος σύνδεσμος', m: 'Αυτός ο σύνδεσμος δεν είναι έγκυρος ή έχει ήδη χρησιμοποιηθεί.', icon: '✕', color: E },
+            tr: { h: 'Geçersiz bağlantı', m: 'Bu bağlantı geçersiz veya zaten kullanılmış.', icon: '✕', color: E },
+            fi: { h: 'Virheellinen linkki', m: 'Tämä linkki on virheellinen tai sitä on jo käytetty.', icon: '✕', color: E },
+            sv: { h: 'Ogiltig länk', m: 'Denna länk är ogiltig eller har redan använts.', icon: '✕', color: E },
+            no: { h: 'Ugyldig lenke', m: 'Denne lenken er ugyldig eller har allerede blitt brukt.', icon: '✕', color: E },
+            da: { h: 'Ugyldigt link', m: 'Dette link er ugyldigt eller er allerede blevet brugt.', icon: '✕', color: E },
+            lt: { h: 'Netinkama nuoroda', m: 'Ši nuoroda netinkama arba jau buvo panaudota.', icon: '✕', color: E },
+            lv: { h: 'Nederīga saite', m: 'Šī saite ir nederīga vai jau ir izmantota.', icon: '✕', color: E },
+            et: { h: 'Kehtetu link', m: 'See link on kehtetu või on juba kasutatud.', icon: '✕', color: E },
+            ja: { h: '無効なリンク', m: 'このリンクは無効か、すでに使用されています。', icon: '✕', color: E },
+            ko: { h: '잘못된 링크', m: '이 링크는 유효하지 않거나 이미 사용되었습니다.', icon: '✕', color: E },
+            'zh-CN': { h: '无效链接', m: '此链接无效或已被使用。', icon: '✕', color: E },
+            'zh-TW': { h: '無效連結', m: '此連結無效或已被使用。', icon: '✕', color: E },
+            'ar-SA': { h: 'رابط غير صالح', m: 'هذا الرابط غير صالح أو تم استخدامه بالفعل.', icon: '✕', color: E }
         },
         used: {
-            cs: { h: 'Odkaz již byl použit', m: 'Tento požadavek již byl zpracován.', icon: '⚠', color: '#ffaa00' },
-            sk: { h: 'Odkaz už bol použitý', m: 'Táto požiadavka už bola spracovaná.', icon: '⚠', color: '#ffaa00' },
-            en: { h: 'Link already used', m: 'This request has already been processed.', icon: '⚠', color: '#ffaa00' },
-            de: { h: 'Link bereits verwendet', m: 'Dieser Antrag wurde bereits bearbeitet.', icon: '⚠', color: '#ffaa00' },
-            fr: { h: 'Lien déjà utilisé', m: 'Cette demande a déjà été traitée.', icon: '⚠', color: '#ffaa00' },
-            es: { h: 'Enlace ya utilizado', m: 'Esta solicitud ya ha sido procesada.', icon: '⚠', color: '#ffaa00' }
+            cs: { h: 'Odkaz již byl použit', m: 'Tento požadavek již byl zpracován.', icon: '⚠', color: W },
+            sk: { h: 'Odkaz už bol použitý', m: 'Táto požiadavka už bola spracovaná.', icon: '⚠', color: W },
+            en: { h: 'Link already used', m: 'This request has already been processed.', icon: '⚠', color: W },
+            de: { h: 'Link bereits verwendet', m: 'Dieser Antrag wurde bereits bearbeitet.', icon: '⚠', color: W },
+            fr: { h: 'Lien déjà utilisé', m: 'Cette demande a déjà été traitée.', icon: '⚠', color: W },
+            es: { h: 'Enlace ya utilizado', m: 'Esta solicitud ya ha sido procesada.', icon: '⚠', color: W },
+            it: { h: 'Link già utilizzato', m: 'Questa richiesta è già stata elaborata.', icon: '⚠', color: W },
+            pt: { h: 'Link já utilizado', m: 'Este pedido já foi processado.', icon: '⚠', color: W },
+            pl: { h: 'Link już użyty', m: 'To żądanie zostało już przetworzone.', icon: '⚠', color: W },
+            nl: { h: 'Link al gebruikt', m: 'Dit verzoek is al verwerkt.', icon: '⚠', color: W },
+            ru: { h: 'Ссылка уже использована', m: 'Этот запрос уже обработан.', icon: '⚠', color: W },
+            uk: { h: 'Посилання вже використане', m: 'Цей запит вже оброблено.', icon: '⚠', color: W },
+            ro: { h: 'Link deja utilizat', m: 'Această cerere a fost deja procesată.', icon: '⚠', color: W },
+            hu: { h: 'A link már felhasználva', m: 'Ez a kérelem már feldolgozásra került.', icon: '⚠', color: W },
+            bg: { h: 'Линкът вече е използван', m: 'Тази заявка вече е обработена.', icon: '⚠', color: W },
+            hr: { h: 'Poveznica već korištena', m: 'Ovaj zahtjev je već obrađen.', icon: '⚠', color: W },
+            sr: { h: 'Линк је већ коришћен', m: 'Овај захтев је већ обрађен.', icon: '⚠', color: W },
+            el: { h: 'Ο σύνδεσμος χρησιμοποιήθηκε', m: 'Αυτό το αίτημα έχει ήδη επεξεργαστεί.', icon: '⚠', color: W },
+            tr: { h: 'Bağlantı zaten kullanıldı', m: 'Bu talep zaten işlendi.', icon: '⚠', color: W },
+            fi: { h: 'Linkki on jo käytetty', m: 'Tämä pyyntö on jo käsitelty.', icon: '⚠', color: W },
+            sv: { h: 'Länken har redan använts', m: 'Denna begäran har redan behandlats.', icon: '⚠', color: W },
+            no: { h: 'Lenken er allerede brukt', m: 'Denne forespørselen er allerede behandlet.', icon: '⚠', color: W },
+            da: { h: 'Linket er allerede brugt', m: 'Denne anmodning er allerede behandlet.', icon: '⚠', color: W },
+            lt: { h: 'Nuoroda jau panaudota', m: 'Ši užklausa jau apdorota.', icon: '⚠', color: W },
+            lv: { h: 'Saite jau izmantota', m: 'Šis pieprasījums jau ir apstrādāts.', icon: '⚠', color: W },
+            et: { h: 'Link on juba kasutatud', m: 'See taotlus on juba töödeldud.', icon: '⚠', color: W },
+            ja: { h: 'リンクは使用済みです', m: 'このリクエストはすでに処理されています。', icon: '⚠', color: W },
+            ko: { h: '링크가 이미 사용되었습니다', m: '이 요청은 이미 처리되었습니다.', icon: '⚠', color: W },
+            'zh-CN': { h: '链接已使用', m: '此请求已被处理。', icon: '⚠', color: W },
+            'zh-TW': { h: '連結已使用', m: '此請求已被處理。', icon: '⚠', color: W },
+            'ar-SA': { h: 'الرابط مستخدم بالفعل', m: 'تم معالجة هذا الطلب بالفعل.', icon: '⚠', color: W }
         },
         error: {
-            cs: { h: 'Nastala chyba', m: 'Zkuste to prosím znovu později.', icon: '✕', color: '#ff4444' },
-            sk: { h: 'Nastala chyba', m: 'Skúste to prosím znova neskôr.', icon: '✕', color: '#ff4444' },
-            en: { h: 'An error occurred', m: 'Please try again later.', icon: '✕', color: '#ff4444' },
-            de: { h: 'Ein Fehler ist aufgetreten', m: 'Bitte versuchen Sie es später erneut.', icon: '✕', color: '#ff4444' },
-            fr: { h: 'Une erreur est survenue', m: 'Veuillez réessayer plus tard.', icon: '✕', color: '#ff4444' },
-            es: { h: 'Se produjo un error', m: 'Por favor, inténtelo de nuevo más tarde.', icon: '✕', color: '#ff4444' }
+            cs: { h: 'Nastala chyba', m: 'Zkuste to prosím znovu později.', icon: '✕', color: E },
+            sk: { h: 'Nastala chyba', m: 'Skúste to prosím znova neskôr.', icon: '✕', color: E },
+            en: { h: 'An error occurred', m: 'Please try again later.', icon: '✕', color: E },
+            de: { h: 'Ein Fehler ist aufgetreten', m: 'Bitte versuchen Sie es später erneut.', icon: '✕', color: E },
+            fr: { h: 'Une erreur est survenue', m: 'Veuillez réessayer plus tard.', icon: '✕', color: E },
+            es: { h: 'Se produjo un error', m: 'Por favor, inténtelo de nuevo más tarde.', icon: '✕', color: E },
+            it: { h: 'Si è verificato un errore', m: 'Riprova più tardi.', icon: '✕', color: E },
+            pt: { h: 'Ocorreu um erro', m: 'Tente novamente mais tarde.', icon: '✕', color: E },
+            pl: { h: 'Wystąpił błąd', m: 'Spróbuj ponownie później.', icon: '✕', color: E },
+            nl: { h: 'Er is een fout opgetreden', m: 'Probeer het later opnieuw.', icon: '✕', color: E },
+            ru: { h: 'Произошла ошибка', m: 'Попробуйте позже.', icon: '✕', color: E },
+            uk: { h: 'Сталася помилка', m: 'Спробуйте пізніше.', icon: '✕', color: E },
+            ro: { h: 'A apărut o eroare', m: 'Încercați din nou mai târziu.', icon: '✕', color: E },
+            hu: { h: 'Hiba történt', m: 'Kérjük, próbálja újra később.', icon: '✕', color: E },
+            bg: { h: 'Възникна грешка', m: 'Моля, опитайте отново по-късно.', icon: '✕', color: E },
+            hr: { h: 'Došlo je do pogreške', m: 'Pokušajte ponovno kasnije.', icon: '✕', color: E },
+            sr: { h: 'Дошло је до грешке', m: 'Покушајте поново касније.', icon: '✕', color: E },
+            el: { h: 'Παρουσιάστηκε σφάλμα', m: 'Δοκιμάστε ξανά αργότερα.', icon: '✕', color: E },
+            tr: { h: 'Bir hata oluştu', m: 'Lütfen daha sonra tekrar deneyin.', icon: '✕', color: E },
+            fi: { h: 'Tapahtui virhe', m: 'Yritä myöhemmin uudelleen.', icon: '✕', color: E },
+            sv: { h: 'Ett fel uppstod', m: 'Försök igen senare.', icon: '✕', color: E },
+            no: { h: 'Det oppstod en feil', m: 'Prøv igjen senere.', icon: '✕', color: E },
+            da: { h: 'Der opstod en fejl', m: 'Prøv igen senere.', icon: '✕', color: E },
+            lt: { h: 'Įvyko klaida', m: 'Bandykite vėliau.', icon: '✕', color: E },
+            lv: { h: 'Radās kļūda', m: 'Lūdzu, mēģiniet vēlāk.', icon: '✕', color: E },
+            et: { h: 'Tekkis viga', m: 'Palun proovige hiljem uuesti.', icon: '✕', color: E },
+            ja: { h: 'エラーが発生しました', m: '後でもう一度お試しください。', icon: '✕', color: E },
+            ko: { h: '오류가 발생했습니다', m: '나중에 다시 시도하세요.', icon: '✕', color: E },
+            'zh-CN': { h: '发生错误', m: '请稍后重试。', icon: '✕', color: E },
+            'zh-TW': { h: '發生錯誤', m: '請稍後重試。', icon: '✕', color: E },
+            'ar-SA': { h: 'حدث خطأ', m: 'يرجى المحاولة مرة أخرى لاحقًا.', icon: '✕', color: E }
         }
     };
 
@@ -2874,13 +3025,13 @@ async function handleContact(event) {
     const honeypot = document.getElementById('contactHoneypot');
     if (honeypot && honeypot.value) {
         console.warn('Spam detected (honeypot)');
-        showContactStatus('Děkujeme za zprávu!', false); // Fake success pro boty
+        showContactStatus(t('intro.contact_success', 'Thank you!'), false); // Fake success pro boty
         return false;
     }
     
     // Rate limiting
     if (!contactRateLimiter.canSubmit()) {
-        showContactStatus('Počkejte prosím 30 sekund před dalším odesláním.', true);
+        showContactStatus(t('intro.contact_rate_limit', 'Please wait 30 seconds before sending another message.'), true);
         return false;
     }
     
@@ -2890,25 +3041,25 @@ async function handleContact(event) {
     
     // Validace
     if (!email || !subject || !message) {
-        showContactStatus('Vyplňte prosím všechna pole.', true);
+        showContactStatus(t('intro.contact_fill_all', 'Please fill in all fields.'), true);
         return false;
     }
     
     // Email validace
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        showContactStatus('Zadejte platnou e-mailovou adresu.', true);
+        showContactStatus(t('intro.contact_invalid_email', 'Please enter a valid email address.'), true);
         return false;
     }
     
     // Délka validace
     if (subject.length < 3 || subject.length > 200) {
-        showContactStatus('Předmět musí mít 3-200 znaků.', true);
+        showContactStatus(t('intro.contact_subject_length', 'Subject must be 3-200 characters.'), true);
         return false;
     }
     
     if (message.length < 10 || message.length > 5000) {
-        showContactStatus('Zpráva musí mít 10-5000 znaků.', true);
+        showContactStatus(t('intro.contact_message_length', 'Message must be 10-5000 characters.'), true);
         return false;
     }
     
@@ -2917,7 +3068,7 @@ async function handleContact(event) {
     const category = categorySelect ? categorySelect.value : 'other';
     
     if (!category) {
-        showContactStatus('Vyberte prosím kategorii.', true);
+        showContactStatus(t('intro.contact_category_placeholder', 'Please select a category.'), true);
         return false;
     }
     
@@ -2958,7 +3109,7 @@ async function handleContact(event) {
         }
         
         // Úspěch
-        showContactStatus('Děkujeme! Vaše zpráva byla odeslána.', false);
+        showContactStatus(t('intro.contact_success', 'Thank you! Your message has been sent.'), false);
         
         // Vymazat formulář (email přihlášeného uživatele zůstane)
         document.getElementById('contactSubject').value = '';
@@ -2968,7 +3119,7 @@ async function handleContact(event) {
         
     } catch (err) {
         console.error('Error sending contact message:', err);
-        showContactStatus('Omlouváme se, zprávu se nepodařilo odeslat. Zkuste to prosím později.', true);
+        showContactStatus(t('intro.contact_error', 'Sorry, the message could not be sent. Please try again later.'), true);
     } finally {
         setContactLoading(false);
     }
