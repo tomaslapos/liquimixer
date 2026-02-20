@@ -580,6 +580,16 @@ async function deleteClerkUser(clerkId: string): Promise<boolean> {
   }
 }
 
+// Helper: redirect to liquimixer.com with GDPR result parameters
+// Supabase Edge Functions cannot serve HTML (Content-Type forced to text/plain)
+function gdprRedirect(result: string, lang: string): Response {
+  const url = `https://www.liquimixer.com?gdpr=${result}&lang=${lang}`
+  return new Response(null, {
+    status: 302,
+    headers: { 'Location': url, 'Cache-Control': 'no-store' }
+  })
+}
+
 // ============================================
 // HLAVNÍ HANDLER
 // ============================================
@@ -598,25 +608,13 @@ serve(async (req) => {
 
   // Validate parameters
   if (!token || !action || !['delete', 'cancel'].includes(action)) {
-    return new Response(
-      generateHtmlPage(
-        t.error_title, t.invalid_heading, t.invalid_message, '',
-        false, true, t.back_link, t.footer, lang
-      ),
-      { status: 400, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-    )
+    return gdprRedirect('invalid', lang)
   }
 
   // Validate token format (UUID)
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   if (!uuidRegex.test(token)) {
-    return new Response(
-      generateHtmlPage(
-        t.error_title, t.invalid_heading, t.invalid_message, '',
-        false, true, t.back_link, t.footer, lang
-      ),
-      { status: 400, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-    )
+    return gdprRedirect('invalid', lang)
   }
 
   // Initialize Supabase with service role (bypasses RLS)
@@ -636,24 +634,12 @@ serve(async (req) => {
 
     if (fetchError || !gdprRequest) {
       console.error('GDPR request not found for token:', token)
-      return new Response(
-        generateHtmlPage(
-          t.error_title, t.invalid_heading, t.invalid_message, '',
-          false, true, t.back_link, t.footer, lang
-        ),
-        { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-      )
+      return gdprRedirect('invalid', lang)
     }
 
     // 2. Check if already processed
     if (gdprRequest.status !== 'pending') {
-      return new Response(
-        generateHtmlPage(
-          t.error_title, t.already_used_heading, t.already_used_message, '',
-          false, false, t.back_link, t.footer, lang
-        ),
-        { status: 410, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-      )
+      return gdprRedirect('used', lang)
     }
 
     // 3. Check expiration (24 hours)
@@ -665,13 +651,7 @@ serve(async (req) => {
         .update({ status: 'expired' })
         .eq('id', gdprRequest.id)
 
-      return new Response(
-        generateHtmlPage(
-          t.error_title, t.expired_heading, t.expired_message, '',
-          false, false, t.back_link, t.footer, lang
-        ),
-        { status: 410, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-      )
+      return gdprRedirect('expired', lang)
     }
 
     const clerkId = gdprRequest.clerk_id
@@ -718,13 +698,7 @@ serve(async (req) => {
 
       console.log(`GDPR deletion CANCELLED for ${clerkId} (${userEmail})`)
 
-      return new Response(
-        generateHtmlPage(
-          t.cancelled_title, t.cancelled_heading, t.cancelled_message, t.cancelled_detail,
-          true, false, t.back_link, t.footer, lang
-        ),
-        { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-      )
+      return gdprRedirect('cancelled', lang)
     }
 
     // ============================================
@@ -837,13 +811,7 @@ serve(async (req) => {
 
     console.log(`GDPR account DELETED for ${clerkId} (${userEmail}):`, deletionLog)
 
-    return new Response(
-      generateHtmlPage(
-        t.deleted_title, t.deleted_heading, t.deleted_message, t.deleted_detail,
-        true, false, t.back_link, t.footer, lang
-      ),
-      { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-    )
+    return gdprRedirect('deleted', lang)
 
   } catch (error) {
     console.error('GDPR confirm error:', error)
@@ -869,12 +837,6 @@ serve(async (req) => {
       // Ignore audit log errors
     }
 
-    return new Response(
-      generateHtmlPage(
-        t.error_title, t.error_heading, error.message || 'Internal server error', '',
-        false, true, t.back_link, t.footer, lang
-      ),
-      { status: 500, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-    )
+    return gdprRedirect('error', lang)
   }
 })

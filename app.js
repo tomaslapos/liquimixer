@@ -989,12 +989,94 @@ function getShishaNicotineDescriptionText(value) {
     return '';
 }
 
+// GDPR result page handler — shows overlay after redirect from Supabase edge function
+function handleGdprResult() {
+    const params = new URLSearchParams(window.location.search);
+    const gdprResult = params.get('gdpr');
+    if (!gdprResult) return;
+
+    const lang = params.get('lang') || document.documentElement.lang || 'en';
+    const msgs = {
+        deleted: {
+            cs: { h: 'Váš účet byl smazán', m: 'Všechna vaše data byla nenávratně odstraněna v souladu s GDPR.', icon: '✓', color: '#00ff88' },
+            sk: { h: 'Váš účet bol zmazaný', m: 'Všetky vaše dáta boli nenávratne odstránené v súlade s GDPR.', icon: '✓', color: '#00ff88' },
+            en: { h: 'Your account has been deleted', m: 'All your data has been permanently removed in compliance with GDPR.', icon: '✓', color: '#00ff88' },
+            de: { h: 'Ihr Konto wurde gelöscht', m: 'Alle Ihre Daten wurden gemäß DSGVO dauerhaft entfernt.', icon: '✓', color: '#00ff88' },
+            fr: { h: 'Votre compte a été supprimé', m: 'Toutes vos données ont été définitivement supprimées conformément au RGPD.', icon: '✓', color: '#00ff88' },
+            es: { h: 'Tu cuenta ha sido eliminada', m: 'Todos tus datos han sido eliminados permanentemente de acuerdo con el RGPD.', icon: '✓', color: '#00ff88' }
+        },
+        cancelled: {
+            cs: { h: 'Váš účet zůstává aktivní', m: 'Děkujeme, že zůstáváte s LiquiMixer! Požadavek na smazání byl zrušen.', icon: '✓', color: '#00ff88' },
+            sk: { h: 'Váš účet zostáva aktívny', m: 'Ďakujeme, že zostávate s LiquiMixer! Požiadavka na zmazanie bola zrušená.', icon: '✓', color: '#00ff88' },
+            en: { h: 'Your account remains active', m: 'Thank you for staying with LiquiMixer! The deletion request has been cancelled.', icon: '✓', color: '#00ff88' },
+            de: { h: 'Ihr Konto bleibt aktiv', m: 'Danke, dass Sie bei LiquiMixer bleiben! Der Löschantrag wurde storniert.', icon: '✓', color: '#00ff88' },
+            fr: { h: 'Votre compte reste actif', m: 'Merci de rester avec LiquiMixer ! La demande de suppression a été annulée.', icon: '✓', color: '#00ff88' },
+            es: { h: 'Tu cuenta sigue activa', m: '¡Gracias por quedarte con LiquiMixer! La solicitud de eliminación ha sido cancelada.', icon: '✓', color: '#00ff88' }
+        },
+        expired: {
+            cs: { h: 'Odkaz vypršel', m: 'Platnost tohoto odkazu vypršela (24 hodin). Pokud si stále přejete smazat účet, podejte nový požadavek.', icon: '⚠', color: '#ffaa00' },
+            sk: { h: 'Odkaz vypršal', m: 'Platnosť tohto odkazu vypršala (24 hodín). Ak si stále prajete zmazať účet, podajte novú požiadavku.', icon: '⚠', color: '#ffaa00' },
+            en: { h: 'Link expired', m: 'This link has expired (24 hours). If you still wish to delete your account, please submit a new request.', icon: '⚠', color: '#ffaa00' },
+            de: { h: 'Link abgelaufen', m: 'Dieser Link ist abgelaufen (24 Stunden). Stellen Sie bitte einen neuen Antrag.', icon: '⚠', color: '#ffaa00' },
+            fr: { h: 'Lien expiré', m: 'Ce lien a expiré (24 heures). Veuillez soumettre une nouvelle demande.', icon: '⚠', color: '#ffaa00' },
+            es: { h: 'Enlace caducado', m: 'Este enlace ha caducado (24 horas). Envía una nueva solicitud.', icon: '⚠', color: '#ffaa00' }
+        },
+        invalid: {
+            cs: { h: 'Neplatný odkaz', m: 'Tento odkaz je neplatný nebo byl již použit.', icon: '✕', color: '#ff4444' },
+            sk: { h: 'Neplatný odkaz', m: 'Tento odkaz je neplatný alebo bol už použitý.', icon: '✕', color: '#ff4444' },
+            en: { h: 'Invalid link', m: 'This link is invalid or has already been used.', icon: '✕', color: '#ff4444' },
+            de: { h: 'Ungültiger Link', m: 'Dieser Link ist ungültig oder wurde bereits verwendet.', icon: '✕', color: '#ff4444' },
+            fr: { h: 'Lien invalide', m: 'Ce lien est invalide ou a déjà été utilisé.', icon: '✕', color: '#ff4444' },
+            es: { h: 'Enlace inválido', m: 'Este enlace es inválido o ya ha sido utilizado.', icon: '✕', color: '#ff4444' }
+        },
+        used: {
+            cs: { h: 'Odkaz již byl použit', m: 'Tento požadavek již byl zpracován.', icon: '⚠', color: '#ffaa00' },
+            sk: { h: 'Odkaz už bol použitý', m: 'Táto požiadavka už bola spracovaná.', icon: '⚠', color: '#ffaa00' },
+            en: { h: 'Link already used', m: 'This request has already been processed.', icon: '⚠', color: '#ffaa00' },
+            de: { h: 'Link bereits verwendet', m: 'Dieser Antrag wurde bereits bearbeitet.', icon: '⚠', color: '#ffaa00' },
+            fr: { h: 'Lien déjà utilisé', m: 'Cette demande a déjà été traitée.', icon: '⚠', color: '#ffaa00' },
+            es: { h: 'Enlace ya utilizado', m: 'Esta solicitud ya ha sido procesada.', icon: '⚠', color: '#ffaa00' }
+        },
+        error: {
+            cs: { h: 'Nastala chyba', m: 'Zkuste to prosím znovu později.', icon: '✕', color: '#ff4444' },
+            sk: { h: 'Nastala chyba', m: 'Skúste to prosím znova neskôr.', icon: '✕', color: '#ff4444' },
+            en: { h: 'An error occurred', m: 'Please try again later.', icon: '✕', color: '#ff4444' },
+            de: { h: 'Ein Fehler ist aufgetreten', m: 'Bitte versuchen Sie es später erneut.', icon: '✕', color: '#ff4444' },
+            fr: { h: 'Une erreur est survenue', m: 'Veuillez réessayer plus tard.', icon: '✕', color: '#ff4444' },
+            es: { h: 'Se produjo un error', m: 'Por favor, inténtelo de nuevo más tarde.', icon: '✕', color: '#ff4444' }
+        }
+    };
+
+    const resultMsgs = msgs[gdprResult];
+    if (!resultMsgs) return;
+    const t = resultMsgs[lang] || resultMsgs['en'];
+
+    const overlay = document.createElement('div');
+    overlay.id = 'gdpr-result-overlay';
+    overlay.innerHTML = `
+        <div style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;">
+            <div style="max-width:480px;width:100%;text-align:center;background:rgba(30,30,40,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:40px 30px;backdrop-filter:blur(10px);">
+                <div style="font-size:28px;font-weight:900;background:linear-gradient(135deg,#ff00ff,#00ffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:24px;">LiquiMixer</div>
+                <div style="width:80px;height:80px;border-radius:50%;border:3px solid ${t.color};display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px;color:${t.color};">${t.icon}</div>
+                <h1 style="font-size:24px;margin-bottom:16px;color:${t.color};font-family:'Segoe UI',Tahoma,sans-serif;">${t.h}</h1>
+                <p style="font-size:16px;line-height:1.6;color:#cccccc;margin-bottom:30px;font-family:'Segoe UI',Tahoma,sans-serif;">${t.m}</p>
+                <button onclick="document.getElementById('gdpr-result-overlay').remove();history.replaceState(null,'',window.location.pathname);" style="background:linear-gradient(135deg,#ff00ff,#aa00ff);color:white;padding:12px 28px;border:none;border-radius:8px;font-weight:600;font-size:16px;cursor:pointer;">OK</button>
+                <p style="margin-top:20px;font-size:12px;color:#666666;">© 2026 LiquiMixer — WOOs, s. r. o.</p>
+            </div>
+        </div>`;
+    document.body.appendChild(overlay);
+    history.replaceState(null, '', window.location.pathname);
+}
+
 // DOM Elements
 let vgPgRatioSlider, targetNicotineSlider, flavorStrengthSlider;
 let nicotineTypeSelect, flavorTypeSelect;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // GDPR result page — redirect from Supabase edge function
+    handleGdprResult();
+
     initializeSliders();
     updateAllDisplays();
     initSearchStarsHover();
