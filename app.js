@@ -3025,13 +3025,13 @@ async function handleContact(event) {
     const honeypot = document.getElementById('contactHoneypot');
     if (honeypot && honeypot.value) {
         console.warn('Spam detected (honeypot)');
-        showContactStatus(t('intro.contact_success', 'Thank you!'), false); // Fake success pro boty
+        showContactStatus(t('menu.contact_success', 'Thank you!'), false); // Fake success pro boty
         return false;
     }
     
     // Rate limiting
     if (!contactRateLimiter.canSubmit()) {
-        showContactStatus(t('intro.contact_rate_limit', 'Please wait 30 seconds before sending another message.'), true);
+        showContactStatus(t('menu.contact_rate_limit', 'Please wait 30 seconds before sending another message.'), true);
         return false;
     }
     
@@ -3041,25 +3041,25 @@ async function handleContact(event) {
     
     // Validace
     if (!email || !subject || !message) {
-        showContactStatus(t('intro.contact_fill_all', 'Please fill in all fields.'), true);
+        showContactStatus(t('menu.contact_fill_all', 'Please fill in all fields.'), true);
         return false;
     }
     
     // Email validace
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        showContactStatus(t('intro.contact_invalid_email', 'Please enter a valid email address.'), true);
+        showContactStatus(t('menu.contact_invalid_email', 'Please enter a valid email address.'), true);
         return false;
     }
     
     // Délka validace
     if (subject.length < 3 || subject.length > 200) {
-        showContactStatus(t('intro.contact_subject_length', 'Subject must be 3-200 characters.'), true);
+        showContactStatus(t('menu.contact_subject_length', 'Subject must be 3-200 characters.'), true);
         return false;
     }
     
     if (message.length < 10 || message.length > 5000) {
-        showContactStatus(t('intro.contact_message_length', 'Message must be 10-5000 characters.'), true);
+        showContactStatus(t('menu.contact_message_length', 'Message must be 10-5000 characters.'), true);
         return false;
     }
     
@@ -3068,7 +3068,7 @@ async function handleContact(event) {
     const category = categorySelect ? categorySelect.value : 'other';
     
     if (!category) {
-        showContactStatus(t('intro.contact_category_placeholder', 'Please select a category.'), true);
+        showContactStatus(t('menu.contact_category_placeholder', 'Please select a category.'), true);
         return false;
     }
     
@@ -3109,7 +3109,7 @@ async function handleContact(event) {
         }
         
         // Úspěch
-        showContactStatus(t('intro.contact_success', 'Thank you! Your message has been sent.'), false);
+        showContactStatus(t('menu.contact_success', 'Thank you! Your message has been sent.'), false);
         
         // Vymazat formulář (email přihlášeného uživatele zůstane)
         document.getElementById('contactSubject').value = '';
@@ -3119,7 +3119,7 @@ async function handleContact(event) {
         
     } catch (err) {
         console.error('Error sending contact message:', err);
-        showContactStatus(t('intro.contact_error', 'Sorry, the message could not be sent. Please try again later.'), true);
+        showContactStatus(t('menu.contact_error', 'Sorry, the message could not be sent. Please try again later.'), true);
     } finally {
         setContactLoading(false);
     }
