@@ -22,6 +22,11 @@ current_flavors*.sql
 # Cursor notes - lokální (business plány, citlivé info)
 .cursor_notes.md
 
+# N8N workflow backups (contain API keys and secrets)
+n8n_workflows/
+n8n_backup.mjs
+temp_*
+
 
 
 
