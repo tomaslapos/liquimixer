@@ -162,7 +162,7 @@ function setupForegroundMessageHandler() {
         const notificationOptions = {
             body: payload.notification?.body || '',
             icon: '/icons/icon-192.png',
-            badge: '/icons/icon-192.png',
+            badge: '/icons/badge-96.png',
             tag: 'liquimixer-notification',
             data: payload.data
         };

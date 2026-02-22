@@ -30,7 +30,7 @@ messaging.onBackgroundMessage((payload) => {
     const notificationOptions = {
         body: payload.notification?.body || 'Máte novou zprávu',
         icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png',
+        badge: '/icons/badge-96.png',
         tag: 'liquimixer-maturity-reminder',
         data: payload.data || {},
         actions: [

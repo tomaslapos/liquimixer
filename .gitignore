@@ -7,6 +7,9 @@
 .DS_Store
 Thumbs.db
 
+# Node
+node_modules/
+
 # GP WebPay - obsahuje privátní klíče a dokumentaci
 GPWebpay/
 

@@ -738,7 +738,36 @@ serve(async (req) => {
       .select('id')
     deletionLog.fcm_tokens = deletedFcmTokens?.length || 0
 
-    // 4e. Delete subscriptions
+    // 4e. PRESERVE active subscription as grant before deletion
+    const { data: activeSubscriptions } = await supabaseAdmin
+      .from('subscriptions')
+      .select('*')
+      .eq('clerk_id', clerkId)
+      .eq('status', 'active')
+      .gte('valid_to', new Date().toISOString())
+
+    let subscriptionGrantsSaved = 0
+    if (activeSubscriptions && activeSubscriptions.length > 0) {
+      for (const sub of activeSubscriptions) {
+        await supabaseAdmin
+          .from('subscription_grants')
+          .insert({
+            email: userEmail,
+            original_clerk_id: clerkId,
+            plan_type: sub.plan_type || 'yearly',
+            valid_from: sub.valid_from,
+            valid_to: sub.valid_to,
+            amount: sub.amount,
+            currency: sub.currency,
+            notes: `GDPR deletion on ${new Date().toISOString()}. Original subscription ID: ${sub.id}`
+          })
+        subscriptionGrantsSaved++
+      }
+      console.log(`Saved ${subscriptionGrantsSaved} subscription grant(s) for ${userEmail}`)
+    }
+    deletionLog.subscription_grants_saved = subscriptionGrantsSaved
+
+    // 4f. Delete subscriptions
     const { data: deletedSubscriptions } = await supabaseAdmin
       .from('subscriptions')
       .delete()
@@ -746,7 +775,7 @@ serve(async (req) => {
       .select('id')
     deletionLog.subscriptions = deletedSubscriptions?.length || 0
 
-    // 4f. Delete payments
+    // 4g. Delete payments
     const { data: deletedPayments } = await supabaseAdmin
       .from('payments')
       .delete()
@@ -754,7 +783,7 @@ serve(async (req) => {
       .select('id')
     deletionLog.payments = deletedPayments?.length || 0
 
-    // 4g. Anonymize contact messages (keep for audit, remove PII)
+    // 4h. Anonymize contact messages (keep for audit, remove PII)
     const { data: anonymizedMessages } = await supabaseAdmin
       .from('contact_messages')
       .update({
@@ -768,7 +797,7 @@ serve(async (req) => {
       .select('id')
     deletionLog.contact_messages_anonymized = anonymizedMessages?.length || 0
 
-    // 4h. Delete user record
+    // 4i. Delete user record
     const { data: deletedUser } = await supabaseAdmin
       .from('users')
       .delete()

@@ -87,6 +87,99 @@ serve(async (req) => {
           .single()
 
         if (error || !subscription) {
+          // Check for subscription_grants (GDPR re-registration)
+          // Get user email from Clerk token or users table
+          let userEmail = tokenPayload.email
+          if (!userEmail) {
+            const { data: userData } = await supabaseAdmin
+              .from('users')
+              .select('email')
+              .eq('clerk_id', clerkId)
+              .single()
+            userEmail = userData?.email
+          }
+
+          if (userEmail) {
+            const { data: grant } = await supabaseAdmin
+              .from('subscription_grants')
+              .select('*')
+              .eq('email', userEmail)
+              .is('redeemed_at', null)
+              .gte('valid_to', new Date().toISOString())
+              .order('valid_to', { ascending: false })
+              .limit(1)
+              .single()
+
+            if (grant) {
+              // Double-check: grant must not be expired
+              const now = new Date()
+              const grantValidTo = new Date(grant.valid_to)
+              
+              if (grantValidTo <= now) {
+                // Grant expired — do NOT redeem, mark as expired
+                console.log(`Grant ${grant.id} expired (valid_to: ${grant.valid_to}), skipping`)
+                await supabaseAdmin
+                  .from('subscription_grants')
+                  .update({ notes: (grant.notes || '') + ` | Expired at check: ${now.toISOString()}` })
+                  .eq('id', grant.id)
+              } else {
+              // Redeem the grant — create active subscription
+              console.log(`Redeeming subscription grant ${grant.id} for ${userEmail}, valid until ${grant.valid_to}`)
+
+              const { data: newSub } = await supabaseAdmin
+                .from('subscriptions')
+                .insert({
+                  clerk_id: clerkId,
+                  plan_type: grant.plan_type || 'yearly',
+                  status: 'active',
+                  payment_status: 'paid',
+                  valid_from: grant.valid_from,
+                  valid_to: grant.valid_to,
+                  amount: grant.amount,
+                  currency: grant.currency,
+                  auto_renew: false,
+                  paid_at: grant.valid_from,
+                })
+                .select()
+                .single()
+
+              // Mark grant as redeemed
+              await supabaseAdmin
+                .from('subscription_grants')
+                .update({
+                  redeemed_at: new Date().toISOString(),
+                  redeemed_by: clerkId
+                })
+                .eq('id', grant.id)
+
+              if (newSub) {
+                const now2 = new Date()
+                const validTo = new Date(newSub.valid_to)
+                const daysLeft = Math.ceil((validTo.getTime() - now2.getTime()) / (1000 * 60 * 60 * 24))
+
+                return new Response(
+                  JSON.stringify({
+                    valid: true,
+                    subscription: {
+                      id: newSub.id,
+                      plan_type: newSub.plan_type,
+                      status: newSub.status,
+                      valid_from: newSub.valid_from,
+                      valid_to: newSub.valid_to,
+                      auto_renew: newSub.auto_renew
+                    },
+                    expiresAt: newSub.valid_to,
+                    daysLeft: daysLeft,
+                    needsRenewal: daysLeft <= RENEWAL_REMINDER_DAYS,
+                    restoredFromGrant: true
+                  }),
+                  { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+                )
+              }
+              } // close else (grant not expired)
+            } // close if (grant)
+          } // close if (userEmail)
+
           // Zkontrolovat expirované předplatné
           const { data: expiredSub } = await supabaseAdmin
             .from('subscriptions')
