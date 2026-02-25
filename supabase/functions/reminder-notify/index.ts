@@ -246,8 +246,8 @@ serve(async (req) => {
 
     console.log(`Checking reminders for date: ${currentDate}, hour: ${currentHour}`);
 
-    // Find reminders that should be sent today
-    // We check for reminders where remind_at is today and status is pending
+    // Find reminders that should be notified today
+    // We check for reminders where remind_at <= today, status is pending, and not yet notified (sent_at IS NULL)
     // Also exclude consumed reminders (consumed_at IS NULL)
     const { data: reminders, error: remindersError } = await supabase
       .from("recipe_reminders")
@@ -267,7 +267,8 @@ serve(async (req) => {
       `)
       .eq("status", "pending")
       .lte("remind_at", currentDate)
-      .is("consumed_at", null);
+      .is("consumed_at", null)
+      .is("sent_at", null);
 
     if (remindersError) {
       console.error("Error fetching reminders:", remindersError);
@@ -321,10 +322,10 @@ serve(async (req) => {
 
         if (!tokens || tokens.length === 0) {
           console.log(`No FCM tokens for user ${reminder.clerk_id}`);
-          // Mark as sent anyway to avoid repeated attempts
+          // Mark as matured (liquid is ready) and record notification attempt
           await supabase
             .from("recipe_reminders")
-            .update({ status: "sent", sent_at: new Date().toISOString() })
+            .update({ status: "matured", sent_at: new Date().toISOString() })
             .eq("id", reminder.id);
           continue;
         }
@@ -371,10 +372,10 @@ serve(async (req) => {
         }
 
         if (anySent) {
-          // Update reminder status
+          // Update reminder status — liquid is matured and ready to use
           await supabase
             .from("recipe_reminders")
-            .update({ status: "sent", sent_at: new Date().toISOString() })
+            .update({ status: "matured", sent_at: new Date().toISOString() })
             .eq("id", reminder.id);
 
           sentCount++;

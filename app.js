@@ -4257,7 +4257,7 @@ async function loadMaturedRecipeIds() {
         // Najít vyzrálé připomínky a uložit jejich recipe_id
         // Filtrovat spotřebované připomínky (consumed_at != null nebo stock_percent <= 0)
         reminders.forEach(r => {
-            if (r.status !== 'pending' || !r.recipe_id) return;
+            if ((r.status !== 'pending' && r.status !== 'matured') || !r.recipe_id) return;
             
             // Přeskočit spotřebované připomínky
             if (r.consumed_at != null) return;
@@ -12450,12 +12450,12 @@ function renderReminderItem(reminder, recipeId) {
     const mixedDate = new Date(reminder.mixed_at).toLocaleDateString();
     const remindDate = new Date(reminder.remind_at).toLocaleDateString();
     
-    // Kontrola vyzrálosti - remind_at <= dnes a status je pending
+    // Kontrola vyzrálosti - remind_at <= dnes a status je pending nebo matured
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const reminderDate = new Date(reminder.remind_at);
     reminderDate.setHours(0, 0, 0, 0);
-    const isMatured = reminder.status === 'pending' && reminderDate <= today;
+    const isMatured = (reminder.status === 'pending' || reminder.status === 'matured') && reminderDate <= today;
     
     // Stock tracking
     const stockPercent = reminder.stock_percent ?? 100;
@@ -12473,18 +12473,14 @@ function renderReminderItem(reminder, recipeId) {
     
     // Sestavit CSS třídy
     let statusClass = '';
-    if (reminder.status === 'sent') {
-        statusClass = 'sent';
-    } else if (reminder.status === 'cancelled') {
+    if (reminder.status === 'cancelled') {
         statusClass = 'cancelled';
     } else if (isMatured) {
         statusClass = 'matured';
     }
 
     let statusBadge = '';
-    if (reminder.status === 'sent') {
-        statusBadge = `<span class="reminder-status-badge sent">✓ ${t('reminder.sent', 'Odesláno')}</span>`;
-    } else if (reminder.status === 'cancelled') {
+    if (reminder.status === 'cancelled') {
         statusBadge = `<span class="reminder-status-badge cancelled">✕ ${t('reminder.cancelled', 'Cancelled')}</span>`;
     } else if (isMatured) {
         statusBadge = `<span class="reminder-status-badge matured">✓ ${t('reminder.matured', 'Matured')}</span>`;
@@ -12515,7 +12511,7 @@ function renderReminderItem(reminder, recipeId) {
                     <button type="button" class="stock-btn plus" onclick="event.stopPropagation(); updateReminderStockUI('${reminder.id}', '${recipeId}', +10)" title="+10%">+</button>
                 </div>
                 
-                ${reminder.status === 'pending' ? `
+                ${(reminder.status === 'pending' || reminder.status === 'matured') ? `
                     <div class="reminder-actions">
                         <button type="button" class="reminder-btn edit" onclick="event.stopPropagation(); showEditReminderModal('${reminder.id}', '${recipeId}')">${reminderEditIcon}</button>
                         <button type="button" class="reminder-btn delete" onclick="event.stopPropagation(); deleteReminderConfirm('${reminder.id}', '${recipeId}')">${reminderDeleteIcon}</button>
@@ -12600,7 +12596,7 @@ async function checkMaturedReminders() {
         // 2. Byly dnes již zavřeny (nezobrazí se znovu dnes)
         // 3. Byly zavřeny 3x nebo více (nezobrazí se vůbec)
         const maturedReminders = reminders.filter(r => {
-            if (r.status !== 'pending') return false;
+            if (r.status !== 'pending' && r.status !== 'matured') return false;
             
             // Přeskočit spotřebované připomínky
             if (r.consumed_at != null) return false;

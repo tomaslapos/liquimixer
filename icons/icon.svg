@@ -16,33 +16,29 @@
   <!-- Background -->
   <rect width="512" height="512" rx="80" fill="url(#bgGrad)"/>
   
-  <!-- Flask/Beaker shape -->
-  <g filter="url(#neonGlow)">
+  <!-- Flask/Beaker shape — centered in maskable safe zone (inner 80%) -->
+  <g filter="url(#neonGlow)" transform="translate(0, -20)">
     <!-- Flask body -->
-    <path d="M180 140 L180 280 L140 380 Q120 420 160 440 L352 440 Q392 420 372 380 L332 280 L332 140" 
+    <path d="M180 160 L180 290 L140 385 Q120 425 160 445 L352 445 Q392 425 372 385 L332 290 L332 160" 
           fill="none" stroke="#00ffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
     
     <!-- Flask neck -->
-    <path d="M180 140 L180 100 Q180 80 200 80 L312 80 Q332 80 332 100 L332 140" 
+    <path d="M180 160 L180 115 Q180 95 200 95 L312 95 Q332 95 332 115 L332 160" 
           fill="none" stroke="#00ffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
     
     <!-- Liquid inside -->
-    <path d="M160 360 Q140 400 175 420 L337 420 Q372 400 352 360 L320 300 L192 300 Z" 
+    <path d="M160 370 Q140 405 175 425 L337 425 Q372 405 352 370 L320 310 L192 310 Z" 
           fill="#ff00ff" opacity="0.6"/>
     
     <!-- Bubbles -->
-    <circle cx="220" cy="350" r="15" fill="#ff00ff" opacity="0.8"/>
-    <circle cx="280" cy="370" r="10" fill="#00ffff" opacity="0.8"/>
-    <circle cx="250" cy="330" r="12" fill="#ffff00" opacity="0.8"/>
+    <circle cx="220" cy="360" r="15" fill="#ff00ff" opacity="0.8"/>
+    <circle cx="280" cy="380" r="10" fill="#00ffff" opacity="0.8"/>
+    <circle cx="250" cy="340" r="12" fill="#ffff00" opacity="0.8"/>
     
     <!-- Drop -->
-    <path d="M256 180 Q280 220 256 250 Q232 220 256 180 Z" 
+    <path d="M256 195 Q280 235 256 265 Q232 235 256 195 Z" 
           fill="#00ff00" opacity="0.9"/>
   </g>
-  
-  <!-- L letter -->
-  <text x="256" y="480" font-family="Arial Black, sans-serif" font-size="60" font-weight="900" 
-        fill="#ff00ff" text-anchor="middle" filter="url(#neonGlow)">LM</text>
 </svg>
 
 

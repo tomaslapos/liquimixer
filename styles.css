@@ -1835,11 +1835,6 @@ body {
     border-color: rgba(0, 255, 255, 0.4);
 }
 
-.reminder-item.sent {
-    opacity: 0.6;
-    border-color: rgba(0, 255, 0, 0.3);
-}
-
 .reminder-item.cancelled {
     opacity: 0.4;
     border-color: rgba(255, 0, 0, 0.3);
@@ -1881,11 +1876,6 @@ body {
     border-radius: 12px;
     font-size: 0.75rem;
     margin-left: 8px;
-}
-
-.reminder-status-badge.sent {
-    background: rgba(0, 255, 0, 0.2);
-    color: #00ff00;
 }
 
 .reminder-status-badge.cancelled {
