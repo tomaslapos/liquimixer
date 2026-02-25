@@ -4275,6 +4275,10 @@ async function loadMaturedRecipeIds() {
         });
         
         console.log('[loadMaturedRecipeIds] Loaded matured recipe IDs:', maturedRecipeIds.size, [...maturedRecipeIds]);
+        // TEMP DEBUG - odstranit po diagnostice
+        const debugStatuses = reminders.map(r => r.status);
+        const debugRecipeIds = reminders.map(r => r.recipe_id).filter(Boolean);
+        alert(`DEBUG loadMaturedRecipeIds:\nReminders: ${reminders.length}\nStatuses: ${[...new Set(debugStatuses)].join(', ')}\nWith recipe_id: ${debugRecipeIds.length}\nMatured found: ${maturedRecipeIds.size}\nIDs: ${[...maturedRecipeIds].join(', ').substring(0, 100)}`);
     } catch (error) {
         console.error('Error loading matured recipe IDs:', error);
     }
