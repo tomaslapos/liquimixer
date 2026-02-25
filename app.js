@@ -12856,6 +12856,7 @@ async function saveReminderFromModal(event) {
         
         // Po uložení připomínky aktualizovat maturedRecipeIds a zkontrolovat notifikace
         await loadMaturedRecipeIds();
+        if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
         // Zkontrolovat zda nová připomínka je vyzrálá a zobrazit notifikaci
         checkMaturedReminders();
     } catch (error) {
@@ -12894,7 +12895,11 @@ async function deleteReminderConfirm(reminderId, recipeId) {
     if (!confirm(t('reminder.delete_confirm', 'Opravdu chcete smazat tuto připomínku?'))) return;
     try {
         const deleted = await window.LiquiMixerDB.deleteReminder(window.Clerk.user.id, reminderId);
-        if (deleted) { loadRecipeReminders(recipeId); }
+        if (deleted) {
+            loadRecipeReminders(recipeId);
+            await loadMaturedRecipeIds();
+            if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
+        }
         else { alert(t('reminder.delete_error', 'Chyba při mazání připomínky.')); }
     } catch (error) {
         console.error('Error deleting reminder:', error);
@@ -13031,6 +13036,8 @@ async function updateViewReminderStock(delta) {
                 showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
                 hideViewReminderModal();
                 loadRecipeReminders(currentViewReminderRecipeId);
+                await loadMaturedRecipeIds();
+                if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
             } else {
                 // Vrátit na 10%
                 newStock = 10;
@@ -15062,6 +15069,8 @@ async function updateReminderStockUI(reminderId, recipeId, delta) {
                 showNotification(t('reminder.consumed_success', 'Liquid označen jako spotřebovaný!'), 'success');
                 // Refresh seznamu - připomínka zmizí
                 loadRecipeReminders(recipeId);
+                await loadMaturedRecipeIds();
+                if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
             } else {
                 // Vrátit na 10%
                 newStock = 10;
