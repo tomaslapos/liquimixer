@@ -4256,7 +4256,9 @@ async function loadMaturedRecipeIds() {
         
         // Najít vyzrálé připomínky a uložit jejich recipe_id
         // Filtrovat spotřebované připomínky (consumed_at != null nebo stock_percent <= 0)
+        console.log('[loadMaturedRecipeIds] Total reminders:', reminders.length);
         reminders.forEach(r => {
+            console.log('[loadMaturedRecipeIds] Reminder:', r.id, 'status:', r.status, 'recipe_id:', r.recipe_id, 'consumed_at:', r.consumed_at, 'stock_percent:', r.stock_percent, 'remind_at:', r.remind_at);
             if ((r.status !== 'pending' && r.status !== 'matured') || !r.recipe_id) return;
             
             // Přeskočit spotřebované připomínky
@@ -4268,10 +4270,11 @@ async function loadMaturedRecipeIds() {
             remindDate.setHours(0, 0, 0, 0);
             if (remindDate <= today) {
                 maturedRecipeIds.add(r.recipe_id);
+                console.log('[loadMaturedRecipeIds] → Added recipe_id:', r.recipe_id);
             }
         });
         
-        console.log('Loaded matured recipe IDs:', maturedRecipeIds.size);
+        console.log('[loadMaturedRecipeIds] Loaded matured recipe IDs:', maturedRecipeIds.size, [...maturedRecipeIds]);
     } catch (error) {
         console.error('Error loading matured recipe IDs:', error);
     }
@@ -6855,6 +6858,11 @@ function showPage(pageId, pushToHistory = true) {
     // Animovat texty tlačítek na stránce mode-select
     if (pageId === 'mode-select' && typeof window.animateModeButtons === 'function') {
         setTimeout(window.animateModeButtons, 50);
+    }
+    
+    // Při návratu na přehled receptů refreshnout vyzrálé připomínky
+    if (pageId === 'my-recipes' && allUserRecipes.length > 0) {
+        loadMaturedRecipeIds().then(() => renderRecipesList(allUserRecipes));
     }
     
     // Zobrazit/skrýt tlačítko Domů
