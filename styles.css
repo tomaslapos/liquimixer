@@ -687,6 +687,26 @@ body {
     box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
 }
 
+/* Clerk loading spinner na login tlačítku */
+.clerk-loading-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 0, 255, 0.3);
+    border-top-color: var(--neon-pink);
+    border-radius: 50%;
+    animation: clerk-spin 0.8s linear infinite;
+}
+
+@keyframes clerk-spin {
+    to { transform: rotate(360deg); }
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
 /* Menu Dropdown */
 .menu-dropdown {
     position: fixed;

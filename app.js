@@ -2411,6 +2411,44 @@ function handleRegisterFromRequired() {
 }
 
 async function showLoginModal(mode = 'signIn') {
+    // Pokud Clerk ještě není načtený, zobrazit loading a počkat na načtení
+    if (!clerkLoaded || !window.Clerk) {
+        const loginBtn = document.querySelector('.login-btn');
+        if (loginBtn) {
+            const originalContent = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<span class="nav-icon clerk-loading-spinner"></span>';
+            loginBtn.disabled = true;
+            // Počkat max 5 sekund na Clerk
+            let waited = 0;
+            const waitInterval = setInterval(() => {
+                waited += 200;
+                if ((clerkLoaded && window.Clerk) || waited >= 5000) {
+                    clearInterval(waitInterval);
+                    loginBtn.disabled = false;
+                    // Obnovit původní obsah a zobrazit správný modal
+                    if (clerkLoaded && window.Clerk) {
+                        updateAuthUI();
+                        if (window.Clerk.user) {
+                            showUserProfileModal();
+                        } else {
+                            showLoginModal(mode);
+                        }
+                    } else {
+                        loginBtn.innerHTML = originalContent;
+                        showNotification(t('auth.loading_error', 'Connection error. Please try again.'), 'error');
+                    }
+                }
+            }, 200);
+        }
+        return;
+    }
+    
+    // Pokud je uživatel přihlášen, zobrazit profil místo login modalu
+    if (window.Clerk.user) {
+        showUserProfileModal();
+        return;
+    }
+    
     const menuDropdown = document.getElementById('menuDropdown');
     const loginModal = document.getElementById('loginModal');
     const userProfileModal = document.getElementById('userProfileModal');
@@ -4256,9 +4294,7 @@ async function loadMaturedRecipeIds() {
         
         // Najít vyzrálé připomínky a uložit jejich recipe_id
         // Filtrovat spotřebované připomínky (consumed_at != null nebo stock_percent <= 0)
-        console.log('[loadMaturedRecipeIds] Total reminders:', reminders.length);
         reminders.forEach(r => {
-            console.log('[loadMaturedRecipeIds] Reminder:', r.id, 'status:', r.status, 'recipe_id:', r.recipe_id, 'consumed_at:', r.consumed_at, 'stock_percent:', r.stock_percent, 'remind_at:', r.remind_at);
             if ((r.status !== 'pending' && r.status !== 'matured') || !r.recipe_id) return;
             
             // Přeskočit spotřebované připomínky
@@ -4270,15 +4306,9 @@ async function loadMaturedRecipeIds() {
             remindDate.setHours(0, 0, 0, 0);
             if (remindDate <= today) {
                 maturedRecipeIds.add(r.recipe_id);
-                console.log('[loadMaturedRecipeIds] → Added recipe_id:', r.recipe_id);
             }
         });
         
-        console.log('[loadMaturedRecipeIds] Loaded matured recipe IDs:', maturedRecipeIds.size, [...maturedRecipeIds]);
-        // TEMP DEBUG - odstranit po diagnostice
-        const debugStatuses = reminders.map(r => r.status);
-        const debugRecipeIds = reminders.map(r => r.recipe_id).filter(Boolean);
-        alert(`DEBUG loadMaturedRecipeIds:\nReminders: ${reminders.length}\nStatuses: ${[...new Set(debugStatuses)].join(', ')}\nWith recipe_id: ${debugRecipeIds.length}\nMatured found: ${maturedRecipeIds.size}\nIDs: ${[...maturedRecipeIds].join(', ').substring(0, 100)}`);
     } catch (error) {
         console.error('Error loading matured recipe IDs:', error);
     }
@@ -4512,6 +4542,8 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     
     // SECURITY: Použít textContent místo innerHTML pro název
     titleEl.textContent = recipe.name;
+    // Odstranit data-i18n aby i18n systém nepřepsal název receptu
+    titleEl.removeAttribute('data-i18n');
     
     const rating = Math.min(Math.max(parseInt(recipe.rating) || 0, 0), 5);
     const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
@@ -6866,7 +6898,7 @@ function showPage(pageId, pushToHistory = true) {
     
     // Při návratu na přehled receptů refreshnout vyzrálé připomínky
     if (pageId === 'my-recipes' && allUserRecipes.length > 0) {
-        loadMaturedRecipeIds().then(() => renderRecipesList(allUserRecipes));
+        loadMaturedRecipeIds().then(() => filterRecipes());
     }
     
     // Zobrazit/skrýt tlačítko Domů
@@ -12868,7 +12900,7 @@ async function saveReminderFromModal(event) {
         
         // Po uložení připomínky aktualizovat maturedRecipeIds a zkontrolovat notifikace
         await loadMaturedRecipeIds();
-        if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
+        if (currentPageId === 'my-recipes') filterRecipes();
         // Zkontrolovat zda nová připomínka je vyzrálá a zobrazit notifikaci
         checkMaturedReminders();
     } catch (error) {
@@ -12910,7 +12942,7 @@ async function deleteReminderConfirm(reminderId, recipeId) {
         if (deleted) {
             loadRecipeReminders(recipeId);
             await loadMaturedRecipeIds();
-            if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
+            if (currentPageId === 'my-recipes') filterRecipes();
         }
         else { alert(t('reminder.delete_error', 'Chyba při mazání připomínky.')); }
     } catch (error) {
@@ -13049,7 +13081,7 @@ async function updateViewReminderStock(delta) {
                 hideViewReminderModal();
                 loadRecipeReminders(currentViewReminderRecipeId);
                 await loadMaturedRecipeIds();
-                if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
+                if (currentPageId === 'my-recipes') filterRecipes();
             } else {
                 // Vrátit na 10%
                 newStock = 10;
@@ -15082,7 +15114,7 @@ async function updateReminderStockUI(reminderId, recipeId, delta) {
                 // Refresh seznamu - připomínka zmizí
                 loadRecipeReminders(recipeId);
                 await loadMaturedRecipeIds();
-                if (currentPageId === 'my-recipes') renderRecipesList(allUserRecipes);
+                if (currentPageId === 'my-recipes') filterRecipes();
             } else {
                 // Vrátit na 10%
                 newStock = 10;
