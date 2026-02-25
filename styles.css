@@ -3245,7 +3245,7 @@ body {
     .menu-dropdown,
     .login-content {
         width: calc(100vw - 30px);
-        max-height: calc(100vh - 30px);
+        max-height: calc(100vh - 160px);
         padding: 20px;
     }
 }
