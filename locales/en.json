@@ -291,6 +291,8 @@
     "sweetener_base_label": "Molasses base",
     "glycerin_label": "Glycerin (VG)",
     "glycerin_hint": "Glycerin = thick smoke",
+    "molasses_unit": "molasses",
+    "of_molasses": "of molasses",
     "molasses_amount_label": "Molasses amount",
     "amount_label": "How much blend do I want to mix?",
     "nicotine_label": "Nicotine (optional)",

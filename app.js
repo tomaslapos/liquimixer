@@ -14620,12 +14620,32 @@ function initRecipeFlavorAutocomplete() {
         }
     }
     
-    // Shisha - příchutě 1-4
+    // Shisha Mode 1: Tobacco autocomplete (search shisha tobacco products)
     for (let i = 1; i <= 4; i++) {
-        const inputId = `shFlavorAutocomplete${i}`;
+        const inputId = `shTobaccoAutocomplete${i}`;
         if (document.getElementById(inputId)) {
             initFlavorAutocomplete(inputId, 'shisha', (flavorData) => {
-                console.log('Selected Shisha flavor', i, flavorData);
+                console.log('Selected Shisha tobacco', i, flavorData);
+            });
+        }
+    }
+    
+    // Shisha Mode 2: DIY flavor autocomplete (vape concentrates)
+    for (let i = 1; i <= 4; i++) {
+        const inputId = `shDiyFlavorAutocomplete${i}`;
+        if (document.getElementById(inputId)) {
+            initFlavorAutocomplete(inputId, 'liquid', (flavorData) => {
+                console.log('Selected DIY flavor', i, flavorData);
+            });
+        }
+    }
+    
+    // Shisha Mode 3: Molasses flavor autocomplete (vape concentrates)
+    for (let i = 1; i <= 4; i++) {
+        const inputId = `shMolFlavorAutocomplete${i}`;
+        if (document.getElementById(inputId)) {
+            initFlavorAutocomplete(inputId, 'liquid', (flavorData) => {
+                console.log('Selected Mol flavor', i, flavorData);
             });
         }
     }
@@ -14665,29 +14685,55 @@ function showFlavorSliderWithRange(inputId, flavorData) {
             valueId: 'proFlavorValue4',
             descriptionId: null
         },
-        'shFlavorAutocomplete1': {
-            containerId: 'shFlavorStrengthContainer1',
-            sliderId: 'shFlavorStrength1',
-            valueId: 'shFlavorValue1',
-            descriptionId: 'shFlavorStrengthDisplay1'
+        // Shisha Mode 2: DIY flavor autocomplete
+        'shDiyFlavorAutocomplete1': {
+            containerId: 'shDiyFlavorStrengthContainer1',
+            sliderId: 'shDiyFlavorStrength1',
+            valueId: 'shDiyFlavorValue1',
+            descriptionId: 'shDiyFlavorStrengthDisplay1'
         },
-        'shFlavorAutocomplete2': {
-            containerId: 'shFlavorStrengthContainer2',
-            sliderId: 'shFlavorStrength2',
-            valueId: 'shFlavorValue2',
-            descriptionId: 'shFlavorStrengthDisplay2'
+        'shDiyFlavorAutocomplete2': {
+            containerId: 'shDiyFlavorStrengthContainer2',
+            sliderId: 'shDiyFlavorStrength2',
+            valueId: 'shDiyFlavorValue2',
+            descriptionId: 'shDiyFlavorStrengthDisplay2'
         },
-        'shFlavorAutocomplete3': {
-            containerId: 'shFlavorStrengthContainer3',
-            sliderId: 'shFlavorStrength3',
-            valueId: 'shFlavorValue3',
-            descriptionId: 'shFlavorStrengthDisplay3'
+        'shDiyFlavorAutocomplete3': {
+            containerId: 'shDiyFlavorStrengthContainer3',
+            sliderId: 'shDiyFlavorStrength3',
+            valueId: 'shDiyFlavorValue3',
+            descriptionId: 'shDiyFlavorStrengthDisplay3'
         },
-        'shFlavorAutocomplete4': {
-            containerId: 'shFlavorStrengthContainer4',
-            sliderId: 'shFlavorStrength4',
-            valueId: 'shFlavorValue4',
-            descriptionId: 'shFlavorStrengthDisplay4'
+        'shDiyFlavorAutocomplete4': {
+            containerId: 'shDiyFlavorStrengthContainer4',
+            sliderId: 'shDiyFlavorStrength4',
+            valueId: 'shDiyFlavorValue4',
+            descriptionId: 'shDiyFlavorStrengthDisplay4'
+        },
+        // Shisha Mode 3: Molasses flavor autocomplete
+        'shMolFlavorAutocomplete1': {
+            containerId: 'shMolFlavorStrengthContainer1',
+            sliderId: 'shMolFlavorStrength1',
+            valueId: 'shMolFlavorValue1',
+            descriptionId: 'shMolFlavorStrengthDisplay1'
+        },
+        'shMolFlavorAutocomplete2': {
+            containerId: 'shMolFlavorStrengthContainer2',
+            sliderId: 'shMolFlavorStrength2',
+            valueId: 'shMolFlavorValue2',
+            descriptionId: 'shMolFlavorStrengthDisplay2'
+        },
+        'shMolFlavorAutocomplete3': {
+            containerId: 'shMolFlavorStrengthContainer3',
+            sliderId: 'shMolFlavorStrength3',
+            valueId: 'shMolFlavorValue3',
+            descriptionId: 'shMolFlavorStrengthDisplay3'
+        },
+        'shMolFlavorAutocomplete4': {
+            containerId: 'shMolFlavorStrengthContainer4',
+            sliderId: 'shMolFlavorStrength4',
+            valueId: 'shMolFlavorValue4',
+            descriptionId: 'shMolFlavorStrengthDisplay4'
         }
     };
     
@@ -15406,6 +15452,119 @@ function switchShishaMode(mode) {
     document.getElementById('shModeContentMolasses')?.classList.toggle('hidden', mode !== 'molasses');
 }
 
+// ---- Shared VG/PG helpers for DIY + Molasses ----
+function getShishaModeInputs(mode) {
+    const prefix = mode === 'diy' ? 'shDiy' : 'shMol';
+    const totalAmount = mode === 'diy'
+        ? (() => {
+            const tobaccoAmount = parseFloat(document.getElementById('shDiyTobaccoAmount')?.value) || 250;
+            const ratioVal = document.getElementById('shDiyRatio')?.value || '3';
+            let ratio;
+            if (ratioVal === 'custom') {
+                const t = parseFloat(document.getElementById('shDiyCustomRatioTobacco')?.value) || 3;
+                const m = parseFloat(document.getElementById('shDiyCustomRatioMolasses')?.value) || 1;
+                ratio = t / m;
+            } else { ratio = parseFloat(ratioVal) || 3; }
+            return Math.round(tobaccoAmount / ratio);
+        })()
+        : parseFloat(document.getElementById('shMolTotalAmount')?.value) || 100;
+    
+    const nicType = document.getElementById(`${prefix}NicotineType`)?.value || 'none';
+    const nicTarget = parseFloat(document.getElementById(`${prefix}TargetNicotine`)?.value) || 0;
+    const nicBase = parseFloat(document.getElementById(`${prefix}NicotineBaseStrength`)?.value) || 20;
+    const nicRatioVal = document.getElementById(`${prefix}NicotineRatio`)?.value || '50/50';
+    const nicVg = parseInt(nicRatioVal.split('/')[0]) || 50;
+    
+    // Sweetener + glycerin + water = non-VG/PG volume
+    const sweetenerPct = parseFloat(document.getElementById(`${prefix}SweetenerPercent`)?.value) || 55;
+    const glycerinPct = parseFloat(document.getElementById(`${prefix}GlycerinPercent`)?.value) || 30;
+    const waterPct = parseFloat(document.getElementById(`${prefix}WaterPercent`)?.value) || 0;
+    
+    // Flavors
+    let flavorVolume = 0, flavorVgVolume = 0, flavorPgVolume = 0;
+    for (let i = 1; i <= 4; i++) {
+        const typeEl = document.getElementById(`${prefix}FlavorType${i}`);
+        const strengthEl = document.getElementById(`${prefix}FlavorStrength${i}`);
+        const ratioEl = document.getElementById(`${prefix}FlavorRatioSlider${i}`);
+        if (!typeEl || typeEl.value === 'none') continue;
+        const pct = parseFloat(strengthEl?.value) || 0;
+        if (pct <= 0) continue;
+        const vol = (pct / 100) * totalAmount;
+        const vgR = parseInt(ratioEl?.value) || 0;
+        flavorVolume += vol;
+        flavorVgVolume += vol * (vgR / 100);
+        flavorPgVolume += vol * ((100 - vgR) / 100);
+    }
+    
+    // Base type
+    const baseType = document.getElementById(`${prefix}BaseType`)?.value || 'separate';
+    const premixedRatioVal = document.getElementById(`${prefix}PremixedRatio`)?.value || '50/50';
+    const premixedVg = parseInt(premixedRatioVal.split('/')[0]) || 50;
+    
+    return { totalAmount, nicType, nicTarget, nicBase, nicVg, sweetenerPct, glycerinPct, waterPct, flavorVolume, flavorVgVolume, flavorPgVolume, baseType, premixedVg };
+}
+
+function calculateShishaVgPgLimits(mode) {
+    const inp = getShishaModeInputs(mode);
+    const totalAmount = inp.totalAmount;
+    
+    // Nicotine volume
+    let nicVol = 0;
+    if (inp.nicType !== 'none' && inp.nicTarget > 0 && inp.nicBase > 0) {
+        nicVol = (inp.nicTarget * totalAmount) / inp.nicBase;
+    }
+    const nicVgVol = nicVol * (inp.nicVg / 100);
+    const nicPgVol = nicVol * ((100 - inp.nicVg) / 100);
+    
+    // Non-VG/PG volume (sweetener, water — glycerin IS VG so it contributes to VG)
+    const sweetenerVol = (inp.sweetenerPct / 100) * totalAmount;
+    const waterVol = (inp.waterPct / 100) * totalAmount;
+    const glycerinVol = (inp.glycerinPct / 100) * totalAmount;
+    const nonVgPgVol = sweetenerVol + waterVol;
+    
+    // Fixed VG and PG from known components
+    const fixedVg = nicVgVol + inp.flavorVgVolume + glycerinVol;
+    const fixedPg = nicPgVol + inp.flavorPgVolume;
+    
+    // Remaining volume for carrier base (VG/PG)
+    const remainingVol = totalAmount - nicVol - inp.flavorVolume - nonVgPgVol - glycerinVol;
+    
+    if (remainingVol <= 0) {
+        const minVg = Math.round((fixedVg / (totalAmount - nonVgPgVol)) * 100);
+        return { min: Math.max(0, minVg), max: Math.min(100, minVg) };
+    }
+    
+    const vgPgTotal = totalAmount - nonVgPgVol;
+    const minVg = Math.ceil((fixedVg / vgPgTotal) * 100);
+    const maxVg = Math.floor(((fixedVg + remainingVol) / vgPgTotal) * 100);
+    
+    return { min: Math.max(0, minVg), max: Math.min(100, maxVg) };
+}
+
+function calculateShishaActualVgPg(mode) {
+    const inp = getShishaModeInputs(mode);
+    const totalAmount = inp.totalAmount;
+    
+    let nicVol = 0;
+    if (inp.nicType !== 'none' && inp.nicTarget > 0 && inp.nicBase > 0) {
+        nicVol = (inp.nicTarget * totalAmount) / inp.nicBase;
+    }
+    
+    const sweetenerVol = (inp.sweetenerPct / 100) * totalAmount;
+    const waterVol = (inp.waterPct / 100) * totalAmount;
+    const glycerinVol = (inp.glycerinPct / 100) * totalAmount;
+    const nonVgPgVol = sweetenerVol + waterVol;
+    
+    const remainingVol = totalAmount - nicVol - inp.flavorVolume - nonVgPgVol - glycerinVol;
+    
+    const vgFromNic = nicVol * (inp.nicVg / 100);
+    const vgFromBase = Math.max(0, remainingVol) * (inp.premixedVg / 100);
+    const totalVg = vgFromNic + inp.flavorVgVolume + glycerinVol + vgFromBase;
+    
+    const vgPgTotal = totalAmount - nonVgPgVol;
+    return vgPgTotal > 0 ? Math.max(0, Math.min(100, Math.round((totalVg / vgPgTotal) * 100))) : 50;
+}
+
 // ---- Initialize ----
 function initShishaForm() {
     shishaUserManuallyChangedRatio = false;
@@ -15421,11 +15580,14 @@ function initShishaForm() {
     updateDiyMolassesCalc();
     updateDiySweetenerDisplay();
     updateDiyGlycerinDisplay();
+    updateDiyWaterDisplay();
+    autoRecalculateShishaDiyVgPgRatio();
     
     // Mode 3 init
     updateMolSweetenerDisplay();
     updateMolGlycerinDisplay();
     updateMolWaterDisplay();
+    autoRecalculateShishaMolVgPgRatio();
     
     updateShishaPremiumElements();
     
@@ -15511,7 +15673,33 @@ function updateShishaTobaccoPercent(index) {
     if (!slider) return;
     const val = parseInt(slider.value);
     if (display) display.textContent = val;
-    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, var(--neon-gold), #b8860b)'; }
+    if (track) {
+        const pct = val;
+        track.style.width = '100%';
+        track.style.background = `linear-gradient(90deg, var(--neon-gold) ${pct}%, #333 ${pct}%)`;
+    }
+    
+    // Auto-complement: when exactly 2 tobaccos exist, auto-set the other to 100 - val
+    const activeTobaccos = [];
+    for (let i = 1; i <= 4; i++) {
+        if (document.getElementById(`shTobaccoPercent${i}`)) activeTobaccos.push(i);
+    }
+    if (activeTobaccos.length === 2) {
+        const otherIndex = activeTobaccos.find(i => i !== index);
+        if (otherIndex) {
+            const otherSlider = document.getElementById(`shTobaccoPercent${otherIndex}`);
+            const otherDisplay = document.getElementById(`shTobaccoValue${otherIndex}`);
+            const otherTrack = document.getElementById(`shTobaccoTrack${otherIndex}`);
+            const otherVal = Math.max(0, 100 - val);
+            if (otherSlider) otherSlider.value = otherVal;
+            if (otherDisplay) otherDisplay.textContent = otherVal;
+            if (otherTrack) {
+                otherTrack.style.width = '100%';
+                otherTrack.style.background = `linear-gradient(90deg, var(--neon-gold) ${otherVal}%, #333 ${otherVal}%)`;
+            }
+        }
+    }
+    
     updateShishaTobaccoTotal();
 }
 
@@ -15654,6 +15842,30 @@ function adjustDiyGlycerin(change) {
     if (!slider) return;
     slider.value = Math.max(10, Math.min(50, parseInt(slider.value) + change));
     updateDiyGlycerinDisplay();
+}
+
+// DIY Water functions (Mode 2)
+function updateDiyWaterDisplay() {
+    const slider = document.getElementById('shDiyWaterPercent');
+    const display = document.getElementById('shDiyWaterValue');
+    const track = document.getElementById('shDiyWaterTrack');
+    if (!slider) return;
+    const val = parseFloat(slider.value);
+    if (display) display.textContent = Number.isInteger(val) ? val : val.toFixed(1);
+    if (track) {
+        const pct = (val / 10) * 100;
+        track.style.width = '100%';
+        track.style.background = `linear-gradient(90deg, #00aaff ${pct}%, #333 ${pct}%)`;
+    }
+    autoRecalculateShishaDiyVgPgRatio();
+}
+
+function adjustDiyWater(change) {
+    const slider = document.getElementById('shDiyWaterPercent');
+    if (!slider) return;
+    let v = parseFloat(slider.value) + change;
+    slider.value = Math.max(0, Math.min(10, Math.round(v * 2) / 2));
+    updateDiyWaterDisplay();
 }
 
 // DIY Flavor functions (vape concentrates)
@@ -15821,14 +16033,51 @@ function updateShishaDiyNicotineDisplay() {
     const slider = document.getElementById('shDiyTargetNicotine');
     const display = document.getElementById('shDiyTargetNicotineValue');
     const track = document.getElementById('shDiyNicotineTrack');
+    const descEl = document.getElementById('shDiyNicotineDescription');
+    const displayContainer = display ? display.parentElement : null;
     if (!slider) return;
     const val = parseInt(slider.value);
     if (display) display.textContent = val;
-    if (track) { track.style.width = '100%'; track.style.background = val > 0 ? 'linear-gradient(90deg, #00cc66, #ff6600)' : 'linear-gradient(90deg, #00cc66, #00cc66)'; }
+    const desc = nicotineDescriptions.find(d => val >= d.min && val <= d.max);
+    if (desc) {
+        if (track) track.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
+        if (descEl) { descEl.textContent = getNicotineDescriptionText(val); descEl.style.color = desc.color; descEl.style.borderLeftColor = desc.color; }
+        if (displayContainer) { displayContainer.style.color = desc.color; displayContainer.style.textShadow = `0 0 20px ${desc.color}`; }
+    }
+    if (track) track.style.width = '100%';
+    autoRecalculateShishaDiyVgPgRatio();
 }
 
 function autoRecalculateShishaDiyVgPgRatio() {
-    // Placeholder — recalculates when inputs change
+    updateShishaDiyVgPgLimits();
+    const baseType = document.getElementById('shDiyBaseType')?.value || 'separate';
+    if (baseType === 'premixed' && !shishaUserManuallyChangedRatio) {
+        const actualVg = calculateShishaActualVgPg('diy');
+        const slider = document.getElementById('shDiyVgPgRatio');
+        if (slider && actualVg !== null) { slider.value = actualVg; updateShishaDiyRatioDisplay(); }
+    }
+}
+
+function updateShishaDiyVgPgLimits() {
+    const slider = document.getElementById('shDiyVgPgRatio');
+    const disabledLeft = document.getElementById('shDiySliderDisabledLeft');
+    const disabledRight = document.getElementById('shDiySliderDisabledRight');
+    const limitValueLeft = document.getElementById('shDiyLimitValueLeft');
+    const limitValueRight = document.getElementById('shDiyLimitValueRight');
+    const warningEl = document.getElementById('shDiyRatioLimitWarning');
+    if (!slider) return;
+    
+    const limits = calculateShishaVgPgLimits('diy');
+    
+    if (disabledLeft) { disabledLeft.style.width = limits.min + '%'; }
+    if (disabledRight) { disabledRight.style.width = (100 - limits.max) + '%'; }
+    if (limitValueLeft) { limitValueLeft.textContent = limits.min > 0 ? limits.min : ''; }
+    if (limitValueRight) { limitValueRight.textContent = limits.max < 100 ? limits.max : ''; }
+    
+    const currentVal = parseInt(slider.value);
+    if (currentVal < limits.min) { slider.value = limits.min; updateShishaDiyRatioDisplay(); }
+    if (currentVal > limits.max) { slider.value = limits.max; updateShishaDiyRatioDisplay(); }
+    if (warningEl) warningEl.classList.toggle('hidden', currentVal >= limits.min && currentVal <= limits.max);
 }
 
 // DIY Base type
@@ -16092,14 +16341,51 @@ function updateShishaMolNicotineDisplay() {
     const slider = document.getElementById('shMolTargetNicotine');
     const display = document.getElementById('shMolTargetNicotineValue');
     const track = document.getElementById('shMolNicotineTrack');
+    const descEl = document.getElementById('shMolNicotineDescription');
+    const displayContainer = display ? display.parentElement : null;
     if (!slider) return;
     const val = parseInt(slider.value);
     if (display) display.textContent = val;
-    if (track) { track.style.width = '100%'; track.style.background = val > 0 ? 'linear-gradient(90deg, #00cc66, #ff6600)' : 'linear-gradient(90deg, #00cc66, #00cc66)'; }
+    const desc = nicotineDescriptions.find(d => val >= d.min && val <= d.max);
+    if (desc) {
+        if (track) track.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
+        if (descEl) { descEl.textContent = getNicotineDescriptionText(val); descEl.style.color = desc.color; descEl.style.borderLeftColor = desc.color; }
+        if (displayContainer) { displayContainer.style.color = desc.color; displayContainer.style.textShadow = `0 0 20px ${desc.color}`; }
+    }
+    if (track) track.style.width = '100%';
+    autoRecalculateShishaMolVgPgRatio();
 }
 
 function autoRecalculateShishaMolVgPgRatio() {
-    // Placeholder — recalculates when inputs change
+    updateShishaMolVgPgLimits();
+    const baseType = document.getElementById('shMolBaseType')?.value || 'separate';
+    if (baseType === 'premixed' && !shishaUserManuallyChangedRatio) {
+        const actualVg = calculateShishaActualVgPg('molasses');
+        const slider = document.getElementById('shMolVgPgRatio');
+        if (slider && actualVg !== null) { slider.value = actualVg; updateShishaMolRatioDisplay(); }
+    }
+}
+
+function updateShishaMolVgPgLimits() {
+    const slider = document.getElementById('shMolVgPgRatio');
+    const disabledLeft = document.getElementById('shMolSliderDisabledLeft');
+    const disabledRight = document.getElementById('shMolSliderDisabledRight');
+    const limitValueLeft = document.getElementById('shMolLimitValueLeft');
+    const limitValueRight = document.getElementById('shMolLimitValueRight');
+    const warningEl = document.getElementById('shMolRatioLimitWarning');
+    if (!slider) return;
+    
+    const limits = calculateShishaVgPgLimits('molasses');
+    
+    if (disabledLeft) { disabledLeft.style.width = limits.min + '%'; }
+    if (disabledRight) { disabledRight.style.width = (100 - limits.max) + '%'; }
+    if (limitValueLeft) { limitValueLeft.textContent = limits.min > 0 ? limits.min : ''; }
+    if (limitValueRight) { limitValueRight.textContent = limits.max < 100 ? limits.max : ''; }
+    
+    const currentVal = parseInt(slider.value);
+    if (currentVal < limits.min) { slider.value = limits.min; updateShishaMolRatioDisplay(); }
+    if (currentVal > limits.max) { slider.value = limits.max; updateShishaMolRatioDisplay(); }
+    if (warningEl) warningEl.classList.toggle('hidden', currentVal >= limits.min && currentVal <= limits.max);
 }
 
 // Molasses Base type
@@ -16330,6 +16616,7 @@ function calculateShishaMixMode2() {
     const sweetenerType = document.getElementById('shDiySweetenerType')?.value || 'molasses';
     const sweetenerPercent = parseInt(document.getElementById('shDiySweetenerPercent')?.value) || 55;
     const glycerinPercent = parseInt(document.getElementById('shDiyGlycerinPercent')?.value) || 30;
+    const waterPercent = parseFloat(document.getElementById('shDiyWaterPercent')?.value) || 0;
     
     // Flavors with full metadata for save pipeline
     const flavors = [];
@@ -16383,6 +16670,7 @@ function calculateShishaMixMode2() {
     // Calculate amounts (in grams from totalMolasses)
     const sweetenerAmount = Math.round(totalMolasses * (sweetenerPercent / 100) * 10) / 10;
     const glycerinAmount = Math.round(totalMolasses * (glycerinPercent / 100) * 10) / 10;
+    const waterAmount = Math.round(totalMolasses * (waterPercent / 100) * 10) / 10;
     
     let nicotineAmount = 0;
     if (nicType !== 'none' && nicTarget > 0 && nicBaseStrength > 0) {
@@ -16457,6 +16745,17 @@ function calculateShishaMixMode2() {
         });
     }
     
+    // Water
+    if (waterAmount > 0) {
+        ingredients.push({
+            name: t('ingredients.water', 'Voda'),
+            ingredientKey: 'water',
+            volume: waterAmount,
+            percent: waterPercent,
+            grams: waterAmount
+        });
+    }
+    
     const recipeData = {
         formType: 'shisha',
         shishaMode: 'diy',
@@ -16469,6 +16768,8 @@ function calculateShishaMixMode2() {
         sweetenerAmount,
         glycerinPercent,
         glycerinAmount,
+        waterPercent,
+        waterAmount,
         flavors,
         nicotine: nicTarget,
         nicotineType: nicType,
@@ -16486,7 +16787,7 @@ function calculateShishaMixMode2() {
     storeCurrentRecipe(recipeData);
     
     // Custom rendering for DIY (grams-based, tobacco row has no ml)
-    document.getElementById('resultTotal').textContent = `${totalWeight} g (${t('shisha.tobacco_amount_label', 'tabák')}: ${tobaccoAmount}g + molasses: ${Math.round(totalMolasses)}g)`;
+    document.getElementById('resultTotal').textContent = `${totalWeight}g`;
     document.getElementById('resultRatio').textContent = `${vgPgRatio}:${100 - vgPgRatio}`;
     document.getElementById('resultNicotine').textContent = `${nicTarget} mg/ml`;
     
@@ -16772,6 +17073,8 @@ window.updateDiySweetenerDisplay = updateDiySweetenerDisplay;
 window.adjustDiySweetener = adjustDiySweetener;
 window.updateDiyGlycerinDisplay = updateDiyGlycerinDisplay;
 window.adjustDiyGlycerin = adjustDiyGlycerin;
+window.updateDiyWaterDisplay = updateDiyWaterDisplay;
+window.adjustDiyWater = adjustDiyWater;
 window.updateShishaDiyFlavorType = updateShishaDiyFlavorType;
 window.adjustShishaDiyFlavor = adjustShishaDiyFlavor;
 window.updateShishaDiyFlavorStrength = updateShishaDiyFlavorStrength;

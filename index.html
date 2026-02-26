@@ -2111,7 +2111,7 @@
                             </div>
                         </div>
                         <div class="flavor-display" style="margin-top: 5px;">
-                            = <span id="shDiyMolassesCalc">83</span>g molasses
+                            = <span id="shDiyMolassesCalc">83</span>g <span data-i18n="shisha.molasses_unit" class="molasses-label">molasses</span>
                         </div>
                     </div>
 
@@ -2132,7 +2132,7 @@
                             <button class="slider-btn small" onclick="adjustDiySweetener(5)">▶</button>
                         </div>
                         <div class="flavor-display">
-                            <span id="shDiySweetenerValue">55</span>% z molasses
+                            <span id="shDiySweetenerValue">55</span>% <span data-i18n="shisha.of_molasses" class="molasses-label">z molasses</span>
                         </div>
                     </div>
 
@@ -2151,7 +2151,26 @@
                             <button class="slider-btn small" onclick="adjustDiyGlycerin(5)">▶</button>
                         </div>
                         <div class="flavor-display">
-                            <span id="shDiyGlycerinValue">30</span>% z molasses
+                            <span id="shDiyGlycerinValue">30</span>% <span data-i18n="shisha.of_molasses" class="molasses-label">z molasses</span>
+                        </div>
+                    </div>
+
+                    <!-- Voda (volitelné) - Mode 2 -->
+                    <div class="form-group water-section">
+                        <label class="form-label">
+                            <span data-i18n="shisha.water_label">Voda (volitelné)</span>
+                            <span class="label-hint" data-i18n="shisha.water_hint">Zředí směs pro lepší průtah</span>
+                        </label>
+                        <div class="slider-container small">
+                            <button class="slider-btn small" onclick="adjustDiyWater(-0.5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shDiyWaterPercent" min="0" max="10" value="0" step="0.5" class="flavor-slider" oninput="updateDiyWaterDisplay()">
+                                <div class="slider-track flavor-track" id="shDiyWaterTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustDiyWater(0.5)">▶</button>
+                        </div>
+                        <div class="flavor-display">
+                            <span id="shDiyWaterValue">0</span>%
                         </div>
                     </div>
 

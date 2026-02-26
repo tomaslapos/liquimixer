@@ -4055,6 +4055,12 @@ button.locked {
     color: var(--neon-green);
 }
 
+/* Molasses label golden color */
+.molasses-label {
+    color: #ffd700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
 /* Multi-flavor PRO styles */
 .pro-flavor-group {
     position: relative;
