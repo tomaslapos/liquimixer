@@ -1957,7 +1957,7 @@
             </div>
 
             <!-- ============================================ -->
-            <!-- SHISHA / HOOKAH - Kalkulátor pro vodní dýmky -->
+            <!-- SHISHA / HOOKAH - Kalkulátor pro vodní dýmky (3 režimy) -->
             <!-- ============================================ -->
             <div id="form-shisha" class="form-content form-gold">
                 <!-- Info o shisha -->
@@ -1965,285 +1965,639 @@
                     <p data-i18n="shisha.info">Hookah / Shisha kalkulátor pro míchání vlastní glycerinové směsi pro vodní dýmky.</p>
                 </div>
 
-                <!-- Množství směsi -->
+                <!-- ============================================ -->
+                <!-- PŘEPÍNAČ REŽIMU -->
+                <!-- ============================================ -->
                 <div class="form-group">
-                    <label class="form-label" data-i18n="shisha.amount_label">
-                        Kolik směsi chci namíchat?
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="number" id="shTotalAmount" min="50" max="9999" value="200" class="neon-input" oninput="autoRecalculateShishaVgPgRatio()">
-                        <span class="input-unit" data-i18n="common.ml">ml</span>
-                    </div>
-                </div>
-
-                <!-- Typ báze (separátní / předmíchaná) -->
-                <div class="form-group">
-                    <label class="form-label" data-i18n="form.base_type_label">
-                        Typ báze
-                    </label>
+                    <label class="form-label" data-i18n="shisha.mode_label">Režim</label>
                     <div class="ratio-toggle-buttons">
-                        <button type="button" id="shBaseSeparate" class="ratio-toggle-btn" data-value="separate" onclick="updateShishaBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
-                        <button type="button" id="shBasePremixed" class="ratio-toggle-btn active" data-value="premixed" onclick="updateShishaBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
+                        <button type="button" id="shModeMix" class="ratio-toggle-btn active" data-value="mix" onclick="switchShishaMode('mix')" data-i18n="shisha.mode_mix">Mix tabáků</button>
+                        <button type="button" id="shModeDiy" class="ratio-toggle-btn" data-value="diy" onclick="switchShishaMode('diy')" data-i18n="shisha.mode_diy">DIY tabák</button>
+                        <button type="button" id="shModeMolasses" class="ratio-toggle-btn" data-value="molasses" onclick="switchShishaMode('molasses')" data-i18n="shisha.mode_molasses">Molasses mix</button>
                     </div>
-                    <input type="hidden" id="shBaseType" value="premixed">
-                    
-                    <!-- Předmíchané poměry (zobrazí se při volbě "Předmíchaná báze") -->
-                    <div id="shPremixedRatioContainer" class="form-group-sub" style="margin-top: 10px;">
-                        <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
-                        <div class="ratio-toggle-buttons">
-                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaPremixedRatio('70/30')">70/30</button>
-                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn active" data-value="80/20" onclick="updateShishaPremixedRatio('80/20')">80/20</button>
-                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="90/10" onclick="updateShishaPremixedRatio('90/10')">90/10</button>
-                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn" data-value="100/0" onclick="updateShishaPremixedRatio('100/0')">100/0</button>
-                            <button type="button" class="sh-premixed-ratio-btn ratio-toggle-btn premium-only" data-value="custom" onclick="updateShishaPremixedRatio('custom')" data-i18n="form.custom">Vlastní</button>
-                        </div>
-                        <input type="hidden" id="shPremixedRatio" value="80/20">
-                        <div id="shCustomPremixedContainer" class="hidden" style="margin-top: 10px;">
-                            <div class="input-wrapper inline">
-                                <input type="number" id="shCustomPremixedVg" min="0" max="100" value="80" class="neon-input small" oninput="updateShishaCustomPremixedPg()">
-                                <span>VG :</span>
-                                <input type="number" id="shCustomPremixedPg" min="0" max="100" value="20" class="neon-input small" disabled>
-                                <span>PG</span>
-                            </div>
-                        </div>
-                        <div class="premium-badge hidden" id="shCustomBasePremiumBadge">
-                            <span data-i18n="premium.custom_base_required">Vlastní poměr báze vyžaduje Premium</span>
-                        </div>
-                    </div>
+                    <input type="hidden" id="shMode" value="mix">
                 </div>
 
-                <!-- Nikotinová báze - jako Liquid formulář -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span data-i18n="form.nicotine_base_label">Jak silnou mám nikotinovou bázi?</span>
-                        <span class="label-hint" data-i18n="form.nicotine_base_hint">Tyto údaje opiš z obalu nikotinu</span>
-                    </label>
-                    <div class="nicotine-base-container">
-                        <select id="shNicotineType" class="neon-select" onchange="updateShishaNicotineType()">
-                            <option value="none" data-i18n="form.nicotine_none">Bez nikotinu</option>
-                            <option value="freebase" data-i18n="form.nicotine_booster">Nikotin booster</option>
-                            <option value="salt" data-i18n="form.nicotine_salt">Nikotinová sůl</option>
-                        </select>
-                        <div id="shNicotineStrengthContainer" class="hidden">
-                            <input type="number" id="shNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="autoRecalculateShishaVgPgRatio()">
-                            <span class="input-unit" data-i18n="common.mg_ml">mg/ml</span>
-                        </div>
-                    </div>
-                    <div id="shNicotineRatioContainer" class="hidden">
-                        <label class="form-label-small" data-i18n="form.nicotine_ratio_label">Poměr VG/PG v koncentrátu</label>
-                        <div class="ratio-toggle-buttons">
-                            <button type="button" class="sh-nic-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateShishaNicotineRatio('50/50')">50/50</button>
-                            <button type="button" class="sh-nic-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaNicotineRatio('70/30')">70/30</button>
-                        </div>
-                        <input type="hidden" id="shNicotineRatio" value="50/50">
-                    </div>
-                </div>
-
-                <!-- Cílová síla nikotinu pro Shisha -->
-                <div class="form-group hidden" id="shTargetNicotineGroup">
-                    <label class="form-label" data-i18n="form.target_nicotine_label">
-                        Jak silnou chci finální nikotinovou bázi na vapování?
-                    </label>
-                    <div class="target-nicotine-container">
-                        <div class="slider-container">
-                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(-1)">◀</button>
-                            <div class="slider-wrapper">
-                                <input type="range" id="shTargetNicotine" min="0" max="10" value="0" step="1" class="nicotine-slider" oninput="updateShishaNicotineDisplay()">
-                                <div class="slider-track nicotine-track" id="shNicotineTrack"></div>
-                            </div>
-                            <button class="slider-btn" onclick="adjustShishaTargetNicotine(1)">▶</button>
-                        </div>
-                        <div class="nicotine-display">
-                            <span id="shTargetNicotineValue">0</span> mg/ml
-                        </div>
-                        <div class="nicotine-description" id="shNicotineDescription">
-                            Bez nikotinu - vhodné pro nekuřáky nebo postupné odvykání.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Příchuť 1 -->
-                <div class="form-group sh-flavor-group" id="shFlavorGroup1">
-                    <label class="form-label">
-                        <span data-i18n="shisha.flavor_label">Příchuť</span>
-                        <span class="flavor-number"> 1</span>
-                    </label>
-                    <div class="flavor-container">
-                        <!-- Autocomplete pro konkrétní příchuť z oblíbených/databáze - PRVNÍ -->
-                        <div class="flavor-autocomplete-wrapper">
-                            <input type="text" id="shFlavorAutocomplete1" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
-                        </div>
-                        <!-- Kategorie příchutě - DRUHÁ (aktivní pouze bez konkrétní příchutě) -->
-                        <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
-                            Nebo vyberte kategorii (bez konkrétní příchutě):
+                <!-- ============================================ -->
+                <!-- REŽIM 1: MIX HOTOVÝCH TABÁKŮ -->
+                <!-- ============================================ -->
+                <div id="shModeContentMix">
+                    <!-- Velikost korunky -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span data-i18n="shisha.bowl_size_label">Velikost korunky</span>
+                            <span class="label-hint" data-i18n="shisha.bowl_size_hint">Kolik tabáku se vejde do vaší korunky</span>
                         </label>
-                        <select id="shFlavorType1" class="neon-select sh-flavor-select" data-flavor-index="1" onchange="updateShishaFlavorType(1)">
-                            <option value="none" data-i18n="form.flavor_none">Žádná</option>
-                            <option value="double_apple" data-i18n="shisha.flavor_double_apple">Double Apple</option>
-                            <option value="mint" data-i18n="shisha.flavor_mint">Máta</option>
-                            <option value="grape" data-i18n="shisha.flavor_grape">Hrozno</option>
-                            <option value="watermelon" data-i18n="shisha.flavor_watermelon">Meloun</option>
-                            <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">Citrón a máta</option>
-                            <option value="blueberry" data-i18n="shisha.flavor_blueberry">Borůvka</option>
-                            <option value="peach" data-i18n="shisha.flavor_peach">Broskev</option>
-                            <option value="mango" data-i18n="shisha.flavor_mango">Mango</option>
-                            <option value="strawberry" data-i18n="shisha.flavor_strawberry">Jahoda</option>
-                            <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">Ovocný mix</option>
-                            <option value="cola" data-i18n="shisha.flavor_cola">Kola</option>
-                            <option value="gum" data-i18n="shisha.flavor_gum">Žvýkačka</option>
-                            <option value="rose" data-i18n="shisha.flavor_rose">Růže</option>
-                            <option value="custom" data-i18n="form.custom">Vlastní</option>
-                        </select>
-                        <div id="shFlavorStrengthContainer1" class="hidden">
-                            <div class="slider-container small">
-                                <button class="slider-btn small double" onclick="adjustShishaFlavor(1, -1)" title="-1%">◀◀</button>
-                                <button class="slider-btn small" onclick="adjustShishaFlavor(1, -0.1)" title="-0.1%">◀</button>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="sh-bowl-btn ratio-toggle-btn" data-value="10" onclick="updateShishaBowlSize(10)">10g</button>
+                            <button type="button" class="sh-bowl-btn ratio-toggle-btn active" data-value="15" onclick="updateShishaBowlSize(15)">15g</button>
+                            <button type="button" class="sh-bowl-btn ratio-toggle-btn" data-value="20" onclick="updateShishaBowlSize(20)">20g</button>
+                            <button type="button" class="sh-bowl-btn ratio-toggle-btn" data-value="25" onclick="updateShishaBowlSize(25)">25g</button>
+                            <button type="button" class="sh-bowl-btn ratio-toggle-btn" data-value="custom" onclick="updateShishaBowlSize('custom')" data-i18n="form.custom">Vlastní</button>
+                        </div>
+                        <input type="hidden" id="shBowlSize" value="15">
+                        <div id="shCustomBowlContainer" class="hidden" style="margin-top: 10px;">
+                            <div class="input-wrapper">
+                                <input type="number" id="shCustomBowlSize" min="5" max="50" value="15" class="neon-input small" oninput="updateShishaCustomBowlSize()">
+                                <span class="input-unit">g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabák 1 (povinný) -->
+                    <div class="form-group sh-tobacco-group" id="shTobaccoGroup1">
+                        <label class="form-label">
+                            <span data-i18n="shisha.tobacco_label">Tabák</span>
+                            <span class="flavor-number"> 1</span>
+                        </label>
+                        <div class="flavor-container">
+                            <div class="flavor-autocomplete-wrapper">
+                                <input type="text" id="shTobaccoAutocomplete1" class="login-input flavor-search-input" data-product-type="shisha" data-i18n-placeholder="shisha.search_tobacco_placeholder" placeholder="Hledat tabák..." autocomplete="off">
+                            </div>
+                            <div class="slider-container small" style="margin-top: 10px;">
+                                <button class="slider-btn small" onclick="adjustShishaTobacco(1, -5)">◀</button>
                                 <div class="slider-wrapper">
-                                    <input type="range" id="shFlavorStrength1" min="0" max="35" value="15" step="0.1" class="flavor-slider sh-flavor-slider" data-flavor-index="1" oninput="updateShishaFlavorStrength(1)">
-                                    <div class="slider-track flavor-track" id="shFlavorTrack1"></div>
+                                    <input type="range" id="shTobaccoPercent1" min="0" max="100" value="50" step="5" class="flavor-slider sh-tobacco-slider" data-tobacco-index="1" oninput="updateShishaTobaccoPercent(1)">
+                                    <div class="slider-track flavor-track" id="shTobaccoTrack1"></div>
                                 </div>
-                                <button class="slider-btn small" onclick="adjustShishaFlavor(1, 0.1)" title="+0.1%">▶</button>
-                                <button class="slider-btn small double" onclick="adjustShishaFlavor(1, 1)" title="+1%">▶▶</button>
+                                <button class="slider-btn small" onclick="adjustShishaTobacco(1, 5)">▶</button>
                             </div>
                             <div class="flavor-display">
-                                <span id="shFlavorValue1">15</span>%
+                                <span id="shTobaccoValue1">50</span>%
                             </div>
-                            <!-- Zobrazení doporučení síly příchutě (pod sliderem jako u Liquid) -->
-                            <div id="shFlavorStrengthDisplay1" class="flavor-strength-display"></div>
-                            
-                            <!-- VG/PG poměr pro příchuť -->
-                            <div class="form-group-sub">
-                                <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
-                                <div class="ratio-container compact">
-                                    <div class="ratio-labels">
-                                        <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
-                                        <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
-                                    </div>
-                                    <div class="slider-container">
-                                        <button class="slider-btn small" onclick="adjustShishaFlavorRatio(1, -5)">◀</button>
-                                        <div class="slider-wrapper">
-                                            <input type="range" id="shFlavorRatioSlider1" min="0" max="100" value="0" class="ratio-slider sh-flavor-ratio" data-flavor-index="1" oninput="updateShishaFlavorRatioDisplay(1)">
-                                            <div class="slider-track" id="shFlavorTrackRatio1"></div>
-                                        </div>
-                                        <button class="slider-btn small" onclick="adjustShishaFlavorRatio(1, 5)">▶</button>
-                                    </div>
-                                    <div class="ratio-display small">
-                                        <span id="shFlavorVgValue1">0</span>:<span id="shFlavorPgValue1">100</span>
-                                    </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabák 2 (povinný) -->
+                    <div class="form-group sh-tobacco-group" id="shTobaccoGroup2">
+                        <label class="form-label">
+                            <span data-i18n="shisha.tobacco_label">Tabák</span>
+                            <span class="flavor-number"> 2</span>
+                        </label>
+                        <div class="flavor-container">
+                            <div class="flavor-autocomplete-wrapper">
+                                <input type="text" id="shTobaccoAutocomplete2" class="login-input flavor-search-input" data-product-type="shisha" data-i18n-placeholder="shisha.search_tobacco_placeholder" placeholder="Hledat tabák..." autocomplete="off">
+                            </div>
+                            <div class="slider-container small" style="margin-top: 10px;">
+                                <button class="slider-btn small" onclick="adjustShishaTobacco(2, -5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shTobaccoPercent2" min="0" max="100" value="50" step="5" class="flavor-slider sh-tobacco-slider" data-tobacco-index="2" oninput="updateShishaTobaccoPercent(2)">
+                                    <div class="slider-track flavor-track" id="shTobaccoTrack2"></div>
                                 </div>
+                                <button class="slider-btn small" onclick="adjustShishaTobacco(2, 5)">▶</button>
                             </div>
+                            <div class="flavor-display">
+                                <span id="shTobaccoValue2">50</span>%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Container pro další tabáky (3-4) - Premium -->
+                    <div id="shAdditionalTobaccoContainer"></div>
+
+                    <!-- Tlačítko přidat tabák -->
+                    <div class="form-group add-flavor-group premium-only" id="shAddTobaccoGroup">
+                        <button type="button" class="neon-button secondary add-flavor-btn" onclick="addShishaTobacco()">
+                            <span data-i18n="shisha.add_tobacco">+ Přidat další tabák</span>
+                        </button>
+                        <span class="flavor-count-hint" id="shTobaccoCountHint" data-i18n="shisha.tobacco_count_hint">(max 4 tabáky)</span>
+                        <div class="premium-badge" id="shAddTobaccoPremiumBadge">
+                            <span data-i18n="premium.multiple_flavors_required">Více příchutí vyžaduje Premium</span>
+                        </div>
+                    </div>
+
+                    <!-- Celkový podíl tabáků -->
+                    <div class="form-group flavor-total-group" id="shTobaccoTotalGroup">
+                        <div class="flavor-total-display">
+                            <span data-i18n="shisha.total_tobacco">Celkem:</span>
+                            <strong><span id="shTotalTobaccoPercent">100</span>%</strong>
+                            <span class="flavor-total-warning hidden" id="shTobaccoTotalWarning" data-i18n="shisha.tobacco_total_warning">(musí být 100%)</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Container pro dodatečné příchutě (2-4) - pouze Premium -->
-                <div id="shAdditionalFlavorsContainer"></div>
-
-                <!-- Tlačítko pro přidání další příchutě - pouze Premium -->
-                <div class="form-group add-flavor-group premium-only" id="shAddFlavorGroup">
-                    <button type="button" class="neon-button secondary add-flavor-btn" onclick="addShishaFlavor()">
-                        <span data-i18n="form.add_flavor">+ Přidat další příchuť</span>
-                    </button>
-                    <span class="flavor-count-hint" id="shFlavorCountHint" data-i18n="form.flavor_count_hint">(max 4 příchutě)</span>
-                    <div class="premium-badge" id="shAddFlavorPremiumBadge">
-                        <span data-i18n="premium.multiple_flavors_required">Více příchutí vyžaduje Premium</span>
+                <!-- ============================================ -->
+                <!-- REŽIM 2: DIY TABÁK OD NULY -->
+                <!-- ============================================ -->
+                <div id="shModeContentDiy" class="hidden">
+                    <!-- Množství tabáku -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span data-i18n="shisha.tobacco_amount_label">Množství tabáku (g)</span>
+                            <span class="label-hint" data-i18n="shisha.tobacco_amount_hint">Sušené listy — namočte, odstraňte stonky, nakrájejte</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="shDiyTobaccoAmount" min="50" max="1000" value="250" class="neon-input" oninput="updateDiyMolassesCalc()">
+                            <span class="input-unit">g</span>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Celkové procento příchutí -->
-                <div class="form-group flavor-total-group" id="shFlavorTotalGroup">
-                    <div class="flavor-total-display">
-                        <span data-i18n="form.total_flavor_percent">Celkem příchutí:</span>
-                        <strong><span id="shTotalFlavorPercent">0</span>%</strong>
-                        <span class="flavor-total-warning hidden" id="shFlavorTotalWarning" data-i18n="shisha.flavor_total_warning">(doporučeno 15-25%)</span>
-                    </div>
-                </div>
-
-                <!-- Sladidlo (volitelné) -->
-                <div class="form-group sweetener-section">
-                    <label class="form-label">
-                        <span data-i18n="shisha.sweetener_label">Sladidlo (volitelné)</span>
-                    </label>
-                    <select id="shSweetenerSelect" class="neon-select" onchange="handleShishaSweetenerSelect()">
-                        <option value="none" data-i18n="shisha.sweetener_none">Bez sladidla</option>
-                        <option value="sucralose" data-i18n="shisha.sweetener_sucralose">Sukralóza (nejčastější)</option>
-                        <option value="ethyl_maltol" data-i18n="shisha.sweetener_ethyl_maltol">Ethyl Maltol (cukrová vata)</option>
-                        <option value="stevia" data-i18n="shisha.sweetener_stevia">Stevia (přírodní)</option>
-                        <option value="honey" data-i18n="shisha.sweetener_honey">Med</option>
-                        <option value="molasses" data-i18n="shisha.sweetener_molasses">Melasa</option>
-                        <option value="agave" data-i18n="shisha.sweetener_agave">Agáve</option>
-                    </select>
-                    <div id="shSweetenerContainer" class="hidden">
-                        <div class="slider-container small" style="margin-top: 10px;">
-                            <button class="slider-btn small" onclick="adjustShishaSweetener(-1)">◀</button>
-                            <div class="slider-wrapper">
-                                <input type="range" id="shSweetenerStrength" min="0" max="10" value="3" class="flavor-slider" oninput="updateShishaSweetenerDisplay()">
-                                <div class="slider-track flavor-track" id="shSweetenerTrack"></div>
+                    <!-- Poměr tabák:molasses -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="shisha.tobacco_molasses_ratio_label">Poměr tabák:molasses</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" class="sh-ratio-btn ratio-toggle-btn" data-value="4" onclick="updateDiyRatio(4)">4:1</button>
+                            <button type="button" class="sh-ratio-btn ratio-toggle-btn active" data-value="3" onclick="updateDiyRatio(3)">3:1</button>
+                            <button type="button" class="sh-ratio-btn ratio-toggle-btn" data-value="2" onclick="updateDiyRatio(2)">2:1</button>
+                            <button type="button" class="sh-ratio-btn ratio-toggle-btn" data-value="1" onclick="updateDiyRatio(1)">1:1</button>
+                            <button type="button" class="sh-ratio-btn ratio-toggle-btn" data-value="custom" onclick="updateDiyRatio('custom')" data-i18n="form.custom">Vlastní</button>
+                        </div>
+                        <input type="hidden" id="shDiyRatio" value="3">
+                        <div id="shDiyCustomRatioContainer" class="hidden" style="margin-top: 10px;">
+                            <div class="input-wrapper inline">
+                                <input type="number" id="shDiyCustomRatioTobacco" min="1" max="10" value="3" class="neon-input small" oninput="updateDiyMolassesCalc()">
+                                <span>:</span>
+                                <input type="number" id="shDiyCustomRatioMolasses" min="1" max="10" value="1" class="neon-input small" oninput="updateDiyMolassesCalc()">
                             </div>
-                            <button class="slider-btn small" onclick="adjustShishaSweetener(1)">▶</button>
+                        </div>
+                        <div class="flavor-display" style="margin-top: 5px;">
+                            = <span id="shDiyMolassesCalc">83</span>g molasses
+                        </div>
+                    </div>
+
+                    <!-- Základ molasses (sladidlo) -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="shisha.sweetener_base_label">Základ molasses</label>
+                        <select id="shDiySweetenerType" class="neon-select">
+                            <option value="molasses" data-i18n="shisha.sweetener_molasses">Melasa</option>
+                            <option value="honey" data-i18n="shisha.sweetener_honey">Med</option>
+                            <option value="agave" data-i18n="shisha.sweetener_agave">Agáve</option>
+                        </select>
+                        <div class="slider-container small" style="margin-top: 10px;">
+                            <button class="slider-btn small" onclick="adjustDiySweetener(-5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shDiySweetenerPercent" min="30" max="70" value="55" step="5" class="flavor-slider" oninput="updateDiySweetenerDisplay()">
+                                <div class="slider-track flavor-track" id="shDiySweetenerTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustDiySweetener(5)">▶</button>
                         </div>
                         <div class="flavor-display">
-                            <span id="shSweetenerValue">3</span>%
+                            <span id="shDiySweetenerValue">55</span>% z molasses
                         </div>
                     </div>
-                </div>
 
-                <!-- Voda (volitelné) - procentuální slider vždy viditelný -->
-                <div class="form-group water-section">
-                    <label class="form-label">
-                        <span data-i18n="shisha.water_label">Voda (volitelné)</span>
-                        <span class="label-hint" data-i18n="shisha.water_hint">Zředí směs pro lepší průtah</span>
-                    </label>
-                    <div class="slider-container small">
-                        <button class="slider-btn small" onclick="adjustShishaWater(-0.5)">◀</button>
-                        <div class="slider-wrapper">
-                            <input type="range" id="shWaterPercent" min="0" max="5" value="0" step="0.5" class="flavor-slider" oninput="updateShishaWaterDisplay()">
-                            <div class="slider-track flavor-track" id="shWaterTrack"></div>
-                        </div>
-                        <button class="slider-btn small" onclick="adjustShishaWater(0.5)">▶</button>
-                    </div>
-                    <div class="flavor-display">
-                        <span id="shWaterValue">0</span>%
-                    </div>
-                </div>
-
-                <!-- Poměr VG/PG ve výsledné směsi -->
-                <div class="form-group">
-                    <label class="form-label" data-i18n="shisha.vgpg_label">
-                        Výsledný poměr VG/PG
-                    </label>
-                    <div class="ratio-container">
-                        <div class="ratio-labels">
-                            <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
-                            <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
-                        </div>
-                        <div class="slider-container">
-                            <button class="slider-btn" onclick="adjustShishaRatio(-5)">◀</button>
-                            <div class="slider-wrapper-with-limits">
-                                <span class="slider-limit left">100</span>
-                                <div class="slider-wrapper ratio-slider-wrapper">
-                                    <div class="slider-disabled-zone left" id="shSliderDisabledLeft">
-                                        <span class="limit-value" id="shLimitValueLeft"></span>
-                                    </div>
-                                    <div class="slider-disabled-zone right" id="shSliderDisabledRight">
-                                        <span class="limit-value" id="shLimitValueRight"></span>
-                                    </div>
-                                    <input type="range" id="shVgPgRatio" min="0" max="100" value="80" class="ratio-slider" oninput="updateShishaRatioDisplay()">
-                                    <div class="slider-track" id="shSliderTrack"></div>
-                                    <div class="slider-center-mark"></div>
-                                </div>
-                                <span class="slider-limit right">100</span>
+                    <!-- Glycerin -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span data-i18n="shisha.glycerin_label">Glycerin (VG)</span>
+                            <span class="label-hint" data-i18n="shisha.glycerin_hint">Glycerin = hustý kouř</span>
+                        </label>
+                        <div class="slider-container small">
+                            <button class="slider-btn small" onclick="adjustDiyGlycerin(-5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shDiyGlycerinPercent" min="10" max="50" value="30" step="5" class="flavor-slider" oninput="updateDiyGlycerinDisplay()">
+                                <div class="slider-track flavor-track" id="shDiyGlycerinTrack"></div>
                             </div>
-                            <button class="slider-btn" onclick="adjustShishaRatio(5)">▶</button>
+                            <button class="slider-btn small" onclick="adjustDiyGlycerin(5)">▶</button>
                         </div>
-                        <div class="ratio-display">
-                            <span id="shVgValue">80</span>:<span id="shPgValue">20</span>
+                        <div class="flavor-display">
+                            <span id="shDiyGlycerinValue">30</span>% z molasses
                         </div>
-                        <div id="shRatioDescription" class="ratio-description"></div>
-                        <div id="shRatioLimitWarning" class="input-warning hidden"></div>
+                    </div>
+
+                    <!-- Příchuť 1 (volitelné, vape koncentráty) -->
+                    <div class="form-group sh-flavor-group" id="shDiyFlavorGroup1">
+                        <label class="form-label">
+                            <span data-i18n="shisha.flavor_label">Příchuť</span>
+                            <span class="flavor-number"> 1</span>
+                            <span class="label-hint">(volitelné)</span>
+                        </label>
+                        <div class="flavor-container">
+                            <div class="flavor-autocomplete-wrapper">
+                                <input type="text" id="shDiyFlavorAutocomplete1" class="login-input flavor-search-input" data-product-type="vape" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                            </div>
+                            <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
+                                Nebo vyberte kategorii (bez konkrétní příchutě):
+                            </label>
+                            <select id="shDiyFlavorType1" class="neon-select sh-diy-flavor-select" data-flavor-index="1" onchange="updateShishaDiyFlavorType(1)">
+                                <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
+                                <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
+                                <option value="citrus" data-i18n="form.flavor_citrus">Citrónové (citron, limeta)</option>
+                                <option value="berry" data-i18n="form.flavor_berry">Bobulové (borůvka, malina)</option>
+                                <option value="tropical" data-i18n="form.flavor_tropical">Tropické (ananas, mango)</option>
+                                <option value="menthol" data-i18n="form.flavor_menthol">Mentol / Mátové</option>
+                                <option value="cream" data-i18n="form.flavor_cream">Krémové (vanilka, smetana)</option>
+                                <option value="candy" data-i18n="form.flavor_candy">Sladkosti (cukroví, karamel)</option>
+                                <option value="drink" data-i18n="form.flavor_drink">Nápojové (kola, čaj)</option>
+                                <option value="mix" data-i18n="form.flavor_mix">Mix / Směs</option>
+                            </select>
+                            <div id="shDiyFlavorStrengthContainer1" class="hidden">
+                                <div class="slider-container small">
+                                    <button class="slider-btn small double" onclick="adjustShishaDiyFlavor(1, -1)" title="-1%">◀◀</button>
+                                    <button class="slider-btn small" onclick="adjustShishaDiyFlavor(1, -0.1)" title="-0.1%">◀</button>
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="shDiyFlavorStrength1" min="0" max="15" value="5" step="0.1" class="flavor-slider sh-diy-flavor-slider" data-flavor-index="1" oninput="updateShishaDiyFlavorStrength(1)">
+                                        <div class="slider-track flavor-track" id="shDiyFlavorTrack1"></div>
+                                    </div>
+                                    <button class="slider-btn small" onclick="adjustShishaDiyFlavor(1, 0.1)" title="+0.1%">▶</button>
+                                    <button class="slider-btn small double" onclick="adjustShishaDiyFlavor(1, 1)" title="+1%">▶▶</button>
+                                </div>
+                                <div class="flavor-display">
+                                    <span id="shDiyFlavorValue1">5</span>%
+                                </div>
+                                <div id="shDiyFlavorStrengthDisplay1" class="flavor-strength-display"></div>
+                                <!-- VG/PG poměr pro příchuť -->
+                                <div class="form-group-sub">
+                                    <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
+                                    <div class="ratio-container compact">
+                                        <div class="ratio-labels">
+                                            <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                                            <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                                        </div>
+                                        <div class="slider-container">
+                                            <button class="slider-btn small" onclick="adjustShishaDiyFlavorRatio(1, -5)">◀</button>
+                                            <div class="slider-wrapper">
+                                                <input type="range" id="shDiyFlavorRatioSlider1" min="0" max="100" value="0" class="ratio-slider sh-diy-flavor-ratio" data-flavor-index="1" oninput="updateShishaDiyFlavorRatioDisplay(1)">
+                                                <div class="slider-track" id="shDiyFlavorTrackRatio1"></div>
+                                            </div>
+                                            <button class="slider-btn small" onclick="adjustShishaDiyFlavorRatio(1, 5)">▶</button>
+                                        </div>
+                                        <div class="ratio-display small">
+                                            <span id="shDiyFlavorVgValue1">0</span>:<span id="shDiyFlavorPgValue1">100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Container pro další příchutě (2-4) - Premium -->
+                    <div id="shDiyAdditionalFlavorsContainer"></div>
+
+                    <!-- Tlačítko přidat příchuť -->
+                    <div class="form-group add-flavor-group premium-only" id="shDiyAddFlavorGroup">
+                        <button type="button" class="neon-button secondary add-flavor-btn" onclick="addShishaDiyFlavor()">
+                            <span data-i18n="form.add_flavor">+ Přidat další příchuť</span>
+                        </button>
+                        <span class="flavor-count-hint" id="shDiyFlavorCountHint" data-i18n="form.flavor_count_hint">(max 4 příchutě)</span>
+                        <div class="premium-badge" id="shDiyAddFlavorPremiumBadge">
+                            <span data-i18n="premium.multiple_flavors_required">Více příchutí vyžaduje Premium</span>
+                        </div>
+                    </div>
+
+                    <!-- Nikotin (volitelný) -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span data-i18n="form.nicotine_base_label">Jak silnou mám nikotinovou bázi?</span>
+                            <span class="label-hint" data-i18n="form.nicotine_base_hint">Tyto údaje opiš z obalu nikotinu</span>
+                        </label>
+                        <div class="nicotine-base-container">
+                            <select id="shDiyNicotineType" class="neon-select" onchange="updateShishaDiyNicotineType()">
+                                <option value="none" data-i18n="form.nicotine_none">Bez nikotinu</option>
+                                <option value="freebase" data-i18n="form.nicotine_booster">Nikotin booster</option>
+                                <option value="salt" data-i18n="form.nicotine_salt">Nikotinová sůl</option>
+                            </select>
+                            <div id="shDiyNicotineStrengthContainer" class="hidden">
+                                <input type="number" id="shDiyNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="autoRecalculateShishaDiyVgPgRatio()">
+                                <span class="input-unit" data-i18n="common.mg_ml">mg/ml</span>
+                            </div>
+                        </div>
+                        <div id="shDiyNicotineRatioContainer" class="hidden">
+                            <label class="form-label-small" data-i18n="form.nicotine_ratio_label">Poměr VG/PG v koncentrátu</label>
+                            <div class="ratio-toggle-buttons">
+                                <button type="button" class="sh-diy-nic-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateShishaDiyNicotineRatio('50/50')">50/50</button>
+                                <button type="button" class="sh-diy-nic-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaDiyNicotineRatio('70/30')">70/30</button>
+                            </div>
+                            <input type="hidden" id="shDiyNicotineRatio" value="50/50">
+                        </div>
+                    </div>
+
+                    <!-- Cílová síla nikotinu -->
+                    <div class="form-group hidden" id="shDiyTargetNicotineGroup">
+                        <label class="form-label" data-i18n="form.target_nicotine_label">
+                            Jak silnou chci finální nikotinovou bázi na vapování?
+                        </label>
+                        <div class="target-nicotine-container">
+                            <div class="slider-container">
+                                <button class="slider-btn" onclick="adjustShishaDiyTargetNicotine(-1)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shDiyTargetNicotine" min="0" max="45" value="0" step="1" class="nicotine-slider" oninput="updateShishaDiyNicotineDisplay()">
+                                    <div class="slider-track nicotine-track" id="shDiyNicotineTrack"></div>
+                                </div>
+                                <button class="slider-btn" onclick="adjustShishaDiyTargetNicotine(1)">▶</button>
+                            </div>
+                            <div class="nicotine-display">
+                                <span id="shDiyTargetNicotineValue">0</span> mg/ml
+                            </div>
+                            <div class="nicotine-description" id="shDiyNicotineDescription"></div>
+                        </div>
+                    </div>
+
+                    <!-- Typ báze (separátní / předmíchaná) -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="form.base_type_label">Typ báze</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" id="shDiyBaseSeparate" class="ratio-toggle-btn active" data-value="separate" onclick="updateShishaDiyBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
+                            <button type="button" id="shDiyBasePremixed" class="ratio-toggle-btn" data-value="premixed" onclick="updateShishaDiyBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
+                        </div>
+                        <input type="hidden" id="shDiyBaseType" value="separate">
+                        <div id="shDiyPremixedRatioContainer" class="form-group-sub hidden">
+                            <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
+                            <div class="ratio-toggle-buttons">
+                                <button type="button" class="sh-diy-premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateShishaDiyPremixedRatio('50/50')">50/50</button>
+                                <button type="button" class="sh-diy-premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updateShishaDiyPremixedRatio('60/40')">60/40</button>
+                                <button type="button" class="sh-diy-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaDiyPremixedRatio('70/30')">70/30</button>
+                                <button type="button" class="sh-diy-premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updateShishaDiyPremixedRatio('80/20')">80/20</button>
+                            </div>
+                            <input type="hidden" id="shDiyPremixedRatio" value="50/50">
+                        </div>
+                    </div>
+
+                    <!-- Výsledný poměr VG/PG -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="shisha.vgpg_label">Výsledný poměr VG/PG</label>
+                        <div class="ratio-container">
+                            <div class="ratio-labels">
+                                <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                                <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                            </div>
+                            <div class="slider-container">
+                                <button class="slider-btn" onclick="adjustShishaDiyRatio(-5)">◀</button>
+                                <div class="slider-wrapper-with-limits">
+                                    <span class="slider-limit left">100</span>
+                                    <div class="slider-wrapper ratio-slider-wrapper">
+                                        <div class="slider-disabled-zone left" id="shDiySliderDisabledLeft">
+                                            <span class="limit-value" id="shDiyLimitValueLeft"></span>
+                                        </div>
+                                        <div class="slider-disabled-zone right" id="shDiySliderDisabledRight">
+                                            <span class="limit-value" id="shDiyLimitValueRight"></span>
+                                        </div>
+                                        <input type="range" id="shDiyVgPgRatio" min="0" max="100" value="70" class="ratio-slider" oninput="updateShishaDiyRatioDisplay()">
+                                        <div class="slider-track" id="shDiySliderTrack"></div>
+                                        <div class="slider-center-mark"></div>
+                                    </div>
+                                    <span class="slider-limit right">100</span>
+                                </div>
+                                <button class="slider-btn" onclick="adjustShishaDiyRatio(5)">▶</button>
+                            </div>
+                            <div class="ratio-display">
+                                <span id="shDiyVgValue">70</span>:<span id="shDiyPgValue">30</span>
+                            </div>
+                            <div id="shDiyRatioDescription" class="ratio-description"></div>
+                            <div id="shDiyRatioLimitWarning" class="input-warning hidden"></div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- ============================================ -->
+                <!-- REŽIM 3: MOLASSES MIX -->
+                <!-- ============================================ -->
+                <div id="shModeContentMolasses" class="hidden">
+                    <!-- Celkové množství -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="shisha.molasses_amount_label">Množství molasses</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="shMolTotalAmount" min="50" max="500" value="100" class="neon-input" oninput="autoRecalculateShishaMolVgPgRatio()">
+                            <span class="input-unit" data-i18n="common.ml">ml</span>
+                        </div>
+                    </div>
+
+                    <!-- Základ (sladidlo) -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="shisha.sweetener_base_label">Základ molasses</label>
+                        <select id="shMolSweetenerType" class="neon-select">
+                            <option value="molasses" data-i18n="shisha.sweetener_molasses">Melasa</option>
+                            <option value="honey" data-i18n="shisha.sweetener_honey">Med</option>
+                            <option value="agave" data-i18n="shisha.sweetener_agave">Agáve</option>
+                        </select>
+                        <div class="slider-container small" style="margin-top: 10px;">
+                            <button class="slider-btn small" onclick="adjustMolSweetener(-5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shMolSweetenerPercent" min="30" max="70" value="55" step="5" class="flavor-slider" oninput="updateMolSweetenerDisplay()">
+                                <div class="slider-track flavor-track" id="shMolSweetenerTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustMolSweetener(5)">▶</button>
+                        </div>
+                        <div class="flavor-display">
+                            <span id="shMolSweetenerValue">55</span>%
+                        </div>
+                    </div>
+
+                    <!-- Glycerin -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span data-i18n="shisha.glycerin_label">Glycerin (VG)</span>
+                            <span class="label-hint" data-i18n="shisha.glycerin_hint">Glycerin = hustý kouř</span>
+                        </label>
+                        <div class="slider-container small">
+                            <button class="slider-btn small" onclick="adjustMolGlycerin(-5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shMolGlycerinPercent" min="10" max="50" value="30" step="5" class="flavor-slider" oninput="updateMolGlycerinDisplay()">
+                                <div class="slider-track flavor-track" id="shMolGlycerinTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustMolGlycerin(5)">▶</button>
+                        </div>
+                        <div class="flavor-display">
+                            <span id="shMolGlycerinValue">30</span>%
+                        </div>
+                    </div>
+
+                    <!-- Příchuť 1 (volitelné, vape koncentráty) -->
+                    <div class="form-group sh-flavor-group" id="shMolFlavorGroup1">
+                        <label class="form-label">
+                            <span data-i18n="shisha.flavor_label">Příchuť</span>
+                            <span class="flavor-number"> 1</span>
+                            <span class="label-hint">(volitelné)</span>
+                        </label>
+                        <div class="flavor-container">
+                            <div class="flavor-autocomplete-wrapper">
+                                <input type="text" id="shMolFlavorAutocomplete1" class="login-input flavor-search-input" data-product-type="vape" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                            </div>
+                            <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
+                                Nebo vyberte kategorii (bez konkrétní příchutě):
+                            </label>
+                            <select id="shMolFlavorType1" class="neon-select sh-mol-flavor-select" data-flavor-index="1" onchange="updateShishaMolFlavorType(1)">
+                                <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
+                                <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
+                                <option value="citrus" data-i18n="form.flavor_citrus">Citrónové (citron, limeta)</option>
+                                <option value="berry" data-i18n="form.flavor_berry">Bobulové (borůvka, malina)</option>
+                                <option value="tropical" data-i18n="form.flavor_tropical">Tropické (ananas, mango)</option>
+                                <option value="menthol" data-i18n="form.flavor_menthol">Mentol / Mátové</option>
+                                <option value="cream" data-i18n="form.flavor_cream">Krémové (vanilka, smetana)</option>
+                                <option value="candy" data-i18n="form.flavor_candy">Sladkosti (cukroví, karamel)</option>
+                                <option value="drink" data-i18n="form.flavor_drink">Nápojové (kola, čaj)</option>
+                                <option value="mix" data-i18n="form.flavor_mix">Mix / Směs</option>
+                            </select>
+                            <div id="shMolFlavorStrengthContainer1" class="hidden">
+                                <div class="slider-container small">
+                                    <button class="slider-btn small double" onclick="adjustShishaMolFlavor(1, -1)" title="-1%">◀◀</button>
+                                    <button class="slider-btn small" onclick="adjustShishaMolFlavor(1, -0.1)" title="-0.1%">◀</button>
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="shMolFlavorStrength1" min="0" max="15" value="5" step="0.1" class="flavor-slider sh-mol-flavor-slider" data-flavor-index="1" oninput="updateShishaMolFlavorStrength(1)">
+                                        <div class="slider-track flavor-track" id="shMolFlavorTrack1"></div>
+                                    </div>
+                                    <button class="slider-btn small" onclick="adjustShishaMolFlavor(1, 0.1)" title="+0.1%">▶</button>
+                                    <button class="slider-btn small double" onclick="adjustShishaMolFlavor(1, 1)" title="+1%">▶▶</button>
+                                </div>
+                                <div class="flavor-display">
+                                    <span id="shMolFlavorValue1">5</span>%
+                                </div>
+                                <div id="shMolFlavorStrengthDisplay1" class="flavor-strength-display"></div>
+                                <!-- VG/PG poměr pro příchuť -->
+                                <div class="form-group-sub">
+                                    <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
+                                    <div class="ratio-container compact">
+                                        <div class="ratio-labels">
+                                            <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                                            <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                                        </div>
+                                        <div class="slider-container">
+                                            <button class="slider-btn small" onclick="adjustShishaMolFlavorRatio(1, -5)">◀</button>
+                                            <div class="slider-wrapper">
+                                                <input type="range" id="shMolFlavorRatioSlider1" min="0" max="100" value="0" class="ratio-slider sh-mol-flavor-ratio" data-flavor-index="1" oninput="updateShishaMolFlavorRatioDisplay(1)">
+                                                <div class="slider-track" id="shMolFlavorTrackRatio1"></div>
+                                            </div>
+                                            <button class="slider-btn small" onclick="adjustShishaMolFlavorRatio(1, 5)">▶</button>
+                                        </div>
+                                        <div class="ratio-display small">
+                                            <span id="shMolFlavorVgValue1">0</span>:<span id="shMolFlavorPgValue1">100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Container pro další příchutě (2-4) - Premium -->
+                    <div id="shMolAdditionalFlavorsContainer"></div>
+
+                    <!-- Tlačítko přidat příchuť -->
+                    <div class="form-group add-flavor-group premium-only" id="shMolAddFlavorGroup">
+                        <button type="button" class="neon-button secondary add-flavor-btn" onclick="addShishaMolFlavor()">
+                            <span data-i18n="form.add_flavor">+ Přidat další příchuť</span>
+                        </button>
+                        <span class="flavor-count-hint" id="shMolFlavorCountHint" data-i18n="form.flavor_count_hint">(max 4 příchutě)</span>
+                        <div class="premium-badge" id="shMolAddFlavorPremiumBadge">
+                            <span data-i18n="premium.multiple_flavors_required">Více příchutí vyžaduje Premium</span>
+                        </div>
+                    </div>
+
+                    <!-- Nikotin (volitelný) -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span data-i18n="form.nicotine_base_label">Jak silnou mám nikotinovou bázi?</span>
+                            <span class="label-hint" data-i18n="form.nicotine_base_hint">Tyto údaje opiš z obalu nikotinu</span>
+                        </label>
+                        <div class="nicotine-base-container">
+                            <select id="shMolNicotineType" class="neon-select" onchange="updateShishaMolNicotineType()">
+                                <option value="none" data-i18n="form.nicotine_none">Bez nikotinu</option>
+                                <option value="freebase" data-i18n="form.nicotine_booster">Nikotin booster</option>
+                                <option value="salt" data-i18n="form.nicotine_salt">Nikotinová sůl</option>
+                            </select>
+                            <div id="shMolNicotineStrengthContainer" class="hidden">
+                                <input type="number" id="shMolNicotineBaseStrength" min="3" max="200" value="20" class="neon-input medium" oninput="autoRecalculateShishaMolVgPgRatio()">
+                                <span class="input-unit" data-i18n="common.mg_ml">mg/ml</span>
+                            </div>
+                        </div>
+                        <div id="shMolNicotineRatioContainer" class="hidden">
+                            <label class="form-label-small" data-i18n="form.nicotine_ratio_label">Poměr VG/PG v koncentrátu</label>
+                            <div class="ratio-toggle-buttons">
+                                <button type="button" class="sh-mol-nic-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateShishaMolNicotineRatio('50/50')">50/50</button>
+                                <button type="button" class="sh-mol-nic-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaMolNicotineRatio('70/30')">70/30</button>
+                            </div>
+                            <input type="hidden" id="shMolNicotineRatio" value="50/50">
+                        </div>
+                    </div>
+
+                    <!-- Cílová síla nikotinu -->
+                    <div class="form-group hidden" id="shMolTargetNicotineGroup">
+                        <label class="form-label" data-i18n="form.target_nicotine_label">
+                            Jak silnou chci finální nikotinovou bázi na vapování?
+                        </label>
+                        <div class="target-nicotine-container">
+                            <div class="slider-container">
+                                <button class="slider-btn" onclick="adjustShishaMolTargetNicotine(-1)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shMolTargetNicotine" min="0" max="45" value="0" step="1" class="nicotine-slider" oninput="updateShishaMolNicotineDisplay()">
+                                    <div class="slider-track nicotine-track" id="shMolNicotineTrack"></div>
+                                </div>
+                                <button class="slider-btn" onclick="adjustShishaMolTargetNicotine(1)">▶</button>
+                            </div>
+                            <div class="nicotine-display">
+                                <span id="shMolTargetNicotineValue">0</span> mg/ml
+                            </div>
+                            <div class="nicotine-description" id="shMolNicotineDescription"></div>
+                        </div>
+                    </div>
+
+                    <!-- Voda (volitelné) -->
+                    <div class="form-group water-section">
+                        <label class="form-label">
+                            <span data-i18n="shisha.water_label">Voda (volitelné)</span>
+                            <span class="label-hint" data-i18n="shisha.water_hint">Zředí směs pro lepší průtah</span>
+                        </label>
+                        <div class="slider-container small">
+                            <button class="slider-btn small" onclick="adjustMolWater(-0.5)">◀</button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="shMolWaterPercent" min="0" max="10" value="0" step="0.5" class="flavor-slider" oninput="updateMolWaterDisplay()">
+                                <div class="slider-track flavor-track" id="shMolWaterTrack"></div>
+                            </div>
+                            <button class="slider-btn small" onclick="adjustMolWater(0.5)">▶</button>
+                        </div>
+                        <div class="flavor-display">
+                            <span id="shMolWaterValue">0</span>%
+                        </div>
+                    </div>
+
+                    <!-- Typ báze (separátní / předmíchaná) -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="form.base_type_label">Typ báze</label>
+                        <div class="ratio-toggle-buttons">
+                            <button type="button" id="shMolBaseSeparate" class="ratio-toggle-btn active" data-value="separate" onclick="updateShishaMolBaseType('separate')" data-i18n="form.base_separate">Separátní PG/VG</button>
+                            <button type="button" id="shMolBasePremixed" class="ratio-toggle-btn" data-value="premixed" onclick="updateShishaMolBaseType('premixed')" data-i18n="form.base_premixed">Předmíchaná báze</button>
+                        </div>
+                        <input type="hidden" id="shMolBaseType" value="separate">
+                        <div id="shMolPremixedRatioContainer" class="form-group-sub hidden">
+                            <label class="form-label-small" data-i18n="form.premixed_ratio">Poměr předmíchané báze (VG/PG)</label>
+                            <div class="ratio-toggle-buttons">
+                                <button type="button" class="sh-mol-premixed-ratio-btn ratio-toggle-btn active" data-value="50/50" onclick="updateShishaMolPremixedRatio('50/50')">50/50</button>
+                                <button type="button" class="sh-mol-premixed-ratio-btn ratio-toggle-btn" data-value="60/40" onclick="updateShishaMolPremixedRatio('60/40')">60/40</button>
+                                <button type="button" class="sh-mol-premixed-ratio-btn ratio-toggle-btn" data-value="70/30" onclick="updateShishaMolPremixedRatio('70/30')">70/30</button>
+                                <button type="button" class="sh-mol-premixed-ratio-btn ratio-toggle-btn" data-value="80/20" onclick="updateShishaMolPremixedRatio('80/20')">80/20</button>
+                            </div>
+                            <input type="hidden" id="shMolPremixedRatio" value="50/50">
+                        </div>
+                    </div>
+
+                    <!-- Výsledný poměr VG/PG -->
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="shisha.vgpg_label">Výsledný poměr VG/PG</label>
+                        <div class="ratio-container">
+                            <div class="ratio-labels">
+                                <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                                <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                            </div>
+                            <div class="slider-container">
+                                <button class="slider-btn" onclick="adjustShishaMolRatio(-5)">◀</button>
+                                <div class="slider-wrapper-with-limits">
+                                    <span class="slider-limit left">100</span>
+                                    <div class="slider-wrapper ratio-slider-wrapper">
+                                        <div class="slider-disabled-zone left" id="shMolSliderDisabledLeft">
+                                            <span class="limit-value" id="shMolLimitValueLeft"></span>
+                                        </div>
+                                        <div class="slider-disabled-zone right" id="shMolSliderDisabledRight">
+                                            <span class="limit-value" id="shMolLimitValueRight"></span>
+                                        </div>
+                                        <input type="range" id="shMolVgPgRatio" min="0" max="100" value="70" class="ratio-slider" oninput="updateShishaMolRatioDisplay()">
+                                        <div class="slider-track" id="shMolSliderTrack"></div>
+                                        <div class="slider-center-mark"></div>
+                                    </div>
+                                    <span class="slider-limit right">100</span>
+                                </div>
+                                <button class="slider-btn" onclick="adjustShishaMolRatio(5)">▶</button>
+                            </div>
+                            <div class="ratio-display">
+                                <span id="shMolVgValue">70</span>:<span id="shMolPgValue">30</span>
+                            </div>
+                            <div id="shMolRatioDescription" class="ratio-description"></div>
+                            <div id="shMolRatioLimitWarning" class="input-warning hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- TLAČÍTKA (společné pro všechny režimy) -->
+                <!-- ============================================ -->
                 <div class="button-group">
                     <button class="neon-button secondary" onclick="goBack()">
                         <span data-i18n="form.back">◀ ZPĚT</span>

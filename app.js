@@ -1482,19 +1482,35 @@ window.addEventListener('localeChanged', () => {
         updateDiluteTargetRatioDisplay();
     }
     
-    // Aktualizovat Shisha formulář pokud je inicializován
-    if (document.getElementById('shVgPgRatio')) {
-        updateShishaRatioDisplay();
-        updateShishaNicotineDisplay();
-        // Aktualizovat všechny příchutě
-        for (let i = 1; i <= 4; i++) {
-            if (document.getElementById(`shFlavorType${i}`)) {
-                updateShishaFlavorStrength(i);
-                updateShishaFlavorRatioDisplay(i);
+    // Aktualizovat Shisha formulář pokud je inicializován (3-mode)
+    if (document.getElementById('shMode')) {
+        // Mode 2: DIY
+        if (document.getElementById('shDiyVgPgRatio')) {
+            updateShishaDiyRatioDisplay();
+            updateShishaDiyNicotineDisplay();
+            updateDiySweetenerDisplay();
+            updateDiyGlycerinDisplay();
+            for (let i = 1; i <= 4; i++) {
+                if (document.getElementById(`shDiyFlavorType${i}`)) {
+                    updateShishaDiyFlavorStrength(i);
+                    updateShishaDiyFlavorRatioDisplay(i);
+                }
             }
         }
-        updateShishaSweetenerDisplay();
-        updateShishaWaterDisplay();
+        // Mode 3: Molasses
+        if (document.getElementById('shMolVgPgRatio')) {
+            updateShishaMolRatioDisplay();
+            updateShishaMolNicotineDisplay();
+            updateMolSweetenerDisplay();
+            updateMolGlycerinDisplay();
+            updateMolWaterDisplay();
+            for (let i = 1; i <= 4; i++) {
+                if (document.getElementById(`shMolFlavorType${i}`)) {
+                    updateShishaMolFlavorStrength(i);
+                    updateShishaMolFlavorRatioDisplay(i);
+                }
+            }
+        }
     }
     
     // Překreslit výsledky výpočtu pokud existují
@@ -3202,6 +3218,10 @@ function calculateDifficultyLevel(recipeData) {
         if (recipeData.flavors && Array.isArray(recipeData.flavors)) {
             flavorCount = recipeData.flavors.filter(f => f && f.type && f.type !== 'none' && f.percent > 0).length;
         }
+        // Shisha Mode 1 (tobacco mix) uses tobaccos array instead of flavors
+        if (formType === 'shisha' && recipeData.shishaMode === 'mix' && recipeData.tobaccos && Array.isArray(recipeData.tobaccos)) {
+            flavorCount = recipeData.tobaccos.filter(tb => tb && tb.percent > 0).length;
+        }
     } else {
         // Jednoduchý formulář (liquid, shakevape, shortfill)
         if (recipeData.flavorType && recipeData.flavorType !== 'none') {
@@ -3309,10 +3329,6 @@ function goBackToCalculator() {
         tabName = 'shisha';
     } else if (formType === 'dilute') {
         tabName = 'dilute';
-    } else if (formType === 'shisha') {
-        tabName = 'shisha';
-    } else if (formType === 'dilute') {
-        tabName = 'dilute';
     }
     
     // Povolit programovou změnu záložky
@@ -3321,6 +3337,11 @@ function goBackToCalculator() {
     // Přepnout na správnou záložku a zobrazit formulář
     switchFormTab(tabName);
     showPage('form');
+    
+    // Obnovit shisha režim pokud se jedná o shisha recept
+    if (formType === 'shisha' && recipeData.shishaMode) {
+        switchShishaMode(recipeData.shishaMode);
+    }
     
     // Vizuálně označit záložky jako disabled v režimu editace
     updateFormTabsState();
@@ -3941,6 +3962,34 @@ function extractRecipeFlavors(recipeData, formType) {
                 
                 flavors.push(flavorEntry);
             }
+        }
+    }
+    
+    // Extrahovat shisha tabáky (Mode 1: tobacco mix) do recipe_flavors
+    if (formType === 'shisha' && recipeData.shishaMode === 'mix' && recipeData.tobaccos && Array.isArray(recipeData.tobaccos)) {
+        let position = flavors.length + 1;
+        for (const tobacco of recipeData.tobaccos) {
+            if (!tobacco || tobacco.percent <= 0) continue;
+            const flavorEntry = {
+                position: position++,
+                percentage: tobacco.percent || 0,
+                generic_flavor_type: 'shisha_tobacco'
+            };
+            if (tobacco.flavorName) {
+                flavorEntry.flavor_name = tobacco.flavorName;
+                flavorEntry.flavor_manufacturer = tobacco.flavorManufacturer || null;
+                if (tobacco.favoriteProductId) {
+                    flavorEntry.favorite_product_id = tobacco.favoriteProductId;
+                    if (tobacco.flavorId) flavorEntry.flavor_id = tobacco.flavorId;
+                } else if (tobacco.flavorId) {
+                    if (tobacco.flavorSource === 'favorite') {
+                        flavorEntry.favorite_product_id = tobacco.flavorId;
+                    } else {
+                        flavorEntry.flavor_id = tobacco.flavorId;
+                    }
+                }
+            }
+            flavors.push(flavorEntry);
         }
     }
     
@@ -4573,13 +4622,16 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         ${ingredients.map(ing => {
                             // Dynamicky přeložit název ingredience
                             const ingredientName = escapeHtml(getIngredientName(ing));
-                            // Vypočítat gramy
-                            const grams = calculateIngredientGrams(ing);
+                            // Vypočítat gramy — shisha recepty mají předpočítané grams
+                            const isShishaRecipe = data.formType === 'shisha';
+                            const grams = (isShishaRecipe && ing.grams !== undefined) ? parseFloat(ing.grams).toFixed(1) : calculateIngredientGrams(ing);
+                            const vol = parseFloat(ing.volume || 0);
+                            const volText = (isShishaRecipe && vol === 0) ? '—' : vol.toFixed(2);
                             const percentInline = `<span class="ingredient-percent-inline">(${parseFloat(ing.percent || 0).toFixed(1)}%)</span>`;
                             return `
                             <tr>
                                 <td class="ingredient-name">${ingredientName} ${percentInline}</td>
-                                <td class="ingredient-value">${parseFloat(ing.volume || 0).toFixed(2)}</td>
+                                <td class="ingredient-value">${volText}</td>
                                 <td class="ingredient-grams">${grams}</td>
                             </tr>
                             `;
@@ -7570,6 +7622,9 @@ function getIngredientName(ingredient) {
                 shishaDisplayName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
             }
             return `${t('ingredients.flavor', 'Flavor')} ${ingredient.flavorNumber || 1}: ${shishaDisplayName}`;
+        case 'shisha_tobacco':
+            // Shisha tobacco (Mode 1 mix) - use ingredient name directly (tobacco brand/flavor)
+            return ingredient.name || t('shisha.tobacco_label', 'Tabák');
         case 'shisha_sweetener':
             // Shisha sweetener - přeložit název sladidla
             const sweetType = ingredient.sweetenerType || 'sucralose';
@@ -8291,37 +8346,49 @@ function generateMixingNotes(recipeData) {
     
     const notes = [];
     
-    // Shisha-specific notes
+    // Shisha-specific notes (3 modes)
     if (recipeData.formType === 'shisha') {
-        // 1. Flavors first
-        notes.push(t('results.notes_flavors_first', 'Nejprve přidejte příchutě.'));
+        const shMode = recipeData.shishaMode || 'mix';
         
-        // 2. Nicotine if present
-        if (recipeData.nicotine > 0) {
-            notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
-        }
-        
-        // 3. Premixed base
-        notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
-        
-        // 4. Sweetener if present
-        if (recipeData.sweetener && recipeData.sweetener.percent > 0) {
-            notes.push(t('shisha.note_add_sweetener', 'Přidejte sladidlo a důkladně promíchejte.'));
-        }
-        
-        // 5. Water if present
-        if (recipeData.water > 0) {
-            notes.push(t('shisha.note_add_water', 'Přidejte vodu pro zředění směsi.'));
-        }
-        
-        // 6. Shake
-        notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
-        
-        // 7. Steeping
-        const steepingDays = getMaxSteepingDaysFromRecipe(recipeData);
-        if (steepingDays > 0) {
-            const steepText = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', steepingDays);
-            notes.push(steepText);
+        if (shMode === 'mix') {
+            // Mode 1: Tobacco Mix — just weigh tobaccos
+            notes.push(t('shisha.note_mix_weigh', 'Navažte jednotlivé tabáky podle gramáže.'));
+            notes.push(t('shisha.note_mix_blend', 'Tabáky důkladně promíchejte v korunce.'));
+            notes.push(t('shisha.note_mix_pack', 'Naplňte korunku a rovnoměrně utlačte.'));
+        } else if (shMode === 'diy') {
+            // Mode 2: DIY Tobacco
+            notes.push(t('shisha.note_diy_prepare', 'Připravte tabákové listy — namočte, odstraňte stonky, nakrájejte na proužky.'));
+            notes.push(t('shisha.note_diy_sweetener', 'Smíchejte melasu/med se glycerinem.'));
+            if (recipeData.flavors && recipeData.flavors.length > 0) {
+                notes.push(t('results.notes_flavors_first', 'Přidejte příchutě do molasses směsi.'));
+            }
+            if (recipeData.nicotine > 0) {
+                notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
+            }
+            notes.push(t('shisha.note_diy_combine', 'Zalijte tabák molasses směsí a důkladně promíchejte.'));
+            const steepingDays = recipeData.steepDays || getMaxSteepingDaysFromRecipe(recipeData);
+            if (steepingDays > 0) {
+                const steepText = t('shisha.note_steeping', 'Nechte směs zrát {{days}} dní pro lepší chuť.').replace('{{days}}', steepingDays);
+                notes.push(steepText);
+            }
+        } else if (shMode === 'molasses') {
+            // Mode 3: Molasses Mix
+            notes.push(t('shisha.note_mol_sweetener', 'Smíchejte melasu/med se glycerinem.'));
+            if (recipeData.flavors && recipeData.flavors.length > 0) {
+                notes.push(t('results.notes_flavors_first', 'Přidejte příchutě do směsi.'));
+            }
+            if (recipeData.nicotine > 0) {
+                notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
+            }
+            if (recipeData.waterPercent > 0 || recipeData.water > 0) {
+                notes.push(t('shisha.note_add_water', 'Přidejte vodu pro zředění směsi.'));
+            }
+            notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
+            const steepingDays = recipeData.steepDays || getMaxSteepingDaysFromRecipe(recipeData);
+            if (steepingDays > 0) {
+                const steepText = t('shisha.note_steeping', 'Nechte směs zrát {{days}} dní pro lepší chuť.').replace('{{days}}', steepingDays);
+                notes.push(steepText);
+            }
         }
     } else {
         // Standard liquid notes
@@ -8407,6 +8474,10 @@ function refreshResultsTable() {
     const tbody = document.getElementById('resultsBody');
     if (!tbody || !currentRecipeData || !currentRecipeData.ingredients) return;
     
+    // Shisha recipes use custom rendering (grams, no ml for some modes)
+    const isShisha = currentRecipeData.formType === 'shisha';
+    const shMode = currentRecipeData.shishaMode || 'mix';
+    
     tbody.innerHTML = '';
     let runningTotal = 0;
     let totalGrams = 0;
@@ -8414,27 +8485,39 @@ function refreshResultsTable() {
     currentRecipeData.ingredients.forEach(ing => {
         const row = document.createElement('tr');
         
-        const grams = calculateIngredientGrams(ing);
-        totalGrams += parseFloat(grams);
+        let grams;
+        if (isShisha && ing.grams !== undefined) {
+            grams = parseFloat(ing.grams) || 0;
+        } else {
+            grams = parseFloat(calculateIngredientGrams(ing)) || 0;
+        }
+        totalGrams += grams;
         
         const ingredientName = getIngredientName(ing);
+        const vol = parseFloat(ing.volume || 0);
+        runningTotal += vol;
+        
+        // For shisha tobacco items (volume=0), show '—' instead of 0.00
+        const volText = (isShisha && vol === 0) ? '—' : vol.toFixed(2);
+        const gramsText = isShisha ? grams.toFixed(1) : grams;
         
         row.innerHTML = `
             <td class="ingredient-name">${ingredientName} <span class="ingredient-percent-inline">(${parseFloat(ing.percent || 0).toFixed(1)}%)</span></td>
-            <td class="ingredient-value">${parseFloat(ing.volume || 0).toFixed(2)}</td>
-            <td class="ingredient-grams">${grams}</td>
+            <td class="ingredient-value">${volText}</td>
+            <td class="ingredient-grams">${gramsText}</td>
         `;
         tbody.appendChild(row);
-        runningTotal += parseFloat(ing.volume || 0);
     });
     
     // Přidat řádek celkem
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
+    const totalVolText = (isShisha && (shMode === 'mix' || runningTotal === 0)) ? '—' : runningTotal.toFixed(2);
+    const totalGramsText = isShisha ? totalGrams.toFixed(1) : totalGrams.toFixed(2);
     totalRow.innerHTML = `
         <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
-        <td class="ingredient-value">${runningTotal.toFixed(2)}</td>
-        <td class="ingredient-grams">${totalGrams.toFixed(2)}</td>
+        <td class="ingredient-value">${totalVolText}</td>
+        <td class="ingredient-grams">${totalGramsText}</td>
     `;
     tbody.appendChild(totalRow);
     
@@ -15295,39 +15378,57 @@ window.updateProFlavorRatioDisplay = updateProFlavorRatioDisplay;
 window.autoRecalculateProVgPgRatio = autoRecalculateProVgPgRatio;
 
 // =========================================
-// SHISHA (Hookah) Functions
+// SHISHA (Hookah) Functions — 3 Modes
 // =========================================
 
 let shVgPgLimits = { min: 0, max: 100 };
-let shFlavorCount = 1;
+let shFlavorCount = 1;        // legacy (Mode 1 uses shTobaccoCount)
+let shTobaccoCount = 2;       // Mode 1: tobacco mix count (min 2)
+let shDiyFlavorCount = 1;     // Mode 2: DIY flavor count
+let shMolFlavorCount = 1;     // Mode 3: Molasses flavor count
 
-// Initialize Shisha form
-function initShishaForm() {
-    // Resetovat flag při inicializaci formuláře (nová kalkulace)
-    shishaUserManuallyChangedRatio = false;
+// Current shisha mode: 'mix' | 'diy' | 'molasses'
+let currentShishaMode = 'mix';
+
+// ---- Mode Switcher ----
+function switchShishaMode(mode) {
+    currentShishaMode = mode;
+    document.getElementById('shMode').value = mode;
     
-    updateShishaVgPgLimits();
-    updateShishaRatioDisplay();
-    updateShishaFlavorType(1);
-    updateShishaTotalFlavorPercent();
+    // Update toggle buttons
+    document.getElementById('shModeMix')?.classList.toggle('active', mode === 'mix');
+    document.getElementById('shModeDiy')?.classList.toggle('active', mode === 'diy');
+    document.getElementById('shModeMolasses')?.classList.toggle('active', mode === 'molasses');
+    
+    // Show/hide mode content
+    document.getElementById('shModeContentMix')?.classList.toggle('hidden', mode !== 'mix');
+    document.getElementById('shModeContentDiy')?.classList.toggle('hidden', mode !== 'diy');
+    document.getElementById('shModeContentMolasses')?.classList.toggle('hidden', mode !== 'molasses');
+}
+
+// ---- Initialize ----
+function initShishaForm() {
+    shishaUserManuallyChangedRatio = false;
+    currentShishaMode = 'mix';
+    switchShishaMode('mix');
+    
+    // Mode 1 init
+    updateShishaTobaccoPercent(1);
+    updateShishaTobaccoPercent(2);
+    updateShishaTobaccoTotal();
+    
+    // Mode 2 init
+    updateDiyMolassesCalc();
+    updateDiySweetenerDisplay();
+    updateDiyGlycerinDisplay();
+    
+    // Mode 3 init
+    updateMolSweetenerDisplay();
+    updateMolGlycerinDisplay();
+    updateMolWaterDisplay();
+    
     updateShishaPremiumElements();
     
-    // Inicializovat display funkcí pro správné vybarvení sliderů
-    updateShishaNicotineDisplay();
-    updateShishaSweetenerDisplay();
-    updateShishaWaterDisplay();
-    
-    // Přidat listener pro ruční změnu VG/PG slideru (jen pokud ještě není přidán)
-    const shVgPgRatio = document.getElementById('shVgPgRatio');
-    if (shVgPgRatio && !shVgPgRatio.dataset.listenerAdded) {
-        shVgPgRatio.addEventListener('input', () => {
-            shishaUserManuallyChangedRatio = true;
-            updateShishaRatioDisplay();
-        });
-        shVgPgRatio.dataset.listenerAdded = 'true';
-    }
-    
-    // Apply translations
     if (window.i18n && window.i18n.applyTranslations) {
         window.i18n.applyTranslations();
     }
@@ -15337,1724 +15438,1380 @@ function initShishaForm() {
 function updateShishaPremiumElements() {
     const isPremium = window.checkSubscriptionStatus && window.checkSubscriptionStatus();
     
-    // Custom base ratio button
-    const customBaseBtn = document.querySelector('.sh-premixed-ratio-btn[data-value="custom"]');
-    const customBaseBadge = document.getElementById('shCustomBasePremiumBadge');
-    
-    if (customBaseBtn) {
+    // Mode 1: Add tobacco button
+    const addTobaccoGroup = document.getElementById('shAddTobaccoGroup');
+    const addTobaccoBadge = document.getElementById('shAddTobaccoPremiumBadge');
+    if (addTobaccoGroup) {
         if (isPremium) {
-            customBaseBtn.classList.remove('locked');
-            if (customBaseBadge) customBaseBadge.classList.add('hidden');
+            addTobaccoGroup.classList.remove('locked');
+            if (addTobaccoBadge) addTobaccoBadge.classList.add('hidden');
         } else {
-            customBaseBtn.classList.add('locked');
+            addTobaccoGroup.classList.add('locked');
+            if (addTobaccoBadge) addTobaccoBadge.classList.remove('hidden');
         }
     }
     
-    // Add flavor button
-    const addFlavorGroup = document.getElementById('shAddFlavorGroup');
-    const addFlavorBadge = document.getElementById('shAddFlavorPremiumBadge');
-    
-    if (addFlavorGroup) {
+    // Mode 2: Add DIY flavor button
+    const addDiyFlavorGroup = document.getElementById('shDiyAddFlavorGroup');
+    const addDiyFlavorBadge = document.getElementById('shDiyAddFlavorPremiumBadge');
+    if (addDiyFlavorGroup) {
         if (isPremium) {
-            addFlavorGroup.classList.remove('locked');
-            if (addFlavorBadge) addFlavorBadge.classList.add('hidden');
+            addDiyFlavorGroup.classList.remove('locked');
+            if (addDiyFlavorBadge) addDiyFlavorBadge.classList.add('hidden');
         } else {
-            addFlavorGroup.classList.add('locked');
-            if (addFlavorBadge) addFlavorBadge.classList.remove('hidden');
+            addDiyFlavorGroup.classList.add('locked');
+            if (addDiyFlavorBadge) addDiyFlavorBadge.classList.remove('hidden');
+        }
+    }
+    
+    // Mode 3: Add Mol flavor button
+    const addMolFlavorGroup = document.getElementById('shMolAddFlavorGroup');
+    const addMolFlavorBadge = document.getElementById('shMolAddFlavorPremiumBadge');
+    if (addMolFlavorGroup) {
+        if (isPremium) {
+            addMolFlavorGroup.classList.remove('locked');
+            if (addMolFlavorBadge) addMolFlavorBadge.classList.add('hidden');
+        } else {
+            addMolFlavorGroup.classList.add('locked');
+            if (addMolFlavorBadge) addMolFlavorBadge.classList.remove('hidden');
         }
     }
 }
 
-// Base type (separate / premixed)
-function updateShishaBaseType(type) {
-    // Update hidden input
-    const baseTypeInput = document.getElementById('shBaseType');
-    if (baseTypeInput) {
-        baseTypeInput.value = type;
-        console.log('updateShishaBaseType: Set shBaseType to', type);
-    } else {
-        console.error('updateShishaBaseType: shBaseType element not found!');
-    }
-    
-    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
-    shishaUserManuallyChangedRatio = false;
-    
-    // Update active button
-    document.getElementById('shBaseSeparate')?.classList.toggle('active', type === 'separate');
-    document.getElementById('shBasePremixed')?.classList.toggle('active', type === 'premixed');
-    
-    // Show/hide premixed ratio container
-    const premixedContainer = document.getElementById('shPremixedRatioContainer');
-    if (premixedContainer) {
-        if (type === 'premixed') {
-            premixedContainer.classList.remove('hidden');
-        } else {
-            premixedContainer.classList.add('hidden');
-        }
-    }
-    
-    autoRecalculateShishaVgPgRatio();
-}
+// =========================================
+// MODE 1: MIX HOTOVÝCH TABÁKŮ
+// =========================================
 
-// Premixed base ratio
-function updateShishaPremixedRatio(ratio) {
-    // Vlastní poměr vyžaduje přihlášení
-    if (ratio === 'custom' && !isUserLoggedIn()) {
-        showLoginRequiredModal();
-        return;
-    }
-    
+function updateShishaBowlSize(size) {
     // Update active button
-    document.querySelectorAll('.sh-premixed-ratio-btn').forEach(btn => {
+    document.querySelectorAll('.sh-bowl-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.dataset.value === ratio) {
-            btn.classList.add('active');
-        }
+        if (String(btn.dataset.value) === String(size)) btn.classList.add('active');
     });
     
-    const premixedRatioInput = document.getElementById('shPremixedRatio');
-    const customContainer = document.getElementById('shCustomPremixedContainer');
-    
-    // OPRAVA: Pro custom režim číst hodnotu z inputu a nastavit správný poměr
-    if (ratio === 'custom') {
+    const customContainer = document.getElementById('shCustomBowlContainer');
+    if (size === 'custom') {
         if (customContainer) customContainer.classList.remove('hidden');
-        // Získat hodnotu z custom inputu
-        const customVg = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 70;
-        if (premixedRatioInput) premixedRatioInput.value = `${customVg}/${100 - customVg}`;
+        document.getElementById('shBowlSize').value = document.getElementById('shCustomBowlSize')?.value || 15;
     } else {
         if (customContainer) customContainer.classList.add('hidden');
-        if (premixedRatioInput) premixedRatioInput.value = ratio;
+        document.getElementById('shBowlSize').value = size;
     }
-    
-    autoRecalculateShishaVgPgRatio();
 }
 
-function updateShishaCustomPremixedPg() {
-    const vgInput = document.getElementById('shCustomPremixedVg');
-    const pgInput = document.getElementById('shCustomPremixedPg');
-    
-    let vg = parseInt(vgInput.value) || 0;
-    vg = Math.max(0, Math.min(100, vg));
-    vgInput.value = vg;
-    pgInput.value = 100 - vg;
-    
-    autoRecalculateShishaVgPgRatio();
+function updateShishaCustomBowlSize() {
+    const val = parseInt(document.getElementById('shCustomBowlSize')?.value) || 15;
+    document.getElementById('shBowlSize').value = Math.max(5, Math.min(50, val));
 }
 
-// Starý select handler pro zpětnou kompatibilitu
-function handleShishaNicotineSelect() {
-    updateShishaNicotineType();
-}
-
-// Starý toggle pro zpětnou kompatibilitu
-function toggleShishaNicotine() {
-    updateShishaNicotineType();
-}
-
-// Aktualizovat typ nikotinu - jako v Liquid formuláři
-function updateShishaNicotineType() {
-    const typeSelect = document.getElementById('shNicotineType');
-    const strengthContainer = document.getElementById('shNicotineStrengthContainer');
-    const ratioContainer = document.getElementById('shNicotineRatioContainer');
-    const targetGroup = document.getElementById('shTargetNicotineGroup');
-    const targetSlider = document.getElementById('shTargetNicotine');
-    
-    if (!typeSelect) return;
-    
-    const type = typeSelect.value;
-    
-    if (type === 'none') {
-        // Skrýt všechna nastavení nikotinu
-        if (strengthContainer) strengthContainer.classList.add('hidden');
-        if (ratioContainer) ratioContainer.classList.add('hidden');
-        if (targetGroup) targetGroup.classList.add('hidden');
-        if (targetSlider) {
-            targetSlider.value = 0;
-            updateShishaNicotineDisplay();
-        }
-    } else {
-        // Zobrazit nastavení nikotinu
-        if (strengthContainer) strengthContainer.classList.remove('hidden');
-        if (ratioContainer) ratioContainer.classList.remove('hidden');
-        if (targetGroup) targetGroup.classList.remove('hidden');
-        
-        // Nastavit max hodnotu podle typu
-        const baseStrengthInput = document.getElementById('shNicotineBaseStrength');
-        if (baseStrengthInput) {
-            const maxValue = type === 'salt' ? 72 : 200;
-            baseStrengthInput.max = maxValue;
-            if (parseInt(baseStrengthInput.value) > maxValue) {
-                baseStrengthInput.value = maxValue;
-            }
-        }
-    }
-    
-    autoRecalculateShishaVgPgRatio();
-}
-
-// Aktualizovat poměr VG/PG nikotinu pomocí tlačítek
-function updateShishaNicotineRatio(ratio) {
-    const buttons = document.querySelectorAll('.sh-nic-ratio-btn');
-    buttons.forEach(btn => {
-        if (btn.dataset.value === ratio) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
-    
-    const hiddenInput = document.getElementById('shNicotineRatio');
-    if (hiddenInput) hiddenInput.value = ratio;
-    
-    autoRecalculateShishaVgPgRatio();
-}
-
-// Starý slider handler pro zpětnou kompatibilitu
-function adjustShishaNicRatio(change) {
-    // Již nepoužíváme slider, ale zachováno pro kompatibilitu
-}
-
-function updateShishaNicRatioDisplay() {
-    // Již nepoužíváme slider, ale zachováno pro kompatibilitu
-    
-    if (track) {
-        track.style.width = vg + '%';
-    }
-    
-    autoRecalculateShishaVgPgRatio();
-}
-
-function adjustShishaTargetNicotine(change) {
-    const slider = document.getElementById('shTargetNicotine');
+function updateShishaTobaccoPercent(index) {
+    const slider = document.getElementById(`shTobaccoPercent${index}`);
+    const display = document.getElementById(`shTobaccoValue${index}`);
+    const track = document.getElementById(`shTobaccoTrack${index}`);
     if (!slider) return;
-    
-    let currentValue = parseInt(slider.value);
-    const maxValue = parseInt(slider.max) || 45;
-    
-    let newValue = currentValue + change;
-    newValue = Math.max(0, Math.min(maxValue, newValue));
-    slider.value = newValue;
-    updateShishaNicotineDisplay();
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, var(--neon-gold), #b8860b)'; }
+    updateShishaTobaccoTotal();
 }
 
-function updateShishaNicotineDisplay() {
-    const slider = document.getElementById('shTargetNicotine');
-    const display = document.getElementById('shTargetNicotineValue');
-    const displayContainer = display?.parentElement;
-    const track = document.getElementById('shNicotineTrack');
-    const descEl = document.getElementById('shNicotineDescription');
-    
+function adjustShishaTobacco(index, change) {
+    const slider = document.getElementById(`shTobaccoPercent${index}`);
     if (!slider) return;
-    
-    const value = parseInt(slider.value);
-    const maxValue = parseInt(slider.max) || 10;
-    
-    if (display) display.textContent = value;
-    
-    // Barevná škála podle síly nikotinu - SHISHA specifické popisy (max 10mg)
-    const desc = shishaNicotineDescriptions.find(d => value >= d.min && value <= d.max);
-    if (desc) {
-        if (descEl) {
-            descEl.textContent = getShishaNicotineDescriptionText(value);
-            descEl.style.color = desc.color;
-            descEl.style.borderLeftColor = desc.color;
-        }
-        if (displayContainer) {
-            displayContainer.style.color = desc.color;
-            displayContainer.style.textShadow = `0 0 20px ${desc.color}`;
-        }
-        if (track) {
-            // Plná šířka track s gradientem - jako ostatní formuláře
-            track.style.width = '100%';
-            track.style.background = `linear-gradient(90deg, #00cc66, ${desc.color})`;
-        }
-    } else if (track) {
-        track.style.width = '100%';
-    }
-    
-    autoRecalculateShishaVgPgRatio();
+    let v = parseInt(slider.value) + change;
+    v = Math.max(0, Math.min(100, v));
+    slider.value = v;
+    updateShishaTobaccoPercent(index);
 }
 
-// Flavor functions
-function updateShishaFlavorType(index) {
-    const select = document.getElementById(`shFlavorType${index}`);
-    const strengthContainer = document.getElementById(`shFlavorStrengthContainer${index}`);
-    
-    if (!select) return;
-    
-    const flavorType = select.value;
-    
-    if (flavorType === 'none') {
-        if (strengthContainer) strengthContainer.classList.add('hidden');
-    } else {
-        if (strengthContainer) strengthContainer.classList.remove('hidden');
-        
-        // Set default strength from database
-        const flavor = shishaFlavorDatabase[flavorType];
-        if (flavor) {
-            const slider = document.getElementById(`shFlavorStrength${index}`);
-            if (slider) {
-                slider.value = flavor.ideal;
-                updateShishaFlavorStrength(index);
-            }
-        }
-    }
-    
-    updateShishaTotalFlavorPercent();
-    autoRecalculateShishaVgPgRatio();
-}
-
-function adjustShishaFlavor(index, change) {
-    const slider = document.getElementById(`shFlavorStrength${index}`);
-    if (!slider) return;
-    
-    // Dynamický krok podle rozsahu slideru
-    const minVal = parseFloat(slider.min) || 0;
-    const maxVal = parseFloat(slider.max) || 30;
-    const range = maxVal - minVal;
-    
-    // Pokud je rozsah malý (např. 2-3%), použít menší absolutní krok
-    let actualChange = change;
-    if (range <= 5 && Math.abs(change) === 1) {
-        actualChange = change > 0 ? 0.5 : -0.5;
-    } else if (range <= 5 && Math.abs(change) === 0.1) {
-        actualChange = change > 0 ? 0.1 : -0.1;
-    }
-    
-    let currentValue = parseFloat(slider.value);
-    let newValue = currentValue + actualChange;
-    newValue = Math.max(minVal, Math.min(maxVal, newValue));
-    // Zaokrouhlit na 1 desetinné místo
-    newValue = Math.round(newValue * 10) / 10;
-    slider.value = newValue;
-    updateShishaFlavorStrength(index);
-}
-
-function updateShishaFlavorStrength(index) {
-    const slider = document.getElementById(`shFlavorStrength${index}`);
-    const display = document.getElementById(`shFlavorValue${index}`);
-    const displayContainer = display?.parentElement;
-    const track = document.getElementById(`shFlavorTrack${index}`);
-    const select = document.getElementById(`shFlavorType${index}`);
-    const strengthDisplay = document.getElementById(`shFlavorStrengthDisplay${index}`);
-    const autocomplete = document.getElementById(`shFlavorAutocomplete${index}`);
-    
-    if (!slider) return;
-    
-    const value = parseFloat(slider.value);
-    // Zobrazit s 1 desetinným místem, pokud není celé číslo
-    if (display) display.textContent = Number.isInteger(value) ? value : value.toFixed(1);
-    
-    // Plná šířka track jako v liquid formuláři
-    if (track) track.style.width = '100%';
-    
-    // Zkontrolovat zda je vybraná konkrétní příchuť z databáze
-    let hasSpecificFlavor = false;
-    let specificFlavorName = null;
-    let specificMin = null;
-    let specificMax = null;
-    
-    if (autocomplete && autocomplete.dataset.flavorData) {
-        try {
-            const flavorData = JSON.parse(autocomplete.dataset.flavorData);
-            if (flavorData && flavorData.name) {
-                hasSpecificFlavor = true;
-                specificFlavorName = flavorData.name;
-                specificMin = flavorData.min_percent;
-                specificMax = flavorData.max_percent;
-            }
-        } catch (e) {
-            console.log('Error parsing shisha flavor data:', e);
-        }
-    }
-    
-    // Zobrazení doporučení síly příchutě
-    const flavorType = select?.value || 'custom';
-    const flavor = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
-    
-    // Zjistit, zda máme ověřená data od výrobce
-    const hasVerifiedData = hasSpecificFlavor && specificMin !== null && specificMax !== null && specificMin > 0;
-    
-    // Použít rozsah z konkrétní příchutě nebo z databáze typů (pokud není konkrétní příchuť)
-    let minPercent, maxPercent;
-    if (hasVerifiedData) {
-        minPercent = specificMin;
-        maxPercent = specificMax;
-    } else if (!hasSpecificFlavor) {
-        // Generická kategorie - použít hodnoty z databáze typů
-        minPercent = flavor.min;
-        maxPercent = flavor.max;
-    } else {
-        // Konkrétní příchuť bez ověřených dat - nezobrazovat doporučení
-        minPercent = 0;
-        maxPercent = 100;
-    }
-    
-    let color, text;
-    
-    // Pokud je konkrétní příchuť bez ověřených dat, nezobrazovat doporučení rozsahu
-    if (hasSpecificFlavor && !hasVerifiedData) {
-        color = '#888888'; // šedá - neutrální
-        text = ''; // Žádný text - upozornění je již zobrazeno výše
-        if (track) track.style.background = 'linear-gradient(90deg, #666666, #888888)';
-    } else if (value < minPercent) {
-        color = '#ffaa00';
-        text = t('shisha.flavor_weak', 'Weak flavor - recommended {min}–{max}% for shisha')
-            .replace('{min}', minPercent)
-            .replace('{max}', maxPercent);
-        if (track) track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
-    } else if (value > maxPercent) {
-        color = '#ff0044';
-        text = t('shisha.flavor_strong', 'Too strong flavor - recommended max {max}%')
-            .replace('{min}', minPercent)
-            .replace('{max}', maxPercent);
-        if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
-    } else {
-        color = '#00cc66';
-        // Použít název konkrétní příchutě nebo generickou poznámku
-        const note = hasSpecificFlavor ? specificFlavorName : getShishaFlavorNote(flavorType);
-        text = t('shisha.flavor_ideal', 'Ideální pro shisha ({min}–{max}%) - {note}')
-            .replace('{min}', minPercent)
-            .replace('{max}', maxPercent)
-            .replace('{note}', note);
-        if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
-    }
-    
-    // Barva čísla a % pod sliderem
-    if (displayContainer) {
-        displayContainer.style.color = color;
-        displayContainer.style.textShadow = `0 0 15px ${color}`;
-    }
-    
-    if (strengthDisplay) {
-        strengthDisplay.innerHTML = `
-            <div class="flavor-strength-info" style="border-left-color: ${color}; color: ${color};">
-                ${text}
-            </div>
-        `;
-    }
-    
-    updateShishaTotalFlavorPercent();
-    autoRecalculateShishaVgPgRatio();
-}
-
-// Získat poznámku k shisha příchuti
-function getShishaFlavorNote(flavorType) {
-    const noteKeys = {
-        'double_apple': 'shisha.note_double_apple',
-        'mint': 'shisha.note_mint',
-        'grape': 'shisha.note_grape',
-        'watermelon': 'shisha.note_watermelon',
-        'lemon_mint': 'shisha.note_lemon_mint',
-        'blueberry': 'shisha.note_blueberry',
-        'peach': 'shisha.note_peach',
-        'mango': 'shisha.note_mango',
-        'strawberry': 'shisha.note_strawberry',
-        'mixed_fruit': 'shisha.note_mixed_fruit',
-        'cola': 'shisha.note_cola',
-        'gum': 'shisha.note_gum',
-        'rose': 'shisha.note_rose',
-        'custom': 'shisha.note_custom'
-    };
-    
-    const defaultNotes = {
-        'double_apple': 'klasická shisha příchuť',
-        'mint': 'osvěžující, kombinovatelná',
-        'grape': 'sladká ovocná',
-        'watermelon': 'lehká letní',
-        'lemon_mint': 'citrusová svěžest',
-        'blueberry': 'sladká lesní',
-        'peach': 'jemně sladká',
-        'mango': 'tropická exotika',
-        'strawberry': 'klasická ovocná',
-        'mixed_fruit': 'komplexní ovocná',
-        'cola': 'sladká nápojová',
-        'gum': 'sladká žvýkačková',
-        'rose': 'květinová orientální',
-        'custom': 'vlastní příchuť'
-    };
-    
-    const key = noteKeys[flavorType];
-    const defaultNote = defaultNotes[flavorType] || 'vlastní příchuť';
-    
-    return t(key, defaultNote);
-}
-
-function adjustShishaFlavorRatio(index, change) {
-    const slider = document.getElementById(`shFlavorRatioSlider${index}`);
-    if (!slider) return;
-    
-    let currentValue = parseInt(slider.value);
-    let newValue;
-    if (change > 0) {
-        newValue = Math.ceil((currentValue + 1) / 5) * 5;
-    } else {
-        newValue = Math.floor((currentValue - 1) / 5) * 5;
-    }
-    
-    newValue = Math.max(0, Math.min(100, newValue));
-    slider.value = newValue;
-    updateShishaFlavorRatioDisplay(index);
-}
-
-function updateShishaFlavorRatioDisplay(index) {
-    const slider = document.getElementById(`shFlavorRatioSlider${index}`);
-    const vgValue = document.getElementById(`shFlavorVgValue${index}`);
-    const pgValue = document.getElementById(`shFlavorPgValue${index}`);
-    const track = document.getElementById(`shFlavorTrackRatio${index}`);
-    
-    if (!slider) return;
-    
-    const vg = parseInt(slider.value);
-    const pg = 100 - vg;
-    
-    if (vgValue) vgValue.textContent = vg;
-    if (pgValue) pgValue.textContent = pg;
-    
-    // Plná šířka track s dynamickou barvou
-    if (track) {
-        track.style.width = '100%';
-        // Gradient od VG (zelená) k PG (zlatá/oranžová)
-        track.style.background = `linear-gradient(90deg, var(--neon-green), var(--neon-gold))`;
-    }
-    
-    autoRecalculateShishaVgPgRatio();
-}
-
-function updateShishaTotalFlavorPercent() {
+function updateShishaTobaccoTotal() {
     let total = 0;
+    for (let i = 1; i <= 4; i++) {
+        const s = document.getElementById(`shTobaccoPercent${i}`);
+        if (s) total += parseInt(s.value) || 0;
+    }
+    const display = document.getElementById('shTotalTobaccoPercent');
+    const warning = document.getElementById('shTobaccoTotalWarning');
+    if (display) display.textContent = total;
+    if (warning) warning.classList.toggle('hidden', total === 100);
+}
+
+function addShishaTobacco() {
+    if (!isUserLoggedIn()) { showLoginRequiredModal(); return; }
+    if (shTobaccoCount >= 4) return;
+    shTobaccoCount++;
+    const container = document.getElementById('shAdditionalTobaccoContainer');
+    const html = `
+        <div class="form-group sh-tobacco-group" id="shTobaccoGroup${shTobaccoCount}">
+            <label class="form-label">
+                <span data-i18n="shisha.tobacco_label">${window.i18n?.t('shisha.tobacco_label') || 'Tabák'}</span>
+                <span class="flavor-number"> ${shTobaccoCount}</span>
+                <button type="button" class="remove-flavor-btn" onclick="removeShishaTobacco(${shTobaccoCount})" title="✕">✕</button>
+            </label>
+            <div class="flavor-container">
+                <div class="flavor-autocomplete-wrapper">
+                    <input type="text" id="shTobaccoAutocomplete${shTobaccoCount}" class="login-input flavor-search-input" data-product-type="shisha" placeholder="${window.i18n?.t('shisha.search_tobacco_placeholder') || 'Hledat tabák...'}" autocomplete="off">
+                </div>
+                <div class="slider-container small" style="margin-top:10px;">
+                    <button class="slider-btn small" onclick="adjustShishaTobacco(${shTobaccoCount},-5)">◀</button>
+                    <div class="slider-wrapper">
+                        <input type="range" id="shTobaccoPercent${shTobaccoCount}" min="0" max="100" value="0" step="5" class="flavor-slider sh-tobacco-slider" data-tobacco-index="${shTobaccoCount}" oninput="updateShishaTobaccoPercent(${shTobaccoCount})">
+                        <div class="slider-track flavor-track" id="shTobaccoTrack${shTobaccoCount}"></div>
+                    </div>
+                    <button class="slider-btn small" onclick="adjustShishaTobacco(${shTobaccoCount},5)">▶</button>
+                </div>
+                <div class="flavor-display"><span id="shTobaccoValue${shTobaccoCount}">0</span>%</div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML('beforeend', html);
     
-    for (let i = 1; i <= shFlavorCount; i++) {
-        const select = document.getElementById(`shFlavorType${i}`);
-        const slider = document.getElementById(`shFlavorStrength${i}`);
-        
-        if (select && slider && select.value !== 'none') {
-            total += parseFloat(slider.value) || 0;
-        }
+    // Init autocomplete for new tobacco
+    const acId = `shTobaccoAutocomplete${shTobaccoCount}`;
+    if (document.getElementById(acId) && typeof initFlavorAutocomplete === 'function') {
+        initFlavorAutocomplete(acId, 'shisha', () => {});
     }
     
-    // OPRAVA: Zaokrouhlit na 2 desetinná místa
-    total = Math.round(total * 100) / 100;
-    
-    const totalDisplay = document.getElementById('shTotalFlavorPercent');
-    const warningDisplay = document.getElementById('shFlavorTotalWarning');
-    
-    if (totalDisplay) totalDisplay.textContent = total;
-    
-    if (warningDisplay) {
-        if (total > 25 || (total > 0 && total < 15)) {
-            warningDisplay.classList.remove('hidden');
-        } else {
-            warningDisplay.classList.add('hidden');
+    if (shTobaccoCount >= 4) document.getElementById('shAddTobaccoGroup')?.classList.add('hidden');
+    const hint = document.getElementById('shTobaccoCountHint');
+    if (hint) hint.textContent = `(${shTobaccoCount}/4)`;
+    if (window.i18n?.applyTranslations) window.i18n.applyTranslations();
+}
+
+function removeShishaTobacco(index) {
+    document.getElementById(`shTobaccoGroup${index}`)?.remove();
+    shTobaccoCount--;
+    document.getElementById('shAddTobaccoGroup')?.classList.remove('hidden');
+    const hint = document.getElementById('shTobaccoCountHint');
+    if (hint) hint.textContent = `(${shTobaccoCount}/4)`;
+    updateShishaTobaccoTotal();
+}
+
+// =========================================
+// MODE 2: DIY TABÁK OD NULY
+// =========================================
+
+function updateDiyRatio(ratio) {
+    document.querySelectorAll('.sh-ratio-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (String(btn.dataset.value) === String(ratio)) btn.classList.add('active');
+    });
+    const customContainer = document.getElementById('shDiyCustomRatioContainer');
+    if (ratio === 'custom') {
+        if (customContainer) customContainer.classList.remove('hidden');
+        document.getElementById('shDiyRatio').value = 'custom';
+    } else {
+        if (customContainer) customContainer.classList.add('hidden');
+        document.getElementById('shDiyRatio').value = ratio;
+    }
+    updateDiyMolassesCalc();
+}
+
+function updateDiyMolassesCalc() {
+    const tobaccoAmount = parseFloat(document.getElementById('shDiyTobaccoAmount')?.value) || 250;
+    const ratioVal = document.getElementById('shDiyRatio')?.value;
+    let ratio;
+    if (ratioVal === 'custom') {
+        const t = parseFloat(document.getElementById('shDiyCustomRatioTobacco')?.value) || 3;
+        const m = parseFloat(document.getElementById('shDiyCustomRatioMolasses')?.value) || 1;
+        ratio = t / m;
+    } else {
+        ratio = parseFloat(ratioVal) || 3;
+    }
+    const molasses = Math.round(tobaccoAmount / ratio);
+    const display = document.getElementById('shDiyMolassesCalc');
+    if (display) display.textContent = molasses;
+}
+
+function updateDiySweetenerDisplay() {
+    const slider = document.getElementById('shDiySweetenerPercent');
+    const display = document.getElementById('shDiySweetenerValue');
+    const track = document.getElementById('shDiySweetenerTrack');
+    if (!slider) return;
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, var(--neon-gold), #b8860b)'; }
+}
+
+function adjustDiySweetener(change) {
+    const slider = document.getElementById('shDiySweetenerPercent');
+    if (!slider) return;
+    slider.value = Math.max(30, Math.min(70, parseInt(slider.value) + change));
+    updateDiySweetenerDisplay();
+}
+
+function updateDiyGlycerinDisplay() {
+    const slider = document.getElementById('shDiyGlycerinPercent');
+    const display = document.getElementById('shDiyGlycerinValue');
+    const track = document.getElementById('shDiyGlycerinTrack');
+    if (!slider) return;
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
+}
+
+function adjustDiyGlycerin(change) {
+    const slider = document.getElementById('shDiyGlycerinPercent');
+    if (!slider) return;
+    slider.value = Math.max(10, Math.min(50, parseInt(slider.value) + change));
+    updateDiyGlycerinDisplay();
+}
+
+// DIY Flavor functions (vape concentrates)
+function updateShishaDiyFlavorType(index) {
+    const select = document.getElementById(`shDiyFlavorType${index}`);
+    const container = document.getElementById(`shDiyFlavorStrengthContainer${index}`);
+    if (!select) return;
+    if (select.value === 'none') {
+        if (container) container.classList.add('hidden');
+    } else {
+        if (container) container.classList.remove('hidden');
+        const flavor = flavorDatabase[select.value];
+        if (flavor) {
+            const slider = document.getElementById(`shDiyFlavorStrength${index}`);
+            if (slider) { slider.value = flavor.ideal; updateShishaDiyFlavorStrength(index); }
         }
     }
 }
 
-function addShishaFlavor() {
-    // Přidání více příchutí vyžaduje přihlášení
-    if (!isUserLoggedIn()) {
-        showLoginRequiredModal();
+function adjustShishaDiyFlavor(index, change) {
+    const slider = document.getElementById(`shDiyFlavorStrength${index}`);
+    if (!slider) return;
+    let v = parseFloat(slider.value) + change;
+    v = Math.max(0, Math.min(15, Math.round(v * 10) / 10));
+    slider.value = v;
+    updateShishaDiyFlavorStrength(index);
+}
+
+function updateShishaDiyFlavorStrength(index) {
+    const slider = document.getElementById(`shDiyFlavorStrength${index}`);
+    const display = document.getElementById(`shDiyFlavorValue${index}`);
+    const track = document.getElementById(`shDiyFlavorTrack${index}`);
+    if (!slider) return;
+    const val = parseFloat(slider.value);
+    if (display) display.textContent = Number.isInteger(val) ? val : val.toFixed(1);
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
+}
+
+function adjustShishaDiyFlavorRatio(index, change) {
+    const slider = document.getElementById(`shDiyFlavorRatioSlider${index}`);
+    if (!slider) return;
+    let v = parseInt(slider.value);
+    v = change > 0 ? Math.ceil((v + 1) / 5) * 5 : Math.floor((v - 1) / 5) * 5;
+    slider.value = Math.max(0, Math.min(100, v));
+    updateShishaDiyFlavorRatioDisplay(index);
+}
+
+function updateShishaDiyFlavorRatioDisplay(index) {
+    const slider = document.getElementById(`shDiyFlavorRatioSlider${index}`);
+    const vgEl = document.getElementById(`shDiyFlavorVgValue${index}`);
+    const pgEl = document.getElementById(`shDiyFlavorPgValue${index}`);
+    const track = document.getElementById(`shDiyFlavorTrackRatio${index}`);
+    if (!slider) return;
+    const vg = parseInt(slider.value);
+    if (vgEl) vgEl.textContent = vg;
+    if (pgEl) pgEl.textContent = 100 - vg;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-gold))'; }
+}
+
+function addShishaDiyFlavor() {
+    if (!isUserLoggedIn()) { showLoginRequiredModal(); return; }
+    if (shDiyFlavorCount >= 4) return;
+    shDiyFlavorCount++;
+    const container = document.getElementById('shDiyAdditionalFlavorsContainer');
+    const i = shDiyFlavorCount;
+    const html = `
+        <div class="form-group sh-flavor-group" id="shDiyFlavorGroup${i}">
+            <label class="form-label">
+                <span data-i18n="shisha.flavor_label">${window.i18n?.t('shisha.flavor_label') || 'Příchuť'}</span>
+                <span class="flavor-number"> ${i}</span>
+                <button type="button" class="remove-flavor-btn" onclick="removeShishaDiyFlavor(${i})" title="✕">✕</button>
+            </label>
+            <div class="flavor-container">
+                <div class="flavor-autocomplete-wrapper">
+                    <input type="text" id="shDiyFlavorAutocomplete${i}" class="login-input flavor-search-input" data-product-type="vape" placeholder="${window.i18n?.t('flavor_autocomplete.search_placeholder') || 'Hledat konkrétní příchuť...'}" autocomplete="off">
+                </div>
+                <select id="shDiyFlavorType${i}" class="neon-select sh-diy-flavor-select" data-flavor-index="${i}" onchange="updateShishaDiyFlavorType(${i})">
+                    <option value="none">${window.i18n?.t('form.flavor_none') || 'Žádná'}</option>
+                    <option value="fruit">${window.i18n?.t('form.flavor_fruit') || 'Ovoce'}</option>
+                    <option value="citrus">${window.i18n?.t('form.flavor_citrus') || 'Citrónové'}</option>
+                    <option value="berry">${window.i18n?.t('form.flavor_berry') || 'Bobulové'}</option>
+                    <option value="tropical">${window.i18n?.t('form.flavor_tropical') || 'Tropické'}</option>
+                    <option value="menthol">${window.i18n?.t('form.flavor_menthol') || 'Mentol'}</option>
+                    <option value="cream">${window.i18n?.t('form.flavor_cream') || 'Krémové'}</option>
+                    <option value="candy">${window.i18n?.t('form.flavor_candy') || 'Sladkosti'}</option>
+                    <option value="drink">${window.i18n?.t('form.flavor_drink') || 'Nápojové'}</option>
+                    <option value="mix">${window.i18n?.t('form.flavor_mix') || 'Mix'}</option>
+                </select>
+                <div id="shDiyFlavorStrengthContainer${i}" class="hidden">
+                    <div class="slider-container small">
+                        <button class="slider-btn small double" onclick="adjustShishaDiyFlavor(${i},-1)">◀◀</button>
+                        <button class="slider-btn small" onclick="adjustShishaDiyFlavor(${i},-0.1)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="shDiyFlavorStrength${i}" min="0" max="15" value="5" step="0.1" class="flavor-slider" oninput="updateShishaDiyFlavorStrength(${i})">
+                            <div class="slider-track flavor-track" id="shDiyFlavorTrack${i}"></div>
+                        </div>
+                        <button class="slider-btn small" onclick="adjustShishaDiyFlavor(${i},0.1)">▶</button>
+                        <button class="slider-btn small double" onclick="adjustShishaDiyFlavor(${i},1)">▶▶</button>
+                    </div>
+                    <div class="flavor-display"><span id="shDiyFlavorValue${i}">5</span>%</div>
+                    <div id="shDiyFlavorStrengthDisplay${i}" class="flavor-strength-display"></div>
+                    <div class="form-group-sub">
+                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG'}</label>
+                        <div class="ratio-container compact">
+                            <div class="slider-container">
+                                <button class="slider-btn small" onclick="adjustShishaDiyFlavorRatio(${i},-5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shDiyFlavorRatioSlider${i}" min="0" max="100" value="0" class="ratio-slider" oninput="updateShishaDiyFlavorRatioDisplay(${i})">
+                                    <div class="slider-track" id="shDiyFlavorTrackRatio${i}"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustShishaDiyFlavorRatio(${i},5)">▶</button>
+                            </div>
+                            <div class="ratio-display small"><span id="shDiyFlavorVgValue${i}">0</span>:<span id="shDiyFlavorPgValue${i}">100</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+    if (shDiyFlavorCount >= 4) document.getElementById('shDiyAddFlavorGroup')?.classList.add('hidden');
+    if (window.i18n?.applyTranslations) window.i18n.applyTranslations();
+}
+
+function removeShishaDiyFlavor(index) {
+    document.getElementById(`shDiyFlavorGroup${index}`)?.remove();
+    shDiyFlavorCount--;
+    document.getElementById('shDiyAddFlavorGroup')?.classList.remove('hidden');
+}
+
+// DIY Nicotine
+function updateShishaDiyNicotineType() {
+    const typeSelect = document.getElementById('shDiyNicotineType');
+    const strengthContainer = document.getElementById('shDiyNicotineStrengthContainer');
+    const ratioContainer = document.getElementById('shDiyNicotineRatioContainer');
+    const targetGroup = document.getElementById('shDiyTargetNicotineGroup');
+    if (!typeSelect) return;
+    const type = typeSelect.value;
+    if (type === 'none') {
+        strengthContainer?.classList.add('hidden');
+        ratioContainer?.classList.add('hidden');
+        targetGroup?.classList.add('hidden');
+    } else {
+        strengthContainer?.classList.remove('hidden');
+        ratioContainer?.classList.remove('hidden');
+        targetGroup?.classList.remove('hidden');
+    }
+}
+
+function updateShishaDiyNicotineRatio(ratio) {
+    document.querySelectorAll('.sh-diy-nic-ratio-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === ratio);
+    });
+    const input = document.getElementById('shDiyNicotineRatio');
+    if (input) input.value = ratio;
+}
+
+function adjustShishaDiyTargetNicotine(change) {
+    const slider = document.getElementById('shDiyTargetNicotine');
+    if (!slider) return;
+    slider.value = Math.max(0, Math.min(parseInt(slider.max) || 45, parseInt(slider.value) + change));
+    updateShishaDiyNicotineDisplay();
+}
+
+function updateShishaDiyNicotineDisplay() {
+    const slider = document.getElementById('shDiyTargetNicotine');
+    const display = document.getElementById('shDiyTargetNicotineValue');
+    const track = document.getElementById('shDiyNicotineTrack');
+    if (!slider) return;
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = val > 0 ? 'linear-gradient(90deg, #00cc66, #ff6600)' : 'linear-gradient(90deg, #00cc66, #00cc66)'; }
+}
+
+function autoRecalculateShishaDiyVgPgRatio() {
+    // Placeholder — recalculates when inputs change
+}
+
+// DIY Base type
+function updateShishaDiyBaseType(type) {
+    document.getElementById('shDiyBaseType').value = type;
+    document.getElementById('shDiyBaseSeparate')?.classList.toggle('active', type === 'separate');
+    document.getElementById('shDiyBasePremixed')?.classList.toggle('active', type === 'premixed');
+    document.getElementById('shDiyPremixedRatioContainer')?.classList.toggle('hidden', type !== 'premixed');
+}
+
+function updateShishaDiyPremixedRatio(ratio) {
+    document.querySelectorAll('.sh-diy-premixed-ratio-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === ratio);
+    });
+    document.getElementById('shDiyPremixedRatio').value = ratio;
+}
+
+// DIY VG/PG ratio display
+function adjustShishaDiyRatio(change) {
+    const slider = document.getElementById('shDiyVgPgRatio');
+    if (!slider) return;
+    let v = parseInt(slider.value);
+    v = change > 0 ? Math.ceil((v + 1) / 5) * 5 : Math.floor((v - 1) / 5) * 5;
+    slider.value = Math.max(0, Math.min(100, v));
+    updateShishaDiyRatioDisplay();
+}
+
+function updateShishaDiyRatioDisplay() {
+    const slider = document.getElementById('shDiyVgPgRatio');
+    const vgEl = document.getElementById('shDiyVgValue');
+    const pgEl = document.getElementById('shDiyPgValue');
+    const track = document.getElementById('shDiySliderTrack');
+    if (!slider) return;
+    const vg = parseInt(slider.value);
+    if (vgEl) vgEl.textContent = vg;
+    if (pgEl) pgEl.textContent = 100 - vg;
+    if (track) {
+        track.style.width = '100%';
+        if (vg >= 60 && vg <= 80) track.style.background = 'linear-gradient(90deg, var(--neon-gold), #b8860b)';
+        else track.style.background = 'linear-gradient(90deg, #ffaa00, #ff6600)';
+    }
+}
+
+// =========================================
+// MODE 3: MOLASSES MIX
+// =========================================
+
+function updateMolSweetenerDisplay() {
+    const slider = document.getElementById('shMolSweetenerPercent');
+    const display = document.getElementById('shMolSweetenerValue');
+    const track = document.getElementById('shMolSweetenerTrack');
+    if (!slider) return;
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, var(--neon-gold), #b8860b)'; }
+}
+
+function adjustMolSweetener(change) {
+    const slider = document.getElementById('shMolSweetenerPercent');
+    if (!slider) return;
+    slider.value = Math.max(30, Math.min(70, parseInt(slider.value) + change));
+    updateMolSweetenerDisplay();
+}
+
+function updateMolGlycerinDisplay() {
+    const slider = document.getElementById('shMolGlycerinPercent');
+    const display = document.getElementById('shMolGlycerinValue');
+    const track = document.getElementById('shMolGlycerinTrack');
+    if (!slider) return;
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
+}
+
+function adjustMolGlycerin(change) {
+    const slider = document.getElementById('shMolGlycerinPercent');
+    if (!slider) return;
+    slider.value = Math.max(10, Math.min(50, parseInt(slider.value) + change));
+    updateMolGlycerinDisplay();
+}
+
+function updateMolWaterDisplay() {
+    const slider = document.getElementById('shMolWaterPercent');
+    const display = document.getElementById('shMolWaterValue');
+    const track = document.getElementById('shMolWaterTrack');
+    if (!slider) return;
+    const val = parseFloat(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = val > 0 ? 'linear-gradient(90deg, #00aaff, #00cc66)' : 'linear-gradient(90deg, #00aaff, #00aaff)'; }
+}
+
+function adjustMolWater(change) {
+    const slider = document.getElementById('shMolWaterPercent');
+    if (!slider) return;
+    slider.value = Math.max(0, Math.min(10, parseFloat(slider.value) + change));
+    updateMolWaterDisplay();
+}
+
+// Molasses Flavor functions (vape concentrates — identical pattern to DIY)
+function updateShishaMolFlavorType(index) {
+    const select = document.getElementById(`shMolFlavorType${index}`);
+    const container = document.getElementById(`shMolFlavorStrengthContainer${index}`);
+    if (!select) return;
+    if (select.value === 'none') {
+        if (container) container.classList.add('hidden');
+    } else {
+        if (container) container.classList.remove('hidden');
+        const flavor = flavorDatabase[select.value];
+        if (flavor) {
+            const slider = document.getElementById(`shMolFlavorStrength${index}`);
+            if (slider) { slider.value = flavor.ideal; updateShishaMolFlavorStrength(index); }
+        }
+    }
+}
+
+function adjustShishaMolFlavor(index, change) {
+    const slider = document.getElementById(`shMolFlavorStrength${index}`);
+    if (!slider) return;
+    let v = parseFloat(slider.value) + change;
+    v = Math.max(0, Math.min(15, Math.round(v * 10) / 10));
+    slider.value = v;
+    updateShishaMolFlavorStrength(index);
+}
+
+function updateShishaMolFlavorStrength(index) {
+    const slider = document.getElementById(`shMolFlavorStrength${index}`);
+    const display = document.getElementById(`shMolFlavorValue${index}`);
+    const track = document.getElementById(`shMolFlavorTrack${index}`);
+    if (!slider) return;
+    const val = parseFloat(slider.value);
+    if (display) display.textContent = Number.isInteger(val) ? val : val.toFixed(1);
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
+}
+
+function adjustShishaMolFlavorRatio(index, change) {
+    const slider = document.getElementById(`shMolFlavorRatioSlider${index}`);
+    if (!slider) return;
+    let v = parseInt(slider.value);
+    v = change > 0 ? Math.ceil((v + 1) / 5) * 5 : Math.floor((v - 1) / 5) * 5;
+    slider.value = Math.max(0, Math.min(100, v));
+    updateShishaMolFlavorRatioDisplay(index);
+}
+
+function updateShishaMolFlavorRatioDisplay(index) {
+    const slider = document.getElementById(`shMolFlavorRatioSlider${index}`);
+    const vgEl = document.getElementById(`shMolFlavorVgValue${index}`);
+    const pgEl = document.getElementById(`shMolFlavorPgValue${index}`);
+    const track = document.getElementById(`shMolFlavorTrackRatio${index}`);
+    if (!slider) return;
+    const vg = parseInt(slider.value);
+    if (vgEl) vgEl.textContent = vg;
+    if (pgEl) pgEl.textContent = 100 - vg;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-gold))'; }
+}
+
+function addShishaMolFlavor() {
+    if (!isUserLoggedIn()) { showLoginRequiredModal(); return; }
+    if (shMolFlavorCount >= 4) return;
+    shMolFlavorCount++;
+    const container = document.getElementById('shMolAdditionalFlavorsContainer');
+    const i = shMolFlavorCount;
+    const html = `
+        <div class="form-group sh-flavor-group" id="shMolFlavorGroup${i}">
+            <label class="form-label">
+                <span data-i18n="shisha.flavor_label">${window.i18n?.t('shisha.flavor_label') || 'Příchuť'}</span>
+                <span class="flavor-number"> ${i}</span>
+                <button type="button" class="remove-flavor-btn" onclick="removeShishaMolFlavor(${i})" title="✕">✕</button>
+            </label>
+            <div class="flavor-container">
+                <div class="flavor-autocomplete-wrapper">
+                    <input type="text" id="shMolFlavorAutocomplete${i}" class="login-input flavor-search-input" data-product-type="vape" placeholder="${window.i18n?.t('flavor_autocomplete.search_placeholder') || 'Hledat konkrétní příchuť...'}" autocomplete="off">
+                </div>
+                <select id="shMolFlavorType${i}" class="neon-select sh-mol-flavor-select" data-flavor-index="${i}" onchange="updateShishaMolFlavorType(${i})">
+                    <option value="none">${window.i18n?.t('form.flavor_none') || 'Žádná'}</option>
+                    <option value="fruit">${window.i18n?.t('form.flavor_fruit') || 'Ovoce'}</option>
+                    <option value="citrus">${window.i18n?.t('form.flavor_citrus') || 'Citrónové'}</option>
+                    <option value="berry">${window.i18n?.t('form.flavor_berry') || 'Bobulové'}</option>
+                    <option value="tropical">${window.i18n?.t('form.flavor_tropical') || 'Tropické'}</option>
+                    <option value="menthol">${window.i18n?.t('form.flavor_menthol') || 'Mentol'}</option>
+                    <option value="cream">${window.i18n?.t('form.flavor_cream') || 'Krémové'}</option>
+                    <option value="candy">${window.i18n?.t('form.flavor_candy') || 'Sladkosti'}</option>
+                    <option value="drink">${window.i18n?.t('form.flavor_drink') || 'Nápojové'}</option>
+                    <option value="mix">${window.i18n?.t('form.flavor_mix') || 'Mix'}</option>
+                </select>
+                <div id="shMolFlavorStrengthContainer${i}" class="hidden">
+                    <div class="slider-container small">
+                        <button class="slider-btn small double" onclick="adjustShishaMolFlavor(${i},-1)">◀◀</button>
+                        <button class="slider-btn small" onclick="adjustShishaMolFlavor(${i},-0.1)">◀</button>
+                        <div class="slider-wrapper">
+                            <input type="range" id="shMolFlavorStrength${i}" min="0" max="15" value="5" step="0.1" class="flavor-slider" oninput="updateShishaMolFlavorStrength(${i})">
+                            <div class="slider-track flavor-track" id="shMolFlavorTrack${i}"></div>
+                        </div>
+                        <button class="slider-btn small" onclick="adjustShishaMolFlavor(${i},0.1)">▶</button>
+                        <button class="slider-btn small double" onclick="adjustShishaMolFlavor(${i},1)">▶▶</button>
+                    </div>
+                    <div class="flavor-display"><span id="shMolFlavorValue${i}">5</span>%</div>
+                    <div id="shMolFlavorStrengthDisplay${i}" class="flavor-strength-display"></div>
+                    <div class="form-group-sub">
+                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG'}</label>
+                        <div class="ratio-container compact">
+                            <div class="slider-container">
+                                <button class="slider-btn small" onclick="adjustShishaMolFlavorRatio(${i},-5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shMolFlavorRatioSlider${i}" min="0" max="100" value="0" class="ratio-slider" oninput="updateShishaMolFlavorRatioDisplay(${i})">
+                                    <div class="slider-track" id="shMolFlavorTrackRatio${i}"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustShishaMolFlavorRatio(${i},5)">▶</button>
+                            </div>
+                            <div class="ratio-display small"><span id="shMolFlavorVgValue${i}">0</span>:<span id="shMolFlavorPgValue${i}">100</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+    if (shMolFlavorCount >= 4) document.getElementById('shMolAddFlavorGroup')?.classList.add('hidden');
+    if (window.i18n?.applyTranslations) window.i18n.applyTranslations();
+}
+
+function removeShishaMolFlavor(index) {
+    document.getElementById(`shMolFlavorGroup${index}`)?.remove();
+    shMolFlavorCount--;
+    document.getElementById('shMolAddFlavorGroup')?.classList.remove('hidden');
+}
+
+// Molasses Nicotine
+function updateShishaMolNicotineType() {
+    const typeSelect = document.getElementById('shMolNicotineType');
+    const strengthContainer = document.getElementById('shMolNicotineStrengthContainer');
+    const ratioContainer = document.getElementById('shMolNicotineRatioContainer');
+    const targetGroup = document.getElementById('shMolTargetNicotineGroup');
+    if (!typeSelect) return;
+    const type = typeSelect.value;
+    if (type === 'none') {
+        strengthContainer?.classList.add('hidden');
+        ratioContainer?.classList.add('hidden');
+        targetGroup?.classList.add('hidden');
+    } else {
+        strengthContainer?.classList.remove('hidden');
+        ratioContainer?.classList.remove('hidden');
+        targetGroup?.classList.remove('hidden');
+    }
+}
+
+function updateShishaMolNicotineRatio(ratio) {
+    document.querySelectorAll('.sh-mol-nic-ratio-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === ratio);
+    });
+    const input = document.getElementById('shMolNicotineRatio');
+    if (input) input.value = ratio;
+}
+
+function adjustShishaMolTargetNicotine(change) {
+    const slider = document.getElementById('shMolTargetNicotine');
+    if (!slider) return;
+    slider.value = Math.max(0, Math.min(parseInt(slider.max) || 45, parseInt(slider.value) + change));
+    updateShishaMolNicotineDisplay();
+}
+
+function updateShishaMolNicotineDisplay() {
+    const slider = document.getElementById('shMolTargetNicotine');
+    const display = document.getElementById('shMolTargetNicotineValue');
+    const track = document.getElementById('shMolNicotineTrack');
+    if (!slider) return;
+    const val = parseInt(slider.value);
+    if (display) display.textContent = val;
+    if (track) { track.style.width = '100%'; track.style.background = val > 0 ? 'linear-gradient(90deg, #00cc66, #ff6600)' : 'linear-gradient(90deg, #00cc66, #00cc66)'; }
+}
+
+function autoRecalculateShishaMolVgPgRatio() {
+    // Placeholder — recalculates when inputs change
+}
+
+// Molasses Base type
+function updateShishaMolBaseType(type) {
+    document.getElementById('shMolBaseType').value = type;
+    document.getElementById('shMolBaseSeparate')?.classList.toggle('active', type === 'separate');
+    document.getElementById('shMolBasePremixed')?.classList.toggle('active', type === 'premixed');
+    document.getElementById('shMolPremixedRatioContainer')?.classList.toggle('hidden', type !== 'premixed');
+}
+
+function updateShishaMolPremixedRatio(ratio) {
+    document.querySelectorAll('.sh-mol-premixed-ratio-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === ratio);
+    });
+    document.getElementById('shMolPremixedRatio').value = ratio;
+}
+
+// Molasses VG/PG ratio display
+function adjustShishaMolRatio(change) {
+    const slider = document.getElementById('shMolVgPgRatio');
+    if (!slider) return;
+    let v = parseInt(slider.value);
+    v = change > 0 ? Math.ceil((v + 1) / 5) * 5 : Math.floor((v - 1) / 5) * 5;
+    slider.value = Math.max(0, Math.min(100, v));
+    updateShishaMolRatioDisplay();
+}
+
+function updateShishaMolRatioDisplay() {
+    const slider = document.getElementById('shMolVgPgRatio');
+    const vgEl = document.getElementById('shMolVgValue');
+    const pgEl = document.getElementById('shMolPgValue');
+    const track = document.getElementById('shMolSliderTrack');
+    if (!slider) return;
+    const vg = parseInt(slider.value);
+    if (vgEl) vgEl.textContent = vg;
+    if (pgEl) pgEl.textContent = 100 - vg;
+    if (track) {
+        track.style.width = '100%';
+        if (vg >= 60 && vg <= 80) track.style.background = 'linear-gradient(90deg, var(--neon-gold), #b8860b)';
+        else track.style.background = 'linear-gradient(90deg, #ffaa00, #ff6600)';
+    }
+}
+
+// Legacy compat stubs (old form functions that may be referenced elsewhere)
+function handleShishaNicotineSelect() {}
+function toggleShishaNicotine() {}
+function updateShishaFlavorType() {}
+function adjustShishaFlavor() {}
+function updateShishaFlavorStrength() {}
+function adjustShishaFlavorRatio() {}
+function updateShishaFlavorRatioDisplay() {}
+function updateShishaTotalFlavorPercent() {}
+function addShishaFlavor() {}
+function removeShishaFlavor() {}
+function getShishaFlavorsData() { return []; }
+function handleShishaSweetenerSelect() {}
+function toggleShishaSweetener() {}
+function updateShishaSweetenerType() {}
+function adjustShishaSweetener() {}
+function updateShishaSweetenerDisplay() {}
+function toggleShishaWater() {}
+function adjustShishaWater() {}
+function updateShishaWaterDisplay() {}
+function adjustShishaRatio() {}
+function updateShishaRatioDisplay() {}
+function autoRecalculateShishaVgPgRatio() {}
+function updateShishaVgPgLimits() {}
+function updateShishaBaseType() {}
+function updateShishaPremixedRatio() {}
+function updateShishaCustomPremixedPg() {}
+function updateShishaNicotineType() {}
+function updateShishaNicotineRatio() {}
+function adjustShishaNicRatio() {}
+function updateShishaNicRatioDisplay() {}
+function adjustShishaTargetNicotine() {}
+function updateShishaNicotineDisplay() {}
+
+// =========================================
+// CALCULATE SHISHA MIX (dispatcher)
+// =========================================
+function calculateShishaMix() {
+    const mode = currentShishaMode || 'mix';
+    
+    if (mode === 'mix') {
+        calculateShishaMixMode1();
+    } else if (mode === 'diy') {
+        calculateShishaMixMode2();
+    } else if (mode === 'molasses') {
+        calculateShishaMixMode3();
+    }
+}
+
+// MODE 1: Mix hotových tabáků
+function calculateShishaMixMode1() {
+    const bowlSize = parseInt(document.getElementById('shBowlSize')?.value) || 15;
+    
+    // Collect tobaccos
+    const tobaccos = [];
+    for (let i = 1; i <= 4; i++) {
+        const slider = document.getElementById(`shTobaccoPercent${i}`);
+        const autocomplete = document.getElementById(`shTobaccoAutocomplete${i}`);
+        if (!slider) continue;
+        const percent = parseInt(slider.value) || 0;
+        if (percent <= 0) continue;
+        
+        let name = '';
+        let flavorName = null, flavorManufacturer = null, flavorId = null, flavorSource = null, favoriteProductId = null;
+        if (autocomplete && autocomplete.dataset.flavorData) {
+            try {
+                const data = JSON.parse(autocomplete.dataset.flavorData);
+                name = data.name || '';
+                flavorName = data.name || null;
+                flavorManufacturer = data.manufacturer || data.manufacturer_code || null;
+                if (name && flavorManufacturer) name += ` (${flavorManufacturer})`;
+                const isFavorite = data.source === 'favorites' || data.source === 'favorite';
+                if (isFavorite) {
+                    favoriteProductId = data.favorite_product_id || data.id || autocomplete.dataset.favoriteProductId || null;
+                    flavorId = data.flavor_id || null;
+                    flavorSource = 'favorite';
+                } else {
+                    flavorId = data.id || autocomplete.dataset.flavorId || null;
+                    flavorSource = 'database';
+                }
+            } catch(e) {}
+        }
+        if (!name) name = `${t('shisha.tobacco_label', 'Tabák')} ${i}`;
+        
+        const grams = Math.round((percent / 100) * bowlSize * 10) / 10;
+        tobaccos.push({ name, percent, grams, flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId });
+    }
+    
+    // Validate total = 100%
+    const total = tobaccos.reduce((s, tb) => s + tb.percent, 0);
+    if (total !== 100) {
+        showNotification(t('shisha.tobacco_total_warning', 'Celkový podíl tabáků musí být 100%'), 'warning');
         return;
     }
     
-    if (shFlavorCount >= 4) return;
+    // Build ingredients in displayResults-compatible format (volume=0 for gram-only items)
+    const ingredients = tobaccos.map((tb, idx) => ({
+        name: tb.name,
+        ingredientKey: 'shisha_tobacco',
+        volume: 0,
+        percent: tb.percent,
+        grams: tb.grams,
+        flavorName: tb.flavorName,
+        flavorManufacturer: tb.flavorManufacturer,
+        flavorId: tb.flavorId,
+        flavorSource: tb.flavorSource,
+        favoriteProductId: tb.favoriteProductId
+    }));
+    
+    const recipeData = {
+        formType: 'shisha',
+        shishaMode: 'mix',
+        bowlSize,
+        totalAmount: bowlSize,
+        totalGrams: bowlSize,
+        tobaccos,
+        steepDays: 0,
+        nicotine: 0,
+        vgPercent: 0,
+        pgPercent: 0,
+        ingredients
+    };
+    
+    storeCurrentRecipe(recipeData);
+    
+    // Custom rendering for tobacco mix (grams, no ml)
+    document.getElementById('resultTotal').textContent = `${bowlSize} g`;
+    document.getElementById('resultRatio').textContent = '—';
+    document.getElementById('resultNicotine').textContent = '0 mg/ml';
     
-    shFlavorCount++;
-    const container = document.getElementById('shAdditionalFlavorsContainer');
-    
-    // Clone flavor 1 structure - použít window.i18n?.t() pro překlad (jako v addProFlavor)
-    const flavorHtml = `
-        <div class="form-group sh-flavor-group" id="shFlavorGroup${shFlavorCount}">
-            <label class="form-label">
-                <span data-i18n="shisha.flavor_label">${window.i18n?.t('shisha.flavor_label') || 'Příchuť'}</span>
-                <span class="flavor-number"> ${shFlavorCount}</span>
-                <button type="button" class="remove-flavor-btn" onclick="removeShishaFlavor(${shFlavorCount})" title="${window.i18n?.t('form.remove_flavor') || 'Odebrat příchuť'}">✕</button>
-            </label>
-            <div class="flavor-container">
-                <!-- Autocomplete pro konkrétní příchuť - PRVNÍ -->
-                <div class="flavor-autocomplete-wrapper">
-                    <input type="text" id="shFlavorAutocomplete${shFlavorCount}" class="login-input flavor-search-input" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="${window.i18n?.t('flavor_autocomplete.search_placeholder') || 'Hledat konkrétní příchuť...'}" autocomplete="off">
-                </div>
-                <!-- Kategorie příchutě - DRUHÁ -->
-                <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
-                    ${window.i18n?.t('form.flavor_category_label') || 'Nebo vyberte kategorii (bez konkrétní příchutě):'}
-                </label>
-                <select id="shFlavorType${shFlavorCount}" class="neon-select sh-flavor-select" data-flavor-index="${shFlavorCount}" onchange="updateShishaFlavorType(${shFlavorCount})">
-                    <option value="none" data-i18n="form.flavor_none">${window.i18n?.t('form.flavor_none') || 'Žádná'}</option>
-                    <option value="double_apple" data-i18n="shisha.flavor_double_apple">${window.i18n?.t('shisha.flavor_double_apple') || 'Double Apple'}</option>
-                    <option value="mint" data-i18n="shisha.flavor_mint">${window.i18n?.t('shisha.flavor_mint') || 'Máta'}</option>
-                    <option value="grape" data-i18n="shisha.flavor_grape">${window.i18n?.t('shisha.flavor_grape') || 'Hrozno'}</option>
-                    <option value="watermelon" data-i18n="shisha.flavor_watermelon">${window.i18n?.t('shisha.flavor_watermelon') || 'Meloun'}</option>
-                    <option value="lemon_mint" data-i18n="shisha.flavor_lemon_mint">${window.i18n?.t('shisha.flavor_lemon_mint') || 'Citrón a máta'}</option>
-                    <option value="blueberry" data-i18n="shisha.flavor_blueberry">${window.i18n?.t('shisha.flavor_blueberry') || 'Borůvka'}</option>
-                    <option value="peach" data-i18n="shisha.flavor_peach">${window.i18n?.t('shisha.flavor_peach') || 'Broskev'}</option>
-                    <option value="mango" data-i18n="shisha.flavor_mango">${window.i18n?.t('shisha.flavor_mango') || 'Mango'}</option>
-                    <option value="strawberry" data-i18n="shisha.flavor_strawberry">${window.i18n?.t('shisha.flavor_strawberry') || 'Jahoda'}</option>
-                    <option value="mixed_fruit" data-i18n="shisha.flavor_mixed_fruit">${window.i18n?.t('shisha.flavor_mixed_fruit') || 'Ovocný mix'}</option>
-                    <option value="cola" data-i18n="shisha.flavor_cola">${window.i18n?.t('shisha.flavor_cola') || 'Kola'}</option>
-                    <option value="gum" data-i18n="shisha.flavor_gum">${window.i18n?.t('shisha.flavor_gum') || 'Žvýkačka'}</option>
-                    <option value="rose" data-i18n="shisha.flavor_rose">${window.i18n?.t('shisha.flavor_rose') || 'Růže'}</option>
-                    <option value="custom" data-i18n="form.custom">${window.i18n?.t('form.custom') || 'Vlastní'}</option>
-                </select>
-                <div id="shFlavorStrengthContainer${shFlavorCount}" class="hidden">
-                    <div class="slider-container small">
-                        <button class="slider-btn small double" onclick="adjustShishaFlavor(${shFlavorCount}, -1)" title="-1%">◀◀</button>
-                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, -0.1)" title="-0.1%">◀</button>
-                        <div class="slider-wrapper">
-                            <input type="range" id="shFlavorStrength${shFlavorCount}" min="0" max="35" value="15" step="0.1" class="flavor-slider sh-flavor-slider" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorStrength(${shFlavorCount})">
-                            <div class="slider-track flavor-track" id="shFlavorTrack${shFlavorCount}"></div>
-                        </div>
-                        <button class="slider-btn small" onclick="adjustShishaFlavor(${shFlavorCount}, 0.1)" title="+0.1%">▶</button>
-                        <button class="slider-btn small double" onclick="adjustShishaFlavor(${shFlavorCount}, 1)" title="+1%">▶▶</button>
-                    </div>
-                    <div class="flavor-display">
-                        <span id="shFlavorValue${shFlavorCount}">15</span>%
-                    </div>
-                    <!-- Zobrazení doporučení síly příchutě (pod sliderem jako u Liquid) -->
-                    <div id="shFlavorStrengthDisplay${shFlavorCount}" class="flavor-strength-display"></div>
-                    <div class="form-group-sub">
-                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG v koncentrátu příchutě'}</label>
-                        <div class="ratio-container compact">
-                            <div class="ratio-labels">
-                                <span class="ratio-label left" data-i18n="form.vg_label">${window.i18n?.t('form.vg_label') || 'Dým (VG)'}</span>
-                                <span class="ratio-label right" data-i18n="form.pg_label">${window.i18n?.t('form.pg_label') || 'Chuť (PG)'}</span>
-                            </div>
-                            <div class="slider-container">
-                                <button class="slider-btn small" onclick="adjustShishaFlavorRatio(${shFlavorCount}, -5)">◀</button>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="shFlavorRatioSlider${shFlavorCount}" min="0" max="100" value="0" class="ratio-slider sh-flavor-ratio" data-flavor-index="${shFlavorCount}" oninput="updateShishaFlavorRatioDisplay(${shFlavorCount})">
-                                    <div class="slider-track" id="shFlavorTrackRatio${shFlavorCount}"></div>
-                                </div>
-                                <button class="slider-btn small" onclick="adjustShishaFlavorRatio(${shFlavorCount}, 5)">▶</button>
-                            </div>
-                            <div class="ratio-display small">
-                                <span id="shFlavorVgValue${shFlavorCount}">0</span>:<span id="shFlavorPgValue${shFlavorCount}">100</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    container.insertAdjacentHTML('beforeend', flavorHtml);
-    
-    // Update hint
-    const hint = document.getElementById('shFlavorCountHint');
-    if (hint) {
-        const flavorsText = window.i18n?.t('shisha.flavors_count') || 'příchutí';
-        hint.textContent = `(${shFlavorCount}/4 ${flavorsText})`;
-    }
-    
-    // Hide add button if max reached
-    if (shFlavorCount >= 4) {
-        document.getElementById('shAddFlavorGroup').classList.add('hidden');
-    }
-    
-    // Inicializovat autocomplete pro novou příchuť
-    const newAutocompleteId = `shFlavorAutocomplete${shFlavorCount}`;
-    if (document.getElementById(newAutocompleteId)) {
-        initFlavorAutocomplete(newAutocompleteId, 'shisha', (flavorData) => {
-            console.log('Selected Shisha flavor:', flavorData);
-        });
-    }
-    
-    // Apply translations
-    if (window.i18n && window.i18n.applyTranslations) {
-        window.i18n.applyTranslations();
-    }
-}
-
-function removeShishaFlavor(index) {
-    const group = document.getElementById(`shFlavorGroup${index}`);
-    if (group) {
-        group.remove();
-    }
-    
-    // Renumber remaining flavors would be complex, so we just hide add button logic
-    shFlavorCount--;
-    
-    // Show add button
-    document.getElementById('shAddFlavorGroup').classList.remove('hidden');
-    
-    // Update hint
-    const hint = document.getElementById('shFlavorCountHint');
-    if (hint) {
-        const flavorsText = window.i18n?.t('shisha.flavors_count') || 'příchutí';
-        hint.textContent = `(${shFlavorCount}/4 ${flavorsText})`;
-    }
-    
-    updateShishaTotalFlavorPercent();
-    autoRecalculateShishaVgPgRatio();
-}
-
-function getShishaFlavorsData() {
-    const flavors = [];
-    
-    for (let i = 1; i <= 4; i++) {
-        const select = document.getElementById(`shFlavorType${i}`);
-        const slider = document.getElementById(`shFlavorStrength${i}`);
-        const ratioSlider = document.getElementById(`shFlavorRatioSlider${i}`);
-        const autocomplete = document.getElementById(`shFlavorAutocomplete${i}`);
-        
-        // Zkontrolovat zda je vybraná konkrétní příchuť z autocomplete
-        let specificFlavorName = null;
-        let specificFlavorManufacturer = null;
-        let specificFlavorId = null;
-        let specificFlavorSource = 'generic';
-        
-        // Získat favorite_product_id přímo z datasetu (důležité pro správné párování)
-        let specificFavoriteProductId = autocomplete?.dataset.favoriteProductId || null;
-        
-        if (autocomplete && autocomplete.dataset.flavorData) {
-            try {
-                const flavorData = JSON.parse(autocomplete.dataset.flavorData);
-                if (flavorData && flavorData.name) {
-                    specificFlavorName = flavorData.name;
-                    specificFlavorManufacturer = flavorData.manufacturer || flavorData.manufacturer_code;
-                    // Pro oblíbené příchutě použít favorite_product_id, jinak flavor_id
-                    const isFavorite = flavorData.source === 'favorites' || flavorData.source === 'favorite';
-                    if (isFavorite) {
-                        // Oblíbená příchuť - přednostně favorite_product_id
-                        specificFavoriteProductId = flavorData.favorite_product_id || flavorData.id || specificFavoriteProductId;
-                        specificFlavorId = flavorData.flavor_id || null;  // flavor_id může být null pro vlastní příchutě
-                    } else {
-                        // Příchuť z veřejné databáze
-                        specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
-                    }
-                    specificFlavorSource = autocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
-                }
-            } catch (e) {
-                console.log('Error parsing Shisha flavor data:', e);
-            }
-        }
-        
-        // Příchuť je aktivní buď když je vybraná kategorie NEBO konkrétní příchuť
-        const hasCategory = select && select.value !== 'none';
-        const hasSpecific = specificFlavorName !== null;
-        
-        if ((hasCategory || hasSpecific) && slider) {
-            const flavorType = select?.value || 'custom';
-            const flavorData = shishaFlavorDatabase[flavorType] || shishaFlavorDatabase.custom;
-            
-            const flavorEntry = {
-                type: flavorType,
-                percent: parseFloat(slider.value) || 0,
-                vgRatio: parseInt(ratioSlider?.value) || 0,
-                data: flavorData
-            };
-            
-            // Přidat info o konkrétní příchuti
-            if (specificFlavorName) {
-                flavorEntry.flavorName = specificFlavorName;
-                flavorEntry.flavorManufacturer = specificFlavorManufacturer;
-                flavorEntry.flavorId = specificFlavorId;
-                flavorEntry.flavorSource = specificFlavorSource;
-                // Přidat favorite_product_id pro správné párování při ukládání
-                if (specificFavoriteProductId) {
-                    flavorEntry.favoriteProductId = specificFavoriteProductId;
-                }
-            }
-            
-            flavors.push(flavorEntry);
-        }
-    }
-    
-    return flavors;
-}
-
-// Sweetener select handler (nahrazuje toggle)
-function handleShishaSweetenerSelect() {
-    const select = document.getElementById('shSweetenerSelect');
-    const container = document.getElementById('shSweetenerContainer');
-    const slider = document.getElementById('shSweetenerStrength');
-    
-    if (!select) return;
-    
-    const sweetenerType = select.value;
-    
-    if (sweetenerType !== 'none') {
-        container.classList.remove('hidden');
-        
-        // Nastavit doporučenou hodnotu ze sweetenerDatabase
-        const sweetener = sweetenerDatabase[sweetenerType];
-        if (sweetener && slider) {
-            slider.min = sweetener.minPercent;
-            slider.max = sweetener.maxPercent;
-            slider.value = sweetener.defaultPercent;
-        }
-        
-        updateShishaSweetenerDisplay();
-    } else {
-        container.classList.add('hidden');
-    }
-}
-
-// Starý toggle pro zpětnou kompatibilitu
-function toggleShishaSweetener() {
-    // Tato funkce již není používána, ale zachována pro kompatibilitu
-    handleShishaSweetenerSelect();
-}
-
-function updateShishaSweetenerType() {
-    const select = document.getElementById('shSweetenerType');
-    const slider = document.getElementById('shSweetenerStrength');
-    
-    if (!select || !slider) return;
-    
-    const sweetenerType = select.value;
-    const sweetener = sweetenerDatabase[sweetenerType];
-    
-    if (sweetener) {
-        slider.value = sweetener.defaultPercent;
-        slider.max = sweetener.maxPercent;
-        updateShishaSweetenerDisplay();
-    }
-}
-
-function adjustShishaSweetener(change) {
-    const slider = document.getElementById('shSweetenerStrength');
-    if (!slider) return;
-    
-    let currentValue = parseFloat(slider.value);
-    let newValue = currentValue + change;
-    newValue = Math.max(0, Math.min(parseFloat(slider.max), newValue));
-    slider.value = newValue;
-    updateShishaSweetenerDisplay();
-}
-
-function updateShishaSweetenerDisplay() {
-    const slider = document.getElementById('shSweetenerStrength');
-    const display = document.getElementById('shSweetenerValue');
-    const displayContainer = display?.parentElement;
-    const track = document.getElementById('shSweetenerTrack');
-    const sweetenerSelect = document.getElementById('shSweetenerSelect');
-    
-    if (!slider) return;
-    
-    const value = parseFloat(slider.value);
-    if (display) display.textContent = value;
-    
-    // Plná šířka track s dynamickou barvou
-    if (track) {
-        track.style.width = '100%';
-        
-        // Dynamická barva podle doporučených hodnot
-        const sweetenerType = sweetenerSelect?.value || 'sucralose';
-        const sweetener = sweetenerDatabase[sweetenerType] || sweetenerDatabase.sucralose;
-        const minVal = sweetener.minPercent || 1;
-        const maxVal = sweetener.maxPercent || 5;
-        const defaultVal = sweetener.defaultPercent || 3;
-        
-        let color;
-        if (value < minVal) {
-            color = '#ffaa00'; // slabé
-            track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
-        } else if (value > maxVal) {
-            color = '#ff0044'; // příliš silné
-            track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
-        } else {
-            color = '#00cc66'; // ideální
-            track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
-        }
-        
-        if (displayContainer) {
-            displayContainer.style.color = color;
-            displayContainer.style.textShadow = `0 0 15px ${color}`;
-        }
-    }
-}
-
-// Water functions - voda je nyní vždy viditelný slider bez toggle
-// Toggle funkce zachována pro zpětnou kompatibilitu (voda je nyní vždy viditelná)
-function toggleShishaWater() {
-    // Prázdná funkce - voda je nyní vždy viditelná, toggle již není potřeba
-}
-
-function adjustShishaWater(change) {
-    const slider = document.getElementById('shWaterPercent');
-    if (!slider) return;
-    
-    let currentValue = parseFloat(slider.value);
-    let newValue = currentValue + change;
-    newValue = Math.max(0, Math.min(5, newValue));
-    slider.value = newValue;
-    updateShishaWaterDisplay();
-}
-
-function updateShishaWaterDisplay() {
-    const slider = document.getElementById('shWaterPercent');
-    const display = document.getElementById('shWaterValue');
-    const displayContainer = display?.parentElement;
-    const track = document.getElementById('shWaterTrack');
-    
-    if (!slider) return;
-    
-    const value = parseFloat(slider.value);
-    if (display) display.textContent = value;
-    
-    // Plná šířka track s dynamickou barvou
-    // Voda: 0-2% ideální, 2-5% hodně
-    if (track) {
-        track.style.width = '100%';
-        
-        let color;
-        if (value === 0) {
-            color = '#00aaff'; // bez vody
-            track.style.background = 'linear-gradient(90deg, #00aaff, #00aaff)';
-        } else if (value <= 2) {
-            color = '#00cc66'; // ideální
-            track.style.background = 'linear-gradient(90deg, #00aaff, #00cc66)';
-        } else {
-            color = '#ffaa00'; // hodně vody
-            track.style.background = 'linear-gradient(90deg, #00cc66, #ffaa00)';
-        }
-        
-        if (displayContainer) {
-            displayContainer.style.color = color;
-            displayContainer.style.textShadow = `0 0 15px ${color}`;
-        }
-    }
-}
-
-// VG/PG ratio functions
-function adjustShishaRatio(change) {
-    const slider = document.getElementById('shVgPgRatio');
-    if (!slider) return;
-    
-    let currentValue = parseInt(slider.value);
-    let newValue;
-    
-    if (change > 0) {
-        newValue = Math.ceil((currentValue + 1) / 5) * 5;
-    } else {
-        newValue = Math.floor((currentValue - 1) / 5) * 5;
-    }
-    
-    // Respect limits
-    newValue = Math.max(shVgPgLimits.min, Math.min(shVgPgLimits.max, newValue));
-    slider.value = newValue;
-    updateShishaRatioDisplay();
-}
-
-function updateShishaRatioDisplay() {
-    const slider = document.getElementById('shVgPgRatio');
-    const vgValue = document.getElementById('shVgValue');
-    const pgValue = document.getElementById('shPgValue');
-    const track = document.getElementById('shSliderTrack');
-    const displayContainer = document.querySelector('#shVgValue')?.closest('.ratio-display');
-    const descEl = document.getElementById('shRatioDescription');
-    
-    if (!slider) return;
-    
-    const vg = parseInt(slider.value);
-    const pg = 100 - vg;
-    
-    if (vgValue) vgValue.textContent = vg;
-    if (pgValue) pgValue.textContent = pg;
-    
-    // Optimální poměr pro shisha: 70-80% VG
-    // Plná šířka track s dynamickou barvou podle optimálnosti
-    let color, descText;
-    
-    if (vg >= 70 && vg <= 80) {
-        // Optimální rozsah - zlatá
-        color = 'var(--neon-gold)';
-        descText = t('shisha.ratio_optimal', 'Optimal ratio for shisha - balanced smoke and flavor');
-    } else if (vg > 80) {
-        // Více VG - hodně dýmu
-        color = '#ffaa00';
-        descText = t('shisha.ratio_more_vg', 'More smoke, less intense flavor');
-    } else {
-        // Více PG - intenzivnější chuť
-        color = '#00ccff';
-        descText = t('shisha.ratio_more_pg', 'Thinner liquid, more intense flavor');
-    }
-    
-    if (track) {
-        track.style.width = '100%';
-        
-        if (vg >= 70 && vg <= 80) {
-            track.style.background = `linear-gradient(90deg, var(--neon-gold), #b8860b)`;
-        } else if ((vg >= 60 && vg < 70) || (vg > 80 && vg <= 90)) {
-            track.style.background = `linear-gradient(90deg, var(--neon-gold), #ffaa00)`;
-        } else {
-            track.style.background = `linear-gradient(90deg, #ffaa00, #ff6600)`;
-        }
-        
-        // Barevně označit i čísla poměru
-        if (displayContainer) {
-            displayContainer.style.color = color;
-            displayContainer.style.textShadow = `0 0 15px ${color}`;
-        }
-    }
-    
-    // Zobrazit popis poměru
-    if (descEl) {
-        descEl.textContent = descText;
-        descEl.style.color = color;
-        descEl.style.borderLeftColor = color;
-    }
-}
-
-function autoRecalculateShishaVgPgRatio() {
-    // Get base type - only auto-recalculate for premixed mode
-    const baseType = document.getElementById('shBaseType')?.value || 'premixed';
-    
-    // Přepočítat POUZE pokud uživatel ručně neměnil poměr
-    if (baseType === 'premixed' && !shishaUserManuallyChangedRatio) {
-        // In premixed mode, slider follows the premixed base ratio
-        const result = calculateActualVgPgRatio('shisha');
-        
-        if (result && result.actualVg !== undefined) {
-            const slider = document.getElementById('shVgPgRatio');
-            if (slider) {
-                let newValue = Math.round(result.actualVg);
-                newValue = Math.max(shVgPgLimits.min, Math.min(shVgPgLimits.max, newValue));
-                slider.value = newValue;
-                updateShishaRatioDisplay();
-            }
-        }
-    } else {
-        // In separate mode, just update the display without changing slider value
-        updateShishaRatioDisplay();
-    }
-    
-    updateShishaVgPgLimits();
-}
-
-function updateShishaVgPgLimits() {
-    const slider = document.getElementById('shVgPgRatio');
-    const disabledLeft = document.getElementById('shSliderDisabledLeft');
-    const disabledRight = document.getElementById('shSliderDisabledRight');
-    
-    if (!slider) return;
-    
-    const totalAmount = parseFloat(document.getElementById('shTotalAmount')?.value) || 200;
-    
-    // Get nicotine contribution - podporuje nový select i starý toggle pro zpětnou kompatibilitu
-    let nicotineVgVolume = 0;
-    let nicotinePgVolume = 0;
-    
-    const nicTypeSelect = document.getElementById('shNicotineType');
-    const nicToggle = document.getElementById('shNicotineToggle');
-    const hasNicotine = (nicTypeSelect && nicTypeSelect.value !== 'none') || (nicToggle && nicToggle.checked);
-    
-    if (hasNicotine) {
-        const nicStrength = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
-        const targetNic = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
-        // Parsovat VG/PG poměr z hidden inputu (formát "50/50")
-        const nicRatioInput = document.getElementById('shNicotineRatio');
-        const nicRatioValue = nicRatioInput?.value || '50/50';
-        const nicRatio = parseInt(nicRatioValue.split('/')[0]) || 50;
-        
-        if (targetNic > 0 && nicStrength > 0) {
-            const nicVolume = (targetNic / nicStrength) * totalAmount;
-            nicotineVgVolume = nicVolume * (nicRatio / 100);
-            nicotinePgVolume = nicVolume * ((100 - nicRatio) / 100);
-        }
-    }
-    
-    // Get flavor contribution
-    const flavorsData = getShishaFlavorsData();
-    let totalFlavorVgVolume = 0;
-    let totalFlavorPgVolume = 0;
-    
-    flavorsData.forEach(flavor => {
-        const flavorVolume = (flavor.percent / 100) * totalAmount;
-        const flavorVg = flavor.vgRatio;
-        const flavorPg = 100 - flavorVg;
-        totalFlavorVgVolume += flavorVolume * (flavorVg / 100);
-        totalFlavorPgVolume += flavorVolume * (flavorPg / 100);
-    });
-    
-    const fixedPgVolume = nicotinePgVolume + totalFlavorPgVolume;
-    const fixedVgVolume = nicotineVgVolume + totalFlavorVgVolume;
-    
-    // Získat sweetener a water pro výpočet zbývajícího objemu
-    let sweetenerVolume = 0;
-    const sweetenerSelect = document.getElementById('shSweetenerSelect');
-    if (sweetenerSelect && sweetenerSelect.value !== 'none') {
-        const sweetenerPercent = parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0;
-        sweetenerVolume = (sweetenerPercent / 100) * totalAmount;
-    }
-    
-    let waterVolume = 0;
-    const waterPercent = parseFloat(document.getElementById('shWaterPercent')?.value) || 0;
-    if (waterPercent > 0) {
-        waterVolume = (waterPercent / 100) * totalAmount;
-    }
-    
-    // Získat nikotin objem - použít již vypočtené hodnoty
-    let nicotineVolume = 0;
-    if (hasNicotine) {
-        const nicStrengthVal = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
-        const targetNicVal = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
-        if (targetNicVal > 0 && nicStrengthVal > 0) {
-            nicotineVolume = (targetNicVal / nicStrengthVal) * totalAmount;
-        }
-    }
-    
-    // Zbývající objem pro bázi
-    const totalFlavorVolume = flavorsData.reduce((sum, f) => sum + (f.percent / 100) * totalAmount, 0);
-    const remainingVolume = totalAmount - nicotineVolume - totalFlavorVolume - sweetenerVolume - waterVolume;
-    
-    // Zkontrolovat jestli je vybraný premixed režim
-    const baseType = document.getElementById('shBaseType')?.value || 'premixed';
-    const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
-    
-    let minVgPercent, maxVgPercent;
-    
-    // OPRAVA: VG+PG objem = celkový objem mínus složky které nejsou VG ani PG
-    const vgPgVolume = totalAmount - sweetenerVolume - waterVolume;
-    
-    if (baseType === 'premixed' && remainingVolume > 0) {
-        // PREMIXED režim - limity jsou ovlivněny poměrem báze
-        let premixedVgPercent;
-        if (premixedRatio === 'custom') {
-            premixedVgPercent = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 80;
-        } else {
-            const parts = premixedRatio.split('/');
-            premixedVgPercent = parseInt(parts[0]) || 80;
-        }
-        
-        // S doladěním můžeme dosáhnout rozsahu od fixedVg do fixedVg + remainingVolume
-        // OPRAVA: Dělit vgPgVolume místo totalAmount
-        minVgPercent = vgPgVolume > 0 ? Math.ceil((fixedVgVolume / vgPgVolume) * 100) : 0;
-        maxVgPercent = vgPgVolume > 0 ? Math.floor(((fixedVgVolume + remainingVolume) / vgPgVolume) * 100) : 100;
-    } else {
-        // SEPARATE režim - původní logika
-        // OPRAVA: Dělit vgPgVolume místo totalAmount
-        minVgPercent = vgPgVolume > 0 ? Math.ceil((fixedVgVolume / vgPgVolume) * 100) : 0;
-        maxVgPercent = vgPgVolume > 0 ? Math.floor(100 - (fixedPgVolume / vgPgVolume) * 100) : 100;
-    }
-    
-    shVgPgLimits.min = Math.max(0, minVgPercent);
-    shVgPgLimits.max = Math.min(100, maxVgPercent);
-    
-    const limitValueLeft = document.getElementById('shLimitValueLeft');
-    const limitValueRight = document.getElementById('shLimitValueRight');
-    
-    if (disabledLeft) {
-        disabledLeft.style.width = shVgPgLimits.min + '%';
-    }
-    if (disabledRight) {
-        disabledRight.style.width = (100 - shVgPgLimits.max) + '%';
-    }
-    
-    // Show limit values
-    if (limitValueLeft) {
-        if (shVgPgLimits.min > 0) {
-            limitValueLeft.textContent = shVgPgLimits.min + '%';
-            limitValueLeft.style.display = 'block';
-        } else {
-            limitValueLeft.style.display = 'none';
-        }
-    }
-    if (limitValueRight) {
-        if (shVgPgLimits.max < 100) {
-            limitValueRight.textContent = shVgPgLimits.max + '%';
-            limitValueRight.style.display = 'block';
-        } else {
-            limitValueRight.style.display = 'none';
-        }
-    }
-    
-    // Constrain current value
-    let currentValue = parseInt(slider.value);
-    if (currentValue < shVgPgLimits.min) {
-        slider.value = shVgPgLimits.min;
-        updateShishaRatioDisplay();
-    } else if (currentValue > shVgPgLimits.max) {
-        slider.value = shVgPgLimits.max;
-        updateShishaRatioDisplay();
-    }
-}
-
-// Calculate Shisha Mix - main calculation function
-function calculateShishaMix() {
-    // Get values
-    const totalAmount = parseFloat(document.getElementById('shTotalAmount')?.value) || 200;
-    
-    // VG/PG ratio
-    const vgPercent = parseInt(document.getElementById('shVgPgRatio')?.value) || 80;
-    const pgPercent = 100 - vgPercent;
-    
-    // Base type (separate or premixed)
-    const baseType = document.getElementById('shBaseType')?.value || 'premixed';
-    console.log('calculateShishaMix: baseType =', baseType);
-    
-    // Premixed base ratio (only used when baseType is 'premixed')
-    const premixedRatio = document.getElementById('shPremixedRatio')?.value || '80/20';
-    let premixedVg, premixedPg;
-    if (premixedRatio === 'custom') {
-        premixedVg = parseInt(document.getElementById('shCustomPremixedVg')?.value) || 80;
-        premixedPg = 100 - premixedVg;
-    } else {
-        const parts = premixedRatio.split('/');
-        premixedVg = parseInt(parts[0]) || 80;
-        premixedPg = parseInt(parts[1]) || 20;
-    }
-    
-    // Nicotine - nová struktura jako Liquid formulář
-    let nicotineVolume = 0;
-    let nicotineVgVolume = 0;
-    let nicotinePgVolume = 0;
-    let targetNicotine = 0;
-    
-    const nicTypeSelect = document.getElementById('shNicotineType');
-    const nicotineType = nicTypeSelect?.value || 'none';
-    
-    const hasNicotine = nicotineType !== 'none';
-    
-    if (hasNicotine) {
-        const baseNicotine = parseFloat(document.getElementById('shNicotineBaseStrength')?.value) || 20;
-        targetNicotine = parseFloat(document.getElementById('shTargetNicotine')?.value) || 0;
-        
-        // Získat poměr VG/PG z tlačítek nebo defaultní 50/50
-        const nicRatioInput = document.getElementById('shNicotineRatio');
-        const nicRatio = nicRatioInput?.value || '50/50';
-        const nicRatioParts = nicRatio.split('/');
-        const nicVgPercent = parseInt(nicRatioParts[0]) || 50;
-        
-        if (targetNicotine > 0 && baseNicotine > 0) {
-            nicotineVolume = (targetNicotine * totalAmount) / baseNicotine;
-            nicotineVgVolume = nicotineVolume * (nicVgPercent / 100);
-            nicotinePgVolume = nicotineVolume * ((100 - nicVgPercent) / 100);
-        }
-    }
-    
-    // Flavors
-    const flavorsData = getShishaFlavorsData();
-    let totalFlavorVolume = 0;
-    let totalFlavorVgVolume = 0;
-    let totalFlavorPgVolume = 0;
-    
-    flavorsData.forEach(flavor => {
-        const flavorVolume = (flavor.percent / 100) * totalAmount;
-        totalFlavorVolume += flavorVolume;
-        totalFlavorVgVolume += flavorVolume * (flavor.vgRatio / 100);
-        totalFlavorPgVolume += flavorVolume * ((100 - flavor.vgRatio) / 100);
-    });
-    
-    // Sweetener - použít nový select nebo starý toggle pro zpětnou kompatibilitu
-    let sweetenerVolume = 0;
-    let sweetenerType = 'none';
-    const sweetenerSelect = document.getElementById('shSweetenerSelect');
-    const sweetenerToggle = document.getElementById('shSweetenerToggle');
-    
-    // Preferovat select, pokud existuje
-    if (sweetenerSelect) {
-        sweetenerType = sweetenerSelect.value;
-        if (sweetenerType !== 'none') {
-            const sweetenerPercent = parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0;
-            sweetenerVolume = (sweetenerPercent / 100) * totalAmount;
-        }
-    } else if (sweetenerToggle && sweetenerToggle.checked) {
-        const sweetenerPercent = parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0;
-        sweetenerVolume = (sweetenerPercent / 100) * totalAmount;
-        sweetenerType = document.getElementById('shSweetenerType')?.value || 'sucralose';
-    }
-    
-    // Water - vždy viditelný slider, nepotřebuje toggle
-    let waterVolume = 0;
-    const waterPercent = parseFloat(document.getElementById('shWaterPercent')?.value) || 0;
-    if (waterPercent > 0) {
-        waterVolume = (waterPercent / 100) * totalAmount;
-    }
-    
-    // Calculate remaining base volume
-    const usedVolume = nicotineVolume + totalFlavorVolume + sweetenerVolume + waterVolume;
-    const baseVolume = totalAmount - usedVolume;
-    
-    // OPRAVA: VG+PG objem = celkový objem mínus složky které nejsou VG ani PG
-    const vgPgVolume = totalAmount - sweetenerVolume - waterVolume;
-    
-    // Calculate VG and PG needed from base
-    // Target VG/PG z VG+PG objemu (ne z celkového objemu)
-    const targetVgVolume = (vgPercent / 100) * vgPgVolume;
-    const targetPgVolume = (pgPercent / 100) * vgPgVolume;
-    
-    // VG/PG already provided by nicotine and flavors
-    const providedVg = nicotineVgVolume + totalFlavorVgVolume;
-    const providedPg = nicotinePgVolume + totalFlavorPgVolume;
-    
-    // Calculate pure VG and PG needed
-    let pureVgVolume = targetVgVolume - providedVg;
-    let purePgVolume = targetPgVolume - providedPg;
-    
-    // If using premixed base, calculate how much base is needed
-    let premixedBaseVolume = 0;
-    
-    if (baseType === 'premixed') {
-        // PREMIXED BASE MODE s podporou doladění
-        if (baseVolume > 0) {
-            // Kolik VG/PG ještě potřebujeme dodat pro cílový poměr
-            const neededVg = Math.max(0, targetVgVolume - providedVg);
-            const neededPg = Math.max(0, targetPgVolume - providedPg);
-            
-            // Vypočítat optimální množství předmíchané báze a doladění
-            let adjustmentVg = 0;
-            let adjustmentPg = 0;
-            
-            if (premixedVg >= 100) {
-                // Báze je 100% VG - použijeme ji pro VG a doladíme PG
-                premixedBaseVolume = Math.min(neededVg, baseVolume);
-                adjustmentPg = Math.min(neededPg, baseVolume - premixedBaseVolume);
-            } else if (premixedVg <= 0) {
-                // Báze je 100% PG - použijeme ji pro PG a doladíme VG
-                premixedBaseVolume = Math.min(neededPg, baseVolume);
-                adjustmentVg = Math.min(neededVg, baseVolume - premixedBaseVolume);
-            } else {
-                // Smíšená báze - NOVÁ LOGIKA:
-                // 1. Vypočítat VG/PG které dodá celá báze
-                // 2. Porovnat s cílovým VG/PG
-                // 3. Přidat doladění VG nebo PG podle potřeby
-                
-                const adjustmentThresholdCalc = totalAmount * 0.015; // 1.5% práh
-                
-                // Kolik VG/PG dodá celá báze
-                const vgFromFullBase = baseVolume * (premixedVg / 100);
-                const pgFromFullBase = baseVolume * (premixedPg / 100);
-                
-                // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
-                const totalVgWithFullBase = providedVg + vgFromFullBase;
-                const totalPgWithFullBase = providedPg + pgFromFullBase;
-                
-                // Rozdíl mezi cílem a tím co máme s celou bází
-                const vgDiff = targetVgVolume - totalVgWithFullBase;
-                const pgDiff = targetPgVolume - totalPgWithFullBase;
-                
-                // Pokud potřebujeme víc VG než dodá celá báze → doladění VG
-                // Pokud potřebujeme víc PG než dodá celá báze → doladění PG
-                if (vgDiff > adjustmentThresholdCalc) {
-                    // Potřebujeme přidat VG - použijeme menší bázi + VG doladění
-                    // baseForPgMatch = báze která dodá přesně potřebné PG
-                    const baseForPgMatch = neededPg / (premixedPg / 100);
-                    if (baseForPgMatch >= 0 && baseForPgMatch <= baseVolume) {
-                        premixedBaseVolume = baseForPgMatch;
-                        adjustmentVg = neededVg - (baseForPgMatch * (premixedVg / 100));
-                        adjustmentPg = 0;
-                    } else {
-                        // Báze sama o sobě nestačí - použít celou + VG doladění
-                        premixedBaseVolume = baseVolume;
-                        adjustmentVg = Math.max(0, vgDiff);
-                        adjustmentPg = 0;
-                    }
-                } else if (pgDiff > adjustmentThresholdCalc) {
-                    // Potřebujeme přidat PG - použijeme menší bázi + PG doladění
-                    // baseForVgMatch = báze která dodá přesně potřebné VG
-                    const baseForVgMatch = neededVg / (premixedVg / 100);
-                    if (baseForVgMatch >= 0 && baseForVgMatch <= baseVolume) {
-                        premixedBaseVolume = baseForVgMatch;
-                        adjustmentPg = neededPg - (baseForVgMatch * (premixedPg / 100));
-                        adjustmentVg = 0;
-                    } else {
-                        // Báze sama o sobě nestačí - použít celou + PG doladění
-                        premixedBaseVolume = baseVolume;
-                        adjustmentPg = Math.max(0, pgDiff);
-                        adjustmentVg = 0;
-                    }
-                } else {
-                    // Rozdíl je pod prahem - použít celou bázi bez doladění
-                    premixedBaseVolume = baseVolume;
-                    adjustmentVg = 0;
-                    adjustmentPg = 0;
-                }
-                
-                // Zajistit že součet nepřekročí baseVolume
-                const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
-                if (totalUsed > baseVolume + 0.01) {
-                    // Škálovat zpět
-                    const scale = baseVolume / totalUsed;
-                    premixedBaseVolume *= scale;
-                    adjustmentVg *= scale;
-                    adjustmentPg *= scale;
-                }
-            }
-            
-            // Threshold pro doladění - 1.5% objemu
-            const adjustmentThreshold = totalAmount * 0.015;
-            pureVgVolume = adjustmentVg > adjustmentThreshold ? adjustmentVg : 0;
-            purePgVolume = adjustmentPg > adjustmentThreshold ? adjustmentPg : 0;
-        }
-    } else {
-        // SEPARATE PG/VG MODE
-        // Normalize negative values
-        if (pureVgVolume < 0) pureVgVolume = 0;
-        if (purePgVolume < 0) purePgVolume = 0;
-        
-        // Adjust if total needed exceeds available base volume
-        const totalPureNeeded = pureVgVolume + purePgVolume;
-        if (totalPureNeeded > baseVolume && totalPureNeeded > 0) {
-            const ratio = baseVolume / totalPureNeeded;
-            pureVgVolume *= ratio;
-            purePgVolume *= ratio;
-        } else if (totalPureNeeded < baseVolume && totalPureNeeded > 0) {
-            // Distribute extra volume according to VG/PG ratio
-            const extra = baseVolume - totalPureNeeded;
-            pureVgVolume += extra * (vgPercent / 100);
-            purePgVolume += extra * (pgPercent / 100);
-        } else if (totalPureNeeded === 0 && baseVolume > 0) {
-            // All VG/PG comes from nicotine/flavors, distribute base volume
-            pureVgVolume = baseVolume * (vgPercent / 100);
-            purePgVolume = baseVolume * (pgPercent / 100);
-        }
-    }
-    
-    // Build results
-    const results = [];
-    
-    // Add premixed base or separate VG/PG based on baseType
-    if (baseType === 'premixed' && premixedBaseVolume > 0) {
-        const baseDensity = calculatePremixedBaseDensity(premixedVg);
-        results.push({
-            name: `${t('ingredients.premixed_base', 'Předmíchaná báze')} (${premixedVg}/${premixedPg})`,
-            volume: premixedBaseVolume.toFixed(2),
-            grams: mlToGrams(premixedBaseVolume, baseDensity),
-            type: 'base'
-        });
-        
-        // Přidat doladění VG/PG pokud je potřeba (premixed mód)
-        if (pureVgVolume > 0.01) {
-            results.push({
-                name: t('ingredients.vg_adjustment', 'VG (doladění)'),
-                volume: pureVgVolume.toFixed(2),
-                grams: mlToGrams(pureVgVolume, 1.261),
-                type: 'vg_adjustment'
-            });
-        }
-        if (purePgVolume > 0.01) {
-            results.push({
-                name: t('ingredients.pg_adjustment', 'PG (doladění)'),
-                volume: purePgVolume.toFixed(2),
-                grams: mlToGrams(purePgVolume, 1.036),
-                type: 'pg_adjustment'
-            });
-        }
-    } else if (baseType === 'separate') {
-        // Add pure VG
-        if (pureVgVolume > 0.01) {
-            results.push({
-                name: t('ingredients.vg', 'Rostlinný glycerin (VG)'),
-                volume: pureVgVolume.toFixed(2),
-                grams: mlToGrams(pureVgVolume, 1.261),
-                type: 'vg'
-            });
-        }
-        // Add pure PG
-        if (purePgVolume > 0.01) {
-            results.push({
-                name: t('ingredients.pg', 'Propylenglykol (PG)'),
-                volume: purePgVolume.toFixed(2),
-                grams: mlToGrams(purePgVolume, 1.036),
-                type: 'pg'
-            });
-        }
-    }
-    
-    // Nicotine
-    if (nicotineVolume > 0) {
-        // Parsovat VG/PG poměr z hidden inputu (formát "50/50")
-        const nicRatioInputRes = document.getElementById('shNicotineRatio');
-        const nicRatioValueRes = nicRatioInputRes?.value || '50/50';
-        const nicVgPercent = parseInt(nicRatioValueRes.split('/')[0]) || 50;
-        const nicDensity = calculateNicotineDensity(nicVgPercent);
-        results.push({
-            name: t('ingredients.nicotine_base', 'Nikotinová báze'),
-            volume: nicotineVolume.toFixed(2),
-            grams: mlToGrams(nicotineVolume, nicDensity),
-            type: 'nicotine'
-        });
-    }
-    
-    // Flavors - použít přeložené názvy nebo konkrétní příchuť
-    flavorsData.forEach((flavor, index) => {
-        const flavorVolume = (flavor.percent / 100) * totalAmount;
-        const flavorData = shishaFlavorDatabase[flavor.type] || shishaFlavorDatabase.custom;
-        const flavorDensity = calculateCompositionDensity(flavorData.composition);
-        
-        // Pokud je vybraná konkrétní příchuť, použít její název
-        let displayName;
-        if (flavor.flavorName) {
-            // Konkrétní příchuť - zobrazit název a výrobce
-            displayName = flavor.flavorManufacturer 
-                ? `${flavor.flavorName} (${flavor.flavorManufacturer})`
-                : flavor.flavorName;
-        } else {
-            // Generická kategorie - přeložený název
-            displayName = t(`shisha.flavor_${flavor.type}`, flavorData.name);
-        }
-        
-        results.push({
-            name: `${t('ingredients.flavor', 'Flavor')} ${index + 1}: ${displayName}`,
-            volume: flavorVolume.toFixed(2),
-            grams: mlToGrams(flavorVolume, flavorDensity),
-            type: 'flavor'
-        });
-    });
-    
-    // Sweetener - použít přeložený název
-    if (sweetenerVolume > 0) {
-        const sweetener = sweetenerDatabase[sweetenerType] || sweetenerDatabase.sucralose;
-        const sweetenerName = t(`shisha.sweetener_${sweetenerType}`, sweetener.name);
-        results.push({
-            name: `${t('shisha.sweetener_label')}: ${sweetenerName}`,
-            volume: sweetenerVolume.toFixed(2),
-            grams: mlToGrams(sweetenerVolume, sweetener.density || 1.0),
-            type: 'sweetener'
-        });
-    }
-    
-    // Water
-    if (waterVolume > 0) {
-        results.push({
-            name: t('form.water'),
-            volume: waterVolume.toFixed(2),
-            grams: mlToGrams(waterVolume, 1.0),
-            type: 'water'
-        });
-    }
-    
-    // Update results display
-    document.getElementById('resultTotal').textContent = totalAmount + ' ml';
-    document.getElementById('resultRatio').textContent = vgPercent + ':' + pgPercent;
-    document.getElementById('resultNicotine').textContent = targetNicotine + ' mg/ml';
-    
-    // Build results table
     const tbody = document.getElementById('resultsBody');
     tbody.innerHTML = '';
-    
-    let runningTotal = 0;
     let totalGrams = 0;
     
-    results.forEach(item => {
+    ingredients.forEach(ing => {
         const row = document.createElement('tr');
-        const volume = parseFloat(item.volume);
-        const grams = parseFloat(item.grams);
-        runningTotal += volume;
-        totalGrams += grams;
-        
-        // Přidat procenta
-        const percent = ((volume / totalAmount) * 100).toFixed(1);
-        
+        totalGrams += ing.grams;
         row.innerHTML = `
-            <td class="ingredient-name">${escapeHtml(item.name)} <span class="ingredient-percent-inline">(${percent}%)</span></td>
-            <td class="ingredient-value">${item.volume}</td>
-            <td class="ingredient-grams">${item.grams}</td>
+            <td class="ingredient-name">${ing.name} <span class="ingredient-percent-inline">(${ing.percent.toFixed(1)}%)</span></td>
+            <td class="ingredient-value">—</td>
+            <td class="ingredient-grams">${ing.grams.toFixed(1)}</td>
         `;
         tbody.appendChild(row);
     });
     
-    // Přidat řádek celkem
+    const totalRow = document.createElement('tr');
+    totalRow.className = 'total-row';
+    totalRow.innerHTML = `
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
+        <td class="ingredient-value">—</td>
+        <td class="ingredient-grams">${totalGrams.toFixed(1)}</td>
+    `;
+    tbody.appendChild(totalRow);
+    
+    generateMixingNotes(recipeData);
+    
+    // Show results page with correct buttons
+    const newButtons = document.getElementById('resultsNewButtons');
+    const editButtons = document.getElementById('resultsEditButtons');
+    if (window.editingRecipeFromDetail) {
+        if (newButtons) newButtons.classList.add('hidden');
+        if (editButtons) editButtons.classList.remove('hidden');
+    } else {
+        if (newButtons) newButtons.classList.remove('hidden');
+        if (editButtons) editButtons.classList.add('hidden');
+    }
+    showPage('results');
+}
+
+// MODE 2: DIY tabák od nuly
+function calculateShishaMixMode2() {
+    const tobaccoAmount = parseFloat(document.getElementById('shDiyTobaccoAmount')?.value) || 250;
+    const ratioVal = document.getElementById('shDiyRatio')?.value;
+    let tobaccoMolassesRatio;
+    if (ratioVal === 'custom') {
+        const tR = parseFloat(document.getElementById('shDiyCustomRatioTobacco')?.value) || 3;
+        const mR = parseFloat(document.getElementById('shDiyCustomRatioMolasses')?.value) || 1;
+        tobaccoMolassesRatio = tR / mR;
+    } else {
+        tobaccoMolassesRatio = parseFloat(ratioVal) || 3;
+    }
+    const totalMolasses = tobaccoAmount / tobaccoMolassesRatio;
+    
+    // Sweetener base
+    const sweetenerType = document.getElementById('shDiySweetenerType')?.value || 'molasses';
+    const sweetenerPercent = parseInt(document.getElementById('shDiySweetenerPercent')?.value) || 55;
+    const glycerinPercent = parseInt(document.getElementById('shDiyGlycerinPercent')?.value) || 30;
+    
+    // Flavors with full metadata for save pipeline
+    const flavors = [];
+    let totalFlavorPercent = 0;
+    for (let i = 1; i <= 4; i++) {
+        const select = document.getElementById(`shDiyFlavorType${i}`);
+        const slider = document.getElementById(`shDiyFlavorStrength${i}`);
+        const ratioSlider = document.getElementById(`shDiyFlavorRatioSlider${i}`);
+        const autocomplete = document.getElementById(`shDiyFlavorAutocomplete${i}`);
+        if (!select || !slider || select.value === 'none') continue;
+        const pct = parseFloat(slider.value) || 0;
+        if (pct <= 0) continue;
+        totalFlavorPercent += pct;
+        
+        let displayName = select.options[select.selectedIndex]?.text || select.value;
+        let flavorName = null, flavorManufacturer = null, flavorId = null, flavorSource = null, favoriteProductId = null;
+        if (autocomplete && autocomplete.dataset.flavorData) {
+            try {
+                const data = JSON.parse(autocomplete.dataset.flavorData);
+                if (data.name) {
+                    flavorName = data.name;
+                    flavorManufacturer = data.manufacturer || data.manufacturer_code || null;
+                    displayName = data.name + (flavorManufacturer ? ` (${flavorManufacturer})` : '');
+                    const isFavorite = data.source === 'favorites' || data.source === 'favorite';
+                    if (isFavorite) {
+                        favoriteProductId = data.favorite_product_id || data.id || autocomplete.dataset.favoriteProductId || null;
+                        flavorId = data.flavor_id || null;
+                        flavorSource = 'favorite';
+                    } else {
+                        flavorId = data.id || autocomplete.dataset.flavorId || null;
+                        flavorSource = 'database';
+                    }
+                }
+            } catch(e) {}
+        }
+        flavors.push({
+            type: select.value,
+            name: displayName,
+            percent: pct,
+            vgRatio: parseInt(ratioSlider?.value) || 0,
+            flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId
+        });
+    }
+    
+    // Nicotine
+    const nicType = document.getElementById('shDiyNicotineType')?.value || 'none';
+    const nicBaseStrength = parseFloat(document.getElementById('shDiyNicotineBaseStrength')?.value) || 20;
+    const nicTarget = parseInt(document.getElementById('shDiyTargetNicotine')?.value) || 0;
+    const nicRatioVal = document.getElementById('shDiyNicotineRatio')?.value || '50/50';
+    
+    // Calculate amounts (in grams from totalMolasses)
+    const sweetenerAmount = Math.round(totalMolasses * (sweetenerPercent / 100) * 10) / 10;
+    const glycerinAmount = Math.round(totalMolasses * (glycerinPercent / 100) * 10) / 10;
+    
+    let nicotineAmount = 0;
+    if (nicType !== 'none' && nicTarget > 0 && nicBaseStrength > 0) {
+        nicotineAmount = Math.round((nicTarget / nicBaseStrength) * totalMolasses * 10) / 10;
+    }
+    
+    const totalWeight = Math.round(tobaccoAmount + totalMolasses);
+    const vgPgRatio = parseInt(document.getElementById('shDiyVgPgRatio')?.value) || 70;
+    
+    // Build ingredients array for display
+    const ingredients = [];
+    
+    // Tobacco (dry leaves)
+    ingredients.push({
+        name: `${t('shisha.tobacco_amount_label', 'Tabák')} (${t('shisha.tobacco_amount_hint', 'sušené listy')})`,
+        ingredientKey: 'shisha_tobacco',
+        volume: 0,
+        percent: Math.round(tobaccoAmount / totalWeight * 100 * 10) / 10,
+        grams: tobaccoAmount
+    });
+    
+    // Sweetener base (molasses/honey/agave)
+    const sweetenerNames = { molasses: t('shisha.sweetener_molasses', 'Melasa'), honey: t('shisha.sweetener_honey', 'Med'), agave: t('shisha.sweetener_agave', 'Agáve') };
+    ingredients.push({
+        name: sweetenerNames[sweetenerType] || sweetenerType,
+        ingredientKey: 'shisha_sweetener',
+        sweetenerType,
+        volume: sweetenerAmount,
+        percent: sweetenerPercent,
+        grams: sweetenerAmount
+    });
+    
+    // Glycerin
+    ingredients.push({
+        name: t('shisha.glycerin_label', 'Glycerin (VG)'),
+        ingredientKey: 'vg',
+        volume: glycerinAmount,
+        percent: glycerinPercent,
+        grams: Math.round(glycerinAmount * 1.261 * 10) / 10
+    });
+    
+    // Flavors
+    flavors.forEach((f, idx) => {
+        const flavorGrams = Math.round(totalMolasses * (f.percent / 100) * 10) / 10;
+        ingredients.push({
+            name: `${t('ingredients.flavor', 'Příchuť')}: ${f.name}`,
+            ingredientKey: 'flavor',
+            flavorType: f.type,
+            flavorNumber: idx + 1,
+            flavorName: f.flavorName,
+            flavorManufacturer: f.flavorManufacturer,
+            flavorId: f.flavorId,
+            flavorSource: f.flavorSource,
+            favoriteProductId: f.favoriteProductId,
+            volume: flavorGrams,
+            percent: f.percent,
+            grams: flavorGrams,
+            params: { vgpg: `${f.vgRatio}/${100 - f.vgRatio}` }
+        });
+    });
+    
+    // Nicotine
+    if (nicotineAmount > 0) {
+        const nicIngredientKey = nicType === 'salt' ? 'nicotine_salt' : 'nicotine_booster';
+        ingredients.push({
+            name: `${t('ingredients.' + nicIngredientKey, 'Nikotin')} (${nicBaseStrength} mg/ml, VG/PG ${nicRatioVal})`,
+            ingredientKey: nicIngredientKey,
+            volume: nicotineAmount,
+            percent: Math.round(nicotineAmount / totalMolasses * 100 * 10) / 10,
+            grams: Math.round(nicotineAmount * 10) / 10,
+            params: { strength: nicBaseStrength, vgpg: nicRatioVal }
+        });
+    }
+    
+    const recipeData = {
+        formType: 'shisha',
+        shishaMode: 'diy',
+        tobaccoAmount,
+        tobaccoMolassesRatio,
+        totalMolasses: Math.round(totalMolasses),
+        totalAmount: totalMolasses,
+        sweetenerType,
+        sweetenerPercent,
+        sweetenerAmount,
+        glycerinPercent,
+        glycerinAmount,
+        flavors,
+        nicotine: nicTarget,
+        nicotineType: nicType,
+        nicotineBaseStrength: nicBaseStrength,
+        nicotineTarget: nicTarget,
+        nicotineRatio: nicRatioVal,
+        nicotineAmount,
+        totalWeight,
+        steepDays: 7,
+        vgPercent: vgPgRatio,
+        pgPercent: 100 - vgPgRatio,
+        ingredients
+    };
+    
+    storeCurrentRecipe(recipeData);
+    
+    // Custom rendering for DIY (grams-based, tobacco row has no ml)
+    document.getElementById('resultTotal').textContent = `${totalWeight} g (${t('shisha.tobacco_amount_label', 'tabák')}: ${tobaccoAmount}g + molasses: ${Math.round(totalMolasses)}g)`;
+    document.getElementById('resultRatio').textContent = `${vgPgRatio}:${100 - vgPgRatio}`;
+    document.getElementById('resultNicotine').textContent = `${nicTarget} mg/ml`;
+    
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = '';
+    let runTotalGrams = 0;
+    
+    ingredients.forEach(ing => {
+        const row = document.createElement('tr');
+        const g = typeof ing.grams === 'number' ? ing.grams : parseFloat(ing.grams) || 0;
+        runTotalGrams += g;
+        const volText = ing.volume > 0 ? ing.volume.toFixed(1) : '—';
+        row.innerHTML = `
+            <td class="ingredient-name">${ing.name} <span class="ingredient-percent-inline">(${(ing.percent || 0).toFixed(1)}%)</span></td>
+            <td class="ingredient-value">${volText}</td>
+            <td class="ingredient-grams">${g.toFixed(1)}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    const totalRow = document.createElement('tr');
+    totalRow.className = 'total-row';
+    totalRow.innerHTML = `
+        <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
+        <td class="ingredient-value">—</td>
+        <td class="ingredient-grams">${runTotalGrams.toFixed(1)}</td>
+    `;
+    tbody.appendChild(totalRow);
+    
+    generateMixingNotes(recipeData);
+    
+    const newButtons = document.getElementById('resultsNewButtons');
+    const editButtons = document.getElementById('resultsEditButtons');
+    if (window.editingRecipeFromDetail) {
+        if (newButtons) newButtons.classList.add('hidden');
+        if (editButtons) editButtons.classList.remove('hidden');
+    } else {
+        if (newButtons) newButtons.classList.remove('hidden');
+        if (editButtons) editButtons.classList.add('hidden');
+    }
+    showPage('results');
+}
+
+// MODE 3: Molasses mix
+function calculateShishaMixMode3() {
+    const totalAmount = parseFloat(document.getElementById('shMolTotalAmount')?.value) || 100;
+    
+    // Sweetener base
+    const sweetenerType = document.getElementById('shMolSweetenerType')?.value || 'molasses';
+    const sweetenerPercent = parseInt(document.getElementById('shMolSweetenerPercent')?.value) || 55;
+    const glycerinPercent = parseInt(document.getElementById('shMolGlycerinPercent')?.value) || 30;
+    const waterPercent = parseFloat(document.getElementById('shMolWaterPercent')?.value) || 0;
+    
+    // Flavors with full metadata for save pipeline
+    const flavors = [];
+    let totalFlavorPercent = 0;
+    for (let i = 1; i <= 4; i++) {
+        const select = document.getElementById(`shMolFlavorType${i}`);
+        const slider = document.getElementById(`shMolFlavorStrength${i}`);
+        const ratioSlider = document.getElementById(`shMolFlavorRatioSlider${i}`);
+        const autocomplete = document.getElementById(`shMolFlavorAutocomplete${i}`);
+        if (!select || !slider || select.value === 'none') continue;
+        const pct = parseFloat(slider.value) || 0;
+        if (pct <= 0) continue;
+        totalFlavorPercent += pct;
+        
+        let displayName = select.options[select.selectedIndex]?.text || select.value;
+        let flavorName = null, flavorManufacturer = null, flavorId = null, flavorSource = null, favoriteProductId = null;
+        if (autocomplete && autocomplete.dataset.flavorData) {
+            try {
+                const data = JSON.parse(autocomplete.dataset.flavorData);
+                if (data.name) {
+                    flavorName = data.name;
+                    flavorManufacturer = data.manufacturer || data.manufacturer_code || null;
+                    displayName = data.name + (flavorManufacturer ? ` (${flavorManufacturer})` : '');
+                    const isFavorite = data.source === 'favorites' || data.source === 'favorite';
+                    if (isFavorite) {
+                        favoriteProductId = data.favorite_product_id || data.id || autocomplete.dataset.favoriteProductId || null;
+                        flavorId = data.flavor_id || null;
+                        flavorSource = 'favorite';
+                    } else {
+                        flavorId = data.id || autocomplete.dataset.flavorId || null;
+                        flavorSource = 'database';
+                    }
+                }
+            } catch(e) {}
+        }
+        flavors.push({
+            type: select.value,
+            name: displayName,
+            percent: pct,
+            vgRatio: parseInt(ratioSlider?.value) || 0,
+            flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId
+        });
+    }
+    
+    // Nicotine
+    const nicType = document.getElementById('shMolNicotineType')?.value || 'none';
+    const nicBaseStrength = parseFloat(document.getElementById('shMolNicotineBaseStrength')?.value) || 20;
+    const nicTarget = parseInt(document.getElementById('shMolTargetNicotine')?.value) || 0;
+    const nicRatioVal = document.getElementById('shMolNicotineRatio')?.value || '50/50';
+    
+    // Calculate amounts (ml)
+    const sweetenerAmount = Math.round(totalAmount * (sweetenerPercent / 100) * 10) / 10;
+    const glycerinAmount = Math.round(totalAmount * (glycerinPercent / 100) * 10) / 10;
+    const waterAmount = Math.round(totalAmount * (waterPercent / 100) * 10) / 10;
+    
+    let nicotineAmount = 0;
+    if (nicType !== 'none' && nicTarget > 0 && nicBaseStrength > 0) {
+        nicotineAmount = Math.round((nicTarget / nicBaseStrength) * totalAmount * 10) / 10;
+    }
+    
+    const vgPgRatio = parseInt(document.getElementById('shMolVgPgRatio')?.value) || 70;
+    
+    // Build ingredients array for display & save pipeline
+    const ingredients = [];
+    
+    // Sweetener base (molasses/honey/agave)
+    const sweetenerNames = { molasses: t('shisha.sweetener_molasses', 'Melasa'), honey: t('shisha.sweetener_honey', 'Med'), agave: t('shisha.sweetener_agave', 'Agáve') };
+    ingredients.push({
+        name: sweetenerNames[sweetenerType] || sweetenerType,
+        ingredientKey: 'shisha_sweetener',
+        sweetenerType,
+        volume: sweetenerAmount,
+        percent: sweetenerPercent,
+        grams: sweetenerAmount
+    });
+    
+    // Glycerin
+    ingredients.push({
+        name: t('shisha.glycerin_label', 'Glycerin (VG)'),
+        ingredientKey: 'vg',
+        volume: glycerinAmount,
+        percent: glycerinPercent,
+        grams: Math.round(glycerinAmount * 1.261 * 10) / 10
+    });
+    
+    // Flavors
+    flavors.forEach((f, idx) => {
+        const flavorMl = Math.round(totalAmount * (f.percent / 100) * 10) / 10;
+        ingredients.push({
+            name: `${t('ingredients.flavor', 'Příchuť')}: ${f.name}`,
+            ingredientKey: 'flavor',
+            flavorType: f.type,
+            flavorNumber: idx + 1,
+            flavorName: f.flavorName,
+            flavorManufacturer: f.flavorManufacturer,
+            flavorId: f.flavorId,
+            flavorSource: f.flavorSource,
+            favoriteProductId: f.favoriteProductId,
+            volume: flavorMl,
+            percent: f.percent,
+            grams: flavorMl,
+            params: { vgpg: `${f.vgRatio}/${100 - f.vgRatio}` }
+        });
+    });
+    
+    // Nicotine
+    if (nicotineAmount > 0) {
+        const nicIngredientKey = nicType === 'salt' ? 'nicotine_salt' : 'nicotine_booster';
+        ingredients.push({
+            name: `${t('ingredients.' + nicIngredientKey, 'Nikotin')} (${nicBaseStrength} mg/ml, VG/PG ${nicRatioVal})`,
+            ingredientKey: nicIngredientKey,
+            volume: nicotineAmount,
+            percent: Math.round(nicotineAmount / totalAmount * 100 * 10) / 10,
+            grams: Math.round(nicotineAmount * 10) / 10,
+            params: { strength: nicBaseStrength, vgpg: nicRatioVal }
+        });
+    }
+    
+    // Water
+    if (waterAmount > 0) {
+        ingredients.push({
+            name: t('shisha.water_label', 'Voda'),
+            ingredientKey: 'water',
+            volume: waterAmount,
+            percent: waterPercent,
+            grams: waterAmount
+        });
+    }
+    
+    const recipeData = {
+        formType: 'shisha',
+        shishaMode: 'molasses',
+        totalAmount,
+        sweetenerType,
+        sweetenerPercent,
+        sweetenerAmount,
+        glycerinPercent,
+        glycerinAmount,
+        waterPercent,
+        waterAmount,
+        water: waterPercent,
+        sweetener: { type: sweetenerType, percent: sweetenerPercent },
+        flavors,
+        nicotine: nicTarget,
+        nicotineType: nicType,
+        nicotineBaseStrength: nicBaseStrength,
+        nicotineTarget: nicTarget,
+        nicotineRatio: nicRatioVal,
+        nicotineAmount,
+        steepDays: 3,
+        vgPercent: vgPgRatio,
+        pgPercent: 100 - vgPgRatio,
+        ingredients
+    };
+    
+    storeCurrentRecipe(recipeData);
+    
+    // Render results
+    document.getElementById('resultTotal').textContent = `${totalAmount} ml`;
+    document.getElementById('resultRatio').textContent = `${vgPgRatio}:${100 - vgPgRatio}`;
+    document.getElementById('resultNicotine').textContent = `${nicTarget} mg/ml`;
+    
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = '';
+    let runningTotal = 0;
+    let runTotalGrams = 0;
+    
+    ingredients.forEach(ing => {
+        const row = document.createElement('tr');
+        const vol = parseFloat(ing.volume) || 0;
+        const g = typeof ing.grams === 'number' ? ing.grams : parseFloat(ing.grams) || 0;
+        runningTotal += vol;
+        runTotalGrams += g;
+        row.innerHTML = `
+            <td class="ingredient-name">${ing.name} <span class="ingredient-percent-inline">(${(ing.percent || 0).toFixed(1)}%)</span></td>
+            <td class="ingredient-value">${vol.toFixed(2)}</td>
+            <td class="ingredient-grams">${g.toFixed(1)}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
     const totalRow = document.createElement('tr');
     totalRow.className = 'total-row';
     totalRow.innerHTML = `
         <td class="ingredient-name">${t('ingredients.total', 'CELKEM')}</td>
         <td class="ingredient-value">${runningTotal.toFixed(2)}</td>
-        <td class="ingredient-grams">${totalGrams.toFixed(2)}</td>
+        <td class="ingredient-grams">${runTotalGrams.toFixed(1)}</td>
     `;
     tbody.appendChild(totalRow);
     
-    // Add mixing notes
-    const notesList = document.getElementById('mixingNotesList');
-    notesList.innerHTML = '';
+    generateMixingNotes(recipeData);
     
-    const notes = [
-        t('results.notes_flavors_first', 'Nejprve přidejte příchutě.')
-    ];
-    
-    // Add nicotine note only if nicotine is present
-    if (nicotineVolume > 0) {
-        notes.push(t('results.notes_nicotine', 'Poté přidejte nikotin (pracujte v rukavicích!).'));
-    }
-    
-    // Add base note based on type
-    if (baseType === 'premixed') {
-        notes.push(t('results.notes_premixed', 'Doplňte předmíchanou bázi.'));
-    } else {
-        notes.push(t('results.notes_vg_pg', 'Doplňte VG a PG podle receptu.'));
-    }
-    
-    if (sweetenerVolume > 0) {
-        notes.push(t('shisha.note_add_sweetener', 'Přidejte sladidlo a promíchejte.'));
-    }
-    if (waterVolume > 0) {
-        notes.push(t('shisha.note_add_water', 'Přidejte vodu pro zředění.'));
-    }
-    
-    // Add shake note
-    notes.push(t('results.notes_shake', 'Důkladně protřepejte (2-3 minuty).'));
-    
-    // Add steeping note
-    if (flavorsData.length > 0) {
-        const maxSteeping = Math.max(...flavorsData.map(f => f.data?.steepingDays || 3));
-        const steepingNote = t('results.notes_steep', 'Nechte zrát {days} dní.').replace('{days}', maxSteeping);
-        notes.push(steepingNote);
-    }
-    
-    notes.forEach(note => {
-        const li = document.createElement('li');
-        li.textContent = note;
-        notesList.appendChild(li);
-    });
-    
-    // Store current recipe data
-    const hasSweetener = sweetenerSelect ? sweetenerType !== 'none' : (sweetenerToggle?.checked);
-    
-    // Vytvořit pole ingredients s ingredientKey pro dynamický překlad při změně jazyka
-    const ingredients = [];
-    
-    // Add base ingredients based on baseType
-    if (baseType === 'premixed' && premixedBaseVolume > 0) {
-        // Premixed base - DŮLEŽITÉ: vgRatio je potřeba pro calculateIngredientGrams()
-        ingredients.push({
-            ingredientKey: 'premixedBase',
-            params: { vgpg: `${premixedVg}/${premixedPg}` },
-            vgRatio: premixedVg,  // Pro správný výpočet hustoty v refreshResultsTable()
-            volume: premixedBaseVolume,
-            percent: ((premixedBaseVolume / totalAmount) * 100).toFixed(1),
-            grams: parseFloat(results.find(r => r.type === 'base')?.grams || 0)
-        });
-        
-        // Přidat doladění VG/PG pokud existuje (premixed režim)
-        if (pureVgVolume > 0.01) {
-            ingredients.push({
-                ingredientKey: 'vg_adjustment',
-                volume: pureVgVolume,
-                percent: ((pureVgVolume / totalAmount) * 100).toFixed(1),
-                grams: parseFloat(results.find(r => r.type === 'vg_adjustment')?.grams || 0)
-            });
-        }
-        if (purePgVolume > 0.01) {
-            ingredients.push({
-                ingredientKey: 'pg_adjustment',
-                volume: purePgVolume,
-                percent: ((purePgVolume / totalAmount) * 100).toFixed(1),
-                grams: parseFloat(results.find(r => r.type === 'pg_adjustment')?.grams || 0)
-            });
-        }
-    } else if (baseType === 'separate') {
-        // Pure VG
-        if (pureVgVolume > 0.01) {
-            ingredients.push({
-                ingredientKey: 'vg',
-                volume: pureVgVolume,
-                percent: ((pureVgVolume / totalAmount) * 100).toFixed(1),
-                grams: parseFloat(results.find(r => r.type === 'vg')?.grams || 0)
-            });
-        }
-        // Pure PG
-        if (purePgVolume > 0.01) {
-            ingredients.push({
-                ingredientKey: 'pg',
-                volume: purePgVolume,
-                percent: ((purePgVolume / totalAmount) * 100).toFixed(1),
-                grams: parseFloat(results.find(r => r.type === 'pg')?.grams || 0)
-            });
-        }
-    }
-    
-    // Nicotine
-    if (nicotineVolume > 0) {
-        const nicRatioInputRes = document.getElementById('shNicotineRatio');
-        const nicRatioValueRes = nicRatioInputRes?.value || '50/50';
-        ingredients.push({
-            ingredientKey: 'nicotine_base',
-            params: { vgpg: nicRatioValueRes },
-            volume: nicotineVolume,
-            percent: ((nicotineVolume / totalAmount) * 100).toFixed(1),
-            grams: parseFloat(results.find(r => r.type === 'nicotine')?.grams || 0)
-        });
-    }
-    
-    // Flavors
-    flavorsData.forEach((flavor, index) => {
-        const flavorVolume = (flavor.percent / 100) * totalAmount;
-        const flavorResult = results.find(r => r.type === 'flavor' && r.name.includes(`${index + 1}:`));
-        const flavorIngredient = {
-            ingredientKey: 'shisha_flavor',
-            flavorType: flavor.type,
-            flavorNumber: index + 1,
-            params: { vgpg: flavor.vgpg || '50/50' },
-            volume: flavorVolume,
-            percent: ((flavorVolume / totalAmount) * 100).toFixed(1),
-            grams: parseFloat(flavorResult?.grams || 0)
-        };
-        
-        // Přidat info o konkrétní příchuti pokud existuje
-        if (flavor.flavorName) {
-            flavorIngredient.flavorName = flavor.flavorName;
-            flavorIngredient.flavorManufacturer = flavor.flavorManufacturer;
-            flavorIngredient.flavorId = flavor.flavorId;
-            flavorIngredient.favoriteProductId = flavor.favoriteProductId;
-            flavorIngredient.flavorSource = flavor.flavorSource;
-        }
-        
-        ingredients.push(flavorIngredient);
-    });
-    
-    // Sweetener
-    if (sweetenerVolume > 0) {
-        ingredients.push({
-            ingredientKey: 'shisha_sweetener',
-            sweetenerType: sweetenerType,
-            volume: sweetenerVolume,
-            percent: ((sweetenerVolume / totalAmount) * 100).toFixed(1),
-            grams: parseFloat(results.find(r => r.type === 'sweetener')?.grams || 0)
-        });
-    }
-    
-    // Water
-    if (waterVolume > 0) {
-        ingredients.push({
-            ingredientKey: 'water',
-            volume: waterVolume,
-            percent: ((waterVolume / totalAmount) * 100).toFixed(1),
-            grams: parseFloat(results.find(r => r.type === 'water')?.grams || 0)
-        });
-    }
-    
-    // Uložit data receptu pomocí storeCurrentRecipe() pro konzistenci s ostatními formuláři
-    storeCurrentRecipe({
-        formType: 'shisha',
-        totalAmount: totalAmount,
-        vgPercent: vgPercent,
-        pgPercent: pgPercent,
-        nicotine: targetNicotine,
-        baseType: baseType,
-        premixedRatio: premixedRatio,
-        flavors: flavorsData,
-        sweetener: hasSweetener ? {
-            type: sweetenerType,
-            percent: parseFloat(document.getElementById('shSweetenerStrength')?.value) || 0
-        } : null,
-        water: waterPercent > 0 ? waterPercent : 0,
-        results: results,
-        ingredients: ingredients
-    });
-    
-    // Show results page
-    showPage('results');
-    
-    // Show appropriate buttons (check edit mode like other forms)
     const newButtons = document.getElementById('resultsNewButtons');
     const editButtons = document.getElementById('resultsEditButtons');
-    
     if (window.editingRecipeFromDetail) {
-        // Režim editace existujícího receptu
         if (newButtons) newButtons.classList.add('hidden');
         if (editButtons) editButtons.classList.remove('hidden');
     } else {
-        // Nový recept
         if (newButtons) newButtons.classList.remove('hidden');
         if (editButtons) editButtons.classList.add('hidden');
     }
+    showPage('results');
 }
 
-// Export Shisha functions
+// --- All old duplicate shisha functions removed ---
+// --- New exports below ---
+
+// =========================================
+// Export Shisha functions (3-mode)
+// =========================================
+
+// Core
 window.initShishaForm = initShishaForm;
+window.switchShishaMode = switchShishaMode;
 window.updateShishaPremiumElements = updateShishaPremiumElements;
+window.calculateShishaMix = calculateShishaMix;
+
+// Mode 1: Tobacco Mix
+window.updateShishaBowlSize = updateShishaBowlSize;
+window.updateShishaCustomBowlSize = updateShishaCustomBowlSize;
+window.updateShishaTobaccoPercent = updateShishaTobaccoPercent;
+window.adjustShishaTobacco = adjustShishaTobacco;
+window.updateShishaTobaccoTotal = updateShishaTobaccoTotal;
+window.addShishaTobacco = addShishaTobacco;
+window.removeShishaTobacco = removeShishaTobacco;
+
+// Mode 2: DIY Tobacco
+window.updateDiyRatio = updateDiyRatio;
+window.updateDiyMolassesCalc = updateDiyMolassesCalc;
+window.updateDiySweetenerDisplay = updateDiySweetenerDisplay;
+window.adjustDiySweetener = adjustDiySweetener;
+window.updateDiyGlycerinDisplay = updateDiyGlycerinDisplay;
+window.adjustDiyGlycerin = adjustDiyGlycerin;
+window.updateShishaDiyFlavorType = updateShishaDiyFlavorType;
+window.adjustShishaDiyFlavor = adjustShishaDiyFlavor;
+window.updateShishaDiyFlavorStrength = updateShishaDiyFlavorStrength;
+window.adjustShishaDiyFlavorRatio = adjustShishaDiyFlavorRatio;
+window.updateShishaDiyFlavorRatioDisplay = updateShishaDiyFlavorRatioDisplay;
+window.addShishaDiyFlavor = addShishaDiyFlavor;
+window.removeShishaDiyFlavor = removeShishaDiyFlavor;
+window.updateShishaDiyNicotineType = updateShishaDiyNicotineType;
+window.updateShishaDiyNicotineRatio = updateShishaDiyNicotineRatio;
+window.adjustShishaDiyTargetNicotine = adjustShishaDiyTargetNicotine;
+window.updateShishaDiyNicotineDisplay = updateShishaDiyNicotineDisplay;
+window.updateShishaDiyBaseType = updateShishaDiyBaseType;
+window.updateShishaDiyPremixedRatio = updateShishaDiyPremixedRatio;
+window.adjustShishaDiyRatio = adjustShishaDiyRatio;
+window.updateShishaDiyRatioDisplay = updateShishaDiyRatioDisplay;
+
+// Mode 3: Molasses Mix
+window.updateMolSweetenerDisplay = updateMolSweetenerDisplay;
+window.adjustMolSweetener = adjustMolSweetener;
+window.updateMolGlycerinDisplay = updateMolGlycerinDisplay;
+window.adjustMolGlycerin = adjustMolGlycerin;
+window.updateMolWaterDisplay = updateMolWaterDisplay;
+window.adjustMolWater = adjustMolWater;
+window.updateShishaMolFlavorType = updateShishaMolFlavorType;
+window.adjustShishaMolFlavor = adjustShishaMolFlavor;
+window.updateShishaMolFlavorStrength = updateShishaMolFlavorStrength;
+window.adjustShishaMolFlavorRatio = adjustShishaMolFlavorRatio;
+window.updateShishaMolFlavorRatioDisplay = updateShishaMolFlavorRatioDisplay;
+window.addShishaMolFlavor = addShishaMolFlavor;
+window.removeShishaMolFlavor = removeShishaMolFlavor;
+window.updateShishaMolNicotineType = updateShishaMolNicotineType;
+window.updateShishaMolNicotineRatio = updateShishaMolNicotineRatio;
+window.adjustShishaMolTargetNicotine = adjustShishaMolTargetNicotine;
+window.updateShishaMolNicotineDisplay = updateShishaMolNicotineDisplay;
+window.updateShishaMolBaseType = updateShishaMolBaseType;
+window.updateShishaMolPremixedRatio = updateShishaMolPremixedRatio;
+window.adjustShishaMolRatio = adjustShishaMolRatio;
+window.updateShishaMolRatioDisplay = updateShishaMolRatioDisplay;
+
+// Legacy compat stubs (exported for old references)
 window.updateShishaBaseType = updateShishaBaseType;
 window.updateShishaPremixedRatio = updateShishaPremixedRatio;
 window.updateShishaCustomPremixedPg = updateShishaCustomPremixedPg;
@@ -17087,4 +16844,3 @@ window.adjustShishaRatio = adjustShishaRatio;
 window.updateShishaRatioDisplay = updateShishaRatioDisplay;
 window.autoRecalculateShishaVgPgRatio = autoRecalculateShishaVgPgRatio;
 window.updateShishaVgPgLimits = updateShishaVgPgLimits;
-window.calculateShishaMix = calculateShishaMix;
