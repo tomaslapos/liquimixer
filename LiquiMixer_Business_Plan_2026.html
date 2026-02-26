@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiquiMixer — Business Analýza & Marketingový Plán 2026–2030</title>
+<style>
+  @page { size: A4; margin: 20mm 15mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a2e; line-height: 1.6; background: #fff; max-width: 210mm; margin: 0 auto; padding: 20mm 15mm; font-size: 11px; }
+  
+  /* Cover */
+  .cover { text-align: center; page-break-after: always; padding: 60px 0; }
+  .cover h1 { font-size: 32px; color: #7c3aed; margin-bottom: 8px; letter-spacing: -0.5px; }
+  .cover .subtitle { font-size: 16px; color: #475569; margin-bottom: 40px; }
+  .cover .meta { font-size: 12px; color: #94a3b8; }
+  .cover .logo { font-size: 48px; margin-bottom: 20px; }
+  .cover .badge { display: inline-block; background: #7c3aed; color: #fff; padding: 6px 18px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 30px; letter-spacing: 1px; }
+  .cover .stats { display: flex; justify-content: center; gap: 24px; margin-top: 40px; flex-wrap: wrap; }
+  .cover .stat { text-align: center; }
+  .cover .stat-value { font-size: 20px; font-weight: 700; color: #7c3aed; }
+  .cover .stat-label { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* TOC */
+  .toc { page-break-after: always; }
+  .toc h2 { font-size: 18px; color: #7c3aed; margin-bottom: 20px; border-bottom: 2px solid #7c3aed; padding-bottom: 8px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 6px; font-size: 12px; color: #334155; }
+  .toc li a { color: #334155; text-decoration: none; }
+
+  /* Headings */
+  h2 { font-size: 18px; color: #7c3aed; margin: 30px 0 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; page-break-after: avoid; }
+  h3 { font-size: 14px; color: #1e1b4b; margin: 20px 0 8px; page-break-after: avoid; }
+  h4 { font-size: 12px; color: #475569; margin: 14px 0 6px; }
+  p { margin-bottom: 8px; font-size: 11px; }
+  
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 10px; page-break-inside: avoid; }
+  th { background: #7c3aed; color: #fff; padding: 6px 8px; text-align: left; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 0.3px; }
+  td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) { background: #f8fafc; }
+  tr:hover { background: #f1f5f9; }
+  td:last-child, th:last-child { text-align: right; }
+  .highlight-row { background: #ede9fe !important; font-weight: 600; }
+
+  /* Cards */
+  .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin: 10px 0; }
+  .card-purple { border-left: 4px solid #7c3aed; }
+  .card-green { border-left: 4px solid #10b981; }
+  .card-red { border-left: 4px solid #ef4444; }
+  .card-amber { border-left: 4px solid #f59e0b; }
+  .card-blue { border-left: 4px solid #3b82f6; }
+
+  /* Lists */
+  ul, ol { padding-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; font-size: 11px; }
+
+  /* Scenario colors */
+  .pessimistic { color: #ef4444; }
+  .realistic { color: #f59e0b; }
+  .target { color: #7c3aed; }
+  .optimistic { color: #10b981; }
+
+  /* KPI grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+  .kpi-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 14px 0; }
+  .kpi { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+  .kpi-value { font-size: 18px; font-weight: 700; color: #7c3aed; }
+  .kpi-label { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Page break */
+  .page-break { page-break-before: always; }
+
+  /* Footer */
+  .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #94a3b8; text-align: center; }
+
+  /* Blockquote */
+  blockquote { background: #ede9fe; border-left: 4px solid #7c3aed; padding: 10px 14px; margin: 10px 0; border-radius: 0 6px 6px 0; font-size: 11px; }
+  blockquote strong { color: #7c3aed; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="logo">🧪</div>
+  <h1>LiquiMixer</h1>
+  <div class="subtitle">Business Analýza & Marketingový Plán 2026–2030</div>
+  <div class="badge">INTERNÍ DOKUMENT — DŮVĚRNÉ</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-value">~200M</div><div class="stat-label">celkový trh</div></div>
+    <div class="stat"><div class="stat-value">28–43M</div><div class="stat-label">TAM (rostoucí)</div></div>
+    <div class="stat"><div class="stat-value">5 000+</div><div class="stat-label">ověřených příchutí</div></div>
+    <div class="stat"><div class="stat-value">31</div><div class="stat-label">jazyků</div></div>
+    <div class="stat"><div class="stat-value">2.40€</div><div class="stat-label">roční cena</div></div>
+  </div>
+  <div class="meta" style="margin-top: 60px;">
+    <p>Verze: 3.0 — 24. února 2026</p>
+    <p>Autor: WOOs s.r.o.</p>
+    <p>www.liquimixer.com</p>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Obsah</h2>
+  <ol>
+    <li><a href="#product">O produktu LiquiMixer</a></li>
+    <li><a href="#total-market">Celkový trh — 200M+ uživatelů</a></li>
+    <li><a href="#tam">Adresovatelný trh (TAM) — 28M rostoucí na 43M</a></li>
+    <li><a href="#advantages">Konkurenční výhody</a></li>
+    <li><a href="#pricing">Cenová strategie 2026–2030</a></li>
+    <li><a href="#scenarios">Scénáře příjmů 2026–2030 (rostoucí TAM)</a>
+      <ol>
+        <li>Pesimistický scénář (3.2% penetrace)</li>
+        <li>Realistický scénář (12.9% penetrace)</li>
+        <li>Cílový scénář (25% penetrace)</li>
+        <li>Optimistický scénář (34.3% penetrace)</li>
+      </ol>
+    </li>
+    <li><a href="#comparison">Srovnání všech scénářů</a></li>
+    <li><a href="#marketing">Marketingová strategie 2026</a></li>
+    <li><a href="#marketing-impact">Vliv marketingu na business predikci</a></li>
+    <li><a href="#factors">Rozhodující faktory</a></li>
+    <li><a href="#verdict">Finální verdikt</a></li>
+  </ol>
+</div>
+
+<!-- 1. O PRODUKTU -->
+<h2 id="product">1. O produktu LiquiMixer</h2>
+
+<p>LiquiMixer je profesionální kalkulačka pro míchání e-liquidů a hookah/shisha tabáku. Funguje jako PWA (Progressive Web App) dostupná na všech platformách bez nutnosti app storu.</p>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-value">5 000+</div><div class="kpi-label">ověřených příchutí</div></div>
+  <div class="kpi"><div class="kpi-value">70+</div><div class="kpi-label">výrobců</div></div>
+  <div class="kpi"><div class="kpi-value">31</div><div class="kpi-label">jazyků</div></div>
+  <div class="kpi"><div class="kpi-value">2.40€/rok</div><div class="kpi-label">cena předplatného</div></div>
+</div>
+
+<h3>Klíčové funkce</h3>
+<div class="two-col">
+  <div>
+    <ul>
+      <li>PG/VG/nikotin kalkulátor</li>
+      <li>Hookah/shisha kalkulátor (monopol)</li>
+      <li>Databáze 5000+ ověřených příchutí</li>
+      <li>Auto-% dávkování příchutí</li>
+      <li>Vlastní recepty s steep time</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li>31 jazyků (6× více než konkurence)</li>
+      <li>AI support v 31 jazycích (24/7)</li>
+      <li>PWA — funguje na všech zařízeních</li>
+      <li>Dilute kalkulátor</li>
+      <li>Od začátečníků po profesionály</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Uživatelské segmenty</h3>
+<table>
+  <tr><th>Segment</th><th>% DIY mixérů</th><th>Potřeby</th><th>Jak LiquiMixer pomáhá</th></tr>
+  <tr><td><strong>Začátečníci</strong></td><td>60%</td><td>Jednoduchost, návody, auto-%</td><td>5000+ příchutí s auto-%, jednoduchý kalkulátor</td></tr>
+  <tr><td>Pokročilí</td><td>30%</td><td>Flexibilita, recepty, komunita</td><td>Liquid PRO, veřejné recepty, hodnocení</td></tr>
+  <tr><td>Profesionálové</td><td>10%</td><td>Přesnost, sklad, notifikace</td><td>Stock tracking, push zrání, multi-flavor</td></tr>
+  <tr><td><strong>Shisha/hookah</strong></td><td>—</td><td>Kalkulátor mixování</td><td><strong>MONOPOL — žádný konkurent</strong></td></tr>
+</table>
+
+<!-- 2. CELKOVÝ TRH -->
+<h2 id="total-market" class="page-break">2. Celkový trh — 200M+ uživatelů</h2>
+
+<div class="card card-purple">
+  <strong>Celkový globální trh (vaping + hookah): ~200 milionů uživatelů (2026), rostoucí na ~280 milionů (2030)</strong>
+  <p style="margin-top:6px;">Zdroje: WHO (říjen 2025), Euromonitor, Grand View Research, Allied Market Research, Research Nester</p>
+</div>
+
+<h3>Vaping trh — tvrdá data</h3>
+<table>
+  <tr><th>Metrika</th><th>Hodnota</th><th>Zdroj</th></tr>
+  <tr><td>Celosvětový počet vaperů</td><td><strong>100+ milionů</strong> (86M dospělých + 15M adolescentů)</td><td>WHO, říjen 2025</td></tr>
+  <tr><td>Globální vaping trh</td><td>$48.18 miliard (2026)</td><td>Research Nester</td></tr>
+  <tr><td>CAGR vaping trhu</td><td><strong>20–33% ročně</strong></td><td>Grand View Research</td></tr>
+  <tr><td>Open system (refillable) podíl</td><td>55% trhu</td><td>Coherent Market Insights</td></tr>
+  <tr><td>Aktivní DIY mixéři</td><td>5–8 milionů</td><td>Odhad z komunitních dat</td></tr>
+</table>
+
+<h3>Hookah/Shisha trh — tvrdá data</h3>
+<table>
+  <tr><th>Metrika</th><th>Hodnota</th><th>Zdroj</th></tr>
+  <tr><td>Hookah tobacco trh</td><td>$824M (2020) → $1.7B (2030)</td><td>Allied Market Research</td></tr>
+  <tr><td>CAGR</td><td>6.5%</td><td>Allied Market Research</td></tr>
+  <tr><td>Hookah uživatelů celosvětově</td><td><strong>100–150 milionů</strong></td><td>Regionální studie, WHO</td></tr>
+  <tr><td>Klíčové regiony</td><td>MENA, Turecko, Indie, Rusko, Německo, US</td><td>WHO</td></tr>
+  <tr><td>Hookah kalkulátorů na trhu</td><td><strong>0 (nula)</strong> — LiquiMixer = monopol</td><td>Ověřeno — app stores, Google, fóra</td></tr>
+</table>
+
+<h3>Struktura celkového trhu</h3>
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-value">~200M</div><div class="kpi-label">celkový trh 2026</div></div>
+  <div class="kpi"><div class="kpi-value">~85M</div><div class="kpi-label">SAM (mohou mixovat)</div></div>
+  <div class="kpi"><div class="kpi-value">28M</div><div class="kpi-label">TAM 2026</div></div>
+  <div class="kpi"><div class="kpi-value">43M</div><div class="kpi-label">TAM 2030</div></div>
+</div>
+
+<table>
+  <tr><th>Úroveň</th><th>2026</th><th>2030</th><th>Popis</th></tr>
+  <tr><td><strong>Celkový trh</strong></td><td>~200M</td><td>~280M</td><td>Všichni vaperů + hookah uživatelé</td></tr>
+  <tr><td>SAM (Serviceable)</td><td>~85M</td><td>~115M</td><td>Open system vapeři + pravidelní hookah</td></tr>
+  <tr><td><strong>TAM (Addressable)</strong></td><td><strong>28M</strong></td><td><strong>43M</strong></td><td>Aktivní + potenciální DIY mixéři</td></tr>
+</table>
+
+<h3>Hookah segment — kulturní kontext</h3>
+<p><strong>100–150M hookah uživatelů celosvětově, 0 konkurenčních kalkulátorů.</strong> Hookah je kulturní fenomén v:</p>
+<ul>
+  <li><strong>Turecko</strong> — 15M+ uživatelů, hookah bary na každém rohu</li>
+  <li><strong>Arabské země</strong> — kulturní tradice, desítky milionů</li>
+  <li><strong>Indie</strong> — rostoucí trend, obrovská populace</li>
+  <li><strong>Rusko</strong> — hookah bary velmi populární</li>
+  <li><strong>Německo</strong> — 2. největší hookah trh v EU</li>
+  <li><strong>US</strong> — rostoucí trend, hookah lounges</li>
+</ul>
+
+<!-- 3. TAM ROSTOUCÍ -->
+<h2 id="tam" class="page-break">3. Adresovatelný trh (TAM) — 28M rostoucí na 43M</h2>
+
+<div class="card card-blue">
+  <strong>TAM roste s trhem.</strong> CAGR vaping trhu je 20–33%, disposable bany přesouvají lidi na DIY, hookah DIY segment roste.
+</div>
+
+<h3>Projekce TAM 2026–2030</h3>
+<table>
+  <tr><th>Rok</th><th>Celkem vaperů</th><th>Open system</th><th>Vaping DIY</th><th>Hookah DIY</th><th>Potenciální DIY</th><th>TAM celkem</th></tr>
+  <tr><td>2026</td><td>90M</td><td>50M</td><td>6M</td><td>4M</td><td>18M</td><td><strong>28M</strong></td></tr>
+  <tr><td>2027</td><td>105M</td><td>60M</td><td>8M</td><td>5M</td><td>18M</td><td><strong>31M</strong></td></tr>
+  <tr><td>2028</td><td>120M</td><td>70M</td><td>11M</td><td>7M</td><td>17M</td><td><strong>35M</strong></td></tr>
+  <tr><td>2029</td><td>135M</td><td>80M</td><td>14M</td><td>9M</td><td>16M</td><td><strong>39M</strong></td></tr>
+  <tr class="highlight-row"><td>2030</td><td>150M</td><td>90M</td><td>18M</td><td>12M</td><td>13M</td><td><strong>43M</strong></td></tr>
+</table>
+
+<h3>Co žene růst TAM</h3>
+<ul>
+  <li><strong>Disposable bany v EU:</strong> Francie a Belgie zakázaly, UK a Německo plánují. Každý ban = 100–500k nových potenciálních DIY mixérů.</li>
+  <li><strong>Regulace (TPD v EU, FDA v US):</strong> Zvyšují ceny komerčních liquidů → více lidí přechází na DIY.</li>
+  <li><strong>Hookah DIY trend:</strong> Sociální sítě ukazují domácí přípravu → roste zájem o kalkulátory.</li>
+  <li><strong>Ekonomická motivace:</strong> DIY e-liquid stojí ~2€ vs. komerční ~50€ za stejný objem.</li>
+</ul>
+
+<h3>Segmenty TAM v roce 2030 (43M)</h3>
+<table>
+  <tr><th>Segment</th><th>Velikost 2026</th><th>Velikost 2030</th><th>LiquiMixer pozice</th></tr>
+  <tr><td><strong>Hookah DIY</strong></td><td>4M</td><td><strong>12M</strong></td><td><strong>MONOPOL (0 konkurentů)</strong></td></tr>
+  <tr><td>Začátečníci (non-EN)</td><td>2M</td><td>10M</td><td>Jediná alternativa v 25+ jazycích</td></tr>
+  <tr><td>Začátečníci (EN)</td><td>1.5M</td><td>8M</td><td>Nejlepší produkt (auto-%, 5000+ příchutí)</td></tr>
+  <tr><td>Pokročilí (non-EN)</td><td>0.8M</td><td>3M</td><td>Jediná alternativa</td></tr>
+  <tr><td>Pokročilí (EN)</td><td>1.5M</td><td>3M</td><td>Dobrý, ale ELR má větší komunitu</td></tr>
+  <tr><td>Profesionálové</td><td>0.7M</td><td>3M</td><td>Silný (sklad, notifikace, přesnost)</td></tr>
+  <tr><td>Potenciální DIY (new converts)</td><td>17.5M</td><td>4M</td><td>Přecházejí na aktivní DIY</td></tr>
+  <tr class="highlight-row"><td><strong>CELKEM TAM</strong></td><td><strong>28M</strong></td><td><strong>43M</strong></td><td></td></tr>
+</table>
+
+<!-- 4. KONKURENČNÍ VÝHODY -->
+<h2 id="advantages">4. Konkurenční výhody</h2>
+
+<div class="card card-green">
+  <strong>LiquiMixer má 6 ověřitelných konkurenčních výhod, z nichž 3 jsou absolutní monopoly.</strong>
+</div>
+
+<table>
+  <tr><th>Výhoda</th><th>LiquiMixer</th><th>Konkurence</th><th>Status</th></tr>
+  <tr><td>Hookah kalkulátor</td><td>✅ Ano</td><td>❌ Neexistuje</td><td><strong>MONOPOL</strong></td></tr>
+  <tr><td>Počet jazyků</td><td>31</td><td>Max 5</td><td><strong>6× více</strong></td></tr>
+  <tr><td>AI support 31 jazyků</td><td>✅ 24/7</td><td>❌ Žádný</td><td><strong>MONOPOL</strong></td></tr>
+  <tr><td>Ověřené příchutě</td><td>5 000+</td><td>Max 1 000</td><td>5× více</td></tr>
+  <tr><td>Auto-% dávkování</td><td>✅ Ano</td><td>❌ Ne</td><td><strong>Unikátní</strong></td></tr>
+  <tr><td>Cena/rok</td><td>2.40€</td><td>5–20€</td><td>2–8× levnější</td></tr>
+  <tr><td>Platforma</td><td>PWA (všechny)</td><td>iOS/Android/web</td><td>Univerzální</td></tr>
+</table>
+
+<h3>Proč konverze 25–30% je reálná</h3>
+<ul>
+  <li><strong>2.40€/rok = cena jedné kávy.</strong> Psychologická bariéra je minimální.</li>
+  <li><strong>Utility produkt:</strong> Řeší reálný problém (výpočet poměrů) — "need to have", ne "nice to have".</li>
+  <li><strong>Ukládání receptů = killer feature:</strong> Uživatel nechce znovu zadávat → platí aby nepřišel o data.</li>
+  <li><strong>Churn minimální:</strong> Nikdo neruší předplatné za 2.40€/rok.</li>
+  <li><strong>Benchmark:</strong> Produkty s cenou pod 5€/rok a jasnou utility hodnotou dosahují 20–35% konverze.</li>
+</ul>
+
+<!-- 5. CENOVÁ STRATEGIE -->
+<h2 id="pricing" class="page-break">5. Cenová strategie 2026–2030</h2>
+
+<table>
+  <tr><th>Rok</th><th>CZ cena</th><th>EU cena</th><th>Mimo EU</th><th>Meziroční nárůst</th><th>Přidaná hodnota</th></tr>
+  <tr><td>2026</td><td>59 CZK</td><td>2.40€</td><td>2.90 USD</td><td>—</td><td>Aktuální funkce</td></tr>
+  <tr><td>2027</td><td>79 CZK</td><td>2.90€</td><td>3.50 USD</td><td>+21%</td><td>AI doporučení, kalkulátor nákladů</td></tr>
+  <tr><td>2028</td><td>99 CZK</td><td>3.60€</td><td>4.30 USD</td><td>+24%</td><td>Marketplace, sociální funkce</td></tr>
+  <tr><td>2029</td><td>119 CZK</td><td>4.20€</td><td>5.00 USD</td><td>+17%</td><td>Affiliate, komunita</td></tr>
+  <tr><td>2030</td><td>139 CZK</td><td>4.80€</td><td>5.80 USD</td><td>+14%</td><td>Premium tier, etablovaný leader</td></tr>
+</table>
+
+<blockquote>
+  <strong>Strategie:</strong> Postupné zdvojnásobení ceny za 5 let (2.40€ → 4.80€) s přidáváním hodnoty. I v roce 2030 je cena 4.80€/rok výrazně pod konkurencí.
+</blockquote>
+
+<!-- 6. SCÉNÁŘE PŘÍJMŮ -->
+<h2 id="scenarios" class="page-break">6. Scénáře příjmů 2026–2030</h2>
+
+<blockquote>
+  <strong>Přepočteno s rostoucím TAM (28M → 43M).</strong> Penetrace zůstává dle původních scénářů (3.2%–34.3%), ale aplikuje se na rostoucí trh. Konverze 25–30%.
+</blockquote>
+
+<h3 class="pessimistic">🔴 Pesimistický scénář (penetrace 3.2%)</h3>
+<p><em>Předpoklady: Pomalý růst, hookah segment nereaguje, jen vaping, žádné virální efekty. Penetrace roste pomalu z 0.3% na 3.2%.</em></p>
+
+<table>
+  <tr><th>Rok</th><th>TAM</th><th>Penetrace</th><th>MAU</th><th>Konverze</th><th>Platící</th><th>Cena</th><th>CELKEM</th><th>Kumulativní</th></tr>
+  <tr><td>2026</td><td>28M</td><td>0.3%</td><td>80 000</td><td>20%</td><td>16 000</td><td>2.40€</td><td><strong>40 400€</strong></td><td>40 400€</td></tr>
+  <tr><td>2027</td><td>31M</td><td>0.8%</td><td>248 000</td><td>22%</td><td>54 560</td><td>2.90€</td><td><strong>172 224€</strong></td><td>212 624€</td></tr>
+  <tr><td>2028</td><td>35M</td><td>1.5%</td><td>525 000</td><td>24%</td><td>126 000</td><td>3.60€</td><td><strong>493 600€</strong></td><td>706 224€</td></tr>
+  <tr><td>2029</td><td>39M</td><td>2.3%</td><td>897 000</td><td>26%</td><td>233 220</td><td>4.20€</td><td><strong>1 059 524€</strong></td><td>1 765 748€</td></tr>
+  <tr class="highlight-row"><td>2030</td><td>43M</td><td>3.2%</td><td>1 376 000</td><td>28%</td><td>385 280</td><td>4.80€</td><td><strong>1 989 344€</strong></td><td><strong>3 755 092€</strong></td></tr>
+</table>
+
+<h3 class="realistic">🟡 Realistický scénář (penetrace 12.9%)</h3>
+<p><em>Předpoklady: AI bot funguje, hookah komunity reagují postupně, 5+ e-shop partnerství, SEO ve 31 jazycích.</em></p>
+
+<table>
+  <tr><th>Rok</th><th>TAM</th><th>Penetrace</th><th>MAU</th><th>Konverze</th><th>Platící</th><th>Cena</th><th>CELKEM</th><th>Kumulativní</th></tr>
+  <tr><td>2026</td><td>28M</td><td>0.5%</td><td>150 000</td><td>22%</td><td>33 000</td><td>2.40€</td><td><strong>83 200€</strong></td><td>83 200€</td></tr>
+  <tr><td>2027</td><td>31M</td><td>2.0%</td><td>620 000</td><td>25%</td><td>155 000</td><td>2.90€</td><td><strong>499 500€</strong></td><td>582 700€</td></tr>
+  <tr><td>2028</td><td>35M</td><td>4.5%</td><td>1 575 000</td><td>27%</td><td>425 250</td><td>3.60€</td><td><strong>1 680 900€</strong></td><td>2 263 600€</td></tr>
+  <tr><td>2029</td><td>39M</td><td>8.0%</td><td>3 120 000</td><td>28%</td><td>873 600</td><td>4.20€</td><td><strong>3 989 120€</strong></td><td>6 252 720€</td></tr>
+  <tr class="highlight-row"><td>2030</td><td>43M</td><td>12.9%</td><td>5 547 000</td><td>30%</td><td>1 664 100</td><td>4.80€</td><td><strong>8 567 680€</strong></td><td><strong>14 820 400€</strong></td></tr>
+</table>
+
+<h3 class="target">🎯 Cílový scénář (penetrace 25%)</h3>
+<p><em>Předpoklady: Hookah exploze, AI bot + embedded kalkulátor + SEO dominance, disposable bany v EU, 3 z 5 klíčových faktorů.</em></p>
+
+<table>
+  <tr><th>Rok</th><th>TAM</th><th>Penetrace</th><th>MAU</th><th>Konverze</th><th>Platící</th><th>Cena</th><th>CELKEM</th><th>Kumulativní</th></tr>
+  <tr><td>2026</td><td>28M</td><td>0.9%</td><td>250 000</td><td>25%</td><td>62 500</td><td>2.40€</td><td><strong>156 000€</strong></td><td>156 000€</td></tr>
+  <tr><td>2027</td><td>31M</td><td>3.5%</td><td>1 085 000</td><td>27%</td><td>292 950</td><td>2.90€</td><td><strong>929 555€</strong></td><td>1 085 555€</td></tr>
+  <tr><td>2028</td><td>35M</td><td>8.0%</td><td>2 800 000</td><td>28%</td><td>784 000</td><td>3.60€</td><td><strong>3 072 400€</strong></td><td>4 157 955€</td></tr>
+  <tr><td>2029</td><td>39M</td><td>15.0%</td><td>5 850 000</td><td>29%</td><td>1 696 500</td><td>4.20€</td><td><strong>7 645 300€</strong></td><td>11 803 255€</td></tr>
+  <tr class="highlight-row"><td>2030</td><td>43M</td><td>25.0%</td><td>10 750 000</td><td>30%</td><td>3 225 000</td><td>4.80€</td><td><strong>16 430 000€</strong></td><td><strong>28 233 255€</strong></td></tr>
+</table>
+
+<h4>Rozpad platících dle segmentu v 2030 (cílový scénář)</h4>
+<table>
+  <tr><th>Segment</th><th>Trh 2030</th><th>Penetrace</th><th>Platící</th></tr>
+  <tr><td><strong>Hookah</strong></td><td>12 000 000</td><td>35%</td><td><strong>4 200 000</strong></td></tr>
+  <tr><td>Začátečníci (non-EN)</td><td>10 000 000</td><td>15%</td><td>1 500 000</td></tr>
+  <tr><td>Začátečníci (EN)</td><td>8 000 000</td><td>10%</td><td>800 000</td></tr>
+  <tr><td>Pokročilí (non-EN)</td><td>3 000 000</td><td>15%</td><td>450 000</td></tr>
+  <tr><td>Pokročilí (EN)</td><td>3 000 000</td><td>8%</td><td>240 000</td></tr>
+  <tr><td>Profesionálové</td><td>3 000 000</td><td>12%</td><td>360 000</td></tr>
+  <tr><td>Potenciální DIY (converts)</td><td>4 000 000</td><td>5%</td><td>200 000</td></tr>
+  <tr class="highlight-row"><td><strong>CELKEM</strong></td><td><strong>43 000 000</strong></td><td></td><td><strong>7 750 000 potenciál</strong></td></tr>
+</table>
+<p>Cílový scénář = 3.225M platících = 42% z potenciálu 7.75M. <strong>Prostor pro růst po 2030 je obrovský.</strong></p>
+
+<h3 class="optimistic">🟢 Optimistický scénář (penetrace 34.3%)</h3>
+<p><em>Předpoklady: Virální hookah růst, 10+ e-shop partnerství, disposable bany v celé EU, SEO dominance, 4–5 faktorů.</em></p>
+
+<table>
+  <tr><th>Rok</th><th>TAM</th><th>Penetrace</th><th>MAU</th><th>Konverze</th><th>Platící</th><th>Cena</th><th>CELKEM</th><th>Kumulativní</th></tr>
+  <tr><td>2026</td><td>28M</td><td>1.3%</td><td>350 000</td><td>25%</td><td>87 500</td><td>2.40€</td><td><strong>220 000€</strong></td><td>220 000€</td></tr>
+  <tr><td>2027</td><td>31M</td><td>5.0%</td><td>1 550 000</td><td>27%</td><td>418 500</td><td>2.90€</td><td><strong>1 343 650€</strong></td><td>1 563 650€</td></tr>
+  <tr><td>2028</td><td>35M</td><td>12.0%</td><td>4 200 000</td><td>28%</td><td>1 176 000</td><td>3.60€</td><td><strong>4 633 600€</strong></td><td>6 197 250€</td></tr>
+  <tr><td>2029</td><td>39M</td><td>22.0%</td><td>8 580 000</td><td>29%</td><td>2 488 200</td><td>4.20€</td><td><strong>11 250 440€</strong></td><td>17 447 690€</td></tr>
+  <tr class="highlight-row"><td>2030</td><td>43M</td><td>34.3%</td><td>14 749 000</td><td>30%</td><td>4 424 700</td><td>4.80€</td><td><strong>22 638 560€</strong></td><td><strong>40 086 250€</strong></td></tr>
+</table>
+
+<!-- 7. SROVNÁNÍ -->
+<h2 id="comparison" class="page-break">7. Srovnání všech scénářů</h2>
+
+<table>
+  <tr><th>Metrika</th><th class="pessimistic">🔴 Pesimist.</th><th class="realistic">🟡 Realist.</th><th class="target">🎯 Cílový</th><th class="optimistic">🟢 Optimist.</th></tr>
+  <tr><td>TAM 2030</td><td>43M</td><td>43M</td><td>43M</td><td>43M</td></tr>
+  <tr><td>2026 MAU</td><td>80k</td><td>150k</td><td>250k</td><td>350k</td></tr>
+  <tr><td>2027 MAU</td><td>248k</td><td>620k</td><td>1.09M</td><td>1.55M</td></tr>
+  <tr><td>2028 MAU</td><td>525k</td><td>1.58M</td><td>2.8M</td><td>4.2M</td></tr>
+  <tr><td>2029 MAU</td><td>897k</td><td>3.12M</td><td>5.85M</td><td>8.58M</td></tr>
+  <tr><td><strong>2030 MAU</strong></td><td><strong>1.38M</strong></td><td><strong>5.55M</strong></td><td><strong>10.75M</strong></td><td><strong>14.75M</strong></td></tr>
+  <tr><td>2030 penetrace</td><td>3.2%</td><td>12.9%</td><td>25%</td><td>34.3%</td></tr>
+  <tr><td>2030 konverze</td><td>28%</td><td>30%</td><td>30%</td><td>30%</td></tr>
+  <tr><td><strong>2030 platící</strong></td><td><strong>385k</strong></td><td><strong>1.66M</strong></td><td><strong>3.23M</strong></td><td><strong>4.42M</strong></td></tr>
+  <tr><td><strong>2030 ARR</strong></td><td><strong>1.99M€</strong></td><td><strong>8.57M€</strong></td><td><strong>16.43M€</strong></td><td><strong>22.64M€</strong></td></tr>
+  <tr class="highlight-row"><td><strong>5Y kumulativní</strong></td><td><strong>3.76M€</strong></td><td><strong>14.82M€</strong></td><td><strong>28.23M€</strong></td><td><strong>40.09M€</strong></td></tr>
+</table>
+
+<h3>Srovnání: statický TAM (10.5M) vs. rostoucí TAM (28–43M)</h3>
+<table>
+  <tr><th>Scénář</th><th>Starý 5Y (statický TAM)</th><th>Nový 5Y (rostoucí TAM)</th><th>Nárůst</th></tr>
+  <tr><td class="pessimistic">🔴 Pesimistický</td><td>3.28M€</td><td><strong>3.76M€</strong></td><td>+14%</td></tr>
+  <tr><td class="realistic">🟡 Realistický</td><td>11.99M€</td><td><strong>14.82M€</strong></td><td>+24%</td></tr>
+  <tr><td class="target">🎯 Cílový</td><td>22.39M€</td><td><strong>28.23M€</strong></td><td>+26%</td></tr>
+  <tr><td class="optimistic">🟢 Optimistický</td><td>32.86M€</td><td><strong>40.09M€</strong></td><td>+22%</td></tr>
+</table>
+
+<div class="card card-purple">
+  <strong>Růst TAM přidává +14–26% k celkovým příjmům</strong> oproti původnímu výpočtu se statickým trhem 10.5M. Penetrace zůstává stejná — trh je prostě větší.
+</div>
+
+<!-- 8. MARKETINGOVÁ STRATEGIE -->
+<h2 id="marketing" class="page-break">8. Marketingová strategie 2026</h2>
+
+<div class="card card-purple">
+  <strong>Celkový budget: 400 000 Kč (~16 000€)</strong><br>
+  Cíl: Maximální rozšíření povědomí, vše aktivní do konce dubna 2026. Marketing intenzivní 2–3 roky, pak organický růst přebírá.
+</div>
+
+<h3>Rozdělení rozpočtu</h3>
+<table>
+  <tr><th>Kanál</th><th>Budget</th><th>%</th><th>Uživatelé/rok</th></tr>
+  <tr><td>Banner reklama (5 fór, 9 měs.)</td><td>259 000 Kč</td><td>64%</td><td>15 500</td></tr>
+  <tr><td>Reddit Ads (r/DIY_eJuice + r/Vaping)</td><td>79 000 Kč</td><td>19%</td><td>4 850</td></tr>
+  <tr><td>AI Forum Bot (10 měs.)</td><td>18 000 Kč</td><td>5%</td><td>9 600</td></tr>
+  <tr><td>YouTube tutoriály + TikTok/Reels</td><td>22 000 Kč</td><td>6%</td><td>8 000</td></tr>
+  <tr><td>E-shop partnerství</td><td>6 000 Kč</td><td>2%</td><td>2 760</td></tr>
+  <tr><td>Rezerva</td><td>16 000 Kč</td><td>4%</td><td>—</td></tr>
+  <tr class="highlight-row"><td><strong>CELKEM</strong></td><td><strong>400 000 Kč</strong></td><td><strong>100%</strong></td><td><strong>40 710</strong></td></tr>
+</table>
+
+<h3>Časová osa — vše do konce dubna</h3>
+<table>
+  <tr><th>Kdy</th><th>Akce</th></tr>
+  <tr><td>1.–15. března</td><td>AI Forum Bot: vývoj + nasazení + rozjezd účtů</td></tr>
+  <tr><td>16.–31. března</td><td>AI bot plně operativní, YouTube natáčení, TikTok první videa</td></tr>
+  <tr><td>1.–15. dubna</td><td>Spuštění bannerů (ECF + dampfer-board + FR + IT + hookah), Reddit Ads, E-shop outreach</td></tr>
+  <tr><td>16.–30. dubna</td><td>YouTube videa online, vše běží na plný výkon</td></tr>
+  <tr><td>Květen+</td><td>Optimalizace dle dat, e-shopy se zapojují postupně</td></tr>
+</table>
+
+<h3>Banner reklama — TOP fóra</h3>
+<table>
+  <tr><th>Fórum</th><th>Trh</th><th>Měsíční náklad</th><th>Uživatelé/měs</th></tr>
+  <tr><td>ECF (e-cigarette-forum.com)</td><td>EN — 350k členů</td><td>400€ (10 000 Kč)</td><td>500–3 000</td></tr>
+  <tr><td>dampfer-board.de</td><td>DE, AT, CH — 100k+</td><td>300€ (7 500 Kč)</td><td>200–1 200</td></tr>
+  <tr><td>forum-ecigarette.com</td><td>FR — 80k+</td><td>200€ (5 000 Kč)</td><td>100–600</td></tr>
+  <tr><td>svapo.it / girovapors.it</td><td>IT — 40k+</td><td>150€ (3 750 Kč)</td><td>80–400</td></tr>
+  <tr><td>hookahforum.com + r/Hookah</td><td>Shisha — monopol</td><td>100€ (2 500 Kč)</td><td>100–500</td></tr>
+</table>
+
+<h3>Měsíční projekce (duben–prosinec 2026)</h3>
+<table>
+  <tr><th>Měsíc</th><th>Bannery</th><th>Reddit</th><th>AI Bot</th><th>YouTube</th><th>TikTok</th><th>E-shopy</th><th>CELKEM</th></tr>
+  <tr><td>Duben</td><td>400</td><td>150</td><td>500</td><td>0</td><td>200</td><td>0</td><td><strong>1 250</strong></td></tr>
+  <tr><td>Květen</td><td>800</td><td>300</td><td>700</td><td>150</td><td>350</td><td>0</td><td><strong>2 300</strong></td></tr>
+  <tr><td>Červen</td><td>1 200</td><td>450</td><td>900</td><td>250</td><td>450</td><td>80</td><td><strong>3 330</strong></td></tr>
+  <tr><td>Červenec</td><td>1 600</td><td>550</td><td>1 000</td><td>350</td><td>550</td><td>180</td><td><strong>4 230</strong></td></tr>
+  <tr><td>Srpen</td><td>1 900</td><td>600</td><td>1 100</td><td>400</td><td>600</td><td>300</td><td><strong>4 900</strong></td></tr>
+  <tr><td>Září</td><td>2 100</td><td>650</td><td>1 200</td><td>450</td><td>550</td><td>400</td><td><strong>5 350</strong></td></tr>
+  <tr><td>Říjen</td><td>2 300</td><td>700</td><td>1 300</td><td>500</td><td>700</td><td>500</td><td><strong>6 000</strong></td></tr>
+  <tr><td>Listopad</td><td>2 500</td><td>700</td><td>1 400</td><td>500</td><td>650</td><td>600</td><td><strong>6 350</strong></td></tr>
+  <tr><td>Prosinec</td><td>2 700</td><td>750</td><td>1 500</td><td>550</td><td>800</td><td>700</td><td><strong>7 050</strong></td></tr>
+  <tr class="highlight-row"><td><strong>CELKEM</strong></td><td><strong>15 500</strong></td><td><strong>4 850</strong></td><td><strong>9 600</strong></td><td><strong>3 150</strong></td><td><strong>4 850</strong></td><td><strong>2 760</strong></td><td><strong>40 710</strong></td></tr>
+</table>
+
+<!-- 9. VLIV MARKETINGU -->
+<h2 id="marketing-impact" class="page-break">9. Vliv marketingu na business predikci</h2>
+
+<p>Marketing primárně urychluje 2026–2027 (rychlejší nábor → rychlejší word-of-mouth → dřívější dosažení kritické masy). Od 2028 organický růst dominuje.</p>
+
+<h3>Porovnání: s marketingem vs. bez marketingu</h3>
+
+<table>
+  <tr><th>Scénář</th><th>5Y bez mktg</th><th>5Y s mktg</th><th>Přírůstek</th><th>ROI mktg</th></tr>
+  <tr><td class="pessimistic">🔴 Pesimistický</td><td>3.76M€</td><td>4.23M€</td><td>+470k€</td><td>+588%</td></tr>
+  <tr><td class="realistic">🟡 Realistický</td><td>14.82M€</td><td>15.74M€</td><td>+920k€</td><td>+1 150%</td></tr>
+  <tr><td class="target">🎯 Cílový</td><td>28.23M€</td><td>29.32M€</td><td>+1 090k€</td><td>+1 363%</td></tr>
+  <tr><td class="optimistic">🟢 Optimistický</td><td>40.09M€</td><td>41.89M€</td><td>+1 800k€</td><td>+2 250%</td></tr>
+</table>
+
+<div class="card card-green">
+  <strong>Marketing 3Y budget: ~80 000€</strong> (400k Kč 2026 + 250k Kč 2027 + 100k Kč 2028, pak stop)<br>
+  <strong>Marketing se vyplatí v každém scénáři s ROI 588–2 250%.</strong>
+</div>
+
+<h3>Proč marketing jen 2–3 roky</h3>
+<ul>
+  <li><strong>Fóra mají konečný dosah</strong> — ECF 350k, dampfer-board 100k. Po 2 letech oslovíš většinu.</li>
+  <li><strong>Od 2028 organický růst přebírá</strong> — e-shop partnerství, YouTube SEO, word-of-mouth.</li>
+  <li><strong>AI bot je jediný trvalý kanál</strong> — 18 000 Kč/rok, generuje organický obsah navždy.</li>
+</ul>
+
+<!-- 10. ROZHODUJÍCÍ FAKTORY -->
+<h2 id="factors">10. Rozhodující faktory</h2>
+
+<h3>Ověřitelné faktory (existují dnes)</h3>
+<div class="two-col">
+  <div class="card card-green">
+    <strong>✅ Ověřeno</strong>
+    <ul>
+      <li>Hookah monopol — žádný konkurent</li>
+      <li>31 jazyků — implementováno</li>
+      <li>5000+ příchutí — v databázi</li>
+      <li>2.40€/rok — platební brána funguje</li>
+      <li>AI support — N8N nasazeno, 31 jazyků</li>
+      <li>PWA — dostupné na liquimixer.com</li>
+    </ul>
+  </div>
+  <div class="card card-amber">
+    <strong>⏳ Závisí na realizaci</strong>
+    <ul>
+      <li>AI forum bot — technicky jednoduchý</li>
+      <li>Banner reklama — standardní proces</li>
+      <li>Reddit Ads — self-serve platforma</li>
+      <li>YouTube tutoriály — Fiverr voiceover</li>
+      <li>E-shop partnerství — outreach emaily</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Co rozhodne mezi scénáři</h3>
+<table>
+  <tr><th>Faktor</th><th>Pokud ANO → cílový</th><th>Pokud NE → realistický</th></tr>
+  <tr><td>AI forum bot 1000+ uživatelů/měsíc</td><td>+1.5M MAU za 3 roky</td><td>Pomalejší organický růst</td></tr>
+  <tr><td>Hookah komunity v TR/AR/RU reagují</td><td>+2M MAU (monopol)</td><td>Jen vaping segment</td></tr>
+  <tr><td>Embedded kalkulátor na 5+ e-shopech</td><td>+1M MAU</td><td>Jen SEO + WOM</td></tr>
+  <tr><td>Disposable bany v EU do 2028</td><td>+1M nových DIY mixérů</td><td>Stabilní trh</td></tr>
+  <tr><td>SEO dominance ve 31 jazycích</td><td>+500k MAU (long-tail)</td><td>Jen přímý traffic</td></tr>
+</table>
+
+<div class="card card-purple">
+  <strong>Pokud 3 z 5 faktorů → cílový scénář (25% penetrace, 28.23M€ 5Y)</strong><br>
+  Pokud 1–2 faktorů → realistický scénář (12.9% penetrace, 14.82M€ 5Y)<br>
+  Pokud 0 faktorů → pesimistický scénář (3.2% penetrace, 3.76M€ 5Y)
+</div>
+
+<!-- 11. FINÁLNÍ VERDIKT -->
+<h2 id="verdict" class="page-break">11. Finální verdikt</h2>
+
+<div class="card card-purple" style="text-align:center; padding: 20px;">
+  <div style="font-size: 14px; font-weight: 700; color: #7c3aed; margin-bottom: 8px;">Nejpravděpodobnější výsledek</div>
+  <div style="font-size: 24px; font-weight: 700; color: #1e1b4b;">Mezi realistickým a cílovým scénářem</div>
+  <div style="font-size: 16px; color: #475569; margin-top: 8px;">Expected value: ~22.4M€ za 5 let (s marketingem)</div>
+</div>
+
+<table>
+  <tr><th>Scénář</th><th>Pravděpodobnost</th><th>5Y kumulativní (s mktg)</th><th>2030 měsíční příjem</th></tr>
+  <tr><td class="pessimistic">🔴 Pesimistický</td><td>10%</td><td>4.23M€</td><td>172k€/měs</td></tr>
+  <tr><td class="realistic">🟡 Realistický</td><td>30%</td><td>15.74M€</td><td>740k€/měs</td></tr>
+  <tr class="highlight-row"><td class="target">🎯 Cílový</td><td>35%</td><td>29.32M€</td><td>1.42M€/měs</td></tr>
+  <tr><td class="optimistic">🟢 Optimistický</td><td>15%</td><td>41.89M€</td><td>1.96M€/měs</td></tr>
+  <tr><td>Mezi realist. a cílovým</td><td>10%</td><td>~22.5M€</td><td>~1.08M€/měs</td></tr>
+</table>
+
+<h3>Proč je cílový scénář (25% penetrace) dosažitelný</h3>
+<ol>
+  <li><strong>Hookah monopol je reálný a ověřitelný</strong> — neexistuje žádný konkurenční hookah kalkulátor. 35% penetrace v segmentu kde jste jediní je konzervativní odhad.</li>
+  <li><strong>31 jazyků = 25+ trhů bez konkurence</strong> — v turečtině, arabštině, ruštině, polštině a dalších 20+ jazycích neexistuje ŽÁDNÁ alternativa.</li>
+  <li><strong>2.40€/rok = nulová bariéra</strong> — konverze 25–30% je reálná pro ultra-nízkou cenu utility produktu.</li>
+  <li><strong>AI support v 31 jazycích</strong> — generuje silný word-of-mouth v komunitách kde nikdo jiný neposkytuje support.</li>
+  <li><strong>Regulace pracují PRO LiquiMixer</strong> — zákazy disposables tlačí uživatele na DIY.</li>
+  <li><strong>5000+ ověřených příchutí</strong> — největší databáze eliminuje bariéru pro začátečníky.</li>
+  <li><strong>Trh roste 20–33% ročně</strong> — TAM se za 5 let zvětší z 28M na 43M (+54%).</li>
+</ol>
+
+<h3>Závěr</h3>
+<p>Celkový trh (vaping + hookah) čítá <strong>~200 milionů uživatelů</strong>, z toho adresovatelný trh pro LiquiMixer je <strong>28M (2026) rostoucí na 43M (2030)</strong>. I při konzervativní penetraci 3.2% (pesimistický scénář) generuje LiquiMixer téměř <strong>2M€ ročně</strong> v roce 2030.</p>
+<p>Marketing (400 000 Kč/rok, intenzivní 2–3 roky) je <strong>akcelerátor</strong>, který zkrátí cestu k cíli o 6–12 měsíců. Hlavní driver růstu je v produktových výhodách: hookah monopol, 31 jazyků bez konkurence, 5000+ příchutí a cena 2.40€/rok.</p>
+<p><strong>I v pesimistickém scénáři je LiquiMixer ziskový. V cílovém scénáři (35% pravděpodobnost) generuje 16.4M€ ročně v roce 2030.</strong></p>
+
+<div class="footer">
+  <p>LiquiMixer Business Analýza & Marketingový Plán 2026–2030 | Verze 3.0 | 24.02.2026 | WOOs s.r.o. | DŮVĚRNÉ</p>
+</div>
+
+</body>
+</html>
