@@ -30,6 +30,13 @@ n8n_workflows/
 n8n_backup.mjs
 temp_*
 
+# Temporary scripts and audit files (contain API keys)
+flavor_audit*
+wf1_*
+wf2_*
+*.ps1
+*.mjs
+
 
 
 
