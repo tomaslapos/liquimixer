@@ -4061,6 +4061,63 @@ button.locked {
     text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
+/* Unified base section (Základ: sladidlo + glycerin + voda) */
+.base-section {
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.base-total-display {
+    text-align: center;
+    font-size: 1rem;
+    color: #00ffcc;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.base-warning {
+    color: #ff4444;
+    font-weight: bold;
+    animation: pulse 1s infinite;
+}
+
+.base-sub-section {
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.base-sub-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.form-label-small {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.form-label-small .label-hint {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.inline-select {
+    display: inline-block;
+    width: auto;
+    min-width: 100px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    margin-left: 4px;
+}
+
 /* Multi-flavor PRO styles */
 .pro-flavor-group {
     position: relative;
@@ -4507,6 +4564,30 @@ button.locked {
 
 .mode-button.pink .mode-desc {
     color: rgba(255, 0, 255, 0.7);
+}
+
+.mode-button.gold {
+    border-color: var(--neon-gold);
+    box-shadow: 0 0 15px rgba(212, 168, 75, 0.2);
+}
+
+.mode-button.gold:hover {
+    box-shadow: 0 0 35px rgba(212, 168, 75, 0.5);
+    transform: translateY(-3px);
+}
+
+.mode-button.gold .mode-title {
+    color: var(--neon-gold);
+    text-shadow: 0 0 10px var(--neon-gold), 0 0 20px var(--neon-gold), 0 0 40px var(--neon-gold);
+}
+
+.mode-button.gold .mode-title .char {
+    display: inline-block;
+    animation: textGlowWave 2s ease-in-out infinite;
+}
+
+.mode-button.gold .mode-desc {
+    color: rgba(212, 168, 75, 0.7);
 }
 
 .mode-title {
@@ -5102,6 +5183,11 @@ button.locked {
     box-shadow: 0 0 20px rgba(212, 168, 75, 0.2);
 }
 
+.form-gold .page-title {
+    color: var(--neon-gold);
+    text-shadow: 0 0 10px var(--neon-gold), 0 0 20px var(--neon-gold);
+}
+
 .form-gold .form-label {
     color: var(--neon-gold);
 }
@@ -5258,21 +5344,164 @@ button.locked {
         0 0 60px var(--neon-gold);
 }
 
-/* Gold tab */
-.form-tab.tab-gold {
-    border-color: var(--neon-gold);
-    color: var(--neon-gold);
+/* Gold tab 1 — Mix tabáků (warm gold) */
+.form-tab.tab-gold-1 { border-color: #d4a84b; color: #d4a84b; }
+.form-tab.tab-gold-1:hover { background: rgba(212, 168, 75, 0.1); box-shadow: 0 0 10px rgba(212, 168, 75, 0.3); }
+.form-tab.tab-gold-1.active { background: #d4a84b; color: #1a1a2e; box-shadow: 0 0 20px rgba(212, 168, 75, 0.5); }
+
+/* Gold tab 2 — Úprava tabáku (amber) */
+.form-tab.tab-gold-2 { border-color: #c99035; color: #c99035; }
+.form-tab.tab-gold-2:hover { background: rgba(201, 144, 53, 0.1); box-shadow: 0 0 10px rgba(201, 144, 53, 0.3); }
+.form-tab.tab-gold-2.active { background: #c99035; color: #1a1a2e; box-shadow: 0 0 20px rgba(201, 144, 53, 0.5); }
+
+/* Gold tab 3 — DIY tabák (honey) */
+.form-tab.tab-gold-3 { border-color: #e0b84a; color: #e0b84a; }
+.form-tab.tab-gold-3:hover { background: rgba(224, 184, 74, 0.1); box-shadow: 0 0 10px rgba(224, 184, 74, 0.3); }
+.form-tab.tab-gold-3.active { background: #e0b84a; color: #1a1a2e; box-shadow: 0 0 20px rgba(224, 184, 74, 0.5); }
+
+/* Gold tab 4 — Melasová směs (bronze) */
+.form-tab.tab-gold-4 { border-color: #b8862d; color: #b8862d; }
+.form-tab.tab-gold-4:hover { background: rgba(184, 134, 45, 0.1); box-shadow: 0 0 10px rgba(184, 134, 45, 0.3); }
+.form-tab.tab-gold-4.active { background: #b8862d; color: #1a1a2e; box-shadow: 0 0 20px rgba(184, 134, 45, 0.5); }
+
+/* Tweak mode checkboxes */
+.tweak-problem-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
 }
 
-.form-tab.tab-gold:hover {
+.tweak-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(212, 168, 75, 0.05);
+    border: 1px solid rgba(212, 168, 75, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+.tweak-checkbox-label:hover {
     background: rgba(212, 168, 75, 0.1);
-    box-shadow: 0 0 10px rgba(212, 168, 75, 0.3);
+    border-color: rgba(212, 168, 75, 0.4);
 }
 
-.form-tab.tab-gold.active {
-    background: var(--neon-gold);
-    color: #1a1a2e;
-    box-shadow: 0 0 20px rgba(212, 168, 75, 0.5);
+.tweak-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #d4a84b;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tweak-checkbox-label input[type="checkbox"]:checked + span {
+    color: #d4a84b;
+}
+
+/* Tweak selected tobacco chip */
+.tweak-selected-tobacco {
+    margin-top: 8px;
+}
+
+.tweak-tobacco-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 204, 102, 0.1);
+    border: 1px solid rgba(0, 204, 102, 0.3);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.tweak-tobacco-name {
+    color: #00cc66;
+    font-weight: 500;
+}
+
+.tweak-tobacco-remove {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.tweak-tobacco-remove:hover {
+    color: #ff4444;
+}
+
+/* Tweak info box */
+.tweak-info-box {
+    background: rgba(212, 168, 75, 0.08);
+    border-left: 3px solid rgba(212, 168, 75, 0.5);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    margin-top: 8px;
+}
+
+.tweak-info-box p {
+    color: #bbb;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Tweak warning box (nicotine hot spots) */
+.tweak-warning-box {
+    background: rgba(255, 60, 60, 0.08);
+    border: 1px solid rgba(255, 60, 60, 0.3);
+    border-left: 4px solid #ff4444;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-top: 12px;
+}
+
+.tweak-warning-box strong {
+    color: #ff6666;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.tweak-warning-box p {
+    color: #ccc;
+    font-size: 0.85rem;
+    margin: 6px 0;
+    line-height: 1.5;
+}
+
+.tweak-warning-box p strong {
+    color: #ffaa44;
+    display: inline;
+    font-size: inherit;
+    margin: 0;
+}
+
+/* Tweak recipe box */
+.tweak-recipe-box {
+    background: rgba(212, 168, 75, 0.06);
+    border: 1px solid rgba(212, 168, 75, 0.3);
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+.tweak-recipe-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tweak-recipe-table tr + tr td {
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 /* Shisha info box */
