@@ -2344,7 +2344,7 @@ window.addEventListener('load', async function() {
                         console.log('User came from subscription modal - showing payment step (State B)...');
                         // Krátká pauza pro stabilizaci UI a Clerk session
                         await new Promise(r => setTimeout(r, 500));
-                        showSubscriptionModal();
+                        showSubscriptionModal(true);
                         isFullyInitialized = true;
                         return; // Nepokračovat dál - uživatel musí zaplatit
                     }
@@ -3680,7 +3680,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     // Přidáváme POUZE příchutě s konkrétním názvem (flavorName)
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
-            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco') {
+            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
                 // Pouze konkrétní příchutě s názvem - generické kategorie nepřidávat
                 if (ingredient.flavorName) {
                     const flavorInfo = {
@@ -4939,7 +4939,9 @@ async function editSavedRecipe() {
         } else {
             prefillShishaForm(recipeData, linkedFlavors);
         }
-        switchFormTab('shisha');
+        // Shisha má vlastní stránku (shisha-form), ne záložku v #form
+        showPage('shisha-form');
+        return;
     } else {
         prefillLiquidForm(recipeData, linkedFlavors);
         switchFormTab('liquid');
@@ -7353,8 +7355,11 @@ document.addEventListener('click', function(event) {
     }
     
     // Check if click is outside login modal
+    // DŮLEŽITÉ: Clerk používá portály/overlay mimo loginModal DOM (eye icon, popups)
+    // Proto kontrolujeme i Clerk elementy, aby se modal nezavíral při interakci s Clerk komponentou
     if (loginModal && !loginModal.classList.contains('hidden')) {
-        if (!loginModal.contains(event.target) && !loginBtn.contains(event.target)) {
+        const isClerkElement = event.target.closest('[class*="cl-"], [data-clerk], .cl-rootBox, .cl-card, .cl-internal-');
+        if (!loginModal.contains(event.target) && !loginBtn.contains(event.target) && !isClerkElement) {
             hideLoginModal();
         }
     }
@@ -8397,65 +8402,63 @@ function calculateMix() {
             premixedBaseVolume = Math.min(neededPg, remainingVolume);
             adjustmentVg = Math.min(neededVg, remainingVolume - premixedBaseVolume);
         } else {
-            // Smíšená báze - NOVÁ LOGIKA:
-            // 1. Vypočítat VG/PG které dodá celá báze
-            // 2. Porovnat s cílovým VG/PG
-            // 3. Přidat doladění VG nebo PG podle potřeby
-            
-            const adjustmentThreshold = totalAmount * 0.015; // 1.5% práh
-            
-            // Kolik VG/PG dodá celá báze
-            const vgFromFullBase = remainingVolume * (premixedVgPercent / 100);
-            const pgFromFullBase = remainingVolume * (premixedPgPercent / 100);
-            
-            // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
-            const totalVgWithFullBase = providedVg + vgFromFullBase;
-            const totalPgWithFullBase = providedPg + pgFromFullBase;
-            
-            // Rozdíl mezi cílem a tím co máme s celou bází
-            const vgDiff = targetVgVolume - totalVgWithFullBase;
-            const pgDiff = targetPgVolume - totalPgWithFullBase;
-            
-            // Pokud potřebujeme víc VG než dodá celá báze → doladění VG
-            // Pokud potřebujeme víc PG než dodá celá báze → doladění PG
-            if (vgDiff > adjustmentThreshold) {
-                // Potřebujeme přidat VG - použijeme menší bázi + VG doladění
-                const baseForPgMatch = neededPg / (premixedPgPercent / 100);
-                if (baseForPgMatch >= 0 && baseForPgMatch <= remainingVolume) {
-                    premixedBaseVolume = baseForPgMatch;
-                    adjustmentVg = neededVg - (baseForPgMatch * (premixedVgPercent / 100));
-                    adjustmentPg = 0;
-                } else {
-                    premixedBaseVolume = remainingVolume;
-                    adjustmentVg = Math.max(0, vgDiff);
-                    adjustmentPg = 0;
-                }
-            } else if (pgDiff > adjustmentThreshold) {
-                // Potřebujeme přidat PG - použijeme menší bázi + PG doladění
-                const baseForVgMatch = neededVg / (premixedVgPercent / 100);
-                if (baseForVgMatch >= 0 && baseForVgMatch <= remainingVolume) {
-                    premixedBaseVolume = baseForVgMatch;
-                    adjustmentPg = neededPg - (baseForVgMatch * (premixedPgPercent / 100));
-                    adjustmentVg = 0;
-                } else {
-                    premixedBaseVolume = remainingVolume;
-                    adjustmentPg = Math.max(0, pgDiff);
-                    adjustmentVg = 0;
-                }
-            } else {
-                // Rozdíl je pod prahem - použít celou bázi bez doladění
+            // Smíšená báze:
+            // Pokud uživatel neměnil VG/PG posuvník, použít celou bázi bez doladění
+            if (!liquidUserManuallyChangedRatio) {
                 premixedBaseVolume = remainingVolume;
                 adjustmentVg = 0;
                 adjustmentPg = 0;
-            }
-            
-            // Zajistit že součet nepřekročí remainingVolume
-            const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
-            if (totalUsed > remainingVolume + 0.01) {
-                const scale = remainingVolume / totalUsed;
-                premixedBaseVolume *= scale;
-                adjustmentVg *= scale;
-                adjustmentPg *= scale;
+            } else {
+                const adjustmentThreshold = totalAmount * 0.015; // 1.5% práh
+                
+                // Kolik VG/PG dodá celá báze
+                const vgFromFullBase = remainingVolume * (premixedVgPercent / 100);
+                const pgFromFullBase = remainingVolume * (premixedPgPercent / 100);
+                
+                // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
+                const totalVgWithFullBase = providedVg + vgFromFullBase;
+                const totalPgWithFullBase = providedPg + pgFromFullBase;
+                
+                // Rozdíl mezi cílem a tím co máme s celou bází
+                const vgDiff = targetVgVolume - totalVgWithFullBase;
+                const pgDiff = targetPgVolume - totalPgWithFullBase;
+                
+                if (vgDiff > adjustmentThreshold) {
+                    const baseForPgMatch = neededPg / (premixedPgPercent / 100);
+                    if (baseForPgMatch >= 0 && baseForPgMatch <= remainingVolume) {
+                        premixedBaseVolume = baseForPgMatch;
+                        adjustmentVg = neededVg - (baseForPgMatch * (premixedVgPercent / 100));
+                        adjustmentPg = 0;
+                    } else {
+                        premixedBaseVolume = remainingVolume;
+                        adjustmentVg = Math.max(0, vgDiff);
+                        adjustmentPg = 0;
+                    }
+                } else if (pgDiff > adjustmentThreshold) {
+                    const baseForVgMatch = neededVg / (premixedVgPercent / 100);
+                    if (baseForVgMatch >= 0 && baseForVgMatch <= remainingVolume) {
+                        premixedBaseVolume = baseForVgMatch;
+                        adjustmentPg = neededPg - (baseForVgMatch * (premixedPgPercent / 100));
+                        adjustmentVg = 0;
+                    } else {
+                        premixedBaseVolume = remainingVolume;
+                        adjustmentPg = Math.max(0, pgDiff);
+                        adjustmentVg = 0;
+                    }
+                } else {
+                    premixedBaseVolume = remainingVolume;
+                    adjustmentVg = 0;
+                    adjustmentPg = 0;
+                }
+                
+                // Zajistit že součet nepřekročí remainingVolume
+                const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
+                if (totalUsed > remainingVolume + 0.01) {
+                    const scale = remainingVolume / totalUsed;
+                    premixedBaseVolume *= scale;
+                    adjustmentVg *= scale;
+                    adjustmentPg *= scale;
+                }
             }
         }
         
@@ -10110,65 +10113,63 @@ function calculateShakeVape() {
             premixedBaseVolume = Math.min(neededPg, remainingVolume);
             adjustmentVg = Math.min(neededVg, remainingVolume - premixedBaseVolume);
         } else {
-            // Smíšená báze - NOVÁ LOGIKA:
-            // 1. Vypočítat VG/PG které dodá celá báze
-            // 2. Porovnat s cílovým VG/PG
-            // 3. Přidat doladění VG nebo PG podle potřeby
-            
-            const adjustmentThresholdCalc = totalAmount * 0.015; // 1.5% práh
-            
-            // Kolik VG/PG dodá celá báze
-            const vgFromFullBase = remainingVolume * (premixedVgPercent / 100);
-            const pgFromFullBase = remainingVolume * (premixedPgPercent / 100);
-            
-            // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
-            const totalVgWithFullBase = providedVg + vgFromFullBase;
-            const totalPgWithFullBase = providedPg + pgFromFullBase;
-            
-            // Rozdíl mezi cílem a tím co máme s celou bází
-            const vgDiff = targetVgTotal - totalVgWithFullBase;
-            const pgDiff = targetPgTotal - totalPgWithFullBase;
-            
-            // Pokud potřebujeme víc VG než dodá celá báze → doladění VG
-            // Pokud potřebujeme víc PG než dodá celá báze → doladění PG
-            if (vgDiff > adjustmentThresholdCalc) {
-                // Potřebujeme přidat VG - použijeme menší bázi + VG doladění
-                const baseForPgMatch = neededPg / (premixedPgPercent / 100);
-                if (baseForPgMatch >= 0 && baseForPgMatch <= remainingVolume) {
-                    premixedBaseVolume = baseForPgMatch;
-                    adjustmentVg = neededVg - (baseForPgMatch * (premixedVgPercent / 100));
-                    adjustmentPg = 0;
-                } else {
-                    premixedBaseVolume = remainingVolume;
-                    adjustmentVg = Math.max(0, vgDiff);
-                    adjustmentPg = 0;
-                }
-            } else if (pgDiff > adjustmentThresholdCalc) {
-                // Potřebujeme přidat PG - použijeme menší bázi + PG doladění
-                const baseForVgMatch = neededVg / (premixedVgPercent / 100);
-                if (baseForVgMatch >= 0 && baseForVgMatch <= remainingVolume) {
-                    premixedBaseVolume = baseForVgMatch;
-                    adjustmentPg = neededPg - (baseForVgMatch * (premixedPgPercent / 100));
-                    adjustmentVg = 0;
-                } else {
-                    premixedBaseVolume = remainingVolume;
-                    adjustmentPg = Math.max(0, pgDiff);
-                    adjustmentVg = 0;
-                }
-            } else {
-                // Rozdíl je pod prahem - použít celou bázi bez doladění
+            // Smíšená báze:
+            // Pokud uživatel neměnil VG/PG posuvník, použít celou bázi bez doladění
+            if (!shakevapeUserManuallyChangedRatio) {
                 premixedBaseVolume = remainingVolume;
                 adjustmentVg = 0;
                 adjustmentPg = 0;
-            }
-            
-            // Zajistit že součet nepřekročí remainingVolume
-            const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
-            if (totalUsed > remainingVolume + 0.01) {
-                const scale = remainingVolume / totalUsed;
-                premixedBaseVolume *= scale;
-                adjustmentVg *= scale;
-                adjustmentPg *= scale;
+            } else {
+                const adjustmentThresholdCalc = totalAmount * 0.015; // 1.5% práh
+                
+                // Kolik VG/PG dodá celá báze
+                const vgFromFullBase = remainingVolume * (premixedVgPercent / 100);
+                const pgFromFullBase = remainingVolume * (premixedPgPercent / 100);
+                
+                // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
+                const totalVgWithFullBase = providedVg + vgFromFullBase;
+                const totalPgWithFullBase = providedPg + pgFromFullBase;
+                
+                // Rozdíl mezi cílem a tím co máme s celou bází
+                const vgDiff = targetVgTotal - totalVgWithFullBase;
+                const pgDiff = targetPgTotal - totalPgWithFullBase;
+                
+                if (vgDiff > adjustmentThresholdCalc) {
+                    const baseForPgMatch = neededPg / (premixedPgPercent / 100);
+                    if (baseForPgMatch >= 0 && baseForPgMatch <= remainingVolume) {
+                        premixedBaseVolume = baseForPgMatch;
+                        adjustmentVg = neededVg - (baseForPgMatch * (premixedVgPercent / 100));
+                        adjustmentPg = 0;
+                    } else {
+                        premixedBaseVolume = remainingVolume;
+                        adjustmentVg = Math.max(0, vgDiff);
+                        adjustmentPg = 0;
+                    }
+                } else if (pgDiff > adjustmentThresholdCalc) {
+                    const baseForVgMatch = neededVg / (premixedVgPercent / 100);
+                    if (baseForVgMatch >= 0 && baseForVgMatch <= remainingVolume) {
+                        premixedBaseVolume = baseForVgMatch;
+                        adjustmentPg = neededPg - (baseForVgMatch * (premixedPgPercent / 100));
+                        adjustmentVg = 0;
+                    } else {
+                        premixedBaseVolume = remainingVolume;
+                        adjustmentPg = Math.max(0, pgDiff);
+                        adjustmentVg = 0;
+                    }
+                } else {
+                    premixedBaseVolume = remainingVolume;
+                    adjustmentVg = 0;
+                    adjustmentPg = 0;
+                }
+                
+                // Zajistit že součet nepřekročí remainingVolume
+                const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
+                if (totalUsed > remainingVolume + 0.01) {
+                    const scale = remainingVolume / totalUsed;
+                    premixedBaseVolume *= scale;
+                    adjustmentVg *= scale;
+                    adjustmentPg *= scale;
+                }
             }
         }
         
@@ -11743,65 +11744,69 @@ function calculateProMix() {
             premixedBaseVolume = Math.min(neededPg, remainingVolume);
             adjustmentVg = Math.min(neededVg, remainingVolume - premixedBaseVolume);
         } else {
-            // Smíšená báze - NOVÁ LOGIKA:
-            // 1. Vypočítat VG/PG které dodá celá báze
-            // 2. Porovnat s cílovým VG/PG
-            // 3. Přidat doladění VG nebo PG podle potřeby
-            
-            const adjustmentThresholdCalc = totalAmount * 0.015; // 1.5% práh
-            
-            // Kolik VG/PG dodá celá báze
-            const vgFromFullBase = remainingVolume * (premixedVgPercent / 100);
-            const pgFromFullBase = remainingVolume * (premixedPgPercent / 100);
-            
-            // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
-            const totalVgWithFullBase = providedVg + vgFromFullBase;
-            const totalPgWithFullBase = providedPg + pgFromFullBase;
-            
-            // Rozdíl mezi cílem a tím co máme s celou bází
-            const vgDiff = targetVgTotal - totalVgWithFullBase;
-            const pgDiff = targetPgTotal - totalPgWithFullBase;
-            
-            // Pokud potřebujeme víc VG než dodá celá báze → doladění VG
-            // Pokud potřebujeme víc PG než dodá celá báze → doladění PG
-            if (vgDiff > adjustmentThresholdCalc) {
-                // Potřebujeme přidat VG - použijeme menší bázi + VG doladění
-                const baseForPgMatch = neededPg / (premixedPgPercent / 100);
-                if (baseForPgMatch >= 0 && baseForPgMatch <= remainingVolume) {
-                    premixedBaseVolume = baseForPgMatch;
-                    adjustmentVg = neededVg - (baseForPgMatch * (premixedVgPercent / 100));
-                    adjustmentPg = 0;
-                } else {
-                    premixedBaseVolume = remainingVolume;
-                    adjustmentVg = Math.max(0, vgDiff);
-                    adjustmentPg = 0;
-                }
-            } else if (pgDiff > adjustmentThresholdCalc) {
-                // Potřebujeme přidat PG - použijeme menší bázi + PG doladění
-                const baseForVgMatch = neededVg / (premixedVgPercent / 100);
-                if (baseForVgMatch >= 0 && baseForVgMatch <= remainingVolume) {
-                    premixedBaseVolume = baseForVgMatch;
-                    adjustmentPg = neededPg - (baseForVgMatch * (premixedPgPercent / 100));
-                    adjustmentVg = 0;
-                } else {
-                    premixedBaseVolume = remainingVolume;
-                    adjustmentPg = Math.max(0, pgDiff);
-                    adjustmentVg = 0;
-                }
-            } else {
-                // Rozdíl je pod prahem - použít celou bázi bez doladění
+            // Smíšená báze:
+            // Pokud uživatel neměnil VG/PG posuvník, použít celou bázi bez doladění
+            // Doladění se přidává POUZE když uživatel ručně změní cílový poměr
+            if (!proUserManuallyChangedRatio) {
+                // Uživatel neměnil posuvník — celá báze, žádné doladění
                 premixedBaseVolume = remainingVolume;
                 adjustmentVg = 0;
                 adjustmentPg = 0;
-            }
-            
-            // Zajistit že součet nepřekročí remainingVolume
-            const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
-            if (totalUsed > remainingVolume + 0.01) {
-                const scale = remainingVolume / totalUsed;
-                premixedBaseVolume *= scale;
-                adjustmentVg *= scale;
-                adjustmentPg *= scale;
+            } else {
+                // Uživatel ručně změnil cílový poměr → doladění podle potřeby
+                const adjustmentThresholdCalc = totalAmount * 0.015; // 1.5% práh
+                
+                // Kolik VG/PG dodá celá báze
+                const vgFromFullBase = remainingVolume * (premixedVgPercent / 100);
+                const pgFromFullBase = remainingVolume * (premixedPgPercent / 100);
+                
+                // Kolik VG/PG budeme mít celkem s celou bází (bez doladění)
+                const totalVgWithFullBase = providedVg + vgFromFullBase;
+                const totalPgWithFullBase = providedPg + pgFromFullBase;
+                
+                // Rozdíl mezi cílem a tím co máme s celou bází
+                const vgDiff = targetVgTotal - totalVgWithFullBase;
+                const pgDiff = targetPgTotal - totalPgWithFullBase;
+                
+                if (vgDiff > adjustmentThresholdCalc) {
+                    // Potřebujeme přidat VG - použijeme menší bázi + VG doladění
+                    const baseForPgMatch = neededPg / (premixedPgPercent / 100);
+                    if (baseForPgMatch >= 0 && baseForPgMatch <= remainingVolume) {
+                        premixedBaseVolume = baseForPgMatch;
+                        adjustmentVg = neededVg - (baseForPgMatch * (premixedVgPercent / 100));
+                        adjustmentPg = 0;
+                    } else {
+                        premixedBaseVolume = remainingVolume;
+                        adjustmentVg = Math.max(0, vgDiff);
+                        adjustmentPg = 0;
+                    }
+                } else if (pgDiff > adjustmentThresholdCalc) {
+                    // Potřebujeme přidat PG - použijeme menší bázi + PG doladění
+                    const baseForVgMatch = neededVg / (premixedVgPercent / 100);
+                    if (baseForVgMatch >= 0 && baseForVgMatch <= remainingVolume) {
+                        premixedBaseVolume = baseForVgMatch;
+                        adjustmentPg = neededPg - (baseForVgMatch * (premixedPgPercent / 100));
+                        adjustmentVg = 0;
+                    } else {
+                        premixedBaseVolume = remainingVolume;
+                        adjustmentPg = Math.max(0, pgDiff);
+                        adjustmentVg = 0;
+                    }
+                } else {
+                    // Rozdíl je pod prahem - použít celou bázi bez doladění
+                    premixedBaseVolume = remainingVolume;
+                    adjustmentVg = 0;
+                    adjustmentPg = 0;
+                }
+                
+                // Zajistit že součet nepřekročí remainingVolume
+                const totalUsed = premixedBaseVolume + adjustmentVg + adjustmentPg;
+                if (totalUsed > remainingVolume + 0.01) {
+                    const scale = remainingVolume / totalUsed;
+                    premixedBaseVolume *= scale;
+                    adjustmentVg *= scale;
+                    adjustmentPg *= scale;
+                }
             }
         }
         
@@ -12149,8 +12154,8 @@ async function getClerkToken(maxRetries = 1, retryDelay = 500) {
 }
 
 // Zobrazit modal předplatného
-async function showSubscriptionModal() {
-    console.log('showSubscriptionModal: Starting...');
+async function showSubscriptionModal(skipTermsCheck = false) {
+    console.log('showSubscriptionModal: Starting...', skipTermsCheck ? '(skipTermsCheck)' : '');
     
     const modal = document.getElementById('subscriptionModal');
     if (!modal) {
@@ -12255,8 +12260,8 @@ async function showSubscriptionModal() {
     console.log('showSubscriptionModal: isLoggedIn =', isLoggedIn, 'email =', window.Clerk?.user?.primaryEmailAddress?.emailAddress);
     
     // Zkontrolovat zda uživatel již souhlasil s OP (terms_accepted_at v DB)
-    let hasAcceptedTerms = false;
-    if (isLoggedIn && window.LiquiMixerDB) {
+    let hasAcceptedTerms = skipTermsCheck; // Pokud přišel ze subscription flow po registraci, přeskočit
+    if (!hasAcceptedTerms && isLoggedIn && window.LiquiMixerDB) {
         try {
             const userData = await window.LiquiMixerDB.getUser(window.Clerk.user.id);
             hasAcceptedTerms = !!userData?.terms_accepted_at;
@@ -15574,6 +15579,7 @@ function lockFlavorVgPgRatio(inputId, flavorData, hasExactPercent = true) {
             if (!lockNote) {
                 lockNote = document.createElement('div');
                 lockNote.className = 'ratio-lock-note';
+                lockNote.setAttribute('data-i18n', 'flavor_form.ratio_locked');
                 ratioContainer.appendChild(lockNote);
             }
             lockNote.textContent = t('flavor_form.ratio_locked', 'Poměr je nastaven dle výrobce');
@@ -17525,14 +17531,21 @@ function calculateShishaTweak() {
             if ((flavorType !== 'none' || hasDbFlavor) && flavorPct > 0) {
                 const flavorMl = (flavorPct / 100) * tobaccoG;
                 let flavorDisplayName = t('shisha.tweak_ingredient_concentrate', 'Aroma koncentrát');
+                const flavorIngredient = { name: flavorDisplayName, ingredientKey: 'shisha_tweak_flavor', volume: flavorMl, percent: flavorPct, grams: Math.round(flavorMl * 1.04 * 10) / 10, flavorNumber: fi };
                 if (hasDbFlavor) {
                     try {
                         const fd = JSON.parse(flavorAuto.dataset.flavorData);
                         const brand = fd.manufacturer_code || fd.manufacturer || fd.brand || '';
                         flavorDisplayName = brand ? `${fd.name} (${brand})` : fd.name;
+                        flavorIngredient.name = flavorDisplayName;
+                        flavorIngredient.flavorName = fd.name;
+                        flavorIngredient.flavorManufacturer = fd.manufacturer_code || fd.manufacturer || fd.brand || null;
+                        flavorIngredient.flavorId = fd.flavor_id || fd.id || null;
+                        flavorIngredient.favoriteProductId = fd.favorite_product_id || fd.favoriteProductId || null;
+                        flavorIngredient.flavorSource = fd.source || 'favorites';
                     } catch(e) {}
                 }
-                ingredients.push({ name: flavorDisplayName, ingredientKey: 'shisha_tweak_flavor', volume: flavorMl, percent: flavorPct, grams: Math.round(flavorMl * 1.04 * 10) / 10, flavorNumber: fi });
+                ingredients.push(flavorIngredient);
                 totalAdditives += flavorMl;
             }
         }

@@ -939,6 +939,9 @@
     "subscription_activated_body": "Your LiquiMixer subscription has been successfully activated.",
     "subscription_expires": "Valid until",
     "subscription_features": "You now have access to all premium features.",
+    "payment_success": "Payment successful! Your subscription has been activated.",
+    "payment_failed": "Payment failed. Please try again.",
+    "payment_success_login_required": "Payment successful! Please log in to activate your subscription.",
     "day": "day",
     "days_2_4": "days",
     "days_5_plus": "days"

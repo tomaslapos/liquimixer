@@ -656,32 +656,57 @@ serve(async (req) => {
             console.error('iDoklad error:', idokladErr.message)
           }
           
-          // Odeslat email s fakturou
+          // Odeslat email s fakturou (s retry logikou)
           if (invoiceData && customerEmail) {
             const invoiceFunctionUrl = `${SUPABASE_URL}/functions/v1/invoice`
-            try {
-              const emailResponse = await fetch(invoiceFunctionUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${serviceRoleKey}`,
-                  'apikey': serviceRoleKey,
-                },
-                body: JSON.stringify({
-                  action: 'sendEmail',
-                  data: {
-                    invoice: invoiceData,
-                    customerEmail: customerEmail,
-                    customerName: customerName,
-                    locale: invoiceLocale
-                  }
+            const MAX_EMAIL_RETRIES = 2
+            let emailSent = false
+            
+            for (let attempt = 1; attempt <= MAX_EMAIL_RETRIES; attempt++) {
+              try {
+                console.log(`Invoice email attempt ${attempt}/${MAX_EMAIL_RETRIES} to ${customerEmail}`)
+                const emailResponse = await fetch(invoiceFunctionUrl, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${serviceRoleKey}`,
+                    'apikey': serviceRoleKey,
+                  },
+                  body: JSON.stringify({
+                    action: 'sendEmail',
+                    data: {
+                      invoice: invoiceData,
+                      customerEmail: customerEmail,
+                      customerName: customerName,
+                      locale: invoiceLocale
+                    }
+                  })
                 })
-              })
+                
+                const emailResult = await emailResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
+                
+                if (emailResponse.ok && emailResult.success) {
+                  console.log(`Invoice email sent successfully on attempt ${attempt}`)
+                  emailSent = true
+                  break
+                } else {
+                  console.error(`Invoice email attempt ${attempt} failed:`, emailResult.error || emailResponse.status)
+                }
+              } catch (emailErr: any) {
+                console.error(`Invoice email attempt ${attempt} error:`, emailErr.message)
+              }
               
-              await emailResponse.json().catch(() => ({ error: 'Invalid JSON response' }))
-            } catch (emailErr: any) {
-              console.error('Email send error:', emailErr.message)
+              // Pauza před dalším pokusem
+              if (attempt < MAX_EMAIL_RETRIES) {
+                await new Promise(r => setTimeout(r, 2000))
+              }
             }
+            
+            if (!emailSent) {
+              console.error(`CRITICAL: Invoice email to ${customerEmail} failed after ${MAX_EMAIL_RETRIES} attempts. Invoice: ${invoiceData.number}`)
+            }
+          } else {
+            console.warn('Invoice email skipped: invoiceData =', !!invoiceData, ', customerEmail =', !!customerEmail)
           }
 
           await logAudit(supabaseAdmin, payment.clerk_id, 'payment_completed', 'payment', payment.id, {

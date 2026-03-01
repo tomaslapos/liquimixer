@@ -797,6 +797,9 @@
     "subscription_activated_body": "Vaše předplatné LiquiMixer bylo úspěšně aktivováno.",
     "subscription_expires": "Platnost do",
     "subscription_features": "Nyní máte přístup ke všem prémiovým funkcím.",
+    "payment_success": "Platba proběhla úspěšně! Vaše předplatné bylo aktivováno.",
+    "payment_failed": "Platba se nezdařila. Zkuste to prosím znovu.",
+    "payment_success_login_required": "Platba proběhla úspěšně! Přihlaste se pro aktivaci předplatného.",
     "day": "den",
     "days_2_4": "dny",
     "days_5_plus": "dní"

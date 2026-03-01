@@ -415,6 +415,23 @@ serve(async (req) => {
 
           await client.close()
 
+          // Aktualizovat email_sent v invoices tabulce
+          try {
+            if (invoice.dbId) {
+              await supabaseAdmin
+                .from('invoices')
+                .update({ email_sent: true, email_sent_at: new Date().toISOString() })
+                .eq('id', invoice.dbId)
+            } else if (invoice.number) {
+              await supabaseAdmin
+                .from('invoices')
+                .update({ email_sent: true, email_sent_at: new Date().toISOString() })
+                .eq('invoice_number', invoice.number)
+            }
+          } catch (dbErr) {
+            console.warn('Failed to update email_sent in DB:', dbErr)
+          }
+
           return new Response(
             JSON.stringify({ success: true, message: 'Email odeslán' }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -639,6 +656,124 @@ serve(async (req) => {
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
         }
+      }
+
+      case 'resendUnsent': {
+        // Záložní služba: Najít a odeslat neodeslaté faktury
+        // Spouštěna CRON jobem každou hodinu
+        const { data: unsentInvoices, error: fetchError } = await supabaseAdmin
+          .from('invoices')
+          .select('*')
+          .eq('status', 'paid')
+          .or('email_sent.is.null,email_sent.eq.false')
+          .not('customer_email', 'is', null)
+          .order('created_at', { ascending: true })
+
+        if (fetchError) {
+          console.error('Error fetching unsent invoices:', fetchError)
+          return new Response(
+            JSON.stringify({ error: 'DB error', details: fetchError.message }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        if (!unsentInvoices || unsentInvoices.length === 0) {
+          return new Response(
+            JSON.stringify({ message: 'No unsent invoices', count: 0 }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        console.log(`Found ${unsentInvoices.length} unsent invoices`)
+        let sentCount = 0
+        let errorCount = 0
+
+        for (const inv of unsentInvoices) {
+          try {
+            // Sestavit invoice objekt pro email šablonu
+            const invoiceForEmail = {
+              id: inv.idoklad_id,
+              dbId: inv.id,
+              number: inv.invoice_number,
+              dateOfIssue: inv.issue_date,
+              dateOfMaturity: inv.due_date,
+              dateOfPayment: inv.paid_at,
+              totalWithVat: inv.total,
+              totalWithoutVat: inv.subtotal,
+              vatRate: inv.vat_rate,
+              vatAmount: inv.vat_amount,
+              currency: inv.currency,
+              items: typeof inv.items === 'string' ? JSON.parse(inv.items) : inv.items,
+              supplier: {
+                name: inv.supplier_name,
+                street: inv.supplier_street,
+                city: inv.supplier_city,
+                zip: inv.supplier_zip,
+                country: inv.supplier_country,
+                ico: inv.supplier_ico,
+                dic: inv.supplier_dic,
+              },
+              customer: {
+                name: inv.customer_name,
+                email: inv.customer_email,
+              }
+            }
+
+            const emailLocale = inv.locale || 'cs'
+            const emailSubject = getEmailSubject(emailLocale, inv.invoice_number)
+            const emailBody = getEmailBodyFromIdoklad(emailLocale, invoiceForEmail, inv.customer_name, inv.customer_email)
+
+            const client = new SMTPClient({
+              connection: {
+                hostname: SMTP_CONFIG.hostname,
+                port: SMTP_CONFIG.port,
+                tls: SMTP_CONFIG.port === 465,
+                auth: {
+                  username: SMTP_CONFIG.username,
+                  password: SMTP_CONFIG.password,
+                },
+              },
+            })
+
+            const htmlBase64 = encodeBase64Utf8(emailBody)
+
+            await client.send({
+              from: EMAIL_FROM,
+              to: inv.customer_email,
+              subject: emailSubject,
+              mimeContent: [{
+                mimeType: 'text/html; charset="utf-8"',
+                content: htmlBase64,
+                transferEncoding: 'base64'
+              }]
+            })
+
+            await client.close()
+
+            // Označit jako odeslanou
+            await supabaseAdmin
+              .from('invoices')
+              .update({ email_sent: true, email_sent_at: new Date().toISOString() })
+              .eq('id', inv.id)
+
+            sentCount++
+            console.log(`Resent invoice ${inv.invoice_number} to ${inv.customer_email}`)
+
+          } catch (emailErr: any) {
+            errorCount++
+            console.error(`Failed to resend invoice ${inv.invoice_number}:`, emailErr.message)
+          }
+        }
+
+        return new Response(
+          JSON.stringify({
+            message: 'Unsent invoices processed',
+            total: unsentInvoices.length,
+            sent: sentCount,
+            errors: errorCount
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
       }
 
       default:
