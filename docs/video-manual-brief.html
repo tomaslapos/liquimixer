@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiquiMixer — Brief pro natáčení video manuálů (v3)</title>
+<style>
+  @page { size: A4; margin: 18mm 14mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a2e; line-height: 1.65; background: #fff; max-width: 210mm; margin: 0 auto; padding: 18mm 14mm; font-size: 11.5px; }
+
+  /* Cover */
+  .cover { text-align: center; page-break-after: always; padding: 50px 0; }
+  .cover h1 { font-size: 34px; color: #7c3aed; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .cover .subtitle { font-size: 17px; color: #475569; margin-bottom: 10px; }
+  .cover .desc { font-size: 12px; color: #64748b; max-width: 520px; margin: 0 auto 30px; }
+  .cover .logo { font-size: 52px; margin-bottom: 16px; }
+  .cover .badge { display: inline-block; background: #7c3aed; color: #fff; padding: 6px 20px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+  .cover .meta { font-size: 11px; color: #94a3b8; margin-top: 50px; }
+  .cover .stats { display: flex; justify-content: center; gap: 24px; margin-top: 40px; flex-wrap: wrap; }
+  .cover .stat { text-align: center; }
+  .cover .stat-value { font-size: 20px; font-weight: 700; color: #7c3aed; }
+  .cover .stat-label { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Headings */
+  h2 { font-size: 19px; color: #7c3aed; margin: 28px 0 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; page-break-after: avoid; }
+  h3 { font-size: 14px; color: #1e1b4b; margin: 18px 0 8px; page-break-after: avoid; }
+  h4 { font-size: 12px; color: #475569; margin: 12px 0 6px; font-weight: 600; }
+  p { margin-bottom: 8px; font-size: 11.5px; }
+
+  /* Cards */
+  .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin: 10px 0; page-break-inside: avoid; }
+  .card-purple { border-left: 4px solid #7c3aed; }
+  .card-green { border-left: 4px solid #10b981; }
+  .card-red { border-left: 4px solid #ef4444; }
+  .card-amber { border-left: 4px solid #f59e0b; }
+  .card-blue { border-left: 4px solid #3b82f6; }
+
+  /* Problem-solution card */
+  .ps-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; margin: 10px 0; overflow: hidden; page-break-inside: avoid; }
+  .ps-header { background: #fef2f2; padding: 10px 14px; border-bottom: 1px solid #fecaca; }
+  .ps-header .num { display: inline-block; background: #ef4444; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-size: 10px; font-weight: 700; margin-right: 8px; }
+  .ps-header strong { color: #991b1b; font-size: 12px; }
+  .ps-problem { padding: 10px 14px; background: #fef2f2; font-size: 11px; color: #7f1d1d; border-bottom: 1px solid #e2e8f0; }
+  .ps-solution { padding: 10px 14px; background: #f0fdf4; font-size: 11px; color: #14532d; }
+  .ps-solution strong { color: #15803d; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 11px; page-break-inside: avoid; }
+  th { background: #7c3aed; color: #fff; padding: 7px 10px; text-align: left; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+  td { padding: 6px 10px; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  /* Lists */
+  ul, ol { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+
+  /* Video card */
+  .video-card { background: linear-gradient(135deg, #fefce8 0%, #fff7ed 100%); border: 1px solid #fbbf24; border-radius: 10px; padding: 16px; margin: 14px 0; page-break-inside: avoid; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .video-card h4 { color: #92400e; margin: 0 0 8px; font-size: 14px; }
+  .video-card .vid-meta { font-size: 10px; color: #a16207; margin-bottom: 10px; padding: 4px 10px; background: rgba(251,191,36,0.15); border-radius: 6px; display: inline-block; }
+
+  /* KPI grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+  .kpi { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+  .kpi-value { font-size: 18px; font-weight: 700; color: #7c3aed; }
+  .kpi-label { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Misc */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .page-break { page-break-before: always; }
+  .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #94a3b8; text-align: center; }
+  blockquote { background: #ede9fe; border-left: 4px solid #7c3aed; padding: 10px 14px; margin: 10px 0; border-radius: 0 6px 6px 0; font-size: 11px; }
+  blockquote strong { color: #7c3aed; }
+  .section-intro { font-size: 12px; color: #475569; margin-bottom: 14px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="logo">🧪</div>
+  <h1>LiquiMixer</h1>
+  <div class="subtitle">Brief pro natáčení video manuálů</div>
+  <div class="desc">Kompletní přehled aplikace pro osobu natáčející manuály: 20 konkrétních problémů a jak je LiquiMixer řeší, konkurenční výhody, 9 kalkulátorů a detailní scénáře dvou videí.</div>
+  <div class="badge">INTERNÍ DOKUMENT</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-value">9</div><div class="stat-label">kalkulátorů</div></div>
+    <div class="stat"><div class="stat-value">5 000+</div><div class="stat-label">ověřených příchutí</div></div>
+    <div class="stat"><div class="stat-value">31</div><div class="stat-label">jazyků</div></div>
+    <div class="stat"><div class="stat-value">2,40€</div><div class="stat-label">roční cena</div></div>
+  </div>
+  <div class="meta">
+    <p>Verze 3.0 — 1. března 2026 | WOOs s.r.o. | www.liquimixer.com</p>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 1. CO JE LIQUIMIXER -->
+<!-- ============================================ -->
+<h2>1. Co je LiquiMixer</h2>
+
+<p><strong>LiquiMixer</strong> je profesionální online kalkulačka pro míchání e-liquidů (elektronické cigarety) a hookah/shisha tabáku. Funguje jako PWA (Progressive Web App) — běží v prohlížeči na jakémkoli zařízení (mobil, tablet, PC) a lze ji nainstalovat jako běžnou aplikaci bez app storu.</p>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-value">9</div><div class="kpi-label">kalkulátorů</div></div>
+  <div class="kpi"><div class="kpi-value">5 000+</div><div class="kpi-label">ověřených příchutí</div></div>
+  <div class="kpi"><div class="kpi-value">31</div><div class="kpi-label">jazyků</div></div>
+  <div class="kpi"><div class="kpi-value">2,40 €/rok</div><div class="kpi-label">cena PRO</div></div>
+</div>
+
+<p>Aplikace má dvě hlavní sekce — <strong>eLiquid</strong> (5 kalkulátorů pro elektronické cigarety) a <strong>Shisha/Hookah</strong> (4 samostatné kalkulátory pro vodní dýmky, celosvětový monopol). Shisha sekce byla kompletně přepracována na 4 specializované kalkulátory: Mix tabáků, Úprava tabáku, DIY tabák a Melasová směs.</p>
+
+<div class="card card-purple">
+  <strong>Klíčový fakt:</strong> LiquiMixer je jediná aplikace na světě, která nabízí hookah/shisha kalkulátor. Žádný konkurent ho nemá — 4 kalkulátory pro 100–150 milionů hookah uživatelů. Absolutní monopol.
+</div>
+
+<!-- ============================================ -->
+<!-- 2. 20 PROBLÉMŮ KTERÉ ŘEŠÍ -->
+<!-- ============================================ -->
+<h2>2. 20 problémů, které LiquiMixer řeší</h2>
+<p class="section-intro">Každý problém je popsán z pohledu uživatele (červeně) a následuje konkrétní řešení v LiquiMixer (zeleně).</p>
+
+<h3>Výpočty a přesnost</h3>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">1</span><strong>Složitý výpočet poměrů PG/VG a objemů složek</strong></div>
+  <div class="ps-problem">Uživatel musí ručně počítat poměry PG/VG, množství nikotinu, procenta příchutí, přepočítávat ml na gramy. Jeden překlep a celá směs za stovky korun je zničená.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Zadáte objem, sílu nikotinu, příchuť a požadovaný poměr → kalkulátor spočítá přesné množství každé složky v ml i gramech. Výsledek za 10 sekund, bez rizika chyby.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">2</span><strong>Nebezpečí chybného dávkování nikotinu</strong></div>
+  <div class="ps-problem">Nikotin je jedovatá látka. Chyba ve výpočtu (zejména u koncentrované báze 72+ mg/ml) může způsobit předávkování, nevolnost, závratě nebo vážné zdravotní problémy.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Kalkulátor automaticky přepočítá přesné množství nikotinu na základě síly báze a cílovéhomg/ml. Zobrazí varování při nebezpečných hodnotách. Eliminuje lidskou chybu v dávkování.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">3</span><strong>Neznalost správného procenta příchutě</strong></div>
+  <div class="ps-problem">„Kolik procent mám dát Strawberry od Capelly?" — odpověď je různá pro každou příchuť od každého výrobce. Příliš mnoho = přesycení (chemická chuť). Příliš málo = žádná chuť. Začátečníci zkouší naslepo a plýtvají ingrediencemi.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Databáze 5 000+ příchutí od 70+ výrobců s ověřenými doporučenými procenty. Při výběru příchutě se % automaticky předvyplní. Zobrazí se min/optimal/max rozsah. Začátečník nemůže udělat chybu.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">4</span><strong>Přepočet ml na gramy</strong></div>
+  <div class="ps-problem">VG (1,261 g/ml) a PG (1,036 g/ml) mají různou hustotu. Ruční přepočet je zdlouhavý a chybový — zvlášť když každá ingredience má jinou hustotu.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Výsledky v ml i gramech automaticky. Kalkulátor zná hustotu každé ingredience (VG, PG, melasa, med, agáve, voda) a přepočítá přesně.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">5</span><strong>Vliv příchutí na skutečný poměr VG/PG</strong></div>
+  <div class="ps-problem">Příchutě nejsou čisté PG — obsahují PG, VG, alkohol, vodu v různých poměrech dle výrobce. Bez zohlednění složení příchutí je výsledný poměr VG/PG nepřesný.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Kalkulátor rozloží každou příchuť na složky (PG/VG/alkohol/voda) a započítá je do výsledného poměru. V pokročilém režimu lze zadat vlastní složení příchutě. Výsledek zobrazuje skutečný dosažitelný poměr.</div>
+</div>
+
+<h3 class="page-break">Hookah/Shisha — MONOPOL</h3>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">6</span><strong>Na celém světě neexistuje hookah kalkulátor</strong></div>
+  <div class="ps-problem">100–150 milionů hookah uživatelů celosvětově (Turecko, arabské země, Indie, Rusko, Německo…) nemá žádný nástroj pro výpočet poměrů při míchání. Ověřeno — app stores, Google, fóra: nula výsledků.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> 4 specializované shisha kalkulátory — absolutní monopol. Mix tabáků, Úprava tabáku, DIY tabák od nuly, Melasová směs. Každý řeší jiný use case hookah komunity.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">7</span><strong>Míchání hotových tabáků „od oka"</strong></div>
+  <div class="ps-problem">Nejpopulárnější hookah aktivita: smíchat 2–4 tabáky (Al Fakher Two Apples + Adalya Love 66…). Bez kalkulátoru se odhaduje „od oka" — poměry se nedají reprodukovat, oblíbený mix se nepodaří zopakovat.</div>
+  <div class="ps-solution"><strong>LiquiMixer → Mix tabáků:</strong> Vyberte velikost korunky (10–25g), vyhledejte tabáky v databázi 826 tabáků, nastavte podíl posuvníkem → přesné gramy. Mix lze uložit jako recept pro opakované použití.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">8</span><strong>Výroba vlastního shisha tabáku — složitý recept</strong></div>
+  <div class="ps-problem">Kdo chce vyrobit vlastní tabák ze sušených listů, potřebuje správný poměr tabák:molasses (4:1 suchý až 1:1 velmi mokrý), množství sladidla (melasa/med/agáve), glycerinu, příchutí. Bez receptu je výsledek nepředvídatelný.</div>
+  <div class="ps-solution"><strong>LiquiMixer → DIY tabák:</strong> Zadáte množství tabáku, poměr, sladidlo, glycerin, příchutě z databáze (s auto-%), volitelně nikotin. Kalkulátor spočítá přesné gramy/ml celé molasses směsi + dobu zrání.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">9</span><strong>Příprava melasové směsi — zásoby pro více dávek</strong></div>
+  <div class="ps-problem">Uživatel chce připravit zásobu tekuté molasses (glycerin + melasa + příchuť), kterou pak přidá k tabáku. Bez kalkulátoru neví kolik čeho dát a na kolik gramů tabáku směs vystačí.</div>
+  <div class="ps-solution"><strong>LiquiMixer → Melasová směs:</strong> Zadáte celkové množství, sladidlo, glycerin, příchuť, vodu. Výsledek zobrazí přesné ml a gramy + „Vystačí na Xg tabáku v poměru 3:1."</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">10</span><strong>Vylepšení komerčního tabáku</strong></div>
+  <div class="ps-problem">Hotový tabák je suchý (málo kouře), nebo mu chybí výraznější chuť, mentol, sladkost. Uživatel chce přidat glycerin, chuťové kapky, med, mentol — ale neví kolik a v jakém pořadí.</div>
+  <div class="ps-solution"><strong>LiquiMixer → Úprava tabáku (Tweak):</strong> Přidejte glycerin (více kouře), chuťové kapky/aroma, mentol/cooling, med, melasu, vodu, nikotin. Kalkulátor vede krok po kroku celým procesem včetně doporučených množství.</div>
+</div>
+
+<h3>Jazyková bariéra a dostupnost</h3>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">11</span><strong>Kalkulátory existují jen v angličtině</strong></div>
+  <div class="ps-problem">Konkurence (ELR, ATF, VapeTool) je pouze v angličtině, maximálně v 5 jazycích. Miliony uživatelů v Turecku, arabských zemích, Rusku, Japonsku, Koreji nemají žádný nástroj ve svém jazyce.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Plně přeloženo do 31 jazyků včetně arabštiny (RTL layout), turečtiny, japončiny, korejštiny, čínštiny (zjednodušená i tradiční). Jazyk se přepne automaticky dle prohlížeče nebo ručně v menu.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">12</span><strong>Žádná zákaznická podpora u konkurence</strong></div>
+  <div class="ps-problem">Uživatel má dotaz k míchání, kalkulátoru, předplatnému — a nemá se na koho obrátit. Konkurenční nástroje nemají žádný support.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> AI zákaznická podpora ve všech 31 jazycích 24/7. Kontaktní formulář s automatickým zpracováním dotazů (technické, business, GDPR). Odpověď v jazyce uživatele.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">13</span><strong>Nutnost stahovat aplikaci z app storu</strong></div>
+  <div class="ps-problem">Vaping aplikace jsou zakázané v Apple App Store i Google Play Store (vaping policy). Uživatel nemůže najít kalkulátor v obchodu s aplikacemi.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> PWA — funguje v prohlížeči, lze nainstalovat na plochu jako běžnou aplikaci (Android: „Přidat na plochu", iOS: Safari → „Přidat na plochu"). Funguje i offline po prvním načtení. Automatické aktualizace.</div>
+</div>
+
+<h3 class="page-break">Správa receptů a komunita</h3>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">14</span><strong>Ztráta receptů a nemožnost je reprodukovat</strong></div>
+  <div class="ps-problem">Uživatelé si zapisují recepty na papír, do poznámek v telefonu. Papír se ztratí, poznámky se smažou. Oblíbený recept se nepodaří zopakovat — „kolik toho bylo?"</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Recepty se ukládají v cloudu se synchronizací mezi zařízeními (mobil ↔ PC ↔ tablet). Každý recept obsahuje přesnou tabulku složek, poměry, poznámky. K dispozici kdykoli a odkudkoli.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">15</span><strong>Sdílení receptů s přáteli je složité</strong></div>
+  <div class="ps-problem">„Hele, ten liquid byl skvělý, pošli mi recept." — Opisování složek přes chat, fotky tabulek, ztráta přesnosti.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Sdílení jedním klikem přes odkaz nebo QR kód. Příjemce otevře v prohlížeči a vidí kompletní recept s tabulkou složek. Může si ho uložit k sobě (PRO).</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">16</span><strong>Chybí inspirace — co namíchat?</strong></div>
+  <div class="ps-problem">Začátečník neví jaké kombinace příchutí fungují. Pokročilý hledá nové recepty na vyzkoušení. Fóra jsou nepřehledná a recepty v různých formátech.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Veřejná databáze receptů od jiných mixérů. Hodnocení hvězdičkami, filtry dle metody přípravy a typu příchutě. Stovky ověřených receptů — klikněte a rovnou míchejte.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">17</span><strong>Zapomínání na vyzrálý liquid</strong></div>
+  <div class="ps-problem">Po namíchání musí liquid zrát — ovocné 1–3 dny, krémové 1–2 týdny, tabákové 2–4 týdny. Uživatel zapomene kdy míchalpřesně a kdy je liquid hotový. Otevře předčasně nebo ho nechá příliš dlouho.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Připomínky zrání s push notifikacemi. „Přidat míchání" → datum → telefon pošle push notifikaci „Váš liquid je vyzrálý!". Filtr „Zobrazit pouze vyzrálé". Označení „spotřebovaný".</div>
+</div>
+
+<h3>Oblíbené produkty a sklad</h3>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">18</span><strong>Žádný přehled o zásobách ingrediencí</strong></div>
+  <div class="ps-problem">„Mám ještě dost VG? Kolik mi zbývá nikotinové báze? Potřebuji dokoupit Strawberry?" — Bez systému uživatel neví co má doma a co mu chybí.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> Sekce Oblíbené produkty — uložte si ingredience (VG, PG, příchutě, nikotin), nastavte stav skladu (kusy), přidejte fotku, URL na e-shop. Přehled na jednom místě.</div>
+</div>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">19</span><strong>Propojení skladu s recepty</strong></div>
+  <div class="ps-problem">Uživatel má recepty a produkty zvlášť — neví které ingredience potřebuje pro jaký recept a co mu chybí.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> U každého receptu vidíte „Použité produkty". U produktu vidíte „Použito v receptech". Automaticky víte co potřebujete dokoupit pro oblíbené recepty.</div>
+</div>
+
+<h3>Ekonomická motivace</h3>
+
+<div class="ps-card">
+  <div class="ps-header"><span class="num">20</span><strong>Komerční liquidy jsou drahé</strong></div>
+  <div class="ps-problem">Komerční e-liquid stojí ~50 € za 100 ml. Při vapování 10 ml denně = 150 € měsíčně. Pro mnoho uživatelů neúnosná částka.</div>
+  <div class="ps-solution"><strong>LiquiMixer:</strong> DIY e-liquid stojí ~2 € za 100 ml — úspora 96%. A LiquiMixer PRO stojí jen 2,40 €/rok (59 Kč) — levnější než jedna káva. Základní kalkulátory jsou zcela zdarma.</div>
+</div>
+
+<!-- ============================================ -->
+<!-- 3. KONKURENČNÍ VÝHODY -->
+<!-- ============================================ -->
+<h2 class="page-break">3. Konkurenční výhody</h2>
+
+<table>
+  <tr><th>Funkce</th><th>LiquiMixer</th><th>Konkurence (ELR, ATF, VapeTool)</th><th>Výhoda</th></tr>
+  <tr><td><strong>Hookah/Shisha kalkulátor</strong></td><td>4 kalkulátory</td><td>Neexistuje</td><td><strong>MONOPOL</strong></td></tr>
+  <tr><td><strong>Počet jazyků</strong></td><td>31</td><td>Max 5</td><td><strong>6× více</strong></td></tr>
+  <tr><td><strong>AI zákaznická podpora</strong></td><td>31 jazyků, 24/7</td><td>Žádná</td><td><strong>MONOPOL</strong></td></tr>
+  <tr><td><strong>Databáze příchutí</strong></td><td>5 000+ ověřených</td><td>Max ~1 000</td><td><strong>5× více</strong></td></tr>
+  <tr><td><strong>Automatické % příchutí</strong></td><td>Ano (z DB)</td><td>Ruční zadání</td><td><strong>Unikátní</strong></td></tr>
+  <tr><td><strong>Cena/rok</strong></td><td>2,40 €</td><td>5–20 €</td><td><strong>2–8× levnější</strong></td></tr>
+  <tr><td><strong>Platforma</strong></td><td>PWA — vše</td><td>Jen web / jen app</td><td><strong>Univerzální</strong></td></tr>
+  <tr><td><strong>Offline režim</strong></td><td>Plně funkční</td><td>Většinou ne</td><td><strong>Ano</strong></td></tr>
+  <tr><td><strong>Push zrání</strong></td><td>Push notifikace</td><td>Ne</td><td><strong>Unikátní</strong></td></tr>
+</table>
+
+<div class="card card-green">
+  <strong>3 absolutní monopoly:</strong>
+  <ol>
+    <li><strong>Hookah kalkulátor</strong> — na celém světě neexistuje žádný jiný (4 kalkulátory)</li>
+    <li><strong>31 jazyků</strong> — v 25+ jazycích neexistuje ŽÁDNÁ alternativa pro DIY mixéry</li>
+    <li><strong>AI podpora v 31 jazycích</strong> — žádný konkurent nemá AI support</li>
+  </ol>
+</div>
+
+<!-- ============================================ -->
+<!-- 4. PŘEHLED 9 KALKULÁTORŮ -->
+<!-- ============================================ -->
+<h2>4. Přehled všech 9 kalkulátorů</h2>
+
+<h3>eLiquid sekce (5 kalkulátorů)</h3>
+<table>
+  <tr><th>Kalkulátor</th><th>Zdarma/PRO</th><th>Popis</th></tr>
+  <tr><td><strong>Liquid</strong></td><td>Zdarma</td><td>Základní kalkulátor pro 1 příchuť. Objem, nikotin (booster/sůl), příchuť z DB s auto-%, poměr VG/PG, aditiva.</td></tr>
+  <tr><td><strong>Liquid PRO</strong></td><td>PRO</td><td>Až 4 příchutě současně. Pokročilé složení příchutí (PG/VG/alkohol/voda). Aditiva: chladivo, sladidlo, zesilovač, terpeny.</td></tr>
+  <tr><td><strong>Shake & Vape</strong></td><td>Zdarma</td><td>Pro hotové příchutě v lahvičce (longfill). Kolik dolít báze + nikotin.</td></tr>
+  <tr><td><strong>Shortfill</strong></td><td>Zdarma</td><td>Nikotinové shoty do liquidů bez nikotinu. Počet shotů + varování přetečení.</td></tr>
+  <tr><td><strong>Ředění báze</strong></td><td>Zdarma</td><td>Ředění silné nikotinové báze (např. 72→20 mg/ml). Kolik PG/VG přidat.</td></tr>
+</table>
+
+<h3>Shisha/Hookah sekce (4 kalkulátory — MONOPOL)</h3>
+<table>
+  <tr><th>Kalkulátor</th><th>Zdarma/PRO</th><th>Popis</th></tr>
+  <tr><td><strong>Mix tabáků</strong></td><td>2 zdarma / 3–4 PRO</td><td>Smíchání 2–4 hotových tabáků. Velikost korunky 10–25g. Autocomplete z DB 826 tabáků (Al Fakher, Adalya, Darkside…). Výsledek v gramech.</td></tr>
+  <tr><td><strong>Úprava tabáku</strong></td><td>Zdarma</td><td>Vylepšení komerčního tabáku: glycerin, chuťové kapky, mentol, med, melasa, voda, nikotin. Mixologie krok za krokem.</td></tr>
+  <tr><td><strong>DIY tabák</strong></td><td>1 příchuť zdarma / 2–4 PRO</td><td>Výroba tabáku/bylinné směsi od nuly. Tabák + molasses (melasa/med/agáve + glycerin + příchutě). Poměr 4:1 až 1:1. Nikotin volitelný.</td></tr>
+  <tr><td><strong>Melasová směs</strong></td><td>1 příchuť zdarma / 2–4 PRO</td><td>Příprava tekuté molasses báze. Glycerin + sladidlo + příchutě + voda. „Vystačí na Xg tabáku."</td></tr>
+</table>
+
+<!-- ============================================ -->
+<!-- 5. PRO FUNKCE -->
+<!-- ============================================ -->
+<h2>5. PRO funkce (předplatné)</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h4>Zdarma (bez registrace)</h4>
+    <ul>
+      <li>Liquid kalkulátor (1 příchuť)</li>
+      <li>Shake & Vape, Shortfill, Ředění báze</li>
+      <li>Shisha: Mix (2 tabáky), Úprava, DIY (1 příchuť), Melasová (1 příchuť)</li>
+      <li>Offline režim, 31 jazyků</li>
+      <li>Prohlížení veřejných receptů</li>
+    </ul>
+  </div>
+  <div class="card card-purple">
+    <h4>PRO (2,40 €/rok)</h4>
+    <ul>
+      <li><strong>Liquid PRO — až 4 příchutě + aditiva</strong></li>
+      <li><strong>Shisha — 3–4 tabáky / příchutě</strong></li>
+      <li><strong>Databáze 5 000+ příchutí s auto-%</strong></li>
+      <li><strong>Ukládání receptů v cloudu + sync</strong></li>
+      <li><strong>Připomínky zrání + push notifikace</strong></li>
+      <li><strong>Oblíbené produkty + sledování skladu</strong></li>
+      <li><strong>Sdílení receptů (odkaz / QR kód)</strong></li>
+      <li><strong>Prioritní podpora</strong></li>
+    </ul>
+  </div>
+</div>
+
+<blockquote>
+  <strong>Klíčový selling point:</strong> Jednorázová platba na 365 dní, automaticky se NEOBNOVUJE. Žádné skryté poplatky. Cena pod jednu kávu ročně.
+</blockquote>
+
+<!-- ============================================ -->
+<!-- 6. CÍLOVÉ SKUPINY -->
+<!-- ============================================ -->
+<h2 class="page-break">6. Cílové skupiny</h2>
+
+<table>
+  <tr><th>Segment</th><th>Kdo to je</th><th>Co potřebují</th><th>Klíčová funkce LiquiMixer</th></tr>
+  <tr><td><strong>Začátečníci (60%)</strong></td><td>Právě začínají s DIY, prvních pár liquidů</td><td>Jednoduchost, nechci udělat chybu</td><td>Auto-% příchutí, jednoduchý postup krok za krokem</td></tr>
+  <tr><td><strong>Pokročilí (30%)</strong></td><td>Míchají pravidelně, experimentují</td><td>Více příchutí, sdílení, komunita</td><td>Liquid PRO (4 příchutě), veřejné recepty, hodnocení</td></tr>
+  <tr><td><strong>Profesionálové (10%)</strong></td><td>Prodávají vlastní liquidy</td><td>Přesnost, sklad, efektivita</td><td>Stock tracking, push zrání, přesné výpočty</td></tr>
+  <tr><td><strong>Hookah uživatelé</strong></td><td>100–150M celosvětově</td><td>Jakýkoli kalkulátor</td><td><strong>4 shisha kalkulátory — MONOPOL</strong></td></tr>
+  <tr><td><strong>Non-EN uživatelé</strong></td><td>Turci, Arabové, Rusové…</td><td>Nástroj ve svém jazyce</td><td><strong>31 jazyků — v 25+ bez alternativy</strong></td></tr>
+</table>
+
+<!-- ============================================ -->
+<!-- 7. DVĚ VIDEA -->
+<!-- ============================================ -->
+<h2>7. Scénáře videí</h2>
+
+<div class="card card-blue">
+  <strong>Formát:</strong> 2 videa, každé do 5 minut. Jazyk: <strong>čeština</strong>. Po připomínkování budou překlady přes <strong>HeyGen</strong> (AI dubbing).
+  <br><strong>Styl:</strong> Screen recording aplikace na mobilu (portrait) + český voice-over. Klidný, instruktážní tón.
+  <br><strong>Disclaimer na začátku obou videí:</strong> „Vapování/kouření poškozuje zdraví. Obsah je určen osobám starším 18 let."
+  <br><strong>Na konci obou videí:</strong> www.liquimixer.com
+</div>
+
+<!-- VIDEO 1 -->
+<div class="video-card">
+  <h4>🎬 Video 1: Úvod + eLiquid sekce</h4>
+  <div class="vid-meta">Délka: do 5 min | Jazyk: CZ | Cíl: Ukázat eLiquid kalkulátory + PRO funkce</div>
+  <ol>
+    <li><strong>Úvod (30s)</strong> — „LiquiMixer je profesionální kalkulačka pro míchání e-liquidů a shisha tabáku. 9 kalkulátorů, 5 000+ příchutí, 31 jazyků. Zdarma na liquimixer.com."</li>
+    <li><strong>Liquid kalkulátor (60s)</strong> — otevřít eLiquid → Liquid. Vybrat typ báze (separátní/předmíchaná). Zadat objem 30 ml. Nastavit nikotin (síla báze, cílový mg/ml). Vybrat příchuť z databáze — zdůraznit auto-% předvyplnění. Posuvník VG/PG. Klik MIXUJ! → výsledná tabulka (ml + gramy).</li>
+    <li><strong>Liquid PRO (45s)</strong> — přepnout na Liquid PRO. Přidat 2–3 příchutě (každá s vlastním %). Ukázat aditiva (chladivo, sladidlo). Klik MIXUJ! → výsledek s rozpadem na jednotlivé složky.</li>
+    <li><strong>Shake & Vape + Shortfill (30s)</strong> — rychle ukázat oba. Shake & Vape: kolik dolít k longfillu. Shortfill: kolik nikotinových shotů.</li>
+    <li><strong>Ředění báze (15s)</strong> — ředění 72 mg/ml na 20 mg/ml.</li>
+    <li><strong>Databáze příchutí (30s)</strong> — vyhledání příchutě podle názvu/výrobce. Ukázat výrobce (Capella, TFA, FA, Inawera…). Auto-% předvyplnění. „5 000+ ověřených příchutí od 70+ výrobců."</li>
+    <li><strong>Recepty (30s)</strong> — uložení receptu. Sdílení přes odkaz/QR kód. Veřejná databáze receptů s hodnocením hvězdičkami.</li>
+    <li><strong>Připomínky zrání (20s)</strong> — přidat míchání → datum → push notifikace „Váš liquid je vyzrálý!". Filtr vyzrálých.</li>
+    <li><strong>Oblíbené + sklad (20s)</strong> — uložit produkt, fotka, stav skladu, propojení s recepty — „vidíte co dokoupit".</li>
+    <li><strong>Outro (20s)</strong> — „Základní kalkulátory zdarma, PRO za 2,40 € ročně. 31 jazyků, funguje offline. www.liquimixer.com."</li>
+  </ol>
+</div>
+
+<!-- VIDEO 2 -->
+<div class="video-card">
+  <h4>🎬 Video 2: Úvod + Shisha/Hookah sekce</h4>
+  <div class="vid-meta">Délka: do 5 min | Jazyk: CZ | Cíl: Zdůraznit MONOPOL + provést 4 shisha kalkulátory</div>
+  <ol>
+    <li><strong>Úvod (30s)</strong> — „LiquiMixer je jediná aplikace na světě s hookah kalkulátorem. Žádná jiná neexistuje. 4 specializované shisha kalkulátory, 31 jazyků. Zdarma na liquimixer.com."</li>
+    <li><strong>Mix tabáků (60s)</strong> — Shisha → Mix tabáků. Velikost korunky (15g). Vyhledat tabáky v DB (826 tabáků — Al Fakher, Adalya, Darkside…). Přidat 2 tabáky, posuvník podílu (60/40). MIXUJ! → přesné gramy. Uložit mix jako recept.</li>
+    <li><strong>Úprava tabáku — Tweak (60s)</strong> — „Máte doma hotový tabák a chcete ho vylepšit?" Přidat glycerin (více kouře). Chuťové kapky. Mentol/cooling. Mixologie: med, melasa, voda. Volitelně nikotin. Výsledek krok za krokem.</li>
+    <li><strong>DIY tabák od nuly (60s)</strong> — „Vyrábíte vlastní tabák?" Množství tabáku (250g). Poměr tabák:molasses (3:1 standard). Sladidlo (melasa/med/agáve). Glycerin. Příchuť z DB s auto-%. Volitelně nikotin. MIXUJ! → tabulka molasses + tabák + celkem. Doba zrání.</li>
+    <li><strong>Melasová směs (45s)</strong> — „Připravte si zásobu molasses." Množství (100 ml). Sladidlo + glycerin + příchuť + voda. Výsledek + „Vystačí na Xg tabáku."</li>
+    <li><strong>Recepty + sdílení (20s)</strong> — uložení shisha receptu, sdílení přes QR kód.</li>
+    <li><strong>Outro (25s)</strong> — „LiquiMixer — jediný hookah kalkulátor na světě. 4 kalkulátory, zdarma, 31 jazyků. www.liquimixer.com."</li>
+  </ol>
+</div>
+
+<!-- ============================================ -->
+<!-- 8. POKYNY PRO NATÁČENÍ -->
+<!-- ============================================ -->
+<h2 class="page-break">8. Pokyny pro natáčení</h2>
+
+<div class="two-col">
+  <div class="card card-green">
+    <h4>Co zdůrazňovat</h4>
+    <ul>
+      <li><strong>„Zdarma"</strong> — základní kalkulátory zdarma, bez registrace</li>
+      <li><strong>„9 kalkulátorů"</strong> — 5 eLiquid + 4 Shisha</li>
+      <li><strong>„31 jazyků"</strong> — automaticky dle prohlížeče</li>
+      <li><strong>„Bez app storu"</strong> — funguje v prohlížeči</li>
+      <li><strong>„Offline"</strong> — funguje bez internetu</li>
+      <li><strong>„2,40 € ročně"</strong> — levnější než káva</li>
+      <li><strong>„MONOPOL"</strong> — hookah kalkulátor jen u nás</li>
+      <li><strong>„5 000+ příchutí"</strong> — auto-% předvyplnění</li>
+      <li><strong>www.liquimixer.com</strong> — vždy na konci</li>
+    </ul>
+  </div>
+  <div class="card card-red">
+    <h4>Co NEŘÍKAT</h4>
+    <ul>
+      <li>Nepropagovat vapování/kouření</li>
+      <li>Neříkat že vapování je bezpečné</li>
+      <li>Nedoporučovat konkrétní e-shopy</li>
+      <li>Neukazovat tváře nezletilých (18+)</li>
+    </ul>
+    <h4 style="margin-top: 14px;">Technické</h4>
+    <ul>
+      <li><strong>Jazyk:</strong> Čeština → překlady HeyGen</li>
+      <li><strong>Délka:</strong> Každé video do 5 min</li>
+      <li><strong>Formát:</strong> Screen recording mobil (portrait) + voice-over</li>
+      <li><strong>Disclaimer:</strong> „Vapování/kouření poškozuje zdraví. 18+."</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Klíčové trhy pro překlady (HeyGen)</h3>
+<table>
+  <tr><th>Region</th><th>Proč důležitý</th><th>Jazyk</th></tr>
+  <tr><td><strong>Turecko</strong></td><td>15M+ hookah uživatelů, 0 konkurence</td><td>Turečtina</td></tr>
+  <tr><td><strong>Arabské země</strong></td><td>Kulturní tradice hookah, miliony uživatelů</td><td>Arabština</td></tr>
+  <tr><td><strong>Německo</strong></td><td>2. největší hookah trh v EU + silný vaping</td><td>Němčina</td></tr>
+  <tr><td><strong>Rusko</strong></td><td>Hookah bary populární, velká vaping komunita</td><td>Ruština</td></tr>
+  <tr><td><strong>US / UK</strong></td><td>Největší DIY vaping komunita</td><td>Angličtina</td></tr>
+  <tr><td><strong>Francie, Itálie</strong></td><td>Silné vaping komunity</td><td>FR, IT</td></tr>
+</table>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>LiquiMixer — Brief pro natáčení video manuálů | Verze 3.0 | 1.03.2026 | WOOs s.r.o. | INTERNÍ</p>
+</div>
+
+</body>
+</html>
