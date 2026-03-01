@@ -3718,6 +3718,23 @@ function extractRecipeFlavorsForDisplay(recipeData) {
         }
     }
     
+    // Shisha Tweak: tabák z autocomplete je v tweakState.tobaccoData, ne v ingredients
+    if (formType === 'shisha' && recipeData.shishaMode === 'tweak' && recipeData.tweakState && recipeData.tweakState.tobaccoData) {
+        const td = recipeData.tweakState.tobaccoData;
+        if (td.name) {
+            const isFavorite = td.source === 'favorites' || td.source === 'favorite';
+            flavors.push({
+                name: td.name,
+                manufacturer: td.manufacturer_code || td.manufacturer || td.brand || null,
+                category: 'tobacco',
+                percent: 0,
+                flavorId: isFavorite ? (td.flavor_id || null) : (td.id || null),
+                favoriteProductId: isFavorite ? (td.id || td.favorite_product_id || null) : null,
+                flavorSource: isFavorite ? 'favorite' : 'database'
+            });
+        }
+    }
+    
     // Pokud je jednoduchý formulář (liquid, shakevape) - pouze pokud má konkrétní příchuť
     if (flavors.length === 0 && recipeData.specificFlavorName) {
         flavors.push({
@@ -4044,7 +4061,7 @@ function extractRecipeFlavors(recipeData, formType) {
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         let position = 1;
         for (const ingredient of recipeData.ingredients) {
-            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor') {
+            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
                 const flavorEntry = {
                     position: position++,
                     percentage: ingredient.percent || 0
@@ -4056,7 +4073,10 @@ function extractRecipeFlavors(recipeData, formType) {
                     flavorEntry.flavor_manufacturer = ingredient.flavorManufacturer || null;
                     
                     // Pokud máme flavor_id nebo favorite_product_id
-                    if (ingredient.flavorId) {
+                    if (ingredient.favoriteProductId) {
+                        flavorEntry.favorite_product_id = ingredient.favoriteProductId;
+                        if (ingredient.flavorId) flavorEntry.flavor_id = ingredient.flavorId;
+                    } else if (ingredient.flavorId) {
                         // Rozlišit zdroj (databáze vs oblíbené)
                         if (ingredient.flavorSource === 'favorite') {
                             flavorEntry.favorite_product_id = ingredient.flavorId;
@@ -4097,6 +4117,29 @@ function extractRecipeFlavors(recipeData, formType) {
                         flavorEntry.flavor_id = tobacco.flavorId;
                     }
                 }
+            }
+            flavors.push(flavorEntry);
+        }
+    }
+    
+    // Extrahovat Shisha Tweak tabák z tweakState.tobaccoData
+    if (formType === 'shisha' && recipeData.shishaMode === 'tweak' && recipeData.tweakState && recipeData.tweakState.tobaccoData) {
+        const td = recipeData.tweakState.tobaccoData;
+        if (td.name) {
+            let position = flavors.length + 1;
+            const isFavorite = td.source === 'favorites' || td.source === 'favorite';
+            const flavorEntry = {
+                position: position,
+                percentage: 0,
+                generic_flavor_type: 'shisha_tobacco',
+                flavor_name: td.name,
+                flavor_manufacturer: td.manufacturer_code || td.manufacturer || td.brand || null
+            };
+            if (isFavorite) {
+                flavorEntry.favorite_product_id = td.id || td.favorite_product_id || null;
+                if (td.flavor_id) flavorEntry.flavor_id = td.flavor_id;
+            } else if (td.id) {
+                flavorEntry.flavor_id = td.id;
             }
             flavors.push(flavorEntry);
         }
