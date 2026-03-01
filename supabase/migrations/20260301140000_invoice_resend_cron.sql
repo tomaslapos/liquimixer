@@ -15,7 +15,7 @@ SELECT cron.schedule(
   '30 * * * *',
   $$
   SELECT net.http_post(
-    url := 'https://krwdfxnvhnxtkhtbkadi.supabase.co/functions/v1/invoice',
+    url := 'https://krwdfxnvhnxtkhtkbadi.supabase.co/functions/v1/invoice',
     headers := '{"Content-Type": "application/json", "Authorization": "Bearer ' || current_setting('supabase.service_role_key') || '"}'::jsonb,
     body := '{"action": "resendUnsent", "data": {}}'::jsonb
   );

@@ -970,47 +970,47 @@ function getShishaRatioDescription(vgPercent, vgPgSharePercent) {
     const pgOfTotal = Math.round(vgPgSharePercent * (100 - vgPercent) / 100);
     
     if (vgPgSharePercent < 5) {
-        text = t('shisha.ratio_no_vgpg', 'Směs zatím neobsahuje VG ani PG. Přidejte příchuť nebo glycerin pro správnou konzistenci.');
+        text = t('shisha.ratio_no_vgpg', 'The blend does not contain VG or PG yet. Add flavor or glycerin for proper consistency.');
         color = '#00aaff';
     } else if (vgPgSharePercent < 60) {
         if (pgOfTotal === 0 && vgOfTotal > 0) {
-            text = t('shisha.ratio_low_only_vg', `✅ V pořádku — glycerin (${vgOfTotal} % objemu) zajistí hustý dým. Přidáním příchutí na PG bázi se směs lépe vstřebá do tabáku.`);
+            text = t('shisha.ratio_low_only_vg', '✅ OK — glycerin ({{vg}} % of volume) ensures thick smoke. Adding PG-based flavors will help the blend absorb into the tobacco.').replace('{{vg}}', vgOfTotal);
             color = '#00aaff';
         } else if (vgOfTotal === 0 && pgOfTotal > 0) {
-            text = t('shisha.ratio_low_only_pg', `⚠ Bez glycerinu bude směs řídká a může škrábat v krku. Přidejte alespoň 15–20 % glycerinu.`);
+            text = t('shisha.ratio_low_only_pg', '⚠ Without glycerin the blend will be thin and may irritate the throat. Add at least 15–20 % glycerin.');
             color = '#ffaa00';
         } else if (vgPercent < 30 && pgOfTotal > vgOfTotal) {
-            text = t('shisha.ratio_low_pg_dominant', `⚠ Vyšší PG ({{pg}} % vs VG {{vg}} %) — výrazná chuť, ale pozor na škrábání v krku. Nepřekračujte 15 % celkového PG. Doporučujeme přidat alespoň 15–20 % glycerinu.`)
+            text = t('shisha.ratio_low_pg_dominant', '⚠ Higher PG ({{pg}} % vs VG {{vg}} %) — strong flavor, but watch for throat irritation. Don\'t exceed 15 % total PG. We recommend adding at least 15–20 % glycerin.')
                 .replace('{{pg}}', pgOfTotal).replace('{{vg}}', vgOfTotal);
             color = '#ffaa00';
         } else {
-            text = t('shisha.ratio_low_balanced', `✅ V pořádku — VG (${vgOfTotal} %) a PG (${pgOfTotal} %) v přijatelném poměru. Zbytek tvoří sladidlo a voda.`);
+            text = t('shisha.ratio_low_balanced', '✅ OK — VG ({{vg}} %) and PG ({{pg}} %) in acceptable ratio. The rest is sweetener and water.').replace('{{vg}}', vgOfTotal).replace('{{pg}}', pgOfTotal);
             color = '#00cc66';
         }
     } else {
         if (vgPercent >= 90) {
-            text = t('shisha.ratio_extreme_vg', '⚠ Příliš hustá směs — hrozí připalování a špatný průtah. Přidejte příchuť nebo snižte glycerin.');
+            text = t('shisha.ratio_extreme_vg', '⚠ Too thick blend — risk of burning and poor draw. Add flavor or reduce glycerin.');
             color = '#ff6600';
         } else if (vgPercent >= 80) {
-            text = t('shisha.ratio_high_vg', '⚠ Velmi hustá směs — může se připalovat na uhlících. Zvažte přidání příchutě (PG báze) pro lepší konzistenci.');
+            text = t('shisha.ratio_high_vg', '⚠ Very thick blend — may burn on the coals. Consider adding flavor (PG base) for better consistency.');
             color = '#ffaa00';
         } else if (vgPercent >= 70) {
-            text = t('shisha.ratio_more_vg', '👍 Hustší dým, dobrý průtah. Chuť příchutí může být mírně tlumená — přidejte víc příchutě pokud chcete silnější chuť.');
+            text = t('shisha.ratio_more_vg', '👍 Thicker smoke, good draw. Flavor may be slightly muted — add more flavor if you want a stronger taste.');
             color = '#00aaff';
         } else if (vgPercent >= 56) {
-            text = t('shisha.ratio_ideal_vg', '✅ Výborně — hustý dým a dobrá chuť. Ideální poměr pro většinu shisha směsí.');
+            text = t('shisha.ratio_ideal_vg', '✅ Excellent — thick smoke and good flavor. Ideal ratio for most shisha blends.');
             color = '#00cc66';
         } else if (vgPercent >= 45) {
-            text = t('shisha.ratio_balanced', '✅ Vyvážený poměr — příjemný dým i chuť. Univerzální základ pro shisha.');
+            text = t('shisha.ratio_balanced', '✅ Balanced ratio — pleasant smoke and flavor. Universal base for shisha.');
             color = '#00cc66';
         } else if (vgPercent >= 30) {
-            text = t('shisha.ratio_more_pg', '⚠ Řidší směs — méně dýmu, ale výraznější chuť. Může lehce škrábat v krku při delším kouření.');
+            text = t('shisha.ratio_more_pg', '⚠ Thinner blend — less smoke, but more pronounced flavor. May slightly irritate the throat during longer sessions.');
             color = '#ffaa00';
         } else if (vgPercent >= 10) {
-            text = t('shisha.ratio_high_pg', '⚠ Příliš řídká směs — slabý dým, může škrábat v krku. Přidejte glycerin pro hustší dým a jemnější průtah.');
+            text = t('shisha.ratio_high_pg', '⚠ Too thin blend — weak smoke, may irritate the throat. Add glycerin for thicker smoke and smoother draw.');
             color = '#ff6600';
         } else {
-            text = t('shisha.ratio_extreme_pg', '❌ Nevhodné pro shisha — téměř bez dýmu, bude drhnout v krku. Přidejte glycerin (alespoň 30 % VG).');
+            text = t('shisha.ratio_extreme_pg', '❌ Not suitable for shisha — almost no smoke, will irritate the throat. Add glycerin (at least 30 % VG).');
             color = '#ff0044';
         }
     }
@@ -1020,12 +1020,12 @@ function getShishaRatioDescription(vgPercent, vgPgSharePercent) {
 
 // Shisha nicotine descriptions - max 10mg, přizpůsobeno pro shisha zvyklosti
 const shishaNicotineDescriptions = [
-    { min: 0, max: 0, color: '#00cc66', key: 'sh_nic_0', text: 'Bez nikotinu - tradiční shisha zkušenost bez nikotinu.' },
-    { min: 1, max: 2, color: '#00aaff', key: 'sh_nic_1_2', text: 'Velmi lehký - jemný nádech nikotinu, vhodné pro začátečníky.' },
-    { min: 3, max: 4, color: '#0088dd', key: 'sh_nic_3_4', text: 'Lehký - mírný nikotin pro příležitostné uživatele.' },
-    { min: 5, max: 6, color: '#00cc88', key: 'sh_nic_5_6', text: 'Střední - vyvážená síla pro pravidelné uživatele.' },
-    { min: 7, max: 8, color: '#ffaa00', key: 'sh_nic_7_8', text: 'Silnější - pro zkušené uživatele, může způsobit závratě.' },
-    { min: 9, max: 10, color: '#ff6600', key: 'sh_nic_9_10', text: 'Silný - maximální doporučená síla pro shisha, pouze pro zkušené.' }
+    { min: 0, max: 0, color: '#00cc66', key: 'sh_nic_0', text: 'No nicotine - traditional shisha experience without nicotine.' },
+    { min: 1, max: 2, color: '#00aaff', key: 'sh_nic_1_2', text: 'Very light - gentle nicotine touch, suitable for beginners.' },
+    { min: 3, max: 4, color: '#0088dd', key: 'sh_nic_3_4', text: 'Light - mild nicotine for occasional users.' },
+    { min: 5, max: 6, color: '#00cc88', key: 'sh_nic_5_6', text: 'Medium - balanced strength for regular users.' },
+    { min: 7, max: 8, color: '#ffaa00', key: 'sh_nic_7_8', text: 'Stronger - for experienced users, may cause dizziness.' },
+    { min: 9, max: 10, color: '#ff6600', key: 'sh_nic_9_10', text: 'Strong - maximum recommended strength for shisha, experienced users only.' }
 ];
 
 // Shisha base (sweetener/glycerin/water) descriptions
@@ -1035,46 +1035,46 @@ function getShishaBaseDescription(sweet, glyc, water) {
     
     // Analýza sladidla
     if (sweet >= 70) {
-        text = 'Velmi sladká směs. Vysoký podíl sladidla může být příliš intenzivní a přehluší ostatní příchutě. Doporučujeme snížit pod 60 %.';
+        text = t('shisha.base_sweet_very_high', 'Very sweet blend. High sweetener content can be too intense and overpower other flavors. We recommend reducing below 60 %.');
         color = '#ff6600';
     } else if (sweet >= 55 && sweet <= 69) {
-        text = 'Sladká směs s výrazným chuťovým základem. Vhodné pro ovocné a dezertní příchutě.';
+        text = t('shisha.base_sweet_high', 'Sweet blend with a pronounced flavor base. Suitable for fruity and dessert flavors.');
         color = '#ffaa00';
     } else if (sweet >= 40 && sweet <= 54) {
-        text = 'Vyvážená směs. Dobrý poměr sladkosti a hustoty, univerzální základ pro většinu příchutí.';
+        text = t('shisha.base_sweet_balanced', 'Balanced blend. Good ratio of sweetness and density, universal base for most flavors.');
         color = '#00cc66';
     } else if (sweet >= 20 && sweet <= 39) {
-        text = 'Méně sladká směs. Glycerin dominuje, směs bude hustší s výraznějším dýmem.';
+        text = t('shisha.base_sweet_low', 'Less sweet blend. Glycerin dominates, the blend will be thicker with more pronounced smoke.');
         color = '#00aaff';
     } else if (sweet >= 1 && sweet <= 19) {
-        text = 'Minimální sladkost. Směs bude mít charakter čistého glycerinu s vodou.';
+        text = t('shisha.base_sweet_minimal', 'Minimal sweetness. The blend will have the character of pure glycerin with water.');
         color = '#0088dd';
     } else if (sweet === 0) {
-        text = 'Bez sladidla. Pouze glycerin a voda – neutrální základ vhodný pro silné příchutě.';
+        text = t('shisha.base_sweet_none', 'No sweetener. Only glycerin and water — neutral base suitable for strong flavors.');
         color = '#0066cc';
     }
     
     // Doplnění o analýzu vody
     if (water > 30) {
-        text += ' Pozor: vysoký podíl vody (nad 30 %) výrazně ředí směs a snižuje produkci dýmu.';
+        text += t('shisha.base_water_very_high', ' Warning: high water content (over 30 %) significantly thins the blend and reduces smoke production.');
         color = '#ff6600';
     } else if (water >= 20 && water <= 30) {
-        text += ' Vyšší podíl vody zajistí řidší směs s lehčím průtahem.';
+        text += t('shisha.base_water_high', ' Higher water content ensures a thinner blend with a lighter draw.');
     } else if (water >= 10 && water <= 19) {
-        text += ' Přiměřené množství vody pro vyvážený průtah.';
+        text += t('shisha.base_water_medium', ' Moderate amount of water for a balanced draw.');
     } else if (water >= 1 && water <= 9) {
-        text += ' Nízký podíl vody – hustší směs s intenzivnějším dýmem.';
+        text += t('shisha.base_water_low', ' Low water content — thicker blend with more intense smoke.');
     } else if (water === 0) {
-        text += ' Bez vody – maximální hustota směsi.';
+        text += t('shisha.base_water_none', ' No water — maximum blend density.');
     }
     
     // Analýza glycerinu
     if (glyc >= 60) {
-        text += ' Velmi hustá směs díky vysokému glycerinu – vydatný dým.';
+        text += t('shisha.base_glyc_very_high', ' Very thick blend due to high glycerin — rich smoke.');
     } else if (glyc <= 10 && glyc > 0) {
-        text += ' Nízký glycerin – směs bude řidší s menší produkcí dýmu.';
+        text += t('shisha.base_glyc_low', ' Low glycerin — the blend will be thinner with less smoke production.');
     } else if (glyc === 0) {
-        text += ' Bez glycerinu – minimální produkce dýmu, pouze sladidlo a voda.';
+        text += t('shisha.base_glyc_none', ' No glycerin — minimal smoke production, only sweetener and water.');
         color = '#ff6600';
     }
     
