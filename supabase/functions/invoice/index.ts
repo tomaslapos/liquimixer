@@ -2,6 +2,7 @@
 // EDGE FUNCTION: Invoice Generation & Email
 // Generování PDF faktur a odesílání emailem
 // WOOs, s. r. o. - Plátce DPH
+// v2.1.0 - resendUnsent + email_sent tracking
 // ============================================
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
