@@ -2,6 +2,7 @@
 // EDGE FUNCTION: GP webpay Payment Gateway
 // Bezpečné zpracování plateb s audit logováním
 // WOOs, s. r. o. - Plátce DPH
+// v2.1.0 - invoice email retry logic
 // ============================================
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
