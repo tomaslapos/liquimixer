@@ -685,85 +685,87 @@ serve(async (req) => {
           )
         }
 
-        console.log(`Found ${unsentInvoices.length} unsent invoices`)
+        console.log(`Found ${unsentInvoices.length} unsent invoices, processing all`)
         let sentCount = 0
         let errorCount = 0
 
-        for (const inv of unsentInvoices) {
-          try {
-            // Sestavit invoice objekt pro email šablonu
-            const invoiceForEmail = {
-              id: inv.idoklad_id,
-              dbId: inv.id,
-              number: inv.invoice_number,
-              dateOfIssue: inv.issue_date,
-              dateOfMaturity: inv.due_date,
-              dateOfPayment: inv.paid_at,
-              totalWithVat: inv.total,
-              totalWithoutVat: inv.subtotal,
-              vatRate: inv.vat_rate,
-              vatAmount: inv.vat_amount,
-              currency: inv.currency,
-              items: typeof inv.items === 'string' ? JSON.parse(inv.items) : inv.items,
-              supplier: {
-                name: inv.supplier_name,
-                street: inv.supplier_street,
-                city: inv.supplier_city,
-                zip: inv.supplier_zip,
-                country: inv.supplier_country,
-                ico: inv.supplier_ico,
-                dic: inv.supplier_dic,
-              },
-              customer: {
-                name: inv.customer_name,
-                email: inv.customer_email,
-              }
-            }
+        // Jedno SMTP spojení pro celý batch
+        const client = new SMTPClient({
+          connection: {
+            hostname: SMTP_CONFIG.hostname,
+            port: SMTP_CONFIG.port,
+            tls: SMTP_CONFIG.port === 465,
+            auth: {
+              username: SMTP_CONFIG.username,
+              password: SMTP_CONFIG.password,
+            },
+          },
+        })
 
-            const emailLocale = inv.locale || 'cs'
-            const emailSubject = getEmailSubject(emailLocale, inv.invoice_number)
-            const emailBody = getEmailBodyFromIdoklad(emailLocale, invoiceForEmail, inv.customer_name, inv.customer_email)
-
-            const client = new SMTPClient({
-              connection: {
-                hostname: SMTP_CONFIG.hostname,
-                port: SMTP_CONFIG.port,
-                tls: SMTP_CONFIG.port === 465,
-                auth: {
-                  username: SMTP_CONFIG.username,
-                  password: SMTP_CONFIG.password,
+        try {
+          for (const inv of unsentInvoices) {
+            try {
+              const invoiceForEmail = {
+                id: inv.idoklad_id,
+                dbId: inv.id,
+                number: inv.invoice_number,
+                dateOfIssue: inv.issue_date,
+                dateOfMaturity: inv.due_date,
+                dateOfPayment: inv.paid_at,
+                totalWithVat: inv.total,
+                totalWithoutVat: inv.subtotal,
+                vatRate: inv.vat_rate,
+                vatAmount: inv.vat_amount,
+                currency: inv.currency,
+                items: typeof inv.items === 'string' ? JSON.parse(inv.items) : inv.items,
+                supplier: {
+                  name: inv.supplier_name,
+                  street: inv.supplier_street,
+                  city: inv.supplier_city,
+                  zip: inv.supplier_zip,
+                  country: inv.supplier_country,
+                  ico: inv.supplier_ico,
+                  dic: inv.supplier_dic,
                 },
-              },
-            })
+                customer: {
+                  name: inv.customer_name,
+                  email: inv.customer_email,
+                }
+              }
 
-            const htmlBase64 = encodeBase64Utf8(emailBody)
+              const emailLocale = inv.locale || 'cs'
+              const emailSubject = getEmailSubject(emailLocale, inv.invoice_number)
+              const emailBody = getEmailBodyFromIdoklad(emailLocale, invoiceForEmail, inv.customer_name, inv.customer_email)
 
-            await client.send({
-              from: EMAIL_FROM,
-              to: inv.customer_email,
-              subject: emailSubject,
-              mimeContent: [{
-                mimeType: 'text/html; charset="utf-8"',
-                content: htmlBase64,
-                transferEncoding: 'base64'
-              }]
-            })
+              const htmlBase64 = encodeBase64Utf8(emailBody)
 
-            await client.close()
+              await client.send({
+                from: EMAIL_FROM,
+                to: inv.customer_email,
+                subject: emailSubject,
+                mimeContent: [{
+                  mimeType: 'text/html; charset="utf-8"',
+                  content: htmlBase64,
+                  transferEncoding: 'base64'
+                }]
+              })
 
-            // Označit jako odeslanou
-            await supabaseAdmin
-              .from('invoices')
-              .update({ email_sent: true, email_sent_at: new Date().toISOString() })
-              .eq('id', inv.id)
+              // Označit jako odeslanou
+              await supabaseAdmin
+                .from('invoices')
+                .update({ email_sent: true, email_sent_at: new Date().toISOString() })
+                .eq('id', inv.id)
 
-            sentCount++
-            console.log(`Resent invoice ${inv.invoice_number} to ${inv.customer_email}`)
+              sentCount++
+              console.log(`Resent invoice ${inv.invoice_number} to ${inv.customer_email}`)
 
-          } catch (emailErr: any) {
-            errorCount++
-            console.error(`Failed to resend invoice ${inv.invoice_number}:`, emailErr.message)
+            } catch (emailErr: any) {
+              errorCount++
+              console.error(`Failed to resend invoice ${inv.invoice_number}:`, emailErr.message)
+            }
           }
+        } finally {
+          try { await client.close() } catch (_) { /* ignore close errors */ }
         }
 
         return new Response(
