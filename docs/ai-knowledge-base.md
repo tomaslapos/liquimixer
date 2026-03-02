@@ -1,7 +1,7 @@
 # LiquiMixer AI Agent — Detailní Knowledge Base
 # System prompt pro AI agenta v N8N. AI odpovídá POUZE na základě tohoto souboru.
 # Pokud odpověď není zde, AI řekne že neví a eskaluje na dashboard.
-# Jazyk: čeština. AI překládá do jazyka uživatele. Aktualizováno: 19.02.2026
+# Jazyk: čeština. AI překládá do jazyka uživatele. Aktualizováno: 08.03.2026
 
 ---
 
@@ -38,8 +38,21 @@ Pro hotové příchutě v lahvičce (longfill). Zadáte: celkový objem nádoby,
 ## 2.4 Shortfill (ZDARMA)
 Pro nikotinové shoty do liquidů bez nikotinu. Zadáte: objem lahvičky, množství liquidu, sílu/objem shotu, cílový nikotin. Vypočítá počet shotů. Varuje při přetečení.
 
-## 2.5 Shisha / Hookah (ZDARMA)
-Glycerinová melasa pro vodní dýmku. VG jako hlavní nosič. Sladidla: med, melasa, sukralóza, ethyl maltol, stevia. Voda pro řidší konzistenci. Nikotin 0-10 mg/ml.
+## 2.5 Shisha / Hookah (ZDARMA) — 4 kalkulátory
+
+### 2.5.1 Mix tabáků (Tobacco Mix)
+Smíchání 2+ hotových komerčních shisha tabáků v zadaném poměru. Zadáte velikost korunky (g), vyberete tabáky a poměr. Výsledek: přesné gramáže každého tabáku pro korunky.
+
+### 2.5.2 DIY tabák (DIY Tobacco)
+Výroba shisha tabáku od nuly. Zadáte: množství (ml), typ tabáku/bylin, glycerin (VG), melasa/med, příchutě, sladidlo, voda, volitelný nikotin, poměr VG/PG. Výsledek: tabulka složek v ml i gramech. Podporuje beznikotinové bylinné směsi.
+
+### 2.5.3 Úprava tabáku (Tobacco Tweak)
+Úprava hotového komerčního tabáku — přidání glycerinu, příchutě, sladidla nebo melasy pro zlepšení. Zadáte: množství tabáku (g), co chcete řešit (málo dýmu, slabá chuť, málo sladkosti, sucho). Výsledek: kolik čeho přidat.
+
+### 2.5.4 Melasová směs (Molasses Mix)
+Čistě melasová/glycerinová směs BEZ tabáku. Pro herbal shisha nebo jako základ. Zadáte: množství, melasa/med, glycerin, příchutě, sladidlo, voda, nikotin. Výsledek: tabulka složek.
+
+**Společné pro všechny shisha kalkulátory:** VG jako hlavní nosič, sladidla (med, melasa, sukralóza, ethyl maltol, stevia, agáve), voda pro řidší konzistenci, nikotin 0-10 mg/ml, příchutě s vyšším doporučeným % (15-25%).
 
 ## 2.6 Ředění nikotinové báze (ZDARMA)
 Ředění silné báze (např. 72→20 mg/ml). Zadáte: sílu a poměr zdrojové báze, cílovou sílu a poměr, množství. Vypočítá kolik PG/VG přidat.
@@ -278,7 +291,7 @@ Sekce pro uložení ingrediencí. Sledování skladu. Propojení s recepty (vít
 # 9. PŘEDPLATNÉ PRO
 
 ## ZDARMA (bez registrace):
-Liquid (1 příchuť), Shake & Vape, Shortfill, Shisha, Ředění báze, offline, 31 jazyků, veřejná DB receptů (prohlížení).
+Liquid (1 příchuť), Shake & Vape, Shortfill, Shisha (4 kalkulátory: Mix tabáků, DIY tabák, Úprava tabáku, Melasová směs), Ředění báze, offline, 31 jazyků, veřejná DB receptů (prohlížení).
 
 ## PRO předplatné odemkne:
 Liquid PRO (4 příchutě), neomezené recepty v cloudu, synchronizace, databáze tisíců příchutí, připomínky zrání + push notifikace, sledování skladu, oblíbené produkty s fotkami, prioritní podpora.
