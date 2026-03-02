@@ -126,6 +126,11 @@ async function saveFcmTokenToDatabase(token) {
     try {
         const clerkId = Clerk.user.id;
         
+        // Ensure Supabase JWT auth is set before saving (prevents RLS failures)
+        if (window.LiquiMixerDB && window.LiquiMixerDB.setAuth) {
+            await window.LiquiMixerDB.setAuth();
+        }
+        
         // Get device info
         const deviceInfo = {
             userAgent: navigator.userAgent,
@@ -137,7 +142,11 @@ async function saveFcmTokenToDatabase(token) {
         
         // Save to database using database.js function
         if (typeof window.database !== 'undefined' && window.database.saveFcmToken) {
-            await window.database.saveFcmToken(clerkId, token, deviceInfo);
+            const result = await window.database.saveFcmToken(clerkId, token, deviceInfo);
+            if (result.error) {
+                console.error('FCM token save failed:', result.error);
+                return false;
+            }
             console.log('FCM token saved to database');
             return true;
         } else {
@@ -248,6 +257,19 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         clearInterval(checkFirebase);
     }, 10000);
+    
+    // Refresh FCM token when Service Worker updates (new SW invalidates old token)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data?.type === 'SW_UPDATED') {
+                console.log('SW updated to', event.data.version, '— refreshing FCM token');
+                if (typeof Clerk !== 'undefined' && Clerk.user && Notification.permission === 'granted') {
+                    // Small delay to let new SW fully activate
+                    setTimeout(() => getFcmToken(), 2000);
+                }
+            }
+        });
+    }
 });
 
 // Export functions for use in other scripts

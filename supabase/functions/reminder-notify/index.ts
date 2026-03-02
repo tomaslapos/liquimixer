@@ -247,8 +247,9 @@ serve(async (req) => {
     console.log(`Checking reminders for date: ${currentDate}, hour: ${currentHour}`);
 
     // Find reminders that should be notified today
-    // We check for reminders where remind_at <= today, status is pending, and not yet notified (sent_at IS NULL)
-    // Also exclude consumed reminders (consumed_at IS NULL)
+    // 1. status=pending, remind_at <= today, sent_at IS NULL → new reminders ready to fire
+    // 2. status=matured, sent_at IS NULL → push failed previously (no FCM tokens), retry
+    // Exclude consumed reminders (consumed_at IS NULL)
     const { data: reminders, error: remindersError } = await supabase
       .from("recipe_reminders")
       .select(`
@@ -265,7 +266,7 @@ serve(async (req) => {
         consumed_at,
         stock_percent
       `)
-      .eq("status", "pending")
+      .in("status", ["pending", "matured"])
       .lte("remind_at", currentDate)
       .is("consumed_at", null)
       .is("sent_at", null);
@@ -321,11 +322,12 @@ serve(async (req) => {
         }
 
         if (!tokens || tokens.length === 0) {
-          console.log(`No FCM tokens for user ${reminder.clerk_id}`);
-          // Mark as matured (liquid is ready) and record notification attempt
+          console.log(`No FCM tokens for user ${reminder.clerk_id}, marking matured but keeping sent_at NULL for retry`);
+          // Mark as matured (liquid IS ready) but do NOT set sent_at
+          // Next CRON run will find this reminder (sent_at IS NULL) and retry push notification
           await supabase
             .from("recipe_reminders")
-            .update({ status: "matured", sent_at: new Date().toISOString() })
+            .update({ status: "matured" })
             .eq("id", reminder.id);
           continue;
         }
