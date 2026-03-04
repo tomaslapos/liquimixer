@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "ボウルと水タバコ",
     "prep_shisha_bowl_detail": "シーシャミックスを試すには、ボウル付きの水タバコが必要です。ボウルは素材（セラミック、シリコン、ガラス）によって異なり、熱分布に影響します。最良の結果を得るには、炭の温度を制御するヒートマネジメントデバイス（HMD）付きのボウルを使用してください。",
     "app_description": "Eリキッドとシーシャミックスを正確な比率、フレーバー、ニコチン計算で安全に調合するための計算機。5つのEリキッド計算機と4つのシーシャ計算機を含みます。お気に入りのレシピと製品を保存するか、友達と共有しましょう。31言語のオフラインアプリとしても動作します。",
+    "hero_headline": "自分だけのリキッドやシーシャブレンドを作ろう。安全に。正確に。格安で。",
+    "hero_subheadline": "計算機が何をどれだけ必要か正確に教えます — 初めてでも大丈夫。フレーバーを選び、パラメータを設定して、ミックス。正しい%は自動で入力されます。",
+    "badge_flavors": "5,000+フレーバー（自動%）",
+    "badge_calculators": "9つの計算機",
+    "badge_languages": "31言語",
+    "badge_offline": "オフライン",
+    "hero_feat_dosing_title": "正確な配合",
+    "hero_feat_dosing_desc": "ニコチン、PG/VG、フレーバー。結果はmlとグラムで。",
+    "hero_feat_auto_title": "正しい%が自動入力",
+    "hero_feat_auto_desc": "データベースからフレーバーを選べば、残りは計算します。",
+    "hero_feat_recipes_title": "レシピとリマインダー",
+    "hero_feat_recipes_desc": "保存、共有、熟成追跡。プッシュ通知: リキッドの準備ができました！",
+    "hero_feat_shisha_title": "フーカ / シーシャ",
+    "hero_feat_shisha_desc": "世界唯一の計算機。タバコミックス、DIY、モラセス、ツイーク。",
+    "hero_feat_stock_title": "材料と完成リキッドの在庫",
+    "hero_feat_stock_desc": "家にあるものと買い足すものが分かります。",
+    "hero_savings": "市販リキッド：{commercial}。LiquiMixerでDIY：{diy}から。LiquiMixerで最大96%節約。",
+    "edu_toggle": "ミキシング前の安全ガイドラインと準備",
     "disclaimer_title": "免責事項",
     "disclaimer_text": "「ミキシング開始」ボタンをクリックすることで、ユーザーは18歳以上であることを確認します。ユーザーは、LiquiMixerが計算ツール（計算機）としてのみ機能し、最終製品に対する責任を負わないことを認めます。ユーザーは、適切なミキシング、成分の取り扱い、安全手順の遵守に対する全責任を負います。",
     "start_button": "ミキシング開始"
@@ -1210,5 +1228,13 @@
     "too_low": "推奨範囲以下 ({min}-{max}%)",
     "too_high": "推奨範囲以上 ({min}-{max}%)",
     "ideal_range": "理想的な範囲 ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "ボトルに貼るラベル",
+    "save": "ラベルを保存",
+    "print": "印刷",
+    "mixed": "ミックス日",
+    "matured": "熟成日",
+    "popup_blocked": "印刷するにはポップアップを許可してください。"
   }
 }

@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Kauss ja vesipiip",
     "prep_shisha_bowl_detail": "Oma šiša segu proovimiseks vajad vesipiipu kausiga. Kausid erinevad materjali poolest (keraamika, silikoon, klaas) ja mõjutavad soojusjaotust. Parimate tulemuste saamiseks kasuta kaussi soojushaldusseadmega (HMD), mis reguleerib söe temperatuuri.",
     "app_description": "Kalkulaator ohutuks e-vedelike ja šiša segude segamiseks täpsete suhte-, maitse- ja nikotiiniarvutustega. Sisaldab 5 e-vedeliku ja 4 šiša kalkulaatorit. Salvesta oma lemmikretseptid ja tooted või jaga neid sõpradega. Töötab ka võrguühenduseta rakendusena 31 keeles.",
+    "hero_headline": "Sega oma e-vedelik või šiša segu. Ohutult. Täpselt. Murdosa hinnaga.",
+    "hero_subheadline": "Kalkulaator ütleb sulle täpselt mida ja kui palju — isegi kui sa pole seda kunagi teinud. Vali maitse, seadista parameetrid, sega. Õiged % täituvad automaatselt.",
+    "badge_flavors": "5 000+ maitset auto-%ga",
+    "badge_calculators": "9 kalkulaatorit",
+    "badge_languages": "31 keelt",
+    "badge_offline": "Võrguväline",
+    "hero_feat_dosing_title": "Täpne doseerimine",
+    "hero_feat_dosing_desc": "nikotiin, PG/VG, maitsed. Tulemused ml ja grammides.",
+    "hero_feat_auto_title": "Õiged % täituvad automaatselt",
+    "hero_feat_auto_desc": "vali maitse andmebaasist, me arvutame ülejäänu.",
+    "hero_feat_recipes_title": "Retseptid ja meeldetuletused",
+    "hero_feat_recipes_desc": "salvesta, jaga, jälgi küpsemist. Push-teade: Sinu vedelik on valmis!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "ainus kalkulaator maailmas. Tubakamiks, DIY, melass, tweak.",
+    "hero_feat_stock_title": "Koostisosade ja vedelike laod",
+    "hero_feat_stock_desc": "tea mida sul kodus on ja mida osta või segada.",
+    "hero_savings": "Valmis vedelik: {commercial}. DIY LiquiMixeriga: alates {diy}. Säästa kuni 96% LiquiMixeriga.",
+    "edu_toggle": "Ohutusjuhised ja ettevalmistus enne segamist",
     "disclaimer_title": "Vastutusest lahtiütlemine",
     "disclaimer_text": "Nupule \"Alusta segamist\" klõpsates kinnitab kasutaja, et ta on vähemalt 18-aastane. Kasutaja tunnistab, et LiquiMixer toimib ainult arvutustööriistana (kalkulaatorina) ega võta vastutust lõpptoote eest. Kasutaja kannab täielikku vastutust õige segamise, koostisosade käsitsemise ja ohutusmenetluste järgimise eest.",
     "start_button": "ALUSTA SEGAMIST"
@@ -1210,5 +1228,13 @@
     "too_low": "Alla soovitatud vahemikku ({min}-{max}%)",
     "too_high": "Üle soovitatud vahemiku ({min}-{max}%)",
     "ideal_range": "Ideaalne vahemik ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Sinu silt pudelile kleepimiseks",
+    "save": "Salvesta silt",
+    "print": "Prindi",
+    "mixed": "Segatud",
+    "matured": "Küpsenud",
+    "popup_blocked": "Luba hüpikaknaid printimiseks."
   }
 }

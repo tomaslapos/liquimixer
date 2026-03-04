@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Vas și narghilea",
     "prep_shisha_bowl_detail": "Pentru a încerca amestecul de shisha, aveți nevoie de o narghilea cu vas. Vasele diferă prin material (ceramică, silicon, sticlă) și afectează distribuirea căldurii. Pentru cele mai bune rezultate, folosiți un vas cu un dispozitiv de gestionare a căldurii (HMD) care reglează temperatura cărbunelui.",
     "app_description": "Calculator pentru amestecarea sigură a e-lichidelor și amestecurilor de shisha cu calcule precise ale proporțiilor, aromelor și nicotinei. Include 5 calculatoare e-lichid și 4 calculatoare shisha. Salvați rețetele și produsele preferate sau partajați-le cu prietenii. Funcționează și ca aplicație offline în 31 de limbi.",
+    "hero_headline": "Prepară-ți propriul lichid sau amestec de shisha. În siguranță. Cu precizie. La o fracțiune din preț.",
+    "hero_subheadline": "Calculatorul îți spune exact ce și cât — chiar dacă nu ai făcut niciodată asta. Alege o aromă, setează parametrii, amestecă. Procentele corecte se completează automat.",
+    "badge_flavors": "5.000+ arome cu auto-%",
+    "badge_calculators": "9 calculatoare",
+    "badge_languages": "31 limbi",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Dozare precisă",
+    "hero_feat_dosing_desc": "nicotină, PG/VG, arome. Rezultate în ml și grame.",
+    "hero_feat_auto_title": "Procentele corecte se completează singure",
+    "hero_feat_auto_desc": "alege o aromă din baza de date, noi calculăm restul.",
+    "hero_feat_recipes_title": "Rețete și memento-uri",
+    "hero_feat_recipes_desc": "salvează, partajează, urmărește maturarea. Notificare push: Lichidul tău este gata!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "singurul calculator din lume. Mix de tutunuri, DIY, melasă, tweak.",
+    "hero_feat_stock_title": "Stoc de ingrediente și lichide",
+    "hero_feat_stock_desc": "știi ce ai acasă și ce trebuie să cumperi sau să amesteci.",
+    "hero_savings": "Lichid gata: {commercial}. DIY cu LiquiMixer: de la {diy}. Economisește până la 96% cu LiquiMixer.",
+    "edu_toggle": "Reguli de siguranță și pregătire înainte de amestecare",
     "disclaimer_title": "Declinarea responsabilității",
     "disclaimer_text": "Prin apăsarea butonului \"Începeți amestecarea\", utilizatorul confirmă că are cel puțin 18 ani. Utilizatorul recunoaște că LiquiMixer servește exclusiv ca instrument de calcul (calculator) și nu își asumă responsabilitatea pentru produsul final. Utilizatorul poartă întreaga responsabilitate pentru amestecarea corectă, manipularea ingredientelor și respectarea procedurilor de siguranță.",
     "start_button": "ÎNCEPEȚI AMESTECAREA"
@@ -1210,5 +1228,13 @@
     "too_low": "Sub intervalul recomandat ({min}-{max}%)",
     "too_high": "Peste intervalul recomandat ({min}-{max}%)",
     "ideal_range": "Interval ideal ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Eticheta dvs. de lipit pe sticlă",
+    "save": "Salvează eticheta",
+    "print": "Tipărește",
+    "mixed": "Amestecat",
+    "matured": "Maturat",
+    "popup_blocked": "Permiteți ferestrele pop-up pentru tipărire."
   }
 }

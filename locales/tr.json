@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Lüle ve nargile",
     "prep_shisha_bowl_detail": "Nargile karışımınızı denemek için lüleli bir nargileye ihtiyacınız var. Lüleler malzemeye göre (seramik, silikon, cam) farklılık gösterir ve ısı dağılımını etkiler. En iyi sonuçlar için kömür sıcaklığını düzenleyen ısı yönetim cihazı (HMD) olan bir lüle kullanın.",
     "app_description": "E-likit ve nargile karışımlarını hassas oran, aroma ve nikotin hesaplamalarıyla güvenli bir şekilde karıştırmak için hesaplayıcı. 5 e-likit ve 4 nargile hesaplayıcısı içerir. Favori tariflerinizi ve ürünlerinizi kaydedin veya arkadaşlarınızla paylaşın. 31 dilde çevrimdışı uygulama olarak da çalışır.",
+    "hero_headline": "Kendi likidini veya nargile karışımını yap. Güvenle. Hassas. Fiyatın küçük bir kısmına.",
+    "hero_subheadline": "Hesaplayıcı sana tam olarak ne ve ne kadar gerektiğini söyler — hiç yapmamış olsan bile. Bir aroma seç, parametreleri ayarla, karıştır. Doğru % otomatik olarak dolar.",
+    "badge_flavors": "5.000+ aroma otomatik-%",
+    "badge_calculators": "9 hesaplayıcı",
+    "badge_languages": "31 dil",
+    "badge_offline": "Çevrimdışı",
+    "hero_feat_dosing_title": "Hassas dozlama",
+    "hero_feat_dosing_desc": "nikotin, PG/VG, aromalar. Sonuçlar ml ve gram olarak.",
+    "hero_feat_auto_title": "Doğru % otomatik dolar",
+    "hero_feat_auto_desc": "veri tabanından aroma seç, gerisini biz hesaplayalım.",
+    "hero_feat_recipes_title": "Tarifler ve hatırlatmalar",
+    "hero_feat_recipes_desc": "kaydet, paylaş, olgunlaşmayı takip et. Push bildirim: Likidin hazır!",
+    "hero_feat_shisha_title": "Nargile / Shisha",
+    "hero_feat_shisha_desc": "dünyadaki tek hesaplayıcı. Tütün karışımı, DIY, pekmez, tweak.",
+    "hero_feat_stock_title": "Malzeme ve likit stoğu",
+    "hero_feat_stock_desc": "evde ne olduğunu ve ne alman gerektiğini bil.",
+    "hero_savings": "Hazır likit: {commercial}. LiquiMixer ile DIY: {diy}'den. LiquiMixer ile %96'ya kadar tasarruf et.",
+    "edu_toggle": "Karıştırmadan önce güvenlik kuralları ve hazırlık",
     "disclaimer_title": "Sorumluluk Reddi",
     "disclaimer_text": "\"Karıştırmaya Başla\" düğmesine tıklayarak kullanıcı en az 18 yaşında olduğunu onaylar. Kullanıcı, LiquiMixer'ın yalnızca bir hesaplama aracı (hesaplayıcı) olarak hizmet verdiğini ve nihai ürün için hiçbir sorumluluk kabul etmediğini kabul eder. Kullanıcı, doğru karıştırma, malzeme kullanımı ve güvenlik prosedürlerine uyum konusunda tam sorumluluk taşır.",
     "start_button": "KARIŞTIRMAYA BAŞLA"
@@ -1210,5 +1228,13 @@
     "too_low": "Önerilen aralığın altında ({min}-{max}%)",
     "too_high": "Önerilen aralığın üstünde ({min}-{max}%)",
     "ideal_range": "İdeal aralık ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Şişeye yapıştırmak için etiketiniz",
+    "save": "Etiketi kaydet",
+    "print": "Yazdır",
+    "mixed": "Karıştırıldı",
+    "matured": "Olgunlaşma",
+    "popup_blocked": "Yazdırmak için açılır pencerelere izin verin."
   }
 }

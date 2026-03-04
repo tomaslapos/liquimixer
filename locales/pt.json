@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Fornilho e narguilé",
     "prep_shisha_bowl_detail": "Para experimentar a sua mistura de shisha, precisa de um narguilé com fornilho. Os fornilhos variam em material (cerâmica, silicone, vidro) e afetam a distribuição de calor. Para melhores resultados, use um fornilho com dispositivo de gestão de calor (HMD) que regula a temperatura do carvão.",
     "app_description": "Calculadora para mistura segura de e-líquidos e misturas de shisha com cálculos precisos de proporções, aromas e nicotina. Inclui 5 calculadoras de e-líquido e 4 de shisha. Guarde as suas receitas e produtos favoritos ou partilhe-os com amigos. Também funciona offline em 31 idiomas.",
+    "hero_headline": "Faça o seu próprio e-líquido ou mistura de shisha. Com segurança. Com precisão. Por uma fração do preço.",
+    "hero_subheadline": "A calculadora diz-lhe exatamente o quê e quanto — mesmo que nunca tenha feito antes. Escolha um sabor, defina os parâmetros, misture. As % corretas preenchem-se automaticamente.",
+    "badge_flavors": "5.000+ sabores com auto-%",
+    "badge_calculators": "9 calculadoras",
+    "badge_languages": "31 idiomas",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Dosagem precisa",
+    "hero_feat_dosing_desc": "nicotina, PG/VG, sabores. Resultados em ml e gramas.",
+    "hero_feat_auto_title": "As % corretas preenchem-se sozinhas",
+    "hero_feat_auto_desc": "escolha um sabor da base de dados, nós calculamos o resto.",
+    "hero_feat_recipes_title": "Receitas e lembretes",
+    "hero_feat_recipes_desc": "guarde, partilhe, acompanhe a maturação. Notificação push: O seu líquido está pronto!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "a única calculadora do mundo. Mix de tabacos, DIY, melaço, tweak.",
+    "hero_feat_stock_title": "Stock de ingredientes e líquidos",
+    "hero_feat_stock_desc": "saiba o que tem em casa e o que precisa comprar ou misturar.",
+    "hero_savings": "Líquido pronto: {commercial}. Líquido DIY com LiquiMixer: a partir de {diy}. Poupe até 96% com LiquiMixer.",
+    "edu_toggle": "Normas de segurança e preparação antes de misturar",
     "disclaimer_title": "Aviso legal",
     "disclaimer_text": "Ao clicar no botão \"Começar a misturar\", o utilizador confirma ter pelo menos 18 anos. O utilizador reconhece que o LiquiMixer serve unicamente como ferramenta de cálculo (calculadora) e não assume qualquer responsabilidade pelo produto final. O utilizador assume toda a responsabilidade pela mistura correta, manuseamento de ingredientes e cumprimento dos procedimentos de segurança.",
     "start_button": "COMEÇAR A MISTURAR"
@@ -1210,5 +1228,13 @@
     "too_low": "Abaixo do intervalo recomendado ({min}-{max}%)",
     "too_high": "Acima do intervalo recomendado ({min}-{max}%)",
     "ideal_range": "Intervalo ideal ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "A sua etiqueta para colar no frasco",
+    "save": "Guardar etiqueta",
+    "print": "Imprimir",
+    "mixed": "Misturado",
+    "matured": "Maturado",
+    "popup_blocked": "Permita pop-ups para imprimir."
   }
 }

@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "烟碗和水烟壶",
     "prep_shisha_bowl_detail": "要试用您的水烟混合物，您需要一个带烟碗的水烟壶。烟碗材质不同（陶瓷、硅胶、玻璃），影响热量分布。为了获得最佳效果，使用带有热量管理装置 (HMD) 的烟碗，它可以调节炭火温度。",
     "app_description": "安全调配电子烟油和水烟混合物的计算器，精确计算比例、香精和尼古丁。包含 5 个电子烟油计算器和 4 个水烟计算器。保存您喜爱的配方和产品，或与朋友分享。还可作为 31 种语言的离线应用程序使用。",
+    "hero_headline": "自制电子烟油或水烟混合物。安全。精确。低成本。",
+    "hero_subheadline": "计算器会告诉你需要什么、需要多少——即使你从未做过。选择口味，设置参数，混合。正确的百分比会自动填入。",
+    "badge_flavors": "5,000+口味自动配比",
+    "badge_calculators": "9个计算器",
+    "badge_languages": "31种语言",
+    "badge_offline": "离线",
+    "hero_feat_dosing_title": "精确配比",
+    "hero_feat_dosing_desc": "尼古丁、PG/VG、口味。结果以毫升和克显示。",
+    "hero_feat_auto_title": "正确百分比自动填入",
+    "hero_feat_auto_desc": "从数据库选择口味，其余由我们计算。",
+    "hero_feat_recipes_title": "配方和提醒",
+    "hero_feat_recipes_desc": "保存、分享、追踪熟化。推送通知：您的烟油已准备好！",
+    "hero_feat_shisha_title": "水烟 / 水烟壶",
+    "hero_feat_shisha_desc": "世界上唯一的计算器。烟草混合、DIY、糖浆、调整。",
+    "hero_feat_stock_title": "原料和成品烟油库存",
+    "hero_feat_stock_desc": "了解家中有什么，需要购买或混合什么。",
+    "hero_savings": "成品烟油：{commercial}。LiquiMixer DIY：从{diy}起。使用LiquiMixer节省高达96%。",
+    "edu_toggle": "混合前的安全指南和准备",
     "disclaimer_title": "免责声明",
     "disclaimer_text": "点击「开始调配」按钮，用户确认已年满 18 岁。用户承认 LiquiMixer 仅作为计算工具（计算器）使用，不对最终产品承担任何责任。用户对正确调配、处理成分和遵守安全程序承担全部责任。",
     "start_button": "开始调配"
@@ -1210,5 +1228,13 @@
     "too_low": "低于推荐范围 ({min}-{max}%)",
     "too_high": "高于推荐范围 ({min}-{max}%)",
     "ideal_range": "理想范围 ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "贴在瓶子上的标签",
+    "save": "保存标签",
+    "print": "打印",
+    "mixed": "混合日期",
+    "matured": "熟化日期",
+    "popup_blocked": "请允许弹出窗口以进行打印。"
   }
 }

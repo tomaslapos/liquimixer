@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Kop en waterpijp",
     "prep_shisha_bowl_detail": "Om je gemengde shisha-mengsel te proberen, heb je een waterpijp met kop nodig. Koppen verschillen in materiaal (keramiek, siliconen, glas) en beïnvloeden de warmteverdeling. Gebruik voor de beste resultaten een kop met een heat management device (HMD) dat de kolentemperatuur regelt.",
     "app_description": "Calculator voor veilig mengen van e-vloeistoffen en shisha-mengsels met nauwkeurige verhoudings-, smaak- en nicotineberekeningen. Bevat 5 e-liquid en 4 shisha calculators. Sla je favoriete recepten en producten op of deel ze met vrienden. Werkt ook als offline app in 31 talen.",
+    "hero_headline": "Mix je eigen e-liquid of shisha-mengsel. Veilig. Precies. Tegen een fractie van de prijs.",
+    "hero_subheadline": "De calculator vertelt je precies wat en hoeveel — ook als je het nog nooit hebt gedaan. Kies een smaak, stel de parameters in, mix. De juiste % worden automatisch ingevuld.",
+    "badge_flavors": "5.000+ smaken met auto-%",
+    "badge_calculators": "9 calculators",
+    "badge_languages": "31 talen",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Nauwkeurige dosering",
+    "hero_feat_dosing_desc": "nicotine, PG/VG, smaken. Resultaten in ml en gram.",
+    "hero_feat_auto_title": "Juiste % worden automatisch ingevuld",
+    "hero_feat_auto_desc": "kies een smaak uit de database, wij berekenen de rest.",
+    "hero_feat_recipes_title": "Recepten en herinneringen",
+    "hero_feat_recipes_desc": "opslaan, delen, rijping volgen. Push-melding: Je liquid is klaar!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "de enige calculator ter wereld. Tabakmix, DIY, melasse, tweak.",
+    "hero_feat_stock_title": "Voorraad ingrediënten en liquids",
+    "hero_feat_stock_desc": "weet wat je thuis hebt en wat je moet kopen of mixen.",
+    "hero_savings": "Kant-en-klare liquid: {commercial}. DIY met LiquiMixer: vanaf {diy}. Bespaar tot 96% met LiquiMixer.",
+    "edu_toggle": "Veiligheidsrichtlijnen en voorbereiding voor het mixen",
     "disclaimer_title": "Disclaimer",
     "disclaimer_text": "Door op de knop \"Start Mengen\" te klikken, bevestigt de gebruiker ten minste 18 jaar oud te zijn. De gebruiker erkent dat LiquiMixer uitsluitend dient als rekengereedschap (calculator) en geen verantwoordelijkheid neemt voor het eindproduct. De gebruiker draagt volledige verantwoordelijkheid voor correct mengen, hanteren van ingrediënten en naleving van veiligheidsprocedures.",
     "start_button": "START MENGEN"
@@ -1210,5 +1228,13 @@
     "too_low": "Onder aanbevolen bereik ({min}-{max}%)",
     "too_high": "Boven aanbevolen bereik ({min}-{max}%)",
     "ideal_range": "Ideaal bereik ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Uw etiket om op het flesje te plakken",
+    "save": "Etiket opslaan",
+    "print": "Afdrukken",
+    "mixed": "Gemixed",
+    "matured": "Gerijpt",
+    "popup_blocked": "Sta pop-ups toe om af te drukken."
   }
 }

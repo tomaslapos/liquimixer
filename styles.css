@@ -487,7 +487,7 @@ body {
 /* App Description Box */
 .app-description-box {
     margin: 30px 0 25px;
-    padding: 20px 25px;
+    padding: 28px 25px 24px;
     background: rgba(187, 134, 252, 0.1);
     border: 2px solid #bb86fc;
     border-radius: var(--border-radius);
@@ -500,6 +500,154 @@ body {
     line-height: 1.7;
     color: var(--text-primary);
     margin: 0;
+}
+
+.hero-headline {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+}
+
+.hero-subheadline {
+    font-size: 0.95rem;
+    color: #b0b0c0;
+    margin: 0 0 18px 0;
+    line-height: 1.5;
+}
+
+.hero-badges {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 16px 0;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(187, 134, 252, 0.15);
+    border: 1px solid rgba(187, 134, 252, 0.4);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #e0d0ff;
+    white-space: nowrap;
+}
+
+.hero-badge .badge-icon {
+    font-size: 0.9rem;
+}
+
+.hero-features {
+    text-align: left;
+    margin: 0 0 16px 0;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+}
+
+.hero-feature-item {
+    font-size: 0.82rem;
+    color: #d0d0e0;
+    line-height: 1.5;
+    padding: 5px 0 5px 20px;
+    position: relative;
+}
+
+.hero-feature-item::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: #00ff88;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.hero-feature-item strong {
+    color: #e0d0ff;
+}
+
+.hero-savings {
+    font-size: 1.05rem;
+    color: #00ff88;
+    font-weight: 700;
+    margin: 0;
+    padding: 14px 0 0;
+    border-top: 1px solid rgba(187, 134, 252, 0.2);
+    line-height: 1.6;
+    text-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+}
+
+/* Edu Accordion (collapsible safety & prep section) */
+.edu-accordion {
+    margin-bottom: 20px;
+}
+
+.edu-accordion-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(255, 136, 0, 0.08);
+    border: 1px solid rgba(255, 136, 0, 0.3);
+    border-radius: var(--border-radius-small);
+    color: var(--neon-orange);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edu-accordion-btn:hover {
+    background: rgba(255, 136, 0, 0.15);
+    border-color: var(--neon-orange);
+}
+
+.edu-accordion-btn.active {
+    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+}
+
+.edu-accordion-icon {
+    font-size: 1.1rem;
+}
+
+.edu-arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    font-size: 0.7rem;
+}
+
+.edu-accordion-btn.active .edu-arrow {
+    transform: rotate(180deg);
+}
+
+.edu-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    border: 1px solid rgba(255, 136, 0, 0.3);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+}
+
+.edu-accordion-content.open {
+    max-height: 3000px;
+}
+
+.edu-accordion-content > .warning-box {
+    margin: 20px;
+    margin-bottom: 15px;
+}
+
+.edu-accordion-content > .prep-box {
+    margin: 0 20px 20px;
 }
 
 /* Warning Box */
@@ -1958,6 +2106,108 @@ body {
 .reminder-btn svg {
     width: 16px;
     height: 16px;
+}
+
+/* Recipe Label (sticker for bottle) */
+.recipe-label-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+.recipe-label-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.recipe-label-card {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 2px dashed #ccc;
+    color: #1a1a2e;
+    min-height: 120px;
+}
+
+.recipe-label-qr {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recipe-label-qr canvas,
+.recipe-label-qr img {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+.recipe-label-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.recipe-label-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recipe-label-detail {
+    font-size: 0.75rem;
+    color: #475569;
+    line-height: 1.4;
+}
+
+.recipe-label-branding {
+    margin-top: auto;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    font-style: italic;
+    padding-top: 4px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.recipe-label-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    justify-content: center;
+}
+
+.recipe-label-actions .neon-button.small {
+    padding: 8px 18px !important;
+    font-size: 0.8rem !important;
+    min-width: auto !important;
+}
+
+@media print {
+    body * { visibility: hidden !important; }
+    .recipe-label-card,
+    .recipe-label-card * {
+        visibility: visible !important;
+    }
+    .recipe-label-card {
+        position: absolute;
+        left: 10mm;
+        top: 10mm;
+        width: 80mm;
+        border: 1px solid #000;
+    }
 }
 
 .add-reminder-btn {

@@ -347,6 +347,8 @@
         type="text/javascript">
     </script>
     
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <!-- Supabase Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/database.js?v=20260213b"></script>
@@ -871,11 +873,24 @@
                 <div class="subtitle" data-i18n="intro.subtitle">E-LIQUID KALKULÁTOR</div>
             </div>
             
-            <!-- Krátký popis aplikace -->
+            <!-- Hero popis aplikace -->
             <div class="app-description-box">
-                <p class="app-description-text" data-i18n="intro.app_description">
-                    Kalkulátor pro bezpečné míchání e-liquidů s přesným výpočtem PG/VG poměru, příchutí a nikotinu. Nezačínejte vždy znova a ukládejte si oblíbené recepty a produkty nebo je sdílejte s přáteli. Funguje také jako offline aplikace ve 31 jazycích.
-                </p>
+                <p class="hero-headline" data-i18n="intro.hero_headline">Míchej si vlastní liquid nebo shisha směs. Bezpečně. Přesně. Za zlomek ceny.</p>
+                <p class="hero-subheadline" data-i18n="intro.hero_subheadline">Kalkulačka ti řekne přesně co a kolik — i když jsi to nikdy nedělal. Vyber příchuť, zadej parametry, míchej. Správné % se doplní automaticky.</p>
+                <div class="hero-badges">
+                    <span class="hero-badge"><span class="badge-icon">🧪</span> <span data-i18n="intro.badge_flavors">5 000+ příchutí s auto-%</span></span>
+                    <span class="hero-badge"><span class="badge-icon">💨</span> <span data-i18n="intro.badge_calculators">9 kalkulátorů</span></span>
+                    <span class="hero-badge"><span class="badge-icon">🌍</span> <span data-i18n="intro.badge_languages">31 jazyků</span></span>
+                    <span class="hero-badge"><span class="badge-icon">📴</span> <span data-i18n="intro.badge_offline">Offline</span></span>
+                </div>
+                <div class="hero-features">
+                    <div class="hero-feature-item"><strong data-i18n="intro.hero_feat_dosing_title">Přesné dávkování</strong> — <span data-i18n="intro.hero_feat_dosing_desc">nikotinu, PG/VG, příchutí. Výsledky v ml i gramech.</span></div>
+                    <div class="hero-feature-item"><strong data-i18n="intro.hero_feat_auto_title">Správné % se doplní samy</strong> — <span data-i18n="intro.hero_feat_auto_desc">vyber příchuť z databáze, zbytek spočítáme za tebe.</span></div>
+                    <div class="hero-feature-item"><strong data-i18n="intro.hero_feat_recipes_title">Recepty a připomínky</strong> — <span data-i18n="intro.hero_feat_recipes_desc">ulož, sdílej, sleduj zrání. Push notifikace „Liquid je vyzrálý!"</span></div>
+                    <div class="hero-feature-item"><strong data-i18n="intro.hero_feat_shisha_title">Hookah / Shisha</strong> — <span data-i18n="intro.hero_feat_shisha_desc">jediný kalkulátor na světě. Mix tabáků, DIY, melasa, tweak.</span></div>
+                    <div class="hero-feature-item"><strong data-i18n="intro.hero_feat_stock_title">Sklad ingrediencí a hotových liquidů</strong> — <span data-i18n="intro.hero_feat_stock_desc">víš co máš doma a co dokoupit nebo namíchat.</span></div>
+                </div>
+                <p class="hero-savings" id="heroSavingsText" data-i18n="intro.hero_savings">Hotový liquid: 120–350 Kč. Namíchaný liquid s LiquiMixer: od 25 Kč. Ušetři až 96 % s LiquiMixer.</p>
             </div>
             
             <!-- Upozornění před zahájením -->
@@ -899,18 +914,26 @@
         <section id="mode-select" class="page">
             <h2 class="page-title" data-i18n="mode_select.title">Co chcete připravit?</h2>
             
-            <div class="warning-box">
-                <h2 class="warning-title" data-i18n="intro.warning_title">Při míchání se soustřeďte na dodržování bezpečnostních zásad</h2>
-                <p class="warning-text" data-i18n="intro.warning_text">
-                    Při míchání e-liquidu vždy noste ochranné rukavice a pracujte v dobře větraném prostoru, 
-                    zejména pokud používáte nikotinové boostery. Používejte pouze kvalitní složky bez příměsí 
-                    a s potravinářskou certifikací vhodné pro vapování od ověřených dodavatelů. 
-                    Dodržujte přesné poměry ingrediencí. Hotový liquid skladujte mimo dosah dětí a zvířat.
-                </p>
-            </div>
-            
-            <div class="prep-box">
-                <h3 class="prep-title" data-i18n="intro.prep_title">Před mícháním si připravte:</h3>
+            <!-- Sbalovací edukační sekce -->
+            <div class="edu-accordion">
+                <button class="edu-accordion-btn" onclick="toggleEduSection(this)">
+                    <span class="edu-accordion-icon">⚠️</span>
+                    <span data-i18n="intro.edu_toggle">Bezpečnostní zásady a příprava před mícháním</span>
+                    <span class="edu-arrow">▼</span>
+                </button>
+                <div class="edu-accordion-content">
+                    <div class="warning-box">
+                        <h2 class="warning-title" data-i18n="intro.warning_title">Při míchání se soustřeďte na dodržování bezpečnostních zásad</h2>
+                        <p class="warning-text" data-i18n="intro.warning_text">
+                            Při míchání e-liquidu vždy noste ochranné rukavice a pracujte v dobře větraném prostoru, 
+                            zejména pokud používáte nikotinové boostery. Používejte pouze kvalitní složky bez příměsí 
+                            a s potravinářskou certifikací vhodné pro vapování od ověřených dodavatelů. 
+                            Dodržujte přesné poměry ingrediencí. Hotový liquid skladujte mimo dosah dětí a zvířat.
+                        </p>
+                    </div>
+                    
+                    <div class="prep-box">
+                        <h3 class="prep-title" data-i18n="intro.prep_title">Před mícháním si připravte:</h3>
                 <div class="prep-grid">
                     <div class="prep-item-accordion">
                         <button class="prep-item-btn" onclick="togglePrepDetail(this)">
@@ -1022,6 +1045,8 @@
                     </div>
                 </div>
             </div>
+            </div><!-- /edu-accordion-content -->
+            </div><!-- /edu-accordion -->
             
             <div class="mode-buttons">
                 <button class="mode-button cyan" onclick="showPage('form')">
@@ -3221,6 +3246,34 @@
                             <!-- Stock bar bude dynamicky vygenerován -->
                         </div>
                     </div>
+                    
+                    <!-- Štítek k receptu -->
+                    <div class="recipe-label-section">
+                        <p class="recipe-label-hint" data-i18n="label.hint">Váš štítek pro nalepení na namíchaný liquid</p>
+                        <div class="recipe-label-card" id="recipeLabelCard">
+                            <div class="recipe-label-qr" id="recipeLabelQr">
+                                <!-- QR kód bude vygenerován dynamicky -->
+                            </div>
+                            <div class="recipe-label-info">
+                                <div class="recipe-label-name" id="recipeLabelName"></div>
+                                <div class="recipe-label-detail" id="recipeLabelVolume"></div>
+                                <div class="recipe-label-detail" id="recipeLabelRatio"></div>
+                                <div class="recipe-label-detail" id="recipeLabelNicotine"></div>
+                                <div class="recipe-label-detail" id="recipeLabelMixDate"></div>
+                                <div class="recipe-label-detail" id="recipeLabelSteepDate"></div>
+                                <div class="recipe-label-branding">www.liquimixer.com</div>
+                            </div>
+                        </div>
+                        <div class="recipe-label-actions">
+                            <button type="button" class="neon-button small" onclick="saveLabelAsImage()">
+                                <span data-i18n="label.save">Uložit štítek</span>
+                            </button>
+                            <button type="button" class="neon-button small secondary" onclick="printLabel()">
+                                <span data-i18n="label.print">Vytisknout</span>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <button type="button" class="neon-button secondary" onclick="hideViewReminderModal()" data-i18n="recipe_detail.back">Zpět</button>
                 </div>
             </div>

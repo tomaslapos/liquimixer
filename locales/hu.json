@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Dohánytölcsér és vízipipa",
     "prep_shisha_bowl_detail": "A kevert shisha keverék kipróbálásához szükséged van egy vízipipára dohánytölcsérrel. A tölcsérek anyagukban (kerámia, szilikon, üveg) különböznek és befolyásolják a hőeloszlást. A legjobb eredményért használj hőkezelő eszközt (HMD), amely szabályozza a szén hőmérsékletét.",
     "app_description": "Kalkulátor biztonságos e-folyadék és shisha keverékek keveréséhez pontos arány-, aroma- és nikotinszámításokkal. 5 e-liquid és 4 shisha kalkulátort tartalmaz. Mentsd el kedvenc receptjeidet és termékeidet, vagy oszd meg barátaiddal. Offline alkalmazásként is működik 31 nyelven.",
+    "hero_headline": "Keverd meg a saját liquidod vagy shísha keveréked. Biztonságosan. Pontosan. Az ár töredékéért.",
+    "hero_subheadline": "A kalkulátor pontosan megmondja mit és mennyit — még ha sosem csináltad. Válassz ízet, állítsd be a paramétereket, keverd. A helyes % automatikusan kitöltődik.",
+    "badge_flavors": "5 000+ íz auto-%-kal",
+    "badge_calculators": "9 kalkulátor",
+    "badge_languages": "31 nyelv",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Pontos adagolás",
+    "hero_feat_dosing_desc": "nikotin, PG/VG, ízek. Eredmények ml-ben és grammban.",
+    "hero_feat_auto_title": "A helyes % automatikusan kitöltődik",
+    "hero_feat_auto_desc": "válassz ízet az adatbázisból, mi kiszámítjuk a többit.",
+    "hero_feat_recipes_title": "Receptek és emlékeztetők",
+    "hero_feat_recipes_desc": "mentsd, oszd meg, kövesd az érlelést. Push értesítés: A liquidod kész!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "az egyetlen kalkulátor a világon. Dohánymix, DIY, melasz, tweak.",
+    "hero_feat_stock_title": "Alapanyag- és liquid készlet",
+    "hero_feat_stock_desc": "tudd mit tárolsz otthon és mit kell venned vagy kevert.",
+    "hero_savings": "Kész liquid: {commercial}. DIY a LiquiMixerrel: {diy}-től. Spórolj akár 96%-ot a LiquiMixerrel.",
+    "edu_toggle": "Biztonsági irányelvek és előkészületek keverés előtt",
     "disclaimer_title": "Felelősségkorlátozás",
     "disclaimer_text": "A \"Keverés indítása\" gombra kattintva a felhasználó megerősíti, hogy elmúlt 18 éves. A felhasználó tudomásul veszi, hogy a LiquiMixer kizárólag számítási eszközként (kalkulátor) szolgál, és nem vállal felelősséget a végtermékért. A felhasználó teljes felelősséget visel a helyes keverésért, az összetevők kezeléséért és a biztonsági eljárások betartásáért.",
     "start_button": "KEVERÉS INDÍTÁSA"
@@ -1210,5 +1228,13 @@
     "too_low": "Az ajánlott tartomány alatt ({min}-{max}%)",
     "too_high": "Az ajánlott tartomány felett ({min}-{max}%)",
     "ideal_range": "Ideális tartomány ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Címkéd az üvegre ragasztáshoz",
+    "save": "Címke mentése",
+    "print": "Nyomtatás",
+    "mixed": "Keverve",
+    "matured": "Érlelés",
+    "popup_blocked": "Engedélyezd a felugró ablakokat a nyomtatáshoz."
   }
 }

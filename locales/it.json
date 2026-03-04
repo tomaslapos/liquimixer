@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Fornello e narghilè",
     "prep_shisha_bowl_detail": "Per provare la tua miscela di shisha, hai bisogno di un narghilè con fornello. I fornelli variano nel materiale (ceramica, silicone, vetro) e influenzano la distribuzione del calore. Per i migliori risultati, usa un fornello con un dispositivo di gestione del calore (HMD) che regola la temperatura del carbone.",
     "app_description": "Calcolatore per la miscelazione sicura di e-liquid e miscele per shisha con calcoli precisi di rapporti, aromi e nicotina. Include 5 calcolatori e-liquid e 4 calcolatori shisha. Salva le tue ricette e prodotti preferiti o condividili con gli amici. Funziona anche offline in 31 lingue.",
+    "hero_headline": "Prepara il tuo e-liquid o miscela per shisha. In sicurezza. Con precisione. A una frazione del costo.",
+    "hero_subheadline": "Il calcolatore ti dice esattamente cosa e quanto — anche se non l'hai mai fatto. Scegli un aroma, imposta i parametri, miscela. Le % corrette si compilano automaticamente.",
+    "badge_flavors": "5.000+ aromi con auto-%",
+    "badge_calculators": "9 calcolatori",
+    "badge_languages": "31 lingue",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Dosaggio preciso",
+    "hero_feat_dosing_desc": "nicotina, PG/VG, aromi. Risultati in ml e grammi.",
+    "hero_feat_auto_title": "Le % corrette si compilano da sole",
+    "hero_feat_auto_desc": "scegli un aroma dal database, calcoliamo noi il resto.",
+    "hero_feat_recipes_title": "Ricette e promemoria",
+    "hero_feat_recipes_desc": "salva, condividi, monitora la maturazione. Notifica push: Il tuo liquido è pronto!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "l'unico calcolatore al mondo. Mix di tabacchi, DIY, melassa, tweak.",
+    "hero_feat_stock_title": "Stock di ingredienti e liquidi",
+    "hero_feat_stock_desc": "sai cosa hai a casa e cosa comprare o miscelare.",
+    "hero_savings": "Liquido commerciale: {commercial}. Liquido DIY con LiquiMixer: da {diy}. Risparmia fino al 96% con LiquiMixer.",
+    "edu_toggle": "Linee guida di sicurezza e preparazione prima della miscelazione",
     "disclaimer_title": "Avvertenza",
     "disclaimer_text": "Cliccando sul pulsante \"Inizia a miscelare\", l'utente conferma di avere almeno 18 anni. L'utente riconosce che LiquiMixer serve esclusivamente come strumento di calcolo (calcolatore) e non si assume alcuna responsabilità per il prodotto finale. L'utente si assume la piena responsabilità per la corretta miscelazione, la manipolazione degli ingredienti e il rispetto delle procedure di sicurezza.",
     "start_button": "INIZIA A MISCELARE"
@@ -1210,5 +1228,13 @@
     "too_low": "Sotto l'intervallo consigliato ({min}-{max}%)",
     "too_high": "Sopra l'intervallo consigliato ({min}-{max}%)",
     "ideal_range": "Intervallo ideale ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "La tua etichetta da incollare sulla bottiglia",
+    "save": "Salva etichetta",
+    "print": "Stampa",
+    "mixed": "Miscelato",
+    "matured": "Maturato",
+    "popup_blocked": "Consenti i pop-up per stampare."
   }
 }

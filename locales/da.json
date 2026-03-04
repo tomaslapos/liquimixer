@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Hoved og vandpibe",
     "prep_shisha_bowl_detail": "For at prøve din shishablanding har du brug for en vandpibe med hoved. Hovederne varierer i materiale (keramik, silikone, glas) og påvirker varmefordelingen. For de bedste resultater, brug et hoved med en varmestyringsenhed (HMD), der regulerer kultemperaturen.",
     "app_description": "Beregner til sikker blanding af e-væsker og shishablandinger med præcise proportions-, aroma- og nikotinberegninger. Indeholder 5 e-væske- og 4 shishaberegnere. Gem dine favoritopskrifter og produkter eller del dem med venner. Fungerer også som offline-app på 31 sprog.",
+    "hero_headline": "Bland din egen e-væske eller shisha-blanding. Sikkert. Præcist. Til en brøkdel af prisen.",
+    "hero_subheadline": "Beregneren fortæller dig præcis hvad og hvor meget — også selvom du aldrig har gjort det før. Vælg en smag, indstil parametrene, bland. De korrekte % udfyldes automatisk.",
+    "badge_flavors": "5.000+ smagsstoffer med auto-%",
+    "badge_calculators": "9 beregnere",
+    "badge_languages": "31 sprog",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Præcis dosering",
+    "hero_feat_dosing_desc": "nikotin, PG/VG, smagsstoffer. Resultater i ml og gram.",
+    "hero_feat_auto_title": "Korrekte % udfyldes automatisk",
+    "hero_feat_auto_desc": "vælg en smag fra databasen, vi beregner resten.",
+    "hero_feat_recipes_title": "Opskrifter og påmindelser",
+    "hero_feat_recipes_desc": "gem, del, følg modningen. Push-notifikation: Din væske er klar!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "den eneste beregner i verden. Tobaksmix, DIY, melasse, tweak.",
+    "hero_feat_stock_title": "Lager af ingredienser og væsker",
+    "hero_feat_stock_desc": "ved hvad du har derhjemme og hvad du skal købe eller blande.",
+    "hero_savings": "Færdig væske: {commercial}. DIY med LiquiMixer: fra {diy}. Spar op til 96% med LiquiMixer.",
+    "edu_toggle": "Sikkerhedsretningslinjer og forberedelse før blanding",
     "disclaimer_title": "Ansvarsfraskrivelse",
     "disclaimer_text": "Ved at klikke på knappen \"Start blanding\" bekræfter brugeren, at de er mindst 18 år gamle. Brugeren anerkender, at LiquiMixer udelukkende fungerer som et beregningsværktøj (beregner) og ikke tager ansvar for slutproduktet. Brugeren bærer det fulde ansvar for korrekt blanding, håndtering af ingredienser og overholdelse af sikkerhedsprocedurer.",
     "start_button": "START BLANDING"
@@ -1210,5 +1228,13 @@
     "too_low": "Under anbefalet område ({min}-{max}%)",
     "too_high": "Over anbefalet område ({min}-{max}%)",
     "ideal_range": "Ideelt område ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Din etiket til at sætte på flasken",
+    "save": "Gem etiket",
+    "print": "Udskriv",
+    "mixed": "Blandet",
+    "matured": "Modnet",
+    "popup_blocked": "Tillad pop-ups for at udskrive."
   }
 }

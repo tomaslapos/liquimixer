@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Komin i fajka wodna",
     "prep_shisha_bowl_detail": "Aby wypróbować swoją mieszankę shisha, potrzebujesz fajki wodnej z kominem. Kominy różnią się materiałem (ceramika, silikon, szkło) i wpływają na rozkład ciepła. Dla najlepszych rezultatów użyj komina z urządzeniem do zarządzania ciepłem (HMD), które reguluje temperaturę węgla.",
     "app_description": "Kalkulator do bezpiecznego mieszania e-liquidów i mieszanek shisha z dokładnymi obliczeniami proporcji, aromatów i nikotyny. Zawiera 5 kalkulatorów e-liquid i 4 kalkulatory shisha. Zapisuj ulubione przepisy i produkty lub udostępniaj je znajomym. Działa również offline w 31 językach.",
+    "hero_headline": "Zrób własny liquid lub mieszankę do shishy. Bezpiecznie. Dokładnie. Za ułamek ceny.",
+    "hero_subheadline": "Kalkulator powie ci dokładnie co i ile — nawet jeśli nigdy tego nie robiłeś. Wybierz aromat, ustaw parametry, mieszaj. Prawidłowe % uzupełnią się automatycznie.",
+    "badge_flavors": "5 000+ aromatów z auto-%",
+    "badge_calculators": "9 kalkulatorów",
+    "badge_languages": "31 języków",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Precyzyjne dawkowanie",
+    "hero_feat_dosing_desc": "nikotyny, PG/VG, aromatów. Wyniki w ml i gramach.",
+    "hero_feat_auto_title": "Prawidłowe % uzupełniają się same",
+    "hero_feat_auto_desc": "wybierz aromat z bazy danych, resztę obliczymy za ciebie.",
+    "hero_feat_recipes_title": "Przepisy i przypomnienia",
+    "hero_feat_recipes_desc": "zapisz, udostępnij, śledź dojrzewanie. Powiadomienie push: Twój liquid jest gotowy!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "jedyny kalkulator na świecie. Mix tytoni, DIY, melasa, tweak.",
+    "hero_feat_stock_title": "Magazyn składników i gotowych liquidów",
+    "hero_feat_stock_desc": "wiesz co masz w domu i co dokupic lub zmieszać.",
+    "hero_savings": "Gotowy liquid: {commercial}. Liquid DIY z LiquiMixer: od {diy}. Oszczędź do 96% z LiquiMixer.",
+    "edu_toggle": "Zasady bezpieczeństwa i przygotowanie przed mieszaniem",
     "disclaimer_title": "Zastrzeżenie",
     "disclaimer_text": "Klikając przycisk \"Rozpocznij mieszanie\", użytkownik potwierdza, że ma co najmniej 18 lat. Użytkownik przyjmuje do wiadomości, że LiquiMixer służy wyłącznie jako narzędzie obliczeniowe (kalkulator) i nie ponosi odpowiedzialności za produkt końcowy. Użytkownik ponosi pełną odpowiedzialność za prawidłowe mieszanie, obsługę składników i przestrzeganie procedur bezpieczeństwa.",
     "start_button": "ROZPOCZNIJ MIESZANIE"
@@ -1210,5 +1228,13 @@
     "too_low": "Poniżej zalecanego zakresu ({min}-{max}%)",
     "too_high": "Powyżej zalecanego zakresu ({min}-{max}%)",
     "ideal_range": "Idealny zakres ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Twoja etykieta do naklejenia na butelkę",
+    "save": "Zapisz etykietę",
+    "print": "Drukuj",
+    "mixed": "Zmieszano",
+    "matured": "Dojrzewanie",
+    "popup_blocked": "Zezwól na wyskakujące okna, aby drukować."
   }
 }

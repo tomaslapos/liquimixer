@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Galva un ūdenspīpe",
     "prep_shisha_bowl_detail": "Lai izmēģinātu savu šīšas maisījumu, jums vajadzēs ūdenspīpi ar galvu. Galvas atšķiras pec materiāla (keramika, silikons, stikls) un ietekmē siltuma sadalījumu. Labākajiem rezultātiem izmantojiet galvu ar siltuma pārvaldības ierīci (HMD), kas regulē ogļu temperatūru.",
     "app_description": "Kalkulators drošai e-šķidrumu un šīšas maisījumu sajaukšanai ar precīzām proporciju, aromātu un nikotīna aprēķiniem. Ietver 5 e-šķidruma un 4 šīšas kalkulatorus. Saglabājiet savas mīļākās receptes un produktus vai kopīgojiet tos ar draugiem. Darbojas arī kā bezsaistes lietotne 31 valodā.",
+    "hero_headline": "Sajauc savu šķidrumu vai šīšas maisījumu. Droši. Precīzi. Par daļu no cenas.",
+    "hero_subheadline": "Kalkulators tev pateiks precīzi ko un cik — pat ja tu to nekad neesi darījis. Izvēlies aromātu, iestati parametrus, jauc. Pareizās % aizpildās automātiski.",
+    "badge_flavors": "5 000+ aromātu ar auto-%",
+    "badge_calculators": "9 kalkulatori",
+    "badge_languages": "31 valoda",
+    "badge_offline": "Bezsaistē",
+    "hero_feat_dosing_title": "Precīza dozēšana",
+    "hero_feat_dosing_desc": "nikotīna, PG/VG, aromātu. Rezultāti ml un gramos.",
+    "hero_feat_auto_title": "Pareizās % aizpildās pašas",
+    "hero_feat_auto_desc": "izvēlies aromātu no datubāzes, mēs aprēķināsim pārējo.",
+    "hero_feat_recipes_title": "Receptes un atgādinājumi",
+    "hero_feat_recipes_desc": "saglabā, dalīies, seko nogatavošanai. Push paziņojums: Tavs šķidrums ir gatavs!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "vienīgais kalkulators pasaulē. Tabakas mikss, DIY, melase, tweak.",
+    "hero_feat_stock_title": "Sastāvdaļu un šķidrumu krājumi",
+    "hero_feat_stock_desc": "zini kas tev ir mājās un ko vajag nopirkt vai sajaukt.",
+    "hero_savings": "Gatavs šķidrums: {commercial}. DIY ar LiquiMixer: no {diy}. Ietaupi līdz 96% ar LiquiMixer.",
+    "edu_toggle": "Drošības vadlīnijas un sagatavošanās pirms jaukšanas",
     "disclaimer_title": "Atbildības atruna",
     "disclaimer_text": "Noklikšķinot uz pogas \"Sākt sajaukšanu\", lietotājs apliecina, ka viņam ir vismaz 18 gadi. Lietotājs atzīst, ka LiquiMixer kalpo tikai kā aprēķinu rīks (kalkulators) un neuzņemas atbildību par galaproduktu. Lietotājs uzņemas pilnu atbildību par pareizu sajaukšanu, sastāvdaļu apstrādi un drošības procedūru ievērošanu.",
     "start_button": "SĀKT SAJAUKŠANU"
@@ -1209,5 +1227,13 @@
     "too_low": "Zem ieteicamā diapazona ({min}-{max}%)",
     "too_high": "Virs ieteicamā diapazona ({min}-{max}%)",
     "ideal_range": "Ideāls diapazons ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Jūsu etiķete uzĻīmēšanai uz pudeles",
+    "save": "Saglabāt etiķeti",
+    "print": "Drukāt",
+    "mixed": "Sajaukts",
+    "matured": "Nogatavojies",
+    "popup_blocked": "Atļaujiet uznirstošos logus drukāšanai."
   }
 }

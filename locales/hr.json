@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Glava i nargila",
     "prep_shisha_bowl_detail": "Za isprobavanje vaše shisha mješavine potrebna vam je nargila s glavom. Glave se razlikuju po materijalu (keramika, silikon, staklo) i utječu na raspodjelu topline. Za najbolje rezultate koristite glavu s heat management sustavom (HMD) koji regulira temperaturu ugljena.",
     "app_description": "Kalkulator za sigurno miješanje e-tekućina i shisha mješavina s preciznim izračunima omjera, aroma i nikotina. Sadrži 5 e-liquid i 4 shisha kalkulatora. Spremite omiljene recepte i proizvode ili ih podijelite s prijateljima. Također radi kao offline aplikacija na 31 jeziku.",
+    "hero_headline": "Napravi vlastiti liquid ili shisha mješavinu. Sigurno. Precizno. Za djelić cijene.",
+    "hero_subheadline": "Kalkulator ti kaže točno što i koliko — čak i ako to nikad nisi radio. Odaberi aromu, postavi parametre, miješaj. Ispravni % se popune automatski.",
+    "badge_flavors": "5 000+ aroma s auto-%",
+    "badge_calculators": "9 kalkulatora",
+    "badge_languages": "31 jezik",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Precizno doziranje",
+    "hero_feat_dosing_desc": "nikotina, PG/VG, aroma. Rezultati u ml i gramima.",
+    "hero_feat_auto_title": "Ispravni % se popune sami",
+    "hero_feat_auto_desc": "odaberi aromu iz baze podataka, mi izračunamo ostatak.",
+    "hero_feat_recipes_title": "Recepti i podsjetnici",
+    "hero_feat_recipes_desc": "spremi, podijeli, prati zrenje. Push obavijest: Tvoj liquid je spreman!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "jedini kalkulator na svijetu. Mix duhana, DIY, melasa, tweak.",
+    "hero_feat_stock_title": "Zalihe sastojaka i gotovih liquida",
+    "hero_feat_stock_desc": "znaj što imaš kod kuće i što trebate kupiti ili pomiješati.",
+    "hero_savings": "Gotovi liquid: {commercial}. DIY s LiquiMixer: od {diy}. Uštedi do 96% s LiquiMixer.",
+    "edu_toggle": "Sigurnosne smjernice i priprema prije miješanja",
     "disclaimer_title": "Izjava o odricanju odgovornosti",
     "disclaimer_text": "Klikom na gumb \"Počni miješanje\" korisnik potvrđuje da ima najmanje 18 godina. Korisnik prihvaća da LiquiMixer služi isključivo kao alat za izračun (kalkulator) i ne preuzima odgovornost za konačni proizvod. Korisnik snosi punu odgovornost za pravilno miješanje, rukovanje sastojcima i pridržavanje sigurnosnih postupaka.",
     "start_button": "POČNI MIJEŠANJE"
@@ -1210,5 +1228,13 @@
     "too_low": "Ispod preporučenog raspona ({min}-{max}%)",
     "too_high": "Iznad preporučenog raspona ({min}-{max}%)",
     "ideal_range": "Idealni raspon ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Vaša naljepnica za bocu",
+    "save": "Spremi naljepnicu",
+    "print": "Ispis",
+    "mixed": "Pomiješano",
+    "matured": "Sazrijevanje",
+    "popup_blocked": "Dopustite skočne prozore za ispis."
   }
 }

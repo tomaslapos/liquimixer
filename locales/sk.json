@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Korunka a vodná fajka",
     "prep_shisha_bowl_detail": "Pre vyskúšanie namiešanej shisha zmesi potrebujete vodnú fajku s korunkou. Korunky sa líšia materiálom (keramika, silikón, sklo) a ovplyvňujú rozloženie tepla. Pre najlepšie výsledky použite korunku s heat management systémom (HMD), ktorý reguluje teplotu uhlíkov.",
     "app_description": "Kalkulátor na bezpečné miešanie e-liquidov a shisha zmesí s presným výpočtom pomerov, príchutí a nikotínu. Obsahuje 5 e-liquid a 4 shisha kalkulátorov. Ukladajte si obľúbené recepty a produkty alebo ich zdieľajte s priateľmi. Funguje tiež ako offline aplikácia v 31 jazykoch.",
+    "hero_headline": "Miešaj si vlastný liquid alebo shisha zmes. Bezpečne. Presne. Za zlomok ceny.",
+    "hero_subheadline": "Kalkulačka ti povie presne čo a koľko — aj keď si to nikdy nerobil. Vyber príchuť, zadaj parametre, miešaj. Správne % sa doplnia automaticky.",
+    "badge_flavors": "5 000+ príchutí s auto-%",
+    "badge_calculators": "9 kalkulátorov",
+    "badge_languages": "31 jazykov",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Presné dávkovanie",
+    "hero_feat_dosing_desc": "nikotínu, PG/VG, príchutí. Výsledky v ml aj gramoch.",
+    "hero_feat_auto_title": "Správne % sa doplnia samy",
+    "hero_feat_auto_desc": "vyber príchuť z databázy, zvyšok vypočítame za teba.",
+    "hero_feat_recipes_title": "Recepty a pripomienky",
+    "hero_feat_recipes_desc": "ulož, zdieľaj, sleduj zrenie. Push notifikácia \"Liquid je vyzretý!\"",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "jediný kalkulátor na svete. Mix tabakov, DIY, melasa, tweak.",
+    "hero_feat_stock_title": "Sklad ingrediencií a hotových liquidov",
+    "hero_feat_stock_desc": "vieš čo máš doma a čo dokúpiť alebo namiešať.",
+    "hero_savings": "Hotový liquid: {commercial}. Namiešaný liquid s LiquiMixer: od {diy}. Ušetri až 96 % s LiquiMixer.",
+    "edu_toggle": "Bezpečnostné zásady a príprava pred miešaním",
     "disclaimer_title": "Upozornenie",
     "disclaimer_text": "Kliknutím na tlačidlo 'Začať miešanie' používateľ potvrdzuje, že dosiahol veku 18 rokov. Berie na vedomie, že LiquiMixer slúži výhradne ako výpočtový nástroj (kalkulačka) a nepreberá žiadnu zodpovednosť za výsledný produkt. Všetku zodpovednosť za správne miešanie, manipuláciu s ingredienciami a dodržanie bezpečnostných postupov nesie používateľ.",
     "start_button": "ZAČAŤ MIEŠANIE"
@@ -1210,5 +1228,13 @@
     "too_low": "Pod odporúčaným rozsahom ({min}-{max}%)",
     "too_high": "Nad odporúčaným rozsahom ({min}-{max}%)",
     "ideal_range": "Ideálny rozsah ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Váš štítok na nalepenie na namiešaný liquid",
+    "save": "Uložiť štítok",
+    "print": "Vytlačiť",
+    "mixed": "Namiešané",
+    "matured": "Vyzretie",
+    "popup_blocked": "Povoľte vyskakovacie okná pre tlač."
   }
 }

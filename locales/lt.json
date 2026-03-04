@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Galvutė ir kaljanas",
     "prep_shisha_bowl_detail": "Norėdami išbandyti savo šišos mišinį, jums reikės kaljano su galvute. Galvutės skiriasi medžiaga (keramika, silikonas, stiklas) ir įtakoja šilumos paskirstymą. Geriausiam rezultatui naudokite galvutę su šilumos valdymo įrenginiu (HMD), kuris reguliuoja anglių temperatūrą.",
     "app_description": "Skaičiuoklė saugiam e-skysčių ir šišos mišinių maišymui su tiksliais proporcijų, aromato ir nikotino skaičiavimais. Turi 5 e-skysčio ir 4 šišos skaičiuokles. Išsaugokite mėgstamus receptus ir produktus arba pasidalinkite jais su draugais. Taip pat veikia kaip neprisijungus prie interneto programa 31 kalba.",
+    "hero_headline": "Susimašyk savo skystį arba šišos mišinį. Saugiai. Tiksliai. Už dalį kainos.",
+    "hero_subheadline": "Skaičiuoklė tau pasakys tiksliai ką ir kiek — net jei niekada to nedarei. Pasirink armatą, nustatyk parametrus, maišyk. Teisingi % užsipildo automatiškai.",
+    "badge_flavors": "5 000+ aromatų su auto-%",
+    "badge_calculators": "9 skaičiuoklės",
+    "badge_languages": "31 kalba",
+    "badge_offline": "Neprisijungus",
+    "hero_feat_dosing_title": "Tikslus dozavimas",
+    "hero_feat_dosing_desc": "nikotino, PG/VG, aromatų. Rezultatai ml ir gramais.",
+    "hero_feat_auto_title": "Teisingi % užsipildo patys",
+    "hero_feat_auto_desc": "pasirink armatą iš duomenų bazės, mes apskaičiuosim likusį.",
+    "hero_feat_recipes_title": "Receptai ir priminimai",
+    "hero_feat_recipes_desc": "išsaugok, pasidalink, sek brandą. Push pranešimas: Tavo skystis paruoses!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "vienintelė skaičiuoklė pasaulyje. Tabako miks, DIY, melasa, tweak.",
+    "hero_feat_stock_title": "Ingredientų ir skysčių atsargos",
+    "hero_feat_stock_desc": "žinok ką turi namuose ir ką reikia nupirkti arba sumaišyti.",
+    "hero_savings": "Gatavs skystis: {commercial}. DIY su LiquiMixer: nuo {diy}. Sutaupyk iki 96% su LiquiMixer.",
+    "edu_toggle": "Saugos gairės ir pasiruošimas prieš maišymą",
     "disclaimer_title": "Atsakomybės atsisakymas",
     "disclaimer_text": "Spustelėdamas mygtuką \"Pradėti maišymą\", vartotojas patvirtina, kad jam yra bent 18 metų. Vartotojas pripažįsta, kad LiquiMixer tarnauja tik kaip skaičiavimo įrankis (skaičiuoklė) ir neprisiima jokios atsakomybės už galutinį produktą. Vartotojas prisiima visą atsakomybę už tinkamą maišymą, ingredientų tvarkymą ir saugos procedūrų laikymąsi.",
     "start_button": "PRADĖTI MAIŠYMĄ"
@@ -1210,5 +1228,13 @@
     "too_low": "Žemiau rekomenduojamo diapazono ({min}-{max}%)",
     "too_high": "Virš rekomenduojamo diapazono ({min}-{max}%)",
     "ideal_range": "Idealus diapazonas ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Jūsų etiketė klijuoti ant buteliuko",
+    "save": "Išsaugoti etiketę",
+    "print": "Spausdinti",
+    "mixed": "Sumaišyta",
+    "matured": "Subrandęs",
+    "popup_blocked": "Leiskite iššokančius langus spausdinimui."
   }
 }

@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "볼과 물담배",
     "prep_shisha_bowl_detail": "시샤 믹스를 시험하려면 볼이 있는 물담배가 필요합니다. 볼은 소재(세라믹, 실리콘, 유리)에 따라 다르며 열 분배에 영향을 줍니다. 최상의 결과를 얻으려면 숙의 온도를 조절하는 히트 매니지먼트 디바이스(HMD)가 있는 볼을 사용하세요.",
     "app_description": "E-리퀴드와 시샤 믹스를 정확한 비율, 향료 및 니코틴 계산으로 안전하게 조합하는 계산기. 5개의 E-리퀴드 계산기와 4개의 시샤 계산기를 포함합니다. 좋아하는 레시피와 제품을 저장하거나 친구와 공유하세요. 31개 언어로 오프라인 앱으로도 작동합니다.",
+    "hero_headline": "나만의 리퀴드 또는 시샤 블렌드를 만들어보세요. 안전하게. 정확하게. 저렴하게.",
+    "hero_subheadline": "계산기가 정확히 무엇을 얼마나 필요한지 알려줍니다 — 처음이라도 괜찮습니다. 향료를 선택하고, 파라미터를 설정하고, 믹스하세요. 올바른 %가 자동으로 입력됩니다.",
+    "badge_flavors": "5,000+ 향료 자동-%",
+    "badge_calculators": "9개 계산기",
+    "badge_languages": "31개 언어",
+    "badge_offline": "오프라인",
+    "hero_feat_dosing_title": "정밀한 배합",
+    "hero_feat_dosing_desc": "니코틴, PG/VG, 향료. ml 및 그램 결과.",
+    "hero_feat_auto_title": "올바른 %가 자동 입력",
+    "hero_feat_auto_desc": "데이터베이스에서 향료를 선택하면 나머지는 계산해 드립니다.",
+    "hero_feat_recipes_title": "레시피 및 알림",
+    "hero_feat_recipes_desc": "저장, 공유, 숙성 추적. 푸시 알림: 리퀴드가 준비되었습니다!",
+    "hero_feat_shisha_title": "후카 / 시샤",
+    "hero_feat_shisha_desc": "세계 유일의 계산기. 담배 믹스, DIY, 당밀, 트윅.",
+    "hero_feat_stock_title": "재료 및 완성 리퀴드 재고",
+    "hero_feat_stock_desc": "집에 있는 것과 구매할 것을 파악하세요.",
+    "hero_savings": "시판 리퀴드: {commercial}. LiquiMixer DIY: {diy}부터. LiquiMixer로 최대 96% 절약.",
+    "edu_toggle": "믹싱 전 안전 지침 및 준비",
     "disclaimer_title": "면책 조항",
     "disclaimer_text": "\"믹싱 시작\" 버튼을 클릭함으로써 사용자는 18세 이상임을 확인합니다. 사용자는 LiquiMixer가 계산 도구(계산기)로만 기능하며 최종 제품에 대한 책임을 지지 않음을 인정합니다. 사용자는 적절한 믹싱, 성분 취급 및 안전 절차 준수에 대한 전적인 책임을 집니다.",
     "start_button": "믹싱 시작"
@@ -1210,5 +1228,13 @@
     "too_low": "권장 범위 미만 ({min}-{max}%)",
     "too_high": "권장 범위 초과 ({min}-{max}%)",
     "ideal_range": "이상적인 범위 ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "병에 붙일 라벨",
+    "save": "라벨 저장",
+    "print": "인쇄",
+    "mixed": "믹스 날짜",
+    "matured": "숙성 날짜",
+    "popup_blocked": "인쇄하려면 팝업을 허용하세요."
   }
 }

@@ -151,6 +151,24 @@
     "prep_shisha_bowl": "Huvud och vattenpipa",
     "prep_shisha_bowl_detail": "För att prova din shishablandning behöver du en vattenpipa med huvud. Huvudena varierar i material (keramik, silikon, glas) och påverkar värmefördelningen. För bästa resultat, använd ett huvud med en värmestyrningsenhet (HMD) som reglerar koltemperaturen.",
     "app_description": "Kalkylator för säker blandning av e-vätskor och shishablandningar med exakta proportioner, arom- och nikotinberäkningar. Innehåller 5 e-vätske- och 4 shishakalkylatorer. Spara dina favoritrecept och produkter eller dela dem med vänner. Fungerar också som offline-app på 31 språk.",
+    "hero_headline": "Blanda din egen e-vätska eller shishablandning. Säkert. Exakt. Till en bråkdel av priset.",
+    "hero_subheadline": "Kalkylatorn berättar exakt vad och hur mycket — även om du aldrig gjort det förut. Välj en smak, ställ in parametrar, blanda. Rätt % fylls i automatiskt.",
+    "badge_flavors": "5 000+ smaker med auto-%",
+    "badge_calculators": "9 kalkylatorer",
+    "badge_languages": "31 språk",
+    "badge_offline": "Offline",
+    "hero_feat_dosing_title": "Exakt dosering",
+    "hero_feat_dosing_desc": "nikotin, PG/VG, smaker. Resultat i ml och gram.",
+    "hero_feat_auto_title": "Rätt % fylls i automatiskt",
+    "hero_feat_auto_desc": "välj en smak från databasen, vi beräknar resten.",
+    "hero_feat_recipes_title": "Recept och påminnelser",
+    "hero_feat_recipes_desc": "spara, dela, följ mognaden. Push-notis: Din vätska är klar!",
+    "hero_feat_shisha_title": "Hookah / Shisha",
+    "hero_feat_shisha_desc": "den enda kalkylatorn i världen. Tobaksmix, DIY, melass, tweak.",
+    "hero_feat_stock_title": "Lager av ingredienser och vätskor",
+    "hero_feat_stock_desc": "vet vad du har hemma och vad du behöver köpa eller blanda.",
+    "hero_savings": "Färdig vätska: {commercial}. DIY med LiquiMixer: från {diy}. Spara upp till 96% med LiquiMixer.",
+    "edu_toggle": "Säkerhetsriktlinjer och förberedelse före blandning",
     "disclaimer_title": "Ansvarsfriskrivning",
     "disclaimer_text": "Genom att klicka på knappen \"Börja blanda\" bekräftar användaren att hen är minst 18 år gammal. Användaren erkänner att LiquiMixer uteslutande fungerar som ett beräkningsverktyg (kalkylator) och inte tar ansvar för slutprodukten. Användaren bär fullt ansvar för korrekt blandning, hantering av ingredienser och efterlevnad av säkerhetsprocedurer.",
     "start_button": "BÖRJA BLANDA"
@@ -1210,5 +1228,13 @@
     "too_low": "Under rekommenderat intervall ({min}-{max}%)",
     "too_high": "Över rekommenderat intervall ({min}-{max}%)",
     "ideal_range": "Idealiskt intervall ({min}-{max}%)"
+  },
+  "label": {
+    "hint": "Din etikett att klistra på flaskan",
+    "save": "Spara etikett",
+    "print": "Skriv ut",
+    "mixed": "Blandat",
+    "matured": "Mognat",
+    "popup_blocked": "Tillåt popup-fönster för utskrift."
   }
 }

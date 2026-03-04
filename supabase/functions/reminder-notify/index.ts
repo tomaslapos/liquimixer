@@ -164,6 +164,11 @@ async function sendNotification(
         title: title,
         body: body,
       },
+      webpush: {
+        notification: {
+          icon: "https://www.liquimixer.com/icons/icon-192.png",
+        },
+      },
     },
   };
 
