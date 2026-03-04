@@ -1361,8 +1361,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializovat flavor autocomplete pro formuláře receptů
     initRecipeFlavorAutocomplete();
     
-    // Update hero savings with dynamic currency
-    updateHeroSavings();
 });
 
 // Nastavit listener pro zprávy od Service Workeru
@@ -7459,15 +7457,9 @@ function updateHeroSavings() {
     const currency = langToCurrency[locale] || 'EUR';
     const p = prices[currency];
     const savingsKey = 'intro.hero_savings';
-    // Build localized savings text with dynamic prices
     let text = t(savingsKey);
-    // If translation returned the key itself, use template
-    if (text === savingsKey) {
-        text = `Hotový liquid stojí ${p.commercial} za 100 ml. Koupí surovin a vlastním mícháním tě vyjde od ${p.diy}. S kalkulačkou LiquiMixer se nemusíš bát šetřit — vše jednoduše a přesně vypočítá.`;
-    } else {
-        // Replace placeholder prices in translated string
-        text = text.replace('{commercial}', p.commercial).replace('{diy}', p.diy);
-    }
+    if (text === savingsKey) return;
+    text = text.replace('{commercial}', p.commercial).replace('{diy}', p.diy);
     el.textContent = text;
     // Remove data-i18n so applyTranslations() won't overwrite interpolated text
     el.removeAttribute('data-i18n');
