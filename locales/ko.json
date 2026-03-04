@@ -167,7 +167,7 @@
     "hero_feat_shisha_desc": "세계 유일의 계산기. 담배 믹스, DIY, 당밀, 트윅.",
     "hero_feat_stock_title": "재료 및 완성 리퀴드 재고",
     "hero_feat_stock_desc": "집에 있는 것과 구매할 것을 파악하세요.",
-    "hero_savings": "시판 리퀴드: {commercial}. LiquiMixer DIY: {diy}부터. LiquiMixer로 최대 96% 절약.",
+    "hero_savings": "시판 리퀴드는 100ml당 {commercial}입니다. 재료를 구매하고 직접 조합하면 {diy}부터 가능합니다. LiquiMixer 계산기로 절약을 두려워할 필요 없습니다 — 모든 것을 간단하고 정확하게 계산합니다.",
     "edu_toggle": "믹싱 전 안전 지침 및 준비",
     "disclaimer_title": "면책 조항",
     "disclaimer_text": "\"믹싱 시작\" 버튼을 클릭함으로써 사용자는 18세 이상임을 확인합니다. 사용자는 LiquiMixer가 계산 도구(계산기)로만 기능하며 최종 제품에 대한 책임을 지지 않음을 인정합니다. 사용자는 적절한 믹싱, 성분 취급 및 안전 절차 준수에 대한 전적인 책임을 집니다.",

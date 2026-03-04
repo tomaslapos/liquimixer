@@ -167,7 +167,7 @@
     "hero_feat_shisha_desc": "世界唯一の計算機。タバコミックス、DIY、モラセス、ツイーク。",
     "hero_feat_stock_title": "材料と完成リキッドの在庫",
     "hero_feat_stock_desc": "家にあるものと買い足すものが分かります。",
-    "hero_savings": "市販リキッド：{commercial}。LiquiMixerでDIY：{diy}から。LiquiMixerで最大96%節約。",
+    "hero_savings": "市販リキッドは100mlあたり{commercial}。材料を購入して自分で調合すれば{diy}から。LiquiMixer計算機なら節約を恐れる必要はありません — すべてをシンプルかつ正確に計算します。",
     "edu_toggle": "ミキシング前の安全ガイドラインと準備",
     "disclaimer_title": "免責事項",
     "disclaimer_text": "「ミキシング開始」ボタンをクリックすることで、ユーザーは18歳以上であることを確認します。ユーザーは、LiquiMixerが計算ツール（計算機）としてのみ機能し、最終製品に対する責任を負わないことを認めます。ユーザーは、適切なミキシング、成分の取り扱い、安全手順の遵守に対する全責任を負います。",

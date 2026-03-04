@@ -167,7 +167,7 @@
     "hero_feat_shisha_desc": "le seul calculateur au monde. Mix de tabacs, DIY, mélasse, tweak.",
     "hero_feat_stock_title": "Stock d'ingrédients et de liquides",
     "hero_feat_stock_desc": "sachez ce que vous avez chez vous et ce qu'il faut acheter ou mélanger.",
-    "hero_savings": "Liquide du commerce : {commercial}. Liquide DIY avec LiquiMixer : à partir de {diy}. Économisez jusqu'à 96 % avec LiquiMixer.",
+    "hero_savings": "Un liquide prêt à l'emploi coûte {commercial} pour 100 ml. En achetant les ingrédients et en mélangeant vous-même, cela revient à partir de {diy}. Avec la calculatrice LiquiMixer, n'ayez pas peur d'économiser — elle calcule tout simplement et précisément.",
     "edu_toggle": "Consignes de sécurité et préparation avant le mélange",
     "disclaimer_title": "Avertissement",
     "disclaimer_text": "En cliquant sur le bouton \"Commencer le mélange\", l'utilisateur confirme avoir au moins 18 ans. L'utilisateur reconnaît que LiquiMixer sert uniquement d'outil de calcul (calculateur) et n'assume aucune responsabilité pour le produit final. L'utilisateur assume l'entière responsabilité du mélange correct, de la manipulation des ingrédients et du respect des procédures de sécurité.",

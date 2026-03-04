@@ -7466,6 +7466,8 @@ function updateHeroSavings() {
         text = text.replace('{commercial}', p.commercial).replace('{diy}', p.diy);
     }
     el.textContent = text;
+    // Remove data-i18n so applyTranslations() won't overwrite interpolated text
+    el.removeAttribute('data-i18n');
 }
 
 function togglePrepDetail(button) {

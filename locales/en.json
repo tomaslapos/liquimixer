@@ -167,7 +167,7 @@
     "hero_feat_shisha_desc": "the only calculator in the world. Tobacco mix, DIY, molasses, tweak.",
     "hero_feat_stock_title": "Ingredient & liquid stock",
     "hero_feat_stock_desc": "know what you have at home and what to buy or mix.",
-    "hero_savings": "Store-bought liquid: {commercial}. DIY with LiquiMixer: from {diy}. Save up to 96% with LiquiMixer.",
+    "hero_savings": "Store-bought liquid costs {commercial} per 100 ml. By buying ingredients and mixing yourself, it costs from {diy}. With the LiquiMixer calculator, you don't have to be afraid to save — it calculates everything simply and precisely.",
     "edu_toggle": "Safety guidelines & preparation before mixing",
     "disclaimer_title": "Disclaimer",
     "disclaimer_text": "By clicking the \"Start Mixing\" button, the user confirms being at least 18 years of age. The user acknowledges that LiquiMixer serves solely as a calculation tool (calculator) and assumes no responsibility for the final product. The user bears full responsibility for proper mixing, handling of ingredients, and compliance with safety procedures.",

@@ -167,7 +167,7 @@
     "hero_feat_shisha_desc": "世界上唯一的计算器。烟草混合、DIY、糖浆、调整。",
     "hero_feat_stock_title": "原料和成品烟油库存",
     "hero_feat_stock_desc": "了解家中有什么，需要购买或混合什么。",
-    "hero_savings": "成品烟油：{commercial}。LiquiMixer DIY：从{diy}起。使用LiquiMixer节省高达96%。",
+    "hero_savings": "成品烟油每100毫升售价{commercial}。自购原料自行调配，仅需{diy}起。使用LiquiMixer计算器，无需担心节省开支——它会简单精确地计算一切。",
     "edu_toggle": "混合前的安全指南和准备",
     "disclaimer_title": "免责声明",
     "disclaimer_text": "点击「开始调配」按钮，用户确认已年满 18 岁。用户承认 LiquiMixer 仅作为计算工具（计算器）使用，不对最终产品承担任何责任。用户对正确调配、处理成分和遵守安全程序承担全部责任。",
