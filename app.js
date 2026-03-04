@@ -7453,7 +7453,7 @@ function updateHeroSavings() {
         en: 'USD', ja: 'USD', ko: 'USD', 'zh-CN': 'USD', 'zh-TW': 'USD',
         'ar-SA': 'USD', tr: 'USD', ru: 'USD', uk: 'USD'
     };
-    const locale = window.i18n?.currentLocale || navigator.language?.split('-')[0] || 'en';
+    const locale = window.i18n?.getLocale?.() || navigator.language?.split('-')[0] || 'en';
     const currency = langToCurrency[locale] || 'EUR';
     const p = prices[currency];
     const savingsKey = 'intro.hero_savings';
