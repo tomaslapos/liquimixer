@@ -1360,6 +1360,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inicializovat flavor autocomplete pro formuláře receptů
     initRecipeFlavorAutocomplete();
+    
+    // Update hero savings with dynamic currency
+    updateHeroSavings();
 });
 
 // Nastavit listener pro zprávy od Service Workeru
@@ -4368,6 +4371,9 @@ async function saveRecipe(event) {
                         if (permissionGranted && window.fcm && window.fcm.getToken) {
                             await window.fcm.getToken();
                         }
+                    } else if ('Notification' in window && Notification.permission === 'granted' && window.fcm && window.fcm.getToken) {
+                        // Permission already granted — ensure FCM token is registered in DB
+                        await window.fcm.getToken();
                     }
                     
                     // Uložit připomínku
@@ -7414,6 +7420,53 @@ document.addEventListener('click', function(event) {
         }
     }
 });
+
+// Toggle edu accordion (safety & prep section)
+function toggleEduSection(button) {
+    const content = button.nextElementSibling;
+    const isActive = button.classList.contains('active');
+    if (isActive) {
+        button.classList.remove('active');
+        content.classList.remove('open');
+    } else {
+        button.classList.add('active');
+        content.classList.add('open');
+    }
+}
+
+// Update hero savings text with dynamic currency based on locale
+function updateHeroSavings() {
+    const el = document.getElementById('heroSavingsText');
+    if (!el) return;
+    const prices = {
+        CZK: { commercial: '120–350 Kč', diy: '25 Kč' },
+        EUR: { commercial: '5–15 €', diy: '1 €' },
+        USD: { commercial: '$5–15', diy: '$1' }
+    };
+    const langToCurrency = {
+        cs: 'CZK', sk: 'CZK',
+        de: 'EUR', fr: 'EUR', it: 'EUR', es: 'EUR', pt: 'EUR', nl: 'EUR',
+        pl: 'EUR', ro: 'EUR', hu: 'EUR', el: 'EUR', bg: 'EUR', hr: 'EUR',
+        sl: 'EUR', et: 'EUR', lv: 'EUR', lt: 'EUR', fi: 'EUR', sv: 'EUR',
+        da: 'EUR', no: 'EUR', sr: 'EUR',
+        en: 'USD', ja: 'USD', ko: 'USD', 'zh-CN': 'USD', 'zh-TW': 'USD',
+        'ar-SA': 'USD', tr: 'USD', ru: 'USD', uk: 'USD'
+    };
+    const locale = window.i18n?.currentLocale || navigator.language?.split('-')[0] || 'en';
+    const currency = langToCurrency[locale] || 'EUR';
+    const p = prices[currency];
+    const savingsKey = 'intro.hero_savings';
+    // Build localized savings text with dynamic prices
+    let text = t(savingsKey);
+    // If translation returned the key itself, use template
+    if (text === savingsKey) {
+        text = `${t('intro.hero_savings_commercial', 'Hotový liquid')}: ${p.commercial}. ${t('intro.hero_savings_diy', 'Namíchaný liquid s LiquiMixer')}: ${t('intro.hero_savings_from', 'od')} ${p.diy}. ${t('intro.hero_savings_save', 'Ušetři až 96 % s LiquiMixer')}.`;
+    } else {
+        // Replace placeholder prices in translated string
+        text = text.replace('{commercial}', p.commercial).replace('{diy}', p.diy);
+    }
+    el.textContent = text;
+}
 
 function togglePrepDetail(button) {
     const accordion = button.parentElement;
@@ -13274,6 +13327,37 @@ async function checkMaturedReminders() {
         
         if (!reminders || reminders.length === 0) return;
         
+        // Ensure FCM token is registered if user has any active reminders
+        const activeReminders = reminders.filter(r => 
+            (r.status === 'pending' || r.status === 'matured') && r.consumed_at == null && (r.stock_percent ?? 100) > 0
+        );
+        if (activeReminders.length > 0 && window.fcm) {
+            const currentToken = window.fcm.getCurrentToken();
+            if (!currentToken && 'Notification' in window) {
+                console.log('[FCM] User has', activeReminders.length, 'active reminders but no FCM token. Permission:', Notification.permission);
+                if (Notification.permission === 'granted') {
+                    // Permission granted but token missing — register now
+                    try {
+                        await window.fcm.getToken();
+                        console.log('[FCM] Token registered for push notifications');
+                    } catch (e) {
+                        console.warn('[FCM] Failed to register token:', e);
+                    }
+                } else if (Notification.permission === 'default') {
+                    // Never asked — prompt user
+                    const granted = await requestNotificationPermissionWithPrompt();
+                    if (granted) {
+                        try {
+                            await window.fcm.getToken();
+                            console.log('[FCM] Token registered after permission prompt');
+                        } catch (e) {
+                            console.warn('[FCM] Failed to register token after prompt:', e);
+                        }
+                    }
+                }
+            }
+        }
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
@@ -13671,6 +13755,9 @@ async function showViewReminderModal(reminderId) {
     }
 
     modal.classList.remove('hidden');
+    
+    // Populate recipe label for sticker
+    populateRecipeLabel(reminder);
 }
 
 // Aktualizovat stock z viewReminderModal
@@ -13782,6 +13869,164 @@ window.updateViewReminderStock = updateViewReminderStock;
 window.updateReminderModalDate = updateReminderModalDate;
 window.saveReminderFromModal = saveReminderFromModal;
 window.deleteReminderConfirm = deleteReminderConfirm;
+window.saveLabelAsImage = saveLabelAsImage;
+window.printLabel = printLabel;
+
+// =============================================
+// ŠTÍTEK K RECEPTU (Label with QR code)
+// =============================================
+
+// Populate recipe label when viewing reminder detail
+function populateRecipeLabel(reminder) {
+    if (!reminder || !currentViewingRecipe) return;
+    
+    const recipe = currentViewingRecipe;
+    const data = recipe.recipe_data || {};
+    const currentLocale = window.i18n?.currentLocale || 'cs';
+    
+    // Recipe name
+    const nameEl = document.getElementById('recipeLabelName');
+    if (nameEl) nameEl.textContent = recipe.name || '?';
+    
+    // Volume
+    const volEl = document.getElementById('recipeLabelVolume');
+    if (volEl) volEl.textContent = `${t('recipe_detail.total_volume', 'Volume')}: ${data.totalAmount || '?'} ml`;
+    
+    // VG/PG ratio
+    const ratioEl = document.getElementById('recipeLabelRatio');
+    const vg = data.vgPercent ?? data.ratio ?? '?';
+    const pg = vg !== '?' ? (100 - vg) : '?';
+    if (ratioEl) ratioEl.textContent = `VG/PG: ${vg}:${pg}`;
+    
+    // Nicotine
+    const nicEl = document.getElementById('recipeLabelNicotine');
+    const nic = parseFloat(data.nicotine ?? 0).toFixed(1);
+    if (nicEl) nicEl.textContent = `${t('recipe_detail.nicotine', 'Nicotine')}: ${nic} mg/ml`;
+    
+    // Mix date
+    const mixDateEl = document.getElementById('recipeLabelMixDate');
+    if (mixDateEl && reminder.mixed_at) {
+        const mixDate = new Date(reminder.mixed_at).toLocaleDateString(currentLocale);
+        mixDateEl.textContent = `${t('label.mixed', 'Namícháno')}: ${mixDate}`;
+    }
+    
+    // Steep date (remind_at = maturation date)
+    const steepEl = document.getElementById('recipeLabelSteepDate');
+    if (steepEl && reminder.remind_at) {
+        const steepDate = new Date(reminder.remind_at).toLocaleDateString(currentLocale);
+        steepEl.textContent = `${t('label.matured', 'Vyzrání')}: ${steepDate}`;
+    }
+    
+    // Generate QR code (same URL as share link)
+    const qrContainer = document.getElementById('recipeLabelQr');
+    if (qrContainer && recipe.share_id) {
+        qrContainer.innerHTML = '';
+        try {
+            const shareUrl = `${SHARE_DOMAIN}/?recipe=${recipe.share_id}`;
+            const qr = qrcode(0, 'M');
+            qr.addData(shareUrl);
+            qr.make();
+            qrContainer.innerHTML = qr.createImgTag(3, 0);
+        } catch (e) {
+            console.error('QR generation error:', e);
+            qrContainer.innerHTML = '<div style="width:100px;height:100px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;">QR</div>';
+        }
+    } else if (qrContainer) {
+        qrContainer.innerHTML = '<div style="width:100px;height:100px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;">QR</div>';
+    }
+}
+
+// Save label as image using canvas
+function saveLabelAsImage() {
+    const card = document.getElementById('recipeLabelCard');
+    if (!card) return;
+    
+    // Use html2canvas-like approach with native canvas
+    const canvas = document.createElement('canvas');
+    const scale = 3; // High DPI
+    const rect = card.getBoundingClientRect();
+    canvas.width = rect.width * scale;
+    canvas.height = rect.height * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+    
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+    
+    // Draw QR code
+    const qrImg = card.querySelector('.recipe-label-qr img');
+    if (qrImg) {
+        ctx.drawImage(qrImg, 16, 16, 100, 100);
+    }
+    
+    // Draw text info
+    ctx.fillStyle = '#1a1a2e';
+    ctx.font = 'bold 14px sans-serif';
+    const nameEl = document.getElementById('recipeLabelName');
+    ctx.fillText(nameEl?.textContent || '', 130, 30);
+    
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = '#475569';
+    const fields = ['recipeLabelVolume', 'recipeLabelRatio', 'recipeLabelNicotine', 'recipeLabelMixDate', 'recipeLabelSteepDate'];
+    let y = 50;
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el?.textContent) {
+            ctx.fillText(el.textContent, 130, y);
+            y += 16;
+        }
+    });
+    
+    // Branding
+    ctx.font = 'italic 9px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('www.liquimixer.com', 130, y + 5);
+    
+    // Dashed border
+    ctx.setLineDash([5, 3]);
+    ctx.strokeStyle = '#ccc';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(1, 1, rect.width - 2, rect.height - 2);
+    
+    // Download
+    const link = document.createElement('a');
+    const recipeName = nameEl?.textContent?.replace(/[^a-zA-Z0-9]/g, '_') || 'recipe';
+    link.download = `LiquiMixer_${recipeName}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+// Print label
+function printLabel() {
+    const card = document.getElementById('recipeLabelCard');
+    if (!card) return;
+    
+    const printWindow = window.open('', '_blank', 'width=400,height=300');
+    if (!printWindow) {
+        alert(t('label.popup_blocked', 'Povolte vyskakovací okna pro tisk.'));
+        return;
+    }
+    
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html><head><title>LiquiMixer Label</title>
+        <style>
+            body { margin: 10mm; font-family: sans-serif; }
+            .label { display: flex; gap: 14px; padding: 16px; border: 2px dashed #ccc; border-radius: 8px; max-width: 80mm; }
+            .qr { flex-shrink: 0; }
+            .qr img { width: 25mm; height: 25mm; }
+            .info { flex: 1; }
+            .name { font-size: 12pt; font-weight: bold; margin-bottom: 4px; }
+            .detail { font-size: 9pt; color: #475569; line-height: 1.5; }
+            .brand { font-size: 7pt; color: #94a3b8; font-style: italic; margin-top: 6px; padding-top: 4px; border-top: 1px solid #e2e8f0; }
+        </style></head><body>
+        <div class="label">${card.innerHTML}</div>
+        <script>window.onload=function(){window.print();window.close();}<\/script>
+        </body></html>
+    `);
+    printWindow.document.close();
+}
 
 // =============================================
 // VEŘEJNÁ DATABÁZE RECEPTŮ

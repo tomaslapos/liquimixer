@@ -164,14 +164,6 @@ async function sendNotification(
         title: title,
         body: body,
       },
-      data: data || {},
-      webpush: {
-        notification: {
-          icon: "/icons/icon-192.png",
-          badge: "/icons/badge-96.png",
-          requireInteraction: true,
-        },
-      },
     },
   };
 
@@ -200,7 +192,7 @@ async function sendNotification(
       return 'error';
     }
 
-    console.log("Notification sent successfully:", responseData);
+    console.log("Notification sent successfully:", responseData?.name);
     return 'sent';
   } catch (error) {
     console.error("Error sending notification:", error);
@@ -233,7 +225,6 @@ serve(async (req) => {
     }
 
     const serviceAccount = JSON.parse(serviceAccountJson);
-
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

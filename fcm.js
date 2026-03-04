@@ -115,7 +115,7 @@ function getVapidKey() {
 
 // Save FCM token to Supabase database
 async function saveFcmTokenToDatabase(token) {
-    if (!token) return false;
+    if (!token) { console.warn('saveFcmTokenToDatabase: no token'); return false; }
     
     // Check if user is logged in (using Clerk)
     if (typeof Clerk === 'undefined' || !Clerk.user) {
@@ -125,10 +125,17 @@ async function saveFcmTokenToDatabase(token) {
     
     try {
         const clerkId = Clerk.user.id;
+        console.log('saveFcmTokenToDatabase: clerk_id=' + clerkId + ', token=' + token.substring(0, 20) + '...');
         
         // Ensure Supabase JWT auth is set before saving (prevents RLS failures)
         if (window.LiquiMixerDB && window.LiquiMixerDB.setAuth) {
-            await window.LiquiMixerDB.setAuth();
+            const authResult = await window.LiquiMixerDB.setAuth();
+            console.log('saveFcmTokenToDatabase: setAuth result=' + authResult);
+            if (!authResult) {
+                console.error('saveFcmTokenToDatabase: setAuth FAILED — RLS will block the upsert');
+            }
+        } else {
+            console.error('saveFcmTokenToDatabase: LiquiMixerDB.setAuth NOT AVAILABLE');
         }
         
         // Get device info
@@ -144,13 +151,17 @@ async function saveFcmTokenToDatabase(token) {
         if (typeof window.database !== 'undefined' && window.database.saveFcmToken) {
             const result = await window.database.saveFcmToken(clerkId, token, deviceInfo);
             if (result.error) {
-                console.error('FCM token save failed:', result.error);
+                console.error('FCM token save FAILED:', result.error?.message || result.error);
                 return false;
             }
-            console.log('FCM token saved to database');
+            if (!result.data) {
+                console.error('FCM token save: NO ERROR but NO DATA returned — likely RLS policy blocking INSERT');
+                return false;
+            }
+            console.log('FCM token saved to database OK, id=' + result.data?.id);
             return true;
         } else {
-            console.warn('Database module not available');
+            console.error('saveFcmTokenToDatabase: window.database=' + typeof window.database + ', saveFcmToken=' + (window.database?.saveFcmToken ? 'yes' : 'NO'));
             return false;
         }
     } catch (error) {
@@ -176,8 +187,12 @@ function setupForegroundMessageHandler() {
             data: payload.data
         };
         
-        // Show notification
-        if (Notification.permission === 'granted') {
+        // Show notification via Service Worker (more reliable than new Notification())
+        if (Notification.permission === 'granted' && navigator.serviceWorker?.controller) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.showNotification(notificationTitle, notificationOptions);
+            });
+        } else if (Notification.permission === 'granted') {
             new Notification(notificationTitle, notificationOptions);
         }
     });
@@ -220,10 +235,12 @@ function getNotificationPermissionStatus() {
 
 // Initialize FCM when page loads
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('[FCM-DIAG] DOMContentLoaded, Notification.permission=' + (('Notification' in window) ? Notification.permission : 'NOT_SUPPORTED'));
     // Wait for Firebase SDK to load
     const checkFirebase = setInterval(() => {
         if (typeof firebase !== 'undefined') {
             clearInterval(checkFirebase);
+            console.log('[FCM-DIAG] Firebase SDK loaded');
             initializeFirebase();
             setupForegroundMessageHandler();
             
@@ -231,16 +248,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const waitForClerk = setInterval(() => {
                 if (typeof Clerk !== 'undefined' && Clerk.loaded) {
                     clearInterval(waitForClerk);
+                    console.log('[FCM-DIAG] Clerk loaded, user=' + (Clerk.user ? Clerk.user.id : 'null') + ', permission=' + Notification.permission);
                     
                     // If user is already logged in, register token
                     if (Clerk.user) {
                         if (Notification.permission === 'granted') {
-                            getFcmToken();
+                            console.log('[FCM-DIAG] Calling getFcmToken (auto-register on load)');
+                            getFcmToken().then(t => console.log('[FCM-DIAG] getFcmToken result:', t ? t.substring(0, 20) + '...' : 'NULL')).catch(e => console.error('[FCM-DIAG] getFcmToken error:', e));
+                        } else {
+                            console.log('[FCM-DIAG] SKIPPING auto-register: permission=' + Notification.permission);
                         }
+                    } else {
+                        console.log('[FCM-DIAG] SKIPPING: no Clerk user');
                     }
                     
                     // Listen for sign-in/sign-out
                     Clerk.addListener(({ user }) => {
+                        console.log('[FCM-DIAG] Clerk listener fired, user=' + (user ? user.id : 'null') + ', permission=' + Notification.permission);
                         if (user && Notification.permission === 'granted') {
                             getFcmToken();
                         }
