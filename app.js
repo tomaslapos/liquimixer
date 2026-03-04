@@ -6044,6 +6044,120 @@ async function loadSharedRecipe() {
     }
 }
 
+// Načíst příchuť z SEO stránky (?seo_flavor=slug)
+async function loadSeoFlavor() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const seoSlug = urlParams.get('seo_flavor');
+    
+    if (!seoSlug || typeof seoSlug !== 'string') return false;
+    
+    // Validace slug formátu (lowercase, alfanumerické + pomlčky)
+    if (!/^[a-z0-9-]{3,80}$/.test(seoSlug)) {
+        console.error('loadSeoFlavor: Invalid slug format:', seoSlug);
+        return false;
+    }
+    
+    console.log('loadSeoFlavor: Processing slug:', seoSlug);
+    
+    // Lookup v SEO flavor mapě
+    const seoData = window.SEO_FLAVORS?.[seoSlug];
+    if (!seoData) {
+        console.error('loadSeoFlavor: Unknown slug:', seoSlug);
+        showNotification(t('seo.flavor_not_found', 'Flavor not found.'), 'error');
+        showPage('intro');
+        return false;
+    }
+    
+    // Počkat na inicializaci Supabase
+    if (window.LiquiMixerDB) {
+        window.LiquiMixerDB.init();
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    try {
+        let flavor = null;
+        
+        // 1. Pokusit se načíst přímo přes flavor_id (pokud je k dispozici)
+        if (seoData.flavor_id) {
+            flavor = await window.LiquiMixerDB.getFlavorById(seoData.flavor_id);
+        }
+        
+        // 2. Fallback: vyhledat dle manufacturer_code + name
+        if (!flavor && seoData.manufacturer_code && seoData.name) {
+            const result = await window.LiquiMixerDB.searchFlavors({
+                manufacturer_code: seoData.manufacturer_code,
+                search: seoData.name,
+                product_type: seoData.product_type || 'vape'
+            }, 1, 5);
+            
+            if (result.data && result.data.length > 0) {
+                // Najít přesnou shodu názvu
+                flavor = result.data.find(f => 
+                    f.name.toLowerCase() === seoData.name.toLowerCase()
+                ) || result.data[0];
+            }
+        }
+        
+        if (!flavor) {
+            console.error('loadSeoFlavor: Flavor not found in database:', seoSlug);
+            showNotification(t('seo.flavor_not_found', 'Flavor not found in database.'), 'error');
+            showPage('intro');
+            return false;
+        }
+        
+        console.log('loadSeoFlavor: Found flavor:', flavor.name, 'ID:', flavor.id);
+        
+        // Vytvořit flavorLink objekt kompatibilní s prefillFlavorAutocomplete
+        const flavorLink = {
+            flavor_id: flavor.id,
+            flavor_name: flavor.name,
+            flavor_manufacturer: flavor.manufacturer_code,
+            percentage: flavor.recommended_percent || ((flavor.min_percent || 5) + (flavor.max_percent || 15)) / 2,
+            generic_flavor_type: flavor.category || seoData.category || 'fruit',
+            flavor: {
+                id: flavor.id,
+                name: flavor.name,
+                manufacturer_name: flavor.flavor_manufacturers?.name || seoData.manufacturer_code,
+                manufacturer_code: flavor.manufacturer_code,
+                category: flavor.category || seoData.category || 'fruit',
+                product_type: flavor.product_type || 'vape',
+                min_percent: flavor.min_percent,
+                max_percent: flavor.max_percent,
+                recommended_percent: flavor.recommended_percent,
+                steep_days: flavor.steep_days,
+                vg_ratio: flavor.vg_ratio
+            }
+        };
+        
+        // Povolit programovou změnu záložky
+        window.allowTabSwitch = true;
+        
+        // Přepnout na liquid formulář
+        switchFormTab('liquid');
+        
+        // Předvyplnit liquid formulář s příchutí
+        prefillLiquidForm({
+            flavorType: 'specific'
+        }, [flavorLink]);
+        
+        // Zobrazit formulář (přeskočit intro — uživatel souhlasil na SEO stránce)
+        showPage('form');
+        
+        // Vyčistit URL (odebrat ?seo_flavor= parametr)
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+        
+        console.log('loadSeoFlavor: Flavor prefilled successfully:', flavor.name);
+        return true;
+        
+    } catch (error) {
+        console.error('loadSeoFlavor: Error:', error);
+        showNotification(t('seo.flavor_error', 'Error loading flavor data.'), 'error');
+        showPage('intro');
+        return false;
+    }
+}
+
 // Zobrazit disclaimer pro sdílený recept
 function showSharedRecipeDisclaimer(shareId) {
     // Uložit shareId pro pozdější načtení
@@ -7387,6 +7501,10 @@ window.addEventListener('load', async function() {
     // Zkusit načíst sdílený recept
     const isSharedRecipe = await loadSharedRecipe();
     if (isSharedRecipe) return;
+    
+    // Zkusit načíst příchuť z SEO stránky (?seo_flavor=slug)
+    const isSeoFlavor = await loadSeoFlavor();
+    if (isSeoFlavor) return;
 });
 
 // Close menus when clicking outside

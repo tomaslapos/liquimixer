@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>SEO Flavors — Fetch from Supabase</title>
+    <style>
+        body { background: #0a0a15; color: #fff; font-family: monospace; padding: 20px; }
+        button { padding: 12px 24px; font-size: 1rem; cursor: pointer; background: #ff00ff; color: #000; border: none; border-radius: 8px; margin: 8px; }
+        button:hover { opacity: 0.8; }
+        pre { background: #111; padding: 16px; border-radius: 8px; overflow: auto; max-height: 80vh; font-size: 0.8rem; line-height: 1.4; }
+        .info { color: #00ffff; margin: 10px 0; }
+        .count { color: #00ff88; font-size: 1.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>SEO Flavors — Supabase Export</h1>
+    <p class="info">Načte příchutě s recommended_percent z Supabase DB, seřazené dle usage_count (nejpoužívanější).</p>
+    
+    <button onclick="fetchFlavors(150)">Načíst TOP 150 příchutí</button>
+    <button onclick="fetchFlavors(300)">Načíst TOP 300</button>
+    <button onclick="copyOutput()">📋 Kopírovat výstup</button>
+    
+    <p class="count" id="countInfo"></p>
+    <pre id="output">Klikni na tlačítko pro načtení...</pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://krwdfxnvhnxtkhtkbadi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd2RmeG52aG54dGtodGtiYWRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0NzA1NDcsImV4cCI6MjA4MTA0NjU0N30.IKpOTRfPaOwyBSnIpqOK2utwIDnllLM3XcV9NH-tXrA';
+        
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { autoRefreshToken: false, persistSession: false }
+        });
+
+        function slugify(manufacturerCode, name) {
+            const raw = (manufacturerCode + '-' + name)
+                .toLowerCase()
+                .replace(/[()[\]{}]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .replace(/-{2,}/g, '-');
+            return raw.substring(0, 80);
+        }
+
+        async function fetchFlavors(limit) {
+            const output = document.getElementById('output');
+            const countInfo = document.getElementById('countInfo');
+            output.textContent = 'Načítám z Supabase...';
+            
+            try {
+                const { data, error, count } = await sb
+                    .from('flavors')
+                    .select('id, name, manufacturer_code, category, product_type, min_percent, max_percent, recommended_percent, steep_days, usage_count, avg_rating, flavor_manufacturers!inner(name)', { count: 'exact' })
+                    .eq('status', 'active')
+                    .not('recommended_percent', 'is', null)
+                    .order('usage_count', { ascending: false })
+                    .range(0, limit - 1);
+                
+                if (error) {
+                    output.textContent = 'CHYBA: ' + JSON.stringify(error, null, 2);
+                    return;
+                }
+
+                countInfo.textContent = `Nalezeno: ${data.length} příchutí (z ${count} s recommended_percent)`;
+
+                // Generovat seo-flavors.js obsah
+                let jsOutput = 'window.SEO_FLAVORS = {\n';
+                const slugs = new Set();
+
+                data.forEach((f, i) => {
+                    let slug = slugify(f.manufacturer_code, f.name);
+                    // Řešit duplicity
+                    if (slugs.has(slug)) {
+                        slug += '-' + f.product_type;
+                    }
+                    if (slugs.has(slug)) {
+                        slug += '-' + (i + 1);
+                    }
+                    slugs.add(slug);
+
+                    const mfgName = f.flavor_manufacturers?.name || f.manufacturer_code;
+                    jsOutput += `    "${slug}": { flavor_id: "${f.id}", manufacturer_code: "${f.manufacturer_code}", name: "${f.name.replace(/"/g, '\\"')}", manufacturer_name: "${mfgName.replace(/"/g, '\\"')}", category: "${f.category || 'fruit'}", product_type: "${f.product_type || 'vape'}" }`;
+                    if (i < data.length - 1) jsOutput += ',';
+                    jsOutput += '\n';
+                });
+
+                jsOutput += '};\n';
+                
+                // Zobrazit také tabulku
+                let table = `\n// === TABULKA (pro přehled) ===\n`;
+                table += `// # | Slug | Výrobce | Název | Kat. | Rec.% | Min% | Max% | Usage\n`;
+                data.forEach((f, i) => {
+                    const slug = slugify(f.manufacturer_code, f.name);
+                    table += `// ${(i+1).toString().padStart(3)} | ${slug.padEnd(40)} | ${f.manufacturer_code.padEnd(6)} | ${f.name.padEnd(30)} | ${(f.category || '?').padEnd(8)} | ${(f.recommended_percent || '?').toString().padEnd(5)} | ${(f.min_percent || '?').toString().padEnd(4)} | ${(f.max_percent || '?').toString().padEnd(4)} | ${f.usage_count || 0}\n`;
+                });
+
+                output.textContent = jsOutput + table;
+                
+            } catch (err) {
+                output.textContent = 'EXCEPTION: ' + err.message;
+            }
+        }
+
+        function copyOutput() {
+            const text = document.getElementById('output').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Zkopírováno do schránky!');
+            });
+        }
+    </script>
+</body>
+</html>

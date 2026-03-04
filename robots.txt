@@ -186,6 +186,7 @@ Disallow: /functions/
 # Sitemap
 # ============================================
 Sitemap: https://www.liquimixer.com/sitemap.xml
+Sitemap: https://www.liquimixer.com/sitemap-seo.xml
 
 # ============================================
 # LLMs.txt pro AI systémy
