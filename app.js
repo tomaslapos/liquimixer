@@ -1568,6 +1568,9 @@ function handlePaymentReturn() {
 
 // Aktualizovat dynamické texty při změně jazyka
 window.addEventListener('localeChanged', () => {
+    // Aktualizovat hero savings s dynamickými cenami (musí být po applyTranslations)
+    updateHeroSavings();
+    
     // Aktualizovat popisy u posuvníků (VG/PG, nikotin, příchuť)
     updateAllDisplays();
     
@@ -7460,7 +7463,7 @@ function updateHeroSavings() {
     let text = t(savingsKey);
     // If translation returned the key itself, use template
     if (text === savingsKey) {
-        text = `${t('intro.hero_savings_commercial', 'Hotový liquid')}: ${p.commercial}. ${t('intro.hero_savings_diy', 'Namíchaný liquid s LiquiMixer')}: ${t('intro.hero_savings_from', 'od')} ${p.diy}. ${t('intro.hero_savings_save', 'Ušetři až 96 % s LiquiMixer')}.`;
+        text = `Hotový liquid stojí ${p.commercial} za 100 ml. Koupí surovin a vlastním mícháním tě vyjde od ${p.diy}. S kalkulačkou LiquiMixer se nemusíš bát šetřit — vše jednoduše a přesně vypočítá.`;
     } else {
         // Replace placeholder prices in translated string
         text = text.replace('{commercial}', p.commercial).replace('{diy}', p.diy);
