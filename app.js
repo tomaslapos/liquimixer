@@ -3303,6 +3303,175 @@ let selectedRating = 0;
 // Uložit aktuální recept do paměti pro pozdější uložení
 function storeCurrentRecipe(data) {
     currentRecipeData = data;
+    // Asynchronně logovat výpočet do analytics DB
+    logCalculation(data);
+}
+
+// ============================================
+// CALCULATION LOGGING (Analytics DB)
+// ============================================
+
+// Anonymní UUID — identifikuje zařízení bez přihlášení
+function getAnonymousId() {
+    let id = localStorage.getItem('liquimixer_anonymous_id');
+    if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem('liquimixer_anonymous_id', id);
+    }
+    return id;
+}
+
+// Detekce typu zařízení
+function getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/tablet|ipad|playbook|silk/i.test(ua)) return 'tablet';
+    if (/mobile|iphone|ipod|android.*mobile|windows phone/i.test(ua)) return 'mobile';
+    return 'desktop';
+}
+
+// Detekce PWA režimu
+function getIsPwa() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true ||
+           document.referrer.includes('android-app://');
+}
+
+// Session hash (fingerprint bez osobních údajů)
+function getSessionHash() {
+    const raw = [
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        new Date().toISOString().substring(0, 10),
+        getDeviceType()
+    ].join('|');
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) {
+        hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash).toString(36);
+}
+
+// Mapovat formType na calc_type
+function getCalcType(data) {
+    const ft = data.formType || data.form_type || 'liquid';
+    const map = {
+        'liquid': 'liquid',
+        'shakevape': 'shakevape',
+        'snv': 'shakevape',
+        'liquidpro': 'liquidpro',
+        'pro': 'liquidpro',
+        'shortfill': 'shortfill',
+        'dilute': 'dilution',
+        'dilution': 'dilution',
+        'shisha': data.shishaMode === 'mix' ? 'shisha_mix' :
+                  data.shishaMode === 'diy' ? 'shisha_diy' :
+                  data.shishaMode === 'molasses' ? 'shisha_molasses' :
+                  data.shishaMode === 'tweak' ? 'shisha_tweak' : 'shisha_mix'
+    };
+    return map[ft] || 'liquid';
+}
+
+// Client-side rate limit (max 25 za minutu)
+let calcLogCount = 0;
+let calcLogResetAt = 0;
+
+async function logCalculation(data) {
+    try {
+        // Client-side rate limit
+        const now = Date.now();
+        if (now > calcLogResetAt) {
+            calcLogCount = 0;
+            calcLogResetAt = now + 60000;
+        }
+        if (calcLogCount >= 25) return;
+        calcLogCount++;
+
+        const calcType = getCalcType(data);
+
+        // Parametry výpočtu (vše co uživatel nastavil)
+        const params = {
+            totalAmount: data.totalAmount,
+            vgPercent: data.vgPercent,
+            pgPercent: data.pgPercent,
+            nicotine: data.nicotine,
+            flavorType: data.flavorType || null,
+            flavorPercent: data.flavorPercent || null,
+            baseType: data.baseType || null,
+            premixedRatio: data.premixedRatio || null,
+            formType: data.formType || null,
+            shishaMode: data.shishaMode || null,
+        };
+
+        // Příchutě (názvy, výrobci, %)
+        if (data.flavors && Array.isArray(data.flavors)) {
+            params.flavors = data.flavors.map(f => ({
+                type: f.type, percent: f.percent,
+                name: f.flavorName || null, manufacturer: f.manufacturer || null
+            }));
+        }
+        if (data.specificFlavorName) {
+            params.specificFlavor = {
+                name: data.specificFlavorName,
+                manufacturer: data.specificFlavorManufacturer || null,
+                source: data.specificFlavorSource || null
+            };
+        }
+
+        // Aditiva (liquidpro)
+        if (data.additives && Array.isArray(data.additives)) {
+            params.additives = data.additives.map(a => ({ type: a.type, percent: a.percent }));
+        }
+
+        // Shisha specifika
+        if (data.shishaMode) {
+            params.sweetener = data.sweetener || null;
+            params.tobaccos = data.tobaccos ? data.tobaccos.map(tb => ({
+                name: tb.name || null, percent: tb.percent, brand: tb.brand || null
+            })) : null;
+            params.tweakState = data.tweakState ? {
+                tobaccoAmount: data.tweakState.tobaccoAmount || null,
+                flavorCount: data.tweakState.flavors ? data.tweakState.flavors.filter(f => f && f.type !== 'none').length : 0
+            } : null;
+        }
+
+        // Výsledky (ingredience)
+        const results = {};
+        if (data.ingredients && Array.isArray(data.ingredients)) {
+            results.ingredients = data.ingredients.map(ing => ({
+                key: ing.ingredientKey, volume: ing.volume, percent: ing.percent
+            }));
+        }
+        if (data.actualVg !== undefined) results.actualVg = data.actualVg;
+        if (data.actualPg !== undefined) results.actualPg = data.actualPg;
+
+        const payload = {
+            calc_type: calcType,
+            params: params,
+            results: results,
+            anonymous_id: getAnonymousId(),
+            clerk_id: window.Clerk?.user?.id || null,
+            locale: navigator.language || 'en',
+            device_type: getDeviceType(),
+            screen_resolution: screen.width + 'x' + screen.height,
+            is_pwa: getIsPwa(),
+            user_agent: navigator.userAgent.substring(0, 300),
+            referrer: document.referrer ? document.referrer.substring(0, 500) : null,
+            session_hash: getSessionHash()
+        };
+
+        const sbUrl = getSupabaseUrl();
+        fetch(sbUrl + '/functions/v1/calc-log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getSupabaseAnonKey()
+            },
+            body: JSON.stringify(payload)
+        }).catch(() => {});
+    } catch (e) {
+        // Nesmí nikdy rozbít hlavní výpočet
+    }
 }
 
 // ============================================

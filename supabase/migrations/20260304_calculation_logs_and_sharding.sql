@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS calculation_logs (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     -- Identifikace uživatele (nullable — i nepřihlášení uživatelé generují logy)
     clerk_id TEXT,
+    -- Anonymní UUID z localStorage (identifikuje zařízení)
+    anonymous_id UUID,
     -- Anonymní session fingerprint pro nepřihlášené (hash user-agent + locale + screen)
     session_hash TEXT,
     -- Typ kalkulátoru
@@ -21,7 +23,10 @@ CREATE TABLE IF NOT EXISTS calculation_logs (
     results JSONB DEFAULT '{}'::jsonb,
     -- Metadata
     locale TEXT DEFAULT 'cs',
+    country TEXT,
     device_type TEXT DEFAULT 'desktop' CHECK (device_type IN ('desktop', 'mobile', 'tablet')),
+    screen_resolution TEXT,
+    is_pwa BOOLEAN DEFAULT false,
     user_agent TEXT,
     referrer TEXT,
     -- Sharding klíč (příprava pro multi-instance)
@@ -34,6 +39,7 @@ CREATE TABLE IF NOT EXISTS calculation_logs (
 CREATE INDEX IF NOT EXISTS idx_calculation_logs_calc_type ON calculation_logs(calc_type);
 CREATE INDEX IF NOT EXISTS idx_calculation_logs_created_at ON calculation_logs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_calculation_logs_clerk_id ON calculation_logs(clerk_id) WHERE clerk_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_calculation_logs_anonymous_id ON calculation_logs(anonymous_id) WHERE anonymous_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_calculation_logs_shard_key ON calculation_logs(shard_key);
 -- JSONB index pro filtrování podle parametrů (GIN)
 CREATE INDEX IF NOT EXISTS idx_calculation_logs_params ON calculation_logs USING GIN(params);
@@ -56,7 +62,7 @@ CREATE POLICY "calculation_logs_service_full"
     USING (true)
     WITH CHECK (true);
 
--- 2. Rate limiting funkce — max 60 logů za minutu per session_hash
+-- 2. Rate limiting funkce — max 25 logů za minutu per session_hash
 -- Vrací true pokud je povoleno logovat, false pokud překročen limit
 CREATE OR REPLACE FUNCTION check_calc_log_rate_limit(p_session_hash TEXT)
 RETURNS BOOLEAN AS $$
@@ -68,7 +74,7 @@ BEGIN
     WHERE session_hash = p_session_hash
       AND created_at > now() - interval '1 minute';
     
-    RETURN recent_count < 60;
+    RETURN recent_count < 25;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
