@@ -3389,61 +3389,210 @@ async function logCalculation(data) {
 
         const calcType = getCalcType(data);
 
-        // Parametry výpočtu (vše co uživatel nastavil)
-        const params = {
-            totalAmount: data.totalAmount,
-            vgPercent: data.vgPercent,
-            pgPercent: data.pgPercent,
-            nicotine: data.nicotine,
-            flavorType: data.flavorType || null,
-            flavorPercent: data.flavorPercent || null,
-            baseType: data.baseType || null,
-            premixedRatio: data.premixedRatio || null,
-            formType: data.formType || null,
-            shishaMode: data.shishaMode || null,
-        };
+        // PARAMS: kompletní recipeData + doplnění z DOM co v data objektu chybí
+        // Klonujeme celý data objekt — obsahuje VŠE co formulář předal
+        const params = JSON.parse(JSON.stringify(data));
+        // Odstranit ingredients z params (jdou do results)
+        delete params.ingredients;
 
-        // Příchutě (názvy, výrobci, %)
-        if (data.flavors && Array.isArray(data.flavors)) {
-            params.flavors = data.flavors.map(f => ({
-                type: f.type, percent: f.percent,
-                name: f.flavorName || null, manufacturer: f.manufacturer || null
-            }));
-        }
-        if (data.specificFlavorName) {
-            params.specificFlavor = {
-                name: data.specificFlavorName,
-                manufacturer: data.specificFlavorManufacturer || null,
-                source: data.specificFlavorSource || null
+        // Doplnit údaje z DOM které data objekt neobsahuje
+        const ft = data.formType || 'liquid';
+        if (ft === 'liquid' || !ft) {
+            // Liquid formulář — doplnit nikotinové parametry
+            params._dom = {
+                nicotineType: document.getElementById('nicotineType')?.value || null,
+                targetNicotine: parseFloat(document.getElementById('targetNicotine')?.value) || 0,
+                baseNicotine: parseFloat(document.getElementById('nicotineBaseStrength')?.value) || 0,
+                nicotineRatio: document.getElementById('nicotineRatio')?.value || null,
+                flavorRatio: document.getElementById('flavorRatio')?.value || null,
+                totalAmount: parseFloat(document.getElementById('totalAmount')?.value) || 0,
+                vgPgRatio: parseInt(document.getElementById('vgPgRatio')?.value) || 0,
+                baseType: document.getElementById('baseType')?.value || null,
+                premixedRatio: document.getElementById('premixedRatio')?.value || null,
             };
+        } else if (ft === 'shakevape' || ft === 'snv') {
+            params._dom = {
+                nicotineType: document.getElementById('svNicotineType')?.value || null,
+                targetNicotine: parseFloat(document.getElementById('svTargetNicotine')?.value) || 0,
+                baseNicotine: parseFloat(document.getElementById('svNicotineBaseStrength')?.value) || 0,
+                nicotineRatio: document.getElementById('svNicotineRatio')?.value || null,
+                flavorVolume: parseFloat(document.getElementById('svFlavorVolume')?.value) || 0,
+                flavorRatio: document.getElementById('svFlavorRatio')?.value || null,
+                totalAmount: parseFloat(document.getElementById('svTotalAmount')?.value) || 0,
+                vgPgRatio: parseInt(document.getElementById('svVgPgRatio')?.value) || 0,
+                baseType: document.getElementById('svBaseType')?.value || null,
+                premixedRatio: document.getElementById('svPremixedRatio')?.value || null,
+            };
+        } else if (ft === 'liquidpro' || ft === 'pro') {
+            params._dom = {
+                nicotineType: document.getElementById('proNicotineType')?.value || null,
+                targetNicotine: parseFloat(document.getElementById('proTargetNicotine')?.value) || 0,
+                baseNicotine: parseFloat(document.getElementById('proNicotineBaseStrength')?.value) || 0,
+                nicotineRatioSlider: parseInt(document.getElementById('proNicotineRatioSlider')?.value) || 50,
+                totalAmount: parseFloat(document.getElementById('proTotalAmount')?.value) || 0,
+                vgPgRatio: parseInt(document.getElementById('proVgPgRatio')?.value) || 0,
+                baseType: document.getElementById('proBaseType')?.value || null,
+                premixedRatio: document.getElementById('proPremixedRatio')?.value || null,
+            };
+            // PRO multi-flavor detaily s kompletními daty z DB
+            if (typeof getProFlavorsData === 'function') {
+                params._proFlavors = getProFlavorsData().map(f => ({
+                    type: f.type, percent: f.percent, vgRatio: f.vgRatio,
+                    name: f.flavorName || f.name || null,
+                    manufacturer: f.flavorManufacturer || f.manufacturer || null,
+                    id: f.flavorId || f.id || null,
+                    favoriteProductId: f.favoriteProductId || null,
+                    source: f.flavorSource || f.source || null,
+                    customComposition: f.customComposition || null
+                }));
+            }
+            // PRO aditiva
+            if (typeof getProAdditivesData === 'function') {
+                params._proAdditives = getProAdditivesData().map(a => ({
+                    type: a.type, percent: a.percent, name: a.name || null,
+                    customComposition: a.customComposition || null
+                }));
+            }
+        } else if (ft === 'shortfill') {
+            params._dom = {
+                bottleVolume: parseFloat(document.getElementById('sfBottleVolume')?.value) || 0,
+                liquidVolume: parseFloat(document.getElementById('sfLiquidVolume')?.value) || 0,
+                nicStrength: parseFloat(document.getElementById('sfNicStrength')?.value) || 0,
+                nicShotVolume: parseFloat(document.getElementById('sfNicShotVolume')?.value) || 0,
+                shotCount: parseInt(document.getElementById('sfShotCountValue')?.value) || 1,
+            };
+        } else if (ft === 'dilute') {
+            params._dom = {
+                amountType: document.querySelector('input[name="amountType"]:checked')?.value || null,
+                baseStrength: parseFloat(document.getElementById('diluteBaseStrength')?.value) || 0,
+                targetStrength: parseFloat(document.getElementById('diluteTargetStrength')?.value) || 0,
+                sourceVg: parseInt(document.getElementById('diluteSourceRatio')?.value) || 0,
+                targetVg: parseInt(document.getElementById('diluteTargetRatio')?.value) || 0,
+                nicotineType: document.getElementById('diluteNicotineType')?.value || null,
+                finalAmount: parseFloat(document.getElementById('diluteFinalAmount')?.value) || 0,
+                sourceAmount: parseFloat(document.getElementById('diluteSourceAmount')?.value) || 0,
+            };
+        } else if (ft === 'shisha') {
+            const mode = data.shishaMode || 'mix';
+            if (mode === 'mix') {
+                params._dom = {
+                    bowlSize: parseInt(document.getElementById('shBowlSize')?.value) || 0,
+                };
+                // Tabáky z Mode 1 (1-4) s detaily
+                params._tobaccoDetails = [];
+                for (let i = 1; i <= 4; i++) {
+                    const pctEl = document.getElementById(`shTobaccoPercent${i}`);
+                    const autoEl = document.getElementById(`shTobaccoAutocomplete${i}`);
+                    if (pctEl && parseFloat(pctEl.value) > 0) {
+                        const entry = { position: i, percent: parseFloat(pctEl.value) };
+                        if (autoEl?.dataset?.flavorData) {
+                            try {
+                                const fd = JSON.parse(autoEl.dataset.flavorData);
+                                entry.name = fd.name || null;
+                                entry.manufacturer = fd.manufacturer_code || fd.manufacturer || fd.brand || null;
+                                entry.id = fd.flavor_id || fd.id || null;
+                                entry.favoriteProductId = fd.favorite_product_id || null;
+                                entry.source = fd.source || null;
+                            } catch(e) {}
+                        }
+                        params._tobaccoDetails.push(entry);
+                    }
+                }
+            } else if (mode === 'diy') {
+                params._dom = {
+                    tobaccoAmount: parseFloat(document.getElementById('shDiyTobaccoAmount')?.value) || 0,
+                    diyRatio: document.getElementById('shDiyRatio')?.value || null,
+                    nicotineType: document.getElementById('shDiyNicotineType')?.value || null,
+                    targetNicotine: parseFloat(document.getElementById('shDiyTargetNicotine')?.value) || 0,
+                    baseNicotine: parseFloat(document.getElementById('shDiyNicotineBaseStrength')?.value) || 0,
+                    sweetenerType: document.getElementById('shDiySweetenerType')?.value || null,
+                    sweetenerPercent: parseFloat(document.getElementById('shDiySweetenerPercent')?.value) || 0,
+                    glycerinPercent: parseFloat(document.getElementById('shDiyGlycerinPercent')?.value) || 0,
+                    waterPercent: parseFloat(document.getElementById('shDiyWaterPercent')?.value) || 0,
+                    purePgPercent: parseFloat(document.getElementById('shDiyPurePgPercent')?.value) || 0,
+                };
+                // DIY příchutě (1-4)
+                params._diyFlavors = [];
+                for (let i = 1; i <= 4; i++) {
+                    const typeEl = document.getElementById(`shDiyFlavorType${i}`);
+                    const pctEl = document.getElementById(`shDiyFlavorStrength${i}`);
+                    const autoEl = document.getElementById(`shDiyFlavorAutocomplete${i}`);
+                    if (typeEl && typeEl.value !== 'none') {
+                        const entry = { position: i, type: typeEl.value, percent: parseFloat(pctEl?.value) || 0 };
+                        if (autoEl?.dataset?.flavorData) {
+                            try {
+                                const fd = JSON.parse(autoEl.dataset.flavorData);
+                                entry.name = fd.name || null;
+                                entry.manufacturer = fd.manufacturer_code || fd.manufacturer || fd.brand || null;
+                                entry.id = fd.flavor_id || fd.id || null;
+                                entry.favoriteProductId = fd.favorite_product_id || null;
+                                entry.source = fd.source || null;
+                            } catch(e) {}
+                        }
+                        params._diyFlavors.push(entry);
+                    }
+                }
+            } else if (mode === 'molasses') {
+                params._dom = {
+                    totalAmount: parseFloat(document.getElementById('shMolTotalAmount')?.value) || 0,
+                    sweetenerBase: document.getElementById('shMolSweetenerBase')?.value || null,
+                    sweetenerPercent: parseFloat(document.getElementById('shMolSweetenerPercent')?.value) || 0,
+                    glycerinPercent: parseFloat(document.getElementById('shMolGlycerinPercent')?.value) || 0,
+                    nicotineType: document.getElementById('shMolNicotineType')?.value || null,
+                    targetNicotine: parseFloat(document.getElementById('shMolTargetNicotine')?.value) || 0,
+                    baseNicotine: parseFloat(document.getElementById('shMolNicotineBaseStrength')?.value) || 0,
+                };
+                // Molasses příchutě (1-4)
+                params._molFlavors = [];
+                for (let i = 1; i <= 4; i++) {
+                    const typeEl = document.getElementById(`shMolFlavorType${i}`);
+                    const pctEl = document.getElementById(`shMolFlavorStrength${i}`);
+                    const autoEl = document.getElementById(`shMolFlavorAutocomplete${i}`);
+                    if (typeEl && typeEl.value !== 'none') {
+                        const entry = { position: i, type: typeEl.value, percent: parseFloat(pctEl?.value) || 0 };
+                        if (autoEl?.dataset?.flavorData) {
+                            try {
+                                const fd = JSON.parse(autoEl.dataset.flavorData);
+                                entry.name = fd.name || null;
+                                entry.manufacturer = fd.manufacturer_code || fd.manufacturer || fd.brand || null;
+                                entry.id = fd.flavor_id || fd.id || null;
+                                entry.favoriteProductId = fd.favorite_product_id || null;
+                                entry.source = fd.source || null;
+                            } catch(e) {}
+                        }
+                        params._molFlavors.push(entry);
+                    }
+                }
+            }
+            // Tweak: tweakState je již kompletní v data objektu (checkboxy, %, příchutě, mixology)
         }
 
-        // Aditiva (liquidpro)
-        if (data.additives && Array.isArray(data.additives)) {
-            params.additives = data.additives.map(a => ({ type: a.type, percent: a.percent }));
-        }
-
-        // Shisha specifika
-        if (data.shishaMode) {
-            params.sweetener = data.sweetener || null;
-            params.tobaccos = data.tobaccos ? data.tobaccos.map(tb => ({
-                name: tb.name || null, percent: tb.percent, brand: tb.brand || null
-            })) : null;
-            params.tweakState = data.tweakState ? {
-                tobaccoAmount: data.tweakState.tobaccoAmount || null,
-                flavorCount: data.tweakState.flavors ? data.tweakState.flavors.filter(f => f && f.type !== 'none').length : 0
-            } : null;
-        }
-
-        // Výsledky (ingredience)
-        const results = {};
+        // RESULTS: kompletní ingredience se VŠEMI detaily
+        const results = {
+            actualVg: data.actualVg !== undefined ? data.actualVg : null,
+            actualPg: data.actualPg !== undefined ? data.actualPg : null,
+        };
         if (data.ingredients && Array.isArray(data.ingredients)) {
             results.ingredients = data.ingredients.map(ing => ({
-                key: ing.ingredientKey, volume: ing.volume, percent: ing.percent
+                key: ing.ingredientKey || null,
+                volume: ing.volume || 0,
+                percent: ing.percent || 0,
+                grams: ing.grams || null,
+                flavorType: ing.flavorType || null,
+                flavorNumber: ing.flavorNumber || null,
+                flavorIndex: ing.flavorIndex || null,
+                flavorName: ing.flavorName || null,
+                flavorManufacturer: ing.flavorManufacturer || null,
+                flavorId: ing.flavorId || null,
+                favoriteProductId: ing.favoriteProductId || null,
+                flavorSource: ing.flavorSource || null,
+                additiveType: ing.additiveType || null,
+                vgRatio: ing.vgRatio || null,
+                customComposition: ing.customComposition || null,
+                params: ing.params || null,
+                displayAmount: ing.displayAmount || null
             }));
         }
-        if (data.actualVg !== undefined) results.actualVg = data.actualVg;
-        if (data.actualPg !== undefined) results.actualPg = data.actualPg;
 
         const payload = {
             calc_type: calcType,
@@ -9936,12 +10085,17 @@ function calculateDilution() {
     // Display results
     displayDiluteResults(totalAmount, targetVg, targetPg, targetStrength, ingredients);
     
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('dilution', {
-        amountType, totalAmount: +totalAmount.toFixed(1), baseStrength, targetStrength,
-        sourceVg, sourcePg, targetVg, targetPg, nicotineType
-    }, {
-        ingredients: ingredients.map(i => ({ key: i.ingredientKey, volume: +(i.volume?.toFixed(2) || 0), percent: +(i.percent?.toFixed(1) || 0) }))
+    // Logovat výpočet do analytics
+    storeCurrentRecipe({
+        formType: 'dilute',
+        totalAmount: +totalAmount.toFixed(1),
+        vgPercent: targetVg,
+        pgPercent: targetPg,
+        nicotine: targetStrength,
+        baseStrength: baseStrength,
+        targetNicotine: targetStrength,
+        diluteAmount: amountType,
+        ingredients: ingredients
     });
     
     showPage('dilute-results');
