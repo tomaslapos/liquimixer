@@ -10,8 +10,11 @@ import {
 } from '../_shared/cors.ts'
 
 // Analytics DB — separátní projekt (nezahlcuje hlavní DB)
-const ANALYTICS_URL = Deno.env.get('ANALYTICS_SUPABASE_URL') || 'https://ikgtygabrrvbqyffcqjd.supabase.co'
-const ANALYTICS_KEY = Deno.env.get('ANALYTICS_SUPABASE_KEY') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrZ3R5Z2FicnJ2YnF5ZmZjcWpkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjcxNTUzMCwiZXhwIjoyMDg4MjkxNTMwfQ.FDeUBb-b7qx25NyZljhmJ5bWAczQ0F3YYuSoUDGSao8'
+// Klíče MUSÍ být nastaveny jako Supabase Edge Function secrets:
+//   supabase secrets set ANALYTICS_SUPABASE_URL=https://ikgtygabrrvbqyffcqjd.supabase.co
+//   supabase secrets set ANALYTICS_SUPABASE_KEY=<service_role_key>
+const ANALYTICS_URL = Deno.env.get('ANALYTICS_SUPABASE_URL')!
+const ANALYTICS_KEY = Deno.env.get('ANALYTICS_SUPABASE_KEY')!
 
 // Registrovat rate limit: 25 za minutu
 RATE_LIMITS['calc-log'] = { maxRequests: 25, windowMs: 60 * 1000 }
