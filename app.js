@@ -4265,6 +4265,7 @@ async function saveRecipe(event) {
         description: description,
         rating: rating,
         is_public: isPublic,
+        public_status: isPublic ? 'pending' : null,
         form_type: formType,
         difficulty_level: difficultyLevel
     };

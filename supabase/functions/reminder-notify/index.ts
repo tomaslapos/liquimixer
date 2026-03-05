@@ -12,38 +12,38 @@ import {
 } from '../_shared/cors.ts'
 
 // Localized notification messages for all 31 supported languages
-const NOTIFICATION_TEXTS: Record<string, { title: string; body: (flavor: string, date: string) => string; unknownFlavor: string }> = {
-  cs: { title: '\u{1F9EA} Váš liquid je vyzrálý!', body: (f, d) => `Váš liquid s příchutí ${f} namíchaný dne ${d} je vyzrálý a připraven.`, unknownFlavor: 'neznámá' },
-  sk: { title: '\u{1F9EA} Váš liquid je vyzretý!', body: (f, d) => `Váš liquid s príchuťou ${f} namiešaný dňa ${d} je vyzretý a pripravený.`, unknownFlavor: 'neznáma' },
-  en: { title: '\u{1F9EA} Your liquid is steeped!', body: (f, d) => `Your liquid with ${f} flavor mixed on ${d} is steeped and ready.`, unknownFlavor: 'unknown' },
-  de: { title: '\u{1F9EA} Ihr Liquid ist gereift!', body: (f, d) => `Ihr Liquid mit ${f} Aroma, gemischt am ${d}, ist gereift und bereit.`, unknownFlavor: 'unbekannt' },
-  fr: { title: '\u{1F9EA} Votre liquide a mûri !', body: (f, d) => `Votre liquide avec l'arôme ${f} mélangé le ${d} a mûri et est prêt.`, unknownFlavor: 'inconnu' },
-  es: { title: '\u{1F9EA} ¡Tu líquido ha madurado!', body: (f, d) => `Tu líquido con aroma ${f} mezclado el ${d} ha madurado y está listo.`, unknownFlavor: 'desconocido' },
-  it: { title: '\u{1F9EA} Il tuo liquido è maturato!', body: (f, d) => `Il tuo liquido con aroma ${f} miscelato il ${d} è maturato e pronto.`, unknownFlavor: 'sconosciuto' },
-  pl: { title: '\u{1F9EA} Twój liquid dojrzał!', body: (f, d) => `Twój liquid z aromatem ${f} zmieszany ${d} dojrzał i jest gotowy.`, unknownFlavor: 'nieznany' },
-  pt: { title: '\u{1F9EA} O seu líquido maturou!', body: (f, d) => `O seu líquido com aroma ${f} misturado em ${d} maturou e está pronto.`, unknownFlavor: 'desconhecido' },
-  nl: { title: '\u{1F9EA} Je liquid is gerijpt!', body: (f, d) => `Je liquid met ${f} aroma gemengd op ${d} is gerijpt en klaar.`, unknownFlavor: 'onbekend' },
-  ru: { title: '\u{1F9EA} Ваш жидкость созрела!', body: (f, d) => `Ваша жидкость с ароматом ${f}, смешанная ${d}, созрела и готова.`, unknownFlavor: 'неизвестный' },
-  uk: { title: '\u{1F9EA} Ваш рідина дозріла!', body: (f, d) => `Ваша рідина з ароматом ${f}, змішана ${d}, дозріла та готова.`, unknownFlavor: 'невідомий' },
-  ja: { title: '\u{1F9EA} リキッドが熟成しました！', body: (f, d) => `${d}に混合した${f}フレーバーのリキッドが熟成し、準備完了です。`, unknownFlavor: '不明' },
-  ko: { title: '\u{1F9EA} 리퀴드가 숙성되었습니다!', body: (f, d) => `${d}에 혼합한 ${f} 향의 리퀴드가 숙성되어 준비되었습니다.`, unknownFlavor: '알 수 없음' },
-  'zh-CN': { title: '\u{1F9EA} 您的烟液已熟化！', body: (f, d) => `您在${d}混合的${f}口味烟液已熟化并准备就绪。`, unknownFlavor: '未知' },
-  'zh-TW': { title: '\u{1F9EA} 您的煙液已熟化！', body: (f, d) => `您在${d}混合的${f}口味煙液已熟化並準備就緒。`, unknownFlavor: '未知' },
-  'ar-SA': { title: '\u{1F9EA} السائل الخاص بك جاهز!', body: (f, d) => `السائل بنكهة ${f} المخلوط في ${d} قد نضج وجاهز.`, unknownFlavor: 'غير معروف' },
-  sv: { title: '\u{1F9EA} Din vätska har mognat!', body: (f, d) => `Din vätska med ${f} arom blandad den ${d} har mognat och är klar.`, unknownFlavor: 'okänd' },
-  da: { title: '\u{1F9EA} Din væske er modnet!', body: (f, d) => `Din væske med ${f} aroma blandet den ${d} er modnet og klar.`, unknownFlavor: 'ukendt' },
-  fi: { title: '\u{1F9EA} Nesteesi on kypsynyt!', body: (f, d) => `${d} sekoitettu ${f}-aromi nesteesi on kypsynyt ja valmis.`, unknownFlavor: 'tuntematon' },
-  no: { title: '\u{1F9EA} Væsken din er modnet!', body: (f, d) => `Væsken din med ${f} aroma blandet den ${d} er modnet og klar.`, unknownFlavor: 'ukjent' },
-  hr: { title: '\u{1F9EA} Vaš liquid je sazrio!', body: (f, d) => `Vaš liquid s aromom ${f} miješan ${d} je sazrio i spreman.`, unknownFlavor: 'nepoznato' },
-  sr: { title: '\u{1F9EA} Ваш liquid је сазрео!', body: (f, d) => `Ваш liquid са аромом ${f} мешан ${d} је сазрео и спреман.`, unknownFlavor: 'непознато' },
-  bg: { title: '\u{1F9EA} Вашият течност узря!', body: (f, d) => `Вашият течност с аромат ${f}, смесен на ${d}, узря и е готов.`, unknownFlavor: 'неизвестен' },
-  ro: { title: '\u{1F9EA} Lichidul tău s-a maturat!', body: (f, d) => `Lichidul tău cu aroma ${f} amestecat pe ${d} s-a maturat și este gata.`, unknownFlavor: 'necunoscut' },
-  lt: { title: '\u{1F9EA} Jūsų skystis subrandino!', body: (f, d) => `Jūsų skystis su ${f} aromatu, sumaišytas ${d}, subrandino ir paruoštas.`, unknownFlavor: 'nežinomas' },
-  lv: { title: '\u{1F9EA} Jūsu šķidrums ir nogatavināts!', body: (f, d) => `Jūsu šķidrums ar ${f} aromātu, sajaukts ${d}, ir nogatavināts un gatavs.`, unknownFlavor: 'nezināms' },
-  et: { title: '\u{1F9EA} Teie vedelik on küpsenud!', body: (f, d) => `Teie ${d} segatud ${f} aroomiga vedelik on küpsenud ja valmis.`, unknownFlavor: 'tundmatu' },
-  hu: { title: '\u{1F9EA} A liquidod megérett!', body: (f, d) => `A ${d}-n kevert ${f} aromájú liquidod megérett és kész.`, unknownFlavor: 'ismeretlen' },
-  el: { title: '\u{1F9EA} Το υγρό σας ωρίμασε!', body: (f, d) => `Το υγρό σας με άρωμα ${f} που αναμίχθηκε στις ${d} ωρίμασε και είναι έτοιμο.`, unknownFlavor: 'άγνωστο' },
-  tr: { title: '\u{1F9EA} Sıvınız olgunlaştı!', body: (f, d) => `${d} tarihinde karıştırılan ${f} aromalı sıvınız olgunlaştı ve hazır.`, unknownFlavor: 'bilinmeyen' },
+const NOTIFICATION_TEXTS: Record<string, { title: string; body: (name: string, date: string) => string; unknownRecipe: string }> = {
+  cs: { title: '\u{1F9EA} Váš liquid je vyzrálý!', body: (n, d) => `Váš liquid ${n} namíchaný dne ${d} je vyzrálý a připraven.`, unknownRecipe: 'liquid' },
+  sk: { title: '\u{1F9EA} Váš liquid je vyzretý!', body: (n, d) => `Váš liquid ${n} namiešaný dňa ${d} je vyzretý a pripravený.`, unknownRecipe: 'liquid' },
+  en: { title: '\u{1F9EA} Your liquid is steeped!', body: (n, d) => `Your liquid ${n} mixed on ${d} is steeped and ready.`, unknownRecipe: 'liquid' },
+  de: { title: '\u{1F9EA} Ihr Liquid ist gereift!', body: (n, d) => `Ihr Liquid ${n}, gemischt am ${d}, ist gereift und bereit.`, unknownRecipe: 'Liquid' },
+  fr: { title: '\u{1F9EA} Votre liquide a mûri !', body: (n, d) => `Votre liquide ${n} mélangé le ${d} a mûri et est prêt.`, unknownRecipe: 'liquide' },
+  es: { title: '\u{1F9EA} ¡Tu líquido ha madurado!', body: (n, d) => `Tu líquido ${n} mezclado el ${d} ha madurado y está listo.`, unknownRecipe: 'líquido' },
+  it: { title: '\u{1F9EA} Il tuo liquido è maturato!', body: (n, d) => `Il tuo liquido ${n} miscelato il ${d} è maturato e pronto.`, unknownRecipe: 'liquido' },
+  pl: { title: '\u{1F9EA} Twój liquid dojrzał!', body: (n, d) => `Twój liquid ${n} zmieszany ${d} dojrzał i jest gotowy.`, unknownRecipe: 'liquid' },
+  pt: { title: '\u{1F9EA} O seu líquido maturou!', body: (n, d) => `O seu líquido ${n} misturado em ${d} maturou e está pronto.`, unknownRecipe: 'líquido' },
+  nl: { title: '\u{1F9EA} Je liquid is gerijpt!', body: (n, d) => `Je liquid ${n} gemengd op ${d} is gerijpt en klaar.`, unknownRecipe: 'liquid' },
+  ru: { title: '\u{1F9EA} Ваш жидкость созрела!', body: (n, d) => `Ваша жидкость ${n}, смешанная ${d}, созрела и готова.`, unknownRecipe: 'жидкость' },
+  uk: { title: '\u{1F9EA} Ваш рідина дозріла!', body: (n, d) => `Ваша рідина ${n}, змішана ${d}, дозріла та готова.`, unknownRecipe: 'рідина' },
+  ja: { title: '\u{1F9EA} リキッドが熟成しました！', body: (n, d) => `${d}に混合したリキッド「${n}」が熟成し、準備完了です。`, unknownRecipe: 'リキッド' },
+  ko: { title: '\u{1F9EA} 리퀴드가 숙성되었습니다!', body: (n, d) => `${d}에 혼합한 리퀴드 「${n}」이(가) 숙성되어 준비되었습니다.`, unknownRecipe: '리퀴드' },
+  'zh-CN': { title: '\u{1F9EA} 您的烟液已熟化！', body: (n, d) => `您在${d}混合的烟液「${n}」已熟化并准备就绪。`, unknownRecipe: '烟液' },
+  'zh-TW': { title: '\u{1F9EA} 您的煙液已熟化！', body: (n, d) => `您在${d}混合的煙液「${n}」已熟化並準備就緒。`, unknownRecipe: '煙液' },
+  'ar-SA': { title: '\u{1F9EA} السائل الخاص بك جاهز!', body: (n, d) => `السائل ${n} المخلوط في ${d} قد نضج وجاهز.`, unknownRecipe: 'السائل' },
+  sv: { title: '\u{1F9EA} Din vätska har mognat!', body: (n, d) => `Din vätska ${n} blandad den ${d} har mognat och är klar.`, unknownRecipe: 'vätska' },
+  da: { title: '\u{1F9EA} Din væske er modnet!', body: (n, d) => `Din væske ${n} blandet den ${d} er modnet og klar.`, unknownRecipe: 'væske' },
+  fi: { title: '\u{1F9EA} Nesteesi on kypsynyt!', body: (n, d) => `${d} sekoitettu neste ${n} on kypsynyt ja valmis.`, unknownRecipe: 'neste' },
+  no: { title: '\u{1F9EA} Væsken din er modnet!', body: (n, d) => `Væsken din ${n} blandet den ${d} er modnet og klar.`, unknownRecipe: 'væske' },
+  hr: { title: '\u{1F9EA} Vaš liquid je sazrio!', body: (n, d) => `Vaš liquid ${n} miješan ${d} je sazrio i spreman.`, unknownRecipe: 'liquid' },
+  sr: { title: '\u{1F9EA} Ваш liquid је сазрео!', body: (n, d) => `Ваш liquid ${n} мешан ${d} је сазрео и спреман.`, unknownRecipe: 'liquid' },
+  bg: { title: '\u{1F9EA} Вашият течност узря!', body: (n, d) => `Вашият течност ${n}, смесен на ${d}, узря и е готов.`, unknownRecipe: 'течност' },
+  ro: { title: '\u{1F9EA} Lichidul tău s-a maturat!', body: (n, d) => `Lichidul tău ${n} amestecat pe ${d} s-a maturat și este gata.`, unknownRecipe: 'lichid' },
+  lt: { title: '\u{1F9EA} Jūsų skystis subrandino!', body: (n, d) => `Jūsų skystis ${n}, sumaišytas ${d}, subrandino ir paruoštas.`, unknownRecipe: 'skystis' },
+  lv: { title: '\u{1F9EA} Jūsu šķidrums ir nogatavināts!', body: (n, d) => `Jūsu šķidrums ${n}, sajaukts ${d}, ir nogatavināts un gatavs.`, unknownRecipe: 'šķidrums' },
+  et: { title: '\u{1F9EA} Teie vedelik on küpsenud!', body: (n, d) => `Teie ${d} segatud vedelik ${n} on küpsenud ja valmis.`, unknownRecipe: 'vedelik' },
+  hu: { title: '\u{1F9EA} A liquidod megérett!', body: (n, d) => `A ${d}-n kevert liquidod (${n}) megérett és kész.`, unknownRecipe: 'liquid' },
+  el: { title: '\u{1F9EA} Το υγρό σας ωρίμασε!', body: (n, d) => `Το υγρό σας ${n} που αναμίχθηκε στις ${d} ωρίμασε και είναι έτοιμο.`, unknownRecipe: 'υγρό' },
+  tr: { title: '\u{1F9EA} Sıvınız olgunlaştı!', body: (n, d) => `${d} tarihinde karıştırılan sıvınız ${n} olgunlaştı ve hazır.`, unknownRecipe: 'sıvı' },
 };
 
 // Get notification text for a given locale
@@ -334,9 +334,9 @@ serve(async (req) => {
 
         // Create localized notification message
         const texts = getNotificationText(userLocale);
-        const flavorName = reminder.flavor_name || texts.unknownFlavor;
+        const recipeName = reminder.recipe_name || reminder.flavor_name || texts.unknownRecipe;
         const title = texts.title;
-        const body = texts.body(flavorName, formattedDate);
+        const body = texts.body(recipeName, formattedDate);
 
         // Send to all user's devices
         let anySent = false;
