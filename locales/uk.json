@@ -924,6 +924,7 @@
     "already_have_account": "Вже є обліковий запис?",
     "logged_in_as": "Ви увійшли як:",
     "pay_button_simple": "Оплатити",
+    "pay_card": "Карткою",
     "redirect_info": "Вас буде перенаправлено на платіжний шлюз GP WebPay",
     "payment_success": "Оплата успішна! Вашу підписку активовано.",
     "payment_success_login_required": "Оплата успішна! Увійдіть, щоб отримати доступ до підписки.",

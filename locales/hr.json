@@ -924,6 +924,7 @@
     "already_have_account": "Već imate račun?",
     "logged_in_as": "Prijavljeni ste kao:",
     "pay_button_simple": "Plati",
+    "pay_card": "Karticom",
     "redirect_info": "Bit ćete preusmjereni na GP WebPay platni sustav",
     "payment_success": "Plaćanje uspješno! Vaša pretplata je aktivirana.",
     "payment_success_login_required": "Plaćanje uspješno! Prijavite se za pristup pretplati.",

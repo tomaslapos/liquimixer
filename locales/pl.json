@@ -924,6 +924,7 @@
     "already_have_account": "Masz już konto?",
     "logged_in_as": "Jesteś zalogowany jako:",
     "pay_button_simple": "Zapłać",
+    "pay_card": "Kartą",
     "redirect_info": "Zostaniesz przekierowany do bramki płatniczej GP WebPay",
     "payment_success": "Płatność zakończona sukcesem! Twoja subskrypcja została aktywowana.",
     "payment_success_login_required": "Płatność zakończona sukcesem! Zaloguj się, aby uzyskać dostęp do subskrypcji.",

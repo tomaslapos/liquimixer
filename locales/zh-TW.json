@@ -924,6 +924,7 @@
     "already_have_account": "已有帳戶？",
     "logged_in_as": "您已登入為：",
     "pay_button_simple": "付款",
+    "pay_card": "信用卡",
     "redirect_info": "您將被重新導向至 GP WebPay 付款閘道",
     "payment_success": "付款成功！您的訂閱已啟用。",
     "payment_success_login_required": "付款成功！請登入以存取您的訂閱。",

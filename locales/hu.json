@@ -924,6 +924,7 @@
     "already_have_account": "Már van fiókod?",
     "logged_in_as": "Bejelentkezve mint:",
     "pay_button_simple": "Fizetés",
+    "pay_card": "Kártyával",
     "redirect_info": "Átirányításra kerülsz a GP WebPay fizetési kapura",
     "payment_success": "Sikeres fizetés! Az előfizetésed aktiválva lett.",
     "payment_success_login_required": "Sikeres fizetés! Az előfizetésed eléréséhez jelentkezz be.",

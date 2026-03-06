@@ -924,6 +924,7 @@
     "already_have_account": "Har du allerede en konto?",
     "logged_in_as": "Du er logget inn som:",
     "pay_button_simple": "Betal",
+    "pay_card": "Med kort",
     "redirect_info": "Du vil bli omdirigert til GP WebPay betalingsgateway",
     "payment_success": "Betaling vellykket! Abonnementet ditt er aktivert.",
     "payment_success_login_required": "Betaling vellykket! Logg inn for å få tilgang til abonnementet ditt.",

@@ -924,6 +924,7 @@
     "already_have_account": "Zaten bir hesabınız var mı?",
     "logged_in_as": "Şu kullanıcı olarak giriş yaptınız:",
     "pay_button_simple": "Öde",
+    "pay_card": "Kartla",
     "redirect_info": "GP WebPay ödeme ağ geçidine yönlendirileceksiniz",
     "payment_success": "Ödeme başarılı! Aboneliğiniz etkinleştirildi.",
     "payment_success_login_required": "Ödeme başarılı! Aboneliğinize erişmek için giriş yapın.",

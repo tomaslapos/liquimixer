@@ -933,6 +933,7 @@
     "already_have_account": "Haben Sie bereits ein Konto?",
     "logged_in_as": "Sie sind angemeldet als:",
     "pay_button_simple": "Bezahlen",
+    "pay_card": "Mit Karte",
     "redirect_info": "Sie werden zur GP WebPay Zahlungsgateway weitergeleitet",
     "payment_success": "Zahlung erfolgreich! Ihr Abonnement wurde aktiviert.",
     "payment_success_login_required": "Zahlung erfolgreich! Bitte melden Sie sich an, um auf Ihr Abonnement zuzugreifen.",

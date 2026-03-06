@@ -924,6 +924,7 @@
     "already_have_account": "Вече имате акаунт?",
     "logged_in_as": "Влезли сте като:",
     "pay_button_simple": "Плати",
+    "pay_card": "С карта",
     "redirect_info": "Ще бъдете пренасочени към платежния портал GP WebPay",
     "payment_success": "Плащането е успешно! Вашият абонамент е активиран.",
     "payment_success_login_required": "Плащането е успешно! Влезте, за да получите достъп до абонамента си.",

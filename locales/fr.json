@@ -924,6 +924,7 @@
     "already_have_account": "Vous avez déjà un compte ?",
     "logged_in_as": "Vous êtes connecté en tant que :",
     "pay_button_simple": "Payer",
+    "pay_card": "Par carte",
     "redirect_info": "Vous serez redirigé vers la passerelle de paiement GP WebPay",
     "payment_success": "Paiement réussi ! Votre abonnement a été activé.",
     "payment_success_login_required": "Paiement réussi ! Veuillez vous connecter pour accéder à votre abonnement.",

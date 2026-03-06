@@ -925,6 +925,7 @@
     "already_have_account": "هل لديك حساب بالفعل؟",
     "logged_in_as": "أنت مسجل الدخول كـ:",
     "pay_button_simple": "ادفع",
+    "pay_card": "بالبطاقة",
     "redirect_info": "سيتم توجيهك إلى بوابة الدفع GP WebPay",
     "payment_success": "تم الدفع بنجاح! تم تفعيل اشتراكك.",
     "payment_success_login_required": "تم الدفع بنجاح! يرجى تسجيل الدخول للوصول إلى اشتراكك.",

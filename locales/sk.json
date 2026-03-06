@@ -933,6 +933,7 @@
     "already_have_account": "Už máte účet?",
     "logged_in_as": "Ste prihlásený ako:",
     "pay_button_simple": "Zaplatiť",
+    "pay_card": "Kartou",
     "redirect_info": "Budete presmerovaný na platobnú bránu GP WebPay",
     "payment_success": "Platba prebehla úspešne! Vaše predplatné bolo aktivované.",
     "payment_success_login_required": "Platba prebehla úspešne! Pre prístup k predplatnému sa prihláste.",

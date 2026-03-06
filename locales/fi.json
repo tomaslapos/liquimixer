@@ -929,6 +929,7 @@
     "already_have_account": "Onko sinulla jo tili?",
     "logged_in_as": "Olet kirjautunut käyttäjänä:",
     "pay_button_simple": "Maksa",
+    "pay_card": "Kortilla",
     "redirect_info": "Sinut ohjataan GP WebPay -maksuyhdyskäytävään",
     "payment_success": "Maksu onnistui! Tilauksesi on aktivoitu.",
     "payment_success_login_required": "Maksu onnistui! Kirjaudu sisään päästäksesi tilauksellesi.",

@@ -2261,6 +2261,7 @@ window.addEventListener('load', async function() {
             // Oddělená logika pro: (1) odhlášení, (2) token refresh, (3) skutečné přihlášení/změna uživatele
             let lastAuthUserId = window.Clerk.user?.id || null;
             let isFullyInitialized = !!window.Clerk.user; // Pokud je user při startu, jsme inicializováni
+            let processingSubscriptionFlow = false; // Guard proti dvojímu zpracování
             
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
@@ -2272,6 +2273,7 @@ window.addEventListener('load', async function() {
                     console.log('Clerk: User signed out');
                     lastAuthUserId = null;
                     isFullyInitialized = false;
+                    processingSubscriptionFlow = false;
                     updateAuthUI();
                     return;
                 }
@@ -2283,6 +2285,12 @@ window.addEventListener('load', async function() {
                     if (window.LiquiMixerDB?.refreshToken) {
                         await window.LiquiMixerDB.refreshToken();
                     }
+                    return;
+                }
+                
+                // ====== 2b. GUARD: subscription flow se již zpracovává ======
+                if (processingSubscriptionFlow) {
+                    console.log('Clerk: Subscription flow already in progress, skipping duplicate event');
                     return;
                 }
                 
@@ -2308,34 +2316,39 @@ window.addEventListener('load', async function() {
                     
                     // Jazyk uživatele se načte automaticky v onSignIn() výše
                     
-                    // NEJPRVE zavřít login modal a aktualizovat UI
-                    hideLoginModal();
-                    updateAuthUI();
-                    
-                    // NEJPRVE zkontrolovat zda uživatel přišel ze subscription modalu
-                    // (registrace přes email: prsc1→prsc2→prsc3→platba)
-                    // Toto MUSÍ být před isNewUser checkem, protože nový uživatel po registraci
-                    // ze subscription flow má fromSubscription=true a má jít rovnou na platbu (Stav B)
+                    // Zkontrolovat zda uživatel přišel ze subscription modalu
+                    // (registrace přes email nebo login ze subscription flow)
                     const fromSubscription = localStorage.getItem('liquimixer_from_subscription') === 'true';
                     const termsAccepted = localStorage.getItem('liquimixer_terms_accepted') === 'true';
+                    
                     if (fromSubscription) {
-                        localStorage.removeItem('liquimixer_from_subscription');
+                        // GUARD: zamezit dvojímu zpracování (Clerk fire-ne listener vícekrát při email verifikaci)
+                        processingSubscriptionFlow = true;
+                        
+                        // Zavřít login modal BEZ updateAuthUI (nechceme flash hlavní obrazovky)
+                        hideLoginModal();
                         
                         // Pokud souhlasil s OP při registraci, uložit do DB
                         if (termsAccepted && window.LiquiMixerDB) {
-                            localStorage.removeItem('liquimixer_terms_accepted');
-                            localStorage.removeItem('liquimixer_terms_accepted_at');
                             console.log('Saving terms acceptance to database...');
                             await window.LiquiMixerDB.saveTermsAcceptance(window.Clerk.user.id);
                         }
                         
+                        // Vyčistit flagy AŽ PO uložení do DB
+                        localStorage.removeItem('liquimixer_from_subscription');
+                        localStorage.removeItem('liquimixer_terms_accepted');
+                        localStorage.removeItem('liquimixer_terms_accepted_at');
+                        
                         console.log('User came from subscription modal - showing payment step (State B)...');
-                        // Krátká pauza pro stabilizaci UI a Clerk session
-                        await new Promise(r => setTimeout(r, 500));
                         showSubscriptionModal(true);
                         isFullyInitialized = true;
+                        processingSubscriptionFlow = false;
                         return; // Nepokračovat dál - uživatel musí zaplatit
                     }
+                    
+                    // Zavřít login modal a aktualizovat UI (pouze pokud NENÍ subscription flow)
+                    hideLoginModal();
+                    updateAuthUI();
                     
                     // DETEKCE NOVÉHO UŽIVATELE: Pokud byl účet vytvořen v posledních 60 sekundách
                     // Toto zachytí OAuth registrace (Continue with Google) které obcházejí subscription modal
@@ -2349,7 +2362,6 @@ window.addEventListener('load', async function() {
                     // Pro nové uživatele (OAuth bez subscription flow) - zobrazit subscription modal (musí souhlasit s OP a zaplatit)
                     if (isNewUser) {
                         console.log('New user detected via OAuth - showing subscription modal for terms acceptance...');
-                        await new Promise(r => setTimeout(r, 500));
                         showSubscriptionModal();
                         isFullyInitialized = true;
                         return; // Nepokračovat - uživatel musí souhlasit s OP a zaplatit

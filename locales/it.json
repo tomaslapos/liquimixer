@@ -924,6 +924,7 @@
     "already_have_account": "Hai già un account?",
     "logged_in_as": "Sei connesso come:",
     "pay_button_simple": "Paga",
+    "pay_card": "Con carta",
     "redirect_info": "Sarai reindirizzato al gateway di pagamento GP WebPay",
     "payment_success": "Pagamento riuscito! Il tuo abbonamento è stato attivato.",
     "payment_success_login_required": "Pagamento riuscito! Effettua l'accesso per accedere al tuo abbonamento.",

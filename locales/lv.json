@@ -924,6 +924,7 @@
     "already_have_account": "Jau ir konts?",
     "logged_in_as": "Esat pieteicies kā:",
     "pay_button_simple": "Maksāt",
+    "pay_card": "Ar karti",
     "redirect_info": "Jūs tiksiet novirzīts uz GP WebPay maksājumu vārteju",
     "payment_success": "Maksājums veiksmīgs! Jūsu abonements ir aktivizēts.",
     "payment_success_login_required": "Maksājums veiksmīgs! Piesakieties, lai piekļūtu savam abonementam.",

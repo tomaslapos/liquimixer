@@ -924,6 +924,7 @@
     "already_have_account": "Juba on konto?",
     "logged_in_as": "Oled sisse logitud kui:",
     "pay_button_simple": "Maksa",
+    "pay_card": "Kaardiga",
     "redirect_info": "Sind suunatakse GP WebPay makseväravasse",
     "payment_success": "Makse õnnestus! Sinu tellimus on aktiveeritud.",
     "payment_success_login_required": "Makse õnnestus! Logi sisse, et pääseda oma tellimusele.",

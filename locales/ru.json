@@ -924,6 +924,7 @@
     "already_have_account": "Уже есть аккаунт?",
     "logged_in_as": "Вы вошли как:",
     "pay_button_simple": "Оплатить",
+    "pay_card": "Картой",
     "redirect_info": "Вы будете перенаправлены на платежный шлюз GP WebPay",
     "payment_success": "Оплата прошла успешно! Ваша подписка активирована.",
     "payment_success_login_required": "Оплата прошла успешно! Войдите, чтобы получить доступ к подписке.",

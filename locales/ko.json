@@ -924,6 +924,7 @@
     "already_have_account": "이미 계정이 있으신가요?",
     "logged_in_as": "로그인 상태:",
     "pay_button_simple": "결제",
+    "pay_card": "카드로",
     "redirect_info": "GP WebPay 결제 게이트웨이로 리디렉션됩니다",
     "payment_success": "결제가 성공적으로 완료되었습니다! 구독이 활성화되었습니다.",
     "payment_success_login_required": "결제가 성공적으로 완료되었습니다! 구독에 액세스하려면 로그인하세요.",

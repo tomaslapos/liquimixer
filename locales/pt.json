@@ -924,6 +924,7 @@
     "already_have_account": "Já tem uma conta?",
     "logged_in_as": "Tem sessão iniciada como:",
     "pay_button_simple": "Pagar",
+    "pay_card": "Com cartão",
     "redirect_info": "Será redirecionado para o gateway de pagamento GP WebPay",
     "payment_success": "Pagamento bem-sucedido! A sua subscrição foi ativada.",
     "payment_success_login_required": "Pagamento bem-sucedido! Por favor, inicie sessão para aceder à sua subscrição.",

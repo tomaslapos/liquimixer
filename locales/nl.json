@@ -924,6 +924,7 @@
     "already_have_account": "Heeft u al een account?",
     "logged_in_as": "U bent ingelogd als:",
     "pay_button_simple": "Betalen",
+    "pay_card": "Met kaart",
     "redirect_info": "U wordt doorgestuurd naar de GP WebPay betaalgateway",
     "payment_success": "Betaling geslaagd! Uw abonnement is geactiveerd.",
     "payment_success_login_required": "Betaling geslaagd! Log in om toegang te krijgen tot uw abonnement.",

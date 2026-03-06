@@ -924,6 +924,7 @@
     "already_have_account": "すでにアカウントをお持ちですか？",
     "logged_in_as": "ログイン中：",
     "pay_button_simple": "支払う",
+    "pay_card": "カードで",
     "redirect_info": "GP WebPay決済ゲートウェイにリダイレクトされます",
     "payment_success": "支払いが完了しました！サブスクリプションが有効になりました。",
     "payment_success_login_required": "支払いが完了しました！サブスクリプションにアクセスするにはログインしてください。",

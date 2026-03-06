@@ -924,6 +924,7 @@
     "already_have_account": "Већ имате налог?",
     "logged_in_as": "Пријављени сте као:",
     "pay_button_simple": "Плати",
+    "pay_card": "Картицом",
     "redirect_info": "Бићете преусмерени на GP WebPay платни систем",
     "payment_success": "Плаћање успешно! Ваша претплата је активирана.",
     "payment_success_login_required": "Плаћање успешно! Пријавите се да бисте приступили претплати.",

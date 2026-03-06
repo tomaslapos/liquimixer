@@ -443,24 +443,25 @@ serve(async (req) => {
         }
 
         // 9. Sestavit URL pro přesměrování
-        const gatewayParams = new URLSearchParams({
-          MERCHANTNUMBER: GPWEBPAY_CONFIG.merchantNumber,
-          OPERATION: operation,
-          ORDERNUMBER: orderNumber,
-          AMOUNT: amountInSmallestUnit.toString(),
-          CURRENCY: currencyCode,
-          DEPOSITFLAG: depositFlag,
-          URL: CALLBACK_URL,
-          DIGEST: signature
-        })
+        // PAYMETHOD: předvolba platební metody (GPAY=Google Pay, APAY=Apple Pay)
+        // PAYMETHOD se nepřidává do podpisu, ale musí být PŘED DIGEST v URL
+        // CRD (karta) = výchozí metoda brány, PAYMETHOD se neposílá
+        // Potvrzeno GP WebPay support (Vít Derner, 06.03.2026): APAY a GPAY aktivní na merchantovi
+        const payMethodMap: Record<string, string> = { 'GAP': 'GPAY', 'APL': 'APAY', 'GPAY': 'GPAY', 'APAY': 'APAY' }
+        const resolvedPayMethod = payMethodMap[data.payMethod] || null
 
-        // PAYMETHOD: předvolba platební metody (GPAY=Google Pay, APAY=Apple Pay, CRD=karta)
-        // PAYMETHOD se nepřidává do podpisu, pouze jako URL parametr
-        const payMethodMap: Record<string, string> = { 'GAP': 'GPAY', 'APL': 'APAY', 'GPAY': 'GPAY', 'APAY': 'APAY', 'CRD': 'CRD' }
-        const payMethod = payMethodMap[data.payMethod] || data.payMethod
-        if (payMethod && ['GPAY', 'APAY', 'CRD'].includes(payMethod)) {
-          gatewayParams.set('PAYMETHOD', payMethod)
+        const gatewayParams = new URLSearchParams()
+        gatewayParams.set('MERCHANTNUMBER', GPWEBPAY_CONFIG.merchantNumber)
+        gatewayParams.set('OPERATION', operation)
+        gatewayParams.set('ORDERNUMBER', orderNumber)
+        gatewayParams.set('AMOUNT', amountInSmallestUnit.toString())
+        gatewayParams.set('CURRENCY', currencyCode)
+        gatewayParams.set('DEPOSITFLAG', depositFlag)
+        gatewayParams.set('URL', CALLBACK_URL)
+        if (resolvedPayMethod && ['GPAY', 'APAY'].includes(resolvedPayMethod)) {
+          gatewayParams.set('PAYMETHOD', resolvedPayMethod)
         }
+        gatewayParams.set('DIGEST', signature)
 
         const redirectUrl = `${GPWEBPAY_CONFIG.gatewayUrl}?${gatewayParams.toString()}`
 
