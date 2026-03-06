@@ -25,8 +25,9 @@ current_flavors*.sql
 # Cursor notes - lokální (business plány, citlivé info)
 .cursor_notes.md
 
-# Windsurf secrets - Apple klíče atd. (NIKDY nepushovat)
+# Windsurf notes a secrets - obsahují privátní klíče (NIKDY nepushovat)
 .windsurf/secrets.md
+.windsurf/notes.md
 
 # N8N workflow backups (contain API keys and secrets)
 n8n_workflows/
