@@ -2312,26 +2312,10 @@ window.addEventListener('load', async function() {
                     hideLoginModal();
                     updateAuthUI();
                     
-                    // DETEKCE NOVÉHO UŽIVATELE: Pokud byl účet vytvořen v posledních 60 sekundách
-                    // Toto zachytí OAuth registrace (Continue with Google) které obcházejí subscription modal
-                    const userCreatedAt = new Date(window.Clerk.user.createdAt);
-                    const now = new Date();
-                    const secondsSinceCreation = (now - userCreatedAt) / 1000;
-                    const isNewUser = secondsSinceCreation < 60; // Účet vytvořen před méně než 60s
-                    
-                    console.log('User created at:', userCreatedAt, 'seconds since creation:', secondsSinceCreation, 'isNewUser:', isNewUser);
-                    
-                    // Pro nové uživatele - zobrazit subscription modal (musí souhlasit s OP a zaplatit)
-                    if (isNewUser) {
-                        console.log('New user detected via OAuth - showing subscription modal for terms acceptance...');
-                        await new Promise(r => setTimeout(r, 500));
-                        showSubscriptionModal();
-                        isFullyInitialized = true;
-                        return; // Nepokračovat - uživatel musí souhlasit s OP a zaplatit
-                    }
-                    
-                    // Zkontrolovat zda existující uživatel přišel ze subscription modalu
-                    // Pokud ano, uložit souhlas s OP do DB a zobrazit platbu
+                    // NEJPRVE zkontrolovat zda uživatel přišel ze subscription modalu
+                    // (registrace přes email: prsc1→prsc2→prsc3→platba)
+                    // Toto MUSÍ být před isNewUser checkem, protože nový uživatel po registraci
+                    // ze subscription flow má fromSubscription=true a má jít rovnou na platbu (Stav B)
                     const fromSubscription = localStorage.getItem('liquimixer_from_subscription') === 'true';
                     const termsAccepted = localStorage.getItem('liquimixer_terms_accepted') === 'true';
                     if (fromSubscription) {
@@ -2351,6 +2335,24 @@ window.addEventListener('load', async function() {
                         showSubscriptionModal(true);
                         isFullyInitialized = true;
                         return; // Nepokračovat dál - uživatel musí zaplatit
+                    }
+                    
+                    // DETEKCE NOVÉHO UŽIVATELE: Pokud byl účet vytvořen v posledních 60 sekundách
+                    // Toto zachytí OAuth registrace (Continue with Google) které obcházejí subscription modal
+                    const userCreatedAt = new Date(window.Clerk.user.createdAt);
+                    const now = new Date();
+                    const secondsSinceCreation = (now - userCreatedAt) / 1000;
+                    const isNewUser = secondsSinceCreation < 60; // Účet vytvořen před méně než 60s
+                    
+                    console.log('User created at:', userCreatedAt, 'seconds since creation:', secondsSinceCreation, 'isNewUser:', isNewUser);
+                    
+                    // Pro nové uživatele (OAuth bez subscription flow) - zobrazit subscription modal (musí souhlasit s OP a zaplatit)
+                    if (isNewUser) {
+                        console.log('New user detected via OAuth - showing subscription modal for terms acceptance...');
+                        await new Promise(r => setTimeout(r, 500));
+                        showSubscriptionModal();
+                        isFullyInitialized = true;
+                        return; // Nepokračovat - uživatel musí souhlasit s OP a zaplatit
                     }
                     
                     // Kontrola předplatného pro existující uživatele (pouze pokud nepřišel ze subscription flow)
