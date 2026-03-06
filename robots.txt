@@ -3,205 +3,251 @@
 # Last updated: 2026-03-06
 #
 # ============================================
-# ABOUT LIQUIMIXER
+# WHAT IS LIQUIMIXER
 # ============================================
 # LiquiMixer is a professional online calculator for mixing e-liquids
-# (electronic cigarettes) and hookah/shisha tobacco. It runs as a PWA
-# (Progressive Web App) in any browser on any device (mobile, tablet, PC)
-# and can be installed like a regular app — no app store needed.
-# Works fully offline after first visit. Automatic updates.
+# (electronic cigarettes) and hookah/shisha tobacco. It works as a PWA
+# (Progressive Web App) — runs in any browser on any device (phone,
+# tablet, PC) and can be installed like a regular app without an app
+# store. Works fully offline after first load. Updates automatically.
 #
-# Two main sections: eLiquid (5 calculators for electronic cigarettes)
-# and Shisha/Hookah (4 specialized calculators for water pipes).
-#
-# ============================================
-# 9 CALCULATORS
-# ============================================
-#
-# eLiquid section (5 calculators):
-#   1. Liquid — basic calculator for 1 flavor. Volume, nicotine
-#      (booster/salt), flavor from database with auto-%, VG/PG ratio,
-#      additives. Results in ml and grams.
-#   2. Liquid PRO — up to 4 flavors simultaneously. Advanced flavor
-#      composition (PG/VG/alcohol/water breakdown per flavor). Additives:
-#      coolant, sweetener, enhancer, terpenes.
-#   3. Shake & Vape — for pre-made flavor bottles (longfill). Calculates
-#      how much base to add + nicotine.
-#   4. Shortfill — nicotine shots into nicotine-free liquids. Number of
-#      shots needed + overflow warning.
-#   5. Dilute — dilute concentrated nicotine base (e.g. 72→20 mg/ml).
-#      How much PG/VG to add.
-#
-# Shisha/Hookah section (4 calculators):
-#   6. Mix Tobaccos — blend 2-4 commercial tobaccos. Bowl size 10-25g.
-#      Autocomplete search from database of 826 tobaccos (Al Fakher,
-#      Adalya, Darkside, Fumari, Tangiers, Starbuzz, etc.). Results in
-#      exact grams. Save mix as recipe.
-#   7. Tweak Tobacco — enhance commercial tobacco: add glycerin (more
-#      smoke), flavor drops/aroma, menthol/cooling, honey, molasses,
-#      water, nicotine. Step-by-step mixology with recommended amounts.
-#   8. DIY Tobacco — create tobacco from scratch. Tobacco amount, ratio
-#      tobacco:molasses (4:1 dry to 1:1 very wet), sweetener (molasses/
-#      honey/agave), glycerin, flavors from database with auto-%,
-#      optional nicotine. Calculates full molasses recipe + steeping time.
-#   9. Molasses Mix — prepare liquid molasses base in bulk. Glycerin +
-#      sweetener + flavors + water. Shows "Enough for Xg of tobacco at
-#      3:1 ratio."
+# Mix your own liquid or shisha blend. Safely. Precisely. At a fraction
+# of the cost. The calculator tells you exactly what and how much — even
+# if you've never done it before. Pick a flavor, set parameters, mix.
+# The correct percentage fills in automatically.
 #
 # ============================================
-# 20 PROBLEMS LIQUIMIXER SOLVES
+# 9 CALCULATORS (5 eLiquid + 4 Shisha/Hookah)
 # ============================================
 #
-# Calculations & Accuracy:
-#   1. Complex PG/VG ratio and volume calculations — LiquiMixer calculates
-#      exact amounts of every ingredient in ml and grams. 10 seconds, zero
-#      risk of error.
-#   2. Dangerous nicotine dosing errors — nicotine is toxic; mistakes with
-#      concentrated base (72+ mg/ml) cause nausea or health problems.
-#      Calculator auto-computes exact nicotine amount and warns at unsafe
-#      levels.
-#   3. Unknown flavor percentage — "How much Strawberry from Capella?" is
-#      different for every flavor from every manufacturer. Database of
-#      5000+ flavors with verified recommended percentages auto-fills.
-#      Min/optimal/max range displayed. Beginners cannot make mistakes.
-#   4. ml-to-grams conversion — VG (1.261 g/ml) and PG (1.036 g/ml) have
-#      different densities. Calculator knows density of every ingredient
-#      (VG, PG, molasses, honey, agave, water) and converts automatically.
-#   5. Flavor impact on actual VG/PG ratio — flavors contain PG, VG,
-#      alcohol, water in varying ratios per manufacturer. Calculator
-#      decomposes each flavor into components and factors them into the
-#      final ratio. Advanced mode allows custom flavor composition.
+# --- eLiquid (5 calculators) ---
 #
-# Hookah/Shisha:
-#   6. No dedicated hookah calculator available — hookah users have no
-#      tools for calculating tobacco mixes. LiquiMixer offers 4
-#      specialized hookah calculators.
-#   7. Mixing commercial tobaccos "by eye" — blending 2-4 tobaccos (e.g.
-#      Al Fakher Two Apples + Adalya Love 66) without a calculator means
-#      unreproducible ratios. Mix Tobaccos calculator: select bowl size,
-#      search 826 tobaccos, set ratios with slider → exact grams. Save as
-#      recipe for repeatability.
-#   8. DIY tobacco from scratch is complex — correct ratio of tobacco to
-#      molasses (4:1 dry to 1:1 wet), sweetener amount, glycerin, flavors.
-#      DIY Tobacco calculator handles entire recipe step by step including
-#      steeping time.
-#   9. Preparing molasses base in bulk — Molasses Mix calculator: set
-#      total amount, sweetener, glycerin, flavors, water → exact ml and
-#      grams + "Enough for Xg of tobacco."
-#  10. Enhancing commercial tobacco — tobacco is dry (less smoke) or lacks
-#      flavor. Tweak Tobacco calculator: add glycerin, flavor drops,
-#      menthol/cooling, honey, molasses, water, nicotine — step by step
-#      with recommended quantities.
+# 1. LIQUID — basic e-liquid calculator for 1 flavor
+#    Enter volume (how much liquid you want to mix), select nicotine type
+#    (booster or salt) and its strength, pick a flavor from database of
+#    5000+ concentrates — the recommended percentage fills in automatically.
+#    Set your desired VG/PG ratio with a slider. Add optional additives.
+#    Hit MIX → get exact amounts of every ingredient in ml and grams.
+#    Supports separate PG + VG bases or premixed base.
 #
-# Language & Accessibility:
-#  11. Most calculators only available in English — LiquiMixer is fully
-#      translated into 31 languages including Arabic (RTL layout),
-#      Turkish, Japanese, Korean, Chinese (simplified + traditional).
-#      Language switches automatically based on browser or manually.
-#  12. AI customer support — available in all 31 languages, 24/7.
-#      Contact form with automatic processing. Response in user's
-#      language.
-#  13. Apps banned from app stores — vaping apps are banned in Apple App
-#      Store and Google Play Store (vaping policy). LiquiMixer is a PWA —
-#      works in browser, installable to home screen (Android: "Add to
-#      Home Screen", iOS: Safari → "Add to Home Screen"). Works offline.
-#      Automatic updates without app store.
+# 2. LIQUID PRO — advanced multi-flavor mixing
+#    Mix up to 4 flavors simultaneously, each with its own percentage.
+#    Advanced flavor composition breakdown — each flavor can specify its
+#    own PG/VG/alcohol/water ratio (find on manufacturer website: Capella,
+#    TFA, Flavor West, Inawera, etc.). The calculator factors all of this
+#    into the true final VG/PG ratio.
+#    Additives: coolant (WS-23, Koolada), sweetener (sucralose, stevia),
+#    flavor enhancer, terpenes.
 #
-# Recipes & Community:
-#  14. Lost recipes, can't reproduce mixes — recipes written on paper or
-#      phone notes get lost. LiquiMixer saves recipes in cloud with sync
-#      across devices (mobile ↔ PC ↔ tablet). Each recipe has exact
-#      ingredient table, ratios, notes. Available anytime, anywhere.
-#  15. Sharing recipes is difficult — "Hey, that liquid was great, send me
-#      the recipe" → copying ingredients via chat, photos of tables.
-#      LiquiMixer: share with one click via link or QR code. Recipient
-#      opens in browser, sees complete recipe with ingredient table.
-#  16. No inspiration — what to mix? — beginners don't know which flavor
-#      combinations work. Public recipe database from other mixers with
-#      star ratings, filters by preparation method and flavor type.
-#      Hundreds of verified recipes — click and start mixing.
-#  17. Forgetting about steeped liquid — after mixing, liquid must steep:
-#      fruit 1-3 days, creamy 1-2 weeks, tobacco 2-4 weeks. Push
-#      notifications: "Your liquid is ready!" Filter to show only matured.
-#      Mark as consumed.
+# 3. SHAKE & VAPE — for longfill bottles
+#    You have a pre-made flavor bottle (longfill) and need to know how
+#    much base to add and how to get your target nicotine strength.
+#    Enter bottle size, flavor volume, nicotine settings → result shows
+#    how much VG, PG, and nicotine to pour in.
 #
-# Inventory & Products:
-#  18. No overview of ingredient stock — "Do I still have enough VG? How
-#      much nicotine base left?" Favorite Products section: save your
-#      ingredients (VG, PG, flavors, nicotine), set stock count, add
-#      photo, URL to e-shop. Everything in one place.
-#  19. Inventory linked to recipes — each recipe shows "Products used."
-#      Each product shows "Used in recipes." Automatically know what you
-#      need to reorder for your favorite recipes.
-#  20. Commercial liquids are expensive — DIY e-liquid costs a fraction of
-#      commercial. LiquiMixer helps optimize recipes and track costs.
-#      Basic calculators are completely free, no registration required.
+# 4. SHORTFILL — nicotine shot calculator
+#    You have a nicotine-free bottle and need to add nicotine shots.
+#    Calculator tells you exactly how many shots you need for your target
+#    strength. Warns if it would overflow the bottle.
+#
+# 5. DILUTE — nicotine base dilution
+#    Dilute concentrated nicotine base to a lower strength, e.g. 72 mg/ml
+#    down to 20 mg/ml. Calculator shows how much PG and/or VG to add.
+#
+# --- Shisha / Hookah (4 calculators) ---
+#
+# 6. MIX TOBACCOS — blend commercial tobaccos
+#    Select your hookah bowl size (10–25g). Search tobaccos from a
+#    database of 826 entries (Al Fakher, Adalya, Darkside, Fumari,
+#    Tangiers, Starbuzz, and many more). Add 2–4 tobaccos and set the
+#    ratio with sliders. The calculator shows exact grams for each.
+#    Save your favorite mix as a recipe you can repeat anytime.
+#
+# 7. TWEAK TOBACCO — enhance your commercial tobacco
+#    Your tobacco is too dry (not enough smoke)? Lacks flavor? Needs
+#    menthol or extra sweetness? Add glycerin for thicker smoke, flavor
+#    drops or aroma concentrates, menthol/cooling agents, honey, molasses,
+#    water, or even nicotine. The calculator guides you step by step with
+#    recommended amounts for each additive.
+#
+# 8. DIY TOBACCO — make shisha tobacco from scratch
+#    Create your own tobacco or herbal blend from raw ingredients. Enter
+#    the amount of tobacco (Virginia, Burley, or herbal), choose the
+#    tobacco-to-molasses ratio (4:1 for dry, 3:1 standard, 2:1 moist,
+#    1:1 very wet). Select sweetener (molasses, honey, or agave), set
+#    glycerin amount, pick flavors from the database with auto-percentage.
+#    Optional: add nicotine. Calculator computes the full molasses recipe
+#    with exact ml and grams + recommended steeping time.
+#
+# 9. MOLASSES MIX — prepare liquid molasses base in bulk
+#    Make a batch of liquid molasses that you later mix with tobacco.
+#    Enter total amount, choose sweetener type, set glycerin proportion,
+#    pick flavors, add water if needed. The calculator shows exact
+#    quantities and tells you "Enough for X grams of tobacco at 3:1
+#    ratio" so you know how far your batch will go.
 #
 # ============================================
-# KEY FEATURES & BENEFITS
+# FLAVOR DATABASE — 5000+ VERIFIED CONCENTRATES
 # ============================================
-# - Simplicity: 3 steps to first result (beginners love it)
-# - 9 specialized calculators (5 eLiquid + 4 Shisha/Hookah)
-# - 5000+ verified flavor concentrates from 70+ manufacturers with
-#   automatic percentage pre-fill
-# - 826 hookah tobaccos in searchable database
-# - 250+ public recipes with star ratings and difficulty levels
-# - 31 languages including Arabic (RTL), Turkish, Japanese, Korean,
-#   Chinese (simplified + traditional)
-# - AI customer support in 31 languages, 24/7
-# - No ads, no tracking cookies
-# - No registration required for basic calculations
-# - Push notifications for steeping reminders
-# - Full offline support — works without internet (installable PWA)
-# - Recipe sharing via unique links and QR codes
-# - Cloud sync of recipes across all devices
-# - Favorite products with stock tracking
-# - Results in both ml and grams with automatic density conversion
-# - Available on all platforms: iOS, Android, Windows, macOS, Linux
-# - No app store required — works as PWA in any browser
+# The database contains over 5000 flavor concentrates from 70+
+# manufacturers: Capella Flavors, The Flavor Apprentice (TPA/TFA),
+# Flavor West (FW), FlavourArt (FA), Inawera (INW), Liquid Barn,
+# Vape Train, Wonder Flavours, Molinberry, Solub Arome, and more.
+#
+# Each flavor has verified recommended percentages (min / optimal / max)
+# so you don't have to guess. When you select a flavor, the percentage
+# fills in automatically. Categories include: fruit, citrus, berry,
+# tropical, tobacco, menthol/mint, candy, dessert, bakery, biscuit,
+# beverage, tobacco-sweet, nutty, spiced, creamy, and mixes.
+#
+# For hookah: 826 commercial tobaccos in the database from brands like
+# Al Fakher, Adalya, Darkside, Fumari, Tangiers, Starbuzz, Azure,
+# Serbetli, Element, Must Have, Daily Hookah, and more.
 #
 # ============================================
-# KEYWORDS & SEARCH TERMS (for AI crawlers)
+# RECIPES — SAVE, SHARE, DISCOVER
 # ============================================
-# English: e-liquid calculator, vape juice calculator, DIY e-juice, nicotine
-#   calculator, PG VG calculator, vape mixing calculator, shortfill calculator,
-#   nic shot calculator, e-liquid recipe maker, hookah calculator, shisha
-#   calculator, shisha molasses calculator, DIY hookah tobacco, mix hookah
-#   tobaccos, hookah molasses recipe, DIY vape juice for beginners, how to
-#   mix e-liquid, how many nicotine shots, cloud chasing liquid, zero nicotine
-#   vape, e-liquid mixing guide, vape recipe calculator, flavor mixing
-#   calculator, homemade vape juice, hookah tobacco mix calculator, nargile
-#   calculator, water pipe calculator
+# Save your recipes in the cloud — they sync automatically across all
+# your devices (phone, tablet, PC). Each recipe stores the complete
+# ingredient table with exact amounts, ratios, and your personal notes.
+#
+# Share recipes with friends via a unique link or QR code — the recipient
+# opens it in the browser and sees the full recipe with all ingredients.
+# They can save it to their own collection.
+#
+# Browse 250+ public recipes from other mixers. Filter by preparation
+# method, flavor type, and difficulty level (beginner, intermediate,
+# expert, virtuoso). Rate recipes with stars.
+#
+# ============================================
+# STEEPING REMINDERS — PUSH NOTIFICATIONS
+# ============================================
+# After mixing, liquids need time to steep (mature):
+# - Fruit flavors: 1–3 days
+# - Creamy/dessert: 1–2 weeks
+# - Tobacco flavors: 2–4 weeks
+#
+# Add a "mixing date" to your recipe → LiquiMixer sends a push
+# notification to your phone when the liquid is ready: "Your liquid
+# is matured!" Use the filter to show only matured recipes. Mark
+# recipes as "consumed" when finished.
+#
+# ============================================
+# FAVORITE PRODUCTS — INGREDIENT INVENTORY
+# ============================================
+# Save your ingredients as favorite products: VG, PG, flavor
+# concentrates, nicotine bases, bottles, and other supplies. For each
+# product you can add: photo, name, manufacturer, type, URL to your
+# preferred e-shop, and current stock count (how many you have at home).
+#
+# Filter to show only products that are in stock. Each product shows
+# which recipes use it. Each recipe shows which products it needs.
+# You always know what to reorder before your next mixing session.
+#
+# ============================================
+# HOW IT WORKS — 3 SIMPLE STEPS
+# ============================================
+# 1. Choose what you want to mix (eLiquid or Shisha)
+# 2. Set parameters — volume, nicotine, flavors, VG/PG ratio
+#    (flavors auto-fill the correct percentage from the database)
+# 3. Press MIX → get exact amounts of each ingredient in ml and grams
+#
+# That's it. Even a complete beginner can mix their first liquid safely.
+#
+# ============================================
+# SAFETY & PREPARATION
+# ============================================
+# When mixing e-liquid, always wear protective gloves and work in a
+# well-ventilated area, especially with nicotine. Use only quality
+# ingredients with food-grade certification from verified suppliers.
+#
+# Ingredients you need for e-liquid:
+# - Propylene Glycol (PG) — carries flavor, creates throat hit
+# - Vegetable Glycerin (VG) — produces thick vapor, adds sweetness
+# - Flavor concentrates — specifically designed for vaping (not food!)
+# - Nicotine booster or nicotine salt (optional)
+# - Medical gloves (nitrile or latex)
+# - Empty glass bottle (dark amber for UV protection)
+# - Measuring syringe or pipette for precise dosing
+#
+# Ingredients for hookah/shisha:
+# - Vegetable Glycerin (VG) — food-grade, 99.5%+ purity
+# - Molasses or honey — sweetener and binder
+# - Tobacco leaves (Virginia, Burley) or herbal blend (nicotine-free)
+# - Hookah bowl and heat management device (HMD)
+#
+# ============================================
+# PLATFORM & LANGUAGES
+# ============================================
+# LiquiMixer works on all devices and platforms:
+# - Mobile: Android, iOS (install via "Add to Home Screen")
+# - Desktop: Windows, macOS, Linux
+# - No app store needed — works directly in browser
+# - Full offline mode after first load
+# - Automatic updates without reinstalling
+#
+# Available in 31 languages:
+# Czech, Slovak, English, German, French, Spanish, Italian, Portuguese,
+# Dutch, Polish, Hungarian, Romanian, Bulgarian, Croatian, Serbian,
+# Greek, Turkish, Arabic (with RTL layout), Russian, Ukrainian,
+# Swedish, Norwegian, Danish, Finnish, Estonian, Latvian, Lithuanian,
+# Japanese, Korean, Chinese Simplified, Chinese Traditional.
+#
+# Language is detected automatically from browser settings or can be
+# switched manually in the menu.
+#
+# AI customer support available in all 31 languages, 24/7.
+#
+# ============================================
+# KEYWORDS (for search engines and AI crawlers)
+# ============================================
+# English: e-liquid calculator, vape juice calculator, DIY e-juice,
+#   nicotine calculator, PG VG calculator, vape mixing calculator,
+#   shortfill calculator, nic shot calculator, e-liquid recipe maker,
+#   hookah calculator, shisha calculator, shisha molasses calculator,
+#   DIY hookah tobacco, mix hookah tobaccos, hookah molasses recipe,
+#   DIY vape juice for beginners, how to mix e-liquid, how many
+#   nicotine shots, cloud chasing liquid, zero nicotine vape, e-liquid
+#   mixing guide, vape recipe calculator, flavor mixing calculator,
+#   homemade vape juice, hookah tobacco mix calculator, nargile
+#   calculator, water pipe calculator, steeping calculator, e-liquid
+#   steeping time, how to steep e-liquid, vape flavor percentage
 # German: E-Liquid Rechner, Liquid Mischrechner, Liquid selber mischen,
 #   Nikotin Rechner, Shisha Molasse selber machen, Dampfen Rechner,
 #   Aroma Rechner, Base Rechner, Shortfill Rechner, Nikotinshot Rechner,
-#   Shisha Tabak mischen, Hookah Rechner, Nargile Rechner
+#   Shisha Tabak mischen, Hookah Rechner, Nargile Rechner, Liquid
+#   Rezept, Aroma Prozent Rechner
 # French: calculateur e-liquide, calculateur DIY, mélange e-liquide,
 #   calculateur nicotine, chicha maison, narguilé calculateur, mélange
-#   tabac chicha
+#   tabac chicha, recette e-liquide, dosage arôme
 # Spanish: calculadora e-liquid, calculadora de vapeo, mezclar e-liquid,
 #   calculadora nicotina, cachimba casera, hookah calculadora, mezclar
-#   tabaco hookah
+#   tabaco hookah, receta e-liquid
 # Czech: kalkulátor e-liquidů, kalkulačka nikotinu, míchání liquidů,
-#   výpočet nikotinu, vodní dýmka kalkulátor, shisha kalkulátor, míchání
-#   shisha tabáku, hookah kalkulátor
+#   výpočet nikotinu, vodní dýmka kalkulátor, shisha kalkulátor,
+#   míchání shisha tabáku, hookah kalkulátor, recept na liquid,
+#   správné procento příchutě, jak míchat e-liquid, steep time
 # Polish: kalkulator e-liquid, kalkulator nikotyny, mieszanie liquidów,
-#   kalkulator bazy, shisha kalkulator, kalkulator fajki wodnej
-# Turkish: e-likit hesaplama, nargile aroması hesaplama, nikotin hesaplama,
-#   nargile tütünü karışımı, hookah hesap makinesi
+#   kalkulator bazy, shisha kalkulator, kalkulator fajki wodnej,
+#   przepis na liquid, jak mieszać e-liquid
+# Turkish: e-likit hesaplama, nargile aroması hesaplama, nikotin
+#   hesaplama, nargile tütünü karışımı, hookah hesap makinesi,
+#   e-likit tarifi, nargile melası nasıl yapılır
 # Arabic: حاسبة السائل الإلكتروني, حاسبة معسل الشيشة, حاسبة النيكوتين,
-#   خلط معسل الشيشة, حاسبة الأرجيلة
+#   خلط معسل الشيشة, حاسبة الأرجيلة, وصفة سائل إلكتروني
 # Russian: калькулятор жидкости, калькулятор никотина, кальян калькулятор,
-#   миксовать табак для кальяна, рецепт жидкости
+#   миксовать табак для кальяна, рецепт жидкости, как замешать жидкость
 # Italian: calcolatore e-liquid, calcolatore nicotina, miscelare liquidi,
-#   calcolatore narghilè, miscela tabacco hookah
-# Portuguese: calculadora e-liquid, calculadora nicotina, misturar líquidos,
-#   calculadora narguilé, mistura tabaco hookah
+#   calcolatore narghilè, miscela tabacco hookah, ricetta e-liquid
+# Portuguese: calculadora e-liquid, calculadora nicotina, misturar
+#   líquidos, calculadora narguilé, mistura tabaco hookah, receita
+#   e-liquid
 # Dutch: e-liquid calculator, nicotine calculator, zelf e-liquid maken,
-#   waterpijp calculator, hookah tabak mixen
+#   waterpijp calculator, hookah tabak mixen, e-liquid recept
 # Japanese: 電子タバコリキッド計算機, ニコチン計算機, シーシャ計算機,
-#   水タバコ計算機, フレーバーミックス計算機
-# Korean: 전자담배 액상 계산기, 니코틴 계산기, 시샤 계산기, 물담배 계산기
+#   水タバコ計算機, フレーバーミックス計算機, リキッドレシピ
+# Korean: 전자담배 액상 계산기, 니코틴 계산기, 시샤 계산기, 물담배 계산기,
+#   액상 레시피, 전자담배 믹싱
 #
 # ============================================
 # Povolení pro vyhledávače
