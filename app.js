@@ -2246,12 +2246,36 @@ window.addEventListener('load', async function() {
             if (window.Clerk.user && window.LiquiMixerDB) {
                 // onSignIn() načte i jazyk uživatele z databáze
                 await window.LiquiMixerDB.onSignIn(window.Clerk.user);
-                // KONTROLA PŘEDPLATNÉHO IHNED - před aktualizací UI!
-                await checkSubscriptionStatus();
-                // Teprve po kontrole předplatného aktualizovat UI
-                updateAuthUI();
-                // Zkontrolovat pending sdílený recept (až po ověření předplatného)
-                await checkPendingSharedRecipe();
+                
+                // PRIORITA: Zkontrolovat zda se uživatel právě vrátil z registrace (subscription flow)
+                // Po email verifikaci Clerk reloaduje stránku — localStorage flagy přežijí
+                const fromSubscriptionOnLoad = localStorage.getItem('liquimixer_from_subscription') === 'true';
+                const termsAcceptedOnLoad = localStorage.getItem('liquimixer_terms_accepted') === 'true';
+                
+                if (fromSubscriptionOnLoad) {
+                    console.log('Initial load: User returned from subscription registration flow');
+                    
+                    // Uložit souhlas s OP do DB
+                    if (termsAcceptedOnLoad) {
+                        await window.LiquiMixerDB.saveTermsAcceptance(window.Clerk.user.id);
+                    }
+                    
+                    // Vyčistit flagy
+                    localStorage.removeItem('liquimixer_from_subscription');
+                    localStorage.removeItem('liquimixer_terms_accepted');
+                    localStorage.removeItem('liquimixer_terms_accepted_at');
+                    
+                    // Ihned zobrazit platební modál (Stav B) — žádný flash hlavní stránky
+                    showSubscriptionModal(true);
+                } else {
+                    // Standardní flow: kontrola předplatného a UI
+                    // KONTROLA PŘEDPLATNÉHO IHNED - před aktualizací UI!
+                    await checkSubscriptionStatus();
+                    // Teprve po kontrole předplatného aktualizovat UI
+                    updateAuthUI();
+                    // Zkontrolovat pending sdílený recept (až po ověření předplatného)
+                    await checkPendingSharedRecipe();
+                }
             } else {
                 // Nepřihlášený uživatel - aktualizovat UI
                 updateAuthUI();
@@ -2261,7 +2285,9 @@ window.addEventListener('load', async function() {
             // Oddělená logika pro: (1) odhlášení, (2) token refresh, (3) skutečné přihlášení/změna uživatele
             let lastAuthUserId = window.Clerk.user?.id || null;
             let isFullyInitialized = !!window.Clerk.user; // Pokud je user při startu, jsme inicializováni
-            let processingSubscriptionFlow = false; // Guard proti dvojímu zpracování
+            // Guard: pokud initial load již zpracoval fromSubscription, nastavit na true
+            const initialLoadHandledSubscription = !localStorage.getItem('liquimixer_from_subscription') && document.getElementById('subscriptionModal') && !document.getElementById('subscriptionModal').classList.contains('hidden');
+            let processingSubscriptionFlow = initialLoadHandledSubscription; // Guard proti dvojímu zpracování
             
             window.Clerk.addListener(async (event) => {
                 console.log('Clerk auth event:', event);
