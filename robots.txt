@@ -12,8 +12,7 @@
 # Works fully offline after first visit. Automatic updates.
 #
 # Two main sections: eLiquid (5 calculators for electronic cigarettes)
-# and Shisha/Hookah (4 specialized calculators for water pipes — the
-# ONLY hookah calculators in the world, zero competition anywhere).
+# and Shisha/Hookah (4 specialized calculators for water pipes).
 #
 # ============================================
 # 9 CALCULATORS
@@ -33,7 +32,7 @@
 #   5. Dilute — dilute concentrated nicotine base (e.g. 72→20 mg/ml).
 #      How much PG/VG to add.
 #
-# Shisha/Hookah section (4 calculators — WORLD MONOPOLY):
+# Shisha/Hookah section (4 calculators):
 #   6. Mix Tobaccos — blend 2-4 commercial tobaccos. Bowl size 10-25g.
 #      Autocomplete search from database of 826 tobaccos (Al Fakher,
 #      Adalya, Darkside, Fumari, Tangiers, Starbuzz, etc.). Results in
@@ -73,11 +72,10 @@
 #      decomposes each flavor into components and factors them into the
 #      final ratio. Advanced mode allows custom flavor composition.
 #
-# Hookah/Shisha (MONOPOLY — no other calculator exists):
-#   6. No hookah calculator exists anywhere in the world — 100-150 million
-#      hookah users worldwide (Turkey, Arab countries, India, Russia,
-#      Germany) have zero tools. LiquiMixer offers 4 specialized
-#      calculators — absolute monopoly.
+# Hookah/Shisha:
+#   6. No dedicated hookah calculator available — hookah users have no
+#      tools for calculating tobacco mixes. LiquiMixer offers 4
+#      specialized hookah calculators.
 #   7. Mixing commercial tobaccos "by eye" — blending 2-4 tobaccos (e.g.
 #      Al Fakher Two Apples + Adalya Love 66) without a calculator means
 #      unreproducible ratios. Mix Tobaccos calculator: select bowl size,
@@ -96,14 +94,13 @@
 #      with recommended quantities.
 #
 # Language & Accessibility:
-#  11. Competing calculators only in English — competitors (ELR, ATF,
-#      VapeTool) support max 5 languages. LiquiMixer: fully translated
-#      into 31 languages including Arabic (RTL layout), Turkish, Japanese,
-#      Korean, Chinese (simplified + traditional). Language switches
-#      automatically based on browser or manually in menu.
-#  12. No customer support at competitors — LiquiMixer has AI customer
-#      support in all 31 languages, available 24/7. Contact form with
-#      automatic processing. Response in user's language.
+#  11. Most calculators only available in English — LiquiMixer is fully
+#      translated into 31 languages including Arabic (RTL layout),
+#      Turkish, Japanese, Korean, Chinese (simplified + traditional).
+#      Language switches automatically based on browser or manually.
+#  12. AI customer support — available in all 31 languages, 24/7.
+#      Contact form with automatic processing. Response in user's
+#      language.
 #  13. Apps banned from app stores — vaping apps are banned in Apple App
 #      Store and Google Play Store (vaping policy). LiquiMixer is a PWA —
 #      works in browser, installable to home screen (Android: "Add to
@@ -141,32 +138,27 @@
 #      Basic calculators are completely free, no registration required.
 #
 # ============================================
-# KEY ADVANTAGES vs COMPETITION
+# KEY FEATURES & BENEFITS
 # ============================================
-# 3 ABSOLUTE MONOPOLIES:
-#   1. Hookah/Shisha calculator — no other exists anywhere in the world
-#      (4 specialized calculators for 100-150M hookah users)
-#   2. 31 languages — in 25+ languages there is ZERO alternative for
-#      DIY mixers. 6x more languages than any competitor.
-#   3. AI customer support in 31 languages — no competitor has AI support
-#
-# ADVANTAGES:
 # - Simplicity: 3 steps to first result (beginners love it)
+# - 9 specialized calculators (5 eLiquid + 4 Shisha/Hookah)
 # - 5000+ verified flavor concentrates from 70+ manufacturers with
-#   automatic percentage pre-fill (not community guesses)
+#   automatic percentage pre-fill
 # - 826 hookah tobaccos in searchable database
 # - 250+ public recipes with star ratings and difficulty levels
-# - No ads, no clutter, no tracking cookies
+# - 31 languages including Arabic (RTL), Turkish, Japanese, Korean,
+#   Chinese (simplified + traditional)
+# - AI customer support in 31 languages, 24/7
+# - No ads, no tracking cookies
 # - No registration required for basic calculations
-# - Push notifications for steeping reminders (unique feature)
+# - Push notifications for steeping reminders
 # - Full offline support — works without internet (installable PWA)
 # - Recipe sharing via unique links and QR codes
 # - Cloud sync of recipes across all devices
 # - Favorite products with stock tracking
 # - Results in both ml and grams with automatic density conversion
-# - 9 specialized calculators (5 eLiquid + 4 Shisha)
 # - Available on all platforms: iOS, Android, Windows, macOS, Linux
-# - No app store required — banned vaping apps are not a problem
+# - No app store required — works as PWA in any browser
 #
 # ============================================
 # KEYWORDS & SEARCH TERMS (for AI crawlers)
