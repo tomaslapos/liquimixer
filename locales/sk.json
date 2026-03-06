@@ -686,6 +686,7 @@
     "loading": "Načítavam produkty...",
     "back": "◀ SPÄŤ",
     "clear_filter": "Zrušiť filter",
+    "in_stock_only": "Iba skladom",
     "not_found": "Produkt nenájdený.",
     "load_error": "Chyba pri načítaní produktu.",
     "deleted": "Produkt bol zmazaný.",

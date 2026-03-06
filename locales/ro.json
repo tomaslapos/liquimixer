@@ -677,6 +677,7 @@
     "loading": "Se încarcă produsele...",
     "back": "◀ ÎNAPOI",
     "clear_filter": "Ștergeți filtrul",
+    "in_stock_only": "Doar în stoc",
     "not_found": "Produsul nu a fost găsit.",
     "load_error": "Eroare la încărcarea produsului.",
     "deleted": "Produsul a fost șters.",

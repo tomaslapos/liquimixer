@@ -3852,6 +3852,12 @@
                             <button class="clear-rating-btn" onclick="clearSearchRating()" data-i18n-title="products.clear_filter" title="Zrušit filtr">✕</button>
                         </div>
                     </div>
+                    <div class="search-field search-stock">
+                        <label class="stock-filter-label">
+                            <input type="checkbox" id="productSearchInStock" onchange="filterProducts()">
+                            <span data-i18n="products.in_stock_only">Pouze skladem</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="search-results-info" id="searchResultsInfo"></div>
             </div>

@@ -677,6 +677,7 @@
     "loading": "Ürünler yükleniyor...",
     "back": "◀ GERİ",
     "clear_filter": "Filtreyi temizle",
+    "in_stock_only": "Sadece stokta",
     "not_found": "Ürün bulunamadı.",
     "load_error": "Ürün yüklenirken hata.",
     "deleted": "Ürün silindi.",

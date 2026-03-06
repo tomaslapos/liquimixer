@@ -440,6 +440,7 @@
     "loading": "Načítám produkty...",
     "back": "◀ ZPĚT",
     "clear_filter": "Zrušit filtr",
+    "in_stock_only": "Pouze skladem",
     "not_found": "Produkt nenalezen.",
     "load_error": "Chyba při načítání produktu.",
     "deleted": "Produkt byl smazán.",

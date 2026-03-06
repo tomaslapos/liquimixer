@@ -677,6 +677,7 @@
     "loading": "Producten laden...",
     "back": "◀ TERUG",
     "clear_filter": "Filter wissen",
+    "in_stock_only": "Alleen op voorraad",
     "not_found": "Product niet gevonden.",
     "load_error": "Fout bij laden van product.",
     "deleted": "Product is verwijderd.",

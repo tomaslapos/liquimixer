@@ -677,6 +677,7 @@
     "loading": "Laddar produkter...",
     "back": "◀ TILLBAKA",
     "clear_filter": "Rensa filter",
+    "in_stock_only": "Endast i lager",
     "not_found": "Produkt hittades inte.",
     "load_error": "Fel vid laddning av produkt.",
     "deleted": "Produkten har raderats.",

@@ -677,6 +677,7 @@
     "loading": "正在載入產品...",
     "back": "◀ 返回",
     "clear_filter": "清除篩選",
+    "in_stock_only": "僅顯示有庫存",
     "not_found": "未找到產品。",
     "load_error": "載入產品時出錯。",
     "deleted": "產品已刪除。",

@@ -677,6 +677,7 @@
     "loading": "Produktu ielāde...",
     "back": "◀ ATPAKAĻ",
     "clear_filter": "Notīrīt filtru",
+    "in_stock_only": "Tikai noliktavā",
     "not_found": "Produkts nav atrasts.",
     "load_error": "Kļūda, ielādējot produktu.",
     "deleted": "Produkts ir dzēsts.",

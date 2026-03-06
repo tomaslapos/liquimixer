@@ -677,6 +677,7 @@
     "loading": "Ladataan tuotteita...",
     "back": "◀ TAKAISIN",
     "clear_filter": "Tyhjennä suodatin",
+    "in_stock_only": "Vain varastossa",
     "not_found": "Tuotetta ei löytynyt.",
     "load_error": "Virhe tuotteen lataamisessa.",
     "deleted": "Tuote on poistettu.",

@@ -677,6 +677,7 @@
     "loading": "Termékek betöltése...",
     "back": "◀ VISSZA",
     "clear_filter": "Szűrő törlése",
+    "in_stock_only": "Csak készleten",
     "not_found": "Termék nem található.",
     "load_error": "Hiba a termék betöltésekor.",
     "deleted": "A termék törölve lett.",

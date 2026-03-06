@@ -6908,6 +6908,7 @@ function initSearchStarsHover() {
 function filterProducts() {
     const searchText = (document.getElementById('productSearchText')?.value || '').toLowerCase().trim();
     const searchType = document.getElementById('productSearchType')?.value || '';
+    const inStockOnly = document.getElementById('productSearchInStock')?.checked || false;
     
     let filtered = allUserProducts.filter(product => {
         // Textový filtr (název a popis)
@@ -6932,13 +6933,21 @@ function filterProducts() {
             }
         }
         
+        // Filtr skladem (stock_quantity > 0)
+        if (inStockOnly) {
+            const stockQuantity = parseFloat(product.stock_quantity) || 0;
+            if (stockQuantity <= 0) {
+                return false;
+            }
+        }
+        
         return true;
     });
     
     // Zobrazit info o výsledcích
     const resultsInfo = document.getElementById('searchResultsInfo');
     if (resultsInfo) {
-        if (searchText || searchType || searchRatingFilter > 0) {
+        if (searchText || searchType || searchRatingFilter > 0 || inStockOnly) {
             if (filtered.length === 0) {
                 resultsInfo.textContent = t('products.no_filter_results', 'No products match the filters.');
                 resultsInfo.className = 'search-results-info no-results';

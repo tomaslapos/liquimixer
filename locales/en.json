@@ -662,6 +662,7 @@
     "loading": "Loading products...",
     "back": "◀ BACK",
     "clear_filter": "Clear filter",
+    "in_stock_only": "In stock only",
     "not_found": "Product not found.",
     "load_error": "Error loading product.",
     "deleted": "Product has been deleted.",

@@ -677,6 +677,7 @@
     "loading": "Indlæser produkter...",
     "back": "◀ TILBAGE",
     "clear_filter": "Ryd filter",
+    "in_stock_only": "Kun på lager",
     "not_found": "Produkt ikke fundet.",
     "load_error": "Fejl ved indlæsning af produkt.",
     "deleted": "Produktet er blevet slettet.",
