@@ -1234,6 +1234,13 @@ body {
     filter: brightness(1.5) !important;
 }
 
+/* Apple ikona - invertovat z černé na bílou */
+#clerk-sign-in .cl-socialButtonsProviderIcon__apple,
+#clerk-sign-in .cl-socialButtonsBlockButton[data-provider="apple"] svg,
+#clerk-sign-in .cl-socialButtonsIconButton[data-provider="apple"] svg {
+    filter: invert(1) brightness(2) !important;
+}
+
 /* Text v social buttons */
 #clerk-sign-in .cl-socialButtonsBlockButtonText {
     color: white !important;

@@ -2754,6 +2754,9 @@ async function showLoginModal(mode = 'signIn') {
                             },
                             footerActionLink: {
                                 color: '#00ffff'
+                            },
+                            socialButtonsProviderIcon__apple: {
+                                filter: 'invert(1) brightness(2)'
                             }
                         }
                     },
