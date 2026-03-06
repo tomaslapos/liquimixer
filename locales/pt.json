@@ -677,7 +677,7 @@
     "loading": "A carregar produtos...",
     "back": "◀ VOLTAR",
     "clear_filter": "Limpar filtro",
-    "in_stock_only": "Apenas em stock",
+    "in_stock_only": "📦 Apenas em stock",
     "not_found": "Produto não encontrado.",
     "load_error": "Erro ao carregar o produto.",
     "deleted": "O produto foi eliminado.",

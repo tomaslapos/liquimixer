@@ -677,7 +677,7 @@
     "loading": "製品を読み込み中...",
     "back": "◀ 戻る",
     "clear_filter": "フィルターをクリア",
-    "in_stock_only": "在庫ありのみ",
+    "in_stock_only": "📦 在庫ありのみ",
     "not_found": "製品が見つかりません。",
     "load_error": "製品の読み込みエラー。",
     "deleted": "製品が削除されました。",
