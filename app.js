@@ -13123,7 +13123,8 @@ function updatePricingUI(location) {
 }
 
 // Spustit platbu (voláno z Stavu B - uživatel je přihlášen)
-async function startPayment() {
+// payMethod: 'GAP' = Google Pay, 'APL' = Apple Pay, 'CRD' = kartou, undefined = bez předvolby
+async function startPayment(payMethod) {
     // Ověřit, že uživatel je přihlášen
     if (!window.Clerk || !window.Clerk.user) {
         console.error('User not logged in - cannot start payment');
@@ -13131,35 +13132,24 @@ async function startPayment() {
         return;
     }
 
-    const payBtn = document.getElementById('paySubscriptionBtn');
-    if (payBtn) {
-        payBtn.disabled = true;
-        const spanEl = payBtn.querySelector('span');
-        if (spanEl) spanEl.textContent = t('subscription.processing', 'Zpracování...');
-    }
+    // Disable všechna platební tlačítka
+    const allPayBtns = document.querySelectorAll('.payment-method-btn');
+    allPayBtns.forEach(btn => { btn.disabled = true; });
 
     try {
         // Pokračovat s platbou
-        await processPayment();
+        await processPayment(payMethod);
 
     } catch (error) {
         console.error('Payment error:', error);
         showSubscriptionError(t('subscription.error_generic', 'An error occurred while processing payment. Please try again.'));
-        if (payBtn) {
-            payBtn.disabled = false;
-            const spanEl = payBtn.querySelector('span');
-            if (spanEl) spanEl.textContent = t('subscription.pay_button_simple', 'Zaplatit');
-        }
+        allPayBtns.forEach(btn => { btn.disabled = false; });
     }
 }
 
 // Zpracovat platbu (voláno když je uživatel již přihlášen)
-async function processPayment() {
-    const payBtn = document.getElementById('paySubscriptionBtn');
-    if (payBtn) {
-        payBtn.disabled = true;
-        payBtn.querySelector('span').textContent = t('subscription.processing', 'Zpracování platby...');
-    }
+// payMethod: 'GAP' = Google Pay, 'APL' = Apple Pay, 'CRD' = kartou
+async function processPayment(payMethod) {
     
     try {
         // DŮLEŽITÉ: Aktualizovat geolokaci před platbou (uživatel se mohl přestěhovat)
@@ -13223,7 +13213,8 @@ async function processPayment() {
             body: JSON.stringify({ 
                 action: 'create',
                 data: {
-                    subscriptionId: subResult.subscription.id
+                    subscriptionId: subResult.subscription.id,
+                    payMethod: payMethod || undefined
                 }
             })
         });
@@ -13251,10 +13242,8 @@ async function processPayment() {
     } catch (error) {
         console.error('Payment processing error:', error);
         showSubscriptionError(t('subscription.error_generic', 'An error occurred while processing payment. Please try again.'));
-        if (payBtn) {
-            payBtn.disabled = false;
-            payBtn.querySelector('span').textContent = t('subscription.pay_button', 'Zaplatit a aktivovat');
-        }
+        const allPayBtns = document.querySelectorAll('.payment-method-btn');
+        allPayBtns.forEach(btn => { btn.disabled = false; });
     }
 }
 

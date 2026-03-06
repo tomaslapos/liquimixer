@@ -632,27 +632,38 @@
                         </div>
                     </div>
                     
-                    <!-- Tlačítko Zaplatit -->
-                    <div class="payment-section">
-                        <button class="neon-button payment-btn" id="paySubscriptionBtn" onclick="startPayment()">
-                            <span data-i18n="subscription.pay_button_simple">Zaplatit</span>
-                            <div class="button-glow"></div>
-                        </button>
+                    <!-- Výběr platební metody -->
+                    <div class="payment-methods-section">
+                        <p class="payment-methods-label" data-i18n="subscription.choose_payment">Vyberte platební metodu:</p>
+                        
+                        <div class="payment-methods-buttons">
+                            <!-- Google Pay -->
+                            <button class="payment-method-btn gpay-btn" onclick="startPayment('GAP')">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" class="payment-method-icon">
+                                <span>Google Pay</span>
+                            </button>
+                            
+                            <!-- Apple Pay -->
+                            <button class="payment-method-btn applepay-btn" onclick="startPayment('APL')">
+                                <svg class="payment-method-icon apple-pay-svg" viewBox="0 0 50 21" xmlns="http://www.w3.org/2000/svg" aria-label="Apple Pay">
+                                    <path fill="currentColor" d="M9.6 5.9c-.6.7-1.5 1.3-2.4 1.2-.1-.9.3-1.9 1-2.6.6-.7 1.6-1.2 2.4-1.3.1 1-.3 1.9-.9 2.6m.9 1.3c-1.3-.1-2.5.8-3.1.8-.6 0-1.6-.7-2.7-.7-1.4 0-2.6.8-3.3 2-1.4 2.5-.4 6.1 1 8.1.7 1 1.5 2.1 2.5 2 1-.1 1.4-.7 2.6-.7 1.2 0 1.5.7 2.6.7 1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.1-.8-2.1-3.2 0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6m8.3-2.8v14.3h2.2v-4.9h3c2.8 0 4.7-1.9 4.7-4.7s-1.9-4.7-4.6-4.7h-5.3zm2.2 1.9h2.5c1.9 0 3 1 3 2.8s-1.1 2.8-3 2.8h-2.5v-5.5zm11.8 12.5c1.4 0 2.6-.7 3.2-1.8h.1v1.7h2v-7.2c0-2.1-1.6-3.4-4.1-3.4-2.3 0-4 1.3-4 3.2h2c.2-.9 1-1.4 2-1.4 1.3 0 2 .6 2 1.7v.8l-2.7.2c-2.5.1-3.8 1.2-3.8 3 0 1.8 1.4 3.1 3.4 3.1m.6-1.7c-1.1 0-1.8-.5-1.8-1.4 0-.9.7-1.4 2-1.5l2.4-.2v.8c0 1.4-1.1 2.4-2.7 2.4m7.1 5.6c2.1 0 3.1-.8 4-3.3l3.8-10.8h-2.2l-2.6 8.4h-.1l-2.6-8.4H38l3.7 10.3-.2.6c-.3 1.1-.9 1.5-1.9 1.5-.2 0-.5 0-.7-.1v1.7c.2.1.7.1.9.1"/>
+                                </svg>
+                                <span>Apple Pay</span>
+                            </button>
+                            
+                            <!-- Kartou -->
+                            <button class="payment-method-btn card-btn" onclick="startPayment('CRD')">
+                                <svg class="payment-method-icon card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                                <span data-i18n="subscription.pay_card">Platební kartou</span>
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Info o přesměrování -->
                     <p class="payment-redirect-info" data-i18n="subscription.redirect_info">Budete přesměrováni na platební bránu GP WebPay</p>
-                    
-                    <!-- Loga platebních metod -->
-                    <div class="payment-methods-logos">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="payment-logo" title="Visa">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="payment-logo" title="Mastercard">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" class="payment-logo" title="Google Pay">
-                        <!-- Apple Pay logo - oficiální styl: čierne pozadie, biele logo -->
-                        <svg class="payment-logo apple-pay-logo" viewBox="0 0 50 21" xmlns="http://www.w3.org/2000/svg" style="height: 24px; width: auto; background: #000; border-radius: 4px; padding: 2px 6px;" aria-label="Apple Pay">
-                            <path fill="#ffffff" d="M9.6 5.9c-.6.7-1.5 1.3-2.4 1.2-.1-.9.3-1.9 1-2.6.6-.7 1.6-1.2 2.4-1.3.1 1-.3 1.9-.9 2.6m.9 1.3c-1.3-.1-2.5.8-3.1.8-.6 0-1.6-.7-2.7-.7-1.4 0-2.6.8-3.3 2-1.4 2.5-.4 6.1 1 8.1.7 1 1.5 2.1 2.5 2 1-.1 1.4-.7 2.6-.7 1.2 0 1.5.7 2.6.7 1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.1-.8-2.1-3.2 0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6m8.3-2.8v14.3h2.2v-4.9h3c2.8 0 4.7-1.9 4.7-4.7s-1.9-4.7-4.6-4.7h-5.3zm2.2 1.9h2.5c1.9 0 3 1 3 2.8s-1.1 2.8-3 2.8h-2.5v-5.5zm11.8 12.5c1.4 0 2.6-.7 3.2-1.8h.1v1.7h2v-7.2c0-2.1-1.6-3.4-4.1-3.4-2.3 0-4 1.3-4 3.2h2c.2-.9 1-1.4 2-1.4 1.3 0 2 .6 2 1.7v.8l-2.7.2c-2.5.1-3.8 1.2-3.8 3 0 1.8 1.4 3.1 3.4 3.1m.6-1.7c-1.1 0-1.8-.5-1.8-1.4 0-.9.7-1.4 2-1.5l2.4-.2v.8c0 1.4-1.1 2.4-2.7 2.4m7.1 5.6c2.1 0 3.1-.8 4-3.3l3.8-10.8h-2.2l-2.6 8.4h-.1l-2.6-8.4H38l3.7 10.3-.2.6c-.3 1.1-.9 1.5-1.9 1.5-.2 0-.5 0-.7-.1v1.7c.2.1.7.1.9.1"/>
-                        </svg>
-                    </div>
                 </div>
                 
                 <!-- Chybová zpráva -->

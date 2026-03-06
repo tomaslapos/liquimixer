@@ -6347,6 +6347,116 @@ button.locked {
     opacity: 1;
 }
 
+/* Payment Methods Selection Buttons (GPay, Apple Pay, Card) */
+.payment-methods-section {
+    margin-top: 20px;
+}
+
+.payment-methods-label {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.payment-methods-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payment-method-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-method-btn:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.15);
+}
+
+.payment-method-btn:active {
+    transform: translateY(0);
+}
+
+.payment-method-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.payment-method-icon {
+    height: 24px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.payment-method-btn .apple-pay-svg {
+    height: 20px;
+    color: #fff;
+}
+
+.payment-method-btn .card-svg {
+    height: 22px;
+    color: var(--neon-cyan);
+}
+
+/* Google Pay button - white bg for official look */
+.gpay-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #3c4043;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.gpay-btn:hover {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.gpay-btn .payment-method-icon {
+    height: 22px;
+}
+
+/* Apple Pay button - black bg for official look */
+.applepay-btn {
+    background: #000;
+    color: #fff;
+    border-color: #333;
+}
+
+.applepay-btn:hover {
+    background: #1a1a1a;
+    border-color: #555;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Card button - neon style matching app theme */
+.card-btn {
+    border-color: rgba(0, 255, 255, 0.3);
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.card-btn:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.12);
+}
+
 .location-detection {
     text-align: center;
     padding: 30px 0;

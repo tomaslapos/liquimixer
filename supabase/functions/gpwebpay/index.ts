@@ -2,7 +2,7 @@
 // EDGE FUNCTION: GP webpay Payment Gateway
 // Bezpečné zpracování plateb s audit logováním
 // WOOs, s. r. o. - Plátce DPH
-// v2.1.0 - invoice email retry logic
+// v3.0.0 - security hardening
 // ============================================
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
@@ -63,6 +63,12 @@ const FAIL_URL = `${BASE_URL}/?payment=failed`
 
 // Konstanty
 const SUBSCRIPTION_DURATION_DAYS = 365
+
+// UUID v4 regex pro validaci
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+// Max délka ORDERNUMBER (čísla, max 15 znaků)
+const ORDERNUMBER_REGEX = /^\d{1,15}$/
 
 // ============================================
 // RSA PODPIS A OVĚŘENÍ (Node.js crypto)
@@ -230,7 +236,8 @@ serve(async (req) => {
       // Funkce pro čištění hodnoty - odstranit VŠECHNY whitespace a speciální znaky
       const cleanValue = (val: any): string => {
         const str = String(val || '')
-        return str.replace(/[\s\r\n\t\u0000-\u001F\u007F-\u009F]+/g, '')
+        // Omezit délku na 1000 znaků (prevence DoS)
+        return str.substring(0, 1000).replace(/[\s\r\n\t\u0000-\u001F\u007F-\u009F]+/g, '')
       }
       
       // Parsovat parametry z URL nebo POST body
@@ -251,7 +258,13 @@ serve(async (req) => {
         }
       }
     } else {
-      // Standardní JSON API volání
+      // Standardní JSON API volání - POUZE POST
+      if (req.method !== 'POST') {
+        return new Response(
+          JSON.stringify({ error: 'Method not allowed' }),
+          { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
       const body = await req.json()
       action = body.action
       data = body.data || {}
@@ -291,8 +304,9 @@ serve(async (req) => {
           )
         }
 
-        // 3. Validovat vstup
-        if (!data.subscriptionId || typeof data.subscriptionId !== 'string') {
+        // 3. Validovat vstup — UUID formát povinný
+        if (!data.subscriptionId || typeof data.subscriptionId !== 'string' || !UUID_REGEX.test(data.subscriptionId)) {
+          await logAudit(supabaseAdmin, clerkId, 'payment_create_invalid_input', 'payment', null, { subscriptionId: String(data.subscriptionId || '').substring(0, 50) }, false, 'Invalid subscription ID format', req)
           return new Response(
             JSON.stringify({ error: 'Invalid subscription ID' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -310,9 +324,9 @@ serve(async (req) => {
 
         if (subError || !subscription) {
           console.error('Subscription lookup error:', subError?.message)
-          await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { subscriptionId: data.subscriptionId }, false, 'Subscription not found', req)
+          await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { subscriptionId: data.subscriptionId, dbError: subError?.message }, false, 'Subscription not found', req)
           return new Response(
-            JSON.stringify({ error: 'Subscription not found or already paid', details: subError?.message, subscriptionId: data.subscriptionId }),
+            JSON.stringify({ error: 'Subscription not found or already paid' }),
             { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
@@ -357,9 +371,9 @@ serve(async (req) => {
 
           if (payError) {
             console.error('Payment insert error:', payError.message)
-            await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { error: payError.message }, false, payError.message, req)
+            await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', null, { error: payError.message, code: payError.code }, false, payError.message, req)
             return new Response(
-              JSON.stringify({ error: 'Failed to create payment', details: payError.message, code: payError.code }),
+              JSON.stringify({ error: 'Failed to create payment' }),
               { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
             )
           }
@@ -423,7 +437,7 @@ serve(async (req) => {
           console.error('Signing failed:', signError.message)
           await logAudit(supabaseAdmin, clerkId, 'payment_create_failed', 'payment', payment.id, { error: signError.message }, false, signError.message, req)
           return new Response(
-            JSON.stringify({ error: 'Failed to create payment', details: signError.message }),
+            JSON.stringify({ error: 'Failed to create payment' }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
         }
@@ -439,6 +453,13 @@ serve(async (req) => {
           URL: CALLBACK_URL,
           DIGEST: signature
         })
+
+        // PAYMETHOD: předvolba platební metody (GAP=Google Pay, APL=Apple Pay, CRD=karta)
+        // PAYMETHOD se nepřidává do podpisu, pouze jako URL parametr
+        const payMethod = data.payMethod
+        if (payMethod && ['GAP', 'APL', 'CRD'].includes(payMethod)) {
+          gatewayParams.set('PAYMETHOD', payMethod)
+        }
 
         const redirectUrl = `${GPWEBPAY_CONFIG.gatewayUrl}?${gatewayParams.toString()}`
 
@@ -483,14 +504,29 @@ serve(async (req) => {
         const DIGEST = data.DIGEST || ''
         const DIGEST1 = data.DIGEST1 || ''
 
-        // 1. Ověřit podpis odpovědi
+        // 0. Validovat ORDERNUMBER formát (pouze čísla, max 15 znaků)
+        if (!ORDERNUMBER || !ORDERNUMBER_REGEX.test(ORDERNUMBER)) {
+          await logAudit(supabaseAdmin, null, 'payment_callback_invalid_ordernumber', 'payment', null, { 
+            ORDERNUMBER: String(ORDERNUMBER).substring(0, 20) 
+          }, false, 'Invalid ORDERNUMBER format', req)
+          return Response.redirect(`${FAIL_URL}&error=invalid_request`, 302)
+        }
+
+        // 1. POVINNÉ: Ověřit podpisy — DIGEST a DIGEST1 MUSÍ být přítomny
+        if (!DIGEST || !DIGEST1) {
+          await logAudit(supabaseAdmin, null, 'payment_callback_missing_digest', 'payment', null, { 
+            ORDERNUMBER, hasDigest: !!DIGEST, hasDigest1: !!DIGEST1 
+          }, false, 'Missing DIGEST or DIGEST1', req)
+          return Response.redirect(`${FAIL_URL}&error=invalid_signature`, 302)
+        }
+
         const digestData = [OPERATION, ORDERNUMBER, PRCODE, SRCODE, RESULTTEXT]
           .filter(v => v !== undefined && v !== null && v !== '')
           .join('|')
 
         const digest1Data = `${digestData}|${GPWEBPAY_CONFIG.merchantNumber}`
 
-        // Získat veřejný klíč GPE
+        // Získat veřejný klíč GPE — POVINNÝ v produkci
         let gpePublicKeyPem: string | null = null
         
         if (GPWEBPAY_CONFIG.gpePublicKey) {
@@ -501,17 +537,15 @@ serve(async (req) => {
           }
         }
 
-        // Ověřit podpisy (pokud máme klíč)
-        let digestValid = true
-        let digest1Valid = true
-        
-        if (gpePublicKeyPem && DIGEST) {
-          digestValid = await verifySignature(digestData, DIGEST, gpePublicKeyPem)
+        if (!gpePublicKeyPem) {
+          console.error('CRITICAL: GPE public key not configured — cannot verify callback signatures!')
+          await logAudit(supabaseAdmin, null, 'payment_callback_no_public_key', 'payment', null, { ORDERNUMBER }, false, 'GPE public key not configured', req)
+          return Response.redirect(`${FAIL_URL}&error=configuration_error`, 302)
         }
-        
-        if (gpePublicKeyPem && DIGEST1) {
-          digest1Valid = await verifySignature(digest1Data, DIGEST1, gpePublicKeyPem)
-        }
+
+        // Ověřit OBA podpisy — oba MUSÍ být platné
+        const digestValid = await verifySignature(digestData, DIGEST, gpePublicKeyPem)
+        const digest1Valid = await verifySignature(digest1Data, DIGEST1, gpePublicKeyPem)
 
         if (!digestValid || !digest1Valid) {
           await logAudit(supabaseAdmin, null, 'payment_callback_invalid_signature', 'payment', null, { 
@@ -537,6 +571,18 @@ serve(async (req) => {
           console.error('Payment not found for order_number:', ORDERNUMBER)
           await logAudit(supabaseAdmin, null, 'payment_callback_not_found', 'payment', null, { ORDERNUMBER }, false, 'Payment not found', req)
           return Response.redirect(`${FAIL_URL}&error=payment_not_found`, 302)
+        }
+
+        // 2b. Idempotence — pokud platba již byla zpracována, neměnit stav
+        if (payment.status === 'completed') {
+          console.log(`Payment ${payment.id} already completed (replay protection), redirecting to success`)
+          await logAudit(supabaseAdmin, payment.clerk_id, 'payment_callback_replay_blocked', 'payment', payment.id, { ORDERNUMBER, existingStatus: payment.status }, true, undefined, req)
+          return Response.redirect(SUCCESS_URL, 302)
+        }
+        if (payment.status === 'failed') {
+          console.log(`Payment ${payment.id} already failed (replay protection), redirecting to fail`)
+          await logAudit(supabaseAdmin, payment.clerk_id, 'payment_callback_replay_blocked', 'payment', payment.id, { ORDERNUMBER, existingStatus: payment.status }, true, undefined, req)
+          return Response.redirect(`${FAIL_URL}&error=already_processed`, 302)
         }
 
         // 3. Zkontrolovat výsledek (PRCODE = 0 znamená úspěch)
@@ -775,9 +821,19 @@ serve(async (req) => {
       }
 
       // ============================================
-      // STATUS - Informace o konfiguraci (pro admin/debug)
+      // STATUS - Informace o konfiguraci (pouze s service_role key)
       // ============================================
       case 'status': {
+        // Vyžadovat service_role autorizaci — NE veřejné
+        const authHeader = req.headers.get('Authorization')
+        const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+        if (!authHeader || authHeader !== `Bearer ${serviceRoleKey}`) {
+          return new Response(
+            JSON.stringify({ error: 'Unauthorized' }),
+            { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
         return new Response(
           JSON.stringify({
             testMode: IS_TEST_MODE,
@@ -797,11 +853,11 @@ serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('GP webpay error:', error)
-    await logAudit(supabaseAdmin, null, 'payment_error', 'payment', null, { error: error.message }, false, error.message, req)
+    await logAudit(supabaseAdmin, null, 'payment_error', 'payment', null, { error: error?.message }, false, error?.message, req).catch(() => {})
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
