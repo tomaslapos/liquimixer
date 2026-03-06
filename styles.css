@@ -6393,7 +6393,8 @@ button.locked {
     margin-bottom: 12px;
 }
 
-.payment-methods-buttons {
+.payment-methods-buttons,
+.payment-method-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -6434,10 +6435,21 @@ button.locked {
     box-shadow: none !important;
 }
 
-.payment-method-icon {
+.payment-method-icon,
+.pm-icon {
     height: 24px;
     width: auto;
     flex-shrink: 0;
+}
+
+.pm-icon-gpay {
+    height: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.pm-icon-card {
+    height: 22px;
+    color: var(--neon-cyan);
 }
 
 .payment-method-btn .apple-pay-svg {

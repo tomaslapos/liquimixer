@@ -12951,8 +12951,8 @@ async function startRegistrationAndPayment() {
             await window.LiquiMixerDB.saveTermsAcceptance(window.Clerk.user.id);
         }
         
-        // Přejít přímo na platbu
-        startPayment();
+        // Přejít na stav B (výběr platební metody)
+        showSubscriptionModal(true);
         return;
     }
     
