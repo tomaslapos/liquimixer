@@ -41,9 +41,8 @@ wf2_*
 *.ps1
 *.mjs
 
-
-
-
+# Security audit files (contain key references)
+SECURITY_AUDIT*
 
 
 
