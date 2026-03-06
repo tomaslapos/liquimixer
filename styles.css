@@ -7102,6 +7102,21 @@ button.locked {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
+/* Subscription Flow Pending - černé pozadí během registrace (Clerk modál zůstává viditelný) */
+body.subscription-flow-pending::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    z-index: 999;
+}
+body.subscription-flow-pending #loginModal {
+    z-index: 1001 !important;
+}
+
 /* Subscription Required - Blokace UI */
 /* Modal sám má vlastní backdrop, nepotřebujeme další vrstvu */
 body.subscription-required .neon-grid,

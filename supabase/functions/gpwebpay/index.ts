@@ -401,8 +401,14 @@ serve(async (req) => {
         const operation = 'CREATE_ORDER'
         const depositFlag = '1'
         
+        // PAYMETHOD: předvolba platební metody (GPAY=Google Pay, APAY=Apple Pay)
+        // CRD (karta) = výchozí metoda brány, PAYMETHOD se neposílá
+        const payMethodMap: Record<string, string> = { 'GAP': 'GPAY', 'APL': 'APAY', 'GPAY': 'GPAY', 'APAY': 'APAY' }
+        const resolvedPayMethod = payMethodMap[data.payMethod] || null
+
         // Data pro podpis (pipe-delimited)
-        const dataToSign = [
+        // Pokud se PAYMETHOD posílá, MUSÍ být zahrnut v DIGEST (GP WebPay HTTP API v1.18)
+        const digestParts = [
           GPWEBPAY_CONFIG.merchantNumber,
           operation,
           orderNumber,
@@ -410,7 +416,11 @@ serve(async (req) => {
           currencyCode,
           depositFlag,
           CALLBACK_URL
-        ].join('|')
+        ]
+        if (resolvedPayMethod && ['GPAY', 'APAY'].includes(resolvedPayMethod)) {
+          digestParts.push(resolvedPayMethod)
+        }
+        const dataToSign = digestParts.join('|')
 
         // 8. Získat privátní klíč a podepsat
         let privateKeyPem: string
@@ -443,13 +453,6 @@ serve(async (req) => {
         }
 
         // 9. Sestavit URL pro přesměrování
-        // PAYMETHOD: předvolba platební metody (GPAY=Google Pay, APAY=Apple Pay)
-        // PAYMETHOD se nepřidává do podpisu, ale musí být PŘED DIGEST v URL
-        // CRD (karta) = výchozí metoda brány, PAYMETHOD se neposílá
-        // Potvrzeno GP WebPay support (Vít Derner, 06.03.2026): APAY a GPAY aktivní na merchantovi
-        const payMethodMap: Record<string, string> = { 'GAP': 'GPAY', 'APL': 'APAY', 'GPAY': 'GPAY', 'APAY': 'APAY' }
-        const resolvedPayMethod = payMethodMap[data.payMethod] || null
-
         const gatewayParams = new URLSearchParams()
         gatewayParams.set('MERCHANTNUMBER', GPWEBPAY_CONFIG.merchantNumber)
         gatewayParams.set('OPERATION', operation)

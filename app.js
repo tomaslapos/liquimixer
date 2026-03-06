@@ -2274,6 +2274,7 @@ window.addEventListener('load', async function() {
                     lastAuthUserId = null;
                     isFullyInitialized = false;
                     processingSubscriptionFlow = false;
+                    document.body.classList.remove('subscription-flow-pending');
                     updateAuthUI();
                     return;
                 }
@@ -2325,6 +2326,9 @@ window.addEventListener('load', async function() {
                         // GUARD: zamezit dvojímu zpracování (Clerk fire-ne listener vícekrát při email verifikaci)
                         processingSubscriptionFlow = true;
                         
+                        // Odstranit pending overlay a ihned zobrazit subscription modál
+                        document.body.classList.remove('subscription-flow-pending');
+                        
                         // Zavřít login modal BEZ updateAuthUI (nechceme flash hlavní obrazovky)
                         hideLoginModal();
                         
@@ -2342,7 +2346,9 @@ window.addEventListener('load', async function() {
                         console.log('User came from subscription modal - showing payment step (State B)...');
                         showSubscriptionModal(true);
                         isFullyInitialized = true;
-                        processingSubscriptionFlow = false;
+                        // processingSubscriptionFlow zůstává TRUE — zabrání opakovanému zobrazení
+                        // modálu při dalších Clerk events (email verifikace fire-ne listener vícekrát)
+                        // Resetuje se v hideSubscriptionModal() nebo při odhlášení
                         return; // Nepokračovat dál - uživatel musí zaplatit
                     }
                     
@@ -2360,8 +2366,10 @@ window.addEventListener('load', async function() {
                     console.log('User created at:', userCreatedAt, 'seconds since creation:', secondsSinceCreation, 'isNewUser:', isNewUser);
                     
                     // Pro nové uživatele (OAuth bez subscription flow) - zobrazit subscription modal (musí souhlasit s OP a zaplatit)
-                    if (isNewUser) {
+                    // Guard: nepřepisovat subscription modal pokud již běží (email verifikace fire-ne listener vícekrát)
+                    if (isNewUser && !processingSubscriptionFlow) {
                         console.log('New user detected via OAuth - showing subscription modal for terms acceptance...');
+                        processingSubscriptionFlow = true;
                         showSubscriptionModal();
                         isFullyInitialized = true;
                         return; // Nepokračovat - uživatel musí souhlasit s OP a zaplatit
@@ -2906,6 +2914,8 @@ function handleLoginModalClose() {
     localStorage.removeItem('liquimixer_pending_payment');
     localStorage.removeItem('liquimixer_terms_accepted');
     localStorage.removeItem('liquimixer_terms_accepted_at');
+    localStorage.removeItem('liquimixer_from_subscription');
+    document.body.classList.remove('subscription-flow-pending');
     hideLoginModal();
 }
 
@@ -2916,6 +2926,8 @@ function handleLoginModalBackdropClick(event) {
         localStorage.removeItem('liquimixer_pending_payment');
         localStorage.removeItem('liquimixer_terms_accepted');
         localStorage.removeItem('liquimixer_terms_accepted_at');
+        localStorage.removeItem('liquimixer_from_subscription');
+        document.body.classList.remove('subscription-flow-pending');
         hideLoginModal();
     }
 }
@@ -12976,6 +12988,9 @@ async function startRegistrationAndPayment() {
     localStorage.setItem('liquimixer_terms_accepted', 'true');
     localStorage.setItem('liquimixer_terms_accepted_at', new Date().toISOString());
     
+    // Černé pozadí během celého registračního flow (uživatel nikdy neuvidí hlavní stránku)
+    document.body.classList.add('subscription-flow-pending');
+    
     // Zavřít subscription modal a otevřít Clerk registraci
     hideSubscriptionModal();
     setTimeout(() => {
@@ -12987,6 +13002,10 @@ async function startRegistrationAndPayment() {
 function goToLoginFromSubscription() {
     // Uložit flag, že uživatel přišel ze subscription modalu
     localStorage.setItem('liquimixer_from_subscription', 'true');
+    
+    // Černé pozadí během celého login flow (uživatel nikdy neuvidí hlavní stránku)
+    document.body.classList.add('subscription-flow-pending');
+    
     hideSubscriptionModal();
     setTimeout(() => {
         showLoginModal('signIn');
