@@ -6347,6 +6347,40 @@ button.locked {
     opacity: 1;
 }
 
+/* Pay Button */
+.pay-button {
+    display: block;
+    width: 100%;
+    padding: 16px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--neon-cyan), #00b8b8);
+    color: #000;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 255, 0.35);
+}
+
+.pay-button:active {
+    transform: translateY(0);
+}
+
+.pay-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
 /* Payment Methods Selection Buttons (GPay, Apple Pay, Card) */
 .payment-methods-section {
     margin-top: 20px;

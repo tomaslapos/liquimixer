@@ -456,10 +456,13 @@ serve(async (req) => {
 
         // PAYMETHOD: předvolba platební metody (GPAY=Google Pay, APAY=Apple Pay, CRD=karta)
         // PAYMETHOD se nepřidává do podpisu, pouze jako URL parametr
-        const payMethod = data.payMethod
-        if (payMethod && ['GPAY', 'APAY', 'CRD'].includes(payMethod)) {
-          gatewayParams.set('PAYMETHOD', payMethod)
-        }
+        // POZOR: PAYMETHOD je dočasně deaktivován — merchant 20263539 nemá povolenou funkci
+        // PAYMETHOD v GP WebPay portálu (PRCODE=31). Kontaktovat GP WebPay support pro aktivaci.
+        // Po aktivaci odkomentovat následující řádky:
+        // const payMethod = data.payMethod
+        // if (payMethod && ['GPAY', 'APAY', 'CRD'].includes(payMethod)) {
+        //   gatewayParams.set('PAYMETHOD', payMethod)
+        // }
 
         const redirectUrl = `${GPWEBPAY_CONFIG.gatewayUrl}?${gatewayParams.toString()}`
 
