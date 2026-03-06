@@ -454,10 +454,10 @@ serve(async (req) => {
           DIGEST: signature
         })
 
-        // PAYMETHOD: předvolba platební metody (GAP=Google Pay, APL=Apple Pay, CRD=karta)
+        // PAYMETHOD: předvolba platební metody (GPAY=Google Pay, APAY=Apple Pay, CRD=karta)
         // PAYMETHOD se nepřidává do podpisu, pouze jako URL parametr
         const payMethod = data.payMethod
-        if (payMethod && ['GAP', 'APL', 'CRD'].includes(payMethod)) {
+        if (payMethod && ['GPAY', 'APAY', 'CRD'].includes(payMethod)) {
           gatewayParams.set('PAYMETHOD', payMethod)
         }
 
