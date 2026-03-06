@@ -63,7 +63,7 @@ self.addEventListener('notificationclick', (event) => {
     }
     
     // Open the app or focus existing window
-    const urlToOpen = event.notification.data?.url || '/';
+    const urlToOpen = event.notification.data?.url || self.location.origin + '/';
     
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
@@ -71,7 +71,6 @@ self.addEventListener('notificationclick', (event) => {
                 // Check if app is already open
                 for (let client of windowClients) {
                     if (client.url.includes(self.location.origin) && 'focus' in client) {
-                        client.focus();
                         // Navigate to specific page if needed
                         if (event.notification.data?.recipeId) {
                             client.postMessage({
@@ -79,7 +78,7 @@ self.addEventListener('notificationclick', (event) => {
                                 recipeId: event.notification.data.recipeId
                             });
                         }
-                        return;
+                        return client.focus();
                     }
                 }
                 // Open new window if not already open

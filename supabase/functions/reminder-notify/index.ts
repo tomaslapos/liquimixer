@@ -164,9 +164,14 @@ async function sendNotification(
         title: title,
         body: body,
       },
+      data: data || {},
       webpush: {
         notification: {
           icon: "https://www.liquimixer.com/icons/icon-192.png",
+          data: data || {},
+        },
+        fcm_options: {
+          link: "https://www.liquimixer.com/",
         },
       },
     },
