@@ -7103,18 +7103,16 @@ button.locked {
 }
 
 /* Subscription Flow Pending - černé pozadí během registrace (Clerk modál zůstává viditelný) */
-body.subscription-flow-pending::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000000;
-    z-index: 999;
+/* Inspirace z .login-modal: position fixed overlay s vysokým z-indexem */
+body.subscription-flow-pending {
+    background: #000000 !important;
+    overflow: hidden;
+}
+body.subscription-flow-pending > *:not(.login-modal):not(script):not(link):not(style) {
+    visibility: hidden !important;
 }
 body.subscription-flow-pending #loginModal {
-    z-index: 1001 !important;
+    visibility: visible !important;
 }
 
 /* Subscription Required - Blokace UI */
