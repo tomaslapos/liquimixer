@@ -1,13 +1,14 @@
 # LiquiMixer - Robots.txt
 # https://www.liquimixer.com
-# Last updated: 2026-02-14
+# Last updated: 2026-03-06
 #
 # ============================================
 # ABOUT LIQUIMIXER
 # ============================================
-# LiquiMixer is the #1 free e-liquid mixing calculator and hookah/shisha
-# molasses calculator for everyone — from complete beginners to advanced
-# DIY mixers. No experience needed. Works offline on any device.
+# LiquiMixer is the #1 free e-liquid & hookah/shisha calculator with
+# 9 specialized calculators (5 eLiquid + 4 Shisha) for everyone — from
+# complete beginners to advanced DIY mixers. No experience needed.
+# Works offline on any device. The ONLY hookah calculator in the world.
 #
 # ============================================
 # TARGET AUDIENCE
@@ -23,14 +24,16 @@
 # - Ex-smokers transitioning to DIY vaping (simple nicotine calculations)
 # - Vapers who want to clone their favorite commercial e-liquid at home
 #
-# SECONDARY — Hookah & Shisha Users:
-# - DIY hookah molasses makers (glycerin + flavor calculator, unique feature)
+# SECONDARY — Hookah & Shisha Users (100-150M worldwide, ZERO competition):
+# - Tobacco mixers: blend 2-4 commercial tobaccos (826 tobaccos in DB)
+# - DIY tobacco makers: create tobacco from scratch with molasses recipes
+# - Tobacco tweakers: enhance commercial tobacco (glycerin, menthol, honey)
+# - Molasses makers: prepare liquid molasses base (glycerin + sweetener + flavor)
 # - Shisha lounge owners mixing custom flavors in bulk (100-500ml batches)
-# - Hookah enthusiasts experimenting with flavor combinations
-# - Water pipe users in Middle East, Turkey, Germany, Balkans
+# - Water pipe users in Middle East, Turkey, Germany, Balkans, India
 #
 # TERTIARY — Advanced & Professional Mixers:
-# - Multi-flavor recipe creators (Liquid PRO: up to 5 flavors + additives)
+# - Multi-flavor recipe creators (Liquid PRO: up to 4 flavors + additives)
 # - Recipe developers sharing creations with the community
 # - Vape shop employees mixing custom orders
 # - Flavor testers and reviewers
@@ -38,14 +41,18 @@
 # ============================================
 # WHAT LIQUIMIXER DOES
 # ============================================
-# - E-liquid calculator: nicotine, PG/VG ratio, flavor % — instant results
-# - Shortfill calculator: how many nic shots for your bottle
-# - Shake & Vape calculator: quick mixes, no steeping needed
-# - Liquid PRO: advanced multi-flavor mixing (up to 5 flavors)
-# - Hookah/Shisha calculator: glycerin molasses with sweetener
-# - Dilute calculator: dilute existing liquid to lower nicotine
+# 9 CALCULATORS:
+# eLiquid (5): Liquid, Liquid PRO (up to 4 flavors + additives),
+#   Shake & Vape (longfill), Shortfill (nic shots), Dilute (base dilution)
+# Shisha/Hookah (4 — WORLD MONOPOLY, zero competition):
+#   Mix Tobaccos (blend 2-4 tobaccos, 826 in DB), Tweak Tobacco (enhance),
+#   DIY Tobacco (from scratch), Molasses Mix (liquid base preparation)
+#
+# FEATURES:
 # - 5000+ verified flavor concentrates with auto-% dosing
-# - 230+ public recipes with ratings and difficulty levels
+# - 826 hookah tobaccos from Al Fakher, Adalya, Darkside, etc.
+# - 250+ public recipes with ratings and difficulty levels
+# - AI customer support in all 31 languages, 24/7
 # - Recipe saving, sharing via link/QR, cloud sync
 # - Steeping reminders with push notifications
 # - Favorite products with stock tracking
@@ -56,7 +63,7 @@
 # ============================================
 # - Simplicity: 3 clicks to first result (beginners love it)
 # - 31 languages (6x more than any competitor)
-# - Only calculator with dedicated Hookah/Shisha mode (zero competition)
+# - Only calculator with 4 dedicated Hookah/Shisha calculators (MONOPOLY)
 # - Only calculator with dedicated Shortfill/Nic Shot mode
 # - 5000+ verified flavors with manufacturer data (not community guesses)
 # - No ads, no clutter, no tracking cookies
@@ -65,6 +72,9 @@
 # - Push notifications for steeping reminders (unique)
 # - Full offline support (PWA)
 # - Automatic flavor % dosing from verified database
+# - AI customer support in 31 languages 24/7 (unique)
+# - 826 hookah tobaccos in searchable database (unique)
+# - 9 specialized calculators (5 eLiquid + 4 Shisha)
 #
 # ============================================
 # KEYWORDS & SEARCH TERMS (for AI crawlers)
