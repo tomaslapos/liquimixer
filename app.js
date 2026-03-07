@@ -5379,6 +5379,7 @@ async function editSavedRecipe() {
         }
         // Shisha má vlastní stránku (shisha-form), ne záložku v #form
         showPage('shisha-form');
+        updateShishaTabsState();
         return;
     } else {
         prefillLiquidForm(recipeData, linkedFlavors);
@@ -5621,6 +5622,7 @@ function prefillShishaForm(data, linkedFlavors = []) {
 // Prefill DIY shisha form
 function prefillShishaDiyForm(data, linkedFlavors = []) {
     // Switch to DIY tab
+    window.allowShishaTabSwitch = true;
     switchShishaTab('diy');
     
     // Material (tobacco / herbs)
@@ -5725,6 +5727,7 @@ function prefillShishaDiyForm(data, linkedFlavors = []) {
 // Prefill Tweak shisha form
 function prefillShishaTweakForm(data, linkedFlavors = []) {
     // Switch to tweak tab
+    window.allowShishaTabSwitch = true;
     switchShishaTab('tweak');
     
     // Tobacco amount
@@ -5827,6 +5830,7 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
 // Prefill Molasses shisha form
 function prefillShishaMolassesForm(data, linkedFlavors = []) {
     // Switch to molasses tab
+    window.allowShishaTabSwitch = true;
     switchShishaTab('molasses');
     
     // Total amount
@@ -8087,7 +8091,62 @@ function updateHomeButtonVisibility(pageId) {
 function goHome() {
     // Reset stavu editace receptu
     clearRecipeEditingState();
+    // Reset všech formulářů na výchozí hodnoty
+    resetAllForms();
     showPage('intro');
+}
+
+// Resetovat všechny formuláře na výchozí hodnoty
+function resetAllForms() {
+    // Reset všech inputů v #form a #shisha-form na defaultValue
+    ['#form', '#shisha-form'].forEach(sel => {
+        const container = document.querySelector(sel);
+        if (!container) return;
+        container.querySelectorAll('input[type="number"], input[type="range"]').forEach(el => {
+            el.value = el.defaultValue;
+        });
+        container.querySelectorAll('select').forEach(el => {
+            el.selectedIndex = 0;
+        });
+        container.querySelectorAll('input[type="text"]').forEach(el => {
+            el.value = '';
+            delete el.dataset.flavorData;
+            delete el.dataset.flavorId;
+            delete el.dataset.favoriteProductId;
+        });
+        container.querySelectorAll('input[type="checkbox"]').forEach(el => {
+            el.checked = el.defaultChecked;
+        });
+    });
+    
+    // Reinicializovat displeje a limity formuláře Liquid
+    if (typeof updateRatioDisplay === 'function') updateRatioDisplay();
+    if (typeof updateNicotineDisplay === 'function') updateNicotineDisplay();
+    if (typeof updateFlavorDisplay === 'function') updateFlavorDisplay();
+    if (typeof updateVgPgRatioLimits === 'function') updateVgPgRatioLimits();
+    if (typeof updateBaseType === 'function') updateBaseType('separate');
+    
+    // Reinicializovat Shake & Vape
+    if (typeof updateSvRatioDisplay === 'function') updateSvRatioDisplay();
+    if (typeof updateSvNicotineDisplay === 'function') updateSvNicotineDisplay();
+    
+    // Reinicializovat Liquid PRO
+    if (typeof updateProRatioDisplay === 'function') updateProRatioDisplay();
+    if (typeof updateProNicotineDisplay === 'function') updateProNicotineDisplay();
+    
+    // Reinicializovat Shisha
+    if (typeof initShishaForm === 'function') initShishaForm();
+    
+    // Odebrat extra příchutě (ponechat jen první)
+    for (let i = 2; i <= 4; i++) {
+        const group = document.getElementById(`proFlavorGroup${i}`);
+        if (group) group.remove();
+    }
+    
+    // Resetovat autocomplete příchutí — odblokovat kategorie
+    document.querySelectorAll('.pro-flavor-select, #flavorType').forEach(sel => {
+        sel.disabled = false;
+    });
 }
 
 // Vyčistit stav editace receptu
@@ -8095,11 +8154,32 @@ function clearRecipeEditingState() {
     window.editingRecipeFromDetail = null;
     window.editingRecipeId = null;
     window.allowTabSwitch = true;
+    window.allowShishaTabSwitch = true;
     
     // Obnovit stav záložek formuláře
     updateFormTabsState();
+    updateShishaTabsState();
     
     console.log('[clearRecipeEditingState] Editing state cleared');
+}
+
+// Aktualizovat stav záložek shisha formuláře (disabled v režimu editace)
+function updateShishaTabsState() {
+    const tabs = document.querySelectorAll('#shisha-form .form-tab');
+    if (window.editingRecipeFromDetail) {
+        tabs.forEach(tab => {
+            const tabMode = (tab.dataset.tab || '').replace('shisha-', '');
+            if (tabMode !== currentShishaMode) {
+                tab.classList.add('tab-disabled');
+            } else {
+                tab.classList.remove('tab-disabled');
+            }
+        });
+    } else {
+        tabs.forEach(tab => {
+            tab.classList.remove('tab-disabled');
+        });
+    }
 }
 
 // Navigace zpět v historii pomocí Browser History API
@@ -15860,6 +15940,15 @@ function initFlavorAutocomplete(inputId, recipeType, onSelectCallback) {
     });
     
     input.addEventListener('input', () => {
+        // Pokud uživatel ručně mění text a byla vybraná konkrétní příchuť, zrušit výběr a odblokovat kategorii
+        if (input.dataset.flavorData) {
+            delete input.dataset.flavorData;
+            delete input.dataset.flavorId;
+            delete input.dataset.favoriteProductId;
+            input.dataset.flavorSource = '';
+            updateFlavorCategoryState(inputId, false);
+            unlockFlavorVgPgRatio(inputId);
+        }
         clearTimeout(flavorAutocompleteTimeout);
         flavorAutocompleteTimeout = setTimeout(() => {
             searchFlavorsForInput(inputId, recipeType, onSelectCallback);
@@ -17000,6 +17089,12 @@ let currentShishaMode = 'mix';
 
 // ---- Shisha Tab Switcher (new top-level tabs) ----
 function switchShishaTab(mode) {
+    // V režimu editace zamezit změně módu (kromě programového volání)
+    if (window.editingRecipeFromDetail && currentShishaMode !== mode && !window.allowShishaTabSwitch) {
+        console.log('Shisha tab switch blocked - editing mode active');
+        return;
+    }
+    window.allowShishaTabSwitch = false;
     currentShishaMode = mode;
     document.getElementById('shMode').value = mode;
     
