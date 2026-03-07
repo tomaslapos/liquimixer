@@ -247,6 +247,7 @@
     "flavor_spice": "Kořeněné (skořice, perník)",
     "flavor_cream": "Krémové (vanilka, smetana)",
     "flavor_mix": "Mix / Směs",
+    "flavor_custom": "Vlastní (nastavte dle výrobce)",
     "add_flavor": "+ Přidat další příchuť",
     "remove_flavor": "Odebrat příchuť",
     "flavor_count_hint": "(max 4 příchutě)",
@@ -639,6 +640,8 @@
     "note_tobaccosweet": "Kombinace vyžaduje 2+ týdny steepingu",
     "note_nuts": "Krémové, vyžaduje 1–2 týdny zrání",
     "note_spice": "Kořeněné, opatrně s koncentrací",
+    "note_cream": "Krémové, steeping 1–2 týdny",
+    "note_mix": "Kombinace příchutí, zrání dle hlavní složky",
     "too_low": "Pod doporučeným rozsahem ({min}-{max}%)",
     "too_high": "Nad doporučeným rozsahem ({min}-{max}%)",
     "ideal_range": "Ideální rozsah ({min}-{max}%)"

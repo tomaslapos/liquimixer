@@ -239,6 +239,7 @@
     "flavor_spice": "Especiado (canela, gengibre)",
     "flavor_cream": "Cremoso (baunilha, creme)",
     "flavor_mix": "Mix / Mistura",
+    "flavor_custom": "Personalizado (conforme fabricante)",
     "add_flavor": "+ Adicionar outro aroma",
     "remove_flavor": "Remover aroma",
     "flavor_count_hint": "(máx 4 aromas)",
@@ -875,7 +876,9 @@
     "note_drink": "Refrescante, maturação rápida",
     "note_tobaccosweet": "A combinação requer 2+ semanas de maturação",
     "note_nuts": "Cremoso, requer 1–2 semanas de maturação",
-    "note_spice": "Especiado, cuidado com a concentração"
+    "note_spice": "Especiado, cuidado com a concentração",
+    "note_cream": "Cremoso, maturação 1–2 semanas",
+    "note_mix": "Mistura de sabores, maturação conforme o componente principal"
   },
   "subscription": {
     "title": "Subscrição LiquiMixer",

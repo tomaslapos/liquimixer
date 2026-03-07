@@ -239,6 +239,7 @@
     "flavor_spice": "Speziato (cannella, pan di zenzero)",
     "flavor_cream": "Cremoso (vaniglia, panna)",
     "flavor_mix": "Mix / Miscela",
+    "flavor_custom": "Personalizzato (secondo produttore)",
     "add_flavor": "+ Aggiungi un altro aroma",
     "remove_flavor": "Rimuovi aroma",
     "flavor_count_hint": "(max 4 aromi)",
@@ -875,7 +876,9 @@
     "note_drink": "Rinfrescante, maturazione rapida",
     "note_tobaccosweet": "La combinazione richiede 2+ settimane di maturazione",
     "note_nuts": "Cremoso, richiede 1–2 settimane di maturazione",
-    "note_spice": "Speziato, attenzione alla concentrazione"
+    "note_spice": "Speziato, attenzione alla concentrazione",
+    "note_cream": "Cremoso, maturazione 1–2 settimane",
+    "note_mix": "Miscela di aromi, maturazione in base al componente principale"
   },
   "subscription": {
     "title": "Abbonamento LiquiMixer",

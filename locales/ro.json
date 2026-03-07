@@ -239,6 +239,7 @@
     "flavor_spice": "Condimentat (scorțișoară, turtă dulce)",
     "flavor_cream": "Cremos (vanilie, frișcă)",
     "flavor_mix": "Mix / Amestec",
+    "flavor_custom": "Personalizat (conform producător)",
     "add_flavor": "+ Adăugați altă aromă",
     "remove_flavor": "Eliminați aroma",
     "flavor_count_hint": "(max 4 arome)",
@@ -875,7 +876,9 @@
     "note_drink": "Răcoritor, macerare rapidă",
     "note_tobaccosweet": "Combinația necesită macerare de 2+ săptămâni",
     "note_nuts": "Cremos, necesită macerare de 1–2 săptămâni",
-    "note_spice": "Condimentat, atenție la concentrație"
+    "note_spice": "Condimentat, atenție la concentrație",
+    "note_cream": "Cremos, macerare 1–2 săptămâni",
+    "note_mix": "Amestec de arome, macerare în funcție de componenta principală"
   },
   "subscription": {
     "title": "Abonament LiquiMixer",

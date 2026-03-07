@@ -239,7 +239,8 @@
     "flavor_spice": "Especiado (canela, jengibre)",
     "flavor_cream": "Cremoso (vainilla, crema)",
     "flavor_mix": "Mix / Mezcla",
-    "add_flavor": "+ Añadir otro aroma",
+    "flavor_custom": "Personalizado (según fabricante)",
+    "add_flavor": "+ Añadir otro sabor",
     "remove_flavor": "Eliminar aroma",
     "flavor_count_hint": "(máx 4 aromas)",
     "flavor_remaining": "{count} restantes",
@@ -875,7 +876,9 @@
     "note_drink": "Refrescante, maceración rápida",
     "note_tobaccosweet": "La combinación requiere 2+ semanas de maceración",
     "note_nuts": "Cremoso, requiere 1–2 semanas de maceración",
-    "note_spice": "Especiado, cuidado con la concentración"
+    "note_spice": "Especiado, cuidado con la concentración",
+    "note_cream": "Cremoso, maceración 1–2 semanas",
+    "note_mix": "Mezcla de sabores, maceración según el componente principal"
   },
   "subscription": {
     "title": "Suscripción LiquiMixer",

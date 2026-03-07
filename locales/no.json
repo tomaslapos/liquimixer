@@ -239,6 +239,7 @@
     "flavor_spice": "Krydret (kanel, pepperkake)",
     "flavor_cream": "Kremaktig (vanilje, fløte)",
     "flavor_mix": "Mix / Blanding",
+    "flavor_custom": "Egendefinert (sett etter produsent)",
     "add_flavor": "+ Legg til en annen aroma",
     "remove_flavor": "Fjern aroma",
     "flavor_count_hint": "(maks 4 aromaer)",
@@ -875,7 +876,9 @@
     "note_drink": "Forfriskende, rask steeping",
     "note_tobaccosweet": "Kombinasjon krever 2+ ukers steeping",
     "note_nuts": "Kremaktig, krever 1–2 ukers steeping",
-    "note_spice": "Krydret, forsiktig med konsentrasjonen"
+    "note_spice": "Krydret, forsiktig med konsentrasjonen",
+    "note_cream": "Kremaktig, steeping 1–2 uker",
+    "note_mix": "Smaksblanding, steeping avhenger av hovedkomponenten"
   },
   "subscription": {
     "title": "LiquiMixer-abonnement",

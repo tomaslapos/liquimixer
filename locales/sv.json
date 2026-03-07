@@ -239,6 +239,7 @@
     "flavor_spice": "Kryddad (kanel, pepparkaka)",
     "flavor_cream": "Krämig (vanilj, grädde)",
     "flavor_mix": "Mix / Blandning",
+    "flavor_custom": "Anpassad (ställ in per tillverkare)",
     "add_flavor": "+ Lägg till en annan arom",
     "remove_flavor": "Ta bort arom",
     "flavor_count_hint": "(max 4 aromer)",
@@ -875,7 +876,9 @@
     "note_drink": "Uppfriskande, snabb steeping",
     "note_tobaccosweet": "Kombination kräver 2+ veckors steeping",
     "note_nuts": "Krämig, kräver 1–2 veckors steeping",
-    "note_spice": "Kryddad, försiktig med koncentrationen"
+    "note_spice": "Kryddad, försiktig med koncentrationen",
+    "note_cream": "Krämig, mognad 1–2 veckor",
+    "note_mix": "Smakblandning, mognad beror på huvudkomponenten"
   },
   "subscription": {
     "title": "LiquiMixer-prenumeration",

@@ -239,6 +239,7 @@
     "flavor_spice": "Garšvielots (kanēlis, piparkūka)",
     "flavor_cream": "Krēmīgs (vaniļa, krējums)",
     "flavor_mix": "Mix / Maisījums",
+    "flavor_custom": "Pielāgots (iestatiet pēc ražotāja)",
     "add_flavor": "+ Pievienot citu aromātu",
     "remove_flavor": "Noņemt aromātu",
     "flavor_count_hint": "(maks. 4 aromāti)",
@@ -875,7 +876,9 @@
     "note_drink": "Atsvaidzinošs, ātra nogatavināšana",
     "note_tobaccosweet": "Kombinācija prasa 2+ nedēļu nogatavināšanu",
     "note_nuts": "Krēmīgs, prasa 1–2 nedēļu nogatavināšanu",
-    "note_spice": "Garšvielu, uzmanīgi ar koncentrāciju"
+    "note_spice": "Garšvielu, uzmanīgi ar koncentrāciju",
+    "note_cream": "Krēmīgs, nogatavināšana 1–2 nedēļas",
+    "note_mix": "Garšu maisījums, nogatavināšana atkarīga no galvenā komponenta"
   },
   "subscription": {
     "title": "LiquiMixer abonements",

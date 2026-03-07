@@ -227,6 +227,7 @@
     "flavor_spice": "香料（肉桂、姜饼）",
     "flavor_cream": "奶油（香草、奶油）",
     "flavor_mix": "混合",
+    "flavor_custom": "自定义（按制造商设置）",
     "add_flavor": "+ 添加另一种香精",
     "remove_flavor": "移除香精",
     "flavor_count_hint": "（最多 4 种香精）",
@@ -875,7 +876,9 @@
     "note_drink": "清爽，快速熟化",
     "note_tobaccosweet": "组合需要 2+ 周熟化",
     "note_nuts": "奶油味，需要 1-2 周熟化",
-    "note_spice": "辛辣，注意浓度"
+    "note_spice": "辛辣，注意浓度",
+    "note_cream": "奶油味，熟化 1–2 周",
+    "note_mix": "混合口味，熟化取决于主要成分"
   },
   "subscription": {
     "title": "LiquiMixer 订阅",

@@ -239,6 +239,7 @@
     "flavor_spice": "Gekruid (kaneel, peperkoek)",
     "flavor_cream": "Romig (vanille, room)",
     "flavor_mix": "Mix / Mengsel",
+    "flavor_custom": "Aangepast (volgens fabrikant)",
     "add_flavor": "+ Voeg een andere aroma toe",
     "remove_flavor": "Verwijder aroma",
     "flavor_count_hint": "(max 4 aroma's)",
@@ -875,7 +876,9 @@
     "note_drink": "Verfrissend, snelle steeping",
     "note_tobaccosweet": "Combinatie vereist 2+ weken steeping",
     "note_nuts": "Romig, vereist 1–2 weken steeping",
-    "note_spice": "Gekruid, voorzichtig met concentratie"
+    "note_spice": "Gekruid, voorzichtig met concentratie",
+    "note_cream": "Romig, steeping 1–2 weken",
+    "note_mix": "Smaakenmix, steeping afhankelijk van hoofdcomponent"
   },
   "subscription": {
     "title": "LiquiMixer Abonnement",

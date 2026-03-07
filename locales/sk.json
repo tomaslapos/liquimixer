@@ -239,6 +239,7 @@
     "flavor_spice": "Korenené (škorica, perník)",
     "flavor_cream": "Krémové (vanilka, smotana)",
     "flavor_mix": "Mix / Zmes",
+    "flavor_custom": "Vlastné (nastavte podľa výrobcu)",
     "add_flavor": "+ Pridať ďalšiu príchuť",
     "remove_flavor": "Odobrať príchuť",
     "flavor_count_hint": "(max 4 príchute)",
@@ -884,7 +885,9 @@
     "note_drink": "Osviežujúce, rýchle zrenie",
     "note_tobaccosweet": "Kombinácia vyžaduje 2+ týždne steepingu",
     "note_nuts": "Krémové, vyžaduje 1–2 týždne zrenia",
-    "note_spice": "Korenené, opatrne s koncentráciou"
+    "note_spice": "Korenené, opatrne s koncentráciou",
+    "note_cream": "Krémové, steeping 1–2 týždne",
+    "note_mix": "Kombinácia príchutí, zrenie podľa hlavnej zložky"
   },
   "subscription": {
     "title": "Predplatné LiquiMixer",

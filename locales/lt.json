@@ -239,6 +239,7 @@
     "flavor_spice": "Prieskoniniai (cinamonas, meduolis)",
     "flavor_cream": "Kreminis (vanilė, grietinėlė)",
     "flavor_mix": "Mix / Mišinys",
+    "flavor_custom": "Pasirinktinis (nustatykite pagal gamintoją)",
     "add_flavor": "+ Pridėti kitą aromatą",
     "remove_flavor": "Pašalinti aromatą",
     "flavor_count_hint": "(maks. 4 aromatai)",
@@ -875,7 +876,9 @@
     "note_drink": "Gaivus, greitas brandinimas",
     "note_tobaccosweet": "Deriniui reikia 2+ savaičių brandinimo",
     "note_nuts": "Kreminis, reikia 1–2 savaičių brandinimo",
-    "note_spice": "Prieskoniniai, atsargiai su koncentracija"
+    "note_spice": "Prieskoniniai, atsargiai su koncentracija",
+    "note_cream": "Kreminis, brandinimas 1–2 savaitės",
+    "note_mix": "Skonių mišinys, brandinimas priklauso nuo pagrindinio komponento"
   },
   "subscription": {
     "title": "LiquiMixer prenumerata",

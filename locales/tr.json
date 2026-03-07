@@ -227,6 +227,7 @@
     "flavor_spice": "Baharatlı (tarçın, zencefilli kurabiye)",
     "flavor_cream": "Kremalı (vanilya, krema)",
     "flavor_mix": "Mix / Karışım",
+    "flavor_custom": "Özel (üreticiye göre ayarlayın)",
     "add_flavor": "+ Başka bir aroma ekle",
     "remove_flavor": "Aromayı kaldır",
     "flavor_count_hint": "(maks 4 aroma)",
@@ -875,7 +876,9 @@
     "note_drink": "Ferahlatıcı, hızlı olgunlaştırma",
     "note_tobaccosweet": "Kombinasyon 2+ hafta olgunlaştırma gerektirir",
     "note_nuts": "Kremsi, 1–2 hafta olgunlaştırma gerektirir",
-    "note_spice": "Baharatlı, konsantrasyona dikkat edin"
+    "note_spice": "Baharatlı, konsantrasyona dikkat edin",
+    "note_cream": "Kremsi, olgunlaştırma 1–2 hafta",
+    "note_mix": "Aroma karışımı, olgunlaştırma ana bileşene göre"
   },
   "subscription": {
     "title": "LiquiMixer Aboneliği",

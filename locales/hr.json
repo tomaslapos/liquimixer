@@ -239,6 +239,7 @@
     "flavor_spice": "Začinjeno (cimet, medenjak)",
     "flavor_cream": "Kremasto (vanilija, vrhnje)",
     "flavor_mix": "Mix / Mješavina",
+    "flavor_custom": "Prilagođeno (prema proizvođaču)",
     "add_flavor": "+ Dodaj drugu aromu",
     "remove_flavor": "Ukloni aromu",
     "flavor_count_hint": "(max 4 arome)",
@@ -875,7 +876,9 @@
     "note_drink": "Osvježavajuće, brzo odležavanje",
     "note_tobaccosweet": "Kombinacija zahtijeva 2+ tjedna odležavanja",
     "note_nuts": "Kremasto, zahtijeva 1–2 tjedna odležavanja",
-    "note_spice": "Začinjeno, paziti na koncentraciju"
+    "note_spice": "Začinjeno, paziti na koncentraciju",
+    "note_cream": "Kremasto, zrenje 1–2 tjedna",
+    "note_mix": "Mješavina okusa, zrenje ovisi o glavnoj komponenti"
   },
   "subscription": {
     "title": "LiquiMixer pretplata",

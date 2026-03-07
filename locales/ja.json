@@ -227,6 +227,7 @@
     "flavor_spice": "スパイス（シナモン、ジンジャーブレッド）",
     "flavor_cream": "クリーミー（バニラ、クリーム）",
     "flavor_mix": "ミックス / ブレンド",
+    "flavor_custom": "カスタム（メーカーに合わせて設定）",
     "add_flavor": "+ 別のフレーバーを追加",
     "remove_flavor": "フレーバーを削除",
     "flavor_count_hint": "（最大4つのフレーバー）",
@@ -875,7 +876,9 @@
     "note_drink": "さわやか、クイックステーピング",
     "note_tobaccosweet": "組み合わせには2週間以上のステーピングが必要",
     "note_nuts": "クリーミー、1〜2週間のステーピングが必要",
-    "note_spice": "スパイシー、濃度に注意"
+    "note_spice": "スパイシー、濃度に注意",
+    "note_cream": "クリーミー、熟成1〜2週間",
+    "note_mix": "フレーバーミックス、主成分に応じて熟成"
   },
   "subscription": {
     "title": "LiquiMixer購読",

@@ -227,6 +227,7 @@
     "flavor_spice": "스파이스 (계피, 진저브레드)",
     "flavor_cream": "크리미 (바닐라, 크림)",
     "flavor_mix": "믹스 / 블렌드",
+    "flavor_custom": "커스텀 (제조사에 맞게 설정)",
     "add_flavor": "+ 다른 향료 추가",
     "remove_flavor": "향료 제거",
     "flavor_count_hint": "(최대 4개 향료)",
@@ -875,7 +876,9 @@
     "note_drink": "상쾌한, 빠른 숙성",
     "note_tobaccosweet": "조합은 2주 이상 숙성 필요",
     "note_nuts": "크리미한, 1–2주 숙성 필요",
-    "note_spice": "스파이시한, 농도에 주의"
+    "note_spice": "스파이시한, 농도에 주의",
+    "note_cream": "크리미한, 숙성 1–2주",
+    "note_mix": "맛 혼합, 주요 성분에 따라 숙성"
   },
   "subscription": {
     "title": "LiquiMixer 구독",

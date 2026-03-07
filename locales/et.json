@@ -239,6 +239,7 @@
     "flavor_spice": "Vürtsine (kaneel, piparkook)",
     "flavor_cream": "Kreemjas (vanilje, koor)",
     "flavor_mix": "Mix / Segu",
+    "flavor_custom": "Kohandatud (seadke tootja järgi)",
     "add_flavor": "+ Lisa teine aroom",
     "remove_flavor": "Eemalda aroom",
     "flavor_count_hint": "(max 4 aroomi)",
@@ -875,7 +876,9 @@
     "note_drink": "Värskendav, kiire järelejäämine",
     "note_tobaccosweet": "Kombinatsioon nõuab 2+ nädala järelejäämist",
     "note_nuts": "Kreemjas, nõuab 1–2 nädala järelejäämist",
-    "note_spice": "Vürtsine, ettevaatlik kontsentratsiooniga"
+    "note_spice": "Vürtsine, ettevaatlik kontsentratsiooniga",
+    "note_cream": "Kreemjas, järelejäämine 1–2 nädalat",
+    "note_mix": "Maitsesegu, järelejäämine sõltub peamisest koostisosast"
   },
   "subscription": {
     "title": "LiquiMixeri tellimus",

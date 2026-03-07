@@ -239,6 +239,7 @@
     "flavor_spice": "Spiced (cinnamon, gingerbread)",
     "flavor_cream": "Creamy (vanilla, cream)",
     "flavor_mix": "Mix / Blend",
+    "flavor_custom": "Custom (set per manufacturer)",
     "add_flavor": "+ Add another flavor",
     "remove_flavor": "Remove flavor",
     "flavor_count_hint": "(max 4 flavors)",
@@ -860,7 +861,9 @@
     "note_drink": "Refreshing, quick steeping",
     "note_tobaccosweet": "Combination requires 2+ weeks steeping",
     "note_nuts": "Creamy, requires 1–2 weeks steeping",
-    "note_spice": "Spiced, careful with concentration"
+    "note_spice": "Spiced, careful with concentration",
+    "note_cream": "Creamy, steeping 1–2 weeks",
+    "note_mix": "Flavor blend, steeping depends on main component"
   },
   "subscription": {
     "title": "LiquiMixer Subscription",

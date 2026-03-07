@@ -5267,6 +5267,19 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     const nicotineValue = parseFloat(data.nicotine ?? 0);
     const safeNicotine = escapeHtml(nicotineValue.toFixed(2));
     
+    // Steep days z uloženého receptu
+    const recipeSteepDays = typeof getMaxSteepingDaysFromRecipe === 'function' ? getMaxSteepingDaysFromRecipe(data) : (data.steepDays || 0);
+    let steepDaysHtml = '';
+    if (recipeSteepDays > 0) {
+        const daysText = recipeSteepDays === 1 ? t('common.day', 'den') : 
+            (recipeSteepDays >= 2 && recipeSteepDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+        steepDaysHtml = `
+            <div class="recipe-info-item">
+                <div class="recipe-info-label">${t('results.steeping', 'Doba zrání:')}</div>
+                <div class="recipe-info-value">${recipeSteepDays} ${escapeHtml(daysText)}</div>
+            </div>`;
+    }
+    
     contentEl.innerHTML = `
         <div class="recipe-detail-header">
             <div class="recipe-detail-rating">${stars}</div>
@@ -5286,6 +5299,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                 <div class="recipe-info-label">${t('recipe_detail.nicotine', 'Nikotin')}</div>
                 <div class="recipe-info-value">${safeNicotine} mg/ml</div>
             </div>
+            ${steepDaysHtml}
         </div>
         
         ${ingredientsHtml}
@@ -8608,7 +8622,9 @@ function getFlavorNote(type) {
         drink: 'Osvěžující, rychlé zrání',
         tobaccosweet: 'Kombinace vyžaduje 2+ týdny steepingu',
         nuts: 'Krémové, vyžaduje 1–2 týdny zrání',
-        spice: 'Kořeněné, opatrně s koncentrací'
+        spice: 'Kořeněné, opatrně s koncentrací',
+        cream: 'Krémové, steeping 1–2 týdny',
+        mix: 'Kombinace příchutí, zrání dle hlavní složky'
     };
     return t(noteKey, fallbackNotes[type] || '');
 }
@@ -19265,10 +19281,13 @@ function calculateShishaMixMode2() {
             juicePercent: diyMixJuicePercent
         },
         totalWeight,
-        steepDays: Math.max(0, ...flavors.filter(f => f.type && f.type !== 'none').map(f => {
+        steepDays: Math.max(0, ...flavors.map(f => {
             if (f.steepDays !== undefined && f.steepDays !== null) return f.steepDays;
-            const fd = shishaFlavorDatabase[f.type];
-            return fd ? fd.steepingDays : 0;
+            if (f.type && f.type !== 'none') {
+                const fd = shishaFlavorDatabase[f.type];
+                return fd ? fd.steepingDays : 0;
+            }
+            return 0;
         })),
         vgPercent: vgPgRatio,
         pgPercent: 100 - vgPgRatio,
@@ -19596,10 +19615,13 @@ function calculateShishaMixMode3() {
             citricGrams: molMixCitricGrams,
             juicePercent: molMixJuicePercent
         },
-        steepDays: Math.max(0, ...flavors.filter(f => f.type && f.type !== 'none').map(f => {
+        steepDays: Math.max(0, ...flavors.map(f => {
             if (f.steepDays !== undefined && f.steepDays !== null) return f.steepDays;
-            const fd = shishaFlavorDatabase[f.type];
-            return fd ? fd.steepingDays : 0;
+            if (f.type && f.type !== 'none') {
+                const fd = shishaFlavorDatabase[f.type];
+                return fd ? fd.steepingDays : 0;
+            }
+            return 0;
         })),
         vgPercent: vgPgRatio,
         pgPercent: 100 - vgPgRatio,

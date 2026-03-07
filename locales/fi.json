@@ -240,6 +240,7 @@
     "flavor_spice": "Maustettu (kaneli, piparkakku)",
     "flavor_cream": "Kermainen (vanilja, kerma)",
     "flavor_mix": "Mix / Sekoitus",
+    "flavor_custom": "Mukautettu (aseta valmistajan mukaan)",
     "add_flavor": "+ Lisää toinen maku",
     "remove_flavor": "Poista maku",
     "flavor_count_hint": "(max 4 aromia)",
@@ -875,7 +876,9 @@
     "note_drink": "Raikas, nopea hautominen",
     "note_tobaccosweet": "Yhdistelmä vaatii 2+ viikon hautomista",
     "note_nuts": "Kermainen, vaatii 1–2 viikon hautomista",
-    "note_spice": "Maustettu, varovainen pitoisuuden kanssa"
+    "note_spice": "Maustettu, varovainen pitoisuuden kanssa",
+    "note_cream": "Kermainen, hautominen 1–2 viikkoa",
+    "note_mix": "Makusekoitus, hautominen riippuu pääkomponentista"
   },
   "flavor_description": {
     "too_low": "Suositellun alueen alapuolella ({min}-{max}%)",

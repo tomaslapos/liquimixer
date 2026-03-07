@@ -239,6 +239,7 @@
     "flavor_spice": "Épicé (cannelle, pain d'épices)",
     "flavor_cream": "Crémeux (vanille, crème)",
     "flavor_mix": "Mix / Mélange",
+    "flavor_custom": "Personnalisé (selon fabricant)",
     "add_flavor": "+ Ajouter un autre arôme",
     "remove_flavor": "Supprimer l'arôme",
     "flavor_count_hint": "(max 4 arômes)",
@@ -875,7 +876,9 @@
     "note_drink": "Rafraîchissant, maturation rapide",
     "note_tobaccosweet": "La combinaison nécessite 2+ semaines de maturation",
     "note_nuts": "Crémeux, nécessite 1–2 semaines de maturation",
-    "note_spice": "Épicé, attention à la concentration"
+    "note_spice": "Épicé, attention à la concentration",
+    "note_cream": "Crémeux, maturation 1–2 semaines",
+    "note_mix": "Mélange d'arômes, maturation selon le composant principal"
   },
   "subscription": {
     "title": "Abonnement LiquiMixer",

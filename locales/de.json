@@ -239,6 +239,7 @@
     "flavor_spice": "Gewürzt (Zimt, Lebkuchen)",
     "flavor_cream": "Cremig (Vanille, Sahne)",
     "flavor_mix": "Mix / Mischung",
+    "flavor_custom": "Eigene (nach Herstellerangabe)",
     "add_flavor": "+ Weiteres Aroma hinzufügen",
     "remove_flavor": "Aroma entfernen",
     "flavor_count_hint": "(max. 4 Aromen)",
@@ -884,7 +885,9 @@
     "note_drink": "Erfrischend, schnelle Reifung",
     "note_tobaccosweet": "Kombination erfordert 2+ Wochen Reifung",
     "note_nuts": "Cremig, erfordert 1–2 Wochen Reifung",
-    "note_spice": "Gewürzt, vorsichtig mit der Konzentration"
+    "note_spice": "Gewürzt, vorsichtig mit der Konzentration",
+    "note_cream": "Cremig, Reifung 1–2 Wochen",
+    "note_mix": "Aromamischung, Reifung je nach Hauptkomponente"
   },
   "subscription": {
     "title": "LiquiMixer Abonnement",

@@ -239,6 +239,7 @@
     "flavor_spice": "Krydret (kanel, honningkage)",
     "flavor_cream": "Cremet (vanilje, fløde)",
     "flavor_mix": "Mix / Blanding",
+    "flavor_custom": "Brugerdefineret (indstil efter producent)",
     "add_flavor": "+ Tilføj en anden aroma",
     "remove_flavor": "Fjern aroma",
     "flavor_count_hint": "(maks 4 aromaer)",
@@ -875,7 +876,9 @@
     "note_drink": "Forfriskende, hurtig steeping",
     "note_tobaccosweet": "Kombination kræver 2+ ugers steeping",
     "note_nuts": "Cremet, kræver 1–2 ugers steeping",
-    "note_spice": "Krydret, forsigtig med koncentrationen"
+    "note_spice": "Krydret, forsigtig med koncentrationen",
+    "note_cream": "Cremet, steeping 1–2 uger",
+    "note_mix": "Smagsblanding, steeping afhænger af hovedkomponenten"
   },
   "subscription": {
     "title": "LiquiMixer-abonnement",

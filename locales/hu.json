@@ -239,6 +239,7 @@
     "flavor_spice": "Fűszeres (fahéj, mézeskalács)",
     "flavor_cream": "Krémes (vanília, tejszín)",
     "flavor_mix": "Mix / Keverék",
+    "flavor_custom": "Egyéni (gyártó szerint)",
     "add_flavor": "+ Másik aroma hozzáadása",
     "remove_flavor": "Aroma eltávolítása",
     "flavor_count_hint": "(max 4 aroma)",
@@ -875,7 +876,9 @@
     "note_drink": "Frissítő, gyors érlelés",
     "note_tobaccosweet": "A kombináció 2+ hét érlelést igényel",
     "note_nuts": "Krémes, 1–2 hét érlelést igényel",
-    "note_spice": "Fűszeres, óvatos a koncentrációval"
+    "note_spice": "Fűszeres, óvatos a koncentrációval",
+    "note_cream": "Krémes, érlelés 1–2 hét",
+    "note_mix": "Ízek keveréke, érlelés a fő összetevőtől függ"
   },
   "subscription": {
     "title": "LiquiMixer előfizetés",
