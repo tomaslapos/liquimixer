@@ -8719,6 +8719,12 @@ function getIngredientName(ingredient) {
                 shishaDisplayName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
             }
             return `${t('ingredients.flavor', 'Flavor')} ${ingredient.flavorNumber || 1}: ${shishaDisplayName}`;
+        case 'shisha_diy_material':
+            // Shisha DIY tobacco/herbs (Mode 2) - dynamicky přeložit podle typu materiálu
+            if (ingredient.diyMaterial === 'herbs') {
+                return `${t('shisha.diy_herbs_amount_label', 'Bylinky')} (${t('shisha.diy_herbs_amount_hint', 'sušené bylinky')})`;
+            }
+            return `${t('shisha.tobacco_amount_label', 'Tabák')} (${t('shisha.tobacco_amount_hint', 'sušené listy')})`;
         case 'shisha_tobacco':
             // Shisha tobacco (Mode 1 mix) - use ingredient name directly (tobacco brand/flavor)
             return ingredient.name || t('shisha.tobacco_label', 'Tabák');
@@ -9711,6 +9717,16 @@ function refreshResultsTable() {
         <td class="ingredient-grams">${totalGramsText}</td>
     `;
     tbody.appendChild(totalRow);
+    
+    // Aktualizovat steep days text v hlavičce
+    const steepContainer = document.getElementById('resultSteepContainer');
+    const steepValueEl = document.getElementById('resultSteepDays');
+    if (steepContainer && steepValueEl && currentRecipeData.steepDays > 0) {
+        const sd = currentRecipeData.steepDays;
+        const daysText = sd === 1 ? t('common.day', 'den') : 
+            (sd >= 2 && sd <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+        steepValueEl.textContent = `${sd} ${daysText}`;
+    }
     
     // Regenerovat dynamické poznámky
     generateMixingNotes(currentRecipeData);
@@ -19127,7 +19143,8 @@ function calculateShishaMixMode2() {
         : `${t('shisha.tobacco_amount_label', 'Tabák')} (${t('shisha.tobacco_amount_hint', 'sušené listy')})`;
     ingredients.push({
         name: materialName,
-        ingredientKey: 'shisha_tobacco',
+        ingredientKey: 'shisha_diy_material',
+        diyMaterial: diyMaterial,
         volume: 0,
         percent: Math.round(tobaccoAmount / totalWeight * 100 * 10) / 10,
         grams: tobaccoAmount
