@@ -2185,8 +2185,9 @@ function updateProPremixedRatio(ratio) {
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr (po nastavení proPremixedRatio)
     // POUZE pokud uživatel ručně neměnil poměr a neprobíhá prefill
+    const _wasPrefilling = _prefillingSavedRecipe;
     setTimeout(() => {
-        if (!proUserManuallyChangedRatio && !_prefillingSavedRecipe) {
+        if (!proUserManuallyChangedRatio && !_wasPrefilling) {
             const actualVg = calculateActualVgPgRatio('pro');
             const slider = document.getElementById('proVgPgRatio');
             if (slider) {
@@ -2194,7 +2195,7 @@ function updateProPremixedRatio(ratio) {
                 updateProRatioDisplay();
             }
         }
-        if (!_prefillingSavedRecipe) {
+        if (!_wasPrefilling) {
             updateProVgPgLimits();
         }
     }, 0);
@@ -10674,8 +10675,9 @@ function updateSvPremixedRatio(ratio) {
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
     // POUZE pokud uživatel ručně neměnil poměr a neprobíhá prefill
+    const _wasPrefilling = _prefillingSavedRecipe;
     setTimeout(() => {
-        if (!shakevapeUserManuallyChangedRatio && !_prefillingSavedRecipe) {
+        if (!shakevapeUserManuallyChangedRatio && !_wasPrefilling) {
             const actualVg = calculateActualVgPgRatio('shakevape');
             const slider = document.getElementById('svVgPgRatio');
             if (slider) {
