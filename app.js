@@ -8863,6 +8863,7 @@ function calculateMix() {
     let specificFlavorId = null;
     let specificFavoriteProductId = null;
     let specificFlavorSource = 'generic';
+    let specificFlavorSteepDays = null;
     
     if (flavorAutocomplete && flavorAutocomplete.dataset.flavorData) {
         try {
@@ -8879,6 +8880,12 @@ function calculateMix() {
                     specificFlavorId = flavorData.flavor_id || flavorData.id || flavorAutocomplete.dataset.flavorId || null;
                 }
                 specificFlavorSource = flavorAutocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
+                // Steep days z konkrétní příchutě (DB nebo oblíbené)
+                if (flavorData.steep_days !== undefined && flavorData.steep_days !== null) {
+                    specificFlavorSteepDays = flavorData.steep_days;
+                } else if (flavorData.flavor_steep_days !== undefined && flavorData.flavor_steep_days !== null) {
+                    specificFlavorSteepDays = flavorData.flavor_steep_days;
+                }
             }
         } catch (e) {
             console.log('Error parsing flavor data:', e);
@@ -9252,6 +9259,7 @@ function calculateMix() {
         specificFlavorId: specificFlavorId,
         specificFavoriteProductId: specificFavoriteProductId,
         specificFlavorSource: specificFlavorSource,
+        specificFlavorSteepDays: specificFlavorSteepDays,
         flavorPercent: flavorPercent
     });
     
@@ -9349,11 +9357,29 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
         recipeData.specificFavoriteProductId = extraData.specificFavoriteProductId;
         recipeData.specificFlavorSource = extraData.specificFlavorSource;
     }
+    if (extraData.specificFlavorSteepDays !== undefined && extraData.specificFlavorSteepDays !== null) {
+        recipeData.specificFlavorSteepDays = extraData.specificFlavorSteepDays;
+    }
     if (extraData.flavorPercent !== undefined) {
         recipeData.flavorPercent = extraData.flavorPercent;
     }
     
     storeCurrentRecipe(recipeData);
+
+    // Zobrazit steep days v hlavičce výsledků
+    const steepContainer = document.getElementById('resultSteepContainer');
+    const steepValueEl = document.getElementById('resultSteepDays');
+    if (steepContainer && steepValueEl) {
+        const steepDays = getMaxSteepingDaysFromRecipe(recipeData);
+        if (steepDays > 0) {
+            const daysText = steepDays === 1 ? t('common.day', 'den') : 
+                (steepDays >= 2 && steepDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+            steepValueEl.textContent = `${steepDays} ${daysText}`;
+            steepContainer.style.display = '';
+        } else {
+            steepContainer.style.display = 'none';
+        }
+    }
 
     const tbody = document.getElementById('resultsBody');
     tbody.innerHTML = '';
@@ -9582,9 +9608,11 @@ function getMaxSteepingDaysFromRecipe(recipeData) {
     let maxDays = 0;
     
     if (recipeData.formType === 'shisha' && recipeData.flavors) {
-        // Shisha recipes - use shishaFlavorDatabase
+        // Shisha recipes - preferovat steepDays z konkrétní příchutě, fallback na kategorii
         for (const flavor of recipeData.flavors) {
-            if (flavor.type && flavor.type !== 'none') {
+            if (flavor.steepDays !== undefined && flavor.steepDays !== null && flavor.steepDays > maxDays) {
+                maxDays = flavor.steepDays;
+            } else if (flavor.type && flavor.type !== 'none') {
                 const flavorData = shishaFlavorDatabase[flavor.type];
                 if (flavorData && flavorData.steepingDays > maxDays) {
                     maxDays = flavorData.steepingDays;
@@ -9592,14 +9620,20 @@ function getMaxSteepingDaysFromRecipe(recipeData) {
             }
         }
     } else if (recipeData.formType === 'liquidpro' && recipeData.flavors) {
+        // Liquid PRO - preferovat steepDays z konkrétní příchutě, fallback na kategorii
         for (const flavor of recipeData.flavors) {
-            if (flavor.type && flavor.type !== 'none') {
+            if (flavor.steepDays !== undefined && flavor.steepDays !== null && flavor.steepDays > maxDays) {
+                maxDays = flavor.steepDays;
+            } else if (flavor.type && flavor.type !== 'none') {
                 const flavorData = flavorDatabase[flavor.type];
                 if (flavorData && flavorData.steepingDays > maxDays) {
                     maxDays = flavorData.steepingDays;
                 }
             }
         }
+    } else if (recipeData.specificFlavorSteepDays !== undefined && recipeData.specificFlavorSteepDays !== null) {
+        // Liquid / Shake & Vape - konkrétní příchuť z DB má přesný steep_days
+        maxDays = recipeData.specificFlavorSteepDays;
     } else if (recipeData.flavorType && recipeData.flavorType !== 'none') {
         const flavorData = flavorDatabase[recipeData.flavorType];
         if (flavorData && flavorData.steepingDays) {
@@ -12030,6 +12064,7 @@ function getProFlavorsData() {
         let specificFlavorManufacturer = null;
         let specificFlavorId = null;
         let specificFlavorSource = 'generic';
+        let specificFlavorSteepDays = null;
         
         // Získat favorite_product_id přímo z datasetu (důležité pro správné párování)
         let specificFavoriteProductId = autocomplete?.dataset.favoriteProductId || null;
@@ -12051,6 +12086,12 @@ function getProFlavorsData() {
                         specificFlavorId = flavorData.id || autocomplete.dataset.flavorId || null;
                     }
                     specificFlavorSource = autocomplete.dataset.flavorSource || (isFavorite ? 'favorite' : 'database');
+                    // Steep days z konkrétní příchutě (DB nebo oblíbené)
+                    if (flavorData.steep_days !== undefined && flavorData.steep_days !== null) {
+                        specificFlavorSteepDays = flavorData.steep_days;
+                    } else if (flavorData.flavor_steep_days !== undefined && flavorData.flavor_steep_days !== null) {
+                        specificFlavorSteepDays = flavorData.flavor_steep_days;
+                    }
                 }
             } catch (e) {
                 console.log('Error parsing PRO flavor data:', e);
@@ -12094,6 +12135,10 @@ function getProFlavorsData() {
                 // Přidat favorite_product_id pro správné párování při ukládání
                 if (specificFavoriteProductId) {
                     flavorEntry.favoriteProductId = specificFavoriteProductId;
+                }
+                // Steep days z konkrétní příchutě (DB)
+                if (specificFlavorSteepDays !== null) {
+                    flavorEntry.steepDays = specificFlavorSteepDays;
                 }
             }
             
@@ -13484,20 +13529,9 @@ function updateReminderDate() {
     let maxSteepingDays = 7;
 
     if (currentRecipeData) {
-        if (currentRecipeData.formType === 'liquidpro' && currentRecipeData.flavors) {
-            for (const flavor of currentRecipeData.flavors) {
-                if (flavor.type && flavor.type !== 'none') {
-                    const flavorData = flavorDatabase[flavor.type];
-                    if (flavorData && flavorData.steepingDays > maxSteepingDays) {
-                        maxSteepingDays = flavorData.steepingDays;
-                    }
-                }
-            }
-        } else if (currentRecipeData.flavorType && currentRecipeData.flavorType !== 'none') {
-            const flavorData = flavorDatabase[currentRecipeData.flavorType];
-            if (flavorData && flavorData.steepingDays) {
-                maxSteepingDays = flavorData.steepingDays;
-            }
+        const steepFromRecipe = getMaxSteepingDaysFromRecipe(currentRecipeData);
+        if (steepFromRecipe > 0) {
+            maxSteepingDays = steepFromRecipe;
         }
     }
 
@@ -13575,45 +13609,45 @@ function getReminderDataFromForm() {
     let maxSteepingDays = 7; // Default steeping days
     
     if (currentRecipeData) {
+        // Použít centrální funkci pro steep days (respektuje konkrétní příchutě z DB)
+        const steepFromRecipe = getMaxSteepingDaysFromRecipe(currentRecipeData);
+        if (steepFromRecipe > 0) {
+            maxSteepingDays = steepFromRecipe;
+        }
+        
         if (currentRecipeData.formType === 'liquidpro' && currentRecipeData.flavors) {
+            // Najít flavor type s nejdelším zráním pro název
             let maxSteeping = 0;
             for (const flavor of currentRecipeData.flavors) {
-                if (flavor.type && flavor.type !== 'none') {
-                    const flavorData = flavorDatabase[flavor.type];
-                    if (flavorData && flavorData.steepingDays > maxSteeping) {
-                        maxSteeping = flavorData.steepingDays;
-                        flavorType = flavor.type;
-                    }
+                const days = (flavor.steepDays !== undefined && flavor.steepDays !== null) ? flavor.steepDays : 
+                    (flavor.type && flavorDatabase[flavor.type] ? flavorDatabase[flavor.type].steepingDays : 0);
+                if (days > maxSteeping) {
+                    maxSteeping = days;
+                    flavorType = flavor.type || 'fruit';
                 }
             }
-            if (maxSteeping > 0) maxSteepingDays = maxSteeping;
             flavorName = currentRecipeData.flavors
                 .filter(f => f.type && f.type !== 'none')
-                .map(f => getFlavorName(f.type))
+                .map(f => f.flavorName || getFlavorName(f.type))
                 .join(', ');
         } else if (currentRecipeData.flavorType && currentRecipeData.flavorType !== 'none') {
             flavorType = currentRecipeData.flavorType;
-            flavorName = getFlavorName(flavorType);
-            const flavorData = flavorDatabase[flavorType];
-            if (flavorData && flavorData.steepingDays) {
-                maxSteepingDays = flavorData.steepingDays;
-            }
+            flavorName = currentRecipeData.specificFlavorName || getFlavorName(flavorType);
         } else if (currentRecipeData.formType === 'shisha' && currentRecipeData.flavors) {
             // Shisha recepty
             let maxSteeping = 0;
             for (const flavor of currentRecipeData.flavors) {
-                if (flavor.type && flavor.type !== 'none') {
-                    const flavorData = shishaFlavorDatabase[flavor.type];
-                    if (flavorData && flavorData.steepingDays > maxSteeping) {
-                        maxSteeping = flavorData.steepingDays;
-                        flavorType = flavor.type;
-                    }
+                const days = (flavor.steepDays !== undefined && flavor.steepDays !== null) ? flavor.steepDays :
+                    (flavor.type && shishaFlavorDatabase[flavor.type] ? shishaFlavorDatabase[flavor.type].steepingDays : 0);
+                if (days > maxSteeping) {
+                    maxSteeping = days;
+                    flavorType = flavor.type || 'fruit';
                 }
             }
-            if (maxSteeping > 0) maxSteepingDays = maxSteeping;
             flavorName = currentRecipeData.flavors
                 .filter(f => f.type && f.type !== 'none')
                 .map(f => {
+                    if (f.flavorName) return f.flavorName;
                     const fd = shishaFlavorDatabase[f.type];
                     return fd ? t(`shisha.flavor_${f.type}`, fd.name) : f.type;
                 })
@@ -14040,24 +14074,42 @@ function showAddReminderModal(recipeId) {
     currentReminderFlavorType = 'fruit';
     currentReminderFlavorName = '';
 
+    // Použít centrální funkci pro steep days (respektuje konkrétní příchutě z DB)
+    const steepFromRecipe = getMaxSteepingDaysFromRecipe(data);
+    if (steepFromRecipe > 0) {
+        currentReminderSteepingDays = steepFromRecipe;
+    }
+
     if (data.formType === 'liquidpro' && data.flavors) {
-        // Liquid PRO - více příchutí
+        // Liquid PRO - více příchutí — najít flavor type pro název
+        let maxSteeping = 0;
         for (const flavor of data.flavors) {
-            if (flavor.type && flavor.type !== 'none') {
-                const flavorData = flavorDatabase[flavor.type];
-                if (flavorData && flavorData.steepingDays > currentReminderSteepingDays) {
-                    currentReminderSteepingDays = flavorData.steepingDays;
-                    currentReminderFlavorType = flavor.type;
-                }
+            const days = (flavor.steepDays !== undefined && flavor.steepDays !== null) ? flavor.steepDays :
+                (flavor.type && flavorDatabase[flavor.type] ? flavorDatabase[flavor.type].steepingDays : 0);
+            if (days > maxSteeping) {
+                maxSteeping = days;
+                currentReminderFlavorType = flavor.type || 'fruit';
             }
         }
-        currentReminderFlavorName = data.flavors.filter(f => f.type && f.type !== 'none').map(f => getFlavorName(f.type)).join(', ');
+        currentReminderFlavorName = data.flavors.filter(f => f.type && f.type !== 'none').map(f => f.flavorName || getFlavorName(f.type)).join(', ');
     } else if (data.flavorType && data.flavorType !== 'none') {
-        // Nový formát - flavorType přímo v datech
         currentReminderFlavorType = data.flavorType;
-        currentReminderFlavorName = getFlavorName(currentReminderFlavorType);
-        const flavorData = flavorDatabase[currentReminderFlavorType];
-        if (flavorData && flavorData.steepingDays) currentReminderSteepingDays = flavorData.steepingDays;
+        currentReminderFlavorName = data.specificFlavorName || getFlavorName(currentReminderFlavorType);
+    } else if (data.formType === 'shisha' && data.flavors) {
+        let maxSteeping = 0;
+        for (const flavor of data.flavors) {
+            const days = (flavor.steepDays !== undefined && flavor.steepDays !== null) ? flavor.steepDays :
+                (flavor.type && shishaFlavorDatabase[flavor.type] ? shishaFlavorDatabase[flavor.type].steepingDays : 0);
+            if (days > maxSteeping) {
+                maxSteeping = days;
+                currentReminderFlavorType = flavor.type || 'fruit';
+            }
+        }
+        currentReminderFlavorName = data.flavors.filter(f => f.type && f.type !== 'none').map(f => {
+            if (f.flavorName) return f.flavorName;
+            const fd = shishaFlavorDatabase[f.type];
+            return fd ? t(`shisha.flavor_${f.type}`, fd.name) : f.type;
+        }).join(', ');
     } else if (data.ingredients && Array.isArray(data.ingredients)) {
         // Starší formát - hledáme flavorType v ingredients
         for (const ing of data.ingredients) {
@@ -18814,6 +18866,7 @@ function calculateShishaMixMode1() {
         
         let name = '';
         let flavorName = null, flavorManufacturer = null, flavorId = null, flavorSource = null, favoriteProductId = null;
+        let steepDays = null;
         if (autocomplete && autocomplete.dataset.flavorData) {
             try {
                 const data = JSON.parse(autocomplete.dataset.flavorData);
@@ -18830,12 +18883,19 @@ function calculateShishaMixMode1() {
                     flavorId = data.id || autocomplete.dataset.flavorId || null;
                     flavorSource = 'database';
                 }
+                if (data.steep_days !== undefined && data.steep_days !== null) {
+                    steepDays = data.steep_days;
+                } else if (data.flavor_steep_days !== undefined && data.flavor_steep_days !== null) {
+                    steepDays = data.flavor_steep_days;
+                }
             } catch(e) {}
         }
         if (!name) name = `${t('shisha.tobacco_label', 'Tabák')} ${i}`;
         
         const grams = Math.round((percent / 100) * bowlSize * 10) / 10;
-        tobaccos.push({ name, percent, grams, flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId });
+        const tobaccoEntry = { name, percent, grams, flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId };
+        if (steepDays !== null) tobaccoEntry.steepDays = steepDays;
+        tobaccos.push(tobaccoEntry);
     }
     
     // Validate total = 100%
@@ -18964,6 +19024,7 @@ function calculateShishaMixMode2() {
         
         let displayName = select.options[select.selectedIndex]?.text || select.value;
         let flavorName = null, flavorManufacturer = null, flavorId = null, flavorSource = null, favoriteProductId = null;
+        let flavorSteepDays = null;
         if (autocomplete && autocomplete.dataset.flavorData) {
             try {
                 const data = JSON.parse(autocomplete.dataset.flavorData);
@@ -18980,16 +19041,23 @@ function calculateShishaMixMode2() {
                         flavorId = data.id || autocomplete.dataset.flavorId || null;
                         flavorSource = 'database';
                     }
+                    if (data.steep_days !== undefined && data.steep_days !== null) {
+                        flavorSteepDays = data.steep_days;
+                    } else if (data.flavor_steep_days !== undefined && data.flavor_steep_days !== null) {
+                        flavorSteepDays = data.flavor_steep_days;
+                    }
                 }
             } catch(e) {}
         }
-        flavors.push({
+        const diyFlavorEntry = {
             type: select.value,
             name: displayName,
             percent: pct,
             vgRatio: parseInt(ratioSlider?.value) || 0,
             flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId
-        });
+        };
+        if (flavorSteepDays !== null) diyFlavorEntry.steepDays = flavorSteepDays;
+        flavors.push(diyFlavorEntry);
     }
     
     // Nicotine
@@ -19198,6 +19266,7 @@ function calculateShishaMixMode2() {
         },
         totalWeight,
         steepDays: Math.max(0, ...flavors.filter(f => f.type && f.type !== 'none').map(f => {
+            if (f.steepDays !== undefined && f.steepDays !== null) return f.steepDays;
             const fd = shishaFlavorDatabase[f.type];
             return fd ? fd.steepingDays : 0;
         })),
@@ -19212,6 +19281,20 @@ function calculateShishaMixMode2() {
     document.getElementById('resultTotal').textContent = `${totalWeight}g`;
     document.getElementById('resultRatio').textContent = `${vgPgRatio}:${100 - vgPgRatio}`;
     document.getElementById('resultNicotine').textContent = `${nicTarget} mg/ml`;
+    
+    // Steep days v hlavičce
+    const steepContainer = document.getElementById('resultSteepContainer');
+    const steepValueEl = document.getElementById('resultSteepDays');
+    if (steepContainer && steepValueEl) {
+        if (recipeData.steepDays > 0) {
+            const daysText = recipeData.steepDays === 1 ? t('common.day', 'den') : 
+                (recipeData.steepDays >= 2 && recipeData.steepDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+            steepValueEl.textContent = `${recipeData.steepDays} ${daysText}`;
+            steepContainer.style.display = '';
+        } else {
+            steepContainer.style.display = 'none';
+        }
+    }
     
     const tbody = document.getElementById('resultsBody');
     tbody.innerHTML = '';
@@ -19292,6 +19375,7 @@ function calculateShishaMixMode3() {
         
         let displayName = select.options[select.selectedIndex]?.text || select.value;
         let flavorName = null, flavorManufacturer = null, flavorId = null, flavorSource = null, favoriteProductId = null;
+        let molFlavorSteepDays = null;
         if (autocomplete && autocomplete.dataset.flavorData) {
             try {
                 const data = JSON.parse(autocomplete.dataset.flavorData);
@@ -19308,16 +19392,23 @@ function calculateShishaMixMode3() {
                         flavorId = data.id || autocomplete.dataset.flavorId || null;
                         flavorSource = 'database';
                     }
+                    if (data.steep_days !== undefined && data.steep_days !== null) {
+                        molFlavorSteepDays = data.steep_days;
+                    } else if (data.flavor_steep_days !== undefined && data.flavor_steep_days !== null) {
+                        molFlavorSteepDays = data.flavor_steep_days;
+                    }
                 }
             } catch(e) {}
         }
-        flavors.push({
+        const molFlavorEntry = {
             type: select.value,
             name: displayName,
             percent: pct,
             vgRatio: parseInt(ratioSlider?.value) || 0,
             flavorName, flavorManufacturer, flavorId, flavorSource, favoriteProductId
-        });
+        };
+        if (molFlavorSteepDays !== null) molFlavorEntry.steepDays = molFlavorSteepDays;
+        flavors.push(molFlavorEntry);
     }
     
     // Nicotine
@@ -19506,6 +19597,7 @@ function calculateShishaMixMode3() {
             juicePercent: molMixJuicePercent
         },
         steepDays: Math.max(0, ...flavors.filter(f => f.type && f.type !== 'none').map(f => {
+            if (f.steepDays !== undefined && f.steepDays !== null) return f.steepDays;
             const fd = shishaFlavorDatabase[f.type];
             return fd ? fd.steepingDays : 0;
         })),
@@ -19520,6 +19612,20 @@ function calculateShishaMixMode3() {
     document.getElementById('resultTotal').textContent = `${totalAmount} ml`;
     document.getElementById('resultRatio').textContent = `${vgPgRatio}:${100 - vgPgRatio}`;
     document.getElementById('resultNicotine').textContent = `${nicTarget} mg/ml`;
+    
+    // Steep days v hlavičce
+    const steepContainer = document.getElementById('resultSteepContainer');
+    const steepValueEl = document.getElementById('resultSteepDays');
+    if (steepContainer && steepValueEl) {
+        if (recipeData.steepDays > 0) {
+            const daysText = recipeData.steepDays === 1 ? t('common.day', 'den') : 
+                (recipeData.steepDays >= 2 && recipeData.steepDays <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+            steepValueEl.textContent = `${recipeData.steepDays} ${daysText}`;
+            steepContainer.style.display = '';
+        } else {
+            steepContainer.style.display = 'none';
+        }
+    }
     
     const tbody = document.getElementById('resultsBody');
     tbody.innerHTML = '';
