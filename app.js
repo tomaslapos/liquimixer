@@ -4073,7 +4073,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     // Přidáváme POUZE příchutě s konkrétním názvem (flavorName)
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
-            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
+            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
                 // Pouze konkrétní příchutě s názvem - generické kategorie nepřidávat
                 if (ingredient.flavorName) {
                     const flavorInfo = {
@@ -5739,14 +5739,32 @@ function prefillShishaMixForm(data, linkedFlavors = []) {
     
     // Tobaccos
     if (data.tobaccos && data.tobaccos.length > 0) {
-        // Reset — tabák 1 existuje vždy, další přidáváme
-        shTobaccoCount = 1;
+        // Reset — tabáky 1 a 2 jsou statické v HTML, dynamické (3-4) jsou v shAdditionalTobaccoContainer
+        shTobaccoCount = 2;
         const container = document.getElementById('shAdditionalTobaccoContainer');
         if (container) container.innerHTML = '';
         
+        // Resetovat statické tabáky 1 a 2
+        for (let i = 1; i <= 2; i++) {
+            const input = document.getElementById(`shTobaccoAutocomplete${i}`);
+            if (input) {
+                input.value = '';
+                delete input.dataset.flavorData;
+                delete input.dataset.flavorId;
+                delete input.dataset.flavorSource;
+                delete input.dataset.favoriteProductId;
+            }
+            const slider = document.getElementById(`shTobaccoPercent${i}`);
+            if (slider) { slider.value = 50; updateShishaTobaccoPercent(i); }
+        }
+        
+        // Zobrazit tlačítko přidat tabák
+        document.getElementById('shAddTobaccoGroup')?.classList.remove('hidden');
+        
         data.tobaccos.forEach((tobacco, idx) => {
             const tobIdx = idx + 1;
-            if (tobIdx > 1) {
+            // Tabáky 1 a 2 jsou statické, od 3 přidáváme dynamicky
+            if (tobIdx > 2) {
                 addShishaTobacco();
             }
             
@@ -5938,23 +5956,29 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
         if (el) { el.value = ts.vgPercent; if (typeof updateTweakVgDisplay === 'function') updateTweakVgDisplay(); }
     }
     
-    // Flavor
-    if (ts.flavorType && ts.flavorType !== 'none') {
-        const el = document.getElementById('shTweakFlavorType1');
-        if (el) { el.value = ts.flavorType; updateShishaTweakFlavorType(1); }
-    }
-    if (ts.flavorStrength) {
-        const el = document.getElementById('shTweakFlavorStrength1');
-        if (el) { el.value = ts.flavorStrength; updateShishaTweakFlavorStrength(1); }
-    }
-    if (ts.flavorData) {
-        const input = document.getElementById('shTweakFlavorAutocomplete1');
-        if (input) {
-            const fd = ts.flavorData;
-            const brand = fd.manufacturer_code || fd.manufacturer || fd.brand || '';
-            input.value = brand ? `${fd.name} (${brand})` : fd.name;
-            input.dataset.flavorData = JSON.stringify(fd);
-        }
+    // Flavors (1-4) — ts.flavors je pole [{type, strength}], ts.flavorData je pole [obj0, obj1, ...]
+    if (ts.flavors && Array.isArray(ts.flavors)) {
+        ts.flavors.forEach((flavor, idx) => {
+            const fi = idx + 1;
+            if (flavor.type && flavor.type !== 'none') {
+                const typeEl = document.getElementById(`shTweakFlavorType${fi}`);
+                if (typeEl) { typeEl.value = flavor.type; updateShishaTweakFlavorType(fi); }
+            }
+            if (flavor.strength) {
+                const strengthEl = document.getElementById(`shTweakFlavorStrength${fi}`);
+                if (strengthEl) { strengthEl.value = flavor.strength; updateShishaTweakFlavorStrength(fi); }
+            }
+            // Autocomplete data z ts.flavorData pole
+            const fd = ts.flavorData && ts.flavorData[idx];
+            if (fd && fd.name) {
+                const input = document.getElementById(`shTweakFlavorAutocomplete${fi}`);
+                if (input) {
+                    const brand = fd.manufacturer_code || fd.manufacturer || fd.brand || '';
+                    input.value = brand ? `${fd.name} (${brand})` : fd.name;
+                    input.dataset.flavorData = JSON.stringify(fd);
+                }
+            }
+        });
     }
     
     // Nicotine
@@ -18889,6 +18913,27 @@ function calculateShishaTweak() {
         try { tweakState.tobaccoData = JSON.parse(tobaccoInput.dataset.flavorData); } catch(e) {}
     }
     
+    // Přidat tabák (základ) jako první složku do ingredients, aby se zobrazil ve složkách receptu
+    const tobaccoIngredient = {
+        name: selectedTobaccoName || t('shisha.tweak_recipe_tobacco_base', 'Tabák (základ)'),
+        ingredientKey: 'shisha_tweak_tobacco',
+        volume: 0,
+        percent: 0,
+        grams: tobaccoG
+    };
+    if (tobaccoInput?.dataset?.flavorData) {
+        try {
+            const td = JSON.parse(tobaccoInput.dataset.flavorData);
+            tobaccoIngredient.flavorName = td.name || null;
+            tobaccoIngredient.flavorManufacturer = td.manufacturer_code || td.manufacturer || td.brand || null;
+            const isFav = td.source === 'favorites' || td.source === 'favorite';
+            tobaccoIngredient.flavorId = isFav ? (td.flavor_id || null) : (td.id || null);
+            tobaccoIngredient.favoriteProductId = isFav ? (td.id || td.favorite_product_id || null) : null;
+            tobaccoIngredient.flavorSource = isFav ? 'favorite' : 'database';
+        } catch(e) {}
+    }
+    ingredients.unshift(tobaccoIngredient);
+
     const recipeData = {
         formType: 'shisha',
         shishaMode: 'tweak',

@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v292';
+const CACHE_NAME = 'liquimixer-v293';
 
 // Firebase Cloud Messaging - background push notifications
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
