@@ -4073,7 +4073,7 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     // Přidáváme POUZE příchutě s konkrétním názvem (flavorName)
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
-            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
+            if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
                 // Pouze konkrétní příchutě s názvem - generické kategorie nepřidávat
                 if (ingredient.flavorName) {
                     const flavorInfo = {
@@ -4115,16 +4115,20 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     if (formType === 'shisha' && recipeData.shishaMode === 'tweak' && recipeData.tweakState && recipeData.tweakState.tobaccoData) {
         const td = recipeData.tweakState.tobaccoData;
         if (td.name) {
-            const isFavorite = td.source === 'favorites' || td.source === 'favorite';
-            flavors.push({
-                name: td.name,
-                manufacturer: td.manufacturer_code || td.manufacturer || td.brand || null,
-                category: 'tobacco',
-                percent: 0,
-                flavorId: isFavorite ? (td.flavor_id || null) : (td.id || null),
-                favoriteProductId: isFavorite ? (td.id || td.favorite_product_id || null) : null,
-                flavorSource: isFavorite ? 'favorite' : 'database'
-            });
+            // Deduplikace — nepřidávat pokud příchuť se stejným jménem již existuje
+            const alreadyExists = flavors.some(f => f.name === td.name);
+            if (!alreadyExists) {
+                const isFavorite = td.source === 'favorites' || td.source === 'favorite';
+                flavors.push({
+                    name: td.name,
+                    manufacturer: td.manufacturer_code || td.manufacturer || td.brand || null,
+                    category: 'tobacco',
+                    percent: 0,
+                    flavorId: isFavorite ? (td.flavor_id || null) : (td.id || null),
+                    favoriteProductId: isFavorite ? (td.id || td.favorite_product_id || null) : null,
+                    flavorSource: isFavorite ? 'favorite' : 'database'
+                });
+            }
         }
     }
     
@@ -5169,6 +5173,12 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         </tr>
                     </thead>
                     <tbody>
+                        ${(data.formType === 'shisha' && data.shishaMode === 'tweak' && data.tobaccoName) ? `
+                        <tr>
+                            <td class="ingredient-name">${escapeHtml(data.tobaccoName)} <span class="ingredient-percent-inline">(0.0%)</span></td>
+                            <td class="ingredient-value">—</td>
+                            <td class="ingredient-grams">${parseFloat(data.tobaccoAmount || 0).toFixed(1)}</td>
+                        </tr>` : ''}
                         ${ingredients.map(ing => {
                             // Dynamicky přeložit název ingredience
                             const ingredientName = escapeHtml(getIngredientName(ing));
@@ -5761,12 +5771,14 @@ function prefillShishaMixForm(data, linkedFlavors = []) {
         // Zobrazit tlačítko přidat tabák
         document.getElementById('shAddTobaccoGroup')?.classList.remove('hidden');
         
+        // Nejdřív přidat všechny dynamické tabáky (3+), aby auto-complement nepřepisoval procenta
+        for (let di = 3; di <= data.tobaccos.length; di++) {
+            addShishaTobacco();
+        }
+        
+        // Teprve potom nastavit procenta a autocomplete pro všechny tabáky
         data.tobaccos.forEach((tobacco, idx) => {
             const tobIdx = idx + 1;
-            // Tabáky 1 a 2 jsou statické, od 3 přidáváme dynamicky
-            if (tobIdx > 2) {
-                addShishaTobacco();
-            }
             
             // Nastavit procento
             const slider = document.getElementById(`shTobaccoPercent${tobIdx}`);
@@ -8951,6 +8963,22 @@ function getIngredientName(ingredient) {
                 shishaDisplayName = t(`shisha.flavor_${shishaFlavorType}`, shishaFlavorData.name);
             }
             return `${t('ingredients.flavor', 'Flavor')} ${ingredient.flavorNumber || 1}: ${shishaDisplayName}`;
+        case 'shisha_tweak_flavor':
+            // Shisha Tweak flavor - příchuť/aroma koncentrát
+            let tweakFlavorDisplayName;
+            if (ingredient.flavorName) {
+                if (ingredient.flavorManufacturer) {
+                    tweakFlavorDisplayName = `${ingredient.flavorName} (${ingredient.flavorManufacturer})`;
+                } else {
+                    tweakFlavorDisplayName = ingredient.flavorName;
+                }
+            } else {
+                tweakFlavorDisplayName = ingredient.name || t('shisha.tweak_ingredient_concentrate', 'Aroma koncentrát');
+            }
+            if (ingredient.flavorNumber && ingredient.flavorNumber > 1) {
+                return `${t('ingredients.flavor', 'Flavor')} ${ingredient.flavorNumber}: ${tweakFlavorDisplayName}`;
+            }
+            return `${t('ingredients.flavor', 'Flavor')}: ${tweakFlavorDisplayName}`;
         case 'shisha_diy_material':
             // Shisha DIY tobacco/herbs (Mode 2) - dynamicky přeložit podle typu materiálu
             if (ingredient.diyMaterial === 'herbs') {
@@ -18913,27 +18941,6 @@ function calculateShishaTweak() {
         try { tweakState.tobaccoData = JSON.parse(tobaccoInput.dataset.flavorData); } catch(e) {}
     }
     
-    // Přidat tabák (základ) jako první složku do ingredients, aby se zobrazil ve složkách receptu
-    const tobaccoIngredient = {
-        name: selectedTobaccoName || t('shisha.tweak_recipe_tobacco_base', 'Tabák (základ)'),
-        ingredientKey: 'shisha_tweak_tobacco',
-        volume: 0,
-        percent: 0,
-        grams: tobaccoG
-    };
-    if (tobaccoInput?.dataset?.flavorData) {
-        try {
-            const td = JSON.parse(tobaccoInput.dataset.flavorData);
-            tobaccoIngredient.flavorName = td.name || null;
-            tobaccoIngredient.flavorManufacturer = td.manufacturer_code || td.manufacturer || td.brand || null;
-            const isFav = td.source === 'favorites' || td.source === 'favorite';
-            tobaccoIngredient.flavorId = isFav ? (td.flavor_id || null) : (td.id || null);
-            tobaccoIngredient.favoriteProductId = isFav ? (td.id || td.favorite_product_id || null) : null;
-            tobaccoIngredient.flavorSource = isFav ? 'favorite' : 'database';
-        } catch(e) {}
-    }
-    ingredients.unshift(tobaccoIngredient);
-
     const recipeData = {
         formType: 'shisha',
         shishaMode: 'tweak',
