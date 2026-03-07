@@ -1853,8 +1853,10 @@ function updateBaseType(type) {
     
     if (baseTypeInput) baseTypeInput.value = type;
     
-    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
-    liquidUserManuallyChangedRatio = false;
+    // Při prefill uloženého receptu nepřepisovat slider ani neresetovat flag
+    if (!_prefillingSavedRecipe) {
+        liquidUserManuallyChangedRatio = false;
+    }
     
     if (type === 'premixed') {
         separateBtn.classList.remove('active');
@@ -1862,11 +1864,13 @@ function updateBaseType(type) {
         if (premixedContainer) premixedContainer.classList.remove('hidden');
         
         // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-        const actualVg = calculateActualVgPgRatio('liquid');
-        const slider = document.getElementById('vgPgRatio');
-        if (slider) {
-            slider.value = actualVg;
-            updateRatioDisplay();
+        if (!_prefillingSavedRecipe) {
+            const actualVg = calculateActualVgPgRatio('liquid');
+            const slider = document.getElementById('vgPgRatio');
+            if (slider) {
+                slider.value = actualVg;
+                updateRatioDisplay();
+            }
         }
     } else {
         separateBtn.classList.add('active');
@@ -1874,7 +1878,9 @@ function updateBaseType(type) {
         if (premixedContainer) premixedContainer.classList.add('hidden');
     }
     
-    updateVgPgRatioLimits();
+    if (!_prefillingSavedRecipe) {
+        updateVgPgRatioLimits();
+    }
 }
 
 // Update premixed ratio
@@ -1893,8 +1899,8 @@ function updatePremixedRatio(ratio) {
     });
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-    // POUZE pokud uživatel ručně neměnil poměr
-    if (!liquidUserManuallyChangedRatio) {
+    // POUZE pokud uživatel ručně neměnil poměr a neprobíhá prefill
+    if (!liquidUserManuallyChangedRatio && !_prefillingSavedRecipe) {
         const actualVg = calculateActualVgPgRatio('liquid');
         const slider = document.getElementById('vgPgRatio');
         if (slider) {
@@ -1903,7 +1909,9 @@ function updatePremixedRatio(ratio) {
         }
     }
     
-    updateVgPgRatioLimits();
+    if (!_prefillingSavedRecipe) {
+        updateVgPgRatioLimits();
+    }
 }
 
 // Get premixed base VG percent
@@ -1915,6 +1923,7 @@ function getPremixedVgPercent() {
 
 // Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode) - LIQUID form
 function autoRecalculateLiquidVgPgRatio() {
+    if (_prefillingSavedRecipe) return;
     const baseType = document.getElementById('baseType')?.value || 'separate';
     // Přepočítat POUZE pokud uživatel ručně neměnil poměr
     if (baseType === 'premixed' && !liquidUserManuallyChangedRatio) {
@@ -2120,20 +2129,22 @@ function updateProBaseType(type) {
     
     if (baseTypeInput) baseTypeInput.value = type;
     
-    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
-    proUserManuallyChangedRatio = false;
+    if (!_prefillingSavedRecipe) {
+        proUserManuallyChangedRatio = false;
+    }
     
     if (type === 'premixed') {
         separateBtn.classList.remove('active');
         premixedBtn.classList.add('active');
         if (premixedContainer) premixedContainer.classList.remove('hidden');
         
-        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-        const actualVg = calculateActualVgPgRatio('pro');
-        const slider = document.getElementById('proVgPgRatio');
-        if (slider) {
-            slider.value = actualVg;
-            updateProRatioDisplay();
+        if (!_prefillingSavedRecipe) {
+            const actualVg = calculateActualVgPgRatio('pro');
+            const slider = document.getElementById('proVgPgRatio');
+            if (slider) {
+                slider.value = actualVg;
+                updateProRatioDisplay();
+            }
         }
     } else {
         separateBtn.classList.add('active');
@@ -2141,7 +2152,9 @@ function updateProBaseType(type) {
         if (premixedContainer) premixedContainer.classList.add('hidden');
     }
     
-    updateProVgPgLimits();
+    if (!_prefillingSavedRecipe) {
+        updateProVgPgLimits();
+    }
 }
 
 // Update PRO premixed ratio
@@ -2171,9 +2184,9 @@ function updateProPremixedRatio(ratio) {
     }
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr (po nastavení proPremixedRatio)
-    // POUZE pokud uživatel ručně neměnil poměr
+    // POUZE pokud uživatel ručně neměnil poměr a neprobíhá prefill
     setTimeout(() => {
-        if (!proUserManuallyChangedRatio) {
+        if (!proUserManuallyChangedRatio && !_prefillingSavedRecipe) {
             const actualVg = calculateActualVgPgRatio('pro');
             const slider = document.getElementById('proVgPgRatio');
             if (slider) {
@@ -2181,7 +2194,9 @@ function updateProPremixedRatio(ratio) {
                 updateProRatioDisplay();
             }
         }
-        updateProVgPgLimits();
+        if (!_prefillingSavedRecipe) {
+            updateProVgPgLimits();
+        }
     }, 0);
 }
 
@@ -5396,6 +5411,7 @@ async function editSavedRecipe() {
 
 // Předvyplnit Liquid formulář
 function prefillLiquidForm(data, linkedFlavors = []) {
+    _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         document.getElementById('totalAmount').value = data.totalAmount;
     }
@@ -5411,12 +5427,6 @@ function prefillLiquidForm(data, linkedFlavors = []) {
     if (data.vgPercent !== undefined) {
         document.getElementById('vgPgRatio').value = data.vgPercent;
         updateRatioDisplay();
-        // Při editaci receptu s premixed bází uživatel mohl ručně doladit VG/PG.
-        // Nastavit flag, aby další updateBaseType/updatePremixedRatio/updateNicotineType
-        // nepřepisovaly slider zpět na vypočítaný poměr z báze.
-        if (data.baseType === 'premixed') {
-            liquidUserManuallyChangedRatio = true;
-        }
     }
     
     // Nikotin — typ, síla báze, VG/PG poměr báze, cílová hodnota
@@ -5459,11 +5469,13 @@ function prefillLiquidForm(data, linkedFlavors = []) {
         prefillFlavorAutocomplete('flavorAutocomplete', firstFlavor);
     }
     
+    _prefillingSavedRecipe = false;
     updateVgPgRatioLimits();
 }
 
 // Předvyplnit Shake & Vape formulář
 function prefillSnvForm(data, linkedFlavors = []) {
+    _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         const el = document.getElementById('svTotalAmount');
         if (el) el.value = data.totalAmount;
@@ -5482,9 +5494,6 @@ function prefillSnvForm(data, linkedFlavors = []) {
         if (el) {
             el.value = data.vgPercent;
             updateSvRatioDisplay();
-            if (data.baseType === 'premixed') {
-                shakevapeUserManuallyChangedRatio = true;
-            }
         }
     }
     
@@ -5521,11 +5530,13 @@ function prefillSnvForm(data, linkedFlavors = []) {
     }
     
     // Aktualizovat limity
+    _prefillingSavedRecipe = false;
     updateSvVgPgLimits();
 }
 
 // Předvyplnit Liquid PRO formulář
 function prefillProForm(data, linkedFlavors = []) {
+    _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         const el = document.getElementById('proTotalAmount');
         if (el) el.value = data.totalAmount;
@@ -5555,9 +5566,6 @@ function prefillProForm(data, linkedFlavors = []) {
         if (el) {
             el.value = data.vgPercent;
             updateProRatioDisplay();
-            if (data.baseType === 'premixed') {
-                proUserManuallyChangedRatio = true;
-            }
         }
     }
     // Nikotin — typ, síla báze, VG/PG poměr báze, cílová hodnota
@@ -5589,6 +5597,7 @@ function prefillProForm(data, linkedFlavors = []) {
         resetAndPrefillProAdditives(data.additives);
     }
     // Aktualizovat limity
+    _prefillingSavedRecipe = false;
     updateProVgPgLimits();
 }
 
@@ -8358,6 +8367,8 @@ let liquidUserManuallyChangedRatio = false;
 let proUserManuallyChangedRatio = false;
 let shishaUserManuallyChangedRatio = false;
 let shakevapeUserManuallyChangedRatio = false;
+// Příznak pro potlačení auto-přepisu VG/PG slideru během předvyplňování uloženého receptu
+let _prefillingSavedRecipe = false;
 
 // Calculate and update VG/PG slider limits based on nicotine and flavor settings
 function updateVgPgRatioLimits() {
@@ -10618,20 +10629,22 @@ function updateSvBaseType(type) {
     
     if (baseTypeInput) baseTypeInput.value = type;
     
-    // Resetovat flag při změně typu báze - uživatel začíná s novým nastavením
-    shakevapeUserManuallyChangedRatio = false;
+    if (!_prefillingSavedRecipe) {
+        shakevapeUserManuallyChangedRatio = false;
+    }
     
     if (type === 'premixed') {
         separateBtn.classList.remove('active');
         premixedBtn.classList.add('active');
         if (premixedContainer) premixedContainer.classList.remove('hidden');
         
-        // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-        const actualVg = calculateActualVgPgRatio('shakevape');
-        const slider = document.getElementById('svVgPgRatio');
-        if (slider) {
-            slider.value = actualVg;
-            updateSvRatioDisplay();
+        if (!_prefillingSavedRecipe) {
+            const actualVg = calculateActualVgPgRatio('shakevape');
+            const slider = document.getElementById('svVgPgRatio');
+            if (slider) {
+                slider.value = actualVg;
+                updateSvRatioDisplay();
+            }
         }
     } else {
         separateBtn.classList.add('active');
@@ -10639,7 +10652,9 @@ function updateSvBaseType(type) {
         if (premixedContainer) premixedContainer.classList.add('hidden');
     }
     
-    updateSvVgPgLimits();
+    if (!_prefillingSavedRecipe) {
+        updateSvVgPgLimits();
+    }
 }
 
 // Update SV premixed ratio
@@ -10658,9 +10673,9 @@ function updateSvPremixedRatio(ratio) {
     });
     
     // Automaticky nastavit VG/PG slider na skutečný výsledný poměr
-    // POUZE pokud uživatel ručně neměnil poměr
+    // POUZE pokud uživatel ručně neměnil poměr a neprobíhá prefill
     setTimeout(() => {
-        if (!shakevapeUserManuallyChangedRatio) {
+        if (!shakevapeUserManuallyChangedRatio && !_prefillingSavedRecipe) {
             const actualVg = calculateActualVgPgRatio('shakevape');
             const slider = document.getElementById('svVgPgRatio');
             if (slider) {
@@ -10670,7 +10685,9 @@ function updateSvPremixedRatio(ratio) {
         }
     }, 0);
     
-    updateSvVgPgLimits();
+    if (!_prefillingSavedRecipe) {
+        updateSvVgPgLimits();
+    }
 }
 
 // Get SV premixed base VG percent
@@ -10682,6 +10699,7 @@ function getSvPremixedVgPercent() {
 
 // Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode) - SHAKE & VAPE form
 function autoRecalculateSvVgPgRatio() {
+    if (_prefillingSavedRecipe) return;
     const baseType = document.getElementById('svBaseType')?.value || 'separate';
     // Přepočítat POUZE pokud uživatel ručně neměnil poměr
     if (baseType === 'premixed' && !shakevapeUserManuallyChangedRatio) {
@@ -11327,6 +11345,7 @@ let proVgPgLimits = { min: 0, max: 100 };
 
 // Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode)
 function autoRecalculateProVgPgRatio() {
+    if (_prefillingSavedRecipe) return;
     const baseType = document.getElementById('proBaseType')?.value || 'separate';
     if (baseType === 'premixed') {
         const actualVg = calculateActualVgPgRatio('pro');
