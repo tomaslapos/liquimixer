@@ -5050,7 +5050,8 @@ function renderRecipesList(recipes) {
         // SECURITY: Escapování všech uživatelských dat
         const safeName = escapeHtml(recipe.name);
         const safeDescription = escapeHtml(recipe.description);
-        const safeTotal = escapeHtml(data.totalAmount || '?');
+        const rawTotal = data.totalAmount;
+        const safeTotal = escapeHtml(rawTotal != null ? (Number.isInteger(+rawTotal) ? rawTotal : parseFloat(rawTotal).toFixed(2)) : '?');
         const safeVg = escapeHtml(data.vgPercent || '?');
         const safePg = escapeHtml(data.pgPercent || '?');
         
@@ -8036,8 +8037,8 @@ function showPage(pageId, pushToHistory = true) {
         updateDiluteTargetRatioDisplay();
     }
     
-    // Initialize shisha form when shown
-    if (pageId === 'shisha-form') {
+    // Initialize shisha form when shown (ne při editaci — prefill už nastavil správný mód)
+    if (pageId === 'shisha-form' && !window.editingRecipeFromDetail) {
         initShishaForm();
     }
     
@@ -8087,66 +8088,9 @@ function updateHomeButtonVisibility(pageId) {
     }
 }
 
-// Přejít na úvodní stránku
+// Přejít na úvodní stránku — reload stránky resetuje vše (formuláře, stav, JS proměnné)
 function goHome() {
-    // Reset stavu editace receptu
-    clearRecipeEditingState();
-    // Reset všech formulářů na výchozí hodnoty
-    resetAllForms();
-    showPage('intro');
-}
-
-// Resetovat všechny formuláře na výchozí hodnoty
-function resetAllForms() {
-    // Reset všech inputů v #form a #shisha-form na defaultValue
-    ['#form', '#shisha-form'].forEach(sel => {
-        const container = document.querySelector(sel);
-        if (!container) return;
-        container.querySelectorAll('input[type="number"], input[type="range"]').forEach(el => {
-            el.value = el.defaultValue;
-        });
-        container.querySelectorAll('select').forEach(el => {
-            el.selectedIndex = 0;
-        });
-        container.querySelectorAll('input[type="text"]').forEach(el => {
-            el.value = '';
-            delete el.dataset.flavorData;
-            delete el.dataset.flavorId;
-            delete el.dataset.favoriteProductId;
-        });
-        container.querySelectorAll('input[type="checkbox"]').forEach(el => {
-            el.checked = el.defaultChecked;
-        });
-    });
-    
-    // Reinicializovat displeje a limity formuláře Liquid
-    if (typeof updateRatioDisplay === 'function') updateRatioDisplay();
-    if (typeof updateNicotineDisplay === 'function') updateNicotineDisplay();
-    if (typeof updateFlavorDisplay === 'function') updateFlavorDisplay();
-    if (typeof updateVgPgRatioLimits === 'function') updateVgPgRatioLimits();
-    if (typeof updateBaseType === 'function') updateBaseType('separate');
-    
-    // Reinicializovat Shake & Vape
-    if (typeof updateSvRatioDisplay === 'function') updateSvRatioDisplay();
-    if (typeof updateSvNicotineDisplay === 'function') updateSvNicotineDisplay();
-    
-    // Reinicializovat Liquid PRO
-    if (typeof updateProRatioDisplay === 'function') updateProRatioDisplay();
-    if (typeof updateProNicotineDisplay === 'function') updateProNicotineDisplay();
-    
-    // Reinicializovat Shisha
-    if (typeof initShishaForm === 'function') initShishaForm();
-    
-    // Odebrat extra příchutě (ponechat jen první)
-    for (let i = 2; i <= 4; i++) {
-        const group = document.getElementById(`proFlavorGroup${i}`);
-        if (group) group.remove();
-    }
-    
-    // Resetovat autocomplete příchutí — odblokovat kategorie
-    document.querySelectorAll('.pro-flavor-select, #flavorType').forEach(sel => {
-        sel.disabled = false;
-    });
+    window.location.href = '/';
 }
 
 // Vyčistit stav editace receptu
@@ -9801,11 +9745,13 @@ function refreshResultsTable() {
     // Aktualizovat steep days text v hlavičce
     const steepContainer = document.getElementById('resultSteepContainer');
     const steepValueEl = document.getElementById('resultSteepDays');
-    if (steepContainer && steepValueEl && currentRecipeData.steepDays > 0) {
-        const sd = currentRecipeData.steepDays;
-        const daysText = sd === 1 ? t('common.day', 'den') : 
-            (sd >= 2 && sd <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
-        steepValueEl.textContent = `${sd} ${daysText}`;
+    if (steepContainer && steepValueEl) {
+        const sd = getMaxSteepingDaysFromRecipe(currentRecipeData);
+        if (sd > 0) {
+            const daysText = sd === 1 ? t('common.day', 'den') : 
+                (sd >= 2 && sd <= 4) ? t('common.days_few', 'dny') : t('common.days', 'dní');
+            steepValueEl.textContent = `${sd} ${daysText}`;
+        }
     }
     
     // Regenerovat dynamické poznámky
@@ -19371,7 +19317,7 @@ function calculateShishaMixMode2() {
         tobaccoAmount,
         tobaccoMolassesRatio,
         totalMolasses: Math.round(totalMolasses),
-        totalAmount: totalMolasses,
+        totalAmount: Math.round(totalMolasses * 100) / 100,
         sweetenerType,
         sweetenerPercent,
         sweetenerAmount,
