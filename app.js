@@ -5413,7 +5413,10 @@ async function editSavedRecipe() {
 // Předvyplnit Liquid formulář
 function prefillLiquidForm(data, linkedFlavors = []) {
     // Obnovit příznak ručního doladění VG/PG PŘED voláním update funkcí
-    if (data.manuallyChangedRatio) {
+    // Pokud flag existuje v datech, použít ho; pokud ne (starý recept), odvodit z premixed + vgPercent
+    if (data.manuallyChangedRatio !== undefined) {
+        liquidUserManuallyChangedRatio = !!data.manuallyChangedRatio;
+    } else if (data.baseType === 'premixed' && data.vgPercent !== undefined) {
         liquidUserManuallyChangedRatio = true;
     }
     _prefillingSavedRecipe = true;
@@ -5481,7 +5484,10 @@ function prefillLiquidForm(data, linkedFlavors = []) {
 // Předvyplnit Shake & Vape formulář
 function prefillSnvForm(data, linkedFlavors = []) {
     // Obnovit příznak ručního doladění VG/PG PŘED voláním update funkcí
-    if (data.manuallyChangedRatio) {
+    // Pokud flag existuje v datech, použít ho; pokud ne (starý recept), odvodit z premixed + vgPercent
+    if (data.manuallyChangedRatio !== undefined) {
+        shakevapeUserManuallyChangedRatio = !!data.manuallyChangedRatio;
+    } else if (data.baseType === 'premixed' && data.vgPercent !== undefined) {
         shakevapeUserManuallyChangedRatio = true;
     }
     _prefillingSavedRecipe = true;
@@ -5545,10 +5551,15 @@ function prefillSnvForm(data, linkedFlavors = []) {
 
 // Předvyplnit Liquid PRO formulář
 function prefillProForm(data, linkedFlavors = []) {
+    console.log('[PREFILL-PRO] data.manuallyChangedRatio:', data.manuallyChangedRatio, 'data.vgPercent:', data.vgPercent, 'data.baseType:', data.baseType);
     // Obnovit příznak ručního doladění VG/PG PŘED voláním update funkcí
-    if (data.manuallyChangedRatio) {
+    // Pokud flag existuje v datech, použít ho; pokud ne (starý recept), odvodit z premixed + vgPercent
+    if (data.manuallyChangedRatio !== undefined) {
+        proUserManuallyChangedRatio = !!data.manuallyChangedRatio;
+    } else if (data.baseType === 'premixed' && data.vgPercent !== undefined) {
         proUserManuallyChangedRatio = true;
     }
+    console.log('[PREFILL-PRO] proUserManuallyChangedRatio set to:', proUserManuallyChangedRatio);
     _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         const el = document.getElementById('proTotalAmount');
@@ -11367,8 +11378,9 @@ let proVgPgLimits = { min: 0, max: 100 };
 
 // Automaticky přepočítat VG/PG slider při změně jakéhokoliv parametru (pouze v premixed mode)
 function autoRecalculateProVgPgRatio() {
-    if (_prefillingSavedRecipe) return;
+    if (_prefillingSavedRecipe) { console.log('[AUTO-RECALC-PRO] skipped: _prefillingSavedRecipe'); return; }
     const baseType = document.getElementById('proBaseType')?.value || 'separate';
+    console.log('[AUTO-RECALC-PRO] baseType:', baseType, 'proUserManuallyChangedRatio:', proUserManuallyChangedRatio);
     // Přepočítat POUZE pokud uživatel ručně neměnil poměr
     if (baseType === 'premixed' && !proUserManuallyChangedRatio) {
         const actualVg = calculateActualVgPgRatio('pro');
@@ -11382,6 +11394,7 @@ function autoRecalculateProVgPgRatio() {
 }
 
 function initLiquidProForm() {
+    console.log('[INIT-PRO] proUserManuallyChangedRatio:', proUserManuallyChangedRatio);
     // Neresetovat flag pokud je true (nastaven z prefill uloženého receptu)
     if (!proUserManuallyChangedRatio) {
         proUserManuallyChangedRatio = false;
@@ -12579,9 +12592,12 @@ function updateProVgPgLimits() {
     }
     
     let currentValue = parseInt(slider.value);
+    console.log('[PRO-LIMITS] currentValue:', currentValue, 'min:', proVgPgLimits.min, 'max:', proVgPgLimits.max, 'proUserManuallyChangedRatio:', proUserManuallyChangedRatio);
     if (currentValue < proVgPgLimits.min) {
+        console.log('[PRO-LIMITS] clamping to min:', proVgPgLimits.min);
         slider.value = proVgPgLimits.min;
     } else if (currentValue > proVgPgLimits.max) {
+        console.log('[PRO-LIMITS] clamping to max:', proVgPgLimits.max);
         slider.value = proVgPgLimits.max;
     }
     
