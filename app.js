@@ -10587,12 +10587,16 @@ function updateFormTabsState() {
 let svVgPgLimits = { min: 0, max: 100 };
 
 function initShakeVapeForm() {
-    // Resetovat flag při inicializaci formuláře (nová kalkulace)
-    shakevapeUserManuallyChangedRatio = false;
+    // Při editaci receptu neresetovat flag ani nepřepočítávat — prefill už nastavil správné hodnoty
+    if (!window.editingRecipeFromDetail) {
+        shakevapeUserManuallyChangedRatio = false;
+    }
     
     setupSvNicotineRatioToggle();
     updateSvRatioDisplay();
-    updateSvNicotineDisplay();
+    if (!window.editingRecipeFromDetail) {
+        updateSvNicotineDisplay();
+    }
 }
 
 function setupSvNicotineRatioToggle() {
@@ -11361,12 +11365,14 @@ function autoRecalculateProVgPgRatio() {
 }
 
 function initLiquidProForm() {
-    // Resetovat flag při inicializaci formuláře (nová kalkulace)
-    proUserManuallyChangedRatio = false;
+    // Při editaci receptu neresetovat flag ani nepřepočítávat — prefill už nastavil správné hodnoty
+    if (!window.editingRecipeFromDetail) {
+        proUserManuallyChangedRatio = false;
+        updateProVgPgLimits();
+        updateProNicotineDisplay();
+    }
     
-    updateProVgPgLimits();
     updateProRatioDisplay();
-    updateProNicotineDisplay();
     updateProNicRatioDisplay();
     updateProFlavorRatioDisplay();
 }
