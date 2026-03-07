@@ -5412,6 +5412,10 @@ async function editSavedRecipe() {
 
 // Předvyplnit Liquid formulář
 function prefillLiquidForm(data, linkedFlavors = []) {
+    // Obnovit příznak ručního doladění VG/PG PŘED voláním update funkcí
+    if (data.manuallyChangedRatio) {
+        liquidUserManuallyChangedRatio = true;
+    }
     _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         document.getElementById('totalAmount').value = data.totalAmount;
@@ -5476,6 +5480,10 @@ function prefillLiquidForm(data, linkedFlavors = []) {
 
 // Předvyplnit Shake & Vape formulář
 function prefillSnvForm(data, linkedFlavors = []) {
+    // Obnovit příznak ručního doladění VG/PG PŘED voláním update funkcí
+    if (data.manuallyChangedRatio) {
+        shakevapeUserManuallyChangedRatio = true;
+    }
     _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         const el = document.getElementById('svTotalAmount');
@@ -5537,6 +5545,10 @@ function prefillSnvForm(data, linkedFlavors = []) {
 
 // Předvyplnit Liquid PRO formulář
 function prefillProForm(data, linkedFlavors = []) {
+    // Obnovit příznak ručního doladění VG/PG PŘED voláním update funkcí
+    if (data.manuallyChangedRatio) {
+        proUserManuallyChangedRatio = true;
+    }
     _prefillingSavedRecipe = true;
     if (data.totalAmount) {
         const el = document.getElementById('proTotalAmount');
@@ -9466,6 +9478,7 @@ function calculateMix() {
         nicotineBaseStrength: baseNicotine,
         nicotineRatio: document.getElementById('nicotineRatio')?.value || '50/50',
         flavorRatio: document.getElementById('flavorRatio')?.value || '0/100',
+        manuallyChangedRatio: liquidUserManuallyChangedRatio,
         // Přidat info o konkrétní příchuti pro fallback v extractRecipeFlavorsForDisplay
         specificFlavorName: specificFlavorName,
         specificFlavorManufacturer: specificFlavorManufacturer,
@@ -9596,6 +9609,10 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     // SNV — objem příchutě
     if (extraData.flavorVolume !== undefined) {
         recipeData.flavorVolume = extraData.flavorVolume;
+    }
+    // Příznak ručního doladění VG/PG slideru
+    if (extraData.manuallyChangedRatio !== undefined) {
+        recipeData.manuallyChangedRatio = extraData.manuallyChangedRatio;
     }
     
     storeCurrentRecipe(recipeData);
@@ -10587,16 +10604,14 @@ function updateFormTabsState() {
 let svVgPgLimits = { min: 0, max: 100 };
 
 function initShakeVapeForm() {
-    // Při editaci receptu neresetovat flag ani nepřepočítávat — prefill už nastavil správné hodnoty
-    if (!window.editingRecipeFromDetail) {
+    // Neresetovat flag pokud je true (nastaven z prefill uloženého receptu)
+    if (!shakevapeUserManuallyChangedRatio) {
         shakevapeUserManuallyChangedRatio = false;
     }
     
     setupSvNicotineRatioToggle();
     updateSvRatioDisplay();
-    if (!window.editingRecipeFromDetail) {
-        updateSvNicotineDisplay();
-    }
+    updateSvNicotineDisplay();
 }
 
 function setupSvNicotineRatioToggle() {
@@ -11191,7 +11206,8 @@ function calculateShakeVape() {
         nicotineBaseStrength: baseNicotine,
         nicotineRatio: document.getElementById('svNicotineRatio')?.value || '50/50',
         flavorRatio: document.getElementById('svFlavorRatio')?.value || '0/100',
-        flavorVolume: flavorVolume
+        flavorVolume: flavorVolume,
+        manuallyChangedRatio: shakevapeUserManuallyChangedRatio
     });
     
     // Log výpočtu (async, fire-and-forget)
@@ -11353,7 +11369,8 @@ let proVgPgLimits = { min: 0, max: 100 };
 function autoRecalculateProVgPgRatio() {
     if (_prefillingSavedRecipe) return;
     const baseType = document.getElementById('proBaseType')?.value || 'separate';
-    if (baseType === 'premixed') {
+    // Přepočítat POUZE pokud uživatel ručně neměnil poměr
+    if (baseType === 'premixed' && !proUserManuallyChangedRatio) {
         const actualVg = calculateActualVgPgRatio('pro');
         const slider = document.getElementById('proVgPgRatio');
         if (slider) {
@@ -11365,13 +11382,13 @@ function autoRecalculateProVgPgRatio() {
 }
 
 function initLiquidProForm() {
-    // Při editaci receptu neresetovat flag ani nepřepočítávat — prefill už nastavil správné hodnoty
-    if (!window.editingRecipeFromDetail) {
+    // Neresetovat flag pokud je true (nastaven z prefill uloženého receptu)
+    if (!proUserManuallyChangedRatio) {
         proUserManuallyChangedRatio = false;
-        updateProVgPgLimits();
-        updateProNicotineDisplay();
     }
     
+    updateProVgPgLimits();
+    updateProNicotineDisplay();
     updateProRatioDisplay();
     updateProNicRatioDisplay();
     updateProFlavorRatioDisplay();
@@ -12969,7 +12986,8 @@ function calculateProMix() {
         premixedRatio: baseType === 'premixed' ? premixedRatio : null,
         nicotineType: nicotineType,
         nicotineBaseStrength: baseNicotine,
-        nicotineRatioSlider: nicVgPercent
+        nicotineRatioSlider: nicVgPercent,
+        manuallyChangedRatio: proUserManuallyChangedRatio
     });
     
     // Log výpočtu (async, fire-and-forget)
