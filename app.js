@@ -5411,6 +5411,12 @@ function prefillLiquidForm(data, linkedFlavors = []) {
     if (data.vgPercent !== undefined) {
         document.getElementById('vgPgRatio').value = data.vgPercent;
         updateRatioDisplay();
+        // Při editaci receptu s premixed bází uživatel mohl ručně doladit VG/PG.
+        // Nastavit flag, aby další updateBaseType/updatePremixedRatio/updateNicotineType
+        // nepřepisovaly slider zpět na vypočítaný poměr z báze.
+        if (data.baseType === 'premixed') {
+            liquidUserManuallyChangedRatio = true;
+        }
     }
     
     // Nikotin — typ, síla báze, VG/PG poměr báze, cílová hodnota
@@ -5476,6 +5482,9 @@ function prefillSnvForm(data, linkedFlavors = []) {
         if (el) {
             el.value = data.vgPercent;
             updateSvRatioDisplay();
+            if (data.baseType === 'premixed') {
+                shakevapeUserManuallyChangedRatio = true;
+            }
         }
     }
     
@@ -5546,6 +5555,9 @@ function prefillProForm(data, linkedFlavors = []) {
         if (el) {
             el.value = data.vgPercent;
             updateProRatioDisplay();
+            if (data.baseType === 'premixed') {
+                proUserManuallyChangedRatio = true;
+            }
         }
     }
     // Nikotin — typ, síla báze, VG/PG poměr báze, cílová hodnota

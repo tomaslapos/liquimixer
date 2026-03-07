@@ -311,6 +311,12 @@ recipe_data: JSONB — FULL recipe parameters and results. Key fields inside:
   recipe_data->>'specificFlavorManufacturer': TEXT — Manufacturer code (e.g. 'TPA', 'CAP')
   recipe_data->>'baseType': TEXT — 'separate' or 'premixed'
   recipe_data->>'premixedRatio': TEXT — Premixed base ratio (e.g. '70/30', '50/50')
+  recipe_data->>'nicotineType': TEXT — Nicotine type used: 'freebase', 'salt', 'booster', or 'none'. Determines nicotine base chemistry. 'none' = no nicotine added.
+  recipe_data->>'nicotineBaseStrength': TEXT castable to NUMERIC — Concentration of the nicotine base in mg/ml (e.g. 20, 36, 72). Only present when nicotineType != 'none'.
+  recipe_data->>'nicotineRatio': TEXT — VG/PG ratio of the nicotine base (e.g. '50/50', '100/0', '0/100'). For liquid and shakevape forms.
+  recipe_data->>'nicotineRatioSlider': TEXT castable to NUMERIC — VG percentage (0-100) of the nicotine base for PRO calculator (e.g. 50 = 50%VG/50%PG).
+  recipe_data->>'flavorRatio': TEXT — VG/PG composition of the flavor concentrate (e.g. '0/100' = pure PG, '20/80'). For liquid and shakevape forms.
+  recipe_data->>'flavorVolume': TEXT castable to NUMERIC — Flavor/aroma volume in ml for Shake & Vape recipes (e.g. 12, 15, 20).
   recipe_data->>'formType': TEXT — Calculator type identifier
   recipe_data->'ingredients': JSONB array — Calculated ingredients with volumes
   recipe_data->'flavors': JSONB array — Multiple flavors for multi-flavor recipes
@@ -327,6 +333,11 @@ TYPICAL QUESTIONS → QUERIES:
 - "recepty s příchutí TPA Strawberry" → SELECT * FROM report_recipes WHERE recipe_data->>'specificFlavorName' ILIKE '%strawberry%' AND recipe_data->>'specificFlavorManufacturer' ILIKE '%TPA%' LIMIT 50
 - "nejlépe hodnocené veřejné recepty" → SELECT name, public_rating_avg, public_rating_count FROM report_recipes WHERE is_public = true AND public_rating_count > 0 ORDER BY public_rating_avg DESC LIMIT 20
 - "PRO recepty vs free" → SELECT is_pro_recipe, COUNT(*) FROM report_recipes GROUP BY is_pro_recipe
+- "rozložení typů nikotinu v receptech" → SELECT recipe_data->>'nicotineType' AS nic_type, COUNT(*) FROM report_recipes WHERE recipe_data->>'nicotineType' IS NOT NULL GROUP BY nic_type ORDER BY count DESC
+- "recepty s nikotinovými solemi" → SELECT COUNT(*) FROM report_recipes WHERE recipe_data->>'nicotineType' = 'salt'
+- "průměrná síla nikotinové báze" → SELECT AVG((recipe_data->>'nicotineBaseStrength')::numeric) FROM report_recipes WHERE recipe_data->>'nicotineBaseStrength' IS NOT NULL AND (recipe_data->>'nicotineBaseStrength')::numeric > 0
+- "nejčastější VG/PG poměr nikotinové báze" → SELECT recipe_data->>'nicotineRatio' AS nic_ratio, COUNT(*) FROM report_recipes WHERE recipe_data->>'nicotineRatio' IS NOT NULL GROUP BY nic_ratio ORDER BY count DESC
+- "recepty bez nikotinu" → SELECT COUNT(*) FROM report_recipes WHERE recipe_data->>'nicotineType' = 'none' OR recipe_data->>'nicotineType' IS NULL
 
 === TABLE: report_products ===
 User's favorite/saved products. Users save products they own (flavors, bases, nicotine boosters) for quick access.
