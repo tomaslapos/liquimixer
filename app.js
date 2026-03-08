@@ -5975,6 +5975,7 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
     if (ts.flavors && Array.isArray(ts.flavors)) {
         // Reset — příchuť 1 je statická, 2+ jsou dynamické v shTweakAdditionalFlavorsContainer
         shTweakFlavorCount = 1;
+        shTweakFlavorNextId = 1;
         const flavorContainer = document.getElementById('shTweakAdditionalFlavorsContainer');
         if (flavorContainer) flavorContainer.innerHTML = '';
         
@@ -11727,8 +11728,10 @@ function updateProFlavorDisplay(flavorIndex = 1) {
     displayEl.textContent = Number.isInteger(value) ? value : value.toFixed(1);
 
     let color;
-    // Pokud je konkrétní příchuť bez ověřených dat, použít neutrální barvu
-    if (hasSpecificFlavor && !hasVerifiedData) {
+    // Kategorie bez konkrétní příchutě → šedá
+    const isCategoryOnly = type !== 'none' && !hasSpecificFlavor;
+    // Pokud je konkrétní příchuť bez ověřených dat nebo jen kategorie, použít neutrální barvu
+    if (isCategoryOnly || (hasSpecificFlavor && !hasVerifiedData)) {
         color = '#888888';
         if (trackEl) trackEl.style.background = `linear-gradient(90deg, #666666, #888888)`;
     } else if (value < minPercent) {
@@ -16707,7 +16710,21 @@ function showFlavorSliderWithRange(inputId, flavorData) {
         }
     };
     
-    const mapping = sliderMapping[inputId];
+    let mapping = sliderMapping[inputId];
+    // Dynamický fallback pro dynamicky generované indexy (shTweak, shDiy, shMol)
+    if (!mapping) {
+        const dynMatch = inputId.match(/^(shTweakFlavor|shDiyFlavor|shMolFlavor)Autocomplete(\d+)$/);
+        if (dynMatch) {
+            const prefix = dynMatch[1];
+            const idx = dynMatch[2];
+            mapping = {
+                containerId: `${prefix}StrengthContainer${idx}`,
+                sliderId: `${prefix}Strength${idx}`,
+                valueId: `${prefix}Value${idx}`,
+                descriptionId: `${prefix}StrengthDisplay${idx}`
+            };
+        }
+    }
     if (!mapping) return;
     
     const container = document.getElementById(mapping.containerId);
@@ -16785,32 +16802,45 @@ function showFlavorSliderWithRange(inputId, flavorData) {
         'shMolFlavorAutocomplete4': 'shMolFlavorTrack4'
     };
     
-    const trackId = trackIdMap[inputId];
+    let trackId = trackIdMap[inputId];
+    if (!trackId) {
+        const dynMatch = inputId.match(/^(shTweakFlavor|shDiyFlavor|shMolFlavor)Autocomplete(\d+)$/);
+        if (dynMatch) trackId = `${dynMatch[1]}Track${dynMatch[2]}`;
+    }
     const trackEl = trackId ? document.getElementById(trackId) : null;
     
     // Nastavit barvu tracku dle aktuální hodnoty a rozsahu
     if (trackEl) {
-        const currentValue = parseFloat(sliderValue);
-        if (currentValue < minPercent) {
-            trackEl.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
-        } else if (currentValue > maxPercent) {
-            trackEl.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
+        if (!hasExactPercent) {
+            // Chybí ověřená data → šedá
+            trackEl.style.background = 'linear-gradient(90deg, #666666, #888888)';
         } else {
-            // Ideální rozsah - zelená/modrá
-            trackEl.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+            const currentValue = parseFloat(sliderValue);
+            if (currentValue < minPercent) {
+                trackEl.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
+            } else if (currentValue > maxPercent) {
+                trackEl.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
+            } else {
+                // Ideální rozsah - zelená/modrá
+                trackEl.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+            }
         }
     }
     
     // Nastavit barvu hodnoty pod sliderem
     if (valueDisplay && valueDisplay.parentElement) {
-        const currentValue = parseFloat(sliderValue);
         let color;
-        if (currentValue < minPercent) {
-            color = '#ffaa00';
-        } else if (currentValue > maxPercent) {
-            color = '#ff0044';
+        if (!hasExactPercent) {
+            color = '#888888';
         } else {
-            color = '#00cc66';
+            const currentValue = parseFloat(sliderValue);
+            if (currentValue < minPercent) {
+                color = '#ffaa00';
+            } else if (currentValue > maxPercent) {
+                color = '#ff0044';
+            } else {
+                color = '#00cc66';
+            }
         }
         valueDisplay.parentElement.style.color = color;
     }
@@ -16879,7 +16909,11 @@ function showPercentFallbackWarning(inputId, hasExactPercent) {
         'shMolFlavorAutocomplete4': 'shMolFlavorStrengthContainer4'
     };
     
-    const containerId = mapping[inputId];
+    let containerId = mapping[inputId];
+    if (!containerId) {
+        const dynMatch = inputId.match(/^(shTweakFlavor|shDiyFlavor|shMolFlavor)Autocomplete(\d+)$/);
+        if (dynMatch) containerId = `${dynMatch[1]}StrengthContainer${dynMatch[2]}`;
+    }
     if (!containerId) return;
     
     const container = document.getElementById(containerId);
@@ -17240,7 +17274,11 @@ function updateFlavorCategoryState(inputId, disabled) {
         'shMolFlavorAutocomplete4': 'shMolFlavorType4'
     };
     
-    const categorySelectId = categorySelectMap[inputId];
+    let categorySelectId = categorySelectMap[inputId];
+    if (!categorySelectId) {
+        const dynMatch = inputId.match(/^(shTweakFlavor|shDiyFlavor|shMolFlavor)Autocomplete(\d+)$/);
+        if (dynMatch) categorySelectId = `${dynMatch[1]}Type${dynMatch[2]}`;
+    }
     if (!categorySelectId) return;
     
     const categorySelect = document.getElementById(categorySelectId);
@@ -17550,6 +17588,7 @@ let shTobaccoCount = 2;       // Mode 1: tobacco mix count (min 2)
 let shDiyFlavorCount = 1;     // Mode 2: DIY flavor count
 let shMolFlavorCount = 1;     // Mode 3: Molasses flavor count
 let shTweakFlavorCount = 1;   // Tweak: flavor count
+let shTweakFlavorNextId = 1;  // Tweak: monotónně rostoucí ID pro unikátní elementy
 
 // Current shisha mode: 'mix' | 'tweak' | 'diy' | 'molasses'
 let currentShishaMode = 'mix';
@@ -18094,8 +18133,11 @@ function updateShishaDiyFlavorStrength(index) {
             if (hasVerified) { minP = fd.min_percent; maxP = fd.max_percent; }
         } catch (e) {}
     }
+    // Kategorie bez konkrétní příchutě → šedá
+    const typeSelect = document.getElementById(`shDiyFlavorType${index}`);
+    const isCategoryOnly = typeSelect && typeSelect.value !== 'none' && !hasSpecific;
     let color = '#00cc66';
-    if (hasSpecific && !hasVerified) {
+    if (isCategoryOnly || (hasSpecific && !hasVerified)) {
         color = '#888888';
         if (track) track.style.background = 'linear-gradient(90deg, #666666, #888888)';
     } else if (val < minP && hasVerified) {
@@ -18107,6 +18149,7 @@ function updateShishaDiyFlavorStrength(index) {
     } else {
         if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
     }
+    if (track) track.style.width = '100%';
     if (display?.parentElement) display.parentElement.style.color = color;
     updateDiyPurePgVisibility();
     autoRecalculateShishaDiyVgPgRatio();
@@ -18758,8 +18801,11 @@ function updateShishaMolFlavorStrength(index) {
             if (hasVerified) { minP = fd.min_percent; maxP = fd.max_percent; }
         } catch (e) {}
     }
+    // Kategorie bez konkrétní příchutě → šedá
+    const typeSelect = document.getElementById(`shMolFlavorType${index}`);
+    const isCategoryOnly = typeSelect && typeSelect.value !== 'none' && !hasSpecific;
     let color = '#00cc66';
-    if (hasSpecific && !hasVerified) {
+    if (isCategoryOnly || (hasSpecific && !hasVerified)) {
         color = '#888888';
         if (track) track.style.background = 'linear-gradient(90deg, #666666, #888888)';
     } else if (val < minP && hasVerified) {
@@ -18771,6 +18817,7 @@ function updateShishaMolFlavorStrength(index) {
     } else {
         if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
     }
+    if (track) track.style.width = '100%';
     if (display?.parentElement) display.parentElement.style.color = color;
     updateMolPurePgVisibility();
 }
@@ -19072,9 +19119,10 @@ function calculateShishaTweak() {
         totalAdditives += dropMl;
     }
     
-    // Flavor concentrate (1-4)
+    // Flavor concentrate (1-4) — iterace přes reálné DOM elementy
     if (document.getElementById('shTweakProblemFlavor')?.checked) {
-        for (let fi = 1; fi <= 4; fi++) {
+        const tweakFlavorIndices = getShishaTweakFlavorIndices();
+        for (const fi of tweakFlavorIndices) {
             const flavorType = document.getElementById(`shTweakFlavorType${fi}`)?.value || 'none';
             const flavorPct = parseFloat(document.getElementById(`shTweakFlavorStrength${fi}`)?.value ?? 5);
             const flavorAuto = document.getElementById(`shTweakFlavorAutocomplete${fi}`);
@@ -19153,10 +19201,10 @@ function calculateShishaTweak() {
         problemNicotine: document.getElementById('shTweakProblemNicotine')?.checked || false,
         problemMixology: document.getElementById('shTweakProblemMixology')?.checked || false,
         vgPercent: parseFloat(document.getElementById('shTweakVgPercent')?.value ?? 10),
-        flavors: Array.from({length: 4}, (_, i) => ({
-            type: document.getElementById(`shTweakFlavorType${i+1}`)?.value || 'none',
-            strength: parseFloat(document.getElementById(`shTweakFlavorStrength${i+1}`)?.value ?? 5),
-            flavorRatio: parseInt(document.getElementById(`shTweakFlavorRatioSlider${i+1}`)?.value ?? 0)
+        flavors: getShishaTweakFlavorIndices().map(fi => ({
+            type: document.getElementById(`shTweakFlavorType${fi}`)?.value || 'none',
+            strength: parseFloat(document.getElementById(`shTweakFlavorStrength${fi}`)?.value ?? 5),
+            flavorRatio: parseInt(document.getElementById(`shTweakFlavorRatioSlider${fi}`)?.value ?? 0)
         })),
         nicotineType: document.getElementById('shTweakNicotineType')?.value || 'freebase',
         nicotineBaseStrength: parseFloat(document.getElementById('shTweakNicotineBaseStrength')?.value) || 20,
@@ -19173,14 +19221,14 @@ function calculateShishaTweak() {
         mixWaterPercent: parseFloat(document.getElementById('shTweakMixWaterPercent')?.value ?? 5)
     };
     
-    // Flavor autocomplete data (1-4)
+    // Flavor autocomplete data — iterace přes reálné DOM elementy
     tweakState.flavorData = [];
-    for (let fi = 1; fi <= 4; fi++) {
+    getShishaTweakFlavorIndices().forEach((fi, arrIdx) => {
         const tweakFlavorAuto = document.getElementById(`shTweakFlavorAutocomplete${fi}`);
         if (tweakFlavorAuto?.dataset?.flavorData) {
-            try { tweakState.flavorData[fi - 1] = JSON.parse(tweakFlavorAuto.dataset.flavorData); } catch(e) {}
+            try { tweakState.flavorData[arrIdx] = JSON.parse(tweakFlavorAuto.dataset.flavorData); } catch(e) {}
         }
-    }
+    });
     
     // Tobacco autocomplete data
     if (tobaccoInput?.dataset?.flavorData) {
@@ -19393,7 +19441,35 @@ function updateShishaTweakFlavorStrength(index) {
     if (!slider) return;
     const val = parseFloat(slider.value);
     if (display) display.textContent = Number.isInteger(val) ? val : val.toFixed(1);
-    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
+    // Min/max-aware barvy (stejná logika jako DIY)
+    const autocomplete = document.getElementById(`shTweakFlavorAutocomplete${index}`);
+    let minP = 0, maxP = 100, hasSpecific = false, hasVerified = false;
+    if (autocomplete?.dataset.flavorData) {
+        try {
+            const fd = JSON.parse(autocomplete.dataset.flavorData);
+            hasSpecific = fd && fd.name;
+            hasVerified = fd.min_percent && fd.max_percent && fd.min_percent > 0;
+            if (hasVerified) { minP = fd.min_percent; maxP = fd.max_percent; }
+        } catch (e) {}
+    }
+    // Kategorie bez konkrétní příchutě → šedá
+    const typeSelect = document.getElementById(`shTweakFlavorType${index}`);
+    const isCategoryOnly = typeSelect && typeSelect.value !== 'none' && !hasSpecific;
+    let color = '#00cc66';
+    if (isCategoryOnly || (hasSpecific && !hasVerified)) {
+        color = '#888888';
+        if (track) track.style.background = 'linear-gradient(90deg, #666666, #888888)';
+    } else if (val < minP && hasVerified) {
+        color = '#ffaa00';
+        if (track) track.style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
+    } else if (val > maxP && hasVerified) {
+        color = '#ff0044';
+        if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #ff0044)';
+    } else {
+        if (track) track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)';
+    }
+    if (track) track.style.width = '100%';
+    if (display?.parentElement) display.parentElement.style.color = color;
 }
 
 function adjustShishaTweakFlavor(index, change) {
@@ -19427,12 +19503,25 @@ function updateShishaTweakFlavorRatioDisplay(index) {
     if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
 }
 
+function getShishaTweakFlavorIndices() {
+    const indices = [1]; // Příchuť 1 je vždy statická v HTML
+    const container = document.getElementById('shTweakAdditionalFlavorsContainer');
+    if (container) {
+        container.querySelectorAll('.sh-flavor-group').forEach(group => {
+            const match = group.id.match(/shTweakFlavorGroup(\d+)/);
+            if (match) indices.push(parseInt(match[1]));
+        });
+    }
+    return indices;
+}
+
 function addShishaTweakFlavor() {
     if (!isUserLoggedIn()) { showLoginRequiredModal(); return; }
     if (shTweakFlavorCount >= 4) return;
+    shTweakFlavorNextId++;
     shTweakFlavorCount++;
     const container = document.getElementById('shTweakAdditionalFlavorsContainer');
-    const i = shTweakFlavorCount;
+    const i = shTweakFlavorNextId;
     const html = `
         <div class="form-group sh-flavor-group" id="shTweakFlavorGroup${i}">
             <label class="form-label">
@@ -19497,6 +19586,7 @@ function addShishaTweakFlavor() {
     if (shTweakFlavorCount >= 4) document.getElementById('shTweakAddFlavorGroup')?.classList.add('hidden');
     const hint = document.getElementById('shTweakFlavorCountHint');
     if (hint) hint.textContent = `(${shTweakFlavorCount}/4)`;
+    renumberShishaTweakFlavors();
     if (window.i18n?.applyTranslations) window.i18n.applyTranslations();
 }
 
@@ -19506,6 +19596,17 @@ function removeShishaTweakFlavor(index) {
     document.getElementById('shTweakAddFlavorGroup')?.classList.remove('hidden');
     const hint = document.getElementById('shTweakFlavorCountHint');
     if (hint) hint.textContent = `(${shTweakFlavorCount}/4)`;
+    renumberShishaTweakFlavors();
+}
+
+function renumberShishaTweakFlavors() {
+    const container = document.getElementById('shTweakAdditionalFlavorsContainer');
+    if (!container) return;
+    const groups = container.querySelectorAll('.sh-flavor-group');
+    groups.forEach((group, idx) => {
+        const numEl = group.querySelector('.flavor-number');
+        if (numEl) numEl.textContent = ` ${idx + 2}`;
+    });
 }
 
 // Legacy compat stubs (old form functions that may be referenced elsewhere)
