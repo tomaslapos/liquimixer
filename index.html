@@ -2272,47 +2272,76 @@
                             <span data-i18n="shisha.tweak_flavor_label">Přidat vape koncentrát příchutě</span>
                             <span class="label-hint" data-i18n="shisha.tweak_flavor_hint">Vape aroma koncentrát — promíchat a nechat odležet</span>
                         </label>
-                        <div class="flavor-container">
-                            <div class="flavor-autocomplete-wrapper">
-                                <input type="text" id="shTweakFlavorAutocomplete1" class="login-input flavor-search-input" data-product-type="vape" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
-                            </div>
-                            <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
-                                Nebo vyberte kategorii (bez konkrétní příchutě):
+
+                        <!-- Příchuť 1 -->
+                        <div class="form-group sh-flavor-group" id="shTweakFlavorGroup1">
+                            <label class="form-label">
+                                <span data-i18n="shisha.flavor_label">Příchuť</span>
+                                <span class="flavor-number"> 1</span>
                             </label>
-                            <select id="shTweakFlavorType1" class="neon-select sh-tweak-flavor-select" data-flavor-index="1" onchange="updateShishaTweakFlavorType(1)">
-                                <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
-                                <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
-                                <option value="citrus" data-i18n="form.flavor_citrus">Citrónové (citron, limeta)</option>
-                                <option value="berry" data-i18n="form.flavor_berry">Bobulové (borůvka, malina)</option>
-                                <option value="tropical" data-i18n="form.flavor_tropical">Tropické (ananas, mango)</option>
-                                <option value="menthol" data-i18n="form.flavor_menthol">Mentol / Mátové</option>
-                                <option value="cream" data-i18n="form.flavor_cream">Krémové (vanilka, smetana)</option>
-                                <option value="candy" data-i18n="form.flavor_candy">Sladkosti (cukroví, karamel)</option>
-                                <option value="drink" data-i18n="form.flavor_drink">Nápojové (kola, čaj)</option>
-                                <option value="mix" data-i18n="form.flavor_mix">Mix / Směs</option>
-                            </select>
-                            <div id="shTweakFlavorStrengthContainer1" class="hidden">
-                                <div class="slider-container small">
-                                    <button class="slider-btn small double" onclick="adjustShishaTweakFlavor(1, -1)" title="-1%">◀◀</button>
-                                    <button class="slider-btn small" onclick="adjustShishaTweakFlavor(1, -0.1)" title="-0.1%">◀</button>
-                                    <div class="slider-wrapper">
-                                        <input type="range" id="shTweakFlavorStrength1" min="0" max="15" value="5" step="0.1" class="flavor-slider sh-tweak-flavor-slider" data-flavor-index="1" oninput="updateShishaTweakFlavorStrength(1)">
-                                        <div class="slider-track flavor-track" id="shTweakFlavorTrack1"></div>
+                            <div class="flavor-container">
+                                <div class="flavor-autocomplete-wrapper">
+                                    <input type="text" id="shTweakFlavorAutocomplete1" class="login-input flavor-search-input" data-product-type="vape" data-i18n-placeholder="flavor_autocomplete.search_placeholder" placeholder="Hledat konkrétní příchuť..." autocomplete="off">
+                                </div>
+                                <label class="form-label-small flavor-category-label" data-i18n="form.flavor_category_label">
+                                    Nebo vyberte kategorii (bez konkrétní příchutě):
+                                </label>
+                                <select id="shTweakFlavorType1" class="neon-select sh-tweak-flavor-select" data-flavor-index="1" onchange="updateShishaTweakFlavorType(1)">
+                                    <option value="none" data-i18n="form.flavor_none">Žádná (bez příchutě)</option>
+                                    <option value="fruit" data-i18n="form.flavor_fruit">Ovoce (jahoda, jablko)</option>
+                                    <option value="citrus" data-i18n="form.flavor_citrus">Citrónové (citron, limeta)</option>
+                                    <option value="berry" data-i18n="form.flavor_berry">Bobulové (borůvka, malina)</option>
+                                    <option value="tropical" data-i18n="form.flavor_tropical">Tropické (ananas, mango)</option>
+                                    <option value="menthol" data-i18n="form.flavor_menthol">Mentol / Mátové</option>
+                                    <option value="cream" data-i18n="form.flavor_cream">Krémové (vanilka, smetana)</option>
+                                    <option value="candy" data-i18n="form.flavor_candy">Sladkosti (cukroví, karamel)</option>
+                                    <option value="drink" data-i18n="form.flavor_drink">Nápojové (kola, čaj)</option>
+                                    <option value="mix" data-i18n="form.flavor_mix">Mix / Směs</option>
+                                </select>
+                                <div id="shTweakFlavorStrengthContainer1" class="hidden">
+                                    <div class="slider-container small">
+                                        <button class="slider-btn small double" onclick="adjustShishaTweakFlavor(1, -1)" title="-1%">◀◀</button>
+                                        <button class="slider-btn small" onclick="adjustShishaTweakFlavor(1, -0.1)" title="-0.1%">◀</button>
+                                        <div class="slider-wrapper">
+                                            <input type="range" id="shTweakFlavorStrength1" min="0" max="15" value="5" step="0.1" class="flavor-slider sh-tweak-flavor-slider" data-flavor-index="1" oninput="updateShishaTweakFlavorStrength(1)">
+                                            <div class="slider-track flavor-track" id="shTweakFlavorTrack1"></div>
+                                        </div>
+                                        <button class="slider-btn small" onclick="adjustShishaTweakFlavor(1, 0.1)" title="+0.1%">▶</button>
+                                        <button class="slider-btn small double" onclick="adjustShishaTweakFlavor(1, 1)" title="+1%">▶▶</button>
                                     </div>
-                                    <button class="slider-btn small" onclick="adjustShishaTweakFlavor(1, 0.1)" title="+0.1%">▶</button>
-                                    <button class="slider-btn small double" onclick="adjustShishaTweakFlavor(1, 1)" title="+1%">▶▶</button>
+                                    <div class="flavor-display">
+                                        <span id="shTweakFlavorValue1">5</span>%
+                                    </div>
+                                    <div id="shTweakFlavorStrengthDisplay1" class="flavor-strength-display"></div>
+                                    <div class="form-group-sub">
+                                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">Poměr VG/PG v koncentrátu příchutě</label>
+                                        <div class="ratio-container compact">
+                                            <div class="ratio-labels">
+                                                <span class="ratio-label left" data-i18n="form.vg_label">Dým (VG)</span>
+                                                <span class="ratio-label right" data-i18n="form.pg_label">Chuť (PG)</span>
+                                            </div>
+                                            <div class="slider-container">
+                                                <button class="slider-btn small" onclick="adjustShishaTweakFlavorRatio(1, -5)">◀</button>
+                                                <div class="slider-wrapper">
+                                                    <input type="range" id="shTweakFlavorRatioSlider1" min="0" max="100" value="0" class="ratio-slider sh-tweak-flavor-ratio" data-flavor-index="1" oninput="updateShishaTweakFlavorRatioDisplay(1)">
+                                                    <div class="slider-track" id="shTweakFlavorTrackRatio1"></div>
+                                                </div>
+                                                <button class="slider-btn small" onclick="adjustShishaTweakFlavorRatio(1, 5)">▶</button>
+                                            </div>
+                                            <div class="ratio-display small">
+                                                <span id="shTweakFlavorVgValue1">0</span>:<span id="shTweakFlavorPgValue1">100</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="flavor-display">
-                                    <span id="shTweakFlavorValue1">5</span>%
-                                </div>
-                                <div id="shTweakFlavorStrengthDisplay1" class="flavor-strength-display"></div>
                             </div>
                         </div>
+
                         <div class="tweak-info-box" style="margin-top: 10px;">
                             <p data-i18n="shisha.tweak_flavor_info">Koncentrát přidejte do krabičky s tabákem, důkladně promíchejte a nechte odležet alespoň 2–4 hodiny (ideálně přes noc). Koncentrát se musí vsáknout do melasy.</p>
                         </div>
 
-                        <!-- Container pro další příchutě (2-4) -->
+                        <!-- Container pro další příchutě (2-4) - Premium -->
                         <div id="shTweakAdditionalFlavorsContainer"></div>
 
                         <!-- Tlačítko přidat příchuť -->

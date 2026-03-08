@@ -2316,6 +2316,8 @@ window.addEventListener('load', async function() {
                     lastAuthUserId = null;
                     isFullyInitialized = false;
                     processingSubscriptionFlow = false;
+                    clearSubscriptionCache();
+                    subscriptionData = null;
                     document.body.classList.remove('subscription-flow-pending');
                     updateAuthUI();
                     return;
@@ -3165,6 +3167,8 @@ function showUserProfileModal() {
 // Funkce pro odhlášení
 async function signOut() {
     if (clerkLoaded && window.Clerk) {
+        clearSubscriptionCache();
+        subscriptionData = null;
         await window.Clerk.signOut();
         hideUserProfileModal();
         updateAuthUI();
@@ -3181,6 +3185,8 @@ function hideUserProfileModal() {
 
 async function handleSignOut() {
     if (clerkLoaded && window.Clerk) {
+        clearSubscriptionCache();
+        subscriptionData = null;
         await window.Clerk.signOut();
         hideUserProfileModal();
         updateAuthUI();
@@ -5989,15 +5995,8 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
         // Teprve potom nastavit hodnoty pro všechny příchutě
         ts.flavors.forEach((flavor, idx) => {
             const fi = idx + 1;
-            if (flavor.type && flavor.type !== 'none') {
-                const typeEl = document.getElementById(`shTweakFlavorType${fi}`);
-                if (typeEl) { typeEl.value = flavor.type; updateShishaTweakFlavorType(fi); }
-            }
-            if (flavor.strength) {
-                const strengthEl = document.getElementById(`shTweakFlavorStrength${fi}`);
-                if (strengthEl) { strengthEl.value = flavor.strength; updateShishaTweakFlavorStrength(fi); }
-            }
-            // Autocomplete data z ts.flavorData pole
+            
+            // 1) Autocomplete data z ts.flavorData pole — nastavit PRVNÍ
             const fd = ts.flavorData && ts.flavorData[idx];
             if (fd && fd.name) {
                 const input = document.getElementById(`shTweakFlavorAutocomplete${fi}`);
@@ -6005,7 +6004,33 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
                     const brand = fd.manufacturer_code || fd.manufacturer || fd.brand || '';
                     input.value = brand ? `${fd.name} (${brand})` : fd.name;
                     input.dataset.flavorData = JSON.stringify(fd);
+                    // Rozbalit slider přes showFlavorSliderWithRange (nastaví rozsah dle příchutě)
+                    if (typeof showFlavorSliderWithRange === 'function') {
+                        showFlavorSliderWithRange(`shTweakFlavorAutocomplete${fi}`, fd);
+                    }
                 }
+            }
+            
+            // 2) Kategorie příchutě — pokud je vybraná kategorie, nastavit a rozbalit
+            if (flavor.type && flavor.type !== 'none') {
+                const typeEl = document.getElementById(`shTweakFlavorType${fi}`);
+                if (typeEl) { typeEl.value = flavor.type; updateShishaTweakFlavorType(fi); }
+            } else if (fd && fd.name) {
+                // Příchuť vybraná z autocomplete (type='none') — zajistit že slider je viditelný
+                const container = document.getElementById(`shTweakFlavorStrengthContainer${fi}`);
+                if (container) container.classList.remove('hidden');
+            }
+            
+            // 3) Síla příchutě — nastavit AŽ po rozbalení slideru
+            if (flavor.strength) {
+                const strengthEl = document.getElementById(`shTweakFlavorStrength${fi}`);
+                if (strengthEl) { strengthEl.value = flavor.strength; updateShishaTweakFlavorStrength(fi); }
+            }
+            
+            // 4) VG/PG ratio příchutě
+            if (flavor.flavorRatio !== undefined && flavor.flavorRatio > 0) {
+                const ratioSlider = document.getElementById(`shTweakFlavorRatioSlider${fi}`);
+                if (ratioSlider) { ratioSlider.value = flavor.flavorRatio; updateShishaTweakFlavorRatioDisplay(fi); }
             }
         });
     }
@@ -13090,6 +13115,47 @@ function calculateProMix() {
 let subscriptionData = null;
 let userLocation = null;
 
+// Cache klíč pro subscription stav v localStorage
+const SUBSCRIPTION_CACHE_KEY = 'liquimixer_subscription_cache';
+const SUBSCRIPTION_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hodin
+
+// Načíst subscription stav z cache (optimistické načtení)
+function loadSubscriptionCache(clerkId) {
+    try {
+        const cached = localStorage.getItem(SUBSCRIPTION_CACHE_KEY);
+        if (!cached) return null;
+        const data = JSON.parse(cached);
+        // Kontrola: cache patří stejnému uživateli a není expirovaná
+        if (data.clerkId !== clerkId) return null;
+        if (Date.now() - data.cachedAt > SUBSCRIPTION_CACHE_TTL) return null;
+        // Kontrola: pokud je valid_to v minulosti, cache je neplatná
+        if (data.result?.expiresAt && new Date(data.result.expiresAt) < new Date()) return null;
+        return data.result;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Uložit subscription stav do cache
+function saveSubscriptionCache(clerkId, result) {
+    try {
+        localStorage.setItem(SUBSCRIPTION_CACHE_KEY, JSON.stringify({
+            clerkId: clerkId,
+            result: result,
+            cachedAt: Date.now()
+        }));
+    } catch (e) {
+        // localStorage může být plný nebo nedostupný
+    }
+}
+
+// Smazat subscription cache (při odhlášení)
+function clearSubscriptionCache() {
+    try {
+        localStorage.removeItem(SUBSCRIPTION_CACHE_KEY);
+    } catch (e) {}
+}
+
 // Zkontrolovat stav předplatného
 // Vrací: true = má platné předplatné, false = nemá nebo chyba
 async function checkSubscriptionStatus() {
@@ -13099,64 +13165,108 @@ async function checkSubscriptionStatus() {
         return false;
     }
 
+    const clerkId = window.Clerk.user.id;
+
+    // OPTIMISTICKÉ NAČTENÍ z cache — okamžitě nastavit stav
+    const cached = loadSubscriptionCache(clerkId);
+    if (cached && cached.valid) {
+        console.log('checkSubscriptionStatus: Using cached subscription (valid until', cached.expiresAt, ')');
+        subscriptionData = cached;
+        updateSubscriptionStatusUI(cached);
+        // Na pozadí ověřit aktuální stav (bez blokování UI)
+        _verifySubscriptionInBackground(clerkId);
+        return true;
+    }
+
+    // Žádná platná cache — musíme ověřit online
+    return await _fetchSubscriptionStatus(clerkId, true);
+}
+
+// Ověřit subscription na pozadí (neblokuje UI, neotevírá modály)
+async function _verifySubscriptionInBackground(clerkId) {
     try {
-        console.log('Checking subscription status for user:', window.Clerk.user.id);
+        const result = await _fetchSubscriptionFromServer();
+        if (!result) return; // network error, ignorovat
         
-        // Počkat na token - může trvat chvíli po přihlášení
-        let token = null;
-        let attempts = 0;
-        while (!token && attempts < 3) {
-            token = await getClerkToken();
-            if (!token) {
-                attempts++;
-                console.log('Waiting for token, attempt:', attempts);
-                await new Promise(r => setTimeout(r, 500));
-            }
-        }
-        
-        if (!token) {
-            console.error('No auth token available after retries');
-            // Bez tokenu nemůžeme ověřit - NEPOKAZOVAT modal, jen logovat
-            // Uživatel zůstane přihlášen, ale nebude mít přístup k placeným funkcím
-            return false;
-        }
-        
-        const response = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getSupabaseAnonKey()}`,
-                'x-clerk-token': token,
-            },
-            body: JSON.stringify({ action: 'check' })
-        });
-
-        if (!response.ok) {
-            console.error('Subscription check failed:', response.status);
-            // Při chybě serveru NEPOKAZOVAT modal automaticky
-            // Uživatel může zkusit znovu nebo kontaktovat podporu
-            return false;
-        }
-
-        const result = await response.json();
-        console.log('Subscription status:', result);
-
         subscriptionData = result;
+        saveSubscriptionCache(clerkId, result);
+        
+        if (!result.valid) {
+            // Cache byla platná ale server říká ne — aktualizovat
+            console.log('Background check: subscription no longer valid');
+            showSubscriptionModal();
+        } else {
+            updateSubscriptionStatusUI(result);
+        }
+    } catch (e) {
+        console.log('Background subscription check failed:', e);
+    }
+}
+
+// Načíst subscription stav ze serveru
+async function _fetchSubscriptionFromServer() {
+    let token = null;
+    let attempts = 0;
+    while (!token && attempts < 3) {
+        token = await getClerkToken();
+        if (!token) {
+            attempts++;
+            console.log('Waiting for token, attempt:', attempts);
+            await new Promise(r => setTimeout(r, 500));
+        }
+    }
+    
+    if (!token) {
+        console.error('No auth token available after retries');
+        return null;
+    }
+    
+    const response = await fetch(`${getSupabaseUrl()}/functions/v1/subscription`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getSupabaseAnonKey()}`,
+            'x-clerk-token': token,
+        },
+        body: JSON.stringify({ action: 'check' })
+    });
+
+    if (!response.ok) {
+        console.error('Subscription check failed:', response.status);
+        return null;
+    }
+
+    return await response.json();
+}
+
+// Plný fetch + UI akce (modály, UI update)
+async function _fetchSubscriptionStatus(clerkId, showModalOnFail) {
+    try {
+        console.log('Checking subscription status for user:', clerkId);
+        
+        const result = await _fetchSubscriptionFromServer();
+        
+        if (!result) {
+            // Network/token error — NEPOKAZOVAT modal
+            return false;
+        }
+
+        console.log('Subscription status:', result);
+        subscriptionData = result;
+        saveSubscriptionCache(clerkId, result);
 
         if (!result.valid) {
-            // Uživatel nemá platné předplatné - zobrazit platební modal
-            console.log('No valid subscription, showing payment modal');
-            showSubscriptionModal();
+            if (showModalOnFail) {
+                console.log('No valid subscription, showing payment modal');
+                showSubscriptionModal();
+            }
             return false;
         } else {
-            // Aktualizovat UI v profilu
             updateSubscriptionStatusUI(result);
             return true;
         }
     } catch (error) {
         console.error('Error checking subscription:', error);
-        // Při network erroru NEPOKAZOVAT modal automaticky
-        // Může jít o dočasný problém se sítí
         return false;
     }
 }
@@ -16503,6 +16613,24 @@ function showFlavorSliderWithRange(inputId, flavorData) {
             valueId: 'shTweakFlavorValue1',
             descriptionId: 'shTweakFlavorStrengthDisplay1'
         },
+        'shTweakFlavorAutocomplete2': {
+            containerId: 'shTweakFlavorStrengthContainer2',
+            sliderId: 'shTweakFlavorStrength2',
+            valueId: 'shTweakFlavorValue2',
+            descriptionId: 'shTweakFlavorStrengthDisplay2'
+        },
+        'shTweakFlavorAutocomplete3': {
+            containerId: 'shTweakFlavorStrengthContainer3',
+            sliderId: 'shTweakFlavorStrength3',
+            valueId: 'shTweakFlavorValue3',
+            descriptionId: 'shTweakFlavorStrengthDisplay3'
+        },
+        'shTweakFlavorAutocomplete4': {
+            containerId: 'shTweakFlavorStrengthContainer4',
+            sliderId: 'shTweakFlavorStrength4',
+            valueId: 'shTweakFlavorValue4',
+            descriptionId: 'shTweakFlavorStrengthDisplay4'
+        },
         // Shisha Mode 2: DIY flavor autocomplete
         'shDiyFlavorAutocomplete1': {
             containerId: 'shDiyFlavorStrengthContainer1',
@@ -16620,6 +16748,9 @@ function showFlavorSliderWithRange(inputId, flavorData) {
         'shFlavorAutocomplete3': 'shFlavorTrack3',
         'shFlavorAutocomplete4': 'shFlavorTrack4',
         'shTweakFlavorAutocomplete1': 'shTweakFlavorTrack1',
+        'shTweakFlavorAutocomplete2': 'shTweakFlavorTrack2',
+        'shTweakFlavorAutocomplete3': 'shTweakFlavorTrack3',
+        'shTweakFlavorAutocomplete4': 'shTweakFlavorTrack4',
         'shDiyFlavorAutocomplete1': 'shDiyFlavorTrack1',
         'shDiyFlavorAutocomplete2': 'shDiyFlavorTrack2',
         'shDiyFlavorAutocomplete3': 'shDiyFlavorTrack3',
@@ -16688,6 +16819,9 @@ function showFlavorSliderWithRange(inputId, flavorData) {
         const index = inputId.match(/\d+/)?.[0];
         if (index) updateShishaMolFlavorStrength(parseInt(index));
         autoRecalculateShishaMolVgPgRatio();
+    } else if (inputId.startsWith('shTweakFlavor')) {
+        const index = inputId.match(/\d+/)?.[0];
+        if (index) updateShishaTweakFlavorStrength(parseInt(index));
     } else if (inputId.startsWith('shFlavor')) {
         const index = inputId.match(/\d+/)?.[0];
         if (index) updateShishaFlavorStrength(parseInt(index));
@@ -18925,7 +19059,8 @@ function calculateShishaTweak() {
         vgPercent: parseFloat(document.getElementById('shTweakVgPercent')?.value ?? 10),
         flavors: Array.from({length: 4}, (_, i) => ({
             type: document.getElementById(`shTweakFlavorType${i+1}`)?.value || 'none',
-            strength: parseFloat(document.getElementById(`shTweakFlavorStrength${i+1}`)?.value ?? 5)
+            strength: parseFloat(document.getElementById(`shTweakFlavorStrength${i+1}`)?.value ?? 5),
+            flavorRatio: parseInt(document.getElementById(`shTweakFlavorRatioSlider${i+1}`)?.value ?? 0)
         })),
         nicotineType: document.getElementById('shTweakNicotineType')?.value || 'freebase',
         nicotineBaseStrength: parseFloat(document.getElementById('shTweakNicotineBaseStrength')?.value) || 20,
@@ -19159,6 +19294,27 @@ function adjustShishaTweakFlavor(index, change) {
 
 function autoRecalculateShishaTweakVgPgRatio() { }
 
+function adjustShishaTweakFlavorRatio(index, change) {
+    const slider = document.getElementById(`shTweakFlavorRatioSlider${index}`);
+    if (!slider) return;
+    let v = parseInt(slider.value);
+    v = change > 0 ? Math.ceil((v + 1) / 5) * 5 : Math.floor((v - 1) / 5) * 5;
+    slider.value = Math.max(0, Math.min(100, v));
+    updateShishaTweakFlavorRatioDisplay(index);
+}
+
+function updateShishaTweakFlavorRatioDisplay(index) {
+    const slider = document.getElementById(`shTweakFlavorRatioSlider${index}`);
+    const vgEl = document.getElementById(`shTweakFlavorVgValue${index}`);
+    const pgEl = document.getElementById(`shTweakFlavorPgValue${index}`);
+    const track = document.getElementById(`shTweakFlavorTrackRatio${index}`);
+    if (!slider) return;
+    const vg = parseInt(slider.value);
+    if (vgEl) vgEl.textContent = vg;
+    if (pgEl) pgEl.textContent = 100 - vg;
+    if (track) { track.style.width = '100%'; track.style.background = 'linear-gradient(90deg, #00cc66, #00aaff)'; }
+}
+
 function addShishaTweakFlavor() {
     if (!isUserLoggedIn()) { showLoginRequiredModal(); return; }
     if (shTweakFlavorCount >= 4) return;
@@ -19201,6 +19357,20 @@ function addShishaTweakFlavor() {
                     </div>
                     <div class="flavor-display"><span id="shTweakFlavorValue${i}">5</span>%</div>
                     <div id="shTweakFlavorStrengthDisplay${i}" class="flavor-strength-display"></div>
+                    <div class="form-group-sub">
+                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG'}</label>
+                        <div class="ratio-container compact">
+                            <div class="slider-container">
+                                <button class="slider-btn small" onclick="adjustShishaTweakFlavorRatio(${i},-5)">◀</button>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="shTweakFlavorRatioSlider${i}" min="0" max="100" value="0" class="ratio-slider" oninput="updateShishaTweakFlavorRatioDisplay(${i})">
+                                    <div class="slider-track" id="shTweakFlavorTrackRatio${i}"></div>
+                                </div>
+                                <button class="slider-btn small" onclick="adjustShishaTweakFlavorRatio(${i},5)">▶</button>
+                            </div>
+                            <div class="ratio-display small"><span id="shTweakFlavorVgValue${i}">0</span>:<span id="shTweakFlavorPgValue${i}">100</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -20158,6 +20328,8 @@ window.updateShishaTweakNicotineDisplay = updateShishaTweakNicotineDisplay;
 window.displayTweakSelectedTobacco = displayTweakSelectedTobacco;
 window.clearTweakSelectedTobacco = clearTweakSelectedTobacco;
 window.autoRecalculateShishaTweakVgPgRatio = autoRecalculateShishaTweakVgPgRatio;
+window.adjustShishaTweakFlavorRatio = adjustShishaTweakFlavorRatio;
+window.updateShishaTweakFlavorRatioDisplay = updateShishaTweakFlavorRatioDisplay;
 
 // Mode 2: DIY Tobacco
 window.updateDiyRatio = updateDiyRatio;
