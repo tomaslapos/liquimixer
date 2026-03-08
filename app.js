@@ -6379,24 +6379,32 @@ function resetAndPrefillShishaDiyFlavors(flavors, linkedFlavors = []) {
         const flavorIndex = idx + 1;
         if (flavorIndex > 1) addShishaDiyFlavor();
         
-        if (flavor && flavor.type !== 'none') {
+        // 1) Autocomplete data z linkedFlavors — nastavit PRVNÍ
+        const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
+        if (linkedFlavor) {
+            const result = prefillFlavorAutocomplete(`shDiyFlavorAutocomplete${flavorIndex}`, linkedFlavor);
+            if (result && linkedFlavor.percentage) {
+                const strengthEl = document.getElementById(`shDiyFlavorStrength${flavorIndex}`);
+                if (strengthEl) { strengthEl.value = linkedFlavor.percentage; updateShishaDiyFlavorStrength(flavorIndex); }
+            }
+        }
+        
+        // 2) Kategorie příchutě — pokud je vybraná kategorie, nastavit a rozbalit
+        if (flavor && flavor.type && flavor.type !== 'none') {
             const typeEl = document.getElementById(`shDiyFlavorType${flavorIndex}`);
             if (typeEl) { typeEl.value = flavor.type; updateShishaDiyFlavorType(flavorIndex); }
             const strengthEl = document.getElementById(`shDiyFlavorStrength${flavorIndex}`);
-            if (strengthEl) { strengthEl.value = flavor.percent || 5; updateShishaDiyFlavorStrength(flavorIndex); }
-            if (flavor.vgRatio !== undefined) {
-                const ratioEl = document.getElementById(`shDiyFlavorRatioSlider${flavorIndex}`);
-                if (ratioEl) { ratioEl.value = flavor.vgRatio; updateShishaDiyFlavorRatioDisplay(flavorIndex); }
-            }
-            
-            const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
-            if (linkedFlavor) {
-                const result = prefillFlavorAutocomplete(`shDiyFlavorAutocomplete${flavorIndex}`, linkedFlavor);
-                if (result && linkedFlavor.percentage && strengthEl) {
-                    strengthEl.value = linkedFlavor.percentage;
-                    updateShishaDiyFlavorStrength(flavorIndex);
-                }
-            }
+            if (strengthEl && flavor.percent) { strengthEl.value = flavor.percent; updateShishaDiyFlavorStrength(flavorIndex); }
+        } else if (linkedFlavor) {
+            // Příchuť vybraná z autocomplete (type='none') — zajistit že slider je viditelný
+            const container = document.getElementById(`shDiyFlavorStrengthContainer${flavorIndex}`);
+            if (container) container.classList.remove('hidden');
+        }
+        
+        // 3) VG/PG ratio příchutě
+        if (flavor && flavor.vgRatio !== undefined) {
+            const ratioEl = document.getElementById(`shDiyFlavorRatioSlider${flavorIndex}`);
+            if (ratioEl) { ratioEl.value = flavor.vgRatio; updateShishaDiyFlavorRatioDisplay(flavorIndex); }
         }
     });
 }
@@ -6413,24 +6421,32 @@ function resetAndPrefillShishaMolFlavors(flavors, linkedFlavors = []) {
         const flavorIndex = idx + 1;
         if (flavorIndex > 1) addShishaMolFlavor();
         
-        if (flavor && flavor.type !== 'none') {
+        // 1) Autocomplete data z linkedFlavors — nastavit PRVNÍ
+        const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
+        if (linkedFlavor) {
+            const result = prefillFlavorAutocomplete(`shMolFlavorAutocomplete${flavorIndex}`, linkedFlavor);
+            if (result && linkedFlavor.percentage) {
+                const strengthEl = document.getElementById(`shMolFlavorStrength${flavorIndex}`);
+                if (strengthEl) { strengthEl.value = linkedFlavor.percentage; updateShishaMolFlavorStrength(flavorIndex); }
+            }
+        }
+        
+        // 2) Kategorie příchutě — pokud je vybraná kategorie, nastavit a rozbalit
+        if (flavor && flavor.type && flavor.type !== 'none') {
             const typeEl = document.getElementById(`shMolFlavorType${flavorIndex}`);
             if (typeEl) { typeEl.value = flavor.type; updateShishaMolFlavorType(flavorIndex); }
             const strengthEl = document.getElementById(`shMolFlavorStrength${flavorIndex}`);
-            if (strengthEl) { strengthEl.value = flavor.percent || 5; updateShishaMolFlavorStrength(flavorIndex); }
-            if (flavor.vgRatio !== undefined) {
-                const ratioEl = document.getElementById(`shMolFlavorRatioSlider${flavorIndex}`);
-                if (ratioEl) { ratioEl.value = flavor.vgRatio; updateShishaMolFlavorRatioDisplay(flavorIndex); }
-            }
-            
-            const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
-            if (linkedFlavor) {
-                const result = prefillFlavorAutocomplete(`shMolFlavorAutocomplete${flavorIndex}`, linkedFlavor);
-                if (result && linkedFlavor.percentage && strengthEl) {
-                    strengthEl.value = linkedFlavor.percentage;
-                    updateShishaMolFlavorStrength(flavorIndex);
-                }
-            }
+            if (strengthEl && flavor.percent) { strengthEl.value = flavor.percent; updateShishaMolFlavorStrength(flavorIndex); }
+        } else if (linkedFlavor) {
+            // Příchuť vybraná z autocomplete (type='none') — zajistit že slider je viditelný
+            const container = document.getElementById(`shMolFlavorStrengthContainer${flavorIndex}`);
+            if (container) container.classList.remove('hidden');
+        }
+        
+        // 3) VG/PG ratio příchutě
+        if (flavor && flavor.vgRatio !== undefined) {
+            const ratioEl = document.getElementById(`shMolFlavorRatioSlider${flavorIndex}`);
+            if (ratioEl) { ratioEl.value = flavor.vgRatio; updateShishaMolFlavorRatioDisplay(flavorIndex); }
         }
     });
 }
@@ -8851,13 +8867,14 @@ function updateFlavorType(forceReset = false) {
     
     if (type === 'none') {
         strengthContainer.classList.add('hidden');
+        hideCategoryFlavorWarning('flavorStrengthContainer');
     } else {
         strengthContainer.classList.remove('hidden');
-        // Nastavit ideal POUZE při forceReset (změna typu uživatelem)
-        // Při volání z updateAllDisplays() (localeChanged event) nepřepisovat uživatelskou hodnotu
-        if (forceReset) {
-            const flavor = flavorDatabase[type];
-            flavorStrengthSlider.value = flavor.ideal;
+        // Kategorie vybraná bez konkrétní příchutě — slider 0%, šedá, varování
+        const autoInput = document.getElementById('flavorAutocomplete');
+        const hasDbFlavor = autoInput?.dataset?.flavorData && autoInput.dataset.flavorData.length > 2;
+        if (!hasDbFlavor) {
+            showCategoryFlavorWarning('flavorStrengthContainer', 'flavorStrength', 'flavorValue', 'flavorTrack');
         }
         updateFlavorDisplay();
     }
@@ -11610,10 +11627,17 @@ function updateProFlavorType(flavorIndex = 1) {
     
     if (type === 'none') {
         strengthContainer.classList.add('hidden');
+        hideCategoryFlavorWarning(`proFlavorStrengthContainer${flavorIndex}`);
     } else {
         strengthContainer.classList.remove('hidden');
-        const flavor = flavorDatabase[type];
-        document.getElementById(`proFlavorStrength${flavorIndex}`).value = flavor.ideal;
+        const autoInput = document.getElementById(`proFlavorAutocomplete${flavorIndex}`);
+        const hasDbFlavor = autoInput?.dataset?.flavorData && autoInput.dataset.flavorData.length > 2;
+        if (!hasDbFlavor) {
+            showCategoryFlavorWarning(`proFlavorStrengthContainer${flavorIndex}`, `proFlavorStrength${flavorIndex}`, `proFlavorValue${flavorIndex}`, `proFlavorTrack${flavorIndex}`);
+        } else {
+            const flavor = flavorDatabase[type];
+            document.getElementById(`proFlavorStrength${flavorIndex}`).value = flavor.ideal;
+        }
         updateProFlavorDisplay(flavorIndex);
     }
     
@@ -16840,7 +16864,19 @@ function showPercentFallbackWarning(inputId, hasExactPercent) {
         'shFlavorAutocomplete1': 'shFlavorStrengthContainer1',
         'shFlavorAutocomplete2': 'shFlavorStrengthContainer2',
         'shFlavorAutocomplete3': 'shFlavorStrengthContainer3',
-        'shFlavorAutocomplete4': 'shFlavorStrengthContainer4'
+        'shFlavorAutocomplete4': 'shFlavorStrengthContainer4',
+        'shTweakFlavorAutocomplete1': 'shTweakFlavorStrengthContainer1',
+        'shTweakFlavorAutocomplete2': 'shTweakFlavorStrengthContainer2',
+        'shTweakFlavorAutocomplete3': 'shTweakFlavorStrengthContainer3',
+        'shTweakFlavorAutocomplete4': 'shTweakFlavorStrengthContainer4',
+        'shDiyFlavorAutocomplete1': 'shDiyFlavorStrengthContainer1',
+        'shDiyFlavorAutocomplete2': 'shDiyFlavorStrengthContainer2',
+        'shDiyFlavorAutocomplete3': 'shDiyFlavorStrengthContainer3',
+        'shDiyFlavorAutocomplete4': 'shDiyFlavorStrengthContainer4',
+        'shMolFlavorAutocomplete1': 'shMolFlavorStrengthContainer1',
+        'shMolFlavorAutocomplete2': 'shMolFlavorStrengthContainer2',
+        'shMolFlavorAutocomplete3': 'shMolFlavorStrengthContainer3',
+        'shMolFlavorAutocomplete4': 'shMolFlavorStrengthContainer4'
     };
     
     const containerId = mapping[inputId];
@@ -16868,6 +16904,49 @@ function showPercentFallbackWarning(inputId, hasExactPercent) {
             warningEl.classList.add('hidden');
         }
     }
+}
+
+// Zobrazit varování a nastavit slider na 0% při výběru kategorie příchutě (bez konkrétní příchutě z DB)
+// Volá se z updateFlavorType, updateProFlavorType, updateShishaDiyFlavorType, updateShishaMolFlavorType, updateShishaTweakFlavorType
+function showCategoryFlavorWarning(containerId, sliderId, valueId, trackId) {
+    const container = document.getElementById(containerId);
+    const slider = document.getElementById(sliderId);
+    const valueDisplay = document.getElementById(valueId);
+    const track = trackId ? document.getElementById(trackId) : null;
+    if (!container || !slider) return;
+    
+    // Nastavit slider na 0%
+    slider.value = 0;
+    if (valueDisplay) valueDisplay.textContent = '0';
+    
+    // Šedá barva tracku
+    if (track) {
+        track.style.background = 'linear-gradient(90deg, #555, #777)';
+        track.style.width = '100%';
+    }
+    
+    // Šedá barva hodnoty
+    if (valueDisplay && valueDisplay.parentElement) {
+        valueDisplay.parentElement.style.color = '#999';
+    }
+    
+    // Zobrazit varování
+    let warningEl = container.querySelector('.percent-fallback-warning');
+    if (!warningEl) {
+        warningEl = document.createElement('div');
+        warningEl.className = 'percent-fallback-warning';
+        container.insertBefore(warningEl, container.firstChild);
+    }
+    warningEl.innerHTML = `<span class="warning-icon">⚠</span> ${t('flavor_form.percent_not_set', 'Doporučené % není nastaveno, chybí ověřená data. Nastavte dle doporučení výrobce.')}`;
+    warningEl.classList.remove('hidden');
+}
+
+// Skrýt varování kategorie příchutě (volá se při výběru 'none' nebo při výběru konkrétní příchutě z autocomplete)
+function hideCategoryFlavorWarning(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const warningEl = container.querySelector('.percent-fallback-warning');
+    if (warningEl) warningEl.classList.add('hidden');
 }
 
 // Zakázat změnu VG/PG poměru když je vybraná konkrétní příchuť z databáze
@@ -17148,6 +17227,9 @@ function updateFlavorCategoryState(inputId, disabled) {
         'shFlavorAutocomplete3': 'shFlavorType3',
         'shFlavorAutocomplete4': 'shFlavorType4',
         'shTweakFlavorAutocomplete1': 'shTweakFlavorType1', // Shisha Tweak
+        'shTweakFlavorAutocomplete2': 'shTweakFlavorType2',
+        'shTweakFlavorAutocomplete3': 'shTweakFlavorType3',
+        'shTweakFlavorAutocomplete4': 'shTweakFlavorType4',
         'shDiyFlavorAutocomplete1': 'shDiyFlavorType1',   // Shisha Mode 2: DIY
         'shDiyFlavorAutocomplete2': 'shDiyFlavorType2',
         'shDiyFlavorAutocomplete3': 'shDiyFlavorType3',
@@ -17966,12 +18048,19 @@ function updateShishaDiyFlavorType(index) {
     if (!select) return;
     if (select.value === 'none') {
         if (container) container.classList.add('hidden');
+        hideCategoryFlavorWarning(`shDiyFlavorStrengthContainer${index}`);
     } else {
         if (container) container.classList.remove('hidden');
-        const flavor = flavorDatabase[select.value];
-        if (flavor) {
-            const slider = document.getElementById(`shDiyFlavorStrength${index}`);
-            if (slider) { slider.value = flavor.ideal; updateShishaDiyFlavorStrength(index); }
+        const autoInput = document.getElementById(`shDiyFlavorAutocomplete${index}`);
+        const hasDbFlavor = autoInput?.dataset?.flavorData && autoInput.dataset.flavorData.length > 2;
+        if (!hasDbFlavor) {
+            showCategoryFlavorWarning(`shDiyFlavorStrengthContainer${index}`, `shDiyFlavorStrength${index}`, `shDiyFlavorValue${index}`, `shDiyFlavorTrack${index}`);
+        } else {
+            const flavor = flavorDatabase[select.value];
+            if (flavor) {
+                const slider = document.getElementById(`shDiyFlavorStrength${index}`);
+                if (slider) { slider.value = flavor.ideal; updateShishaDiyFlavorStrength(index); }
+            }
         }
     }
     updateDiyPurePgVisibility();
@@ -18624,12 +18713,19 @@ function updateShishaMolFlavorType(index) {
     if (!select) return;
     if (select.value === 'none') {
         if (container) container.classList.add('hidden');
+        hideCategoryFlavorWarning(`shMolFlavorStrengthContainer${index}`);
     } else {
         if (container) container.classList.remove('hidden');
-        const flavor = flavorDatabase[select.value];
-        if (flavor) {
-            const slider = document.getElementById(`shMolFlavorStrength${index}`);
-            if (slider) { slider.value = flavor.ideal; updateShishaMolFlavorStrength(index); }
+        const autoInput = document.getElementById(`shMolFlavorAutocomplete${index}`);
+        const hasDbFlavor = autoInput?.dataset?.flavorData && autoInput.dataset.flavorData.length > 2;
+        if (!hasDbFlavor) {
+            showCategoryFlavorWarning(`shMolFlavorStrengthContainer${index}`, `shMolFlavorStrength${index}`, `shMolFlavorValue${index}`, `shMolFlavorTrack${index}`);
+        } else {
+            const flavor = flavorDatabase[select.value];
+            if (flavor) {
+                const slider = document.getElementById(`shMolFlavorStrength${index}`);
+                if (slider) { slider.value = flavor.ideal; updateShishaMolFlavorStrength(index); }
+            }
         }
     }
     updateMolPurePgVisibility();
@@ -19271,7 +19367,23 @@ function updateShishaTweakFlavorType(index) {
     const select = document.getElementById(`shTweakFlavorType${index}`);
     const container = document.getElementById(`shTweakFlavorStrengthContainer${index}`);
     if (!select || !container) return;
-    container.classList.toggle('hidden', select.value === 'none');
+    if (select.value === 'none') {
+        container.classList.add('hidden');
+        hideCategoryFlavorWarning(`shTweakFlavorStrengthContainer${index}`);
+    } else {
+        container.classList.remove('hidden');
+        const autoInput = document.getElementById(`shTweakFlavorAutocomplete${index}`);
+        const hasDbFlavor = autoInput?.dataset?.flavorData && autoInput.dataset.flavorData.length > 2;
+        if (!hasDbFlavor) {
+            showCategoryFlavorWarning(`shTweakFlavorStrengthContainer${index}`, `shTweakFlavorStrength${index}`, `shTweakFlavorValue${index}`, `shTweakFlavorTrack${index}`);
+        } else {
+            const flavor = flavorDatabase[select.value];
+            if (flavor) {
+                const slider = document.getElementById(`shTweakFlavorStrength${index}`);
+                if (slider) { slider.value = flavor.ideal; updateShishaTweakFlavorStrength(index); }
+            }
+        }
+    }
 }
 
 function updateShishaTweakFlavorStrength(index) {
