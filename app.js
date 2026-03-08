@@ -9105,7 +9105,9 @@ function getIngredientName(ingredient) {
                     tweakFlavorDisplayName = ingredient.flavorName;
                 }
             } else {
-                tweakFlavorDisplayName = ingredient.name || t('shisha.tweak_ingredient_concentrate', 'Aroma koncentrát');
+                tweakFlavorDisplayName = (ingredient.flavorType && ingredient.flavorType !== 'none')
+                    ? getFlavorName(ingredient.flavorType)
+                    : (ingredient.name || t('shisha.tweak_ingredient_concentrate', 'Aroma koncentrát'));
             }
             if (ingredient.flavorNumber && ingredient.flavorNumber > 1) {
                 return `${t('ingredients.flavor', 'Flavor')} ${ingredient.flavorNumber}: ${tweakFlavorDisplayName}`;
