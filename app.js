@@ -4117,7 +4117,7 @@ function populateRecipeFlavors() {
 }
 
 // Extrahovat příchutě z receptu pro zobrazení v modalu
-// DŮLEŽITÉ: Vracíme POUZE konkrétní příchutě (s názvem), ne generické kategorie
+// Zahrnuje konkrétní příchutě (s názvem) I generické kategorie (bez autocomplete)
 function extractRecipeFlavorsForDisplay(recipeData) {
     if (!recipeData) return [];
     
@@ -4126,12 +4126,11 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     
     // Z ingredients - primární zdroj pro příchutě a Mix tabáky
     // Tweak tabák jde přes tweakState.tobaccoData (samostatná cesta níže)
-    // Přidáváme POUZE položky s konkrétním názvem (flavorName)
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
             if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
-                // Pouze konkrétní příchutě s názvem - generické kategorie nepřidávat
                 if (ingredient.flavorName) {
+                    // Konkrétní příchuť s názvem z autocomplete
                     const flavorInfo = {
                         name: ingredient.flavorName,
                         manufacturer: ingredient.flavorManufacturer || null,
@@ -4142,6 +4141,17 @@ function extractRecipeFlavorsForDisplay(recipeData) {
                         flavorSource: ingredient.flavorSource || 'database'
                     };
                     flavors.push(flavorInfo);
+                } else if (ingredient.flavorType && ingredient.flavorType !== 'none') {
+                    // Generická kategorie bez konkrétní příchutě — zobrazit název kategorie
+                    flavors.push({
+                        name: getFlavorName(ingredient.flavorType),
+                        manufacturer: null,
+                        category: ingredient.flavorType,
+                        percent: ingredient.percent || 0,
+                        flavorId: null,
+                        favoriteProductId: null,
+                        flavorSource: 'category'
+                    });
                 }
             }
         }
@@ -4150,9 +4160,9 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     // Pokud nebyly nalezeny příchutě v ingredients a existuje flavors array (záložní zdroj)
     if (flavors.length === 0 && (formType === 'liquidpro' || formType === 'shisha') && recipeData.flavors && Array.isArray(recipeData.flavors)) {
         for (const flavor of recipeData.flavors) {
-            // Pouze konkrétní příchutě s názvem
             const flavorName = flavor.flavorName || flavor.name;
             if (flavorName) {
+                // Konkrétní příchuť
                 const flavorInfo = {
                     name: flavorName,
                     manufacturer: flavor.flavorManufacturer || flavor.manufacturer || null,
@@ -4163,6 +4173,17 @@ function extractRecipeFlavorsForDisplay(recipeData) {
                     flavorSource: flavor.flavorSource || flavor.source || 'database'
                 };
                 flavors.push(flavorInfo);
+            } else if (flavor.type && flavor.type !== 'none') {
+                // Generická kategorie
+                flavors.push({
+                    name: getFlavorName(flavor.type),
+                    manufacturer: null,
+                    category: flavor.type,
+                    percent: flavor.percent || 0,
+                    flavorId: null,
+                    favoriteProductId: null,
+                    flavorSource: 'category'
+                });
             }
         }
     }
@@ -4536,6 +4557,7 @@ function extractRecipeFlavors(recipeData, formType) {
                 } else {
                     // Generická příchuť z číselníku
                     flavorEntry.generic_flavor_type = ingredient.flavorType || 'fruit';
+                    flavorEntry.flavor_name = getFlavorName(ingredient.flavorType || 'fruit');
                 }
                 
                 flavors.push(flavorEntry);
@@ -4624,6 +4646,9 @@ function extractRecipeFlavors(recipeData, formType) {
                             flavorEntry.flavor_id = flavor.flavorId;
                         }
                     }
+                } else {
+                    // Generická kategorie — přidat přeložený název
+                    flavorEntry.flavor_name = getFlavorName(flavor.type);
                 }
                 
                 // Zamezit duplicitám - pouze pokud je STEJNÁ konkrétní příchuť (flavor_id nebo flavor_name + manufacturer)
@@ -19178,8 +19203,8 @@ function calculateShishaTweak() {
             const hasDbFlavor = flavorAuto && flavorAuto.dataset.flavorData;
             if ((flavorType !== 'none' || hasDbFlavor) && flavorPct > 0) {
                 const flavorMl = (flavorPct / 100) * tobaccoG;
-                let flavorDisplayName = t('shisha.tweak_ingredient_concentrate', 'Aroma koncentrát');
-                const flavorIngredient = { name: flavorDisplayName, ingredientKey: 'shisha_tweak_flavor', volume: flavorMl, percent: flavorPct, grams: Math.round(flavorMl * 1.04 * 10) / 10, flavorNumber: fi };
+                let flavorDisplayName = flavorType !== 'none' ? getFlavorName(flavorType) : t('shisha.tweak_ingredient_concentrate', 'Aroma koncentrát');
+                const flavorIngredient = { name: flavorDisplayName, ingredientKey: 'shisha_tweak_flavor', flavorType: flavorType, volume: flavorMl, percent: flavorPct, grams: Math.round(flavorMl * 1.04 * 10) / 10, flavorNumber: fi };
                 if (hasDbFlavor) {
                     try {
                         const fd = JSON.parse(flavorAuto.dataset.flavorData);
