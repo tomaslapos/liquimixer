@@ -1609,6 +1609,7 @@ window.addEventListener('localeChanged', () => {
                     updateShishaDiyFlavorRatioDisplay(i);
                 }
             }
+            if (typeof updateDiyPurePgDisplay === 'function') updateDiyPurePgDisplay();
         }
         // Mode 3: Molasses
         if (document.getElementById('shMolVgValue')) {
@@ -1621,6 +1622,54 @@ window.addEventListener('localeChanged', () => {
                     updateShishaMolFlavorRatioDisplay(i);
                 }
             }
+            if (typeof updateMolPurePgDisplay === 'function') updateMolPurePgDisplay();
+        }
+        // Shisha Tweak
+        if (document.getElementById('shTweakTargetNicotine')) {
+            updateShishaTweakNicotineDisplay();
+            if (typeof getShishaTweakFlavorIndices === 'function') {
+                getShishaTweakFlavorIndices().forEach(fi => {
+                    updateShishaTweakFlavorStrength(fi);
+                    updateShishaTweakFlavorRatioDisplay(fi);
+                });
+            }
+        }
+    }
+    
+    // Přegenerovat všechny dynamické warning texty (.percent-fallback-warning)
+    document.querySelectorAll('.percent-fallback-warning').forEach(el => {
+        if (!el.classList.contains('hidden')) {
+            el.innerHTML = `<span class="warning-icon">⚠</span> ${t('flavor_form.percent_not_set', 'Doporučené % není nastaveno, chybí ověřená data. Nastavte dle doporučení výrobce.')}`;
+        }
+    });
+    
+    // Přegenerovat flavor slider descriptions (Ideální rozsah, Pod/Nad doporučeným rozsahem)
+    document.querySelectorAll('.flavor-slider').forEach(slider => {
+        if (slider.dataset.flavorMin !== undefined) {
+            const hasExact = slider.dataset.hasExactPercent === 'true';
+            const descId = slider.id.replace('Strength', 'StrengthDisplay');
+            const descEl = document.getElementById(descId);
+            if (descEl) {
+                updateFlavorSliderDescription(
+                    slider.value,
+                    parseFloat(slider.dataset.flavorMin),
+                    parseFloat(slider.dataset.flavorMax),
+                    descEl,
+                    hasExact
+                );
+            }
+        }
+    });
+    
+    // Aktualizovat Liquid formulář flavor description
+    if (typeof updateFlavorDisplay === 'function' && document.getElementById('flavorStrength')) {
+        updateFlavorDisplay();
+    }
+    
+    // Aktualizovat Liquid PRO flavor descriptions
+    for (let i = 1; i <= 4; i++) {
+        if (document.getElementById(`proFlavorStrength${i}`)) {
+            updateProFlavorDisplay(i);
         }
     }
     

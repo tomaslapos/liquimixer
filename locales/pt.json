@@ -324,8 +324,8 @@
     "vg_label": "Fumaça (VG)",
     "pg_label": "Sabor (PG)",
     "ratio_optimal": "Proporção ideal para shisha - fumo e sabor equilibrados",
-    "ratio_more_vg": "Mais fumo, sabor menos intenso",
-    "ratio_more_pg": "Líquido mais fino, sabor mais intenso",
+    "ratio_more_vg": "👍 Fumo mais denso, boa tiragem. O sabor dos aromas pode estar ligeiramente atenuado — adicione mais aroma se quiser um sabor mais forte.",
+    "ratio_more_pg": "⚠ Mistura mais líquida — menos fumo, mas sabor mais pronunciado. Pode irritar ligeiramente a garganta em sessões longas.",
     "flavor_label": "Aroma",
     "flavor_total_warning": "(recomendado 15-25%)",
     "flavor_double_apple": "Maçã dupla",
@@ -488,8 +488,6 @@
     "ratio_high_vg": "⚠ Mistura muito espessa — pode queimar nos carvões. Considere adicionar aroma (base PG) para melhor consistência.",
     "ratio_ideal_vg": "✅ Excelente — fumo denso e bom sabor. Proporção ideal para a maioria das misturas de shisha.",
     "ratio_balanced": "✅ Proporção equilibrada — fumo agradável e sabor. Base universal para shisha.",
-    "ratio_more_vg": "👍 Fumo mais denso, boa tiragem. O sabor dos aromas pode estar ligeiramente atenuado — adicione mais aroma se quiser um sabor mais forte.",
-    "ratio_more_pg": "⚠ Mistura mais líquida — menos fumo, mas sabor mais pronunciado. Pode irritar ligeiramente a garganta em sessões longas.",
     "ratio_high_pg": "⚠ Mistura demasiado líquida — fumo fraco, pode irritar a garganta. Adicione glicerina para fumo mais denso e tiragem mais suave.",
     "ratio_extreme_pg": "❌ Não adequado para shisha — quase sem fumo, irritará a garganta. Adicione glicerina (pelo menos 30 % VG).",
     "base_sweet_very_high": "Mistura muito doce. O alto teor de adoçante pode ser demasiado intenso e abafar outros aromas. Recomendamos reduzir abaixo de 60 %.",
@@ -505,15 +503,20 @@
     "base_water_none": " Sem água — densidade máxima da mistura.",
     "base_glyc_very_high": " Mistura muito espessa graças à alta glicerina — fumo rico.",
     "base_glyc_low": " Glicerina baixa — a mistura será mais líquida com menos produção de fumo.",
-    "base_glyc_none": " Sem glicerina — produção mínima de fumo, apenas adoçante e água."
+    "base_glyc_none": " Sem glicerina — produção mínima de fumo, apenas adoçante e água.",
+    "pure_pg_desc_0": "O PG realça o sabor e dilui a mistura espessa. Recomendado 2–5 % para um realce sutil.",
+    "pure_pg_desc_low": "PG mínimo — realce sutil do sabor, a mistura permanece espessa.",
+    "pure_pg_desc_medium": "PG médio — boa intensidade de sabor, a mistura é mais líquida e absorve melhor no tabaco.",
+    "pure_pg_desc_high": "PG alto — sabor forte, mas cuidado com a irritação na garganta. Não exceda 15 % de PG total.",
+    "pure_pg_no_vg_warning": "⚠ Sem glicerina (VG) a mistura irritará a garganta! Recomendamos adicionar pelo menos 15–20 % de glicerina."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Sem nicotina – experiência shisha tradicional sem nicotina.",
-    "sh_nic_1_2": "Muito leve – toque delicado de nicotina, adequado para iniciantes.",
-    "sh_nic_3_4": "Leve – nicotina suave para utilizadores ocasionais.",
-    "sh_nic_5_6": "Médio – força equilibrada para utilizadores regulares.",
-    "sh_nic_7_8": "Mais forte – para utilizadores experientes, pode causar tonturas.",
-    "sh_nic_9_10": "Forte – força máxima recomendada para shisha, apenas para experientes."
+    "sh_nic_0": "Sem nicotina - experiência tradicional de shisha sem nicotina.",
+    "sh_nic_1_2": "Muito leve - toque suave de nicotina, adequado para iniciantes.",
+    "sh_nic_3_4": "Leve - nicotina suave para utilizadores ocasionais.",
+    "sh_nic_5_6": "Médio - força equilibrada para utilizadores regulares.",
+    "sh_nic_7_8": "Mais forte - para utilizadores experientes, pode causar tonturas.",
+    "sh_nic_9_10": "Forte - força máxima recomendada para shisha, apenas para experientes."
   },
   "results": {
     "title": "A sua receita",
@@ -847,14 +850,6 @@
     "nic_12_20": "Para fumadores pesados, cigarros fortes, podem ocorrer náuseas sem experiência prévia.",
     "nic_21_35": "Nicotina alta - apenas para fumadores muito pesados ou sistemas pod. Sal de nicotina recomendado.",
     "nic_36_45": "Extremamente forte - apenas para sistemas pod com sal de nicotina. Risco de overdose!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Sem nicotina - experiência tradicional de shisha sem nicotina.",
-    "sh_nic_1_2": "Muito leve - toque suave de nicotina, adequado para iniciantes.",
-    "sh_nic_3_4": "Leve - nicotina suave para utilizadores ocasionais.",
-    "sh_nic_5_6": "Médio - força equilibrada para utilizadores regulares.",
-    "sh_nic_7_8": "Mais forte - para utilizadores experientes, pode causar tonturas.",
-    "sh_nic_9_10": "Forte - força máxima recomendada para shisha, apenas para experientes."
   },
   "flavor_descriptions": {
     "weak": "Sabor fraco ou ausente (recomendado {min}–{max}%)",

@@ -301,8 +301,8 @@
     "vg_label": "Dūmi (VG)",
     "pg_label": "Garša (PG)",
     "ratio_optimal": "Optimāla attiecība šišai - līdzsvaroti dūmi un garša",
-    "ratio_more_vg": "Vairāk dūmu, mazāk intensīva garša",
-    "ratio_more_pg": "Šķidrāks šķidrums, intensīvāka garša",
+    "ratio_more_vg": "👍 Biezāks dūms, laba vilkme. Aromātu garša var būt nedaudz klusinātā — pievienojiet vairāk aromāta stiprākai garšai.",
+    "ratio_more_pg": "⚠ Šķidrāks maisījums — mazāk dūmu, bet izteiktāka garša. Var nedaudz kairināt rīkli ilgāku sesiju laikā.",
     "flavor_label": "Aromāts",
     "flavor_total_warning": "(ieteicams 15-25%)",
     "flavor_double_apple": "Dubultā ābols",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Ļoti biezs maisījums — var sadegt uz oglēm. Apsveriet aromāta (PG bāze) pievienošanu labākai konsistencei.",
     "ratio_ideal_vg": "✅ Izcili — biezs dūms un laba garša. Ideāla attiecība lielākajai daļai šīšas maisījumu.",
     "ratio_balanced": "✅ Līdzsvarota attiecība — patīkams dūms un garša. Universāla bāze šīšai.",
-    "ratio_more_vg": "👍 Biezāks dūms, laba vilkme. Aromātu garša var būt nedaudz klusinātā — pievienojiet vairāk aromāta stiprākai garšai.",
-    "ratio_more_pg": "⚠ Šķidrāks maisījums — mazāk dūmu, bet izteiktāka garša. Var nedaudz kairināt rīkli ilgāku sesiju laikā.",
     "ratio_high_pg": "⚠ Pārāk šķidrs maisījums — vājš dūms, var kairināt rīkli. Pievienojiet glicerīnu biezākam dūmam un maigākai vilkmei.",
     "ratio_extreme_pg": "❌ Nav piemērots šīšai — gandrīz bez dūmiem, kairinās rīkli. Pievienojiet glicerīnu (vismaz 30 % VG).",
     "base_sweet_very_high": "Ļoti salds maisījums. Augsts saldinātāja saturs var būt pārāk intensīvs un nomākt citus aromātus. Iesakām samazināt zem 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Bez ūdens — maksimāls maisījuma blīvums.",
     "base_glyc_very_high": " Ļoti biezs maisījums pateicoties augstam glicerīnam — bagātīgs dūms.",
     "base_glyc_low": " Zems glicerīns — maisījums būs šķidrāks ar mazāku dūmu ražošanu.",
-    "base_glyc_none": " Bez glicerīna — minimāla dūmu ražošana, tikai saldinātājs un ūdens."
+    "base_glyc_none": " Bez glicerīna — minimāla dūmu ražošana, tikai saldinātājs un ūdens.",
+    "pure_pg_desc_0": "PG pastiprina garšu un atšķaida biezo maisījumu. Ieteicams 2–5 % smalkam pastiprinājumam.",
+    "pure_pg_desc_low": "Minimāls PG — smalks garšas pastiprinājums, maisījums paliek biezs.",
+    "pure_pg_desc_medium": "Vidējs PG — laba garšas intensitāte, maisījums ir šķidrāks un labāk uzsūcas tabakas.",
+    "pure_pg_desc_high": "Augstāks PG — spēcīga garša, bet uzmanīgi ar rīkles kairinājumu. Nepārsniedziet 15 % no kopējā PG.",
+    "pure_pg_no_vg_warning": "⚠ Bez glicerīna (VG) maisījums kairinās rīkli! Iesakām pievienot vismaz 15–20 % glicerīna."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotīna – tradicionāla šīšas pieredze bez nikotīna.",
-    "sh_nic_1_2": "Ļoti viegls – maigs nikotīna pieskāriens, piemērots iesācējiem.",
-    "sh_nic_3_4": "Viegls – maigs nikotīns gadījuma lietotājiem.",
-    "sh_nic_5_6": "Vidējs – līdzsvarots stiprums regulāriem lietotājiem.",
-    "sh_nic_7_8": "Stiprāks – pieredzējušiem lietotājiem, var izraisīt reiboni.",
-    "sh_nic_9_10": "Stiprs – maksimālais ieteicamais stiprums šīšai, tikai pieredzējušiem."
+    "sh_nic_0": "Bez nikotīna - tradicionālā ūdenspīpes pieredze bez nikotīna.",
+    "sh_nic_1_2": "Ļoti viegls - maigs nikotīna pieskāriens, piemērots iesācējiem.",
+    "sh_nic_3_4": "Viegls - maigs nikotīns neregulāriem lietotājiem.",
+    "sh_nic_5_6": "Vidējs - līdzsvarots stiprums regulāriem lietotājiem.",
+    "sh_nic_7_8": "Stiprāks - pieredzējušiem lietotājiem, var izraisīt reiboni.",
+    "sh_nic_9_10": "Stiprs - maksimālais ieteicamais stiprums ūdenspīpei, tikai pieredzējušiem."
   },
   "additive": {
     "coolant": "Dzesētājs (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Smagiem smēķētājiem, stipras cigaretes, nelabums var rasties bez iepriekšējas pieredzes.",
     "nic_21_35": "Augsts nikotīns - tikai ļoti smagiem smēķētājiem vai pod sistēmām. Nikotīna sāls ieteicama.",
     "nic_36_45": "Ekstrēmi stiprs - tikai pod sistēmām ar nikotīna sāli. Pārdozēšanas risks!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotīna - tradicionālā ūdenspīpes pieredze bez nikotīna.",
-    "sh_nic_1_2": "Ļoti viegls - maigs nikotīna pieskāriens, piemērots iesācējiem.",
-    "sh_nic_3_4": "Viegls - maigs nikotīns neregulāriem lietotājiem.",
-    "sh_nic_5_6": "Vidējs - līdzsvarots stiprums regulāriem lietotājiem.",
-    "sh_nic_7_8": "Stiprāks - pieredzējušiem lietotājiem, var izraisīt reiboni.",
-    "sh_nic_9_10": "Stiprs - maksimālais ieteicamais stiprums ūdenspīpei, tikai pieredzējušiem."
   },
   "flavor_descriptions": {
     "weak": "Vāja vai nav garšas (ieteicams {min}–{max}%)",

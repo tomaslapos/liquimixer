@@ -301,8 +301,8 @@
     "vg_label": "Rook (VG)",
     "pg_label": "Smaak (PG)",
     "ratio_optimal": "Optimale verhouding voor shisha - gebalanceerde rook en smaak",
-    "ratio_more_vg": "Meer rook, minder intense smaak",
-    "ratio_more_pg": "Dunnere vloeistof, intensere smaak",
+    "ratio_more_vg": "👍 Dikkere rook, goede trek. De smaak van aroma's kan licht gedempt zijn — voeg meer aroma toe als je een sterkere smaak wilt.",
+    "ratio_more_pg": "⚠ Dunner mengsel — minder rook, maar meer uitgesproken smaak. Kan licht irriteren in de keel bij langere sessies.",
     "flavor_label": "Aroma",
     "flavor_total_warning": "(aanbevolen 15-25%)",
     "flavor_double_apple": "Dubbele appel",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Zeer dik mengsel — kan verbranden op de kolen. Overweeg aroma (PG-basis) toe te voegen voor betere consistentie.",
     "ratio_ideal_vg": "✅ Uitstekend — dikke rook en goede smaak. Ideale verhouding voor de meeste shisha-mengsels.",
     "ratio_balanced": "✅ Evenwichtige verhouding — aangename rook en smaak. Universele basis voor shisha.",
-    "ratio_more_vg": "👍 Dikkere rook, goede trek. De smaak van aroma's kan licht gedempt zijn — voeg meer aroma toe als je een sterkere smaak wilt.",
-    "ratio_more_pg": "⚠ Dunner mengsel — minder rook, maar meer uitgesproken smaak. Kan licht irriteren in de keel bij langere sessies.",
     "ratio_high_pg": "⚠ Te dun mengsel — zwakke rook, kan de keel irriteren. Voeg glycerine toe voor dikkere rook en zachtere trek.",
     "ratio_extreme_pg": "❌ Niet geschikt voor shisha — bijna geen rook, zal de keel irriteren. Voeg glycerine toe (minstens 30 % VG).",
     "base_sweet_very_high": "Zeer zoet mengsel. Hoog zoetstofgehalte kan te intens zijn en andere aroma's overheersen. We raden aan onder 60 % te verminderen.",
@@ -482,15 +480,20 @@
     "base_water_none": " Zonder water — maximale dichtheid van het mengsel.",
     "base_glyc_very_high": " Zeer dik mengsel dankzij hoge glycerine — rijke rook.",
     "base_glyc_low": " Lage glycerine — het mengsel wordt dunner met minder rookproductie.",
-    "base_glyc_none": " Zonder glycerine — minimale rookproductie, alleen zoetstof en water."
+    "base_glyc_none": " Zonder glycerine — minimale rookproductie, alleen zoetstof en water.",
+    "pure_pg_desc_0": "PG versterkt de smaak en verdunt het dikke mengsel. Aanbevolen 2–5 % voor subtiele versterking.",
+    "pure_pg_desc_low": "Minimale PG — subtiele smaakversterking, mengsel blijft dik.",
+    "pure_pg_desc_medium": "Gemiddelde PG — goede smaakintensiteit, mengsel is dunner en wordt beter opgenomen door tabak.",
+    "pure_pg_desc_high": "Hogere PG — sterke smaak, maar let op keel-irritatie. Niet meer dan 15 % totaal PG.",
+    "pure_pg_no_vg_warning": "⚠ Zonder glycerine (VG) zal het mengsel de keel irriteren! We raden aan minstens 15–20 % glycerine toe te voegen."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Zonder nicotine – traditionele shisha-ervaring zonder nicotine.",
-    "sh_nic_1_2": "Zeer licht – zacht vleugje nicotine, geschikt voor beginners.",
-    "sh_nic_3_4": "Licht – milde nicotine voor incidentele gebruikers.",
-    "sh_nic_5_6": "Gemiddeld – evenwichtige sterkte voor regelmatige gebruikers.",
-    "sh_nic_7_8": "Sterker – voor ervaren gebruikers, kan duizeligheid veroorzaken.",
-    "sh_nic_9_10": "Sterk – maximale aanbevolen sterkte voor shisha, alleen voor ervaren gebruikers."
+    "sh_nic_0": "Geen nicotine - traditionele shisha-ervaring zonder nicotine.",
+    "sh_nic_1_2": "Zeer licht - zachte nicotine-aanraking, geschikt voor beginners.",
+    "sh_nic_3_4": "Licht - milde nicotine voor occasionele gebruikers.",
+    "sh_nic_5_6": "Medium - gebalanceerde sterkte voor regelmatige gebruikers.",
+    "sh_nic_7_8": "Sterker - voor ervaren gebruikers, kan duizeligheid veroorzaken.",
+    "sh_nic_9_10": "Sterk - maximale aanbevolen sterkte voor shisha, alleen voor ervaren gebruikers."
   },
   "additive": {
     "coolant": "Koelmiddel (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Voor zware rokers, sterke sigaretten, misselijkheid kan optreden zonder eerdere ervaring.",
     "nic_21_35": "Hoge nicotine - alleen voor zeer zware rokers of pod-systemen. Nicotinezout aanbevolen.",
     "nic_36_45": "Extreem sterk - alleen voor pod-systemen met nicotinezout. Overdosisrisico!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Geen nicotine - traditionele shisha-ervaring zonder nicotine.",
-    "sh_nic_1_2": "Zeer licht - zachte nicotine-aanraking, geschikt voor beginners.",
-    "sh_nic_3_4": "Licht - milde nicotine voor occasionele gebruikers.",
-    "sh_nic_5_6": "Medium - gebalanceerde sterkte voor regelmatige gebruikers.",
-    "sh_nic_7_8": "Sterker - voor ervaren gebruikers, kan duizeligheid veroorzaken.",
-    "sh_nic_9_10": "Sterk - maximale aanbevolen sterkte voor shisha, alleen voor ervaren gebruikers."
   },
   "flavor_descriptions": {
     "weak": "Zwakke of geen smaak (aanbevolen {min}–{max}%)",

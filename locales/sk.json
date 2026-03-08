@@ -301,8 +301,8 @@
     "vg_label": "Dym (VG)",
     "pg_label": "Chuť (PG)",
     "ratio_optimal": "Optimálny pomer pre shishu - vyvážený dym a chuť",
-    "ratio_more_vg": "Viac dymu, menej intenzívna chuť",
-    "ratio_more_pg": "Redší liquid, intenzívnejšia chuť",
+    "ratio_more_vg": "👍 Hustší dym, dobrý prieťah. Chuť príchutí môže byť mierne tlmená — pridajte viac príchute ak chcete silnejšiu chuť.",
+    "ratio_more_pg": "⚠ Redšia zmes — menej dymu, ale výraznejšia chuť. Môže ľahko škrabať v krku pri dlhšom fajčení.",
     "flavor_label": "Príchuť",
     "flavor_total_warning": "(odporúčané 15-25%)",
     "flavor_double_apple": "Double Apple",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Veľmi hustá zmes — môže sa pripaľovať na uhliach. Zvážte pridanie príchute (PG báza) pre lepšiu konzistenciu.",
     "ratio_ideal_vg": "✅ Výborne — hustý dym a dobrá chuť. Ideálny pomer pre väčšinu shisha zmesí.",
     "ratio_balanced": "✅ Vyvážený pomer — príjemný dym aj chuť. Univerzálny základ pre shishu.",
-    "ratio_more_vg": "👍 Hustší dym, dobrý prieťah. Chuť príchutí môže byť mierne tlmená — pridajte viac príchute ak chcete silnejšiu chuť.",
-    "ratio_more_pg": "⚠ Redšia zmes — menej dymu, ale výraznejšia chuť. Môže ľahko škrabať v krku pri dlhšom fajčení.",
     "ratio_high_pg": "⚠ Príliš riedka zmes — slabý dym, môže škrabať v krku. Pridajte glycerín pre hustší dym a jemnejší prieťah.",
     "ratio_extreme_pg": "❌ Nevhodné pre shishu — takmer bez dymu, bude drhnúť v krku. Pridajte glycerín (aspoň 30 % VG).",
     "base_sweet_very_high": "Veľmi sladká zmes. Vysoký podiel sladidla môže byť príliš intenzívny a prehluší ostatné príchute. Odporúčame znížiť pod 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Bez vody – maximálna hustota zmesi.",
     "base_glyc_very_high": " Veľmi hustá zmes vďaka vysokému glycerínu – vydatný dym.",
     "base_glyc_low": " Nízky glycerín – zmes bude redšia s menšou produkciou dymu.",
-    "base_glyc_none": " Bez glycerínu – minimálna produkcia dymu, iba sladidlo a voda."
+    "base_glyc_none": " Bez glycerínu – minimálna produkcia dymu, iba sladidlo a voda.",
+    "pure_pg_desc_0": "PG zvýrazní chuť príchute a zriedi hustú zmes. Odporúčané 2–5 % pre jemné zvýraznenie.",
+    "pure_pg_desc_low": "Minimálne PG — jemné zvýraznenie chuti príchute, zmes zostane hustá.",
+    "pure_pg_desc_medium": "Stredné PG — dobrá chuťová intenzita, zmes je tekutejšia a lepšie sa vstrebá do tabaku.",
+    "pure_pg_desc_high": "Vyššie PG — výrazná chuť, ale pozor na škrabanie v hrdle. Neprekračujte 15 % celkového PG.",
+    "pure_pg_no_vg_warning": "⚠ Bez glycerínu (VG) bude zmes škrabať v hrdle! Odporúčame pridať aspoň 15–20 % glycerínu."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotínu – tradičný shisha zážitok bez nikotínu.",
-    "sh_nic_1_2": "Veľmi ľahký – jemný nádych nikotínu, vhodné pre začiatočníkov.",
-    "sh_nic_3_4": "Ľahký – mierny nikotín pre príležitostných užívateľov.",
-    "sh_nic_5_6": "Stredný – vyvážená sila pre pravidelných užívateľov.",
-    "sh_nic_7_8": "Silnejší – pre skúsených užívateľov, môže spôsobiť závraty.",
-    "sh_nic_9_10": "Silný – maximálna odporúčaná sila pre shishu, iba pre skúsených."
+    "sh_nic_0": "Bez nikotínu - tradičný zážitok zo shisha bez nikotínu.",
+    "sh_nic_1_2": "Veľmi ľahký - jemný nádych nikotínu, vhodné pre začiatočníkov.",
+    "sh_nic_3_4": "Ľahký - mierny nikotín pre príležitostných používateľov.",
+    "sh_nic_5_6": "Stredný - vyvážená sila pre pravidelných používateľov.",
+    "sh_nic_7_8": "Silnejší - pre skúsených používateľov, môže spôsobiť závraty.",
+    "sh_nic_9_10": "Silný - maximálna odporúčaná sila pre shisha, iba pre skúsených."
   },
   "additive": {
     "coolant": "Chladivo (WS-23, Koolada)",
@@ -856,14 +859,6 @@
     "nic_12_20": "Pre silných fajčiarov, silné cigarety, bez predchádzajúcej skúsenosti hrozí nevoľnosť.",
     "nic_21_35": "Vysoký nikotín - iba pre veľmi silných fajčiarov alebo pod-systémy. Nikotínová soľ odporúčaná.",
     "nic_36_45": "Extrémne silný - iba pre pod-systémy s nikotínovou soľou. Nebezpečenstvo predávkovania!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotínu - tradičný zážitok zo shisha bez nikotínu.",
-    "sh_nic_1_2": "Veľmi ľahký - jemný nádych nikotínu, vhodné pre začiatočníkov.",
-    "sh_nic_3_4": "Ľahký - mierny nikotín pre príležitostných používateľov.",
-    "sh_nic_5_6": "Stredný - vyvážená sila pre pravidelných používateľov.",
-    "sh_nic_7_8": "Silnejší - pre skúsených používateľov, môže spôsobiť závraty.",
-    "sh_nic_9_10": "Silný - maximálna odporúčaná sila pre shisha, iba pre skúsených."
   },
   "flavor_descriptions": {
     "weak": "Slabá až žiadna chuť (odporúčané {min}–{max}%)",

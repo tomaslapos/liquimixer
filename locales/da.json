@@ -301,8 +301,8 @@
     "vg_label": "Røg (VG)",
     "pg_label": "Smag (PG)",
     "ratio_optimal": "Optimalt forhold for shisha - balanceret røg og smag",
-    "ratio_more_vg": "Mere røg, mindre intens smag",
-    "ratio_more_pg": "Tyndere væske, mere intens smag",
+    "ratio_more_vg": "👍 Tykkere røg, godt træk. Smagen af aromaer kan være let dæmpet — tilsæt mere aroma hvis du ønsker en stærkere smag.",
+    "ratio_more_pg": "⚠ Tyndere blanding — mindre røg, men mere udtalt smag. Kan let irritere halsen under længere sessioner.",
     "flavor_label": "Aroma",
     "flavor_total_warning": "(anbefalet 15-25%)",
     "flavor_double_apple": "Dobbelt æble",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Meget tyk blanding — kan brænde på kullene. Overvej at tilsætte aroma (PG-base) for bedre konsistens.",
     "ratio_ideal_vg": "✅ Fremragende — tyk røg og god smag. Ideelt forhold for de fleste shisha-blandinger.",
     "ratio_balanced": "✅ Afbalanceret forhold — behagelig røg og smag. Universel base til shisha.",
-    "ratio_more_vg": "👍 Tykkere røg, godt træk. Smagen af aromaer kan være let dæmpet — tilsæt mere aroma hvis du ønsker en stærkere smag.",
-    "ratio_more_pg": "⚠ Tyndere blanding — mindre røg, men mere udtalt smag. Kan let irritere halsen under længere sessioner.",
     "ratio_high_pg": "⚠ For tynd blanding — svag røg, kan irritere halsen. Tilsæt glycerin for tykkere røg og blødere træk.",
     "ratio_extreme_pg": "❌ Ikke egnet til shisha — næsten ingen røg, vil irritere halsen. Tilsæt glycerin (mindst 30 % VG).",
     "base_sweet_very_high": "Meget sød blanding. Højt sødemiddelindhold kan være for intenst og overdøve andre aromaer. Vi anbefaler at reducere under 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Uden vand — maksimal blandingens tæthed.",
     "base_glyc_very_high": " Meget tyk blanding takket være høj glycerin — rig røg.",
     "base_glyc_low": " Lav glycerin — blandingen bliver tyndere med mindre røgproduktion.",
-    "base_glyc_none": " Uden glycerin — minimal røgproduktion, kun sødemiddel og vand."
+    "base_glyc_none": " Uden glycerin — minimal røgproduktion, kun sødemiddel og vand.",
+    "pure_pg_desc_0": "PG forstærker smagen og fortynder den tykke blanding. Anbefalet 2–5 % for subtil forstærkning.",
+    "pure_pg_desc_low": "Minimal PG — subtil smagsforstærkning, blandingen forbliver tyk.",
+    "pure_pg_desc_medium": "Medium PG — god smagsintensitet, blandingen er tyndere og absorberes bedre i tobak.",
+    "pure_pg_desc_high": "Højere PG — stærk smag, men pas på halsirritation. Overskrid ikke 15 % total PG.",
+    "pure_pg_no_vg_warning": "⚠ Uden glycerin (VG) vil blandingen irritere halsen! Vi anbefaler at tilføje mindst 15–20 % glycerin."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Uden nikotin – traditionel shisha-oplevelse uden nikotin.",
-    "sh_nic_1_2": "Meget let – blid nikotinberøring, velegnet til begyndere.",
-    "sh_nic_3_4": "Let – mild nikotin til lejlighedsvise brugere.",
-    "sh_nic_5_6": "Medium – afbalanceret styrke til regelmæssige brugere.",
-    "sh_nic_7_8": "Stærkere – til erfarne brugere, kan forårsage svimmelhed.",
-    "sh_nic_9_10": "Stærk – maksimal anbefalet styrke til shisha, kun for erfarne."
+    "sh_nic_0": "Ingen nikotin - traditionel shisha-oplevelse uden nikotin.",
+    "sh_nic_1_2": "Meget let - blød nikotinberøring, velegnet til begyndere.",
+    "sh_nic_3_4": "Let - mild nikotin til lejlighedsvise brugere.",
+    "sh_nic_5_6": "Medium - afbalanceret styrke til regelmæssige brugere.",
+    "sh_nic_7_8": "Stærkere - til erfarne brugere, kan forårsage svimmelhed.",
+    "sh_nic_9_10": "Stærk - maksimal anbefalet styrke til shisha, kun til erfarne."
   },
   "additive": {
     "coolant": "Kølemiddel (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Til storrygere, stærke cigaretter, kvalme kan forekomme uden tidligere erfaring.",
     "nic_21_35": "Høj nikotin - kun til meget stærke rygere eller pod-systemer. Nikotinsalt anbefales.",
     "nic_36_45": "Ekstremt stærk - kun til pod-systemer med nikotinsalt. Risiko for overdosis!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Ingen nikotin - traditionel shisha-oplevelse uden nikotin.",
-    "sh_nic_1_2": "Meget let - blød nikotinberøring, velegnet til begyndere.",
-    "sh_nic_3_4": "Let - mild nikotin til lejlighedsvise brugere.",
-    "sh_nic_5_6": "Medium - afbalanceret styrke til regelmæssige brugere.",
-    "sh_nic_7_8": "Stærkere - til erfarne brugere, kan forårsage svimmelhed.",
-    "sh_nic_9_10": "Stærk - maksimal anbefalet styrke til shisha, kun til erfarne."
   },
   "flavor_descriptions": {
     "weak": "Svag eller ingen smag (anbefalet {min}–{max}%)",

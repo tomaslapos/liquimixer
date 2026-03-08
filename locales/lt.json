@@ -301,8 +301,8 @@
     "vg_label": "Dūmai (VG)",
     "pg_label": "Skonis (PG)",
     "ratio_optimal": "Optimalus santykis shishai - subalansuoti dūmai ir skonis",
-    "ratio_more_vg": "Daugiau dūmų, mažiau intensyvus skonis",
-    "ratio_more_pg": "Skystesnis skystis, intensyvesnis skonis",
+    "ratio_more_vg": "👍 Tirštesnis dūmas, geras traukimas. Aromatų skonis gali būti šiek tiek nuslopintas — pridėkite daugiau aromato, jei norite stipresnio skonio.",
+    "ratio_more_pg": "⚠ Skystesnis mišinys — mažiau dūmų, bet ryškesnis skonis. Gali šiek tiek dirginti gerklę ilgesnių seansų metu.",
     "flavor_label": "Aromatas",
     "flavor_total_warning": "(rekomenduojama 15-25%)",
     "flavor_double_apple": "Dvigubas obuolys",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Labai tirštas mišinys — gali degti ant anglių. Apsvarstykite aromato (PG bazė) pridėjimą geresniam tirštumui.",
     "ratio_ideal_vg": "✅ Puiku — tirštas dūmas ir geras skonis. Idealus santykis daugumai šišos mišinių.",
     "ratio_balanced": "✅ Subalansuotas santykis — malonus dūmas ir skonis. Universali bazė šišai.",
-    "ratio_more_vg": "👍 Tirštesnis dūmas, geras traukimas. Aromatų skonis gali būti šiek tiek nuslopintas — pridėkite daugiau aromato, jei norite stipresnio skonio.",
-    "ratio_more_pg": "⚠ Skystesnis mišinys — mažiau dūmų, bet ryškesnis skonis. Gali šiek tiek dirginti gerklę ilgesnių seansų metu.",
     "ratio_high_pg": "⚠ Per skystas mišinys — silpnas dūmas, gali dirginti gerklę. Pridėkite glicerino tirštesniam dūmui ir švelnesniam traukimui.",
     "ratio_extreme_pg": "❌ Netinka šišai — beveik be dūmų, dirgins gerklę. Pridėkite glicerino (bent 30 % VG).",
     "base_sweet_very_high": "Labai saldus mišinys. Didelis saldiklio kiekis gali būti per intensyvus ir nuslopinti kitus aromatus. Rekomenduojame sumažinti žemiau 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Be vandens — maksimalus mišinio tirštis.",
     "base_glyc_very_high": " Labai tirštas mišinys dėl didelio glicerino — gausus dūmas.",
     "base_glyc_low": " Mažas glicerinas — mišinys bus skystesnis su mažesne dūmų gamyba.",
-    "base_glyc_none": " Be glicerino — minimali dūmų gamyba, tik saldiklis ir vanduo."
+    "base_glyc_none": " Be glicerino — minimali dūmų gamyba, tik saldiklis ir vanduo.",
+    "pure_pg_desc_0": "PG sustiprina skonį ir praskiedžia tirštą mišinį. Rekomenduojama 2–5 % subtiliam sustiprinimui.",
+    "pure_pg_desc_low": "Minimalus PG — subtilus skonio sustiprinimas, mišinys lieka tirštas.",
+    "pure_pg_desc_medium": "Vidutinis PG — geras skonio intensyvumas, mišinys skystesnis ir geriau absorbuojamas į tabaką.",
+    "pure_pg_desc_high": "Aukštesnis PG — stiprus skonis, bet atsargiai su gerklės dirginimas. Neviršykite 15 % bendro PG.",
+    "pure_pg_no_vg_warning": "⚠ Be glicerino (VG) mišinys dirgins gerklę! Rekomenduojame pridėti bent 15–20 % glicerino."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Be nikotino – tradicinė šišos patirtis be nikotino.",
-    "sh_nic_1_2": "Labai lengvas – švelnus nikotino prisilietimas, tinkamas pradedantiesiems.",
-    "sh_nic_3_4": "Lengvas – švelnus nikotinas retkarčiais naudojantiems.",
-    "sh_nic_5_6": "Vidutinis – subalansuotas stiprumas reguliariems naudotojams.",
-    "sh_nic_7_8": "Stipresnis – patyrusiems naudotojams, gali sukelti galvos svaigimą.",
-    "sh_nic_9_10": "Stiprus – maksimalus rekomenduojamas stiprumas šišai, tik patyrusiems."
+    "sh_nic_0": "Be nikotino - tradicinė šišos patirtis be nikotino.",
+    "sh_nic_1_2": "Labai lengvas - švelnus nikotino prisilietimas, tinka pradedantiesiems.",
+    "sh_nic_3_4": "Lengvas - švelnus nikotinas retkarčiais vartotojams.",
+    "sh_nic_5_6": "Vidutinis - subalansuota stiprumas nuolatiniams vartotojams.",
+    "sh_nic_7_8": "Stipresnis - patyrusiems vartotojams, gali sukelti svaigulį.",
+    "sh_nic_9_10": "Stiprus - maksimalus rekomenduojamas stiprumas šišai, tik patyrusiems."
   },
   "additive": {
     "coolant": "Aušiklis (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Stipriems rūkaliams, stiprioms cigaretėms, gali pasireikšti pykinimas be ankstesnės patirties.",
     "nic_21_35": "Aukštas nikotinas - tik labai stipriems rūkaliams arba pod sistemoms. Rekomenduojama nikotino druska.",
     "nic_36_45": "Itin stiprus - tik pod sistemoms su nikotino druska. Perdozavimo pavojus!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Be nikotino - tradicinė šišos patirtis be nikotino.",
-    "sh_nic_1_2": "Labai lengvas - švelnus nikotino prisilietimas, tinka pradedantiesiems.",
-    "sh_nic_3_4": "Lengvas - švelnus nikotinas retkarčiais vartotojams.",
-    "sh_nic_5_6": "Vidutinis - subalansuota stiprumas nuolatiniams vartotojams.",
-    "sh_nic_7_8": "Stipresnis - patyrusiems vartotojams, gali sukelti svaigulį.",
-    "sh_nic_9_10": "Stiprus - maksimalus rekomenduojamas stiprumas šišai, tik patyrusiems."
   },
   "flavor_descriptions": {
     "weak": "Silpnas arba jokio skonio (rekomenduojama {min}–{max}%)",

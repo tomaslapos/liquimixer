@@ -301,8 +301,8 @@
     "vg_label": "Fumée (VG)",
     "pg_label": "Saveur (PG)",
     "ratio_optimal": "Ratio optimal pour chicha - fumée et saveur équilibrées",
-    "ratio_more_vg": "Plus de fumée, saveur moins intense",
-    "ratio_more_pg": "Liquide plus fluide, saveur plus intense",
+    "ratio_more_vg": "👍 Fumée plus épaisse, bon tirage. Le goût des arômes peut être légèrement atténué — ajoutez plus d'arôme si vous voulez un goût plus fort.",
+    "ratio_more_pg": "⚠ Mélange plus liquide — moins de fumée, mais goût plus prononcé. Peut légèrement irriter la gorge lors de longues sessions.",
     "flavor_label": "Arôme",
     "flavor_total_warning": "(recommandé 15-25%)",
     "flavor_double_apple": "Double pomme",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Mélange très épais — peut brûler sur les charbons. Envisagez d'ajouter un arôme (base PG) pour une meilleure consistance.",
     "ratio_ideal_vg": "✅ Excellent — fumée épaisse et bon goût. Ratio idéal pour la plupart des mélanges chicha.",
     "ratio_balanced": "✅ Ratio équilibré — fumée agréable et bon goût. Base universelle pour la chicha.",
-    "ratio_more_vg": "👍 Fumée plus épaisse, bon tirage. Le goût des arômes peut être légèrement atténué — ajoutez plus d'arôme si vous voulez un goût plus fort.",
-    "ratio_more_pg": "⚠ Mélange plus liquide — moins de fumée, mais goût plus prononcé. Peut légèrement irriter la gorge lors de longues sessions.",
     "ratio_high_pg": "⚠ Mélange trop liquide — fumée faible, peut irriter la gorge. Ajoutez de la glycérine pour une fumée plus épaisse et un tirage plus doux.",
     "ratio_extreme_pg": "❌ Non adapté pour la chicha — presque pas de fumée, irritera la gorge. Ajoutez de la glycérine (au moins 30 % VG).",
     "base_sweet_very_high": "Mélange très sucré. La forte teneur en édulcorant peut être trop intense et couvrir les autres arômes. Nous recommandons de réduire en dessous de 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Sans eau — densité maximale du mélange.",
     "base_glyc_very_high": " Mélange très épais grâce à la glycérine élevée — fumée riche.",
     "base_glyc_low": " Glycérine faible — le mélange sera plus liquide avec moins de fumée.",
-    "base_glyc_none": " Sans glycérine — production de fumée minimale, uniquement édulcorant et eau."
+    "base_glyc_none": " Sans glycérine — production de fumée minimale, uniquement édulcorant et eau.",
+    "pure_pg_desc_0": "Le PG renforce la saveur et dilue le mélange épais. Recommandé 2–5 % pour un renforcement subtil.",
+    "pure_pg_desc_low": "PG minimal — renforcement subtil de la saveur, le mélange reste épais.",
+    "pure_pg_desc_medium": "PG moyen — bonne intensité de saveur, le mélange est plus fluide et mieux absorbé par le tabac.",
+    "pure_pg_desc_high": "PG élevé — saveur forte, mais attention à l'irritation de la gorge. Ne pas dépasser 15 % de PG total.",
+    "pure_pg_no_vg_warning": "⚠ Sans glycérine (VG) le mélange sera irritant pour la gorge ! Nous recommandons d'ajouter au moins 15–20 % de glycérine."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Sans nicotine – expérience chicha traditionnelle sans nicotine.",
-    "sh_nic_1_2": "Très léger – touche délicate de nicotine, adapté aux débutants.",
-    "sh_nic_3_4": "Léger – nicotine douce pour les utilisateurs occasionnels.",
-    "sh_nic_5_6": "Moyen – force équilibrée pour les utilisateurs réguliers.",
-    "sh_nic_7_8": "Plus fort – pour les utilisateurs expérimentés, peut causer des vertiges.",
-    "sh_nic_9_10": "Fort – force maximale recommandée pour la chicha, uniquement pour les expérimentés."
+    "sh_nic_0": "Sans nicotine - expérience shisha traditionnelle sans nicotine.",
+    "sh_nic_1_2": "Très léger - touche de nicotine douce, adapté aux débutants.",
+    "sh_nic_3_4": "Léger - nicotine légère pour utilisateurs occasionnels.",
+    "sh_nic_5_6": "Moyen - force équilibrée pour utilisateurs réguliers.",
+    "sh_nic_7_8": "Plus fort - pour utilisateurs expérimentés, peut causer des vertiges.",
+    "sh_nic_9_10": "Fort - force maximale recommandée pour shisha, uniquement pour les expérimentés."
   },
   "additive": {
     "coolant": "Refroidissant (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Pour les gros fumeurs, cigarettes fortes, des nausées peuvent survenir sans expérience préalable.",
     "nic_21_35": "Nicotine élevée - uniquement pour les très gros fumeurs ou les systèmes pod. Sel de nicotine recommandé.",
     "nic_36_45": "Extrêmement fort - uniquement pour les systèmes pod avec sel de nicotine. Risque de surdosage !"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Sans nicotine - expérience shisha traditionnelle sans nicotine.",
-    "sh_nic_1_2": "Très léger - touche de nicotine douce, adapté aux débutants.",
-    "sh_nic_3_4": "Léger - nicotine légère pour utilisateurs occasionnels.",
-    "sh_nic_5_6": "Moyen - force équilibrée pour utilisateurs réguliers.",
-    "sh_nic_7_8": "Plus fort - pour utilisateurs expérimentés, peut causer des vertiges.",
-    "sh_nic_9_10": "Fort - force maximale recommandée pour shisha, uniquement pour les expérimentés."
   },
   "flavor_descriptions": {
     "weak": "Saveur faible ou absente (recommandé {min}–{max}%)",

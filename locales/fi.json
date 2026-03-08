@@ -301,8 +301,8 @@
     "vg_label": "Savu (VG)",
     "pg_label": "Maku (PG)",
     "ratio_optimal": "Optimaalinen suhde shishalle - tasapainoinen savu ja maku",
-    "ratio_more_vg": "Enemmän savua, vähemmän intensiivinen maku",
-    "ratio_more_pg": "Ohuempi neste, intensiivisempi maku",
+    "ratio_more_vg": "👍 Paksumpi savu, hyvä veto. Aromien maku voi olla hieman vaimennettu — lisää enemmän aromia jos haluat voimakkaamman maun.",
+    "ratio_more_pg": "⚠ Ohuempi seos — vähemmän savua, mutta voimakkaampi maku. Voi ärsyttää kurkkua hieman pidempien sessioiden aikana.",
     "flavor_label": "Aromi",
     "flavor_total_warning": "(suositeltu 15-25%)",
     "flavor_double_apple": "Tuplaomena",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Hyvin paksu seos — voi palaa hiilillä. Harkitse aromin (PG-pohja) lisäämistä paremman koostumuksen saavuttamiseksi.",
     "ratio_ideal_vg": "✅ Erinomainen — tiheä savu ja hyvä maku. Ihanteellinen suhde useimmille vesipiippu­seoksille.",
     "ratio_balanced": "✅ Tasapainoinen suhde — miellyttävä savu ja maku. Yleiskäyttöinen pohja vesipiipulle.",
-    "ratio_more_vg": "👍 Paksumpi savu, hyvä veto. Aromien maku voi olla hieman vaimennettu — lisää enemmän aromia jos haluat voimakkaamman maun.",
-    "ratio_more_pg": "⚠ Ohuempi seos — vähemmän savua, mutta voimakkaampi maku. Voi ärsyttää kurkkua hieman pidempien sessioiden aikana.",
     "ratio_high_pg": "⚠ Liian ohut seos — heikko savu, voi ärsyttää kurkkua. Lisää glyseriiniä paksumman savun ja pehmeämmän vedon saamiseksi.",
     "ratio_extreme_pg": "❌ Ei sovellu vesipiipulle — lähes ei savua, ärsyttää kurkkua. Lisää glyseriiniä (vähintään 30 % VG).",
     "base_sweet_very_high": "Hyvin makea seos. Korkea makeutusainepitoisuus voi olla liian intensiivinen ja peittää muut aromit. Suosittelemme vähentämään alle 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Ilman vettä — seoksen maksimitiheys.",
     "base_glyc_very_high": " Hyvin paksu seos korkean glyseriinin ansiosta — runsas savu.",
     "base_glyc_low": " Matala glyseriini — seos on ohuempi ja savuntuotanto vähäisempi.",
-    "base_glyc_none": " Ilman glyseriiniä — minimaalinen savuntuotanto, vain makeutusaine ja vesi."
+    "base_glyc_none": " Ilman glyseriiniä — minimaalinen savuntuotanto, vain makeutusaine ja vesi.",
+    "pure_pg_desc_0": "PG vahvistaa makua ja ohentaa paksua seosta. Suositeltu 2–5 % hienovaraiseen vahvistukseen.",
+    "pure_pg_desc_low": "Minimaalinen PG — hienovarainen makuvahvistus, seos pysyy paksuna.",
+    "pure_pg_desc_medium": "Keskitasoinen PG — hyvä makuintensiteetti, seos on ohuempaa ja imeytyy paremmin tupakkaan.",
+    "pure_pg_desc_high": "Korkeampi PG — voimakas maku, mutta varo kurkun ärsytystä. Älä ylitä 15 % kokonais-PG:tä.",
+    "pure_pg_no_vg_warning": "⚠ Ilman glyserolia (VG) seos ärsyttää kurkkua! Suosittelemme lisäämään vähintään 15–20 % glyserolia."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Ilman nikotiinia – perinteinen vesipiippukokemus ilman nikotiinia.",
-    "sh_nic_1_2": "Hyvin kevyt – lempeä nikotiinin kosketus, sopii aloittelijoille.",
-    "sh_nic_3_4": "Kevyt – mieto nikotiini satunnaisille käyttäjille.",
-    "sh_nic_5_6": "Keskivahva – tasapainoinen vahvuus säännöllisille käyttäjille.",
-    "sh_nic_7_8": "Vahvempi – kokeneille käyttäjille, voi aiheuttaa huimausta.",
-    "sh_nic_9_10": "Vahva – suurin suositeltu vahvuus vesipiipulle, vain kokeneille."
+    "sh_nic_0": "Ei nikotiinia - perinteinen shisha-kokemus ilman nikotiinia.",
+    "sh_nic_1_2": "Erittäin kevyt - pehmeä nikotiinin kosketus, sopii aloittelijoille.",
+    "sh_nic_3_4": "Kevyt - mieto nikotiini satunnaisille käyttäjille.",
+    "sh_nic_5_6": "Keskivahva - tasapainoinen vahvuus säännöllisille käyttäjille.",
+    "sh_nic_7_8": "Vahvempi - kokeneille käyttäjille, voi aiheuttaa huimausta.",
+    "sh_nic_9_10": "Vahva - maksimi suositeltu vahvuus shishalle, vain kokeneille."
   },
   "additive": {
     "coolant": "Jäähdytin (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Vahvoille tupakoijille, vahvat savukkeet, pahoinvointia voi esiintyä ilman aiempaa kokemusta.",
     "nic_21_35": "Korkea nikotiini - vain erittäin vahvoille tupakoijille tai pod-järjestelmille. Nikotiinisuolaa suositellaan.",
     "nic_36_45": "Erittäin vahva - vain pod-järjestelmille nikotiinisuolalla. Yliannostuksen vaara!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Ei nikotiinia - perinteinen shisha-kokemus ilman nikotiinia.",
-    "sh_nic_1_2": "Erittäin kevyt - pehmeä nikotiinin kosketus, sopii aloittelijoille.",
-    "sh_nic_3_4": "Kevyt - mieto nikotiini satunnaisille käyttäjille.",
-    "sh_nic_5_6": "Keskivahva - tasapainoinen vahvuus säännöllisille käyttäjille.",
-    "sh_nic_7_8": "Vahvempi - kokeneille käyttäjille, voi aiheuttaa huimausta.",
-    "sh_nic_9_10": "Vahva - maksimi suositeltu vahvuus shishalle, vain kokeneille."
   },
   "flavor_descriptions": {
     "weak": "Heikko tai ei makua (suositeltu {min}–{max}%)",

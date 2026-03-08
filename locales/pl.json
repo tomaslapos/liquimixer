@@ -301,8 +301,8 @@
     "vg_label": "Dym (VG)",
     "pg_label": "Smak (PG)",
     "ratio_optimal": "Optymalny stosunek dla shishy - zrównoważony dym i smak",
-    "ratio_more_vg": "Więcej dymu, mniej intensywny smak",
-    "ratio_more_pg": "Rzadsza ciecz, intensywniejszy smak",
+    "ratio_more_vg": "👍 Gęstszy dym, dobry ciąg. Smak aromatów może być lekko stłumiony — dodaj więcej aromatu jeśli chcesz mocniejszy smak.",
+    "ratio_more_pg": "⚠ Rzadsza mieszanka — mniej dymu, ale wyrazistszy smak. Może lekko podrażniać gardło przy dłuższym paleniu.",
     "flavor_label": "Aromat",
     "flavor_total_warning": "(zalecane 15-25%)",
     "flavor_double_apple": "Podwójne jabłko",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Bardzo gęsta mieszanka — może się przypalać na węgielkach. Rozważ dodanie aromatu (baza PG) dla lepszej konsystencji.",
     "ratio_ideal_vg": "✅ Doskonale — gęsty dym i dobry smak. Idealny stosunek dla większości mieszanek shisha.",
     "ratio_balanced": "✅ Zrównoważony stosunek — przyjemny dym i smak. Uniwersalna baza do shishy.",
-    "ratio_more_vg": "👍 Gęstszy dym, dobry ciąg. Smak aromatów może być lekko stłumiony — dodaj więcej aromatu jeśli chcesz mocniejszy smak.",
-    "ratio_more_pg": "⚠ Rzadsza mieszanka — mniej dymu, ale wyrazistszy smak. Może lekko podrażniać gardło przy dłuższym paleniu.",
     "ratio_high_pg": "⚠ Zbyt rzadka mieszanka — słaby dym, może podrażniać gardło. Dodaj glicerynę dla gęstszego dymu i łagodniejszego ciągu.",
     "ratio_extreme_pg": "❌ Nieodpowiednie do shishy — prawie bez dymu, będzie drażnić gardło. Dodaj glicerynę (co najmniej 30 % VG).",
     "base_sweet_very_high": "Bardzo słodka mieszanka. Wysoka zawartość słodzika może być zbyt intensywna i zagłuszy inne aromaty. Zalecamy zmniejszenie poniżej 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Bez wody — maksymalna gęstość mieszanki.",
     "base_glyc_very_high": " Bardzo gęsta mieszanka dzięki wysokiej glicerynie — bogaty dym.",
     "base_glyc_low": " Niska gliceryna — mieszanka będzie rzadsza z mniejszą produkcją dymu.",
-    "base_glyc_none": " Bez gliceryny — minimalna produkcja dymu, tylko słodzik i woda."
+    "base_glyc_none": " Bez gliceryny — minimalna produkcja dymu, tylko słodzik i woda.",
+    "pure_pg_desc_0": "PG wzmacnia smak i rozrzedza gęstą mieszankę. Zalecane 2–5 % dla delikatnego wzmocnienia.",
+    "pure_pg_desc_low": "Minimalne PG — delikatne wzmocnienie smaku, mieszanka pozostaje gęsta.",
+    "pure_pg_desc_medium": "Średnie PG — dobra intensywność smaku, mieszanka jest rzadsza i lepiej wchłania się w tytoń.",
+    "pure_pg_desc_high": "Wyższe PG — mocny smak, ale uwaga na drapanie w gardle. Nie przekraczaj 15 % całkowitego PG.",
+    "pure_pg_no_vg_warning": "⚠ Bez gliceryny (VG) mieszanka będzie drapać w gardle! Zalecamy dodanie co najmniej 15–20 % gliceryny."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotyny – tradycyjne doświadczenie shisha bez nikotyny.",
-    "sh_nic_1_2": "Bardzo lekka – delikatny dotyk nikotyny, odpowiednia dla początkujących.",
-    "sh_nic_3_4": "Lekka – łagodna nikotyna dla okazjonalnych użytkowników.",
-    "sh_nic_5_6": "Średnia – zrównoważona siła dla regularnych użytkowników.",
-    "sh_nic_7_8": "Mocniejsza – dla doświadczonych użytkowników, może powodować zawroty głowy.",
-    "sh_nic_9_10": "Mocna – maksymalna zalecana siła dla shishy, tylko dla doświadczonych."
+    "sh_nic_0": "Bez nikotyny - tradycyjne doświadczenie shisha bez nikotyny.",
+    "sh_nic_1_2": "Bardzo lekka - delikatny dotyk nikotyny, odpowiedni dla początkujących.",
+    "sh_nic_3_4": "Lekka - łagodna nikotyna dla okazjonalnych użytkowników.",
+    "sh_nic_5_6": "Średnia - zrównoważona siła dla regularnych użytkowników.",
+    "sh_nic_7_8": "Silniejsza - dla doświadczonych użytkowników, może powodować zawroty głowy.",
+    "sh_nic_9_10": "Mocna - maksymalna zalecana siła dla shisha, tylko dla doświadczonych."
   },
   "additive": {
     "coolant": "Chłodzący (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Dla ciężkich palaczy, mocnych papierosów, mogą wystąpić nudności bez wcześniejszego doświadczenia.",
     "nic_21_35": "Wysoka nikotyna - tylko dla bardzo ciężkich palaczy lub systemów pod. Zalecana sól nikotynowa.",
     "nic_36_45": "Ekstremalnie mocna - tylko dla systemów pod z solą nikotynową. Ryzyko przedawkowania!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotyny - tradycyjne doświadczenie shisha bez nikotyny.",
-    "sh_nic_1_2": "Bardzo lekka - delikatny dotyk nikotyny, odpowiedni dla początkujących.",
-    "sh_nic_3_4": "Lekka - łagodna nikotyna dla okazjonalnych użytkowników.",
-    "sh_nic_5_6": "Średnia - zrównoważona siła dla regularnych użytkowników.",
-    "sh_nic_7_8": "Silniejsza - dla doświadczonych użytkowników, może powodować zawroty głowy.",
-    "sh_nic_9_10": "Mocna - maksymalna zalecana siła dla shisha, tylko dla doświadczonych."
   },
   "flavor_descriptions": {
     "weak": "Słaby lub brak smaku (zalecane {min}–{max}%)",

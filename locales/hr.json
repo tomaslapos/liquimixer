@@ -301,8 +301,8 @@
     "vg_label": "Dim (VG)",
     "pg_label": "Okus (PG)",
     "ratio_optimal": "Optimalan omjer za shishu - uravnotežen dim i okus",
-    "ratio_more_vg": "Više dima, manje intenzivan okus",
-    "ratio_more_pg": "Rijeđa tekućina, intenzivniji okus",
+    "ratio_more_vg": "👍 Gušći dim, dobar povlak. Okus aroma može biti blago prigušen — dodajte više arome ako želite jači okus.",
+    "ratio_more_pg": "⚠ Rjeđa mješavina — manje dima, ali izraženiji okus. Može blago grebati grlo tijekom dužeg pušenja.",
     "flavor_label": "Aroma",
     "flavor_total_warning": "(preporučeno 15-25%)",
     "flavor_double_apple": "Dvostruka jabuka",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Vrlo gusta mješavina — može zagorjeti na ugljenima. Razmislite o dodavanju arome (PG baza) za bolju konzistenciju.",
     "ratio_ideal_vg": "✅ Izvrsno — gusti dim i dobar okus. Idealan omjer za većinu shisha mješavina.",
     "ratio_balanced": "✅ Uravnotežen omjer — ugodan dim i okus. Univerzalna baza za shishu.",
-    "ratio_more_vg": "👍 Gušći dim, dobar povlak. Okus aroma može biti blago prigušen — dodajte više arome ako želite jači okus.",
-    "ratio_more_pg": "⚠ Rjeđa mješavina — manje dima, ali izraženiji okus. Može blago grebati grlo tijekom dužeg pušenja.",
     "ratio_high_pg": "⚠ Previše rijetka mješavina — slab dim, može grebati grlo. Dodajte glicerin za gušći dim i nježniji povlak.",
     "ratio_extreme_pg": "❌ Nije pogodno za shishu — gotovo bez dima, grebat će grlo. Dodajte glicerin (najmanje 30 % VG).",
     "base_sweet_very_high": "Vrlo slatka mješavina. Visok udio zaslađivača može biti previše intenzivan i zagušiti ostale arome. Preporučujemo smanjiti ispod 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Bez vode — maksimalna gustoća mješavine.",
     "base_glyc_very_high": " Vrlo gusta mješavina zahvaljujući visokom glicerinu — bogat dim.",
     "base_glyc_low": " Nizak glicerin — mješavina će biti rjeđa s manjom produkcijom dima.",
-    "base_glyc_none": " Bez glicerina — minimalna produkcija dima, samo zaslađivač i voda."
+    "base_glyc_none": " Bez glicerina — minimalna produkcija dima, samo zaslađivač i voda.",
+    "pure_pg_desc_0": "PG pojačava okus i razrjeđuje gustu smjesu. Preporučeno 2–5 % za suptilno pojačanje.",
+    "pure_pg_desc_low": "Minimalni PG — suptilno pojačanje okusa, smjesa ostaje gusta.",
+    "pure_pg_desc_medium": "Srednji PG — dobar intenzitet okusa, smjesa je rjeđa i bolje se upija u duhan.",
+    "pure_pg_desc_high": "Viši PG — jak okus, ali pazite na iritaciju grla. Ne prelazite 15 % ukupnog PG.",
+    "pure_pg_no_vg_warning": "⚠ Bez glicerina (VG) smjesa će iritirati grlo! Preporučujemo dodati najmanje 15–20 % glicerina."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotina – tradicionalno shisha iskustvo bez nikotina.",
-    "sh_nic_1_2": "Vrlo lagano – nježan dodir nikotina, pogodno za početnike.",
-    "sh_nic_3_4": "Lagano – blagi nikotin za povremene korisnike.",
-    "sh_nic_5_6": "Srednje – uravnotežena jačina za redovite korisnike.",
-    "sh_nic_7_8": "Jače – za iskusne korisnike, može uzrokovati vrtoglavicu.",
-    "sh_nic_9_10": "Jako – maksimalna preporučena jačina za shishu, samo za iskusne."
+    "sh_nic_0": "Bez nikotina - tradicionalno iskustvo shishe bez nikotina.",
+    "sh_nic_1_2": "Vrlo lagano - nježan dodir nikotina, pogodno za početnike.",
+    "sh_nic_3_4": "Lagano - blag nikotin za povremene korisnike.",
+    "sh_nic_5_6": "Srednje - uravnotežena jačina za redovite korisnike.",
+    "sh_nic_7_8": "Jače - za iskusne korisnike, može uzrokovati vrtoglavicu.",
+    "sh_nic_9_10": "Jako - maksimalna preporučena jačina za shishu, samo za iskusne."
   },
   "additive": {
     "coolant": "Hladilo (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Za teške pušače, jake cigarete, mučnina se može pojaviti bez prethodnog iskustva.",
     "nic_21_35": "Visoki nikotin - samo za vrlo teške pušače ili pod sustave. Preporučuje se nikotinska sol.",
     "nic_36_45": "Ekstremno jak - samo za pod sustave s nikotinskom soli. Rizik od predoziranja!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotina - tradicionalno iskustvo shishe bez nikotina.",
-    "sh_nic_1_2": "Vrlo lagano - nježan dodir nikotina, pogodno za početnike.",
-    "sh_nic_3_4": "Lagano - blag nikotin za povremene korisnike.",
-    "sh_nic_5_6": "Srednje - uravnotežena jačina za redovite korisnike.",
-    "sh_nic_7_8": "Jače - za iskusne korisnike, može uzrokovati vrtoglavicu.",
-    "sh_nic_9_10": "Jako - maksimalna preporučena jačina za shishu, samo za iskusne."
   },
   "flavor_descriptions": {
     "weak": "Slab ili nepostojeći okus (preporučeno {min}–{max}%)",

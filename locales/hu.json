@@ -301,8 +301,8 @@
     "vg_label": "Füst (VG)",
     "pg_label": "Íz (PG)",
     "ratio_optimal": "Optimális arány shishához - kiegyensúlyozott füst és íz",
-    "ratio_more_vg": "Több füst, kevésbé intenzív íz",
-    "ratio_more_pg": "Hígabb folyadék, intenzívebb íz",
+    "ratio_more_vg": "👍 Sűrűbb füst, jó szívás. Az íz kissé tompított lehet — adjon hozzá több aromát ha erősebb ízt szeretne.",
+    "ratio_more_pg": "⚠ Hígabb keverék — kevesebb füst, de kifejezettebb íz. Hosszabb szívás során enyhén kaparhatja a torkot.",
     "flavor_label": "Aroma",
     "flavor_total_warning": "(ajánlott 15-25%)",
     "flavor_double_apple": "Dupla alma",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Nagyon sűrű keverék — megéghet a szénen. Fontolja meg aroma (PG-alap) hozzáadását a jobb állaghoz.",
     "ratio_ideal_vg": "✅ Kiváló — sűrű füst és jó íz. Ideális arány a legtöbb shisha keverékhez.",
     "ratio_balanced": "✅ Kiegyensúlyozott arány — kellemes füst és íz. Univerzális alap shishához.",
-    "ratio_more_vg": "👍 Sűrűbb füst, jó szívás. Az íz kissé tompított lehet — adjon hozzá több aromát ha erősebb ízt szeretne.",
-    "ratio_more_pg": "⚠ Hígabb keverék — kevesebb füst, de kifejezettebb íz. Hosszabb szívás során enyhén kaparhatja a torkot.",
     "ratio_high_pg": "⚠ Túl híg keverék — gyenge füst, kaparhatja a torkot. Adjon hozzá glicerint sűrűbb füstért és lágyabb szívásért.",
     "ratio_extreme_pg": "❌ Nem alkalmas shishához — szinte nincs füst, kaparni fogja a torkot. Adjon hozzá glicerint (legalább 30 % VG).",
     "base_sweet_very_high": "Nagyon édes keverék. A magas édesítőtartalom túl intenzív lehet és elnyomja a többi aromát. Javasoljuk 60 % alá csökkenteni.",
@@ -482,15 +480,20 @@
     "base_water_none": " Víz nélkül — maximális keveréksűrűség.",
     "base_glyc_very_high": " Nagyon sűrű keverék a magas glicerin miatt — gazdag füst.",
     "base_glyc_low": " Alacsony glicerin — a keverék hígabb lesz kevesebb füsttel.",
-    "base_glyc_none": " Glicerin nélkül — minimális füsttermelés, csak édesítő és víz."
+    "base_glyc_none": " Glicerin nélkül — minimális füsttermelés, csak édesítő és víz.",
+    "pure_pg_desc_0": "A PG erősíti az ízt és hígítja a sűrű keveréket. Ajánlott 2–5 % finom erősítéshez.",
+    "pure_pg_desc_low": "Minimális PG — finom ízerősítés, a keverék sűrű marad.",
+    "pure_pg_desc_medium": "Közepes PG — jó ízintenzitás, a keverék hígabb és jobban felszívódik a dohányba.",
+    "pure_pg_desc_high": "Magasabb PG — erős íz, de vigyázzon a torokirritációra. Ne lépje túl a 15 % összesített PG-t.",
+    "pure_pg_no_vg_warning": "⚠ Glicerin (VG) nélkül a keverék irritálja a torkot! Javasoljuk legalább 15–20 % glicerin hozzáadását."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Nikotin nélkül – hagyományos shisha élmény nikotin nélkül.",
-    "sh_nic_1_2": "Nagyon könnyű – enyhe nikotinérintés, kezdőknek ajánlott.",
-    "sh_nic_3_4": "Könnyű – enyhe nikotin alkalmi felhasználóknak.",
-    "sh_nic_5_6": "Közepes – kiegyensúlyozott erősség rendszeres felhasználóknak.",
-    "sh_nic_7_8": "Erősebb – tapasztalt felhasználóknak, szédülést okozhat.",
-    "sh_nic_9_10": "Erős – maximális ajánlott erősség shishához, csak tapasztaltaknak."
+    "sh_nic_0": "Nikotin nélkül - hagyományos shisha élmény nikotin nélkül.",
+    "sh_nic_1_2": "Nagyon könnyű - finom nikotin érintés, kezdőknek megfelelő.",
+    "sh_nic_3_4": "Könnyű - enyhe nikotin alkalmi felhasználóknak.",
+    "sh_nic_5_6": "Közepes - kiegyensúlyozott erősség rendszeres felhasználóknak.",
+    "sh_nic_7_8": "Erősebb - tapasztalt felhasználóknak, szédülést okozhat.",
+    "sh_nic_9_10": "Erős - maximálisan ajánlott erősség shishához, csak tapasztaltaknak."
   },
   "additive": {
     "coolant": "Hűtőanyag (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Erős dohányosoknak, erős cigarettákhoz, előzetes tapasztalat nélkül hányinger léphet fel.",
     "nic_21_35": "Magas nikotin - csak nagyon erős dohányosoknak vagy pod rendszerekhez. Nikotin só ajánlott.",
     "nic_36_45": "Rendkívül erős - csak pod rendszerekhez nikotin sóval. Túladagolás veszélye!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Nikotin nélkül - hagyományos shisha élmény nikotin nélkül.",
-    "sh_nic_1_2": "Nagyon könnyű - finom nikotin érintés, kezdőknek megfelelő.",
-    "sh_nic_3_4": "Könnyű - enyhe nikotin alkalmi felhasználóknak.",
-    "sh_nic_5_6": "Közepes - kiegyensúlyozott erősség rendszeres felhasználóknak.",
-    "sh_nic_7_8": "Erősebb - tapasztalt felhasználóknak, szédülést okozhat.",
-    "sh_nic_9_10": "Erős - maximálisan ajánlott erősség shishához, csak tapasztaltaknak."
   },
   "flavor_descriptions": {
     "weak": "Gyenge vagy nincs íz (ajánlott {min}–{max}%)",

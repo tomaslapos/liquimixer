@@ -301,8 +301,8 @@
     "vg_label": "Suits (VG)",
     "pg_label": "Maitse (PG)",
     "ratio_optimal": "Optimaalne suhe shisha jaoks - tasakaalustatud suits ja maitse",
-    "ratio_more_vg": "Rohkem suitsu, vähem intensiivne maitse",
-    "ratio_more_pg": "Õhem vedelik, intensiivsem maitse",
+    "ratio_more_vg": "👍 Paksem suits, hea tõmme. Aromide maitse võib olla veidi summutatud — lisage rohkem aroomi tugevama maitse saamiseks.",
+    "ratio_more_pg": "⚠ Õhem segu — vähem suitsu, kuid tugevam maitse. Võib pikemate seansside ajal veidi kurku ärritada.",
     "flavor_label": "Aroom",
     "flavor_total_warning": "(soovitatav 15-25%)",
     "flavor_double_apple": "Topeltõun",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Väga paks segu — võib sütel põleda. Kaaluge aroomi (PG-alus) lisamist parema konsistentsi saavutamiseks.",
     "ratio_ideal_vg": "✅ Suurepärane — tihe suits ja hea maitse. Ideaalne vahekord enamiku vesipiibu segude jaoks.",
     "ratio_balanced": "✅ Tasakaalustatud vahekord — meeldiv suits ja maitse. Universaalne alus vesipiibu jaoks.",
-    "ratio_more_vg": "👍 Paksem suits, hea tõmme. Aromide maitse võib olla veidi summutatud — lisage rohkem aroomi tugevama maitse saamiseks.",
-    "ratio_more_pg": "⚠ Õhem segu — vähem suitsu, kuid tugevam maitse. Võib pikemate seansside ajal veidi kurku ärritada.",
     "ratio_high_pg": "⚠ Liiga vedel segu — nõrk suits, võib kurku ärritada. Lisa glütseriini paksema suitsu ja pehmema tõmbe saamiseks.",
     "ratio_extreme_pg": "❌ Ei sobi vesipiibu jaoks — peaaegu suitsu pole, ärritab kurku. Lisa glütseriini (vähemalt 30 % VG).",
     "base_sweet_very_high": "Väga magus segu. Kõrge magusainesisaldus võib olla liiga intensiivne ja summutada teisi aroome. Soovitame vähendada alla 60 %.",
@@ -482,15 +480,20 @@
     "base_water_none": " Ilma veeta — segu maksimaalne tihedus.",
     "base_glyc_very_high": " Väga paks segu tänu kõrgele glütseriinile — rikkalik suits.",
     "base_glyc_low": " Madal glütseriin — segu on õhem vähema suitsu tootmisega.",
-    "base_glyc_none": " Ilma glütseriinita — minimaalne suitsu tootmine, ainult magusaine ja vesi."
+    "base_glyc_none": " Ilma glütseriinita — minimaalne suitsu tootmine, ainult magusaine ja vesi.",
+    "pure_pg_desc_0": "PG tugevdab maitset ja vedeldab paksu segu. Peeneks tugevdamiseks soovitatav 2–5 %.",
+    "pure_pg_desc_low": "Minimaalne PG — peen maitse tugevdamine, segu jääb paksuna.",
+    "pure_pg_desc_medium": "Keskmine PG — hea maitse intensiivsus, segu on vedelam ja imendub paremini tubakasse.",
+    "pure_pg_desc_high": "Kõrgem PG — tugev maitse, aga ettevaatust kurgu ärritusega. Ärge ületage 15 % kogu PG-d.",
+    "pure_pg_no_vg_warning": "⚠ Ilma glütseriinita (VG) ärritab segu kurku! Soovitame lisada vähemalt 15–20 % glütseriini."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Ilma nikotiinita – traditsiooniline vesipiibu kogemus ilma nikotiinita.",
-    "sh_nic_1_2": "Väga kerge – õrn nikotiini puudutus, sobib algajatele.",
-    "sh_nic_3_4": "Kerge – leebe nikotiin juhuslikele kasutajatele.",
-    "sh_nic_5_6": "Keskmine – tasakaalustatud tugevus regulaarsetele kasutajatele.",
-    "sh_nic_7_8": "Tugevam – kogenud kasutajatele, võib põhjustada pearinglust.",
-    "sh_nic_9_10": "Tugev – maksimaalne soovitatav tugevus vesipiibu jaoks, ainult kogenuile."
+    "sh_nic_0": "Nikotiinita - traditsiooniline vesipiibu kogemus ilma nikotiinita.",
+    "sh_nic_1_2": "Väga kerge - õrn nikotiinipuudutus, sobib algajatele.",
+    "sh_nic_3_4": "Kerge - mahe nikotiin juhukasutajatele.",
+    "sh_nic_5_6": "Keskmine - tasakaalustatud tugevus regulaarsetele kasutajatele.",
+    "sh_nic_7_8": "Tugevam - kogenud kasutajatele, võib põhjustada pearinglust.",
+    "sh_nic_9_10": "Tugev - maksimaalne soovitatav tugevus vesipiibule, ainult kogenutele."
   },
   "additive": {
     "coolant": "Jahutusaine (WS-23, Koolada)",
@@ -847,14 +850,6 @@
     "nic_12_20": "Tugevatele suitsetajatele, tugevad sigaretid, iiveldus võib tekkida ilma varasema kogemuseta.",
     "nic_21_35": "Kõrge nikotiin - ainult väga tugevatele suitsetajatele või pod-süsteemidele. Nikotiinisool soovitatav.",
     "nic_36_45": "Äärmiselt tugev - ainult pod-süsteemidele nikotiinisoolaga. Üledoosi oht!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Nikotiinita - traditsiooniline vesipiibu kogemus ilma nikotiinita.",
-    "sh_nic_1_2": "Väga kerge - õrn nikotiinipuudutus, sobib algajatele.",
-    "sh_nic_3_4": "Kerge - mahe nikotiin juhukasutajatele.",
-    "sh_nic_5_6": "Keskmine - tasakaalustatud tugevus regulaarsetele kasutajatele.",
-    "sh_nic_7_8": "Tugevam - kogenud kasutajatele, võib põhjustada pearinglust.",
-    "sh_nic_9_10": "Tugev - maksimaalne soovitatav tugevus vesipiibule, ainult kogenutele."
   },
   "flavor_descriptions": {
     "weak": "Nõrk või maitse puudub (soovitatav {min}–{max}%)",

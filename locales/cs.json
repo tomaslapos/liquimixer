@@ -612,12 +612,12 @@
     "nic_36_45": "Extrémně silný - pouze pro pod-systémy s nikotinovou solí. Nebezpečí předávkování!"
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotinu - tradiční shisha zkušenost bez nikotinu.",
-    "sh_nic_1_2": "Velmi lehký - jemný nádech nikotinu, vhodné pro začátečníky.",
-    "sh_nic_3_4": "Lehký - mírný nikotin pro příležitostné uživatele.",
-    "sh_nic_5_6": "Střední - vyvážená síla pro pravidelné uživatele.",
-    "sh_nic_7_8": "Silnější - pro zkušené uživatele, může způsobit závratě.",
-    "sh_nic_9_10": "Silný - maximální doporučená síla pro shisha, pouze pro zkušené."
+    "sh_nic_0": "Bez nikotinu – tradiční shisha zkušenost bez nikotinu.",
+    "sh_nic_1_2": "Velmi lehký – jemný nádech nikotinu, vhodné pro začátečníky.",
+    "sh_nic_3_4": "Lehký – mírný nikotin pro příležitostné uživatele.",
+    "sh_nic_5_6": "Střední – vyvážená síla pro pravidelné uživatele.",
+    "sh_nic_7_8": "Silnější – pro zkušené uživatele, může způsobit závratě.",
+    "sh_nic_9_10": "Silný – maximální doporučená síla pro shisha, pouze pro zkušené."
   },
   "flavor_descriptions": {
     "weak": "Slabá až žádná chuť (doporučeno {min}–{max}%)",
@@ -953,8 +953,6 @@
     "sweetener_hint": "Tradiční shisha je sladká",
     "sweetener_enabled": "Přidat sladidlo",
     "sweetener_type": "Typ sladidla",
-    "sweetener_honey": "Med",
-    "sweetener_molasses": "Melasa",
     "sweetener_sucralose": "Sukralóza",
     "sweetener_ethyl_maltol": "Ethyl Maltol",
     "sweetener_stevia": "Stevia",
@@ -990,7 +988,6 @@
     "nicotine_toggle": "Přidat nikotin",
     "sweetener_toggle": "Přidat sladidlo",
     "sweetener_none": "Bez sladidla",
-    "sweetener_agave": "Agáve",
     "water_toggle": "Přidat vodu",
     "note_add_sweetener": "Přidejte sladidlo a důkladně promíchejte.",
     "note_add_water": "Přidejte vodu pro zředění směsi.",
@@ -1122,15 +1119,12 @@
     "base_water_none": " Bez vody – maximální hustota směsi.",
     "base_glyc_very_high": " Velmi hustá směs díky vysokému glycerinu – vydatný dým.",
     "base_glyc_low": " Nízký glycerin – směs bude řidší s menší produkcí dýmu.",
-    "base_glyc_none": " Bez glycerinu – minimální produkce dýmu, pouze sladidlo a voda."
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Bez nikotinu – tradiční shisha zkušenost bez nikotinu.",
-    "sh_nic_1_2": "Velmi lehký – jemný nádech nikotinu, vhodné pro začátečníky.",
-    "sh_nic_3_4": "Lehký – mírný nikotin pro příležitostné uživatele.",
-    "sh_nic_5_6": "Střední – vyvážená síla pro pravidelné uživatele.",
-    "sh_nic_7_8": "Silnější – pro zkušené uživatele, může způsobit závratě.",
-    "sh_nic_9_10": "Silný – maximální doporučená síla pro shisha, pouze pro zkušené."
+    "base_glyc_none": " Bez glycerinu – minimální produkce dýmu, pouze sladidlo a voda.",
+    "pure_pg_desc_0": "PG zvýrazní chuť příchutě a rozředí hustou směs. Doporučeno 2–5 % pro jemné zvýraznění.",
+    "pure_pg_desc_low": "Minimální PG — jemné zvýraznění chuti příchutě, směs zůstane hustá.",
+    "pure_pg_desc_medium": "Střední PG — dobrá chuťová intenzita, směs je tekutější a lépe se vstřebá do tabáku.",
+    "pure_pg_desc_high": "Vyšší PG — výrazná chuť, ale pozor na škrábání v krku. Nepřekračujte 15 % celkového PG.",
+    "pure_pg_no_vg_warning": "⚠ Bez glycerinu (VG) bude směs škrábat v krku! Doporučujeme přidat alespoň 15–20 % glycerinu."
   },
   "premium": {
     "custom_base_required": "Vlastní poměr báze vyžaduje Premium",

@@ -301,8 +301,8 @@
     "vg_label": "Dampf (VG)",
     "pg_label": "Geschmack (PG)",
     "ratio_optimal": "Optimales Verhältnis für Shisha - ausgewogener Dampf und Geschmack",
-    "ratio_more_vg": "Mehr Dampf, weniger intensiver Geschmack",
-    "ratio_more_pg": "Dünnere Flüssigkeit, intensiverer Geschmack",
+    "ratio_more_vg": "👍 Dickerer Rauch, guter Zug. Geschmack kann leicht gedämpft sein — fügen Sie mehr Aroma hinzu für stärkeren Geschmack.",
+    "ratio_more_pg": "⚠ Dünnere Mischung — weniger Rauch, aber intensiverer Geschmack. Kann bei längeren Sitzungen leicht im Hals kratzen.",
     "flavor_label": "Aroma",
     "flavor_total_warning": "(empfohlen 15-25%)",
     "flavor_double_apple": "Doppel-Apfel",
@@ -465,8 +465,6 @@
     "ratio_high_vg": "⚠ Sehr dicke Mischung — kann auf den Kohlen anbrennen. Erwägen Sie Aroma (PG-Basis) für bessere Konsistenz.",
     "ratio_ideal_vg": "✅ Ausgezeichnet — dichter Rauch und guter Geschmack. Ideales Verhältnis für die meisten Shisha-Mischungen.",
     "ratio_balanced": "✅ Ausgewogenes Verhältnis — angenehmer Rauch und Geschmack. Universelle Basis für Shisha.",
-    "ratio_more_vg": "👍 Dickerer Rauch, guter Zug. Geschmack kann leicht gedämpft sein — fügen Sie mehr Aroma hinzu für stärkeren Geschmack.",
-    "ratio_more_pg": "⚠ Dünnere Mischung — weniger Rauch, aber intensiverer Geschmack. Kann bei längeren Sitzungen leicht im Hals kratzen.",
     "ratio_high_pg": "⚠ Zu dünne Mischung — schwacher Rauch, kann im Hals kratzen. Fügen Sie Glycerin für dickeren Rauch und sanfteren Zug hinzu.",
     "ratio_extreme_pg": "❌ Nicht geeignet für Shisha — fast kein Rauch, wird im Hals kratzen. Fügen Sie Glycerin hinzu (mindestens 30 % VG).",
     "base_sweet_very_high": "Sehr süße Mischung. Hoher Süßungsmittelanteil kann zu intensiv sein und andere Aromen überdecken. Wir empfehlen unter 60 % zu reduzieren.",
@@ -482,15 +480,20 @@
     "base_water_none": " Ohne Wasser — maximale Mischungsdichte.",
     "base_glyc_very_high": " Sehr dicke Mischung dank hohem Glycerin — reichhaltiger Rauch.",
     "base_glyc_low": " Niedriges Glycerin — die Mischung wird dünner mit geringerer Rauchproduktion.",
-    "base_glyc_none": " Ohne Glycerin — minimale Rauchproduktion, nur Süßungsmittel und Wasser."
+    "base_glyc_none": " Ohne Glycerin — minimale Rauchproduktion, nur Süßungsmittel und Wasser.",
+    "pure_pg_desc_0": "PG verstärkt den Geschmack und verdünnt die dicke Mischung. Empfohlen 2–5 % für subtile Verstärkung.",
+    "pure_pg_desc_low": "Minimales PG — subtile Geschmacksverstärkung, Mischung bleibt dick.",
+    "pure_pg_desc_medium": "Mittleres PG — gute Geschmacksintensität, Mischung ist dünner und wird besser vom Tabak aufgenommen.",
+    "pure_pg_desc_high": "Höheres PG — starker Geschmack, aber Vorsicht vor Kratzen im Hals. Nicht mehr als 15 % Gesamt-PG.",
+    "pure_pg_no_vg_warning": "⚠ Ohne Glycerin (VG) kratzt die Mischung im Hals! Wir empfehlen mindestens 15–20 % Glycerin."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Ohne Nikotin – traditionelles Shisha-Erlebnis ohne Nikotin.",
-    "sh_nic_1_2": "Sehr leicht – sanfter Nikotinhauch, geeignet für Anfänger.",
-    "sh_nic_3_4": "Leicht – mildes Nikotin für gelegentliche Nutzer.",
-    "sh_nic_5_6": "Mittel – ausgewogene Stärke für regelmäßige Nutzer.",
-    "sh_nic_7_8": "Stärker – für erfahrene Nutzer, kann Schwindel verursachen.",
-    "sh_nic_9_10": "Stark – maximale empfohlene Stärke für Shisha, nur für Erfahrene."
+    "sh_nic_0": "Kein Nikotin - traditionelles Shisha-Erlebnis ohne Nikotin.",
+    "sh_nic_1_2": "Sehr leicht - sanfter Nikotinhauch, geeignet für Anfänger.",
+    "sh_nic_3_4": "Leicht - mildes Nikotin für gelegentliche Benutzer.",
+    "sh_nic_5_6": "Mittel - ausgewogene Stärke für regelmäßige Benutzer.",
+    "sh_nic_7_8": "Stärker - für erfahrene Benutzer, kann Schwindel verursachen.",
+    "sh_nic_9_10": "Stark - maximale empfohlene Stärke für Shisha, nur für Erfahrene."
   },
   "additive": {
     "coolant": "Kühlmittel (WS-23, Koolada)",
@@ -856,14 +859,6 @@
     "nic_12_20": "Für starke Raucher, starke Zigaretten, Übelkeit kann ohne Vorerfahrung auftreten.",
     "nic_21_35": "Hohes Nikotin - nur für sehr starke Raucher oder Pod-Systeme. Nikotinsalz empfohlen.",
     "nic_36_45": "Extrem stark - nur für Pod-Systeme mit Nikotinsalz. Überdosierungsgefahr!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Kein Nikotin - traditionelles Shisha-Erlebnis ohne Nikotin.",
-    "sh_nic_1_2": "Sehr leicht - sanfter Nikotinhauch, geeignet für Anfänger.",
-    "sh_nic_3_4": "Leicht - mildes Nikotin für gelegentliche Benutzer.",
-    "sh_nic_5_6": "Mittel - ausgewogene Stärke für regelmäßige Benutzer.",
-    "sh_nic_7_8": "Stärker - für erfahrene Benutzer, kann Schwindel verursachen.",
-    "sh_nic_9_10": "Stark - maximale empfohlene Stärke für Shisha, nur für Erfahrene."
   },
   "flavor_descriptions": {
     "weak": "Schwacher oder kein Geschmack (empfohlen {min}–{max}%)",

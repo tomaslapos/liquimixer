@@ -324,8 +324,8 @@
     "vg_label": "Fum (VG)",
     "pg_label": "Aromă (PG)",
     "ratio_optimal": "Raport optim pentru shisha - fum și aromă echilibrate",
-    "ratio_more_vg": "Mai mult fum, aromă mai puțin intensă",
-    "ratio_more_pg": "Lichid mai subțire, aromă mai intensă",
+    "ratio_more_vg": "👍 Fum mai dens, tragere bună. Gustul aromelor poate fi ușor atenuat — adăugați mai multă aromă dacă doriți un gust mai puternic.",
+    "ratio_more_pg": "⚠ Amestec mai subțire — mai puțin fum, dar gust mai pronunțat. Poate irita ușor gâtul în sesiuni lungi.",
     "flavor_label": "Aromă",
     "flavor_total_warning": "(recomandat 15-25%)",
     "flavor_double_apple": "Măr dublu",
@@ -488,8 +488,6 @@
     "ratio_high_vg": "⚠ Amestec foarte dens — se poate arde pe cărbuni. Luați în considerare adăugarea aromei (bază PG) pentru o consistență mai bună.",
     "ratio_ideal_vg": "✅ Excelent — fum dens și gust bun. Raport ideal pentru majoritatea amestecurilor shisha.",
     "ratio_balanced": "✅ Raport echilibrat — fum plăcut și gust. Bază universală pentru shisha.",
-    "ratio_more_vg": "👍 Fum mai dens, tragere bună. Gustul aromelor poate fi ușor atenuat — adăugați mai multă aromă dacă doriți un gust mai puternic.",
-    "ratio_more_pg": "⚠ Amestec mai subțire — mai puțin fum, dar gust mai pronunțat. Poate irita ușor gâtul în sesiuni lungi.",
     "ratio_high_pg": "⚠ Amestec prea subțire — fum slab, poate irita gâtul. Adăugați glicerină pentru fum mai dens și tragere mai lină.",
     "ratio_extreme_pg": "❌ Neadecvat pentru shisha — aproape fără fum, va irita gâtul. Adăugați glicerină (cel puțin 30 % VG).",
     "base_sweet_very_high": "Amestec foarte dulce. Conținutul ridicat de îndulcitor poate fi prea intens și poate acoperi alte arome. Recomandăm reducerea sub 60 %.",
@@ -505,15 +503,20 @@
     "base_water_none": " Fără apă — densitate maximă a amestecului.",
     "base_glyc_very_high": " Amestec foarte dens datorită glicerinei ridicate — fum bogat.",
     "base_glyc_low": " Glicerină scăzută — amestecul va fi mai subțire cu mai puțin fum.",
-    "base_glyc_none": " Fără glicerină — producție minimă de fum, doar îndulcitor și apă."
+    "base_glyc_none": " Fără glicerină — producție minimă de fum, doar îndulcitor și apă.",
+    "pure_pg_desc_0": "PG întărește aroma și diluează amestecul gros. Recomandat 2–5 % pentru o întărire subtilă.",
+    "pure_pg_desc_low": "PG minim — întărire subtilă a aromei, amestecul rămâne gros.",
+    "pure_pg_desc_medium": "PG mediu — intensitate bună a aromei, amestecul este mai lichid și se absoarbe mai bine în tutun.",
+    "pure_pg_desc_high": "PG mai mare — aromă puternică, dar atenție la iritația gâtului. Nu depășiți 15 % PG total.",
+    "pure_pg_no_vg_warning": "⚠ Fără glicerină (VG) amestecul va irita gâtul! Recomandăm să adăugați cel puțin 15–20 % glicerină."
   },
   "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Fără nicotină – experiență tradițională shisha fără nicotină.",
-    "sh_nic_1_2": "Foarte ușoară – atingere delicată de nicotină, potrivită pentru începători.",
-    "sh_nic_3_4": "Ușoară – nicotină blândă pentru utilizatori ocazionali.",
-    "sh_nic_5_6": "Medie – putere echilibrată pentru utilizatori regulați.",
-    "sh_nic_7_8": "Mai puternică – pentru utilizatori experimentați, poate cauza amețeli.",
-    "sh_nic_9_10": "Puternică – putere maximă recomandată pentru shisha, doar pentru experimentați."
+    "sh_nic_0": "Fără nicotină - experiență tradițională de shisha fără nicotină.",
+    "sh_nic_1_2": "Foarte ușoară - atingere blândă de nicotină, potrivită pentru începători.",
+    "sh_nic_3_4": "Ușoară - nicotină blândă pentru utilizatori ocazionali.",
+    "sh_nic_5_6": "Medie - intensitate echilibrată pentru utilizatori obișnuiți.",
+    "sh_nic_7_8": "Mai puternică - pentru utilizatori experimentați, poate provoca amețeli.",
+    "sh_nic_9_10": "Puternică - intensitate maximă recomandată pentru shisha, doar pentru experimentați."
   },
   "results": {
     "title": "Rețeta dvs.",
@@ -847,14 +850,6 @@
     "nic_12_20": "Pentru fumători înrăiți, țigări puternice, poate apărea greață fără experiență anterioară.",
     "nic_21_35": "Nicotină ridicată - doar pentru fumători foarte înrăiți sau sisteme pod. Se recomandă sarea de nicotină.",
     "nic_36_45": "Extrem de puternică - doar pentru sisteme pod cu sare de nicotină. Risc de supradoză!"
-  },
-  "shisha_nicotine_descriptions": {
-    "sh_nic_0": "Fără nicotină - experiență tradițională de shisha fără nicotină.",
-    "sh_nic_1_2": "Foarte ușoară - atingere blândă de nicotină, potrivită pentru începători.",
-    "sh_nic_3_4": "Ușoară - nicotină blândă pentru utilizatori ocazionali.",
-    "sh_nic_5_6": "Medie - intensitate echilibrată pentru utilizatori obișnuiți.",
-    "sh_nic_7_8": "Mai puternică - pentru utilizatori experimentați, poate provoca amețeli.",
-    "sh_nic_9_10": "Puternică - intensitate maximă recomandată pentru shisha, doar pentru experimentați."
   },
   "flavor_descriptions": {
     "weak": "Aromă slabă sau inexistentă (recomandat {min}–{max}%)",
