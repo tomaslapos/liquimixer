@@ -4069,8 +4069,9 @@ function extractRecipeFlavorsForDisplay(recipeData) {
     const flavors = [];
     const formType = recipeData.formType || 'liquid';
     
-    // Z ingredients - primární zdroj pro všechny formuláře
-    // Přidáváme POUZE příchutě s konkrétním názvem (flavorName)
+    // Z ingredients - primární zdroj pro příchutě a Mix tabáky
+    // Tweak tabák jde přes tweakState.tobaccoData (samostatná cesta níže)
+    // Přidáváme POUZE položky s konkrétním názvem (flavorName)
     if (recipeData.ingredients && Array.isArray(recipeData.ingredients)) {
         for (const ingredient of recipeData.ingredients) {
             if (ingredient.type === 'flavor' || ingredient.ingredientKey === 'flavor' || ingredient.ingredientKey === 'shisha_tobacco' || ingredient.ingredientKey === 'shisha_tweak_flavor' || ingredient.ingredientKey === 'shisha_flavor') {
@@ -4111,24 +4112,20 @@ function extractRecipeFlavorsForDisplay(recipeData) {
         }
     }
     
-    // Shisha Tweak: tabák z autocomplete je v tweakState.tobaccoData, ne v ingredients
+    // Shisha Tweak: tabák z tweakState.tobaccoData — samostatná položka, netahá se z ingredients
     if (formType === 'shisha' && recipeData.shishaMode === 'tweak' && recipeData.tweakState && recipeData.tweakState.tobaccoData) {
         const td = recipeData.tweakState.tobaccoData;
         if (td.name) {
-            // Deduplikace — nepřidávat pokud příchuť se stejným jménem již existuje
-            const alreadyExists = flavors.some(f => f.name === td.name);
-            if (!alreadyExists) {
-                const isFavorite = td.source === 'favorites' || td.source === 'favorite';
-                flavors.push({
-                    name: td.name,
-                    manufacturer: td.manufacturer_code || td.manufacturer || td.brand || null,
-                    category: 'tobacco',
-                    percent: 0,
-                    flavorId: isFavorite ? (td.flavor_id || null) : (td.id || null),
-                    favoriteProductId: isFavorite ? (td.id || td.favorite_product_id || null) : null,
-                    flavorSource: isFavorite ? 'favorite' : 'database'
-                });
-            }
+            const isFavorite = td.source === 'favorites' || td.source === 'favorite';
+            flavors.push({
+                name: td.name,
+                manufacturer: td.manufacturer_code || td.manufacturer || td.brand || null,
+                category: 'tobacco',
+                percent: 0,
+                flavorId: isFavorite ? (td.flavor_id || null) : (td.id || null),
+                favoriteProductId: isFavorite ? (td.id || td.favorite_product_id || null) : null,
+                flavorSource: isFavorite ? 'favorite' : 'database'
+            });
         }
     }
     
@@ -5970,6 +5967,26 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
     
     // Flavors (1-4) — ts.flavors je pole [{type, strength}], ts.flavorData je pole [obj0, obj1, ...]
     if (ts.flavors && Array.isArray(ts.flavors)) {
+        // Reset — příchuť 1 je statická, 2+ jsou dynamické v shTweakAdditionalFlavorsContainer
+        shTweakFlavorCount = 1;
+        const flavorContainer = document.getElementById('shTweakAdditionalFlavorsContainer');
+        if (flavorContainer) flavorContainer.innerHTML = '';
+        
+        // Resetovat statickou příchuť 1
+        const type1 = document.getElementById('shTweakFlavorType1');
+        if (type1) { type1.value = 'none'; updateShishaTweakFlavorType(1); }
+        const auto1 = document.getElementById('shTweakFlavorAutocomplete1');
+        if (auto1) { auto1.value = ''; delete auto1.dataset.flavorData; }
+        
+        // Zobrazit tlačítko přidat příchuť
+        document.getElementById('shTweakAddFlavorGroup')?.classList.remove('hidden');
+        
+        // Nejdřív přidat všechny dynamické příchutě (2+)
+        for (let di = 2; di <= ts.flavors.length; di++) {
+            addShishaTweakFlavor();
+        }
+        
+        // Teprve potom nastavit hodnoty pro všechny příchutě
         ts.flavors.forEach((flavor, idx) => {
             const fi = idx + 1;
             if (flavor.type && flavor.type !== 'none') {
@@ -8255,10 +8272,8 @@ function showPage(pageId, pushToHistory = true) {
         updateDiluteTargetRatioDisplay();
     }
     
-    // Initialize shisha form when shown (ne při editaci — prefill už nastavil správný mód)
-    if (pageId === 'shisha-form' && !window.editingRecipeFromDetail) {
-        initShishaForm();
-    }
+    // Shisha form se inicializuje explicitně z mode-select navigace, ne při každém showPage
+    // (stejný vzor jako liquid pro formulář na stránce 'form')
     
     // Animovat texty tlačítek na stránce mode-select
     if (pageId === 'mode-select' && typeof window.animateModeButtons === 'function') {
@@ -18985,7 +19000,7 @@ function calculateShishaTweak() {
         totalMl += ing.volume;
         totalGrams += ing.grams;
         row.innerHTML = `
-            <td class="ingredient-name">${ing.name}${ing.percent > 0 ? ` <span class="ingredient-percent-inline">(${ing.percent}%)</span>` : ''}</td>
+            <td class="ingredient-name">${getIngredientName(ing)}${ing.percent > 0 ? ` <span class="ingredient-percent-inline">(${ing.percent}%)</span>` : ''}</td>
             <td class="ingredient-value">${volText}</td>
             <td class="ingredient-grams">${ing.grams.toFixed(1)}</td>
         `;
