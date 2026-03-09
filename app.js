@@ -9870,19 +9870,6 @@ function calculateMix() {
         flavorPercent: flavorPercent
     });
     
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('liquid', {
-        totalAmount, vgPercent, pgPercent, nicotineType, targetNicotine, baseNicotine,
-        flavorType, flavorPercent, baseType,
-        premixedRatio: baseType === 'premixed' ? premixedRatio : null,
-        flavorRatio: document.getElementById('flavorRatio')?.value,
-        nicotineRatio: document.getElementById('nicotineRatio')?.value,
-        specificFlavorName, specificFlavorId
-    }, {
-        ingredients: ingredients.map(i => ({ key: i.ingredientKey, volume: +(i.volume?.toFixed(2) || 0), percent: +(i.percent?.toFixed(1) || 0) })),
-        actualTotal: +actualTotal.toFixed(2)
-    });
-    
     showPage('results');
 }
 
@@ -11595,17 +11582,6 @@ function calculateShakeVape() {
         manuallyChangedRatio: shakevapeUserManuallyChangedRatio
     });
     
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('shakevape', {
-        totalAmount, vgPercent, pgPercent, nicotineType, targetNicotine, baseNicotine,
-        flavorVolume, baseType,
-        premixedRatio: baseType === 'premixed' ? premixedRatio : null,
-        flavorRatio: document.getElementById('svFlavorRatio')?.value,
-        nicotineRatio: document.getElementById('svNicotineRatio')?.value
-    }, {
-        ingredients: ingredients.map(i => ({ key: i.ingredientKey, volume: +(i.volume?.toFixed(2) || 0), percent: +(i.percent?.toFixed(1) || 0) }))
-    });
-    
     showPage('results');
 }
 
@@ -11725,16 +11701,6 @@ function calculateShortfillMix() {
     if (freeSpace < 0) {
         showNotification(t('shortfill.overflow_warning', 'Pozor: Obsah přesáhne kapacitu lahvičky!'), 'warning');
     }
-    
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('shortfill', {
-        bottleVolume, liquidVolume, nicStrength, nicShotVolume, shotCount
-    }, {
-        totalVolume: +totalVolume.toFixed(1),
-        resultNic: +resultNic.toFixed(2),
-        freeSpace: +freeSpace.toFixed(1),
-        actualVgPercent, actualPgPercent
-    });
     
     showPage('results');
 }
@@ -13383,19 +13349,6 @@ function calculateProMix() {
         nicotineRatioSlider: nicVgPercent,
         nicotineSaltType: nicotineType === 'salt' ? (document.getElementById('proSaltType')?.value || 'unknown') : undefined,
         manuallyChangedRatio: proUserManuallyChangedRatio
-    });
-    
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('liquidpro', {
-        totalAmount, vgPercent, pgPercent, nicotineType, targetNicotine, baseNicotine,
-        baseType,
-        premixedRatio: baseType === 'premixed' ? premixedRatio : null,
-        nicotineRatio: `${nicVgPercent}/${nicPgPercent}`,
-        nicotineSaltType: document.getElementById('proNicotineSaltType')?.value,
-        flavors: flavorsData.map(f => ({ type: f.type, percent: f.percent, name: f.flavorName, id: f.flavorId })),
-        additives: additivesData.map(a => ({ type: a.type, percent: a.percent }))
-    }, {
-        ingredients: ingredients.map(i => ({ key: i.ingredientKey, volume: +(i.volume?.toFixed(2) || 0), percent: +(i.percent?.toFixed(1) || 0) }))
     });
     
     showPage('results');
@@ -19406,9 +19359,15 @@ function calculateShishaTweak() {
                         flavorIngredient.name = flavorDisplayName;
                         flavorIngredient.flavorName = fd.name;
                         flavorIngredient.flavorManufacturer = fd.manufacturer_code || fd.manufacturer || fd.brand || null;
-                        flavorIngredient.flavorId = fd.flavor_id || fd.id || null;
-                        flavorIngredient.favoriteProductId = fd.favorite_product_id || fd.favoriteProductId || null;
-                        flavorIngredient.flavorSource = fd.source || 'favorites';
+                        const isFavorite = fd.source === 'favorites' || fd.source === 'favorite';
+                        if (isFavorite) {
+                            flavorIngredient.favoriteProductId = fd.favorite_product_id || fd.id || flavorAuto.dataset.favoriteProductId || null;
+                            flavorIngredient.flavorId = fd.flavor_id || null;
+                            flavorIngredient.flavorSource = 'favorite';
+                        } else {
+                            flavorIngredient.flavorId = fd.id || flavorAuto.dataset.flavorId || null;
+                            flavorIngredient.flavorSource = 'database';
+                        }
                     } catch(e) {}
                 }
                 ingredients.push(flavorIngredient);
@@ -19563,31 +19522,6 @@ function calculateShishaTweak() {
     tbody.appendChild(totalRow);
     
     generateMixingNotes(recipeData);
-    
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('shisha_tweak', {
-        tobaccoAmount: tobaccoG,
-        tobaccoName: selectedTobaccoName,
-        problemVg: tweakState.problemVg,
-        problemTaste: tweakState.problemTaste,
-        problemFlavor: tweakState.problemFlavor,
-        problemNicotine: tweakState.problemNicotine,
-        problemMixology: tweakState.problemMixology,
-        vgPercent: tweakState.vgPercent,
-        nicotineType: tweakState.nicotineType,
-        nicotineTarget: tweakState.nicotineTarget,
-        nicotineBaseStrength: tweakState.nicotineBaseStrength,
-        flavors: tweakState.flavors?.filter(f => f.type !== 'none'),
-        mixHoney: tweakState.mixHoney, mixHoneyPercent: tweakState.mixHoneyPercent,
-        mixMolasses: tweakState.mixMolasses, mixMolassesPercent: tweakState.mixMolassesPercent,
-        mixMenthol: tweakState.mixMenthol, mixMentholDrops: tweakState.mixMentholDrops,
-        mixCitric: tweakState.mixCitric, mixCitricGrams: tweakState.mixCitricGrams,
-        mixWater: tweakState.mixWater, mixWaterPercent: tweakState.mixWaterPercent
-    }, {
-        totalAmount: +totalAmount.toFixed(1),
-        totalGrams: +totalGrams.toFixed(1),
-        ingredientCount: ingredients.length
-    });
     
     // Show results page
     const newButtons = document.getElementById('resultsNewButtons');
@@ -20042,15 +19976,6 @@ function calculateShishaMixMode1() {
     
     generateMixingNotes(recipeData);
     
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('shisha_mix', {
-        bowlSize,
-        tobaccos: tobaccos.map(tb => ({ name: tb.name, percent: tb.percent, grams: tb.grams, flavorName: tb.flavorName, flavorId: tb.flavorId }))
-    }, {
-        totalGrams: +totalGrams.toFixed(1),
-        tobaccoCount: tobaccos.length
-    });
-    
     // Show results page with correct buttons
     const newButtons = document.getElementById('resultsNewButtons');
     const editButtons = document.getElementById('resultsEditButtons');
@@ -20404,19 +20329,6 @@ function calculateShishaMixMode2() {
     
     generateMixingNotes(recipeData);
     
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('shisha_diy', {
-        diyMaterial, tobaccoAmount, tobaccoMolassesRatio: +tobaccoMolassesRatio.toFixed(2),
-        sweetenerType, sweetenerPercent, glycerinPercent, waterPercent, purePgPercent,
-        nicotineType: nicType, nicotineBaseStrength: nicBaseStrength, nicotineTarget: nicTarget,
-        nicotineRatio: nicRatioVal,
-        flavors: flavors.map(f => ({ type: f.type, name: f.name, percent: f.percent, vgRatio: f.vgRatio, flavorName: f.flavorName, flavorId: f.flavorId })),
-        mixology: { menthol: diyMixMentholDrops, citricGrams: diyMixCitricGrams, juicePercent: diyMixJuicePercent }
-    }, {
-        totalWeight, totalMolasses: Math.round(totalMolasses),
-        vgPgRatio, ingredientCount: ingredients.length
-    });
-    
     const newButtons = document.getElementById('resultsNewButtons');
     const editButtons = document.getElementById('resultsEditButtons');
     if (window.editingRecipeFromDetail) {
@@ -20739,19 +20651,6 @@ function calculateShishaMixMode3() {
     tbody.appendChild(totalRow);
     
     generateMixingNotes(recipeData);
-    
-    // Log výpočtu (async, fire-and-forget)
-    window.LiquiMixerDB?.logCalculation?.('shisha_molasses', {
-        totalAmount,
-        sweetenerType, sweetenerPercent, glycerinPercent, waterPercent, purePgPercent,
-        nicotineType: nicType, nicotineBaseStrength: nicBaseStrength, nicotineTarget: nicTarget,
-        nicotineRatio: nicRatioVal,
-        flavors: flavors.map(f => ({ type: f.type, name: f.name, percent: f.percent, vgRatio: f.vgRatio, flavorName: f.flavorName, flavorId: f.flavorId })),
-        mixology: { menthol: molMixMentholDrops, citricGrams: molMixCitricGrams, juicePercent: molMixJuicePercent }
-    }, {
-        vgPgRatio, ingredientCount: ingredients.length,
-        totalMl: +runningTotal.toFixed(2)
-    });
     
     const newButtons = document.getElementById('resultsNewButtons');
     const editButtons = document.getElementById('resultsEditButtons');

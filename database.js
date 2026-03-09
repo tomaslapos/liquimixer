@@ -3232,87 +3232,6 @@ function getSessionHash() {
     return _sessionHash;
 }
 
-// Detekce typu zařízení
-function detectDeviceType() {
-    const ua = navigator.userAgent || '';
-    if (/tablet|ipad/i.test(ua)) return 'tablet';
-    if (/mobile|android|iphone/i.test(ua)) return 'mobile';
-    return 'desktop';
-}
-
-// In-memory rate limiter (klientská strana — serverová je v SQL funkci)
-const _calcLogTimestamps = [];
-const CALC_LOG_CLIENT_LIMIT = 10; // max 10 logů za minutu na klientovi
-const CALC_LOG_CLIENT_WINDOW = 60000; // 60 sekund
-
-function isCalcLogRateLimited() {
-    const now = Date.now();
-    // Vyčistit staré timestampy
-    while (_calcLogTimestamps.length > 0 && _calcLogTimestamps[0] < now - CALC_LOG_CLIENT_WINDOW) {
-        _calcLogTimestamps.shift();
-    }
-    if (_calcLogTimestamps.length >= CALC_LOG_CLIENT_LIMIT) {
-        return true; // Překročen limit
-    }
-    _calcLogTimestamps.push(now);
-    return false;
-}
-
-// Logovat výpočet do databáze
-// calcType: 'liquid' | 'shakevape' | 'liquidpro' | 'shortfill' | 'dilution' |
-//           'shisha_mix' | 'shisha_diy' | 'shisha_molasses' | 'shisha_tweak'
-// params: objekt se VŠEMI parametry výpočtu (co uživatel nastavil)
-// results: objekt s výsledky (ingredience, objemy)
-async function logCalculation(calcType, params, results) {
-    if (!supabaseClient) return;
-    
-    // Klientský rate limiting
-    if (isCalcLogRateLimited()) {
-        console.log('logCalculation: Client rate limit reached, skipping');
-        return;
-    }
-    
-    const clerkId = window.Clerk?.user?.id || null;
-    const sessionHash = getSessionHash();
-    const locale = window.i18n?.getLocale?.() || navigator.language?.split('-')[0] || 'en';
-    
-    try {
-        // Serverový rate limit check (jen pro nepřihlášené — přihlášení jsou omezeni RLS)
-        if (!clerkId) {
-            const { data: allowed } = await supabaseClient.rpc('check_calc_log_rate_limit', {
-                p_session_hash: sessionHash
-            });
-            if (allowed === false) {
-                console.log('logCalculation: Server rate limit reached, skipping');
-                return;
-            }
-        }
-        
-        const { error } = await supabaseClient
-            .from('calculation_logs')
-            .insert({
-                clerk_id: clerkId,
-                session_hash: sessionHash,
-                calc_type: calcType,
-                params: params || {},
-                results: results || {},
-                locale: locale,
-                device_type: detectDeviceType(),
-                user_agent: (navigator.userAgent || '').substring(0, 500),
-                referrer: (document.referrer || '').substring(0, 500),
-                shard_key: getShardKey()
-            });
-        
-        if (error) {
-            // Tiché selhání — logování nesmí blokovat uživatele
-            console.error('logCalculation: Error:', error.message);
-        }
-    } catch (err) {
-        // Tiché selhání
-        console.error('logCalculation: Exception:', err.message);
-    }
-}
-
 // Exportuj funkce pro použití v app.js
 console.log('database.js: Exporting LiquiMixerDB...');
 window.LiquiMixerDB = {
@@ -3384,10 +3303,7 @@ window.LiquiMixerDB = {
     getFlavorCategories: getFlavorCategories,
     // Propojení příchutí s recepty
     linkFlavorsToRecipe: linkFlavorsToRecipe,
-    getLinkedFlavors: getLinkedFlavors,
-    // Calculation logs + sharding
-    logCalculation: logCalculation,
-    getShardKey: getShardKey
+    getLinkedFlavors: getLinkedFlavors
 };
 
 // Export pro fcm.js a app.js kompatibilitu
