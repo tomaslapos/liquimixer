@@ -678,6 +678,7 @@
     "type_flavor": "Aromi",
     "type_nicotine_booster": "Nikotiiniboosteri",
     "type_nicotine_salt": "Nikotiinisuola",
+    "type_premixed_base": "Esisekoitettu PG/VG-pohja",
     "no_products": "Sinulla ei ole vielä suosikkituotteita.",
     "loading": "Ladataan tuotteita...",
     "back": "◀ TAKAISIN",

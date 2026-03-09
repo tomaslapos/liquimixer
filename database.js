@@ -796,7 +796,7 @@ async function saveFavoriteProduct(clerkId, product) {
     }
     
     // Validace typu produktu
-    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt'];
+    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt', 'premixed_base'];
     const productType = validTypes.includes(product.product_type) ? product.product_type : 'flavor';
     
     // Generování share_id a share_url pro sdílení
@@ -835,6 +835,12 @@ async function saveFavoriteProduct(clerkId, product) {
         if (product.steep_days !== undefined) {
             productData.steep_days = Math.min(Math.max(parseInt(product.steep_days) || 0, 0), 365);
         }
+        if (product.flavor_min_percent !== undefined && product.flavor_min_percent !== null) {
+            productData.flavor_min_percent = parseFloat(product.flavor_min_percent) || null;
+        }
+        if (product.flavor_max_percent !== undefined && product.flavor_max_percent !== null) {
+            productData.flavor_max_percent = parseFloat(product.flavor_max_percent) || null;
+        }
     }
     
     try {
@@ -870,7 +876,7 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
     }
     
     // Validace typu produktu
-    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt'];
+    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt', 'premixed_base'];
     const productType = validTypes.includes(updates.product_type) ? updates.product_type : 'flavor';
     
     // Základní data pro všechny produkty
@@ -892,8 +898,12 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
         if (updates.flavor_category !== undefined) {
             updateData.flavor_category = sanitizeInput(updates.flavor_category);
         }
-        // Poznámka: flavor_min_percent a flavor_max_percent neexistují v tabulce favorite_products
-        // Tyto hodnoty jsou uloženy v tabulce flavors a jsou read-only
+        if (updates.flavor_min_percent !== undefined) {
+            updateData.flavor_min_percent = updates.flavor_min_percent !== null ? (parseFloat(updates.flavor_min_percent) || null) : null;
+        }
+        if (updates.flavor_max_percent !== undefined) {
+            updateData.flavor_max_percent = updates.flavor_max_percent !== null ? (parseFloat(updates.flavor_max_percent) || null) : null;
+        }
         if (updates.steep_days !== undefined) {
             updateData.steep_days = Math.min(Math.max(parseInt(updates.steep_days) || 0, 0), 365);
         }
@@ -2527,8 +2537,8 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                             product_code: p.product_code || null,
                             product_type: p.flavor_product_type || productType,
                             category: p.flavor_category || null,
-                            min_percent: flavorData.min_percent || null,
-                            max_percent: flavorData.max_percent || null,
+                            min_percent: p.flavor_min_percent || flavorData.min_percent || null,
+                            max_percent: p.flavor_max_percent || flavorData.max_percent || null,
                             recommended_percent: flavorData.recommended_percent || null,
                             steep_days: p.steep_days || flavorData.steep_days || null,
                             vg_ratio: flavorData.vg_ratio,
@@ -2972,7 +2982,8 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                     favorite_product_id: favoriteProductId,
                     generic_flavor_type: f.generic_flavor_type || null,
                     flavor_name: f.flavor_name || null,
-                    flavor_manufacturer: f.flavor_manufacturer || null
+                    flavor_manufacturer: f.flavor_manufacturer || null,
+                    flavor_source: f.is_category ? 'category' : (flavorId ? 'database' : 'custom')
                 });
                 // Odstranit z mapy - zpracováno
                 existingLinksByPosition.delete(position);
@@ -2987,7 +2998,8 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                     percentage: percentage,
                     position: position,
                     flavor_name: f.flavor_name || null,
-                    flavor_manufacturer: f.flavor_manufacturer || null
+                    flavor_manufacturer: f.flavor_manufacturer || null,
+                    flavor_source: f.is_category ? 'category' : (flavorId ? 'database' : 'custom')
                 });
                 console.log('linkFlavorsToRecipe: Will INSERT position', position);
             }
@@ -3068,6 +3080,8 @@ async function getLinkedFlavors(recipeId) {
                     flavor_category,
                     steep_days,
                     flavor_id,
+                    flavor_min_percent,
+                    flavor_max_percent,
                     flavors:flavor_id (
                         min_percent,
                         max_percent,
@@ -3113,8 +3127,8 @@ async function getLinkedFlavors(recipeId) {
                     name: item.favorite_products.name,
                     manufacturer_name: item.favorite_products.manufacturer || favFlavorData?.flavor_manufacturers?.name,
                     category: item.favorite_products.flavor_category,
-                    min_percent: favFlavorData?.min_percent,
-                    max_percent: favFlavorData?.max_percent,
+                    min_percent: item.favorite_products.flavor_min_percent || favFlavorData?.min_percent,
+                    max_percent: item.favorite_products.flavor_max_percent || favFlavorData?.max_percent,
                     recommended_percent: favFlavorData?.recommended_percent,
                     steep_days: item.favorite_products.steep_days || favFlavorData?.steep_days,
                     vg_ratio: favFlavorData?.vg_ratio
@@ -3130,6 +3144,7 @@ async function getLinkedFlavors(recipeId) {
                 generic_flavor_type: item.generic_flavor_type,
                 flavor_id: item.flavor_id,
                 favorite_product_id: item.favorite_product_id,
+                flavor_source: item.flavor_source || 'database',
                 // Konsolidovaná data příchutě
                 flavor: flavorParams
             };

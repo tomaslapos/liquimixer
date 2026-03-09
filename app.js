@@ -4325,7 +4325,8 @@ function getSelectedRecipeFlavors() {
                 flavor_manufacturer: data.manufacturer || null,
                 generic_flavor_type: data.category || 'fruit',
                 flavor_id: flavorId,
-                favorite_product_id: favoriteProductId
+                favorite_product_id: favoriteProductId,
+                is_category: data.flavorSource === 'category'
             });
         } catch (e) {
             console.error('Error parsing flavor data:', e);
@@ -4558,6 +4559,7 @@ function extractRecipeFlavors(recipeData, formType) {
                     // Generická příchuť z číselníku
                     flavorEntry.generic_flavor_type = ingredient.flavorType || 'fruit';
                     flavorEntry.flavor_name = getFlavorName(ingredient.flavorType || 'fruit');
+                    flavorEntry.is_category = true;
                 }
                 
                 flavors.push(flavorEntry);
@@ -4649,6 +4651,7 @@ function extractRecipeFlavors(recipeData, formType) {
                 } else {
                     // Generická kategorie — přidat přeložený název
                     flavorEntry.flavor_name = getFlavorName(flavor.type);
+                    flavorEntry.is_category = true;
                 }
                 
                 // Zamezit duplicitám - pouze pokud je STEJNÁ konkrétní příchuť (flavor_id nebo flavor_name + manufacturer)
@@ -4689,6 +4692,10 @@ function extractRecipeFlavors(recipeData, formType) {
                     flavorEntry.flavor_id = recipeData.specificFlavorId;
                 }
             }
+        } else {
+            // Generická kategorie bez konkrétní příchutě
+            flavorEntry.flavor_name = getFlavorName(recipeData.flavorType);
+            flavorEntry.is_category = true;
         }
         
         flavors.push(flavorEntry);
@@ -6287,9 +6294,9 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
     const percentage = flavorLink.percentage || 0;
     const category = flavorLink.generic_flavor_type || flavorLink.flavor?.category || 'fruit';
     
-    // Generická kategorie (bez konkrétní příchutě z DB/oblíbených) — přeskočit autocomplete,
+    // Generická kategorie — přeskočit autocomplete,
     // kategorie se předvyplní přes select v příslušné prefill funkci
-    if (!flavorId && !favoriteProductId && !flavorLink.flavor && flavorLink.generic_flavor_type) {
+    if (flavorLink.flavor_source === 'category') {
         console.log('prefillFlavorAutocomplete: Skipping category flavor:', flavorLink.generic_flavor_type);
         return;
     }
@@ -7787,7 +7794,8 @@ function getProductTypeLabel(type) {
         'pg': 'products.type_pg',
         'flavor': 'products.type_flavor',
         'nicotine_booster': 'products.type_nicotine_booster',
-        'nicotine_salt': 'products.type_nicotine_salt'
+        'nicotine_salt': 'products.type_nicotine_salt',
+        'premixed_base': 'products.type_premixed_base'
     };
     const key = typeKeys[type] || 'products.type_flavor';
     return t(key, productTypeLabels[type] || 'Flavor');
@@ -7799,7 +7807,8 @@ const productTypeLabels = {
     'pg': 'PG (Propylene Glycol)',
     'flavor': 'Flavor',
     'nicotine_booster': 'Nicotine Booster',
-    'nicotine_salt': 'Nicotine Salt'
+    'nicotine_salt': 'Nicotine Salt',
+    'premixed_base': 'Premixed PG/VG Base'
 };
 
 // Mapování typů produktů na ikony
@@ -7808,7 +7817,8 @@ const productTypeIcons = {
     'pg': '💧',
     'flavor': '🍓',
     'nicotine_booster': '⚗',
-    'nicotine_salt': '🧪'
+    'nicotine_salt': '🧪',
+    'premixed_base': '🧪'
 };
 
 // Zobrazit formulář pro přidání produktu
@@ -7827,6 +7837,26 @@ function showAddProductForm() {
     document.getElementById('productUrl').value = '';
     document.getElementById('productImageUrl').value = '';
     document.getElementById('productImagePreview').innerHTML = '<span class="image-placeholder">📷</span>';
+    
+    // Reset flavor-specifických polí
+    const flavorSection = document.getElementById('flavorFieldsSection');
+    if (flavorSection) flavorSection.classList.add('hidden');
+    const flavorProductType = document.getElementById('productFlavorProductType');
+    if (flavorProductType) flavorProductType.value = '';
+    const flavorManufacturer = document.getElementById('productFlavorManufacturer');
+    if (flavorManufacturer) { flavorManufacturer.innerHTML = '<option value="" data-i18n="product_form.type_select">-- Vyberte --</option>'; }
+    const flavorCategory = document.getElementById('productFlavorCategory');
+    if (flavorCategory) flavorCategory.value = '';
+    const flavorMinPercent = document.getElementById('productFlavorMinPercent');
+    if (flavorMinPercent) flavorMinPercent.value = '';
+    const flavorMaxPercent = document.getElementById('productFlavorMaxPercent');
+    if (flavorMaxPercent) flavorMaxPercent.value = '';
+    const flavorSteepDays = document.getElementById('productFlavorSteepDays');
+    if (flavorSteepDays) flavorSteepDays.value = '7';
+    const flavorCode = document.getElementById('productFlavorCode');
+    if (flavorCode) flavorCode.value = '';
+    const suggestCheckbox = document.getElementById('productSuggestToDatabase');
+    if (suggestCheckbox) suggestCheckbox.checked = false;
     
     // Povolit výběr typu produktu při přidávání nového
     const productTypeSelect = document.getElementById('productType');

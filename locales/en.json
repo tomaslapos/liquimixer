@@ -665,6 +665,7 @@
     "type_flavor": "Flavor",
     "type_nicotine_booster": "Nicotine booster",
     "type_nicotine_salt": "Nicotine salt",
+    "type_premixed_base": "Premixed PG/VG base",
     "no_products": "You don't have any favorite products yet.",
     "loading": "Loading products...",
     "back": "◀ BACK",
