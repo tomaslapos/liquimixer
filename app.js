@@ -6287,6 +6287,13 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
     const percentage = flavorLink.percentage || 0;
     const category = flavorLink.generic_flavor_type || flavorLink.flavor?.category || 'fruit';
     
+    // Generická kategorie (bez konkrétní příchutě z DB/oblíbených) — přeskočit autocomplete,
+    // kategorie se předvyplní přes select v příslušné prefill funkci
+    if (!flavorId && !favoriteProductId && !flavorLink.flavor && flavorLink.generic_flavor_type) {
+        console.log('prefillFlavorAutocomplete: Skipping category flavor:', flavorLink.generic_flavor_type);
+        return;
+    }
+    
     // Pokud nemáme název příchutě, nic nenastavujeme
     if (!flavorName) return;
     
