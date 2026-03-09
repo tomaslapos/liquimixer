@@ -6544,21 +6544,38 @@ function resetAndPrefillProFlavors(flavors, linkedFlavors = []) {
             if (typeof updateFlavorCompositionOther === 'function') updateFlavorCompositionOther(flavorIndex);
         }
         
-        // Předvyplnit konkrétní příchuť — prioritně z linkedFlavors, fallback na recipe_data
-        let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+        // Předvyplnit konkrétní příchuť — matchovat linked flavor podle obsahu, ne pozice
+        // Pozice v recipe_flavors nemusí odpovídat pozicím v recipe_data.flavors
+        const fName = flavor.flavorName || flavor.name;
+        const fManufacturer = flavor.flavorManufacturer || flavor.manufacturer;
+        const fId = flavor.flavorId || flavor.id;
+        const fSource = flavor.flavorSource || flavor.source;
+        const fFavId = flavor.favoriteProductId;
+        
+        // Matchovat podle flavor_id, favorite_product_id nebo flavor_name
+        let linkedFlavor = null;
+        if (fFavId) {
+            linkedFlavor = linkedFlavors.find(lf => lf.favorite_product_id === fFavId);
+        }
+        if (!linkedFlavor && fId) {
+            linkedFlavor = linkedFlavors.find(lf => lf.flavor_id === fId);
+        }
+        if (!linkedFlavor && fName) {
+            linkedFlavor = linkedFlavors.find(lf => lf.flavor_name === fName);
+        }
         
         // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
-        if (!linkedFlavor && flavor.flavorName) {
+        if (!linkedFlavor && fName) {
             linkedFlavor = {
-                flavor_name: flavor.flavorName,
-                flavor_manufacturer: flavor.flavorManufacturer || null,
-                flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
-                favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
-                flavor_source: flavor.flavorSource || 'database',
+                flavor_name: fName,
+                flavor_manufacturer: fManufacturer || null,
+                flavor_id: fSource === 'favorite' ? null : (fId || null),
+                favorite_product_id: fSource === 'favorite' ? (fFavId || fId || null) : (fFavId || null),
+                flavor_source: fSource || 'database',
                 generic_flavor_type: flavor.type || 'fruit',
                 percentage: flavor.percent || 0
             };
-            console.log('resetAndPrefillProFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+            console.log('resetAndPrefillProFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', fName);
         }
         
         if (linkedFlavor) {
@@ -6604,21 +6621,30 @@ function resetAndPrefillShishaFlavors(flavors, linkedFlavors = []) {
                 updateShishaFlavorStrength(flavorIndex);
             }
             
-            // Předvyplnit konkrétní příchuť — prioritně z linkedFlavors, fallback na recipe_data
-            let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+            // Předvyplnit konkrétní příchuť — matchovat linked flavor podle obsahu, ne pozice
+            const fName = flavor.flavorName || flavor.name;
+            const fManufacturer = flavor.flavorManufacturer || flavor.manufacturer;
+            const fId = flavor.flavorId || flavor.id;
+            const fSource = flavor.flavorSource || flavor.source;
+            const fFavId = flavor.favoriteProductId;
+            
+            let linkedFlavor = null;
+            if (fFavId) linkedFlavor = linkedFlavors.find(lf => lf.favorite_product_id === fFavId);
+            if (!linkedFlavor && fId) linkedFlavor = linkedFlavors.find(lf => lf.flavor_id === fId);
+            if (!linkedFlavor && fName) linkedFlavor = linkedFlavors.find(lf => lf.flavor_name === fName);
             
             // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
-            if (!linkedFlavor && flavor.flavorName) {
+            if (!linkedFlavor && fName) {
                 linkedFlavor = {
-                    flavor_name: flavor.flavorName,
-                    flavor_manufacturer: flavor.flavorManufacturer || null,
-                    flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
-                    favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
-                    flavor_source: flavor.flavorSource || 'database',
+                    flavor_name: fName,
+                    flavor_manufacturer: fManufacturer || null,
+                    flavor_id: fSource === 'favorite' ? null : (fId || null),
+                    favorite_product_id: fSource === 'favorite' ? (fFavId || fId || null) : (fFavId || null),
+                    flavor_source: fSource || 'database',
                     generic_flavor_type: flavor.type || 'fruit',
                     percentage: flavor.percent || 0
                 };
-                console.log('resetAndPrefillShishaFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+                console.log('resetAndPrefillShishaFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', fName);
             }
             
             if (linkedFlavor) {
@@ -6645,21 +6671,30 @@ function resetAndPrefillShishaDiyFlavors(flavors, linkedFlavors = []) {
         const flavorIndex = idx + 1;
         if (flavorIndex > 1) addShishaDiyFlavor();
         
-        // 1) Autocomplete data — prioritně z linkedFlavors, fallback na recipe_data
-        let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+        // 1) Autocomplete data — matchovat linked flavor podle obsahu, ne pozice
+        const fName = flavor.flavorName || flavor.name;
+        const fManufacturer = flavor.flavorManufacturer || flavor.manufacturer;
+        const fId = flavor.flavorId || flavor.id;
+        const fSource = flavor.flavorSource || flavor.source;
+        const fFavId = flavor.favoriteProductId;
+        
+        let linkedFlavor = null;
+        if (fFavId) linkedFlavor = linkedFlavors.find(lf => lf.favorite_product_id === fFavId);
+        if (!linkedFlavor && fId) linkedFlavor = linkedFlavors.find(lf => lf.flavor_id === fId);
+        if (!linkedFlavor && fName) linkedFlavor = linkedFlavors.find(lf => lf.flavor_name === fName);
         
         // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
-        if (!linkedFlavor && flavor.flavorName) {
+        if (!linkedFlavor && fName) {
             linkedFlavor = {
-                flavor_name: flavor.flavorName,
-                flavor_manufacturer: flavor.flavorManufacturer || null,
-                flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
-                favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
-                flavor_source: flavor.flavorSource || 'database',
+                flavor_name: fName,
+                flavor_manufacturer: fManufacturer || null,
+                flavor_id: fSource === 'favorite' ? null : (fId || null),
+                favorite_product_id: fSource === 'favorite' ? (fFavId || fId || null) : (fFavId || null),
+                flavor_source: fSource || 'database',
                 generic_flavor_type: flavor.type || 'fruit',
                 percentage: flavor.percent || 0
             };
-            console.log('resetAndPrefillShishaDiyFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+            console.log('resetAndPrefillShishaDiyFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', fName);
         }
         
         if (linkedFlavor) {
@@ -6703,21 +6738,30 @@ function resetAndPrefillShishaMolFlavors(flavors, linkedFlavors = []) {
         const flavorIndex = idx + 1;
         if (flavorIndex > 1) addShishaMolFlavor();
         
-        // 1) Autocomplete data — prioritně z linkedFlavors, fallback na recipe_data
-        let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+        // 1) Autocomplete data — matchovat linked flavor podle obsahu, ne pozice
+        const fName = flavor.flavorName || flavor.name;
+        const fManufacturer = flavor.flavorManufacturer || flavor.manufacturer;
+        const fId = flavor.flavorId || flavor.id;
+        const fSource = flavor.flavorSource || flavor.source;
+        const fFavId = flavor.favoriteProductId;
+        
+        let linkedFlavor = null;
+        if (fFavId) linkedFlavor = linkedFlavors.find(lf => lf.favorite_product_id === fFavId);
+        if (!linkedFlavor && fId) linkedFlavor = linkedFlavors.find(lf => lf.flavor_id === fId);
+        if (!linkedFlavor && fName) linkedFlavor = linkedFlavors.find(lf => lf.flavor_name === fName);
         
         // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
-        if (!linkedFlavor && flavor.flavorName) {
+        if (!linkedFlavor && fName) {
             linkedFlavor = {
-                flavor_name: flavor.flavorName,
-                flavor_manufacturer: flavor.flavorManufacturer || null,
-                flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
-                favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
-                flavor_source: flavor.flavorSource || 'database',
+                flavor_name: fName,
+                flavor_manufacturer: fManufacturer || null,
+                flavor_id: fSource === 'favorite' ? null : (fId || null),
+                favorite_product_id: fSource === 'favorite' ? (fFavId || fId || null) : (fFavId || null),
+                flavor_source: fSource || 'database',
                 generic_flavor_type: flavor.type || 'fruit',
                 percentage: flavor.percent || 0
             };
-            console.log('resetAndPrefillShishaMolFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+            console.log('resetAndPrefillShishaMolFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', fName);
         }
         
         if (linkedFlavor) {
@@ -13230,16 +13274,20 @@ function calculateProMix() {
         // Add all flavors
         flavorsData.forEach((flavor, index) => {
             const flavorVolume = (flavor.percent / 100) * totalAmount;
-            const flavorVgPercent = flavor.vgRatio;
-            const flavorPgPercent = 100 - flavorVgPercent;
+            // Použít customComposition pro přesné VG/PG zobrazení
+            const comp = flavor.customComposition || { vg: flavor.vgRatio, pg: 100 - flavor.vgRatio };
+            const displayVg = Math.round(comp.vg);
+            const displayPg = Math.round(comp.pg);
             
             const flavorIngredient = {
                 ingredientKey: 'flavor',
                 flavorType: flavor.type,
                 flavorIndex: flavor.index,
                 flavorNumber: index + 1,
+                vgRatio: flavor.vgRatio,
+                customComposition: flavor.customComposition || null,
                 params: {
-                    vgpg: `${flavorVgPercent}/${flavorPgPercent}`
+                    vgpg: `${displayVg}/${displayPg}`
                 },
                 volume: flavorVolume,
                 percent: (flavorVolume / totalAmount) * 100
@@ -13332,16 +13380,20 @@ function calculateProMix() {
         // Add all flavors (SECOND BRANCH - no premixed base)
         flavorsData.forEach((flavor, index) => {
             const flavorVolume = (flavor.percent / 100) * totalAmount;
-            const flavorVgPercent = flavor.vgRatio;
-            const flavorPgPercent = 100 - flavorVgPercent;
+            // Použít customComposition pro přesné VG/PG zobrazení
+            const comp = flavor.customComposition || { vg: flavor.vgRatio, pg: 100 - flavor.vgRatio };
+            const displayVg = Math.round(comp.vg);
+            const displayPg = Math.round(comp.pg);
             
             const flavorIngredient = {
                 ingredientKey: 'flavor',
                 flavorType: flavor.type,
                 flavorIndex: flavor.index,
                 flavorNumber: index + 1,
+                vgRatio: flavor.vgRatio,
+                customComposition: flavor.customComposition || null,
                 params: {
-                    vgpg: `${flavorVgPercent}/${flavorPgPercent}`
+                    vgpg: `${displayVg}/${displayPg}`
                 },
                 volume: flavorVolume,
                 percent: (flavorVolume / totalAmount) * 100
