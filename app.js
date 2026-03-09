@@ -5773,6 +5773,13 @@ function prefillProForm(data, linkedFlavors = []) {
             const nrEl = document.getElementById('proNicotineRatioSlider');
             if (nrEl) { nrEl.value = data.nicotineRatioSlider; updateProNicRatioDisplay(); }
         }
+        // Typ nikotinové soli
+        if (data.nicotineSaltType && nicType === 'salt') {
+            const saltEl = document.getElementById('proSaltType');
+            if (saltEl) saltEl.value = data.nicotineSaltType;
+            const saltContainer = document.getElementById('proSaltTypeContainer');
+            if (saltContainer) saltContainer.classList.remove('hidden');
+        }
         if (typeof updateProNicotineDisplay === 'function') updateProNicotineDisplay();
     }
     // Příchutě - předvyplnit více příchutí
@@ -6568,9 +6575,9 @@ function resetAndPrefillShishaFlavors(flavors, linkedFlavors = []) {
             // Předvyplnit konkrétní příchuť z linkedFlavors podle pozice
             const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
             if (linkedFlavor) {
-                const result = prefillFlavorAutocomplete(`shFlavorAutocomplete${flavorIndex}`, linkedFlavor);
-                // Použít procento z linkedFlavors (uživatel ho mohl změnit)
-                if (result && linkedFlavor.percentage && strengthEl) {
+                prefillFlavorAutocomplete(`shFlavorAutocomplete${flavorIndex}`, linkedFlavor);
+                // Použít procento z linkedFlavors (uživatel ho mohl změnit) — vždy, i pro kategorie
+                if (linkedFlavor.percentage && strengthEl) {
                     strengthEl.value = linkedFlavor.percentage;
                     updateShishaFlavorStrength(flavorIndex);
                 }
@@ -6594,8 +6601,9 @@ function resetAndPrefillShishaDiyFlavors(flavors, linkedFlavors = []) {
         // 1) Autocomplete data z linkedFlavors — nastavit PRVNÍ
         const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
         if (linkedFlavor) {
-            const result = prefillFlavorAutocomplete(`shDiyFlavorAutocomplete${flavorIndex}`, linkedFlavor);
-            if (result && linkedFlavor.percentage) {
+            prefillFlavorAutocomplete(`shDiyFlavorAutocomplete${flavorIndex}`, linkedFlavor);
+            // Použít procento z linkedFlavors — vždy, i pro kategorie
+            if (linkedFlavor.percentage) {
                 const strengthEl = document.getElementById(`shDiyFlavorStrength${flavorIndex}`);
                 if (strengthEl) { strengthEl.value = linkedFlavor.percentage; updateShishaDiyFlavorStrength(flavorIndex); }
             }
@@ -6636,8 +6644,9 @@ function resetAndPrefillShishaMolFlavors(flavors, linkedFlavors = []) {
         // 1) Autocomplete data z linkedFlavors — nastavit PRVNÍ
         const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
         if (linkedFlavor) {
-            const result = prefillFlavorAutocomplete(`shMolFlavorAutocomplete${flavorIndex}`, linkedFlavor);
-            if (result && linkedFlavor.percentage) {
+            prefillFlavorAutocomplete(`shMolFlavorAutocomplete${flavorIndex}`, linkedFlavor);
+            // Použít procento z linkedFlavors — vždy, i pro kategorie
+            if (linkedFlavor.percentage) {
                 const strengthEl = document.getElementById(`shMolFlavorStrength${flavorIndex}`);
                 if (strengthEl) { strengthEl.value = linkedFlavor.percentage; updateShishaMolFlavorStrength(flavorIndex); }
             }
@@ -8145,17 +8154,20 @@ function cancelProductForm() {
 function toggleFlavorFields() {
     const productType = document.getElementById('productType').value;
     const flavorSection = document.getElementById('flavorFieldsSection');
+    const flavorCategory = document.getElementById('productFlavorCategory');
     
     if (!flavorSection) return;
     
     if (productType === 'flavor') {
         flavorSection.classList.remove('hidden');
+        if (flavorCategory) flavorCategory.required = true;
         // Načíst výrobce do selectu
         initFlavorManufacturersSelect();
         // Aktualizovat nápovědu pro rate limit
         updateFlavorSuggestionHint();
     } else {
         flavorSection.classList.add('hidden');
+        if (flavorCategory) flavorCategory.required = false;
     }
 }
 
@@ -9971,6 +9983,9 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
     }
     if (extraData.nicotineRatioSlider !== undefined) {
         recipeData.nicotineRatioSlider = extraData.nicotineRatioSlider;
+    }
+    if (extraData.nicotineSaltType !== undefined) {
+        recipeData.nicotineSaltType = extraData.nicotineSaltType;
     }
     // Příchuť — VG/PG poměr příchutě
     if (extraData.flavorRatio !== undefined) {
@@ -13366,6 +13381,7 @@ function calculateProMix() {
         nicotineType: nicotineType,
         nicotineBaseStrength: baseNicotine,
         nicotineRatioSlider: nicVgPercent,
+        nicotineSaltType: nicotineType === 'salt' ? (document.getElementById('proSaltType')?.value || 'unknown') : undefined,
         manuallyChangedRatio: proUserManuallyChangedRatio
     });
     
