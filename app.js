@@ -4318,15 +4318,16 @@ function getSelectedRecipeFlavors() {
             // oblíbená příchuť byla vytvořena z veřejné DB - linkFlavorsToRecipe to vyřeší
             // vyhledáním existujícího záznamu v favorite_products podle flavor_id
             
+            const isCategory = data.flavorSource === 'category';
             flavors.push({
                 position: index + 1,
                 percentage: data.percent || 0,
                 flavor_name: data.name || null,
                 flavor_manufacturer: data.manufacturer || null,
-                generic_flavor_type: data.category || 'fruit',
+                generic_flavor_type: isCategory ? (data.category || 'fruit') : null,
                 flavor_id: flavorId,
                 favorite_product_id: favoriteProductId,
-                is_category: data.flavorSource === 'category'
+                is_category: isCategory
             });
         } catch (e) {
             console.error('Error parsing flavor data:', e);
@@ -5568,7 +5569,19 @@ function prefillLiquidForm(data, linkedFlavors = []) {
     // Předvyplnit konkrétní příchuť z linkedFlavors
     if (linkedFlavors && linkedFlavors.length > 0) {
         const firstFlavor = linkedFlavors[0];
-        prefillFlavorAutocomplete('flavorAutocomplete', firstFlavor);
+        console.log('prefillLiquidForm: firstFlavor:', JSON.stringify(firstFlavor, null, 2));
+        
+        // prefillFlavorAutocomplete vrátí null pro kategorie (přeskočí je)
+        const result = prefillFlavorAutocomplete('flavorAutocomplete', firstFlavor);
+        
+        if (!result) {
+            // Kategorie — autocomplete přeskočen, nastavit procento do slideru
+            console.log('prefillLiquidForm: Category flavor, setting percentage:', firstFlavor.percentage);
+            if (firstFlavor.percentage) {
+                document.getElementById('flavorStrength').value = firstFlavor.percentage;
+                updateFlavorType();
+            }
+        }
     }
     
     _prefillingSavedRecipe = false;
@@ -6280,55 +6293,107 @@ function resetAndPrefillProAdditives(additives) {
 }
 
 // Předvyplnit autocomplete input s konkrétní příchutí
+// Rozhodovací logika:
+// 1. Kategorie? → přeskočit autocomplete, předvyplnit select + %
+// 2. Uložena u uživatele (favorite)? → použít favorite_products data
+// 3. V databázi (flavors)? → použít flavors data
+// 4. Nic? → zobrazit 0
 function prefillFlavorAutocomplete(inputId, flavorLink) {
     if (!flavorLink) return;
     
     const input = document.getElementById(inputId);
     if (!input) return;
     
-    // Získat data příchutě
-    const flavorName = flavorLink.flavor_name || flavorLink.flavor?.name || null;
-    const manufacturer = flavorLink.flavor_manufacturer || flavorLink.flavor?.manufacturer_name || flavorLink.flavor?.manufacturer_code || '';
-    const flavorId = flavorLink.flavor_id || flavorLink.flavor?.id || null;
-    const favoriteProductId = flavorLink.favorite_product_id || null;
     const percentage = flavorLink.percentage || 0;
     const category = flavorLink.generic_flavor_type || flavorLink.flavor?.category || 'fruit';
     
-    // Generická kategorie — přeskočit autocomplete,
-    // kategorie se předvyplní přes select v příslušné prefill funkci
-    if (flavorLink.flavor_source === 'category') {
-        console.log('prefillFlavorAutocomplete: Skipping category flavor:', flavorLink.generic_flavor_type);
+    console.log('prefillFlavorAutocomplete:', inputId, {
+        flavor_source: flavorLink.flavor_source,
+        generic_flavor_type: flavorLink.generic_flavor_type,
+        flavor_id: flavorLink.flavor_id,
+        favorite_product_id: flavorLink.favorite_product_id,
+        flavor_name: flavorLink.flavor_name,
+        flavor: flavorLink.flavor ? { min_percent: flavorLink.flavor.min_percent, max_percent: flavorLink.flavor.max_percent } : null
+    });
+    
+    // ── 1. KATEGORIE? → přeskočit autocomplete ──
+    // Primární detekce: flavor_source === 'category' (uloženo v DB)
+    // Fallback: generic_flavor_type existuje a nemá flavor_id (kategorie nemá přímý odkaz na veřejnou flavors tabulku)
+    const isCategory = flavorLink.flavor_source === 'category' || 
+        (!flavorLink.flavor_id && flavorLink.generic_flavor_type);
+    
+    if (isCategory) {
+        console.log('prefillFlavorAutocomplete: Category detected, skipping autocomplete:', category, 'source:', flavorLink.flavor_source);
         return;
     }
     
-    // Pokud nemáme název příchutě, nic nenastavujeme
+    // Získat data příchutě
+    const flavorName = flavorLink.flavor_name || flavorLink.flavor?.name || null;
     if (!flavorName) return;
     
-    // Nastavit text inputu - pouze název (jako selectFlavorFromAutocomplete)
+    const manufacturer = flavorLink.flavor_manufacturer || flavorLink.flavor?.manufacturer_name || flavorLink.flavor?.manufacturer_code || '';
+    const flavorId = flavorLink.flavor_id || null;
+    const favoriteProductId = flavorLink.favorite_product_id || null;
+    
+    // ── 2. ULOŽENA U UŽIVATELE (favorite)? → použít favorite_products data ──
+    // ── 3. V DATABÁZI (flavors)? → použít flavors data ──
+    // ── 4. NIC? → zobrazit 0 ──
+    let minPercent = null;
+    let maxPercent = null;
+    let recommendedPercent = null;
+    let steepDays = null;
+    let vgRatio = null;
+    let source = '';
+    
+    if (favoriteProductId && flavorLink.flavor) {
+        // Příchuť uložena u uživatele — prioritně vzít data z favorite_products
+        minPercent = flavorLink.flavor.min_percent || null;
+        maxPercent = flavorLink.flavor.max_percent || null;
+        recommendedPercent = flavorLink.flavor.recommended_percent || null;
+        steepDays = flavorLink.flavor.steep_days || null;
+        vgRatio = flavorLink.flavor.vg_ratio || null;
+        source = 'favorite';
+        console.log('prefillFlavorAutocomplete: Using FAVORITE data, min:', minPercent, 'max:', maxPercent);
+    } else if (flavorId && flavorLink.flavor) {
+        // Příchuť z veřejné databáze
+        minPercent = flavorLink.flavor.min_percent || null;
+        maxPercent = flavorLink.flavor.max_percent || null;
+        recommendedPercent = flavorLink.flavor.recommended_percent || null;
+        steepDays = flavorLink.flavor.steep_days || null;
+        vgRatio = flavorLink.flavor.vg_ratio || null;
+        source = 'database';
+        console.log('prefillFlavorAutocomplete: Using DATABASE data, min:', minPercent, 'max:', maxPercent);
+    } else {
+        // Nemáme žádná data — zobrazit 0
+        source = favoriteProductId ? 'favorite' : (flavorId ? 'database' : 'custom');
+        console.log('prefillFlavorAutocomplete: No flavor data available, showing defaults');
+    }
+    
+    // Nastavit text inputu
     input.value = flavorName;
     
-    // Nastavit dataset stejně jako selectFlavorFromAutocomplete
-    const isFavorite = !!favoriteProductId;
+    // Nastavit dataset
     input.dataset.flavorId = flavorId || '';
     input.dataset.favoriteProductId = favoriteProductId || '';
-    input.dataset.flavorSource = isFavorite ? 'favorite' : (flavorId ? 'database' : '');
+    input.dataset.flavorSource = source;
     
-    // Uložit kompletní data příchutě (včetně uložené percentage pro prefill)
+    // Uložit kompletní data příchutě
     const flavorData = {
-        id: isFavorite ? favoriteProductId : flavorId,  // ID záznamu (favorite_products nebo flavors)
-        flavor_id: flavorId,  // ID ve veřejné tabulce flavors (pokud existuje)
-        favorite_product_id: favoriteProductId,  // ID v tabulce favorite_products (pokud je oblíbená)
+        id: favoriteProductId || flavorId || null,
+        flavor_id: flavorId,
+        favorite_product_id: favoriteProductId,
         name: flavorName,
         manufacturer: manufacturer,
         manufacturer_code: manufacturer,
         category: category,
         product_type: flavorLink.flavor?.product_type || 'vape',
-        min_percent: flavorLink.flavor?.min_percent,
-        max_percent: flavorLink.flavor?.max_percent,
-        steep_days: flavorLink.flavor?.steep_days,
-        vg_ratio: flavorLink.flavor?.vg_ratio,
-        source: isFavorite ? 'favorite' : 'database',
-        saved_percentage: percentage  // Uložená hodnota z receptu pro prefill
+        min_percent: minPercent,
+        max_percent: maxPercent,
+        recommended_percent: recommendedPercent,
+        steep_days: steepDays,
+        vg_ratio: vgRatio,
+        source: source,
+        saved_percentage: percentage
     };
     input.dataset.flavorData = JSON.stringify(flavorData);
     
@@ -6337,12 +6402,12 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
         updateFlavorCategoryState(inputId, true);
     }
     
-    // Zobrazit slider a nastavit rozsah dle příchutě (s uloženou percentage)
+    // Zobrazit slider a nastavit rozsah dle příchutě
     if (typeof showFlavorSliderWithRange === 'function') {
         showFlavorSliderWithRange(inputId, flavorData);
     }
     
-    console.log('prefillFlavorAutocomplete:', inputId, flavorName, percentage, 'source:', isFavorite ? 'favorite' : 'database');
+    console.log('prefillFlavorAutocomplete: Done', inputId, flavorName, percentage + '%', 'source:', source, 'min:', minPercent, 'max:', maxPercent);
     
     return { percentage, category };
 }
