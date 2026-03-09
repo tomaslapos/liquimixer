@@ -5601,24 +5601,39 @@ function prefillLiquidForm(data, linkedFlavors = []) {
         }
     }
     
-    // Předvyplnit konkrétní příchuť z linkedFlavors
-    if (linkedFlavors && linkedFlavors.length > 0) {
-        const firstFlavor = linkedFlavors[0];
-        console.log('prefillLiquidForm: firstFlavor:', JSON.stringify(firstFlavor, null, 2));
+    // Předvyplnit konkrétní příchuť — prioritně z linkedFlavors, fallback na recipe_data
+    let flavorLinkToUse = (linkedFlavors && linkedFlavors.length > 0) ? linkedFlavors[0] : null;
+    
+    // Fallback: pokud linkedFlavors je prázdný ale recipe_data má konkrétní příchuť
+    if (!flavorLinkToUse && data.specificFlavorName) {
+        flavorLinkToUse = {
+            flavor_name: data.specificFlavorName,
+            flavor_manufacturer: data.specificFlavorManufacturer || null,
+            flavor_id: data.specificFlavorSource === 'favorite' ? null : (data.specificFlavorId || null),
+            favorite_product_id: data.specificFlavorSource === 'favorite' ? (data.specificFavoriteProductId || data.specificFlavorId || null) : null,
+            flavor_source: data.specificFlavorSource || 'database',
+            generic_flavor_type: data.flavorType || 'fruit',
+            percentage: data.flavorPercent || 0
+        };
+        console.log('prefillLiquidForm: Using recipe_data fallback for flavor:', flavorLinkToUse.flavor_name);
+    }
+    
+    if (flavorLinkToUse) {
+        console.log('prefillLiquidForm: flavorLinkToUse:', JSON.stringify(flavorLinkToUse, null, 2));
         
         // prefillFlavorAutocomplete vrátí null pro kategorie (přeskočí je)
-        const result = prefillFlavorAutocomplete('flavorAutocomplete', firstFlavor);
+        const result = prefillFlavorAutocomplete('flavorAutocomplete', flavorLinkToUse);
         
         if (!result) {
             // Kategorie — autocomplete přeskočen, nastavit procento do slideru
             // DŮLEŽITÉ: nastavit AFTER updateFlavorType (ten resetuje na 0%)
-            console.log('prefillLiquidForm: Category flavor, setting percentage:', firstFlavor.percentage);
-            if (firstFlavor.percentage) {
+            console.log('prefillLiquidForm: Category flavor, setting percentage:', flavorLinkToUse.percentage);
+            if (flavorLinkToUse.percentage) {
                 const slider = document.getElementById('flavorStrength');
                 const valueDisplay = document.getElementById('flavorValue');
-                slider.value = firstFlavor.percentage;
+                slider.value = flavorLinkToUse.percentage;
                 if (valueDisplay) {
-                    const displayValue = Number.isInteger(firstFlavor.percentage) ? firstFlavor.percentage : firstFlavor.percentage.toFixed(1);
+                    const displayValue = Number.isInteger(flavorLinkToUse.percentage) ? flavorLinkToUse.percentage : flavorLinkToUse.percentage.toFixed(1);
                     valueDisplay.textContent = displayValue;
                 }
                 updateFlavorDisplay();
@@ -6382,10 +6397,12 @@ function prefillFlavorAutocomplete(inputId, flavorLink) {
     });
     
     // ── 1. KATEGORIE? → přeskočit autocomplete ──
-    // Primární detekce: flavor_source === 'category' (uloženo v DB)
-    // Fallback: generic_flavor_type existuje a nemá flavor_id (kategorie nemá přímý odkaz na veřejnou flavors tabulku)
+    // Kategorie = nemá konkrétní název příchutě, jen generickou kategorii
+    // DŮLEŽITÉ: příchuť s flavor_name NIKDY není kategorie, i když nemá flavor_id (custom/favorite příchuť)
+    const hasFlavorName = !!flavorLink.flavor_name;
+    const hasFavoriteProduct = !!flavorLink.favorite_product_id;
     const isCategory = flavorLink.flavor_source === 'category' || 
-        (!flavorLink.flavor_id && flavorLink.generic_flavor_type);
+        (!hasFlavorName && !hasFavoriteProduct && !flavorLink.flavor_id && flavorLink.generic_flavor_type);
     
     if (isCategory) {
         console.log('prefillFlavorAutocomplete: Category detected, skipping autocomplete:', category, 'source:', flavorLink.flavor_source);
@@ -6527,8 +6544,23 @@ function resetAndPrefillProFlavors(flavors, linkedFlavors = []) {
             if (typeof updateFlavorCompositionOther === 'function') updateFlavorCompositionOther(flavorIndex);
         }
         
-        // Předvyplnit konkrétní příchuť z linkedFlavors podle pozice
-        const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
+        // Předvyplnit konkrétní příchuť — prioritně z linkedFlavors, fallback na recipe_data
+        let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+        
+        // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
+        if (!linkedFlavor && flavor.flavorName) {
+            linkedFlavor = {
+                flavor_name: flavor.flavorName,
+                flavor_manufacturer: flavor.flavorManufacturer || null,
+                flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
+                favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
+                flavor_source: flavor.flavorSource || 'database',
+                generic_flavor_type: flavor.type || 'fruit',
+                percentage: flavor.percent || 0
+            };
+            console.log('resetAndPrefillProFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+        }
+        
         if (linkedFlavor) {
             prefillFlavorAutocomplete(`proFlavorAutocomplete${flavorIndex}`, linkedFlavor);
             // Použít procento z linkedFlavors (uživatel ho mohl změnit) — vždy, i pro kategorie
@@ -6572,8 +6604,23 @@ function resetAndPrefillShishaFlavors(flavors, linkedFlavors = []) {
                 updateShishaFlavorStrength(flavorIndex);
             }
             
-            // Předvyplnit konkrétní příchuť z linkedFlavors podle pozice
-            const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
+            // Předvyplnit konkrétní příchuť — prioritně z linkedFlavors, fallback na recipe_data
+            let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+            
+            // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
+            if (!linkedFlavor && flavor.flavorName) {
+                linkedFlavor = {
+                    flavor_name: flavor.flavorName,
+                    flavor_manufacturer: flavor.flavorManufacturer || null,
+                    flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
+                    favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
+                    flavor_source: flavor.flavorSource || 'database',
+                    generic_flavor_type: flavor.type || 'fruit',
+                    percentage: flavor.percent || 0
+                };
+                console.log('resetAndPrefillShishaFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+            }
+            
             if (linkedFlavor) {
                 prefillFlavorAutocomplete(`shFlavorAutocomplete${flavorIndex}`, linkedFlavor);
                 // Použít procento z linkedFlavors (uživatel ho mohl změnit) — vždy, i pro kategorie
@@ -6598,8 +6645,23 @@ function resetAndPrefillShishaDiyFlavors(flavors, linkedFlavors = []) {
         const flavorIndex = idx + 1;
         if (flavorIndex > 1) addShishaDiyFlavor();
         
-        // 1) Autocomplete data z linkedFlavors — nastavit PRVNÍ
-        const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
+        // 1) Autocomplete data — prioritně z linkedFlavors, fallback na recipe_data
+        let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+        
+        // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
+        if (!linkedFlavor && flavor.flavorName) {
+            linkedFlavor = {
+                flavor_name: flavor.flavorName,
+                flavor_manufacturer: flavor.flavorManufacturer || null,
+                flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
+                favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
+                flavor_source: flavor.flavorSource || 'database',
+                generic_flavor_type: flavor.type || 'fruit',
+                percentage: flavor.percent || 0
+            };
+            console.log('resetAndPrefillShishaDiyFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+        }
+        
         if (linkedFlavor) {
             prefillFlavorAutocomplete(`shDiyFlavorAutocomplete${flavorIndex}`, linkedFlavor);
             // Použít procento z linkedFlavors — vždy, i pro kategorie
@@ -6641,8 +6703,23 @@ function resetAndPrefillShishaMolFlavors(flavors, linkedFlavors = []) {
         const flavorIndex = idx + 1;
         if (flavorIndex > 1) addShishaMolFlavor();
         
-        // 1) Autocomplete data z linkedFlavors — nastavit PRVNÍ
-        const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
+        // 1) Autocomplete data — prioritně z linkedFlavors, fallback na recipe_data
+        let linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx] || null;
+        
+        // Fallback: pokud linkedFlavors nemá match ale recipe_data má konkrétní příchuť
+        if (!linkedFlavor && flavor.flavorName) {
+            linkedFlavor = {
+                flavor_name: flavor.flavorName,
+                flavor_manufacturer: flavor.flavorManufacturer || null,
+                flavor_id: flavor.flavorSource === 'favorite' ? null : (flavor.flavorId || null),
+                favorite_product_id: flavor.flavorSource === 'favorite' ? (flavor.favoriteProductId || flavor.flavorId || null) : (flavor.favoriteProductId || null),
+                flavor_source: flavor.flavorSource || 'database',
+                generic_flavor_type: flavor.type || 'fruit',
+                percentage: flavor.percent || 0
+            };
+            console.log('resetAndPrefillShishaMolFlavors: Using recipe_data fallback for flavor', flavorIndex, ':', flavor.flavorName);
+        }
+        
         if (linkedFlavor) {
             prefillFlavorAutocomplete(`shMolFlavorAutocomplete${flavorIndex}`, linkedFlavor);
             // Použít procento z linkedFlavors — vždy, i pro kategorie
