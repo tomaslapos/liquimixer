@@ -2118,7 +2118,7 @@ function calculateActualVgPgRatio(formType) {
         
         // Kontrola konkrétní příchutě z autocomplete
         const flavorAutocomplete = document.getElementById('flavorAutocomplete');
-        const hasSpecificFlavor = flavorAutocomplete?.dataset.flavorId && flavorAutocomplete.dataset.flavorSource !== 'generic';
+        const hasSpecificFlavor = (flavorAutocomplete?.dataset.flavorId || flavorAutocomplete?.dataset.favoriteProductId || flavorAutocomplete?.dataset.flavorData) && flavorAutocomplete?.dataset.flavorSource !== 'generic';
         const flavorType = document.getElementById('flavorType')?.value || 'none';
         // Příchuť je aktivní pokud je vybraná konkrétní NEBO je zvolena kategorie
         const hasFlavor = hasSpecificFlavor || (flavorType !== 'none' && flavorType !== '');
@@ -5568,6 +5568,13 @@ function prefillLiquidForm(data, linkedFlavors = []) {
         if (data.nicotineRatio) {
             const nrEl = document.getElementById('nicotineRatio');
             if (nrEl) nrEl.value = data.nicotineRatio;
+            // Aktualizovat active class na toggle buttons
+            const btn5050 = document.getElementById('ratio5050');
+            const btn7030 = document.getElementById('ratio7030');
+            if (btn5050 && btn7030) {
+                btn5050.classList.toggle('active', data.nicotineRatio === '50/50');
+                btn7030.classList.toggle('active', data.nicotineRatio === '70/30');
+            }
         }
         updateNicotineDisplay();
     }
@@ -5583,6 +5590,15 @@ function prefillLiquidForm(data, linkedFlavors = []) {
     if (data.flavorRatio) {
         const frEl = document.getElementById('flavorRatio');
         if (frEl) { frEl.value = data.flavorRatio; updateFlavorDisplay(); }
+        // Aktualizovat active class na flavor ratio toggle buttons
+        const fr0100 = document.getElementById('flavorRatio0100');
+        const fr8020 = document.getElementById('flavorRatio8020');
+        const fr7030 = document.getElementById('flavorRatio7030');
+        if (fr0100 && fr8020 && fr7030) {
+            fr0100.classList.toggle('active', data.flavorRatio === '0/100');
+            fr8020.classList.toggle('active', data.flavorRatio === '80/20');
+            fr7030.classList.toggle('active', data.flavorRatio === '70/30');
+        }
     }
     
     // Předvyplnit konkrétní příchuť z linkedFlavors
@@ -5662,6 +5678,13 @@ function prefillSnvForm(data, linkedFlavors = []) {
         if (data.nicotineRatio) {
             const nrEl = document.getElementById('svNicotineRatio');
             if (nrEl) nrEl.value = data.nicotineRatio;
+            // Aktualizovat active class na toggle buttons
+            const sv5050 = document.getElementById('svRatio5050');
+            const sv7030 = document.getElementById('svRatio7030');
+            if (sv5050 && sv7030) {
+                sv5050.classList.toggle('active', data.nicotineRatio === '50/50');
+                sv7030.classList.toggle('active', data.nicotineRatio === '70/30');
+            }
         }
         if (typeof updateSvNicotineDisplay === 'function') updateSvNicotineDisplay();
     }
@@ -5675,6 +5698,15 @@ function prefillSnvForm(data, linkedFlavors = []) {
     if (data.flavorRatio) {
         const frEl = document.getElementById('svFlavorRatio');
         if (frEl) frEl.value = data.flavorRatio;
+        // Aktualizovat active class na flavor ratio toggle buttons
+        const svFr0100 = document.getElementById('svFlavorRatio0100');
+        const svFr8020 = document.getElementById('svFlavorRatio8020');
+        const svFr7030 = document.getElementById('svFlavorRatio7030');
+        if (svFr0100 && svFr8020 && svFr7030) {
+            svFr0100.classList.toggle('active', data.flavorRatio === '0/100');
+            svFr8020.classList.toggle('active', data.flavorRatio === '80/20');
+            svFr7030.classList.toggle('active', data.flavorRatio === '70/30');
+        }
     }
     
     // Aktualizovat limity
@@ -6491,9 +6523,9 @@ function resetAndPrefillProFlavors(flavors, linkedFlavors = []) {
         // Předvyplnit konkrétní příchuť z linkedFlavors podle pozice
         const linkedFlavor = linkedFlavors.find(lf => lf.position === flavorIndex) || linkedFlavors[idx];
         if (linkedFlavor) {
-            const result = prefillFlavorAutocomplete(`proFlavorAutocomplete${flavorIndex}`, linkedFlavor);
-            // Použít procento z linkedFlavors (uživatel ho mohl změnit)
-            if (result && linkedFlavor.percentage && strengthEl) {
+            prefillFlavorAutocomplete(`proFlavorAutocomplete${flavorIndex}`, linkedFlavor);
+            // Použít procento z linkedFlavors (uživatel ho mohl změnit) — vždy, i pro kategorie
+            if (linkedFlavor.percentage && strengthEl) {
                 strengthEl.value = linkedFlavor.percentage;
                 updateProFlavorStrength(flavorIndex);
             }
@@ -7573,6 +7605,14 @@ async function viewProductDetail(productId) {
         }
         
         displayProductDetail(product, linkedRecipes);
+        
+        // Skrýt tlačítko UPRAVIT pro produkty vytvořené automaticky z kategorie
+        const editBtn = document.getElementById('productEditBtn');
+        if (editBtn) {
+            const isAutoCategory = product.description === 'auto:category';
+            editBtn.style.display = isAutoCategory ? 'none' : '';
+        }
+        
         showPage('product-detail');
         
     } catch (error) {
@@ -7966,6 +8006,12 @@ function showAddProductForm() {
 // Upravit produkt
 async function editProduct() {
     if (!currentViewingProduct) return;
+    
+    // Zakázat editaci produktů vytvořených automaticky z kategorie
+    if (currentViewingProduct.description === 'auto:category') {
+        showNotification(t('products.category_no_edit', 'Produkt vytvořený z kategorie nelze upravit.'), 'warning');
+        return;
+    }
     
     document.getElementById('productFormTitle').textContent = t('product_form.edit_title', 'Upravit produkt');
     document.getElementById('editingProductId').value = currentViewingProduct.id;
@@ -8702,7 +8748,7 @@ function updateVgPgRatioLimits() {
     
     // Získat informace o konkrétní příchuti (pokud je vybraná)
     const flavorAutocomplete = document.getElementById('flavorAutocomplete');
-    const hasSpecificFlavor = flavorAutocomplete?.dataset.flavorId && flavorAutocomplete.dataset.flavorSource !== 'generic';
+    const hasSpecificFlavor = (flavorAutocomplete?.dataset.flavorId || flavorAutocomplete?.dataset.favoriteProductId || flavorAutocomplete?.dataset.flavorData) && flavorAutocomplete?.dataset.flavorSource !== 'generic';
     let specificFlavorName = null;
     let specificFlavorManufacturer = null;
     let specificFlavorVgRatio = null;
@@ -9401,7 +9447,7 @@ function calculateMix() {
     
     // Získat informace o konkrétní příchuti (pokud je vybraná)
     const flavorAutocomplete = document.getElementById('flavorAutocomplete');
-    const hasSpecificFlavor = flavorAutocomplete?.dataset.flavorId && flavorAutocomplete.dataset.flavorSource !== 'generic';
+    const hasSpecificFlavor = (flavorAutocomplete?.dataset.flavorId || flavorAutocomplete?.dataset.favoriteProductId || flavorAutocomplete?.dataset.flavorData) && flavorAutocomplete?.dataset.flavorSource !== 'generic';
     let specificFlavorName = null;
     let specificFlavorManufacturer = null;
     let specificFlavorId = null;

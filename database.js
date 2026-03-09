@@ -2808,20 +2808,25 @@ async function createCustomFavoriteProduct(clerkId, flavorData) {
         const shareId = generateShareId();
         const shareUrl = `${SHARE_BASE_URL}/?product=${shareId}`;
         
+        const insertData = {
+            clerk_id: clerkId,
+            name: sanitizeInput(flavorData.name),
+            product_type: 'flavor',
+            manufacturer: sanitizeInput(flavorData.manufacturer) || null,
+            flavor_product_type: flavorData.flavor_product_type || 'vape',
+            flavor_category: flavorData.category || 'mix',
+            rating: 0,
+            share_id: shareId,
+            share_url: shareUrl,
+            created_at: new Date().toISOString()
+        };
+        if (flavorData.description) {
+            insertData.description = flavorData.description;
+        }
+        
         const { data, error } = await supabaseClient
             .from('favorite_products')
-            .insert({
-                clerk_id: clerkId,
-                name: sanitizeInput(flavorData.name),
-                product_type: 'flavor',
-                manufacturer: sanitizeInput(flavorData.manufacturer) || null,
-                flavor_product_type: flavorData.flavor_product_type || 'vape',
-                flavor_category: flavorData.category || 'mix',
-                rating: 0,
-                share_id: shareId,
-                share_url: shareUrl,
-                created_at: new Date().toISOString()
-            })
+            .insert(insertData)
             .select()
             .single();
         
@@ -2942,30 +2947,73 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                     console.log('linkFlavorsToRecipe: Using existing favorite_product_id:', f.favorite_product_id);
                 } else {
                     console.warn('linkFlavorsToRecipe: favorite_product_id not found for user:', f.favorite_product_id);
-                    // Pokud má flavor_name, vytvořit custom příchuť
+                    // Pokud má flavor_name, hledat existující nebo vytvořit custom příchuť
                     if (f.flavor_name) {
-                        const customFlavor = await createCustomFavoriteProduct(clerkId, {
-                            name: f.flavor_name,
-                            manufacturer: f.flavor_manufacturer,
-                            product_type: 'flavor'
-                        });
-                        if (customFlavor) {
-                            favoriteProductId = customFlavor.id;
-                            console.log('linkFlavorsToRecipe: Created custom flavor:', customFlavor.id);
+                        let fallbackQuery = supabaseClient
+                            .from('favorite_products')
+                            .select('id, flavor_id')
+                            .eq('clerk_id', clerkId)
+                            .eq('name', f.flavor_name)
+                            .eq('product_type', 'flavor');
+                        if (f.flavor_manufacturer) {
+                            fallbackQuery = fallbackQuery.eq('manufacturer', f.flavor_manufacturer);
+                        } else {
+                            fallbackQuery = fallbackQuery.is('manufacturer', null);
+                        }
+                        const { data: fallbackMatch } = await fallbackQuery.limit(1).maybeSingle();
+                        if (fallbackMatch) {
+                            favoriteProductId = fallbackMatch.id;
+                            if (fallbackMatch.flavor_id) flavorId = fallbackMatch.flavor_id;
+                            console.log('linkFlavorsToRecipe: Found existing favorite by name (fallback):', f.flavor_name, '→', favoriteProductId);
+                        } else {
+                            const customFlavor = await createCustomFavoriteProduct(clerkId, {
+                                name: f.flavor_name,
+                                manufacturer: f.flavor_manufacturer,
+                                product_type: 'flavor'
+                            });
+                            if (customFlavor) {
+                                favoriteProductId = customFlavor.id;
+                                console.log('linkFlavorsToRecipe: Created custom flavor (fallback):', customFlavor.id);
+                            }
                         }
                     }
                 }
             }
-            // Pouze flavor_name bez ID - vytvořit custom příchuť
+            // Pouze flavor_name bez ID - hledat existující nebo vytvořit custom příchuť
             else if (f.flavor_name) {
-                const customFlavor = await createCustomFavoriteProduct(clerkId, {
-                    name: f.flavor_name,
-                    manufacturer: f.flavor_manufacturer,
-                    product_type: 'flavor'
-                });
-                if (customFlavor) {
-                    favoriteProductId = customFlavor.id;
-                    console.log('linkFlavorsToRecipe: Created custom flavor from name:', customFlavor.id);
+                // Nejdříve hledat existující favorite_product podle názvu + výrobce
+                let query = supabaseClient
+                    .from('favorite_products')
+                    .select('id, flavor_id')
+                    .eq('clerk_id', clerkId)
+                    .eq('name', f.flavor_name)
+                    .eq('product_type', 'flavor');
+                
+                if (f.flavor_manufacturer) {
+                    query = query.eq('manufacturer', f.flavor_manufacturer);
+                } else {
+                    query = query.is('manufacturer', null);
+                }
+                
+                const { data: existingByName } = await query.limit(1).maybeSingle();
+                
+                if (existingByName) {
+                    favoriteProductId = existingByName.id;
+                    if (existingByName.flavor_id) {
+                        flavorId = existingByName.flavor_id;
+                    }
+                    console.log('linkFlavorsToRecipe: Found existing favorite by name:', f.flavor_name, '→', favoriteProductId);
+                } else {
+                    const customFlavor = await createCustomFavoriteProduct(clerkId, {
+                        name: f.flavor_name,
+                        manufacturer: f.flavor_manufacturer,
+                        product_type: 'flavor',
+                        description: f.is_category ? 'auto:category' : undefined
+                    });
+                    if (customFlavor) {
+                        favoriteProductId = customFlavor.id;
+                        console.log('linkFlavorsToRecipe: Created custom flavor from name:', customFlavor.id);
+                    }
                 }
             }
             
