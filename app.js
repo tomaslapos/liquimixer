@@ -5471,6 +5471,25 @@ async function editSavedRecipe() {
     // Povolit programovou změnu záložky
     window.allowTabSwitch = true;
     
+    // Reset autocomplete inputů před prefill (zabránit přenesení dat z předchozího receptu)
+    const autocompletesToReset = [
+        'flavorAutocomplete',
+        'proFlavorAutocomplete1', 'proFlavorAutocomplete2', 'proFlavorAutocomplete3', 'proFlavorAutocomplete4',
+        'shTweakFlavorAutocomplete1', 'shTweakFlavorAutocomplete2', 'shTweakFlavorAutocomplete3', 'shTweakFlavorAutocomplete4',
+        'shDiyFlavorAutocomplete1', 'shDiyFlavorAutocomplete2', 'shDiyFlavorAutocomplete3', 'shDiyFlavorAutocomplete4',
+        'shMolFlavorAutocomplete1', 'shMolFlavorAutocomplete2', 'shMolFlavorAutocomplete3', 'shMolFlavorAutocomplete4'
+    ];
+    autocompletesToReset.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = '';
+            delete el.dataset.flavorId;
+            delete el.dataset.favoriteProductId;
+            delete el.dataset.flavorSource;
+            delete el.dataset.flavorData;
+        }
+    });
+    
     // Předvyplnit formulář podle typu a přepnout záložku
     if (formType === 'shakevape' || formType === 'snv') {
         prefillSnvForm(recipeData, linkedFlavors);
@@ -5576,10 +5595,17 @@ function prefillLiquidForm(data, linkedFlavors = []) {
         
         if (!result) {
             // Kategorie — autocomplete přeskočen, nastavit procento do slideru
+            // DŮLEŽITÉ: nastavit AFTER updateFlavorType (ten resetuje na 0%)
             console.log('prefillLiquidForm: Category flavor, setting percentage:', firstFlavor.percentage);
             if (firstFlavor.percentage) {
-                document.getElementById('flavorStrength').value = firstFlavor.percentage;
-                updateFlavorType();
+                const slider = document.getElementById('flavorStrength');
+                const valueDisplay = document.getElementById('flavorValue');
+                slider.value = firstFlavor.percentage;
+                if (valueDisplay) {
+                    const displayValue = Number.isInteger(firstFlavor.percentage) ? firstFlavor.percentage : firstFlavor.percentage.toFixed(1);
+                    valueDisplay.textContent = displayValue;
+                }
+                updateFlavorDisplay();
             }
         }
     }
@@ -9847,6 +9873,7 @@ function displayResults(total, vg, pg, nicotine, ingredients, actualTotal, actua
             flavorName: ing.flavorName,
             flavorManufacturer: ing.flavorManufacturer,
             flavorId: ing.flavorId,
+            favoriteProductId: ing.favoriteProductId,
             flavorSource: ing.flavorSource
         })),
         actualVg: actualVg,
