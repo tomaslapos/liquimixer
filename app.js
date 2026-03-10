@@ -18568,20 +18568,6 @@ function addShishaDiyFlavor() {
                     </div>
                     <div class="flavor-display"><span id="shDiyFlavorValue${i}">5</span>%</div>
                     <div id="shDiyFlavorStrengthDisplay${i}" class="flavor-strength-display"></div>
-                    <div class="form-group-sub">
-                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG'}</label>
-                        <div class="ratio-container compact">
-                            <div class="slider-container">
-                                <button class="slider-btn small" onclick="adjustShishaDiyFlavorRatio(${i},-5)">◀</button>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="shDiyFlavorRatioSlider${i}" min="0" max="100" value="0" class="ratio-slider" oninput="updateShishaDiyFlavorRatioDisplay(${i})">
-                                    <div class="slider-track" id="shDiyFlavorTrackRatio${i}"></div>
-                                </div>
-                                <button class="slider-btn small" onclick="adjustShishaDiyFlavorRatio(${i},5)">▶</button>
-                            </div>
-                            <div class="ratio-display small"><span id="shDiyFlavorVgValue${i}">0</span>:<span id="shDiyFlavorPgValue${i}">100</span></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>`;
@@ -19234,20 +19220,6 @@ function addShishaMolFlavor() {
                     </div>
                     <div class="flavor-display"><span id="shMolFlavorValue${i}">5</span>%</div>
                     <div id="shMolFlavorStrengthDisplay${i}" class="flavor-strength-display"></div>
-                    <div class="form-group-sub">
-                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG'}</label>
-                        <div class="ratio-container compact">
-                            <div class="slider-container">
-                                <button class="slider-btn small" onclick="adjustShishaMolFlavorRatio(${i},-5)">◀</button>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="shMolFlavorRatioSlider${i}" min="0" max="100" value="0" class="ratio-slider" oninput="updateShishaMolFlavorRatioDisplay(${i})">
-                                    <div class="slider-track" id="shMolFlavorTrackRatio${i}"></div>
-                                </div>
-                                <button class="slider-btn small" onclick="adjustShishaMolFlavorRatio(${i},5)">▶</button>
-                            </div>
-                            <div class="ratio-display small"><span id="shMolFlavorVgValue${i}">0</span>:<span id="shMolFlavorPgValue${i}">100</span></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>`;
@@ -19888,20 +19860,6 @@ function addShishaTweakFlavor() {
                     </div>
                     <div class="flavor-display"><span id="shTweakFlavorValue${i}">5</span>%</div>
                     <div id="shTweakFlavorStrengthDisplay${i}" class="flavor-strength-display"></div>
-                    <div class="form-group-sub">
-                        <label class="form-label-small" data-i18n="form.flavor_ratio_label">${window.i18n?.t('form.flavor_ratio_label') || 'Poměr VG/PG'}</label>
-                        <div class="ratio-container compact">
-                            <div class="slider-container">
-                                <button class="slider-btn small" onclick="adjustShishaTweakFlavorRatio(${i},-5)">◀</button>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="shTweakFlavorRatioSlider${i}" min="0" max="100" value="0" class="ratio-slider" oninput="updateShishaTweakFlavorRatioDisplay(${i})">
-                                    <div class="slider-track" id="shTweakFlavorTrackRatio${i}"></div>
-                                </div>
-                                <button class="slider-btn small" onclick="adjustShishaTweakFlavorRatio(${i},5)">▶</button>
-                            </div>
-                            <div class="ratio-display small"><span id="shTweakFlavorVgValue${i}">0</span>:<span id="shTweakFlavorPgValue${i}">100</span></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>`;
