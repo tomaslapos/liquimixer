@@ -2508,6 +2508,8 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                 `)
                 .eq('clerk_id', clerkId)
                 .eq('product_type', 'flavor')
+                // Filtrovat dle flavor_product_type na serveru — zahrnout odpovídající typ NEBO bez typu (null)
+                .or(`flavor_product_type.eq.${productType},flavor_product_type.is.null`)
                 .limit(limit);
             
             if (searchTerm && searchTerm.trim().length >= 2) {
@@ -2523,9 +2525,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
             }
             
             if (!favError && favData) {
-                // Filtrovat na klientovi - zahrnout příchutě odpovídajícího typu NEBO bez typu
                 results.favorites = favData
-                    .filter(p => !p.flavor_product_type || p.flavor_product_type === productType)
                     .map(p => {
                         // Získat data z joinované flavors tabulky, fallback na data v favorite_products
                         const flavorData = p.flavors || {};

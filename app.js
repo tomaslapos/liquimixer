@@ -6259,20 +6259,23 @@ function prefillShishaTweakForm(data, linkedFlavors = []) {
     // Mixology sub-items
     if (ts.problemMixology) {
         const mixMap = {
-            mixHoney: ['shTweakMixHoney', 'shTweakMixHoneyPercent', ts.mixHoneyPercent],
-            mixMolasses: ['shTweakMixMolasses', 'shTweakMixMolassesPercent', ts.mixMolassesPercent],
-            mixMenthol: ['shTweakMixMenthol', 'shTweakMixMentholDrops', ts.mixMentholDrops],
-            mixCitric: ['shTweakMixCitric', 'shTweakMixCitricGrams', ts.mixCitricGrams],
-            mixWater: ['shTweakMixWater', 'shTweakMixWaterPercent', ts.mixWaterPercent]
+            mixHoney: ['shTweakMixHoney', 'shTweakMixHoneyPercent', ts.mixHoneyPercent, 'honey'],
+            mixMolasses: ['shTweakMixMolasses', 'shTweakMixMolassesPercent', ts.mixMolassesPercent, 'molasses'],
+            mixMenthol: ['shTweakMixMenthol', 'shTweakMixMentholDrops', ts.mixMentholDrops, 'menthol'],
+            mixCitric: ['shTweakMixCitric', 'shTweakMixCitricGrams', ts.mixCitricGrams, 'citric'],
+            mixWater: ['shTweakMixWater', 'shTweakMixWaterPercent', ts.mixWaterPercent, 'water']
         };
-        Object.entries(mixMap).forEach(([key, [cbId, sliderId, val]]) => {
+        Object.entries(mixMap).forEach(([key, [cbId, sliderId, val, sliderType]]) => {
             if (ts[key]) {
                 const cb = document.getElementById(cbId);
                 if (cb) cb.checked = true;
                 const sl = document.getElementById(sliderId);
                 if (sl && val !== undefined) sl.value = val;
+                // Aktualizovat display span pro slider
+                if (typeof updateTweakMixSlider === 'function') updateTweakMixSlider(sliderType);
             }
         });
+        // Zobrazit sub-groups dle zaškrtnutých checkboxů
         if (typeof updateTweakCalculation === 'function') updateTweakCalculation();
     }
 }
