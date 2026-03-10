@@ -5487,6 +5487,10 @@ async function editSavedRecipe() {
             delete el.dataset.favoriteProductId;
             delete el.dataset.flavorSource;
             delete el.dataset.flavorData;
+            // Odblokovat kategorie select (mohl zůstat disabled z předchozí editace)
+            if (typeof updateFlavorCategoryState === 'function') {
+                updateFlavorCategoryState(id, false);
+            }
         }
     });
     
@@ -5497,6 +5501,9 @@ async function editSavedRecipe() {
     } else if (formType === 'liquidpro' || formType === 'pro') {
         prefillProForm(recipeData, linkedFlavors);
         switchFormTab('liquidpro');
+    } else if (formType === 'shortfill') {
+        prefillShortfillForm(recipeData);
+        switchFormTab('shortfill');
     } else if (formType === 'shisha') {
         const shishaMode = recipeData.shishaMode || 'mix';
         if (shishaMode === 'diy') {
@@ -5727,6 +5734,29 @@ function prefillSnvForm(data, linkedFlavors = []) {
     // Aktualizovat limity
     _prefillingSavedRecipe = false;
     updateSvVgPgLimits();
+}
+
+// Předvyplnit Shortfill formulář
+function prefillShortfillForm(data) {
+    const dom = data._dom || {};
+    const bottleEl = document.getElementById('sfBottleVolume');
+    const liquidEl = document.getElementById('sfLiquidVolume');
+    const nicEl = document.getElementById('sfNicStrength');
+    const shotVolEl = document.getElementById('sfNicShotVolume');
+    const shotCountEl = document.getElementById('sfShotCountValue');
+    const shotCountDisplay = document.getElementById('sfShotCount');
+    
+    if (bottleEl && dom.bottleVolume) bottleEl.value = dom.bottleVolume;
+    if (liquidEl && dom.liquidVolume) liquidEl.value = dom.liquidVolume;
+    if (nicEl && dom.nicStrength) nicEl.value = dom.nicStrength;
+    if (shotVolEl && dom.nicShotVolume) shotVolEl.value = dom.nicShotVolume;
+    if (shotCountEl && dom.shotCount) {
+        shotCountEl.value = dom.shotCount;
+        if (shotCountDisplay) shotCountDisplay.textContent = dom.shotCount;
+    }
+    
+    // Přepočítat náhled
+    if (typeof calculateShortfill === 'function') calculateShortfill();
 }
 
 // Předvyplnit Liquid PRO formulář
@@ -6527,6 +6557,12 @@ function resetAndPrefillProFlavors(flavors, linkedFlavors = []) {
         
         // Aktualizovat UI (zobrazit slider, aktualizovat hodnoty)
         updateProFlavorType(flavorIndex);
+        // DŮLEŽITÉ: updateProFlavorType → showCategoryFlavorWarning resetuje slider na 0%
+        // Proto musíme znovu nastavit uloženou hodnotu procenta
+        if (strengthEl && flavor.percent) {
+            strengthEl.value = flavor.percent;
+            updateProFlavorDisplay(flavorIndex);
+        }
         if (typeof updateProFlavorRatioDisplay === 'function') updateProFlavorRatioDisplay(flavorIndex);
         
         // Obnovit detailní složení příchutě (pg/vg/alcohol/water/other)
