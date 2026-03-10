@@ -3569,7 +3569,7 @@ async function logCalculation(data) {
                     id: f.flavorId || f.id || null,
                     favoriteProductId: f.favoriteProductId || null,
                     source: f.flavorSource || f.source || null,
-                    customComposition: f.customComposition || null
+                    customComposition: f._explicitComposition || null
                 }));
             }
             // PRO aditiva
@@ -12499,8 +12499,8 @@ function resetFlavorComposition(flavorIndex) {
 // Get custom composition for a flavor (if set)
 function getFlavorCustomComposition(flavorIndex) {
     const panel = document.getElementById(`flavorComposition${flavorIndex}`);
-    if (!panel || panel.classList.contains('hidden')) {
-        return null; // Not customized
+    if (!panel || !panel.classList.contains('open')) {
+        return null; // Not customized — panel musí být otevřený (open)
     }
     
     const pg = parseFloat(document.getElementById(`proFlavorCompPg${flavorIndex}`)?.value) || 0;
@@ -12745,7 +12745,7 @@ function getProAdditivesData() {
             const panel = document.getElementById(`additiveComposition${i}`);
             let customComposition = null;
             
-            if (panel && !panel.classList.contains('hidden')) {
+            if (panel && panel.classList.contains('open')) {
                 const pg = parseFloat(document.getElementById(`proAdditiveCompPg${i}`)?.value) || 0;
                 const vg = parseFloat(document.getElementById(`proAdditiveCompVg${i}`)?.value) || 0;
                 const alcohol = parseFloat(document.getElementById(`proAdditiveCompAlcohol${i}`)?.value) || 0;
@@ -12869,8 +12869,8 @@ function getProFlavorsData() {
         if (hasCategory || hasSpecific) {
             const vgRatioValue = parseInt(ratioEl?.value) || 0;
             
-            // Načíst detailní kompozici příchutě pokud je zadaná
-            const customComposition = typeof getFlavorCustomComposition === 'function' 
+            // Načíst detailní kompozici příchutě pokud je panel otevřený
+            const explicitComposition = typeof getFlavorCustomComposition === 'function' 
                 ? getFlavorCustomComposition(i) 
                 : null;
             
@@ -12879,15 +12879,16 @@ function getProFlavorsData() {
                 type: typeEl?.value || 'fruit',
                 percent: parseFloat(strengthEl?.value) || 10,
                 vgRatio: vgRatioValue,
-                // Detailní kompozice: buď vlastní nebo odvozená ze slideru
-                // customComposition obsahuje { pg, vg, alcohol, water, other }
-                customComposition: customComposition || { 
+                // Pro výpočet: vždy kompletní kompozice
+                customComposition: explicitComposition || { 
                     pg: 100 - vgRatioValue, 
                     vg: vgRatioValue, 
                     alcohol: 0, 
                     water: 0, 
                     other: 0 
-                }
+                },
+                // Pro uložení: jen pokud uživatel explicitně otevřel panel složení
+                _explicitComposition: explicitComposition
             };
             
             // Přidat info o konkrétní příchuti
