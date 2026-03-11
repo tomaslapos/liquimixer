@@ -6386,9 +6386,10 @@ function resetAndPrefillProAdditives(additives) {
         const percentEl = document.getElementById(`proAdditivePercent${idx}`);
         
         if (typeEl) typeEl.value = additive.type;
-        if (percentEl) percentEl.value = additive.percent;
         
         updateProAdditiveType(idx);
+        
+        if (percentEl) percentEl.value = additive.percent;
         
         // Custom composition
         if (additive.customComposition) {
