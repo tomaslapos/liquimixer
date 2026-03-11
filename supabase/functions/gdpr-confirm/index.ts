@@ -706,19 +706,21 @@ serve(async (req) => {
     // ============================================
     const deletionLog: Record<string, number> = {}
 
-    // 4a. Delete recipes
+    // 4a. Soft delete recipes (zachovat pro analytiku, CRON smaže po 30 dnech)
     const { data: deletedRecipes } = await supabaseAdmin
       .from('recipes')
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq('clerk_id', clerkId)
+      .is('deleted_at', null)
       .select('id')
     deletionLog.recipes = deletedRecipes?.length || 0
 
-    // 4b. Delete favorite products
+    // 4b. Soft delete favorite products (zachovat pro analytiku, CRON smaže po 30 dnech)
     const { data: deletedProducts } = await supabaseAdmin
       .from('favorite_products')
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq('clerk_id', clerkId)
+      .is('deleted_at', null)
       .select('id')
     deletionLog.favorite_products = deletedProducts?.length || 0
 

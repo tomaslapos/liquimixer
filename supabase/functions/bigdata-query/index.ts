@@ -130,8 +130,32 @@ params->'_dom'->>'baseNicotine': numeric
 params->'_molFlavors': JSONB array — Same structure as _diyFlavors
 
 --- Shisha Tweak (calc_type='shisha_tweak') ---
-params->'tweakState': JSONB — Problem checkboxes and settings:
-  {"problemVg":true,"problemTaste":false,"problemFlavor":true,"problemNicotine":false,"problemMixology":true,...}
+params->>'tobaccoAmount': numeric — Tobacco amount in grams
+params->>'tobaccoName': TEXT — Selected tobacco name
+params->'tweakState': JSONB — Complete form state with problem checkboxes, flavor data, nicotine, and mixology settings:
+  tweakState->>'problemVg': BOOLEAN — "Tabák je suchý, málo dýmí" checkbox
+  tweakState->>'problemTaste': BOOLEAN — "Tabák málo chutná" checkbox
+  tweakState->>'problemFlavor': BOOLEAN — "Chci změnit/přidat příchuť" checkbox
+  tweakState->>'problemNicotine': BOOLEAN — "Chci přidat nikotin" checkbox
+  tweakState->>'problemMixology': BOOLEAN — "Mixology — pokročilé úpravy" checkbox
+  tweakState->>'vgPercent': numeric — Glycerin (VG) percentage (0-30)
+  tweakState->'flavors': JSONB array — [{type, strength, flavorRatio}] up to 4 flavors
+  tweakState->'flavorData': JSONB array — Autocomplete data for each flavor [{name, manufacturer, id, source}]
+  tweakState->'tobaccoData': JSONB — Selected tobacco autocomplete data {name, manufacturer, source, flavor_id}
+  tweakState->>'nicotineType': TEXT — 'freebase' or 'salt'
+  tweakState->>'nicotineBaseStrength': numeric — Nicotine base concentration mg/ml
+  tweakState->>'nicotineTarget': numeric — Target nicotine mg/ml (0-10)
+  --- Mixology advanced additives (present when problemMixology=true) ---
+  tweakState->>'mixHoney': BOOLEAN — Med (honey) checkbox
+  tweakState->>'mixHoneyPercent': numeric — Honey % of tobacco (0-20, default 5)
+  tweakState->>'mixMolasses': BOOLEAN — Melasa checkbox
+  tweakState->>'mixMolassesPercent': numeric — Molasses % of tobacco (0-30, default 10)
+  tweakState->>'mixMenthol': BOOLEAN — Mentol/Cooling checkbox
+  tweakState->>'mixMentholDrops': INT — Menthol drops per 20g (0-10, default 3)
+  tweakState->>'mixCitric': BOOLEAN — Kyselina citronová checkbox
+  tweakState->>'mixCitricGrams': numeric — Citric acid grams per 20g (0-5, default 0.5)
+  tweakState->>'mixWater': BOOLEAN — Voda/ovocná šťáva checkbox
+  tweakState->>'mixWaterPercent': numeric — Water % of tobacco (0-20, default 5)
 
 === results JSONB STRUCTURE (verified from real data) ===
 results->>'actualVg': numeric — Final calculated VG percentage

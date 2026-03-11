@@ -658,6 +658,7 @@ async function getRecipeByShareId(shareId) {
             .from('recipes')
             .select('*')
             .eq('share_id', shareId)
+            .is('deleted_at', null)
             .single();
         
         if (error) {
@@ -692,6 +693,7 @@ async function getRecipeById(clerkId, recipeId) {
             .select('*')
             .eq('id', recipeId)
             .eq('clerk_id', clerkId)
+            .is('deleted_at', null)
             .single();
         
         if (error) {
@@ -721,6 +723,7 @@ async function getUserRecipes(clerkId) {
             .from('recipes')
             .select('*')
             .eq('clerk_id', clerkId)
+            .is('deleted_at', null)
             .order('created_at', { ascending: false })
             .limit(100); // SECURITY: Limit počtu receptů
         
@@ -757,11 +760,14 @@ async function deleteUserRecipe(clerkId, recipeId) {
     }
     
     try {
+        // Soft delete — nastavit deleted_at místo fyzického smazání
+        // Data zůstanou 30 dní pro případ obnovení, pak CRON job smaže
         const { error } = await supabaseClient
             .from('recipes')
-            .delete()
+            .update({ deleted_at: new Date().toISOString() })
             .eq('id', recipeId)
-            .eq('clerk_id', clerkId); // Bezpečnostní kontrola - pouze vlastní recepty
+            .eq('clerk_id', clerkId)
+            .is('deleted_at', null);
         
         if (error) {
             console.error('Error deleting recipe:', error);
@@ -1003,6 +1009,7 @@ async function getFavoriteProducts(clerkId) {
                 )
             `)
             .eq('clerk_id', clerkId)
+            .is('deleted_at', null)
             .order('created_at', { ascending: false })
             .limit(100);
         
@@ -1068,6 +1075,7 @@ async function getFavoriteProductById(clerkId, productId) {
             `)
             .eq('id', productId)
             .eq('clerk_id', clerkId)
+            .is('deleted_at', null)
             .single();
         
         if (error) {
@@ -1118,6 +1126,7 @@ async function getProductByCode(clerkId, productCode) {
             .select('*')
             .eq('clerk_id', clerkId)
             .eq('product_code', productCode)
+            .is('deleted_at', null)
             .single();
         
         if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
@@ -1147,6 +1156,7 @@ async function getProductByShareId(shareId) {
             .from('favorite_products')
             .select('*')
             .eq('share_id', shareId)
+            .is('deleted_at', null)
             .single();
         
         if (error) {
@@ -1180,11 +1190,14 @@ async function deleteFavoriteProduct(clerkId, productId) {
     }
     
     try {
+        // Soft delete — nastavit deleted_at místo fyzického smazání
+        // Data zůstanou 30 dní pro případ obnovení, pak CRON job smaže
         const { error } = await supabaseClient
             .from('favorite_products')
-            .delete()
+            .update({ deleted_at: new Date().toISOString() })
             .eq('id', productId)
-            .eq('clerk_id', clerkId);
+            .eq('clerk_id', clerkId)
+            .is('deleted_at', null);
         
         if (error) {
             console.error('Error deleting product:', error);
@@ -1439,6 +1452,7 @@ async function getRecipesByFlavorProductId(clerkId, favoriteProductId) {
             .from('favorite_products')
             .select('flavor_id')
             .eq('id', favoriteProductId)
+            .is('deleted_at', null)
             .single();
         
         const flavorId = favProduct?.flavor_id;
@@ -1517,6 +1531,7 @@ async function getProductByIdPublic(productId) {
             .from('favorite_products')
             .select('*')
             .eq('id', productId)
+            .is('deleted_at', null)
             .single();
         
         if (error) {
@@ -1960,7 +1975,8 @@ async function getPublicRecipes(filters = {}, page = 1, limit = 50) {
         let query = supabaseClient
             .from('recipes')
             .select('id, name, description, is_public, public_rating_avg, public_rating_count, form_type, difficulty_level, recipe_data, created_at', { count: 'exact' })
-            .eq('is_public', true);
+            .eq('is_public', true)
+            .is('deleted_at', null);
         
         // Filtr: Metoda přípravy
         if (filters.formType) {
@@ -2059,6 +2075,7 @@ async function getPublicRecipeById(recipeId) {
             .select('*')
             .eq('id', recipeId)
             .eq('is_public', true)
+            .is('deleted_at', null)
             .single();
         
         if (error) {
@@ -2508,6 +2525,7 @@ async function searchFlavorsForAutocomplete(clerkId, searchTerm, recipeType, lim
                 `)
                 .eq('clerk_id', clerkId)
                 .eq('product_type', 'flavor')
+                .is('deleted_at', null)
                 // Filtrovat dle flavor_product_type na serveru — zahrnout odpovídající typ NEBO bez typu (null)
                 .or(`flavor_product_type.eq.${productType},flavor_product_type.is.null`)
                 .limit(limit);
@@ -2608,6 +2626,7 @@ async function saveFlavorToFavorites(clerkId, flavorId) {
             .select('*')
             .eq('clerk_id', clerkId)
             .eq('flavor_id', flavorId)
+            .is('deleted_at', null)
             .maybeSingle();
         
         if (checkError) {
@@ -2906,6 +2925,7 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                     .select('id, flavor_id')
                     .eq('clerk_id', clerkId)
                     .eq('flavor_id', f.flavor_id)
+                    .is('deleted_at', null)
                     .single();
                 
                 if (existingFavorite) {
@@ -2937,6 +2957,7 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                     .select('id, flavor_id')
                     .eq('id', f.favorite_product_id)
                     .eq('clerk_id', clerkId)  // OPRAVA: Přidat kontrolu vlastníka
+                    .is('deleted_at', null)
                     .single();
                 
                 if (existsCheck) {
@@ -2954,7 +2975,8 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                             .select('id, flavor_id')
                             .eq('clerk_id', clerkId)
                             .eq('name', f.flavor_name)
-                            .eq('product_type', 'flavor');
+                            .eq('product_type', 'flavor')
+                            .is('deleted_at', null);
                         if (f.flavor_manufacturer) {
                             fallbackQuery = fallbackQuery.eq('manufacturer', f.flavor_manufacturer);
                         } else {
@@ -2987,7 +3009,8 @@ async function linkFlavorsToRecipe(clerkId, recipeId, flavors) {
                     .select('id, flavor_id')
                     .eq('clerk_id', clerkId)
                     .eq('name', f.flavor_name)
-                    .eq('product_type', 'flavor');
+                    .eq('product_type', 'flavor')
+                    .is('deleted_at', null);
                 
                 if (f.flavor_manufacturer) {
                     query = query.eq('manufacturer', f.flavor_manufacturer);

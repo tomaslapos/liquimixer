@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
     try {
       const { data: recipes, error } = await mainDb
         .from('recipes')
-        .select('id, clerk_id, name, description, form_type, is_public, public_status, difficulty_level, rating, public_rating_avg, public_rating_count, is_pro_recipe, recipe_data, flavors_data, created_at, updated_at')
+        .select('id, clerk_id, name, description, form_type, is_public, public_status, difficulty_level, rating, public_rating_avg, public_rating_count, is_pro_recipe, recipe_data, flavors_data, created_at, updated_at, deleted_at')
 
       if (error) throw error
 
@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
     try {
       const { data: products, error } = await mainDb
         .from('favorite_products')
-        .select('id, clerk_id, name, product_type, description, manufacturer, flavor_category, flavor_product_type, flavor_id, steep_days, stock_quantity, rating, product_url, created_at, updated_at')
+        .select('id, clerk_id, name, product_type, description, manufacturer, flavor_category, flavor_product_type, flavor_id, steep_days, stock_quantity, rating, product_url, created_at, updated_at, deleted_at')
 
       if (error) throw error
 
