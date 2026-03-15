@@ -2729,6 +2729,24 @@ async function saveFcmToken(clerkId, token, deviceInfo) {
     }
     
     try {
+        // Delete old tokens for this user before saving new one.
+        // After SW update, FCM generates a new token but old one stays in DB.
+        // Edge function sends to ALL tokens → duplicate notifications.
+        const { data: existing } = await supabaseClient
+            .from('fcm_tokens')
+            .select('id, token')
+            .eq('clerk_id', clerkId);
+        
+        if (existing && existing.length > 0) {
+            const stale = existing.filter(t => t.token !== token);
+            if (stale.length > 0) {
+                console.log('saveFcmToken: Removing', stale.length, 'stale token(s)');
+                for (const old of stale) {
+                    await supabaseClient.from('fcm_tokens').delete().eq('id', old.id);
+                }
+            }
+        }
+        
         const { data, error } = await supabaseClient
             .from('fcm_tokens')
             .upsert({

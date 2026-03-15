@@ -24,13 +24,6 @@
       }
     },
     {
-      "src": "/firebase-messaging-sw.js",
-      "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Service-Worker-Allowed": "/"
-      }
-    },
-    {
       "src": "/(.*\\.html)",
       "headers": {
         "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"

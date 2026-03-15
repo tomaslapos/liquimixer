@@ -1,6 +1,6 @@
 // LiquiMixer Service Worker
 // DŮLEŽITÉ: Změna verze vynutí aktualizaci cache u všech uživatelů
-const CACHE_NAME = 'liquimixer-v318';
+const CACHE_NAME = 'liquimixer-v319';
 
 // Firebase Cloud Messaging - background push notifications
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
@@ -21,17 +21,14 @@ const fcmMessaging = firebase.messaging();
 fcmMessaging.onBackgroundMessage((payload) => {
   console.log('[sw.js] FCM background message:', payload);
   
-  const notificationTitle = payload.notification?.title || 'LiquiMixer';
+  // Data-only messages: title/body in payload.data (not payload.notification)
+  const notificationTitle = payload.data?.title || payload.notification?.title || 'LiquiMixer';
   const notificationOptions = {
-    body: payload.notification?.body || '',
+    body: payload.data?.body || payload.notification?.body || '',
     icon: '/icons/icon-192.png',
     badge: '/icons/badge-96.png',
-    tag: 'liquimixer-maturity-reminder',
+    tag: 'liquimixer-maturity-' + (payload.data?.recipeId || Date.now()),
     data: payload.data || {},
-    actions: [
-      { action: 'open', title: 'Open' },
-      { action: 'dismiss', title: 'Dismiss' }
-    ],
     requireInteraction: true,
     vibrate: [200, 100, 200]
   };
@@ -39,31 +36,31 @@ fcmMessaging.onBackgroundMessage((payload) => {
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// Handle notification click
+// Handle notification click — must open/focus the PWA
 self.addEventListener('notificationclick', (event) => {
-  console.log('[sw.js] Notification clicked:', event.action);
+  console.log('[sw.js] Notification clicked, action:', event.action);
   event.notification.close();
   
   if (event.action === 'dismiss') return;
   
+  // Use absolute URL — relative '/' can fail in PWA standalone mode on Android
+  const appUrl = self.location.origin + '/';
+  
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then((windowClients) => {
+        // Try to find and focus an existing app window
         for (let client of windowClients) {
-          if (client.url.includes(self.location.origin) && 'focus' in client) {
-            client.focus();
-            if (event.notification.data?.recipeId) {
-              client.postMessage({
-                type: 'OPEN_RECIPE',
-                recipeId: event.notification.data.recipeId
-              });
-            }
-            return;
+          if (client.url.startsWith(self.location.origin) && 'focus' in client) {
+            client.postMessage({
+              type: 'NOTIFICATION_CLICKED',
+              recipeId: event.notification.data?.recipeId || ''
+            });
+            return client.focus();
           }
         }
-        if (clients.openWindow) {
-          return clients.openWindow('/');
-        }
+        // No app window open — open new one
+        return clients.openWindow(appUrl);
       })
   );
 });

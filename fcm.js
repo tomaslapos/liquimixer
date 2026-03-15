@@ -177,10 +177,10 @@ function setupForegroundMessageHandler() {
     messaging.onMessage((payload) => {
         console.log('Foreground message received:', payload);
         
-        // Show notification manually for foreground messages
-        const notificationTitle = payload.notification?.title || 'Liquimixer';
+        // Data-only messages: title/body in payload.data (not payload.notification)
+        const notificationTitle = payload.data?.title || payload.notification?.title || 'LiquiMixer';
         const notificationOptions = {
-            body: payload.notification?.body || '',
+            body: payload.data?.body || payload.notification?.body || '',
             icon: '/icons/icon-192.png',
             badge: '/icons/badge-96.png',
             tag: 'liquimixer-notification',

@@ -1371,6 +1371,10 @@ function setupServiceWorkerListener() {
                 console.log('LiquiMixer: New version available:', event.data.version);
                 showUpdateNotification();
             }
+            if (event.data && event.data.type === 'NOTIFICATION_CLICKED') {
+                console.log('LiquiMixer: Opened from push notification');
+                checkMaturedReminders();
+            }
         });
         
         // Kontrola, zda je k dispozici nová verze Service Workeru
