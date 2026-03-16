@@ -1377,6 +1377,14 @@ function setupServiceWorkerListener() {
             }
         });
         
+        // PWA standalone: když se app vrátí z pozadí, znovu zkontrolovat vyzrálé liquidy
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && isFullyInitialized) {
+                console.log('LiquiMixer: App returned to foreground, checking matured reminders');
+                checkMaturedReminders();
+            }
+        });
+        
         // Kontrola, zda je k dispozici nová verze Service Workeru
         navigator.serviceWorker.ready.then((registration) => {
             registration.addEventListener('updatefound', () => {

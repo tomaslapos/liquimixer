@@ -157,19 +157,9 @@ async function sendNotification(
 ): Promise<'sent' | 'not_found' | 'error'> {
   const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
-  // Data-only message — NO top-level 'notification', NO fcm_options.link.
-  //
-  // Firebase docs: "For data messages, you can set notification options
-  // in the service worker" via onBackgroundMessage.
-  //
-  // With 'notification' payload: FCM auto-shows notification + onBackgroundMessage
-  // also shows one = 2× duplicate notifications.
-  // With fcm_options.link: FCM intercepts click → opens browser instead of PWA,
-  // and SW notificationclick never fires → app doesn't open.
-  //
-  // Data-only fix:
-  // - onBackgroundMessage shows exactly 1 notification
-  // - SW notificationclick handles click → opens/focuses PWA correctly
+  // Data-only message — NO top-level 'notification' to prevent duplicate notifications.
+  // FCM auto-shows notification from 'notification' payload + onBackgroundMessage shows another = 2×.
+  // Keep webpush.fcm_options.link so Android knows which app to open on click.
   const message = {
     message: {
       token: fcmToken,
@@ -177,6 +167,15 @@ async function sendNotification(
         ...(data || {}),
         title: title,
         body: body,
+      },
+      webpush: {
+        notification: {
+          icon: "https://www.liquimixer.com/icons/icon-192.png",
+          data: data || {},
+        },
+        fcm_options: {
+          link: "https://www.liquimixer.com/",
+        },
       },
     },
   };
