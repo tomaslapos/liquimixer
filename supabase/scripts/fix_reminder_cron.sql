@@ -1,0 +1,16 @@
+-- ============================================
+-- OPRAVA: CRON joby pro reminder-notify
+-- Datum: 16.03.2026
+-- ============================================
+-- ROOT CAUSE: current_setting('supabase.service_role_key') vrací NULL v pg_cron kontextu.
+-- net.http_post posílal "Bearer null" → edge funkce odmítla request.
+-- FIX: Hardcoded service_role_key (stejný přístup jako resend-unsent-invoices).
+-- STAV: Opraveno 16.03.2026 — joby 24, 25, 26 aktivní.
+-- Schedule: 09:00, 14:00, 19:00 UTC (= 10:00, 15:00, 20:00 CET)
+-- ============================================
+
+-- Diagnostika:
+-- SELECT jobid, jobname, schedule, active FROM cron.job WHERE jobname LIKE 'reminder-notify%';
+-- SELECT d.runid, j.jobname, d.status, d.return_message, d.start_time
+-- FROM cron.job_run_details d JOIN cron.job j ON j.jobid = d.jobid
+-- WHERE j.jobname LIKE 'reminder-notify%' ORDER BY d.start_time DESC LIMIT 10;

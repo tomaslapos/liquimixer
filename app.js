@@ -1385,6 +1385,23 @@ function setupServiceWorkerListener() {
             }
         });
         
+        // Po SW update — re-registrovat FCM token (záloha pro fcm.js SW_UPDATED listener)
+        // controllerchange fire vždy když nový SW převezme kontrolu
+        // saveFcmToken() automaticky smaže staré tokeny → žádné duplicitní notifikace
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('LiquiMixer: SW controller changed, scheduling FCM token refresh');
+            setTimeout(async () => {
+                if (window.fcm && window.fcm.getToken && Notification.permission === 'granted' && window.Clerk?.user) {
+                    try {
+                        await window.fcm.getToken();
+                        console.log('LiquiMixer: FCM token re-registered after SW update');
+                    } catch (e) {
+                        console.warn('LiquiMixer: FCM token refresh failed:', e);
+                    }
+                }
+            }, 3000);
+        });
+        
         // Kontrola, zda je k dispozici nová verze Service Workeru
         navigator.serviceWorker.ready.then((registration) => {
             registration.addEventListener('updatefound', () => {

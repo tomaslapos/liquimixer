@@ -34,8 +34,8 @@ calc_type: TEXT NOT NULL — Calculator type used. Values:
   'shisha_diy'      — Shisha DIY (make shisha liquid from scratch)
   'shisha_molasses'  — Shisha molasses maker
   'shisha_tweak'    — Shisha tweak/fix (adjust existing mix)
-locale: TEXT — UI language: 'cs','en','sk','de','pl','hu','ro','uk','es','fr','it','pt','nl','da','sv','fi','no','el','bg','hr','sl','sr','lt','lv','et','tr','ja','ko','zh','ar'
-country: TEXT (nullable) — ISO 3166-1 alpha-2 country code from Cloudflare geolocation (e.g. 'CZ','SK','DE','US','GB')
+locale: TEXT — BCP-47 language tag from navigator.language. Can be short ('cs','en','de') or with region ('sk-SK','en-US','pt-BR'). IMPORTANT: The same language may appear in both formats — always use LIKE 'xx%' for filtering (e.g. WHERE locale LIKE 'sk%' to match both 'sk' and 'sk-SK').
+country: TEXT (nullable) — ISO 3166-1 alpha-2 country code from Cloudflare geolocation (e.g. 'CZ','SK','DE','US','GB'). Often NULL. When filtering by country/region, prefer locale LIKE 'xx%' as it has better coverage than country.
 device_type: TEXT — 'desktop', 'mobile', or 'tablet'
 screen_resolution: TEXT — e.g. '1920x1080', '375x812'
 is_pwa: BOOLEAN — true if user runs app as installed PWA
@@ -223,8 +223,9 @@ WHAT EACH QUESTION MAPS TO:
 - "how many users" → COUNT(DISTINCT anonymous_id) — one anonymous_id = one device/browser
 - "logged in users" → WHERE clerk_id IS NOT NULL
 - "which calculator is most popular" → GROUP BY calc_type
-- "which country" → GROUP BY country (ISO 2-letter codes like CZ, SK, DE, US)
-- "which language" → GROUP BY locale (cs, en, sk, de, ...)
+- "which country" → GROUP BY country (ISO 2-letter codes like CZ, SK, DE, US). BUT country is often NULL — for broader coverage, GROUP BY LEFT(locale, 2) or use locale LIKE 'xx%'
+- "which language" → GROUP BY LEFT(locale, 2) to normalize 'sk' and 'sk-SK' into one group
+- "from Slovakia / na Slovensku" → WHERE locale LIKE 'sk%' (matches 'sk' and 'sk-SK'). Same for other countries: 'cs%'=Czech, 'de%'=German, 'pl%'=Polish, etc.
 - "mobile vs desktop" → GROUP BY device_type
 - "PWA users" → WHERE is_pwa = true
 - "over time / trend / daily / weekly / monthly" → date_trunc('day'|'week'|'month', created_at)
@@ -304,6 +305,7 @@ TYPICAL QUESTIONS → QUERIES:
 === TABLE: report_recipes ===
 User-saved recipes. One row = one saved recipe (private or public).
 Users save recipes after performing a calculation — it stores the full recipe data as JSONB.
+IMPORTANT: This table has NO locale or country column. To filter recipes by country/language, JOIN with report_users: JOIN report_users ru ON report_recipes.clerk_id = ru.clerk_id WHERE ru.locale LIKE 'sk%' (or ru.country = 'SK').
 
 COLUMNS:
 id: UUID (PK)
@@ -356,6 +358,7 @@ TYPICAL QUESTIONS → QUERIES:
 - "průměrný nikotín v receptech" → SELECT AVG((recipe_data->>'nicotine')::numeric) FROM report_recipes WHERE recipe_data->>'nicotine' IS NOT NULL AND (recipe_data->>'nicotine')::numeric > 0
 - "recepty s příchutí TPA Strawberry" → SELECT * FROM report_recipes WHERE recipe_data->>'specificFlavorName' ILIKE '%strawberry%' AND recipe_data->>'specificFlavorManufacturer' ILIKE '%TPA%' LIMIT 50
 - "nejlépe hodnocené veřejné recepty" → SELECT name, public_rating_avg, public_rating_count FROM report_recipes WHERE is_public = true AND public_rating_count > 0 ORDER BY public_rating_avg DESC LIMIT 20
+- "recepty na Slovensku / z Česka / z Německa" → SELECT COUNT(*) FROM report_recipes rr JOIN report_users ru ON rr.clerk_id = ru.clerk_id WHERE ru.locale LIKE 'sk%' (or ru.country = 'SK')
 - "PRO recepty vs free" → SELECT is_pro_recipe, COUNT(*) FROM report_recipes GROUP BY is_pro_recipe
 - "rozložení typů nikotinu v receptech" → SELECT recipe_data->>'nicotineType' AS nic_type, COUNT(*) FROM report_recipes WHERE recipe_data->>'nicotineType' IS NOT NULL GROUP BY nic_type ORDER BY count DESC
 - "recepty s nikotinovými solemi" → SELECT COUNT(*) FROM report_recipes WHERE recipe_data->>'nicotineType' = 'salt'
