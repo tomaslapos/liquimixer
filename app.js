@@ -2352,6 +2352,9 @@ window.addEventListener('load', async function() {
                     updateAuthUI();
                     // Zkontrolovat pending sdílený recept (až po ověření předplatného)
                     await checkPendingSharedRecipe();
+                    
+                    // Zkontrolovat vyzrálé liquidy a zobrazit in-app notifikaci
+                    await checkMaturedReminders();
                 }
             } else {
                 // Nepřihlášený uživatel - aktualizovat UI
