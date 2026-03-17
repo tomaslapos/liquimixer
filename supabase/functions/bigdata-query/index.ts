@@ -35,7 +35,7 @@ calc_type: TEXT NOT NULL — Calculator type used. Values:
   'shisha_molasses'  — Shisha molasses maker
   'shisha_tweak'    — Shisha tweak/fix (adjust existing mix)
 locale: TEXT — BCP-47 language tag from navigator.language. Can be short ('cs','en','de') or with region ('sk-SK','en-US','pt-BR'). IMPORTANT: The same language may appear in both formats — always use LIKE 'xx%' for filtering (e.g. WHERE locale LIKE 'sk%' to match both 'sk' and 'sk-SK').
-country: TEXT (nullable) — ISO 3166-1 alpha-2 country code from Cloudflare geolocation (e.g. 'CZ','SK','DE','US','GB'). Often NULL. When filtering by country/region, prefer locale LIKE 'xx%' as it has better coverage than country.
+country: TEXT (nullable) — ISO 3166-1 alpha-2 country code from Cloudflare geolocation (e.g. 'CZ','SK','DE'). NOTE: country is often NULL in practice. For reliable country grouping/filtering, prefer LEFT(locale, 2) or locale LIKE 'xx%' which has much better coverage. You can use country as a secondary source or combine both.
 device_type: TEXT — 'desktop', 'mobile', or 'tablet'
 screen_resolution: TEXT — e.g. '1920x1080', '375x812'
 is_pwa: BOOLEAN — true if user runs app as installed PWA
@@ -223,9 +223,9 @@ WHAT EACH QUESTION MAPS TO:
 - "how many users" → COUNT(DISTINCT anonymous_id) — one anonymous_id = one device/browser
 - "logged in users" → WHERE clerk_id IS NOT NULL
 - "which calculator is most popular" → GROUP BY calc_type
-- "which country" → GROUP BY country (ISO 2-letter codes like CZ, SK, DE, US). BUT country is often NULL — for broader coverage, GROUP BY LEFT(locale, 2) or use locale LIKE 'xx%'
+- "which country" / "z jakých krajin" / "rozpis podle zemí" / "kolik mixů podle zemí" → Prefer LEFT(locale, 2) for country grouping (best coverage). country column can be used as secondary source but is often NULL. Example: SELECT LEFT(locale, 2) AS country_code, COUNT(*) AS count FROM calculation_logs GROUP BY LEFT(locale, 2) ORDER BY count DESC. Locale prefix → country mapping: cs=Česko, sk=Slovensko, en=anglicky mluvící země, de=Německo, pl=Polsko, lt=Litva, pt=Portugalsko/Brazílie, fr=Francie, it=Itálie, es=Španělsko, hu=Maďarsko, ro=Rumunsko, nl=Nizozemsko, zh=Čína, ja=Japonsko, ko=Korea, ru=Rusko, tr=Turecko, uk=Ukrajina.
 - "which language" → GROUP BY LEFT(locale, 2) to normalize 'sk' and 'sk-SK' into one group
-- "from Slovakia / na Slovensku" → WHERE locale LIKE 'sk%' (matches 'sk' and 'sk-SK'). Same for other countries: 'cs%'=Czech, 'de%'=German, 'pl%'=Polish, etc.
+- "from Slovakia / na Slovensku" → WHERE locale LIKE 'sk%' (matches 'sk' and 'sk-SK'). Same for other countries: 'cs%'=Czech, 'de%'=German, 'pl%'=Polish, 'lt%'=Lithuanian, etc.
 - "mobile vs desktop" → GROUP BY device_type
 - "PWA users" → WHERE is_pwa = true
 - "over time / trend / daily / weekly / monthly" → date_trunc('day'|'week'|'month', created_at)
