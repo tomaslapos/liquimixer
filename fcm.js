@@ -262,11 +262,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log('[FCM-DIAG] SKIPPING: no Clerk user');
                     }
                     
-                    // Listen for sign-in/sign-out
+                    // Listen for sign-in/sign-out (debounced to prevent infinite loop)
+                    let fcmListenerDebounce = null;
+                    let lastFcmListenerUserId = Clerk.user?.id || null;
                     Clerk.addListener(({ user }) => {
-                        console.log('[FCM-DIAG] Clerk listener fired, user=' + (user ? user.id : 'null') + ', permission=' + Notification.permission);
+                        const newUserId = user?.id || null;
+                        // Only act on actual user change (sign-in/sign-out), not token refreshes
+                        if (newUserId === lastFcmListenerUserId) return;
+                        lastFcmListenerUserId = newUserId;
+                        console.log('[FCM-DIAG] Clerk listener fired (user changed), user=' + (user ? user.id : 'null') + ', permission=' + Notification.permission);
                         if (user && Notification.permission === 'granted') {
-                            getFcmToken();
+                            if (fcmListenerDebounce) clearTimeout(fcmListenerDebounce);
+                            fcmListenerDebounce = setTimeout(() => getFcmToken(), 1000);
                         }
                     });
                 }
