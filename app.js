@@ -1379,7 +1379,7 @@ function setupServiceWorkerListener() {
         
         // PWA standalone: když se app vrátí z pozadí, znovu zkontrolovat vyzrálé liquidy
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && isFullyInitialized) {
+            if (document.visibilityState === 'visible' && window.Clerk?.user) {
                 console.log('LiquiMixer: App returned to foreground, checking matured reminders');
                 checkMaturedReminders();
             }
@@ -2372,6 +2372,16 @@ window.addEventListener('load', async function() {
                     
                     // Zkontrolovat vyzrálé liquidy a zobrazit in-app notifikaci
                     await checkMaturedReminders();
+                    
+                    // Zajistit že FCM token je v DB (po SW bump se token změní)
+                    if (window.fcm && window.fcm.getToken && 'Notification' in window && Notification.permission === 'granted') {
+                        try {
+                            await window.fcm.getToken();
+                            console.log('FCM token ensured on initial load');
+                        } catch (fcmErr) {
+                            console.warn('FCM token refresh on initial load failed:', fcmErr);
+                        }
+                    }
                 }
             } else {
                 // Nepřihlášený uživatel - aktualizovat UI

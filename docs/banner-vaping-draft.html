@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiquiMixer — Vaping Banner Draft</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
+  body { background: #1a1a2e; font-family: 'Inter', sans-serif; padding: 40px; color: #fff; }
+  h1 { font-family: 'Orbitron', sans-serif; color: #ff00ff; font-size: 24px; margin-bottom: 10px; }
+  h2 { font-family: 'Exo 2', sans-serif; color: #00ffff; font-size: 16px; margin: 30px 0 10px; font-weight: 400; }
+  .note { color: #888; font-size: 12px; margin-bottom: 30px; }
+  .banner-wrap { display: inline-block; margin: 10px 0; box-shadow: 0 0 40px rgba(255,0,255,0.15); border-radius: 4px; overflow: hidden; }
+  .label { color: #666; font-size: 11px; font-family: 'Exo 2', sans-serif; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>Vaping Banner — Draft</h1>
+<p class="note">Vizuální styl vychází z og-image.svg LiquiMixer: tmavé pozadí, neon magenta/cyan, grid, obláčky páry, laboratorní baňky.</p>
+
+<!-- ============================================================ -->
+<!-- LEADERBOARD 728×90 -->
+<!-- ============================================================ -->
+<h2>Leaderboard — 728 × 90 px</h2>
+
+<div class="banner-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="728" height="90" viewBox="0 0 728 90">
+  <defs>
+    <linearGradient id="lb-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d1a"/>
+      <stop offset="50%" style="stop-color:#0a0a15"/>
+      <stop offset="100%" style="stop-color:#12122a"/>
+    </linearGradient>
+    <pattern id="lb-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#ff00ff" stroke-width="0.3" opacity="0.12"/>
+    </pattern>
+    <filter id="lb-glow-p" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="lb-glow-c" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="lb-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="lb-liquid-cool" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#0088ff;stop-opacity:0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="728" height="90" fill="url(#lb-bg)"/>
+  <rect width="728" height="90" fill="url(#lb-grid)"/>
+
+  <!-- Vapor clouds — large soft blobs -->
+  <ellipse cx="60" cy="45" rx="80" ry="50" fill="#00ffff" opacity="0.04"/>
+  <ellipse cx="180" cy="20" rx="60" ry="35" fill="#ff00ff" opacity="0.035"/>
+  <ellipse cx="350" cy="70" rx="100" ry="40" fill="#ff00ff" opacity="0.03"/>
+  <ellipse cx="550" cy="15" rx="70" ry="30" fill="#00ffff" opacity="0.04"/>
+  <ellipse cx="680" cy="50" rx="90" ry="45" fill="#ff00ff" opacity="0.035"/>
+
+  <!-- Vapor wisps — small rising clouds -->
+  <ellipse cx="90" cy="65" rx="18" ry="7" fill="#00ffff" opacity="0.12" filter="url(#lb-soft)"/>
+  <ellipse cx="75" cy="50" rx="12" ry="5" fill="#00ffff" opacity="0.08"/>
+  <ellipse cx="100" cy="38" rx="8" ry="4" fill="#00ffff" opacity="0.06"/>
+
+  <ellipse cx="640" cy="60" rx="15" ry="6" fill="#ff00ff" opacity="0.1" filter="url(#lb-soft)"/>
+  <ellipse cx="655" cy="45" rx="10" ry="4" fill="#ff00ff" opacity="0.07"/>
+  <ellipse cx="635" cy="33" rx="7" ry="3" fill="#ff00ff" opacity="0.05"/>
+
+  <!-- Corner accents -->
+  <path d="M0 0 L50 0 L50 3 L3 3 L3 50 L0 50 Z" fill="#00ffff" opacity="0.5"/>
+  <path d="M728 0 L678 0 L678 3 L725 3 L725 50 L728 50 Z" fill="#ff00ff" opacity="0.5"/>
+  <path d="M0 90 L50 90 L50 87 L3 87 L3 40 L0 40 Z" fill="#ff00ff" opacity="0.4"/>
+  <path d="M728 90 L678 90 L678 87 L725 87 L725 40 L728 40 Z" fill="#00ffff" opacity="0.4"/>
+
+  <!-- Mini flask icon -->
+  <g transform="translate(42, 44) scale(0.28)">
+    <path d="M-20 -80 L-20 -30 L-50 40 L-50 85 L50 85 L50 40 L20 -30 L20 -80 Z"
+          fill="none" stroke="#00ffff" stroke-width="5" filter="url(#lb-glow-c)"/>
+    <rect x="-24" y="-95" width="48" height="18" rx="3" fill="none" stroke="#00ffff" stroke-width="3.5"/>
+    <path d="M-42 25 L42 25 L42 78 L-42 78 Z" fill="url(#lb-liquid-cool)" opacity="0.8"/>
+    <circle cx="-12" cy="52" r="6" fill="#00ffff" opacity="0.7" filter="url(#lb-soft)"/>
+    <circle cx="14" cy="62" r="5" fill="#00ff88" opacity="0.6"/>
+    <circle cx="0" cy="42" r="4" fill="#0088ff" opacity="0.6"/>
+  </g>
+
+  <!-- LiquiMixer logo -->
+  <text x="100" y="38" font-family="'Orbitron', sans-serif" font-size="22" font-weight="900" fill="#ff00ff" filter="url(#lb-glow-p)">LiquiMixer</text>
+
+  <!-- Subtitle -->
+  <text x="100" y="58" font-family="'Exo 2', sans-serif" font-size="11" font-weight="400" fill="#00ffff" opacity="0.9">E-Liquid Calculator</text>
+
+  <!-- Separator line -->
+  <line x1="270" y1="20" x2="270" y2="70" stroke="#ff00ff" stroke-width="1" opacity="0.25"/>
+
+  <!-- Body copy -->
+  <text x="290" y="34" font-family="'Exo 2', sans-serif" font-size="11" font-weight="500" fill="#ffffff" opacity="0.95">PG/VG/Nic in one tap · 5,000+ flavors · auto-%</text>
+  <text x="290" y="54" font-family="'Exo 2', sans-serif" font-size="10" font-weight="400" fill="#cccccc" opacity="0.85">Steep reminders · Save recipes · 31 languages</text>
+
+  <!-- CTA -->
+  <rect x="622" y="25" width="92" height="36" rx="18" fill="#0a0a15" fill-opacity="0.8" stroke="#ff00ff" stroke-width="2"/>
+  <text x="668" y="49" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="10" font-weight="700" fill="#ffffff" letter-spacing="1">TRY NOW</text>
+
+  <!-- Decorative horizontal lines -->
+  <line x1="100" y1="70" x2="580" y2="70" stroke="#00ffff" stroke-width="0.5" opacity="0.15"/>
+</svg>
+</div>
+<div class="label">728 × 90 — Leaderboard (hlavička fóra)</div>
+
+<!-- ============================================================ -->
+<!-- MEDIUM RECTANGLE 300×250 -->
+<!-- ============================================================ -->
+<h2>Medium Rectangle — 300 × 250 px</h2>
+
+<div class="banner-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="250" viewBox="0 0 300 250">
+  <defs>
+    <linearGradient id="mr-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d1a"/>
+      <stop offset="40%" style="stop-color:#0a0a15"/>
+      <stop offset="100%" style="stop-color:#12122a"/>
+    </linearGradient>
+    <pattern id="mr-grid" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#ff00ff" stroke-width="0.3" opacity="0.1"/>
+    </pattern>
+    <filter id="mr-glow-p" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="mr-glow-c" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="mr-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="mr-liq-cool" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.9"/>
+      <stop offset="60%" style="stop-color:#00ff88;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#0088ff;stop-opacity:0.5"/>
+    </linearGradient>
+    <linearGradient id="mr-liq-warm" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:0.9"/>
+      <stop offset="60%" style="stop-color:#ff0088;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#ff4400;stop-opacity:0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="300" height="250" fill="url(#mr-bg)"/>
+  <rect width="300" height="250" fill="url(#mr-grid)"/>
+
+  <!-- Large vapor clouds — ambient -->
+  <ellipse cx="50" cy="100" rx="90" ry="80" fill="#00ffff" opacity="0.035"/>
+  <ellipse cx="260" cy="80" rx="80" ry="70" fill="#ff00ff" opacity="0.04"/>
+  <ellipse cx="150" cy="220" rx="120" ry="50" fill="#ff00ff" opacity="0.025"/>
+  <ellipse cx="150" cy="20" rx="100" ry="35" fill="#00ffff" opacity="0.03"/>
+
+  <!-- Rising vapor wisps — left flask -->
+  <ellipse cx="82" cy="80" rx="20" ry="8" fill="#00ffff" opacity="0.14" filter="url(#mr-soft)"/>
+  <ellipse cx="70" cy="62" rx="14" ry="6" fill="#00ffff" opacity="0.1" filter="url(#mr-soft)"/>
+  <ellipse cx="88" cy="46" rx="10" ry="4" fill="#00ff88" opacity="0.07"/>
+  <ellipse cx="75" cy="34" rx="7" ry="3" fill="#00ffff" opacity="0.05"/>
+
+  <!-- Rising vapor wisps — right flask -->
+  <ellipse cx="218" cy="80" rx="20" ry="8" fill="#ff00ff" opacity="0.12" filter="url(#mr-soft)"/>
+  <ellipse cx="228" cy="62" rx="14" ry="6" fill="#ff00ff" opacity="0.09" filter="url(#mr-soft)"/>
+  <ellipse cx="212" cy="46" rx="10" ry="4" fill="#ff0088" opacity="0.06"/>
+  <ellipse cx="224" cy="34" rx="7" ry="3" fill="#ff00ff" opacity="0.04"/>
+
+  <!-- Corner accents -->
+  <path d="M0 0 L45 0 L45 3 L3 3 L3 45 L0 45 Z" fill="#00ffff" opacity="0.6"/>
+  <path d="M300 0 L255 0 L255 3 L297 3 L297 45 L300 45 Z" fill="#ff00ff" opacity="0.6"/>
+  <path d="M0 250 L45 250 L45 247 L3 247 L3 205 L0 205 Z" fill="#ff00ff" opacity="0.5"/>
+  <path d="M300 250 L255 250 L255 247 L297 247 L297 205 L300 205 Z" fill="#00ffff" opacity="0.5"/>
+
+  <!-- Left flask — cool tones -->
+  <g transform="translate(82, 135) scale(0.32)">
+    <path d="M-20 -80 L-20 -30 L-50 40 L-50 85 L50 85 L50 40 L20 -30 L20 -80 Z"
+          fill="none" stroke="#00ffff" stroke-width="5" filter="url(#mr-glow-c)"/>
+    <rect x="-24" y="-95" width="48" height="18" rx="3" fill="none" stroke="#00ffff" stroke-width="3.5"/>
+    <path d="M-42 25 L42 25 L42 78 L-42 78 Z" fill="url(#mr-liq-cool)" opacity="0.85"/>
+    <circle cx="-14" cy="52" r="7" fill="#00ffff" opacity="0.7" filter="url(#mr-soft)"/>
+    <circle cx="12" cy="62" r="5" fill="#00ff88" opacity="0.6"/>
+    <circle cx="0" cy="42" r="4" fill="#0088ff" opacity="0.5"/>
+  </g>
+
+  <!-- Right flask — warm tones -->
+  <g transform="translate(218, 135) scale(-0.32, 0.32)">
+    <path d="M-20 -80 L-20 -30 L-50 40 L-50 85 L50 85 L50 40 L20 -30 L20 -80 Z"
+          fill="none" stroke="#ff00ff" stroke-width="5" filter="url(#mr-glow-p)"/>
+    <rect x="-24" y="-95" width="48" height="18" rx="3" fill="none" stroke="#ff00ff" stroke-width="3.5"/>
+    <path d="M-42 25 L42 25 L42 78 L-42 78 Z" fill="url(#mr-liq-warm)" opacity="0.85"/>
+    <circle cx="-14" cy="52" r="7" fill="#ff00ff" opacity="0.7" filter="url(#mr-soft)"/>
+    <circle cx="12" cy="62" r="5" fill="#ff0088" opacity="0.6"/>
+    <circle cx="0" cy="42" r="4" fill="#ff4400" opacity="0.5"/>
+  </g>
+
+  <!-- LiquiMixer logo -->
+  <text x="150" y="38" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#ff00ff" filter="url(#mr-glow-p)">LiquiMixer</text>
+
+  <!-- Separator -->
+  <line x1="60" y1="48" x2="240" y2="48" stroke="#00ffff" stroke-width="1.5" opacity="0.35"/>
+
+  <!-- Subtitle -->
+  <text x="150" y="68" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="13" font-weight="400" fill="#00ffff" filter="url(#mr-glow-c)">E-Liquid Calculator</text>
+
+  <!-- Body copy -->
+  <text x="150" y="180" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="11" font-weight="500" fill="#ffffff" opacity="0.95">PG/VG/Nic ratios in one tap</text>
+  <text x="150" y="196" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="10.5" font-weight="400" fill="#cccccc" opacity="0.85">5,000+ flavors · auto-% dosing</text>
+  <text x="150" y="212" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="10.5" font-weight="400" fill="#cccccc" opacity="0.8">Steep reminders · 31 languages</text>
+
+  <!-- CTA -->
+  <rect x="95" y="222" width="110" height="22" rx="11" fill="#0a0a15" fill-opacity="0.7" stroke="#ff00ff" stroke-width="1.5"/>
+  <text x="150" y="237" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="9" font-weight="700" fill="#ffffff" letter-spacing="1.5">liquimixer.com</text>
+</svg>
+</div>
+<div class="label">300 × 250 — Medium Rectangle (sidebar)</div>
+
+<!-- ============================================================ -->
+<!-- REDDIT PROMOTED POST 1200×628 -->
+<!-- ============================================================ -->
+<h2>Reddit Promoted Post — 1200 × 628 px</h2>
+
+<div class="banner-wrap" style="max-width:100%;">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628" style="max-width:100%;height:auto;">
+  <defs>
+    <linearGradient id="rd-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d1a"/>
+      <stop offset="30%" style="stop-color:#0a0a15"/>
+      <stop offset="70%" style="stop-color:#12122a"/>
+      <stop offset="100%" style="stop-color:#0d0d1a"/>
+    </linearGradient>
+    <pattern id="rd-grid" width="45" height="45" patternUnits="userSpaceOnUse">
+      <path d="M 45 0 L 0 0 0 45" fill="none" stroke="#ff00ff" stroke-width="0.35" opacity="0.1"/>
+    </pattern>
+    <filter id="rd-glow-p" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="rd-glow-c" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="rd-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="rd-cloud" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <linearGradient id="rd-liq-cool" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.95"/>
+      <stop offset="35%" style="stop-color:#00ff88;stop-opacity:0.85"/>
+      <stop offset="100%" style="stop-color:#0088ff;stop-opacity:0.6"/>
+    </linearGradient>
+    <linearGradient id="rd-liq-warm" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:0.95"/>
+      <stop offset="35%" style="stop-color:#ff0088;stop-opacity:0.85"/>
+      <stop offset="100%" style="stop-color:#ff4400;stop-opacity:0.6"/>
+    </linearGradient>
+    <linearGradient id="rd-flask-c" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff"/>
+      <stop offset="50%" style="stop-color:#00ff88"/>
+      <stop offset="100%" style="stop-color:#00cccc"/>
+    </linearGradient>
+    <linearGradient id="rd-flask-p" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff"/>
+      <stop offset="50%" style="stop-color:#ff0088"/>
+      <stop offset="100%" style="stop-color:#ff4400"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="628" fill="url(#rd-bg)"/>
+  <rect width="1200" height="628" fill="url(#rd-grid)"/>
+
+  <!-- Large ambient vapor clouds -->
+  <ellipse cx="100" cy="280" rx="180" ry="250" fill="#00ffff" opacity="0.04"/>
+  <ellipse cx="1100" cy="280" rx="180" ry="250" fill="#ff00ff" opacity="0.04"/>
+  <ellipse cx="600" cy="30" rx="500" ry="100" fill="#ff00ff" opacity="0.025"/>
+  <ellipse cx="600" cy="600" rx="500" ry="80" fill="#00ffff" opacity="0.025"/>
+  <ellipse cx="400" cy="400" rx="200" ry="150" fill="#ff00ff" opacity="0.02"/>
+  <ellipse cx="800" cy="200" rx="180" ry="120" fill="#00ffff" opacity="0.02"/>
+
+  <!-- Decorative vapor wisps — LEFT (rising from flask) -->
+  <ellipse cx="170" cy="180" rx="40" ry="16" fill="#00ffff" opacity="0.15" filter="url(#rd-soft)"/>
+  <ellipse cx="150" cy="148" rx="28" ry="11" fill="#00ffff" opacity="0.11" filter="url(#rd-soft)"/>
+  <ellipse cx="180" cy="120" rx="20" ry="8" fill="#00ff88" opacity="0.08" filter="url(#rd-soft)"/>
+  <ellipse cx="160" cy="95" rx="14" ry="6" fill="#00ffff" opacity="0.06"/>
+  <ellipse cx="175" cy="75" rx="10" ry="4" fill="#00ff88" opacity="0.04"/>
+
+  <!-- Decorative vapor wisps — RIGHT (rising from flask) -->
+  <ellipse cx="1030" cy="180" rx="40" ry="16" fill="#ff00ff" opacity="0.13" filter="url(#rd-soft)"/>
+  <ellipse cx="1050" cy="148" rx="28" ry="11" fill="#ff00ff" opacity="0.1" filter="url(#rd-soft)"/>
+  <ellipse cx="1020" cy="120" rx="20" ry="8" fill="#ff0088" opacity="0.07" filter="url(#rd-soft)"/>
+  <ellipse cx="1040" cy="95" rx="14" ry="6" fill="#ff00ff" opacity="0.05"/>
+  <ellipse cx="1025" cy="75" rx="10" ry="4" fill="#ff0088" opacity="0.035"/>
+
+  <!-- Additional scattered vapor wisps for atmosphere -->
+  <ellipse cx="350" cy="100" rx="50" ry="18" fill="#ff00ff" opacity="0.04" filter="url(#rd-cloud)"/>
+  <ellipse cx="850" cy="520" rx="60" ry="20" fill="#00ffff" opacity="0.04" filter="url(#rd-cloud)"/>
+  <ellipse cx="500" cy="500" rx="45" ry="15" fill="#ff00ff" opacity="0.035" filter="url(#rd-cloud)"/>
+  <ellipse cx="700" cy="80" rx="40" ry="14" fill="#00ffff" opacity="0.03" filter="url(#rd-cloud)"/>
+
+  <!-- Corner accents -->
+  <path d="M0 0 L120 0 L120 8 L8 8 L8 120 L0 120 Z" fill="#00ffff" opacity="0.6"/>
+  <path d="M1200 0 L1080 0 L1080 8 L1192 8 L1192 120 L1200 120 Z" fill="#ff00ff" opacity="0.6"/>
+  <path d="M0 628 L120 628 L120 620 L8 620 L8 508 L0 508 Z" fill="#ff00ff" opacity="0.5"/>
+  <path d="M1200 628 L1080 628 L1080 620 L1192 620 L1192 508 L1200 508 Z" fill="#00ffff" opacity="0.5"/>
+
+  <!-- Left Flask — cool tones -->
+  <g transform="translate(165, 310) scale(0.7)">
+    <path d="M-28 -110 L-28 -42 L-70 55 L-70 120 L70 120 L70 55 L28 -42 L28 -110 Z"
+          fill="none" stroke="url(#rd-flask-c)" stroke-width="4.5" filter="url(#rd-glow-c)"/>
+    <rect x="-33" y="-132" width="66" height="26" rx="4" fill="none" stroke="#00ffff" stroke-width="3.5" filter="url(#rd-glow-c)"/>
+    <path d="M-60 35 L60 35 L60 112 L-60 112 Z" fill="url(#rd-liq-cool)" opacity="0.85"/>
+    <path d="M-42 5 L42 5 L60 35 L-60 35 Z" fill="url(#rd-liq-cool)" opacity="0.55"/>
+    <circle cx="-22" cy="72" r="9" fill="#00ffff" opacity="0.75" filter="url(#rd-soft)"/>
+    <circle cx="18" cy="88" r="7" fill="#00ff88" opacity="0.7" filter="url(#rd-soft)"/>
+    <circle cx="-8" cy="52" r="5" fill="#0088ff" opacity="0.6"/>
+    <circle cx="32" cy="66" r="6" fill="#00ffff" opacity="0.6"/>
+    <circle cx="4" cy="98" r="8" fill="#00ff88" opacity="0.5"/>
+  </g>
+
+  <!-- Right Flask — warm tones -->
+  <g transform="translate(1035, 310) scale(-0.7, 0.7)">
+    <path d="M-28 -110 L-28 -42 L-70 55 L-70 120 L70 120 L70 55 L28 -42 L28 -110 Z"
+          fill="none" stroke="url(#rd-flask-p)" stroke-width="4.5" filter="url(#rd-glow-p)"/>
+    <rect x="-33" y="-132" width="66" height="26" rx="4" fill="none" stroke="#ff00ff" stroke-width="3.5" filter="url(#rd-glow-p)"/>
+    <path d="M-60 35 L60 35 L60 112 L-60 112 Z" fill="url(#rd-liq-warm)" opacity="0.85"/>
+    <path d="M-42 5 L42 5 L60 35 L-60 35 Z" fill="url(#rd-liq-warm)" opacity="0.55"/>
+    <circle cx="-22" cy="72" r="9" fill="#ff00ff" opacity="0.75" filter="url(#rd-soft)"/>
+    <circle cx="18" cy="88" r="7" fill="#ff0088" opacity="0.7" filter="url(#rd-soft)"/>
+    <circle cx="-8" cy="52" r="5" fill="#ff4400" opacity="0.6"/>
+    <circle cx="32" cy="66" r="6" fill="#ff00ff" opacity="0.6"/>
+    <circle cx="4" cy="98" r="8" fill="#ff8800" opacity="0.5"/>
+  </g>
+
+  <!-- Central content -->
+  <!-- LiquiMixer logo -->
+  <text x="600" y="170" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="90" font-weight="900" fill="#ff00ff" filter="url(#rd-glow-p)">LiquiMixer</text>
+
+  <!-- Separator line -->
+  <line x1="280" y1="200" x2="920" y2="200" stroke="#00ffff" stroke-width="2.5" opacity="0.4"/>
+
+  <!-- Subtitle -->
+  <text x="600" y="248" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="32" font-weight="400" fill="#00ffff" filter="url(#rd-glow-c)">E-Liquid Calculator</text>
+
+  <!-- Feature bullets -->
+  <text x="600" y="310" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="24" font-weight="500" fill="#ffffff" opacity="0.95">PG/VG/Nic ratios calculated in one tap</text>
+  <text x="600" y="348" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="22" font-weight="400" fill="#dddddd" opacity="0.9">5,000+ verified flavors with auto-% dosing</text>
+  <text x="600" y="385" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="22" font-weight="400" fill="#dddddd" opacity="0.85">Steep time reminders · Save &amp; share recipes</text>
+
+  <!-- Feature badges row -->
+  <g transform="translate(600, 440)">
+    <g transform="translate(-180, 0)">
+      <rect x="-68" y="-18" width="136" height="36" rx="18" fill="#ff00ff" fill-opacity="0.1" stroke="#ff00ff" stroke-width="2"/>
+      <text x="0" y="7" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="16" font-weight="600" fill="#ff00ff">31 LANGUAGES</text>
+    </g>
+    <g transform="translate(0, 0)">
+      <rect x="-55" y="-18" width="110" height="36" rx="18" fill="#00ffff" fill-opacity="0.1" stroke="#00ffff" stroke-width="2"/>
+      <text x="0" y="7" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="16" font-weight="600" fill="#00ffff">RECIPES</text>
+    </g>
+    <g transform="translate(180, 0)">
+      <rect x="-60" y="-18" width="120" height="36" rx="18" fill="#00ff88" fill-opacity="0.1" stroke="#00ff88" stroke-width="2"/>
+      <text x="0" y="7" text-anchor="middle" font-family="'Exo 2', sans-serif" font-size="16" font-weight="600" fill="#00ff88">NIC SHOTS</text>
+    </g>
+  </g>
+
+  <!-- CTA -->
+  <rect x="430" y="490" width="340" height="56" rx="28" fill="#0a0a15" fill-opacity="0.8" stroke="#ff00ff" stroke-width="2.5"/>
+  <text x="600" y="526" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="24" font-weight="800" fill="#ffffff" letter-spacing="3">liquimixer.com</text>
+
+  <!-- Decorative lines -->
+  <line x1="250" y1="568" x2="950" y2="568" stroke="#00ffff" stroke-width="1" opacity="0.2"/>
+  <line x1="280" y1="90" x2="920" y2="90" stroke="#ff00ff" stroke-width="1" opacity="0.15"/>
+</svg>
+</div>
+<div class="label">1200 × 628 — Reddit Promoted Post</div>
+
+<!-- ============================================================ -->
+<!-- MOBILE BANNER 320×50 -->
+<!-- ============================================================ -->
+<h2>Mobile Banner — 320 × 50 px</h2>
+
+<div class="banner-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="50" viewBox="0 0 320 50">
+  <defs>
+    <linearGradient id="mb-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d1a"/>
+      <stop offset="100%" style="stop-color:#12122a"/>
+    </linearGradient>
+    <pattern id="mb-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ff00ff" stroke-width="0.25" opacity="0.1"/>
+    </pattern>
+    <filter id="mb-glow-p" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="320" height="50" fill="url(#mb-bg)"/>
+  <rect width="320" height="50" fill="url(#mb-grid)"/>
+
+  <!-- Subtle vapor -->
+  <ellipse cx="30" cy="25" rx="40" ry="30" fill="#00ffff" opacity="0.04"/>
+  <ellipse cx="290" cy="25" rx="40" ry="30" fill="#ff00ff" opacity="0.04"/>
+  <ellipse cx="160" cy="5" rx="80" ry="15" fill="#ff00ff" opacity="0.025"/>
+
+  <!-- Corner -->
+  <path d="M0 0 L25 0 L25 2 L2 2 L2 25 L0 25 Z" fill="#00ffff" opacity="0.5"/>
+  <path d="M320 50 L295 50 L295 48 L318 48 L318 25 L320 25 Z" fill="#ff00ff" opacity="0.4"/>
+
+  <!-- Logo -->
+  <text x="10" y="22" font-family="'Orbitron', sans-serif" font-size="11" font-weight="900" fill="#ff00ff" filter="url(#mb-glow-p)">LiquiMixer</text>
+
+  <!-- Subtitle -->
+  <text x="10" y="36" font-family="'Exo 2', sans-serif" font-size="8" fill="#00ffff" opacity="0.8">E-Liquid Calculator</text>
+
+  <!-- Body -->
+  <text x="130" y="22" font-family="'Exo 2', sans-serif" font-size="9" font-weight="500" fill="#fff" opacity="0.9">5,000+ flavors · auto-% · 31 langs</text>
+  <text x="130" y="36" font-family="'Exo 2', sans-serif" font-size="8" font-weight="400" fill="#ccc" opacity="0.8">Steep reminders · Recipes · Nic shots</text>
+
+  <!-- CTA -->
+  <rect x="263" y="13" width="50" height="24" rx="12" fill="#0a0a15" stroke="#ff00ff" stroke-width="1.2"/>
+  <text x="288" y="29" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="6.5" font-weight="700" fill="#fff" letter-spacing="0.5">TRY IT</text>
+</svg>
+</div>
+<div class="label">320 × 50 — Mobile Banner</div>
+
+<h2 style="margin-top:40px; color:#888;">Vizuální prvky z LiquiMixer</h2>
+<ul style="color:#aaa; font-size:12px; line-height:2;">
+  <li>✅ <span style="color:#0d0d1a;background:#0d0d1a;border:1px solid #333;padding:1px 12px;">█</span> Tmavé pozadí (#0d0d1a → #12122a gradient)</li>
+  <li>✅ <span style="color:#ff00ff;">████</span> Neon magenta (#ff00ff) — primární barva, logo, CTA</li>
+  <li>✅ <span style="color:#00ffff;">████</span> Cyan (#00ffff) — sekundární, separator linie, subtitle</li>
+  <li>✅ Grid overlay — jemný magenta grid pattern z og-image</li>
+  <li>✅ Laboratorní baňky s tekutinou a bublinami (cool + warm tóny)</li>
+  <li>✅ <strong>Obláčky páry</strong> — stoupající od baněk + ambientní vapor clouds v pozadí</li>
+  <li>✅ Corner accents — neon rohy z og-image</li>
+  <li>✅ Orbitron font (headline) + Exo 2 (body text)</li>
+  <li>✅ Neon glow filtr na textu a baňkách</li>
+  <li>✅ Pill-shaped CTA button</li>
+  <li>✅ Žádné „FREE" ani „OFFLINE" badge</li>
+</ul>
+
+</body>
+</html>

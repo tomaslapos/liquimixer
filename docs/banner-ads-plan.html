@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiquiMixer — Bannerová reklama: Strategický plán v4.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a2e;
+    --accent: #d600d6;
+    --accent2: #0099cc;
+    --border: #e0e0e0;
+    --light-bg: #f8f8fc;
+    --green: #00a86b;
+    --orange: #e6850a;
+    --red: #cc3333;
+    --gold: #d4a044;
+    --dark-gold: #1a0f00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    font-size: 13px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 40px;
+  }
+
+  .header {
+    text-align: center;
+    padding-bottom: 24px;
+    border-bottom: 3px solid var(--accent);
+    margin-bottom: 30px;
+  }
+  .header h1 { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+  .header .subtitle { font-size: 15px; color: #666; }
+  .header .meta { display: flex; justify-content: center; gap: 30px; margin-top: 12px; font-size: 13px; color: #888; }
+  .header .meta strong { color: var(--text); }
+
+  h2 { font-size: 18px; font-weight: 700; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin: 28px 0 14px 0; page-break-after: avoid; }
+  h3 { font-size: 14px; font-weight: 700; color: var(--accent2); margin: 18px 0 8px 0; page-break-after: avoid; }
+  h4 { font-size: 13px; font-weight: 600; margin: 12px 0 6px 0; }
+  p { margin-bottom: 8px; }
+
+  .philosophy { background: var(--light-bg); border-left: 4px solid var(--accent); padding: 14px 18px; margin-bottom: 20px; border-radius: 0 6px 6px 0; }
+  .philosophy p { margin-bottom: 4px; }
+
+  .rules { list-style: none; padding: 0; }
+  .rules li { padding: 4px 0 4px 24px; position: relative; }
+  .rules li::before { content: attr(data-num); position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 12px; }
+  th { background: var(--accent); color: #fff; padding: 7px 10px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+  td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--light-bg); }
+  .self-service { color: var(--green); font-weight: 600; }
+  .contact { color: var(--orange); font-weight: 600; }
+
+  /* Vaping creative blocks */
+  .creative {
+    background: #0d0d1a;
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 8px 0 12px 0;
+    page-break-inside: avoid;
+  }
+  .creative .headline { color: #ff00ff; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .creative .body-text { color: #ddd; font-size: 12px; line-height: 1.5; }
+  .creative .url { color: #00ffff; font-weight: 600; font-size: 12px; }
+
+  /* Hookah creative blocks — PREMIUM */
+  .creative-hookah {
+    position: relative;
+    background: linear-gradient(135deg, #1a0f00 0%, #2a1800 40%, #1a0f00 100%);
+    border: 1px solid rgba(212, 160, 68, 0.4);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 8px 0 12px 0;
+    overflow: hidden;
+    page-break-inside: avoid;
+  }
+  .creative-hookah::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 120px 120px at 15% 20%, rgba(212,160,68,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 100px 100px at 85% 75%, rgba(212,160,68,0.06) 0%, transparent 70%),
+      /* Ornamental pattern — arabesque diamonds */
+      repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(212,160,68,0.04) 18px, rgba(212,160,68,0.04) 19px),
+      repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(212,160,68,0.04) 18px, rgba(212,160,68,0.04) 19px),
+      /* Horizontal gold lines */
+      repeating-linear-gradient(0deg, transparent, transparent 36px, rgba(212,160,68,0.03) 36px, rgba(212,160,68,0.03) 37px);
+    pointer-events: none;
+    border-radius: 10px;
+  }
+  .creative-hookah::after {
+    content: '';
+    position: absolute;
+    top: -20px; right: -10px;
+    width: 120px; height: 160px;
+    background:
+      radial-gradient(ellipse 40px 80px at 50% 60%, rgba(212,160,68,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 25px 50px at 50% 40%, rgba(255,255,255,0.04) 0%, transparent 50%);
+    filter: blur(4px);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .creative-hookah .hookah-badge {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 28px;
+    opacity: 0.25;
+    filter: drop-shadow(0 0 6px rgba(212,160,68,0.5));
+  }
+  .creative-hookah .headline {
+    position: relative;
+    z-index: 1;
+    color: #d4a044;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 8px rgba(212,160,68,0.3);
+    letter-spacing: 0.3px;
+  }
+  .creative-hookah .ingredients {
+    position: relative;
+    z-index: 1;
+    color: #c89640;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(212,160,68,0.2);
+    padding-bottom: 6px;
+  }
+  .creative-hookah .body-text {
+    position: relative;
+    z-index: 1;
+    color: #e8d5b0;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .creative-hookah .url {
+    position: relative;
+    z-index: 1;
+    color: #d4a044;
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 6px;
+    display: inline-block;
+    border: 1px solid rgba(212,160,68,0.4);
+    padding: 3px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .flag { font-size: 16px; margin-right: 4px; }
+  .context { font-style: italic; color: #666; font-size: 12px; margin: 4px 0 8px 0; }
+
+  .email-block {
+    background: var(--light-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px 16px; margin: 8px 0 14px 0;
+    font-family: 'Consolas', 'Monaco', monospace; font-size: 11px; line-height: 1.5;
+    white-space: pre-wrap; page-break-inside: avoid;
+  }
+
+  .keywords { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 12px 0; }
+  .kw { background: var(--light-bg); border: 1px solid var(--border); border-radius: 12px; padding: 2px 10px; font-size: 11px; color: #555; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  @media print {
+    body { font-size: 11px; }
+    .container { padding: 10px 20px; }
+    h2 { font-size: 15px; margin: 18px 0 8px 0; }
+    h3 { font-size: 12px; }
+    table { font-size: 10px; }
+    th { padding: 4px 6px; font-size: 9px; }
+    td { padding: 4px 6px; }
+    .creative, .creative-hookah { padding: 8px 12px; margin: 4px 0 8px 0; }
+    .creative .headline { font-size: 12px; }
+    .creative .body-text { font-size: 10px; }
+    .creative-hookah .headline { font-size: 13px; }
+    .creative-hookah .body-text { font-size: 10px; }
+    .email-block { font-size: 9px; padding: 8px 10px; }
+    .no-print { display: none; }
+    .header { padding-bottom: 12px; margin-bottom: 16px; }
+    .header h1 { font-size: 22px; }
+    a { color: var(--text); text-decoration: none; }
+  }
+
+  .print-btn {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--accent); color: #fff; border: none;
+    padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(214,0,214,0.3); z-index: 100;
+  }
+  .print-btn:hover { background: #b800b8; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ Vytisknout</button>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <h1>LiquiMixer — Bannerová reklama</h1>
+  <div class="subtitle">Strategický plán kampaně</div>
+  <div class="meta">
+    <span>Verze <strong>4.0</strong></span>
+    <span>Datum <strong>17.03.2026</strong></span>
+    <span>Budget <strong>259 000 Kč (~10 500€)</strong></span>
+    <span>Podíl <strong>64% marketingového budgetu</strong></span>
+  </div>
+</div>
+
+<!-- FILOSOFIE -->
+<h2>Filosofie kampaně</h2>
+<div class="philosophy">
+  <p>LiquiMixer má <strong>31 jazyků</strong> — 6× více než jakýkoli konkurent. Každý uživatel uvidí banner
+  <strong>ve svém jazyce</strong>. Na mezinárodních platformách (Reddit, ECF) = více jazykových mutací.
+  Na lokálních fórech = jazyk komunity.</p>
+</div>
+<ol class="rules">
+  <li data-num="1.">Úvod = vždy <strong>název kalkulátoru v jazyce uživatele</strong></li>
+  <li data-num="2.">Pak <strong>konkrétní potřeby</strong> které daný trh reálně řeší</li>
+  <li data-num="3.">Žádné porovnávání s konkurencí — prezentujeme výhody, ne srovnání</li>
+  <li data-num="4.">Žádné „FREE/ZDARMA" — nesnižovat hodnotu produktu</li>
+  <li data-num="5.">Žádné „Offline" — appka má v offline omezenou funkcionalitu</li>
+</ol>
+
+<!-- 1. PLATFORMY -->
+<h2>1. Platformy — self-service vs. kontakt</h2>
+
+<h3>Self-service</h3>
+<table>
+  <tr><th>Platforma</th><th>Typ</th><th>Jak</th><th>Min. budget</th></tr>
+  <tr><td><strong>Reddit Ads</strong></td><td>Promoted Posts + bannery</td><td class="self-service">ads.reddit.com — geo + subreddit targeting</td><td>$5/den</td></tr>
+  <tr><td><strong>Ekşi Sözlük</strong></td><td>Nativní reklama</td><td class="self-service">nativespot.com — platba kartou</td><td>~5 000 TL (~150€)</td></tr>
+</table>
+
+<h3>Kontakt s adminem</h3>
+<table>
+  <tr><th>Fórum</th><th>Engine</th><th>Jazyk</th><th>Kontakt</th></tr>
+  <tr><td><strong>ECF</strong></td><td>XenForo</td><td>EN + DE subfórum</td><td class="contact">PM admin / „Contact Us"</td></tr>
+  <tr><td><strong>Dampfer-Board.de</strong></td><td>WoltLab</td><td>DE</td><td class="contact">Kontaktní formulář</td></tr>
+  <tr><td><strong>dampferzuflucht.de</strong></td><td>XenForo</td><td>DE</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>dampfertreff.ch</strong></td><td>XenForo</td><td>DE (CH)</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>Forum-Ecigarette.com</strong></td><td>phpBB</td><td>FR</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>Vapoteurs.net</strong></td><td>Magazín</td><td>FR</td><td class="contact">Kontakt redakce</td></tr>
+  <tr><td><strong>Svapo.it</strong></td><td>vBulletin</td><td>IT</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>SigarettaElettronicaForum.com</strong></td><td>XenForo</td><td>IT</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>DonanımHaber</strong></td><td>Vlastní</td><td>TR</td><td class="contact">reklam@donanimhaber.com</td></tr>
+  <tr><td><strong>E-papierosy-forum.pl</strong></td><td>phpBB</td><td>PL</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>Salon Rozchmurzonych</strong></td><td>phpBB</td><td>PL</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>Vapeforums.lv</strong></td><td>phpBB</td><td>LV</td><td class="contact">PM admin</td></tr>
+  <tr><td><strong>e-Savuke.com</strong></td><td>vBulletin</td><td>FI</td><td class="contact">PM admin</td></tr>
+</table>
+
+<!-- 2. REDDIT ADS -->
+<h2>2. Reddit Ads — detailní plán</h2>
+<p>Plně self-service. Geo-targeting dle země = proxy pro jazyk banneru.</p>
+<table>
+  <tr><th>Ad Group</th><th>Subreddity</th><th>Geo</th><th>Jazyk</th><th>Segment</th></tr>
+  <tr><td>EN-Vaping</td><td>r/DIY_eJuice, r/Vaping, r/electronic_cigarette</td><td>US, UK, CA, AU</td><td>EN</td><td>E-Liquid</td></tr>
+  <tr><td>EN-Hookah</td><td>r/Hookah, r/hookahlounge</td><td>US, UK, CA, AU</td><td>EN</td><td>Shisha</td></tr>
+  <tr><td>DE-Vaping</td><td>r/Vaping + geo DE</td><td>DE, AT, CH</td><td>DE</td><td>E-Liquid</td></tr>
+  <tr><td>FR-Vaping</td><td>r/Vaping + geo FR</td><td>FR, BE, CH</td><td>FR</td><td>E-Liquid</td></tr>
+  <tr><td>TR-Hookah</td><td>r/Hookah + geo TR</td><td>TR</td><td>TR</td><td>Nargile</td></tr>
+  <tr><td>ES-Vaping</td><td>r/Vaping + geo ES</td><td>ES, MX, AR, CO</td><td>ES</td><td>E-Liquid</td></tr>
+  <tr><td>PT-Vaping</td><td>r/Vaping + geo BR</td><td>BR, PT</td><td>PT</td><td>E-Liquid</td></tr>
+  <tr><td>PL-Vaping</td><td>r/Vaping + geo PL</td><td>PL</td><td>PL</td><td>E-Liquid</td></tr>
+  <tr><td>NL-Vaping</td><td>r/Vaping + geo NL</td><td>NL, BE</td><td>NL</td><td>E-Liquid</td></tr>
+  <tr><td>LV-Vaping</td><td>r/Vaping + geo LV</td><td>LV</td><td>LV</td><td>E-Liquid</td></tr>
+  <tr><td>FI-Vaping</td><td>r/Vaping + geo FI</td><td>FI</td><td>FI</td><td>E-Liquid</td></tr>
+</table>
+<p><strong>ES/LATAM:</strong> Žádné velké španělské vaping fórum neexistuje. Reddit ES-Vaping = hlavní kanál.</p>
+<p><strong>Formáty:</strong> 1200×628 px / 1080×1080 · CPC: $0.50–$2.00 · Start: $10–20/den per ad group</p>
+
+<!-- 3. FÓRA JAZYKY -->
+<h2>3. Fóra — jazykové mutace</h2>
+<table>
+  <tr><th>Typ</th><th>Fórum</th><th>Jazyk banneru</th></tr>
+  <tr><td rowspan="2"><strong>Mezinárodní</strong></td><td>ECF — hlavní</td><td>EN</td></tr>
+  <tr><td>ECF — germany-forum.775</td><td>DE</td></tr>
+  <tr><td rowspan="9"><strong>Lokální</strong></td><td>Dampfer-Board, dampferzuflucht, dampfertreff</td><td>DE</td></tr>
+  <tr><td>Forum-Ecigarette, Vapoteurs.net</td><td>FR</td></tr>
+  <tr><td>Svapo.it, SigarettaElettronicaForum.com</td><td>IT</td></tr>
+  <tr><td>Ekşi Sözlük, DonanımHaber</td><td>TR</td></tr>
+  <tr><td>E-papierosy-forum.pl, Salon Rozchmurzonych</td><td>PL</td></tr>
+  <tr><td>Vapeforums.lv</td><td>LV</td></tr>
+  <tr><td>e-Savuke.com</td><td>FI</td></tr>
+</table>
+<h4>Rozměry:</h4>
+<table>
+  <tr><th>Rozměr</th><th>Název</th><th>Kde</th></tr>
+  <tr><td>728×90 px</td><td>Leaderboard</td><td>Hlavička fóra</td></tr>
+  <tr><td>300×250 px</td><td>Medium Rectangle</td><td>Sidebar</td></tr>
+  <tr><td>468×60 px</td><td>Full Banner</td><td>Starší fóra (ECF)</td></tr>
+  <tr><td>320×50 px</td><td>Mobile Banner</td><td>Mobilní verze</td></tr>
+</table>
+
+<!-- 4. KREATIVY -->
+<div class="page-break"></div>
+<h2>4. Kreativy — specifické pro každý trh</h2>
+
+<h3><span class="flag">🇬🇧</span> EN — E-Liquid (ECF, Reddit r/DIY_eJuice, r/Vaping)</h3>
+<p class="context">Co řeší: PG/VG poměry, auto-% příchutí, steep time, sdílení receptů.</p>
+<div class="two-col">
+  <div class="creative">
+    <div class="headline">E-Liquid Calculator</div>
+    <div class="body-text">PG/VG/Nic ratios calculated in one tap · 5,000+ verified flavors with auto-% dosing<br>Steep time reminders · Save and share your recipes</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative">
+    <div class="headline">E-Liquid Calculator</div>
+    <div class="body-text">Mix up to 10 flavors with automatic percentages · Nic shot calculator for any base<br>250+ community recipes</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+
+<h3><span class="flag">🇬🇧</span> EN — Hookah (Reddit r/Hookah)</h3>
+<p class="context">Co řeší: Přesné poměry tabáku a melasy, kombinace příchutí, zapamatovat osvědčené mixy.</p>
+<div class="two-col">
+  <div class="creative-hookah">
+    <div class="hookah-badge">🪔</div>
+    <div class="headline">Shisha Calculator</div>
+    <div class="ingredients">Tobacco · Molasses · Flavors</div>
+    <div class="body-text">Precise ratios for the perfect blend<br>826 tobacco blends · Save your combinations</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative-hookah">
+    <div class="hookah-badge">🪔</div>
+    <div class="headline">Shisha Calculator</div>
+    <div class="ingredients">Tobacco · Molasses · Flavors</div>
+    <div class="body-text">Apple + Mint? Cherry + Vanilla?<br>Calculate tobacco &amp; molasses ratios · 826 blends</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+
+<h3><span class="flag">🇩🇪</span> DE — Dampfer-Board, dampferzuflucht, dampfertreff, ECF/775</h3>
+<p class="context">Co řeší: TPD Nic-Shots, nástroj v němčině, shisha, přesná dosierung.</p>
+<div class="creative">
+  <div class="headline">E-Liquid Rechner</div>
+  <div class="body-text">Nic-Shot-Rechner passend für TPD · 5.000+ Aromen mit automatischer Dosierung<br>Rezepte speichern · Reife-Erinnerungen</div>
+  <div class="url">liquimixer.com</div>
+</div>
+<div class="two-col">
+  <div class="creative">
+    <div class="headline">E-Liquid Rechner — komplett auf Deutsch</div>
+    <div class="body-text">Aromen, Rezepte und Erinnerungen — alles auf Deutsch<br>5.000+ verifizierte Aromen · Automatische Dosierung</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative-hookah">
+    <div class="hookah-badge">🪔</div>
+    <div class="headline">Shisha &amp; E-Liquid Rechner</div>
+    <div class="ingredients">Tabak · Melasse · Aromen</div>
+    <div class="body-text">Der einzige Rechner für Shisha-Mischungen und E-Liquids<br>826 Tabak-Mischungen + 5.000+ Aromen</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+
+<h3><span class="flag">🇫🇷</span> FR — Forum-Ecigarette, Vapoteurs.net</h3>
+<p class="context">Co řeší: Přechod z disposables na DIY, nástroj ve francouzštině.</p>
+<div class="two-col">
+  <div class="creative">
+    <div class="headline">Calculateur e-liquide</div>
+    <div class="body-text">Dosage PG/VG/nicotine en un clic · 5 000+ arômes avec dosage automatique<br>Recettes sauvegardées · Rappels de maturation</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative">
+    <div class="headline">Calculateur e-liquide — entièrement en français</div>
+    <div class="body-text">Passez au DIY : PG/VG, nicotine, arômes — tout calculé pour vous<br>5 000+ arômes · Vos recettes accessibles partout</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+
+<h3><span class="flag">🇮🇹</span> IT — Svapo.it, SigarettaElettronicaForum.com</h3>
+<p class="context">Co řeší: Recepty, příchutě, dosaggio. Od 1/2025 zakázán online prodej nik. liquidů → DIY roste.</p>
+<div class="two-col">
+  <div class="creative">
+    <div class="headline">Calcolatore e-liquid</div>
+    <div class="body-text">5.000+ aromi verificati con dosaggio automatico · Salva le tue ricette<br>Nicotina, PG/VG, aromi — tutto calcolato per te</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative">
+    <div class="headline">Calcolatore e-liquid — in italiano</div>
+    <div class="body-text">Non una traduzione automatica — un'esperienza completa nella tua lingua<br>5.000+ aromi · Ricette · Promemoria maturazione</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<h3><span class="flag">🇹🇷</span> TR — Ekşi Sözlük, DonanımHaber</h3>
+<p class="context">Co řeší: Přesné poměry tabáku a melasy, kombinace příchutí, zapamatovat karışımlar.</p>
+<div class="creative-hookah">
+  <div class="hookah-badge">🪔</div>
+  <div class="headline">Nargile Karışım Hesaplayıcısı</div>
+  <div class="ingredients">Tütün · Melas · Aroma</div>
+  <div class="body-text">Mükemmel karışım için doğru oranlar<br>826 tütün çeşidi · Tariflerini kaydet</div>
+  <div class="url">liquimixer.com</div>
+</div>
+<div class="two-col">
+  <div class="creative-hookah">
+    <div class="hookah-badge">🪔</div>
+    <div class="headline">Nargile Karışım Hesaplayıcısı</div>
+    <div class="ingredients">Tütün · Melas · Aroma</div>
+    <div class="body-text">Elma + Nane? Vişne + Vanilya?<br>Tütün ve melas oranlarını hesapla · 826 çeşit</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative-hookah">
+    <div class="hookah-badge">🪔</div>
+    <div class="headline">Nargile Hesaplayıcısı — dünyada tek</div>
+    <div class="ingredients">Tütün · Melas · Aroma</div>
+    <div class="body-text">Tütün ve melas karışım oranlarını profesyonelce hesapla<br>826 çeşit · Türkçe</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+
+<h3><span class="flag">🇵🇱</span> PL — E-papierosy-forum.pl, Salon Rozchmurzonych</h3>
+<p class="context">Co řeší: DIY scéna roste, málo nástrojů v polštině. GFN 2026 Varšava (červen).</p>
+<div class="creative">
+  <div class="headline">Kalkulator e-liquidów</div>
+  <div class="body-text">5 000+ aromatów z automatycznym dawkowaniem · Kalkulator nic-shotów<br>Zapisuj przepisy · Przypomnienia o dojrzewaniu</div>
+  <div class="url">liquimixer.com</div>
+</div>
+
+<h3><span class="flag">🇪🇸</span> ES · <span class="flag">🇵🇹</span> PT · <span class="flag">🇳🇱</span> NL <span style="font-size:11px;color:#999;">(pouze Reddit Ads)</span></h3>
+<div class="two-col">
+  <div class="creative">
+    <div class="headline">Calculadora de e-líquidos</div>
+    <div class="body-text">5.000+ sabores con dosificación automática · Calculadora de nicotina<br>Guarda tus recetas · Recordatorios de maceración</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative">
+    <div class="headline">Calculadora de e-líquidos</div>
+    <div class="body-text">5.000+ sabores com dosagem automática · Calculadora de nicotina<br>Salve suas receitas · Lembretes de maturação</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+<div class="creative" style="max-width:540px;">
+  <div class="headline">E-Liquid Calculator</div>
+  <div class="body-text">5.000+ aroma's met automatische dosering · Nicotine-calculator<br>Bewaar je recepten · Rijpheidsherinneringen</div>
+  <div class="url">liquimixer.com</div>
+</div>
+
+<h3><span class="flag">🇱🇻</span> LV — Vapeforums.lv · <span class="flag">🇫🇮</span> FI — e-Savuke.com</h3>
+<div class="two-col">
+  <div class="creative">
+    <div class="headline">E-šķidruma kalkulators</div>
+    <div class="body-text">5 000+ aromātu ar automātisku dozēšanu · Nikotīna kalkulators<br>Saglabā receptes · Nogatavināšanas atgādinājumi</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+  <div class="creative">
+    <div class="headline">E-nesteen laskin</div>
+    <div class="body-text">5 000+ makua automaattisella annostelulla · Nikotiinilaskin<br>Tallenna reseptisi · Kypsytysmuistutukset</div>
+    <div class="url">liquimixer.com</div>
+  </div>
+</div>
+<p class="context"><strong>LV:</strong> Příchutě povoleny (na rozdíl od LT/EE), aktivní DIY. <strong>FI:</strong> Přísné regulace, DIY = řešení, finština vzácná.</p>
+
+<!-- 5. CO REZONUJE -->
+<div class="page-break"></div>
+<h2>5. Co rezonuje na kterém trhu</h2>
+<table>
+  <tr><th>Trh</th><th>Co uživatelé řeší</th><th>Co je přesvědčí</th><th>Co NEŘÍKAT</th></tr>
+  <tr><td><strong>EN</strong></td><td>PG/VG, auto-%, steep time</td><td>auto-%, steep reminders, recipes</td><td>„Free", srovnání</td></tr>
+  <tr><td><strong>EN-Hookah</strong></td><td>Poměry tabáku a melasy</td><td>Tobacco · Molasses · Flavors, 826 blends</td><td>„Vaping"</td></tr>
+  <tr><td><strong>DE</strong></td><td>TPD nic-shots, EN nástroje</td><td>„Komplett auf Deutsch", Nic-Shot-Rechner</td><td>Superlativy</td></tr>
+  <tr><td><strong>FR</strong></td><td>Disposable ban → DIY</td><td>„En français", dosage</td><td>Anglická slova</td></tr>
+  <tr><td><strong>IT</strong></td><td>Recepty, nik. zákaz online</td><td>„In italiano", ricetta, dosaggio</td><td>Žargon</td></tr>
+  <tr><td><strong>TR</strong></td><td>Nargile od oka, tabák+melas</td><td>Tütün · Melas · Aroma, „hesapla"</td><td>„Vaping"</td></tr>
+  <tr><td><strong>PL</strong></td><td>Málo nástrojů v PL</td><td>„Po polsku", nic-shoty, GFN 2026</td><td>—</td></tr>
+  <tr><td><strong>ES/PT</strong></td><td>Málo nástrojů</td><td>„En español / Em português"</td><td>—</td></tr>
+  <tr><td><strong>LV</strong></td><td>Malý trh</td><td>„Latviešu valodā"</td><td>—</td></tr>
+  <tr><td><strong>FI</strong></td><td>Přísné regulace</td><td>„Suomeksi"</td><td>—</td></tr>
+</table>
+
+<!-- 6. VIZUÁLNÍ STYL -->
+<h2>6. Vizuální styl</h2>
+<div class="two-col">
+  <div>
+    <h4>Vaping bannery:</h4>
+    <ul>
+      <li>Pozadí: tmavé (#0d0d1a) + grid overlay</li>
+      <li>Primární: neon magenta (#ff00ff)</li>
+      <li>Sekundární: cyan (#00ffff)</li>
+      <li>Font: Orbitron (headline), Exo 2 (body)</li>
+      <li>CTA: pill-shaped, magenta/cyan</li>
+      <li>Ikona: laboratorní baňka</li>
+    </ul>
+  </div>
+  <div>
+    <h4>Hookah/Nargile bannery — PRÉMIOVÝ:</h4>
+    <ul>
+      <li>Pozadí: bohatý zlatý gradient + ornamentální arabesque pattern</li>
+      <li>Kouřový efekt: zlatavý, dekorativní</li>
+      <li>Hookah pipe silueta ve zlatě</li>
+      <li>Text: zlatá (#d4a044), bílá</li>
+      <li>Font: Playfair Display (serif, honosnost)</li>
+      <li>CTA: zlatý obrys, elegantní zaoblení</li>
+      <li><strong>Klíčové:</strong> „Tobacco · Molasses · Flavors" vždy viditelné</li>
+      <li>Dojem: luxusní hookah salon, ne tech startup</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 7. KLÍČOVÁ SLOVA -->
+<h2>7. Klíčová slova</h2>
+<h4>EN:</h4>
+<div class="keywords">
+  <span class="kw">e-liquid calculator</span><span class="kw">DIY vape calculator</span><span class="kw">nicotine calculator</span><span class="kw">PG VG ratio</span><span class="kw">nic shot calculator</span><span class="kw">steep time calculator</span><span class="kw">hookah calculator</span><span class="kw">shisha mix calculator</span><span class="kw">shisha molasses ratio</span><span class="kw">hookah tobacco blend</span>
+</div>
+<h4>DE:</h4>
+<div class="keywords">
+  <span class="kw">E-Liquid Rechner</span><span class="kw">Liquid mischen</span><span class="kw">Nic-Shot Rechner</span><span class="kw">Selbstmischer Rechner</span><span class="kw">Shisha Rechner</span>
+</div>
+<h4>FR · IT · TR:</h4>
+<div class="keywords">
+  <span class="kw">calculateur e-liquide</span><span class="kw">dosage nicotine</span><span class="kw">calcolatore e-liquid</span><span class="kw">dosaggio aromi</span><span class="kw">nargile hesaplayıcı</span><span class="kw">nargile karışım</span><span class="kw">melas oranı</span>
+</div>
+<h4>PL · ES · PT · LV · FI:</h4>
+<div class="keywords">
+  <span class="kw">kalkulator e-liquidów</span><span class="kw">calculadora e-líquido</span><span class="kw">calculadora e-líquidos</span><span class="kw">e-šķidruma kalkulators</span><span class="kw">e-nesteen laskin</span><span class="kw">nikotiinilaskin</span>
+</div>
+
+<!-- 8. A/B TESTY -->
+<h2>8. A/B testy</h2>
+<table>
+  <tr><th>Trh</th><th>Test A</th><th>Test B</th><th>Metrika</th></tr>
+  <tr><td><strong>EN</strong></td><td>„PG/VG/Nic in one tap"</td><td>„Mix up to 10 flavors"</td><td>CTR + registrace</td></tr>
+  <tr><td><strong>EN-Hookah</strong></td><td>„Tobacco · Molasses · Flavors"</td><td>„Apple+Mint?"</td><td>CTR</td></tr>
+  <tr><td><strong>DE</strong></td><td>„Nic-Shot-Rechner TPD"</td><td>„Komplett auf Deutsch"</td><td>CTR + registrace</td></tr>
+  <tr><td><strong>FR</strong></td><td>„Passez au DIY"</td><td>„Dosage en un clic"</td><td>CTR</td></tr>
+  <tr><td><strong>TR</strong></td><td>„Tütün · Melas · Aroma"</td><td>„826 tütün"</td><td>CTR + registrace</td></tr>
+  <tr><td><strong>IT</strong></td><td>„Tutto calcolato per te"</td><td>„In italiano"</td><td>CTR</td></tr>
+</table>
+
+<!-- 9. UTM -->
+<h2>9. UTM tracking</h2>
+<div class="email-block">liquimixer.com/?utm_source={platforma}&utm_medium=banner&utm_campaign=2026Q2&utm_content={segment}_{jazyk}</div>
+<table>
+  <tr><th>Příklad</th><th>UTM</th></tr>
+  <tr><td>Reddit EN vaping</td><td><code>?utm_source=reddit&amp;utm_content=vaping_en</code></td></tr>
+  <tr><td>Reddit EN hookah</td><td><code>?utm_source=reddit&amp;utm_content=hookah_en</code></td></tr>
+  <tr><td>Dampfer-Board DE</td><td><code>?utm_source=dampferboard&amp;utm_content=vaping_de</code></td></tr>
+  <tr><td>Ekşi Sözlük TR</td><td><code>?utm_source=eksisozluk&amp;utm_content=hookah_tr</code></td></tr>
+  <tr><td>SigarettaElettronicaForum IT</td><td><code>?utm_source=sef&amp;utm_content=vaping_it</code></td></tr>
+  <tr><td>E-papierosy-forum PL</td><td><code>?utm_source=epapierosy&amp;utm_content=vaping_pl</code></td></tr>
+  <tr><td>Vapeforums.lv</td><td><code>?utm_source=vapeforumslv&amp;utm_content=vaping_lv</code></td></tr>
+  <tr><td>e-Savuke.com</td><td><code>?utm_source=esavuke&amp;utm_content=vaping_fi</code></td></tr>
+</table>
+
+<!-- 10. ROZPOČET -->
+<div class="page-break"></div>
+<h2>10. Rozpočet a harmonogram</h2>
+
+<h3>Fáze 1 — Březen/Duben</h3>
+<table>
+  <tr><th>Platforma</th><th>Měsíčně</th><th>Kreativa</th></tr>
+  <tr><td>Reddit Ads — EN-Vaping</td><td>3 000 Kč</td><td>EN e-liquid</td></tr>
+  <tr><td>Reddit Ads — EN-Hookah</td><td>2 000 Kč</td><td>EN shisha (prémiový)</td></tr>
+  <tr><td>Reddit Ads — DE-Vaping</td><td>2 500 Kč</td><td>DE</td></tr>
+  <tr><td>Reddit Ads — FR-Vaping</td><td>2 000 Kč</td><td>FR</td></tr>
+  <tr><td>Reddit Ads — TR-Hookah</td><td>2 000 Kč</td><td>TR nargile (prémiový)</td></tr>
+  <tr><td>Reddit Ads — ES/PT/PL/NL/LV/FI</td><td>4 500 Kč</td><td>Lokalizované</td></tr>
+  <tr><td>Ekşi Sözlük (NativeSpot)</td><td>4 000 Kč</td><td>TR nargile</td></tr>
+  <tr><td>ECF (po domluvě)</td><td>5 000 Kč</td><td>EN + DE subfórum</td></tr>
+  <tr style="font-weight:700;color:var(--accent)"><td>Celkem/měs</td><td>~25 000 Kč</td><td></td></tr>
+</table>
+
+<h3>Fáze 2 — Květen</h3>
+<table>
+  <tr><th>Platforma</th><th>Měsíčně</th><th>Kreativa</th></tr>
+  <tr><td>+ Dampfer-Board</td><td>+5 000 Kč</td><td>DE</td></tr>
+  <tr><td>+ Forum-Ecigarette</td><td>+3 500 Kč</td><td>FR</td></tr>
+  <tr><td>+ Svapo.it</td><td>+2 500 Kč</td><td>IT</td></tr>
+  <tr><td>+ SigarettaElettronicaForum</td><td>+2 000 Kč</td><td>IT</td></tr>
+  <tr><td>+ DonanımHaber</td><td>+3 000 Kč</td><td>TR</td></tr>
+  <tr><td>+ dampferzuflucht/dampfertreff</td><td>+3 000 Kč</td><td>DE (DACH)</td></tr>
+  <tr><td>+ E-papierosy-forum.pl</td><td>+2 000 Kč</td><td>PL</td></tr>
+  <tr style="font-weight:700;color:var(--accent)"><td>Celkem/měs</td><td>~46 000 Kč</td><td></td></tr>
+</table>
+
+<h3>Fáze 3 — Červen+</h3>
+<ul>
+  <li>Vypnout nefungující, zdvojnásobit TOP performers</li>
+  <li>+ Salon Rozchmurzonych (PL), Vapoteurs.net (FR), Vapeforums.lv (LV), e-Savuke.com (FI)</li>
+  <li><strong>Cíl: 259 000 Kč / 9 měsíců = ~28 800 Kč/měsíc</strong></li>
+</ul>
+
+<!-- 11. METRIKY -->
+<h2>11. Metriky úspěchu</h2>
+<table>
+  <tr><th>Metrika</th><th>Cíl</th><th>Jak měřit</th></tr>
+  <tr><td>CTR</td><td>&gt;0.4% (fóra), &gt;0.8% (Reddit)</td><td>Statistiky platformy</td></tr>
+  <tr><td>CPC</td><td>&lt;$1.50 (Reddit), &lt;0.30€ (fóra)</td><td>Ad platform + UTM</td></tr>
+  <tr><td>Registrace z banneru</td><td>&gt;15% návštěvníků</td><td>UTM → Clerk</td></tr>
+  <tr><td>Konverze na PRO</td><td>&gt;20% za 60 dní</td><td>Supabase subscriptions</td></tr>
+  <tr><td>ROI per trh</td><td>&gt;200% za 6 měsíců</td><td>Revenue vs. spend per UTM</td></tr>
+  <tr><td>Hookah podíl</td><td>&gt;30% trafficu</td><td>UTM content analysis</td></tr>
+</table>
+
+<!-- 12. KONTAKTNÍ ŠABLONY -->
+<div class="page-break"></div>
+<h2>12. Kontaktní šablony pro fóra</h2>
+
+<h3>ECF (EN):</h3>
+<div class="email-block">Subject: Banner Advertising — LiquiMixer (E-Liquid & Hookah Calculator)
+
+Hi,
+
+I'd like to place banner advertising on E-Cigarette Forum.
+
+LiquiMixer (liquimixer.com) is an e-liquid & hookah calculator with
+5,000+ verified flavors, auto-% dosing, recipe management with steep
+reminders, and support in 31 languages.
+
+We'd like to place:
+- Leaderboard (728×90) in the main forum — English
+- Medium rectangle (300×250) in DIY E-Liquid section — English
+- A separate German banner in the Germany subforum (forum.775)
+
+Questions:
+1. Available positions and rates?
+2. Accepted formats (PNG/JPG/GIF/HTML5)?
+3. Minimum commitment?
+4. Can we run 2 variants (A/B)?
+5. Section-specific placement (DIY only)?
+
+Best regards,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>Dampfer-Board.de (DE):</h3>
+<div class="email-block">Betreff: Bannerwerbung — LiquiMixer (E-Liquid & Shisha Rechner)
+
+Hallo,
+
+ich möchte Bannerwerbung auf dampfer-board.de schalten.
+
+LiquiMixer (liquimixer.com) ist ein E-Liquid- und Shisha-Rechner
+mit 5.000+ Aromen, automatischer Dosierung, Rezeptverwaltung und
+Reife-Erinnerungen — komplett auf Deutsch.
+
+Für eure Community relevant: Nic-Shot-Rechner für TPD und der
+einzige Shisha-Kalkulator weltweit.
+
+Fragen:
+1. Positionen und Preise?
+2. Akzeptierte Formate (PNG/JPG/GIF)?
+3. Mindestlaufzeit?
+4. Zwei Varianten gleichzeitig möglich?
+5. Platzierung im Selbstmischer-Bereich möglich?
+
+Mit freundlichen Grüßen,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>Forum-Ecigarette.com (FR):</h3>
+<div class="email-block">Objet : Publicité bannière — LiquiMixer (Calculateur e-liquide)
+
+Bonjour,
+
+Je souhaite placer une bannière publicitaire sur forum-ecigarette.com.
+
+LiquiMixer (liquimixer.com) est un calculateur e-liquide avec
+5 000+ arômes, dosage automatique, gestion de recettes et rappels
+de maturation — entièrement en français.
+
+Questions :
+1. Positions et tarifs disponibles ?
+2. Formats acceptés (PNG/JPG/GIF) ?
+3. Durée minimum ?
+4. Test A/B possible ?
+5. Placement ciblé section DIY ?
+
+Cordialement,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>SigarettaElettronicaForum.com (IT):</h3>
+<div class="email-block">Oggetto: Pubblicità banner — LiquiMixer (Calcolatore e-liquid)
+
+Buongiorno,
+
+Vorrei inserire un banner pubblicitario su SigarettaElettronicaForum.com.
+
+LiquiMixer (liquimixer.com) è un calcolatore e-liquid con 5.000+ aromi,
+dosaggio automatico, gestione ricette e promemoria di maturazione —
+completamente in italiano.
+
+Domande:
+1. Posizioni e tariffe disponibili?
+2. Formati accettati (PNG/JPG/GIF)?
+3. Durata minima?
+4. Test A/B possibile?
+5. Posizionamento nella sezione DIY/Mixing?
+
+Cordiali saluti,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>DonanımHaber (TR):</h3>
+<div class="email-block">Konu: Banner Reklam — LiquiMixer (Nargile Karışım Hesaplayıcısı)
+
+Merhaba,
+
+DonanımHaber'de banner reklam vermek istiyoruz.
+
+LiquiMixer (liquimixer.com), 826 tütün çeşidi ile nargile karışım
+hesaplayıcısıdır. Tütün ve melas oranları hesaplama, tarif kaydetme
+— tamamen Türkçe.
+
+Sorularımız:
+1. Banner pozisyonları ve fiyatlar?
+2. Kabul edilen formatlar (PNG/JPG/GIF)?
+3. Minimum süre?
+4. Nargile bölümünde hedefli yerleşim mümkün mü?
+
+Saygılarımla,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>E-papierosy-forum.pl (PL):</h3>
+<div class="email-block">Temat: Reklama banerowa — LiquiMixer (Kalkulator e-liquidów)
+
+Dzień dobry,
+
+Chciałbym umieścić reklamę banerową na e-papierosy-forum.pl.
+
+LiquiMixer (liquimixer.com) to kalkulator e-liquidów z ponad 5 000
+aromatami, automatycznym dawkowaniem, zarządzaniem przepisami i
+przypomnieniami o dojrzewaniu — w pełni po polsku.
+
+Pytania:
+1. Dostępne pozycje i ceny?
+2. Akceptowane formaty (PNG/JPG/GIF)?
+3. Minimalny okres?
+4. Czy możliwy test A/B?
+
+Z poważaniem,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>Vapeforums.lv (LV):</h3>
+<div class="email-block">Temats: Baneru reklāma — LiquiMixer (E-šķidruma kalkulators)
+
+Labdien,
+
+Vēlos ievietot baneru reklāmu Vapeforums.lv.
+
+LiquiMixer (liquimixer.com) ir e-šķidruma kalkulators ar 5 000+
+aromātiem, automātisku dozēšanu, receptu pārvaldību un
+nogatavināšanas atgādinājumiem — pilnībā latviešu valodā.
+
+Jautājumi:
+1. Pieejamās pozīcijas un cenas?
+2. Pieņemtie formāti (PNG/JPG/GIF)?
+3. Minimālais termiņš?
+4. Vai iespējams A/B tests?
+
+Ar cieņu,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<h3>e-Savuke.com (FI):</h3>
+<div class="email-block">Aihe: Bannerimainonta — LiquiMixer (E-nesteen laskin)
+
+Hei,
+
+Haluaisin sijoittaa bannerimainoksen e-Savuke.com-sivustolle.
+
+LiquiMixer (liquimixer.com) on e-nesteen laskin, jossa on yli 5 000
+makua automaattisella annostelulla, reseptien hallinta ja
+kypsytysmuistutukset — kokonaan suomeksi.
+
+Kysymykset:
+1. Saatavilla olevat paikat ja hinnat?
+2. Hyväksytyt formaatit (PNG/JPG/GIF)?
+3. Minimisitoumus?
+4. A/B-testaus mahdollista?
+
+Ystävällisin terveisin,
+Tomáš Lapos | WOOs s.r.o. | liquimixer.com</div>
+
+<!-- 13. REGULACE -->
+<h2>13. Regulatorní poznámky</h2>
+<table>
+  <tr><th>Trh</th><th>Omezení</th><th>Dopad</th></tr>
+  <tr><td><strong>FR</strong></td><td>Zákaz reklamy na nikotinové produkty</td><td>Kalkulátor = nástroj. OK.</td></tr>
+  <tr><td><strong>IT</strong></td><td>Zákaz reklamy na e-cig + online prodeje nik. liquidů (1/2025)</td><td>Banner = „calcolatore". OK.</td></tr>
+  <tr><td><strong>DE</strong></td><td>TPD, ale DIY nástroje OK</td><td>Žádný problém.</td></tr>
+  <tr><td><strong>TR</strong></td><td>Omezení reklamy na tabák</td><td>Nargile kalkulátor ≠ prodej. Ověřit.</td></tr>
+  <tr><td><strong>FI</strong></td><td>Přísné regulace nikotinu (TPD+)</td><td>Kalkulátor = nástroj. OK.</td></tr>
+  <tr><td><strong>LV</strong></td><td>Příchutě povoleny (na rozdíl od LT/EE)</td><td>Žádný problém.</td></tr>
+  <tr><td><strong>PL</strong></td><td>Regulace e-cigaret, DIY OK</td><td>Žádný problém.</td></tr>
+  <tr><td style="color:var(--red)"><strong>Všechny</strong></td><td style="color:var(--red)">NIKDY</td><td style="color:var(--red)">Zdravotní tvrzení, „quit smoking", prodej nikotinu</td></tr>
+</table>
+
+<!-- 14. AKČNÍ KROKY -->
+<h2>14. Akční kroky</h2>
+<table>
+  <tr><th>Kdy</th><th>Co</th></tr>
+  <tr><td><strong>Tento týden</strong></td><td>1. Účet ads.reddit.com + nativespot.com<br>2. Kreativy: EN, DE, FR, TR (vaping + hookah prémiový)<br>3. Kontaktovat: ECF, Dampfer-Board, Forum-Ecigarette, DonanımHaber, SigarettaElettronicaForum, E-papierosy-forum.pl, Vapeforums.lv, e-Savuke.com</td></tr>
+  <tr><td><strong>Příští týden</strong></td><td>4. Spustit Reddit Ads (11 ad groups)<br>5. Spustit Ekşi Sözlük (NativeSpot)</td></tr>
+  <tr><td><strong>Duben</strong></td><td>6. Fóra live (po odpovědích adminů)<br>7. Kreativy: IT, PL, LV, FI</td></tr>
+  <tr><td><strong>Květen</strong></td><td>8. Vyhodnotit Fázi 1, spustit Fázi 2</td></tr>
+  <tr><td><strong>Červen+</strong></td><td>9. Optimalizace + Salon Rozchmurzonych, Vapoteurs.net</td></tr>
+</table>
+
+<div style="text-align:center; padding:30px 0 10px; color:#999; font-size:11px;">
+  LiquiMixer — WOOs s.r.o. — liquimixer.com — Strategický plán v4.0 — 17.03.2026
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,261 @@
+ATF Audit Results - 2026-03-15T21:22:28.369Z
+Checked: 256 flavors
+Issues: 0
+
+=== NOT_ON_ATF (256) ===
+  CAP 27 Bears                                 HTTP error
+  CAP 27 Fish                                  HTTP error
+  CAP Acai                                     HTTP error
+  CAP Apple Candy                              HTTP error
+  CAP Apple Pie                                HTTP error
+  CAP Apple Pie V2                             HTTP error
+  CAP Apple Snacks                             HTTP error
+  CAP Apricot                                  HTTP error
+  CAP Banana                                   HTTP error
+  CAP Banana Cream                             HTTP error
+  CAP Banana Split                             HTTP error
+  CAP Bavarian Cream                           HTTP error
+  CAP Berry Blend                              HTTP error
+  CAP Berry Cooler                             HTTP error
+  CAP Biscuit                                  HTTP error
+  CAP Black Cherry                             HTTP error
+  CAP Blackberry                               HTTP error
+  CAP Blood Orange                             HTTP error
+  CAP Blue Raspberry Cotton Candy              HTTP error
+  CAP Blueberry                                HTTP error
+  CAP Blueberry Cinnamon Crumble               HTTP error
+  CAP Blueberry Cinnamon Crumble V2            HTTP error
+  CAP Blueberry Extra                          HTTP error
+  CAP Blueberry Jam                            HTTP error
+  CAP Blueberry Pomegranate                    HTTP error
+  CAP Bold Burley Tobacco                      HTTP error
+  CAP Boston Cream Pie                         HTTP error
+  CAP Boston Cream Pie V2                      HTTP error
+  CAP Boysenberry                              HTTP error
+  CAP Bread                                    HTTP error
+  CAP Bubble Gum                               HTTP error
+  CAP Bubblegum                                HTTP error
+  CAP Burley Blend                             HTTP error
+  CAP Butter                                   HTTP error
+  CAP Butter Cream                             HTTP error
+  CAP Butter Pecan V2                          HTTP error
+  CAP Butterscotch                             HTTP error
+  CAP Cake Batter                              HTTP error
+  CAP Cake Batter V2                           HTTP error
+  CAP Cake Mix                                 HTTP error
+  CAP Candied Mango                            HTTP error
+  CAP Candy Roll                               HTTP error
+  CAP Candy Watermelon                         HTTP error
+  CAP Cantaloupe                               HTTP error
+  CAP Cantaloupe V2                            HTTP error
+  CAP Cappuccino V2                            HTTP error
+  CAP Caramel                                  HTTP error
+  CAP Caramel Candy                            HTTP error
+  CAP Caramel V2                               HTTP error
+  CAP Cereal 27                                HTTP error
+  CAP Chai Tea                                 HTTP error
+  CAP Cherry Cola                              HTTP error
+  CAP Cherry Limeade                           HTTP error
+  CAP Chocolate Coconut Almond                 HTTP error
+  CAP Chocolate Fudge Brownie                  HTTP error
+  CAP Chocolate Fudge Brownie V3               HTTP error
+  CAP Chocolate Glazed Doughnut                HTTP error
+  CAP Chocolate Raspberry                      HTTP error
+  CAP Churro                                   HTTP error
+  CAP Churro V2                                HTTP error
+  CAP Cinnamon Coffee Cake                     HTTP error
+  CAP Cinnamon Danish Swirl                    HTTP error
+  CAP Cinnamon Danish Swirl V2                 HTTP error
+  CAP Cinnamon Sugar                           HTTP error
+  CAP Coconut                                  HTTP error
+  CAP Coffee                                   HTTP error
+  CAP Cola                                     HTTP error
+  CAP Concord Grape                            HTTP error
+  CAP Concord Grape with Stevia                HTTP error
+  CAP Cookie Dough                             HTTP error
+  CAP Cool Mint                                HTTP error
+  CAP Corn Bread                               HTTP error
+  CAP Cotton Candy                             HTTP error
+  CAP Cranberry                                HTTP error
+  CAP Cranberry Juice                          HTTP error
+  CAP Creamy Mango                             HTTP error
+  CAP Creamy Orange                            HTTP error
+  CAP Creamy Yogurt                            HTTP error
+  CAP Crunchy Cereal                           HTTP error
+  CAP Cucumber                                 HTTP error
+  CAP Cucumber Mint                            HTTP error
+  CAP Dark Cherry                              HTTP error
+  CAP Dark Chocolate                           HTTP error
+  CAP Deep Fried Cheesecake                    HTTP error
+  CAP Double Apple                             HTTP error
+  CAP Double Chocolate                         HTTP error
+  CAP Double Chocolate V2                      HTTP error
+  CAP Dragon Fruit                             HTTP error
+  CAP Dragonfruit                              HTTP error
+  CAP Dulce de Leche                           HTTP error
+  CAP Egg Nog                                  HTTP error
+  CAP Energy Drink                             HTTP error
+  CAP English Toffee                           HTTP error
+  CAP Espresso                                 HTTP error
+  CAP Fig                                      HTTP error
+  CAP Fizzy Sherbert                           HTTP error
+  CAP French Toast                             HTTP error
+  CAP French Vanilla                           HTTP error
+  CAP French Vanilla V2                        HTTP error
+  CAP Fuji Apple                               HTTP error
+  CAP Funnel Cake                              HTTP error
+  CAP Funnel Cake V2                           HTTP error
+  CAP German Chocolate Cake                    HTTP error
+  CAP Ginger Ale                               HTTP error
+  CAP Gingerbread                              HTTP error
+  CAP Glazed Doughnut                          HTTP error
+  CAP Golden Apple                             HTTP error
+  CAP Golden Butter                            HTTP error
+  CAP Golden Pineapple                         HTTP error
+  CAP Graham Cracker                           HTTP error
+  CAP Graham Cracker V2                        HTTP error
+  CAP Grape                                    HTTP error
+  CAP Grape Soda                               HTTP error
+  CAP Grapefruit                               HTTP error
+  CAP Green Apple                              HTTP error
+  CAP Green Apple Hard Candy                   HTTP error
+  CAP Green Tea                                HTTP error
+  CAP Guava                                    HTTP error
+  CAP Gummy Candy                              HTTP error
+  CAP Hard Candy                               HTTP error
+  CAP Harvest Berry                            HTTP error
+  CAP Harvest Berry V2                         HTTP error
+  CAP Hazelnut                                 HTTP error
+  CAP Hibiscus                                 HTTP error
+  CAP Honey                                    HTTP error
+  CAP Honeydew                                 HTTP error
+  CAP Honeydew Melon                           HTTP error
+  CAP Horchata                                 HTTP error
+  CAP Hot Cocoa                                HTTP error
+  CAP Ice Cream Cone                           HTTP error
+  CAP Irish Cream                              HTTP error
+  CAP Italian Lemon Sicily                     HTTP error
+  CAP Jelly Candy                              HTTP error
+  CAP Jelly Candy V2                           HTTP error
+  CAP Juicy Lemon                              HTTP error
+  CAP Juicy Orange                             HTTP error
+  CAP Juicy Peach                              HTTP error
+  CAP Kentucky Bourbon                         HTTP error
+  CAP Kettle Corn                              HTTP error
+  CAP Key Lime                                 HTTP error
+  CAP Kiwi                                     HTTP error
+  CAP Kiwi Strawberry                          HTTP error
+  CAP Kiwi Strawberry V2                       HTTP error
+  CAP Lemon                                    HTTP error
+  CAP Lemon Lime                               HTTP error
+  CAP Lemon Meringue Pie                       HTTP error
+  CAP Lemon Meringue Pie V2                    HTTP error
+  CAP Licorice                                 HTTP error
+  CAP Lime                                     HTTP error
+  CAP Mango                                    HTTP error
+  CAP Mango V2                                 HTTP error
+  CAP Maple                                    HTTP error
+  CAP Maple Pancake Syrup                      HTTP error
+  CAP Maple Syrup                              HTTP error
+  CAP Marshmallow                              HTTP error
+  CAP Menthol                                  HTTP error
+  CAP Meringue                                 HTTP error
+  CAP Milk Chocolate                           HTTP error
+  CAP Milk Chocolate Toffee                    HTTP error
+  CAP Milkshake                                HTTP error
+  CAP Mint Blend                               HTTP error
+  CAP Mixed Berry                              HTTP error
+  CAP Mulled Wine                              HTTP error
+  CAP Nectarine                                HTTP error
+  CAP New York Cheesecake                      HTTP error
+  CAP New York Cheesecake V2                   HTTP error
+  CAP Oatmeal Cookie                           HTTP error
+  CAP Orange                                   HTTP error
+  CAP Orange Creamsicle                        HTTP error
+  CAP Orange Mango                             HTTP error
+  CAP Original Blend Tobacco                   HTTP error
+  CAP Pancake                                  HTTP error
+  CAP Papaya                                   HTTP error
+  CAP Passion Fruit                            HTTP error
+  CAP Peach                                    HTTP error
+  CAP Peaches and Cream                        HTTP error
+  CAP Peaches and Cream V2                     HTTP error
+  CAP Peanut Butter                            HTTP error
+  CAP Peanut Butter V2                         HTTP error
+  CAP Pear                                     HTTP error
+  CAP Peppermint                               HTTP error
+  CAP Pie Crust                                HTTP error
+  CAP Pineapple                                HTTP error
+  CAP Pink Guava                               HTTP error
+  CAP Pink Lemonade                            HTTP error
+  CAP Pistachio                                HTTP error
+  CAP Plum                                     HTTP error
+  CAP Pomegranate                              HTTP error
+  CAP Pomegranate V2                           HTTP error
+  CAP Popcorn                                  HTTP error
+  CAP Pralines and Cream                       HTTP error
+  CAP Pumpkin Pie                              HTTP error
+  CAP Pumpkin Pie Spice V2                     HTTP error
+  CAP Rainbow Candy                            HTTP error
+  CAP Raspberry                                HTTP error
+  CAP Raspberry V2                             HTTP error
+  CAP Red Oak Tobacco                          HTTP error
+  CAP Ripe Strawberry                          HTTP error
+  CAP Root Beer                                HTTP error
+  CAP Simply Vanilla                           HTTP error
+  CAP Simply Vanilla V2                        HTTP error
+  CAP Smooth Tobacco                           HTTP error
+  CAP Snickerdoodle                            HTTP error
+  CAP Sour                                     HTTP error
+  CAP Spearmint                                HTTP error
+  CAP Spicy Italian Sausage                    HTTP error
+  CAP Strawberries and Cream                   HTTP error
+  CAP Strawberries and Cream V2                HTTP error
+  CAP Strawberry                               HTTP error
+  CAP Strawberry Taffy                         HTTP error
+  CAP Sugar Cookie                             HTTP error
+  CAP Sugar Cookie V1                          HTTP error
+  CAP Sugar Cookie V2                          HTTP error
+  CAP Super Sweet                              HTTP error
+  CAP Super Sweet V2                           HTTP error
+  CAP Sweet Blend Tobacco                      HTTP error
+  CAP Sweet Cream                              HTTP error
+  CAP Sweet Currant                            HTTP error
+  CAP Sweet Guava                              HTTP error
+  CAP Sweet Lychee                             HTTP error
+  CAP Sweet Mango                              HTTP error
+  CAP Sweet Strawberry                         HTTP error
+  CAP Sweet Strawberry V1                      HTTP error
+  CAP Sweet Tangerine                          HTTP error
+  CAP Sweet Watermelon                         HTTP error
+  CAP Tangerine                                HTTP error
+  CAP Tart Cherry                              HTTP error
+  CAP Toasted Almond                           HTTP error
+  CAP Toasted Marshmallow                      HTTP error
+  CAP Tropical Punch                           HTTP error
+  CAP Turkish Tobacco                          HTTP error
+  CAP Vanilla Bean                             HTTP error
+  CAP Vanilla Bean Ice Cream                   HTTP error
+  CAP Vanilla Bean Ice Cream V2                HTTP error
+  CAP Vanilla Bourbon                          HTTP error
+  CAP Vanilla Cupcake                          HTTP error
+  CAP Vanilla Cupcake V2                       HTTP error
+  CAP Vanilla Custard                          HTTP error
+  CAP Vanilla Custard V1                       HTTP error
+  CAP Vanilla Custard V2                       HTTP error
+  CAP Vanilla Milkshake                        HTTP error
+  CAP Vanilla Shake                            HTTP error
+  CAP Vanilla Whipped Cream                    HTTP error
+  CAP Vanilla Whipped Cream V2                 HTTP error
+  CAP Virginia Tobacco                         HTTP error
+  CAP Waffle                                   HTTP error
+  CAP Waffle V2                                HTTP error
+  CAP Watermelon                               HTTP error
+  CAP Whipped Cream                            HTTP error
+  CAP Wild Cherry                              HTTP error
+  CAP Wild Melon                               HTTP error
+  CAP Wintermint                               HTTP error
+  CAP Yellow Cake                              HTTP error
+  CAP Yellow Peach                             HTTP error
+  CAP Yellow Peach V2                          HTTP error
+  CAP Zeppola                                  HTTP error
