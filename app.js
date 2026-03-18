@@ -14599,10 +14599,14 @@ function getReminderDataFromForm() {
             .replace('{daysUnit}', daysText);
     }
 
+    // Use current local time as remind_time (HH:MM) — edge fn will send push at this time in user's timezone
+    const nowLocal = new Date();
+    const remindTime = String(nowLocal.getHours()).padStart(2, '0') + ':' + String(nowLocal.getMinutes()).padStart(2, '0');
+
     return {
         mixed_at: mixDateInput.value,
         remind_at: reminderDateInput.value,
-        remind_time: '16:30',
+        remind_time: remindTime,
         flavor_type: flavorType,
         flavor_name: flavorName,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Prague',
@@ -15179,11 +15183,13 @@ async function saveReminderFromModal(event) {
 
 async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavorName, recipeName, note = '') {
     if (!window.Clerk || !window.Clerk.user) return false;
+    const nowLocal = new Date();
+    const remindTime = String(nowLocal.getHours()).padStart(2, '0') + ':' + String(nowLocal.getMinutes()).padStart(2, '0');
     const reminderData = {
         recipe_id: recipeId,
         mixed_at: mixDate,
         remind_at: remindDate,
-        remind_time: '16:30',
+        remind_time: remindTime,
         flavor_type: flavorType,
         flavor_name: flavorName,
         recipe_name: recipeName,

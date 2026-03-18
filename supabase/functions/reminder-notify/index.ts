@@ -247,15 +247,16 @@ serve(async (req) => {
     const now = new Date();
     const currentHour = now.getUTCHours();
     const currentDate = now.toISOString().split("T")[0];
+    const nowUtcMs = now.getTime();
 
-    console.log(`Checking reminders for date: ${currentDate}, hour: ${currentHour}`);
+    console.log(`Checking reminders for date: ${currentDate}, hour: ${currentHour} UTC`);
 
-    // Find reminders that should be notified today
+    // Find reminders that should be notified today or earlier
     // 1. status=pending, remind_at <= today, sent_at IS NULL → new reminders ready to fire
     // 2. status=matured, sent_at IS NULL → push failed previously (no FCM tokens), retry
     // Exclude consumed reminders (consumed_at IS NULL)
     // Limit to 500 per run for scalability (CRON runs every hour)
-    const { data: reminders, error: remindersError } = await supabase
+    const { data: allReminders, error: remindersError } = await supabase
       .from("recipe_reminders")
       .select(`
         id,
@@ -283,11 +284,55 @@ serve(async (req) => {
       throw remindersError;
     }
 
-    console.log(`Found ${reminders?.length || 0} pending reminders`);
+    if (!allReminders || allReminders.length === 0) {
+      return new Response(
+        JSON.stringify({ message: "No pending reminders", count: 0 }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // --- TIME-AWARE FILTERING ---
+    // Respect remind_time + timezone: only send when user's local time >= remind_time
+    // Reminders from PAST days (remind_at < today) are always ready (overdue).
+    // Reminders for TODAY: check if user's local time has reached remind_time.
+    const reminders = allReminders.filter(r => {
+      // Past-day reminders are always ready
+      if (r.remind_at < currentDate) return true;
+
+      // Today's reminders: check remind_time in user's timezone
+      const remindTime = r.remind_time || '09:00'; // default 09:00 if not set
+      const tz = r.timezone || 'UTC';
+
+      try {
+        // Build the target datetime: remind_at + remind_time in user's timezone
+        // e.g. "2026-03-18T16:30" in "Europe/Prague"
+        const targetLocal = new Date(`${r.remind_at}T${remindTime}:00`);
+        // Convert to UTC using timezone offset
+        const targetInTz = new Date(targetLocal.toLocaleString('en-US', { timeZone: 'UTC' }));
+        const nowInTz = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+        const targetInUserTz = new Date(targetLocal.toLocaleString('en-US', { timeZone: tz }));
+
+        // Compare: what time is it NOW in user's timezone vs remind_time?
+        const nowHours = nowInTz.getHours();
+        const nowMinutes = nowInTz.getMinutes();
+        const [targetHours, targetMinutes] = remindTime.split(':').map(Number);
+
+        const nowTotalMinutes = nowHours * 60 + nowMinutes;
+        const targetTotalMinutes = targetHours * 60 + targetMinutes;
+
+        return nowTotalMinutes >= targetTotalMinutes;
+      } catch {
+        // If timezone parsing fails, send it (better late than never)
+        return true;
+      }
+    });
+
+    const skippedCount = allReminders.length - reminders.length;
+    console.log(`Found ${allReminders.length} pending reminders, ${reminders.length} ready now (${skippedCount} waiting for remind_time)`);
 
     if (!reminders || reminders.length === 0) {
       return new Response(
-        JSON.stringify({ message: "No pending reminders", count: 0 }),
+        JSON.stringify({ message: "All reminders waiting for remind_time", total: allReminders.length, skipped: skippedCount }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
