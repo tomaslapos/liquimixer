@@ -254,6 +254,7 @@ serve(async (req) => {
     // 1. status=pending, remind_at <= today, sent_at IS NULL → new reminders ready to fire
     // 2. status=matured, sent_at IS NULL → push failed previously (no FCM tokens), retry
     // Exclude consumed reminders (consumed_at IS NULL)
+    // Limit to 500 per run for scalability (CRON runs every hour)
     const { data: reminders, error: remindersError } = await supabase
       .from("recipe_reminders")
       .select(`
@@ -273,7 +274,9 @@ serve(async (req) => {
       .in("status", ["pending", "matured"])
       .lte("remind_at", currentDate)
       .is("consumed_at", null)
-      .is("sent_at", null);
+      .is("sent_at", null)
+      .order("remind_at", { ascending: true })
+      .limit(500);
 
     if (remindersError) {
       console.error("Error fetching reminders:", remindersError);
@@ -294,8 +297,84 @@ serve(async (req) => {
 
     let sentCount = 0;
     let errorCount = 0;
+    let noTokenCount = 0;
 
+    // --- SCALABILITY: Group reminders by clerk_id ---
+    // Fetch tokens and locale ONCE per user, not per reminder
+    const userClerkIds = [...new Set(reminders.map(r => r.clerk_id))];
+    console.log(`Processing reminders for ${userClerkIds.length} unique users`);
+
+    // Pre-fetch all FCM tokens for all affected users in one query per user
+    const tokenCache: Record<string, { token: string }[]> = {};
+    const localeCache: Record<string, string | null> = {};
+    const noTokenUsers = new Set<string>();
+
+    for (const clerkId of userClerkIds) {
+      // Fetch tokens
+      const { data: tokens, error: tokensError } = await supabase
+        .from("fcm_tokens")
+        .select("token")
+        .eq("clerk_id", clerkId);
+
+      if (tokensError) {
+        console.error(`Error fetching tokens for user ${clerkId}:`, tokensError);
+        continue;
+      }
+
+      if (!tokens || tokens.length === 0) {
+        noTokenUsers.add(clerkId);
+      } else {
+        tokenCache[clerkId] = tokens;
+      }
+
+      // Fetch locale
+      const { data: userData } = await supabase
+        .from("users")
+        .select("locale")
+        .eq("clerk_id", clerkId)
+        .single();
+      localeCache[clerkId] = userData?.locale || null;
+    }
+
+    // --- Handle users WITHOUT tokens (batch update) ---
+    // Retry limit: if remind_at is older than 7 days, stop retrying (mark no_tokens)
+    const sevenDaysAgo = new Date(now);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const retryDeadline = sevenDaysAgo.toISOString().split("T")[0];
+
+    for (const clerkId of noTokenUsers) {
+      const userReminders = reminders.filter(r => r.clerk_id === clerkId);
+      const retryable = userReminders.filter(r => r.remind_at > retryDeadline);
+      const expired = userReminders.filter(r => r.remind_at <= retryDeadline);
+
+      if (retryable.length > 0) {
+        // Mark matured but keep sent_at NULL for retry — ONE batch update
+        const retryIds = retryable.map(r => r.id);
+        await supabase
+          .from("recipe_reminders")
+          .update({ status: "matured" })
+          .in("id", retryIds);
+        console.log(`No FCM tokens for ${clerkId}: ${retryIds.length} reminders marked matured (retry)`);
+        noTokenCount += retryIds.length;
+      }
+
+      if (expired.length > 0) {
+        // Retry limit exceeded — mark no_tokens permanently
+        const expiredIds = expired.map(r => r.id);
+        await supabase
+          .from("recipe_reminders")
+          .update({ status: "no_tokens", sent_at: new Date().toISOString() })
+          .in("id", expiredIds);
+        console.warn(`No FCM tokens for ${clerkId}: ${expiredIds.length} reminders expired (>7 days), marked no_tokens`);
+        noTokenCount += expiredIds.length;
+      }
+    }
+
+    // --- Process reminders for users WITH tokens ---
     for (const reminder of reminders) {
+      // Skip users already handled (no tokens)
+      if (noTokenUsers.has(reminder.clerk_id)) continue;
+
       try {
         // Skip reminders with 0% stock (consumed)
         const stockPercent = reminder.stock_percent ?? 100;
@@ -303,38 +382,11 @@ serve(async (req) => {
           console.log(`Reminder ${reminder.id} has 0% stock, skipping`);
           continue;
         }
-        
-        // Get user locale for localized notifications
-        const { data: userData } = await supabase
-          .from("users")
-          .select("locale")
-          .eq("clerk_id", reminder.clerk_id)
-          .single();
-        
-        const userLocale = userData?.locale || null;
-        
-        // Get FCM tokens for this user
-        const { data: tokens, error: tokensError } = await supabase
-          .from("fcm_tokens")
-          .select("token")
-          .eq("clerk_id", reminder.clerk_id);
 
-        if (tokensError) {
-          console.error(`Error fetching tokens for user ${reminder.clerk_id}:`, tokensError);
-          errorCount++;
-          continue;
-        }
+        const tokens = tokenCache[reminder.clerk_id];
+        if (!tokens || tokens.length === 0) continue;
 
-        if (!tokens || tokens.length === 0) {
-          console.log(`No FCM tokens for user ${reminder.clerk_id}, marking matured but keeping sent_at NULL for retry`);
-          // Mark as matured (liquid IS ready) but do NOT set sent_at
-          // Next CRON run will find this reminder (sent_at IS NULL) and retry push notification
-          await supabase
-            .from("recipe_reminders")
-            .update({ status: "matured" })
-            .eq("id", reminder.id);
-          continue;
-        }
+        const userLocale = localeCache[reminder.clerk_id] || null;
 
         // Format date for notification
         const mixedDate = new Date(reminder.mixed_at);
@@ -375,6 +427,8 @@ serve(async (req) => {
               .delete()
               .eq("token", badToken);
           }
+          // Update cache so next reminder for same user won't try invalid tokens
+          tokenCache[reminder.clerk_id] = tokens.filter(t => !invalidTokens.includes(t.token));
         }
 
         if (anySent) {
@@ -387,12 +441,15 @@ serve(async (req) => {
           sentCount++;
           console.log(`Reminder ${reminder.id} sent successfully`);
         } else if (invalidTokens.length === tokens.length) {
-          // All tokens were invalid — mark reminder as failed, don't retry forever
+          // All tokens were invalid — mark reminder as failed
           console.warn(`All FCM tokens invalid for reminder ${reminder.id}, marking as no_tokens`);
           await supabase
             .from("recipe_reminders")
             .update({ status: "no_tokens", sent_at: new Date().toISOString() })
             .eq("id", reminder.id);
+          // Mark user as no-token for remaining reminders
+          noTokenUsers.add(reminder.clerk_id);
+          delete tokenCache[reminder.clerk_id];
           errorCount++;
         } else {
           errorCount++;
@@ -408,7 +465,9 @@ serve(async (req) => {
       JSON.stringify({
         message: "Reminders processed",
         total: reminders.length,
+        uniqueUsers: userClerkIds.length,
         sent: sentCount,
+        noTokens: noTokenCount,
         errors: errorCount,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }

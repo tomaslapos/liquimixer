@@ -293,11 +293,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.addEventListener('message', (event) => {
             if (event.data?.type === 'SW_UPDATED') {
-                console.log('SW updated to', event.data.version, '— refreshing FCM token');
-                if (typeof Clerk !== 'undefined' && Clerk.user && Notification.permission === 'granted') {
-                    // Small delay to let new SW fully activate
-                    setTimeout(() => getFcmToken(), 2000);
-                }
+                console.log('[FCM-DIAG] SW updated to', event.data.version, '— will refresh FCM token');
+                // Clerk/Firebase may not be ready yet (race condition on Android).
+                // Retry up to 10× with 2s interval to cover slow init scenarios.
+                let swTokenRetries = 0;
+                const swTokenInterval = setInterval(() => {
+                    swTokenRetries++;
+                    if (typeof Clerk !== 'undefined' && Clerk.user && Notification.permission === 'granted' && messaging) {
+                        clearInterval(swTokenInterval);
+                        console.log('[FCM-DIAG] SW_UPDATED: Clerk+Firebase ready, calling getFcmToken (attempt ' + swTokenRetries + ')');
+                        getFcmToken();
+                    } else if (swTokenRetries >= 10) {
+                        clearInterval(swTokenInterval);
+                        console.warn('[FCM-DIAG] SW_UPDATED: Gave up after 10 retries. Clerk=' + (typeof Clerk !== 'undefined' && Clerk.user ? 'yes' : 'no') + ', messaging=' + !!messaging + ', permission=' + Notification.permission);
+                    }
+                }, 2000);
             }
         });
     }
