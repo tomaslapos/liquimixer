@@ -255,7 +255,7 @@ serve(async (req) => {
     // 1. status=pending, remind_at <= today, sent_at IS NULL → new reminders ready to fire
     // 2. status=matured, sent_at IS NULL → push failed previously (no FCM tokens), retry
     // Exclude consumed reminders (consumed_at IS NULL)
-    // Limit to 500 per run for scalability (CRON runs every hour)
+    // Limit to 2000 per run for scalability (CRON runs every 10 min = 12K/hour)
     const { data: allReminders, error: remindersError } = await supabase
       .from("recipe_reminders")
       .select(`
@@ -277,7 +277,7 @@ serve(async (req) => {
       .is("consumed_at", null)
       .is("sent_at", null)
       .order("remind_at", { ascending: true })
-      .limit(500);
+      .limit(2000);
 
     if (remindersError) {
       console.error("Error fetching reminders:", remindersError);
