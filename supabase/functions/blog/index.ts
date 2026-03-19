@@ -152,11 +152,22 @@ function verifyAuth(req: Request): boolean {
   const isApiKey = apikeyHeader === SUPABASE_SERVICE_ROLE_KEY;
 
   // Způsob 3: x-dashboard-secret (Dashboard)
-  const isDashboard = !!(dashSecret && dashSecret === DASHBOARD_SECRET);
+  const isDashboard = !!(dashSecret && DASHBOARD_SECRET && dashSecret === DASHBOARD_SECRET);
 
   // Způsob 4: x-n8n-secret (N8N workflow)
   const n8nSecret = req.headers.get('x-n8n-secret');
   const isN8N = !!(n8nSecret && N8N_BLOG_SECRET && n8nSecret === N8N_BLOG_SECRET);
+
+  // Debug log
+  console.log('verifyAuth:', {
+    hasAuth: !!authHeader,
+    hasApikey: !!apikeyHeader,
+    hasDashSecret: !!dashSecret,
+    dashSecretLen: dashSecret?.length,
+    envSecretLen: DASHBOARD_SECRET?.length,
+    envSecretExists: !!DASHBOARD_SECRET,
+    isServiceRole, isApiKey, isDashboard, isN8N,
+  });
 
   return isServiceRole || isApiKey || isDashboard || isN8N;
 }
