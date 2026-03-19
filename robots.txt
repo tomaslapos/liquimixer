@@ -340,6 +340,7 @@ Disallow: /functions/
 # ============================================
 Sitemap: https://www.liquimixer.com/sitemap.xml
 Sitemap: https://www.liquimixer.com/sitemap-seo.xml
+Sitemap: https://ikgtygabrrvbqyffcqjd.supabase.co/functions/v1/blog?action=sitemap
 
 # ============================================
 # LLMs.txt pro AI systémy

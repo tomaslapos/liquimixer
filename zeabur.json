@@ -66,6 +66,12 @@
       }
     },
     {
+      "src": "/blog/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"
+      }
+    },
+    {
       "src": "/seo/(.*)",
       "headers": {
         "Cache-Control": "public, max-age=2592000, stale-while-revalidate=604800"
