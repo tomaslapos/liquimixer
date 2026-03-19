@@ -16,6 +16,7 @@ const DOMAIN = 'https://www.liquimixer.com';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const DASHBOARD_SECRET = Deno.env.get('DASHBOARD_BIGDATA_SECRET');
+const N8N_BLOG_SECRET = Deno.env.get('N8N_BLOG_SECRET');
 
 const SUPPORTED_LOCALES = ['cs','sk','en','de','pl','fr','it','es','pt','nl','ja','ko','tr','uk','ru','sv','da','no','fi','el','ar-SA','zh-CN','zh-TW','hu','et','lv','lt','ro','hr','bg','sr'];
 
@@ -140,10 +141,24 @@ ${hreflangTags}
 // Ověření autorizace pro POST akce (N8N + Dashboard)
 function verifyAuth(req: Request): boolean {
   const authHeader = req.headers.get('authorization');
+  const apikeyHeader = req.headers.get('apikey');
   const dashSecret = req.headers.get('x-dashboard-secret');
-  const isServiceRole = authHeader?.includes(SUPABASE_SERVICE_ROLE_KEY);
-  const isDashboard = dashSecret && dashSecret === DASHBOARD_SECRET;
-  return !!(isServiceRole || isDashboard);
+
+  // Způsob 1: Authorization: Bearer <service_role_key>
+  const token = authHeader?.replace('Bearer ', '').trim();
+  const isServiceRole = token === SUPABASE_SERVICE_ROLE_KEY;
+
+  // Způsob 2: apikey header = service_role_key
+  const isApiKey = apikeyHeader === SUPABASE_SERVICE_ROLE_KEY;
+
+  // Způsob 3: x-dashboard-secret (Dashboard)
+  const isDashboard = !!(dashSecret && dashSecret === DASHBOARD_SECRET);
+
+  // Způsob 4: x-n8n-secret (N8N workflow)
+  const n8nSecret = req.headers.get('x-n8n-secret');
+  const isN8N = !!(n8nSecret && N8N_BLOG_SECRET && n8nSecret === N8N_BLOG_SECRET);
+
+  return isServiceRole || isApiKey || isDashboard || isN8N;
 }
 
 serve(async (req) => {
