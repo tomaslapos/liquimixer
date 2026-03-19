@@ -18,13 +18,13 @@ BEGIN
     normalized := lower(trim(regexp_replace(query, '--.*$', '', 'gm')));
     normalized := trim(regexp_replace(normalized, '/\*.*?\*/', '', 'g'));
 
-    -- POUZE SELECT dotazy
-    IF NOT (normalized LIKE 'select%') THEN
-        RAISE EXCEPTION 'Only SELECT queries are allowed';
+    -- POUZE SELECT / WITH (CTE) dotazy
+    IF NOT (normalized LIKE 'select%' OR normalized LIKE 'with%') THEN
+        RAISE EXCEPTION 'Only SELECT queries are allowed (including WITH/CTE)';
     END IF;
 
-    -- Zakázat nebezpečné příkazy
-    IF normalized ~ '\b(insert|update|delete|drop|alter|create|truncate|grant|revoke|execute)\b' THEN
+    -- Zakázat nebezpečné příkazy (včetně pg_read_file, pg_write_file, lo_import, lo_export, copy)
+    IF normalized ~ '\b(insert|update|delete|drop|alter|create|truncate|grant|revoke|execute|copy|pg_read_file|pg_write_file|lo_import|lo_export)\b' THEN
         RAISE EXCEPTION 'Forbidden SQL command detected';
     END IF;
 

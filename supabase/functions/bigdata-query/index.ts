@@ -791,6 +791,16 @@ Rules:
     sql = sql.replace(/^```(?:sql)?\n?/i, '').replace(/\n?```$/i, '').trim()
     sql = sql.replace(/;\s*$/, '').trim()
 
+    // READ-ONLY OCHRANA — edge funkce vrstva (DB funkce exec_readonly_sql má vlastní ochranu)
+    const sqlLower = sql.toLowerCase().replace(/--.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '').trim()
+    if (!sqlLower.startsWith('select') && !sqlLower.startsWith('with')) {
+      return new Response(JSON.stringify({ error: 'Pouze SELECT dotazy jsou povoleny', sql }), { status: 403, headers })
+    }
+    const forbidden = /\b(insert|update|delete|drop|alter|create|truncate|grant|revoke|execute|copy|pg_read_file|pg_write_file|lo_import|lo_export)\b/i
+    if (forbidden.test(sqlLower)) {
+      return new Response(JSON.stringify({ error: 'Zakázaný SQL příkaz detekován', sql }), { status: 403, headers })
+    }
+
     // Step 2: Spustit SQL na analytics DB přes exec_readonly_sql
     const analytics = createClient(ANALYTICS_URL, ANALYTICS_KEY)
     const { data: queryData, error: queryError } = await analytics.rpc('exec_readonly_sql', { query: sql })

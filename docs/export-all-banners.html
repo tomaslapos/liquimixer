@@ -243,6 +243,102 @@ const VAPING_BANNERS = [
   }
 ];
 
+// ==========================================
+// NEUTRAL BANNERS (Reddit-safe, no tobacco/vaping/hookah words)
+// Mixing = vape replacement (neon style)
+// Blend = shisha replacement (gold style)
+// ==========================================
+
+const NEUTRAL_MIXING_BANNERS = [
+  {
+    id:'en-mixing', lang:'EN', label:'EN — Mixing (neutral)',
+    title:'Mixing Calculator', sub:'RATIOS · FLAVORS · RECIPES · PRECISION',
+    hook:'Your perfect mix',
+    hook2:'— calculated in seconds',
+    vp:'PG/VG, nic & up to 4 flavors per recipe',
+    detail:'5,000+ verified flavors',
+    detail2:'Save & share recipes · 31 languages',
+    f1:'5,000+ FLAVORS', f2:'RECIPES', f3:'31 LANGUAGES',
+    headline:'Mixing Calculator — PG/VG, Nic & Flavor Ratios'
+  },
+  {
+    id:'de-mixing', lang:'DE', label:'DE — Mixing (neutral)',
+    title:'Mischrechner', sub:'VERHÄLTNISSE · AROMEN · REZEPTE · PRÄZISION',
+    hook:'Deine perfekte Mischung',
+    hook2:'— in Sekunden berechnet',
+    vp:'PG/VG, Nic & bis zu 4 Aromen pro Rezept',
+    detail:'5.000+ verifizierte Aromen',
+    detail2:'Rezepte speichern & teilen · Auf Deutsch',
+    f1:'5.000+ AROMEN', f2:'REZEPTE', f3:'DEUTSCH',
+    headline:'Mischrechner — PG/VG, Nic & Aromen'
+  },
+  {
+    id:'fr-mixing', lang:'FR', label:'FR — Mixing (neutral)',
+    title:'Calculateur de Mélange', sub:'RATIOS · ARÔMES · RECETTES · PRÉCISION',
+    hook:'Votre mélange parfait',
+    hook2:'— calculé en quelques secondes',
+    vp:'PG/VG, nic & jusqu\'à 4 arômes par recette',
+    detail:'5.000+ arômes vérifiés',
+    detail2:'Sauvegardez & partagez vos recettes · En français',
+    f1:'5.000+ ARÔMES', f2:'RECETTES', f3:'FRANÇAIS',
+    headline:'Calculateur de Mélange — PG/VG, Nic & Arômes'
+  },
+  {
+    id:'it-mixing', lang:'IT', label:'IT — Mixing (neutral)',
+    title:'Calcolatore Miscela', sub:'RAPPORTI · AROMI · RICETTE · PRECISIONE',
+    hook:'La tua miscela perfetta',
+    hook2:'— calcolata in pochi secondi',
+    vp:'PG/VG, nic & fino a 4 aromi per ricetta',
+    detail:'5.000+ aromi verificati',
+    detail2:'Salva e condividi ricette · In italiano',
+    f1:'5.000+ AROMI', f2:'RICETTE', f3:'ITALIANO',
+    headline:'Calcolatore Miscela — PG/VG, Nic & Aromi'
+  }
+];
+
+const NEUTRAL_BLEND_BANNERS = [
+  {
+    id:'en-blend', lang:'EN', label:'EN — Blend (neutral)',
+    title:'Blend Calculator', sub:'RATIOS · INGREDIENTS · RECIPES',
+    hook:'Apple + Mint? Cherry + Vanilla?',
+    vp:'Stop guessing — calculate your perfect blend',
+    detail:'Know exactly how much of each ingredient to use',
+    detail2:'Save your favorite blends · Try new combinations',
+    f1:'826 INGREDIENTS', f2:'RECIPES', f3:'31 LANGUAGES',
+    headline:'Blend Calculator — Custom Ratios for Your Mix'
+  },
+  {
+    id:'de-blend', lang:'DE', label:'DE — Blend (neutral)',
+    title:'Blend Rechner', sub:'VERHÄLTNISSE · ZUTATEN · REZEPTE',
+    hook:'Apfel + Minze? Kirsche + Vanille?',
+    vp:'Nicht raten — berechne deinen perfekten Blend',
+    detail:'Wisse genau, wie viel von jeder Zutat du brauchst',
+    detail2:'Speichere deine Lieblingsblends · Probiere neue Kombinationen',
+    f1:'826 ZUTATEN', f2:'REZEPTE', f3:'DEUTSCH',
+    headline:'Blend Rechner — Eigene Mischungen berechnen'
+  },
+  {
+    id:'fr-blend', lang:'FR', label:'FR — Blend (neutral)',
+    title:'Calculateur Blend', sub:'PROPORTIONS · INGRÉDIENTS · RECETTES',
+    hook:'Pomme + Menthe ? Cerise + Vanille ?',
+    vp:'Arrête de deviner — calcule ton blend parfait',
+    detail:'Sache exactement combien de chaque ingrédient utiliser',
+    detail2:'Sauvegarde tes blends préférés · Essaie de nouvelles combinaisons',
+    f1:'826 INGRÉDIENTS', f2:'RECETTES', f3:'FRANÇAIS',
+    headline:'Calculateur Blend — Proportions sur mesure'
+  },
+  {
+    id:'it-blend', lang:'IT', label:'IT — Blend (neutral)',
+    title:'Calcolatore Blend', sub:'RAPPORTI · INGREDIENTI · RICETTE',
+    hook:'Mela + Menta? Ciliegia + Vaniglia?',
+    vp:'Non tirare a indovinare — calcola il tuo blend perfetto',
+    detail:'Sai esattamente quanto di ogni ingrediente usare',
+    detail2:'Salva i tuoi blend preferiti · Prova nuove combinazioni',
+    f1:'826 INGREDIENTI', f2:'RICETTE', f3:'ITALIANO',
+    headline:'Calcolatore Blend — Rapporti personalizzati'
+  }
+];
+
 function hookahSVG(b) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="max-width:600px;height:auto;">
   <defs>
@@ -421,6 +517,20 @@ function renderAll() {
       <div class="info"><strong>${b.label}</strong>Headline: <code>${b.headline}</code><br><br>
       <button class="vape-btn" onclick="dlOne('${b.id}')">⬇ Stáhnout PNG</button></div></div>`;
   });
+  html += '<h2>🧪 Neutral MIXING bannery (Reddit-safe, vape)</h2>';
+  NEUTRAL_MIXING_BANNERS.forEach(b => {
+    html += `<div class="banner-row">
+      <div id="svg-${b.id}">${vapingSVG(b)}</div>
+      <div class="info"><strong>${b.label}</strong>Headline: <code>${b.headline}</code><br><br>
+      <button class="vape-btn" onclick="dlOne('${b.id}')">⬇ Stáhnout PNG</button></div></div>`;
+  });
+  html += '<h2>🫙 Neutral BLEND bannery (Reddit-safe, shisha)</h2>';
+  NEUTRAL_BLEND_BANNERS.forEach(b => {
+    html += `<div class="banner-row">
+      <div id="svg-${b.id}">${hookahSVG(b)}</div>
+      <div class="info"><strong>${b.label}</strong>Headline: <code>${b.headline}</code><br><br>
+      <button onclick="dlOne('${b.id}')">⬇ Stáhnout PNG</button></div></div>`;
+  });
   container.innerHTML = html;
 }
 
@@ -445,7 +555,7 @@ function dlOne(id) {
 }
 
 async function downloadAll() {
-  const all = [...HOOKAH_BANNERS, ...VAPING_BANNERS];
+  const all = [...HOOKAH_BANNERS, ...VAPING_BANNERS, ...NEUTRAL_MIXING_BANNERS, ...NEUTRAL_BLEND_BANNERS];
   for (let i = 0; i < all.length; i++) {
     dlOne(all[i].id);
     await new Promise(r => setTimeout(r, 800));
