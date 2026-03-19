@@ -3,8 +3,8 @@
     "code": "bg",
     "name": "Bulgarian",
     "nativeName": "Български",
-    "currency": "BGN",
-    "currencySymbol": "лв"
+    "currency": "EUR",
+    "currencySymbol": "€"
   },
   "nav": {
     "menu": "Меню",

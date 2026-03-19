@@ -26,7 +26,6 @@ Na lokálních fórech = jazyk komunity.
 | Platforma | Typ | Jak | Min. budget |
 |---|---|---|---|
 | **Reddit Ads** | Promoted Posts + bannery | ads.reddit.com — geo + subreddit targeting | $5/den |
-| **Ekşi Sözlük** | Nativní reklama | nativespot.com — self-service, platba kartou | ~5 000 TL (~150€) |
 
 ### Kontakt s adminem (bannery spravuje fórum):
 
@@ -46,7 +45,7 @@ Na lokálních fórech = jazyk komunity.
 | **Vapeforums.lv** | phpBB | LV | PM admin |
 | **e-Savuke.com** | vBulletin | FI | PM admin |
 
-**Priorita startu:** Nejdřív self-service (Reddit, Ekşi Sözlük) = okamžitě live.
+**Priorita startu:** Nejdřív self-service (Reddit Ads) = okamžitě live.
 Pak kontaktovat fóra = čekat na odpověď 3–14 dní.
 
 ---
@@ -98,7 +97,7 @@ Reddit Ads s geo-targeting na ES/MX/AR/CO je hlavní a nejefektivnější kanál
   - Dampfer-Board, dampferzuflucht, dampfertreff = DE
   - Forum-Ecigarette, Vapoteurs.net = FR
   - Svapo.it, SigarettaElettronicaForum.com = IT
-  - Ekşi Sözlük, DonanımHaber = TR
+  - DonanımHaber = TR
   - E-papierosy-forum.pl, Salon Rozchmurzonych = PL
   - Vapeforums.lv = LV
   - e-Savuke.com = FI
@@ -136,8 +135,8 @@ Reddit Ads s geo-targeting na ES/MX/AR/CO je hlavní a nejefektivnější kanál
 
 **Banner 2:**
 > `E-Liquid Calculator`
-> `Mix up to 10 flavors with automatic percentages · Nic shot calculator for any base`
-> `250+ community recipes · liquimixer.com`
+> `Mix up to 4 flavors with automatic percentages · Nic shot calculator for any base`
+> `Community recipes · Save and share · liquimixer.com`
 
 **Co EN uživatelé řeší:** Přesný PG/VG poměr s nikotinem, auto-% příchutí, steep time, sdílení receptů.
 
@@ -224,7 +223,7 @@ Zlatý text, teplé tóny. Zmínka o tabáku a melase jako klíčových ingredie
 
 ---
 
-### 🇹🇷 TR — Ekşi Sözlük, DonanımHaber
+### 🇹🇷 TR — DonanımHaber
 
 **Vizuální styl:** Honosný, prémiový. Bohaté tmavě zlaté pozadí s ornamentálním vzorem
 (osmanský/arabesque styl). Kouřový efekt. Zlatý a bílý text. Zmínka o tabáku a melase.
@@ -383,6 +382,46 @@ Pro každé fórum specifický formát. SVG pro škálovatelnost, PNG export pro
 
 ---
 
+## 6b. Vizuální náhledy bannerů (schváleno)
+
+Schválené vizuály pro oba segmenty. Detailní návrhy v souborech:
+- `banner-vaping-draft.html` — vaping bannery (728×90, 300×250, 1200×628, 320×50)
+- `banner-shisha-draft.html` — shisha/hookah bannery (728×90 EN+TR, 300×250, 1200×628)
+
+### Vaping — Leaderboard 728×90:
+- Tmavé pozadí s grid overlay + vapor clouds
+- Laboratorní baňka (ikona)
+- **E-Liquid Calculator** (Orbitron, neon magenta glow)
+- "PG/VG/Nic in one tap · 5,000+ flavors with auto-%"
+- "Steep reminders · Save & share recipes · 31 languages"
+- CTA: pill-shaped cyan `liquimixer.com`
+
+### Shisha/Hookah — Leaderboard 728×90:
+- Černé pozadí + arabesque diamond pattern
+- **Ornamentální arabské okno** (pointed arch, trefoily, sloupy s hlavicemi/patkami, ornamentální tečky)
+- Zlatý gradient text: **Shisha Calculator** (Playfair Display)
+- **TOBACCO · MOLASSES · FLAVORS** (Cormorant Garamond, letter-spacing)
+- "Apple + Mint? Cherry + Vanilla?"
+- "Calculate tobacco & molasses ratios · Don't guess."
+- CTA: zlatý obrys `liquimixer.com`
+
+### Shisha/Hookah — TR varianta 728×90:
+- Stejná grafika brány jako EN verze
+- **Nargile Hesaplayıcısı** / **TÜTÜN · MELAS · AROMA**
+- "Elma + Nane? Vişne + Vanilya?"
+- Pro DonanımHaber a Reddit TR-Hookah
+
+### Další formáty:
+
+| Segment | Formáty | Soubor |
+|---|---|---|
+| Vaping | 728×90, 300×250, 1200×628, 320×50 | `banner-vaping-draft.html` |
+| Shisha/Hookah | 728×90 (EN+TR), 300×250, 1200×628 | `banner-shisha-draft.html` |
+
+Export do PNG/JPG/GIF dle požadavků platformy.
+
+---
+
 ## 7. Klíčová slova
 
 ### EN:
@@ -437,7 +476,7 @@ Na každém trhu 2 varianty, 2–3 týdny:
 
 | Trh | Test A | Test B | Metrika |
 |---|---|---|---|
-| **EN** | "PG/VG/Nic in one tap" (funkce) | "Mix up to 10 flavors" (rozsah) | CTR + registrace |
+| **EN** | "PG/VG/Nic in one tap" (funkce) | "Mix up to 4 flavors" (rozsah) | CTR + registrace |
 | **EN-Hookah** | "Tobacco · Molasses · Flavors" (ingredience) | "Apple+Mint?" (příchutě) | CTR |
 | **DE** | "Nic-Shot-Rechner TPD" (TPD) | "Komplett auf Deutsch" (jazyk) | CTR + registrace |
 | **FR** | "Passez au DIY" (situace) | "Dosage en un clic" (funkce) | CTR |
@@ -458,7 +497,7 @@ liquimixer.com/?utm_source={platforma}&utm_medium=banner&utm_campaign=2026Q2&utm
 - `?utm_source=reddit&utm_medium=banner&utm_campaign=2026Q2&utm_content=hookah_en`
 - `?utm_source=dampferboard&utm_medium=banner&utm_campaign=2026Q2&utm_content=vaping_de`
 - `?utm_source=forumecig&utm_medium=banner&utm_campaign=2026Q2&utm_content=vaping_fr`
-- `?utm_source=eksisozluk&utm_medium=banner&utm_campaign=2026Q2&utm_content=hookah_tr`
+- `?utm_source=donanimhaber&utm_medium=banner&utm_campaign=2026Q2&utm_content=hookah_tr`
 - `?utm_source=svapo&utm_medium=banner&utm_campaign=2026Q2&utm_content=vaping_it`
 - `?utm_source=sef&utm_medium=banner&utm_campaign=2026Q2&utm_content=vaping_it`
 - `?utm_source=epapierosy&utm_medium=banner&utm_campaign=2026Q2&utm_content=vaping_pl`
@@ -481,9 +520,8 @@ LiquiMixer automaticky detekuje `navigator.language` → appka se přepne do spr
 | Reddit Ads — FR-Vaping | 2 000 Kč | FR e-liquid |
 | Reddit Ads — TR-Hookah | 2 000 Kč | TR nargile (prémiový styl) |
 | Reddit Ads — ES/PT/PL/NL/LV/FI | 4 500 Kč | Lokalizované |
-| Ekşi Sözlük (NativeSpot) | 4 000 Kč | TR nargile |
 | ECF (po domluvě) | 5 000 Kč | EN + DE subfórum |
-| **Celkem/měs** | **~25 000 Kč** | |
+| **Celkem/měs** | **~21 000 Kč** | |
 
 ### Fáze 2 — Květen (rozšíření)
 
@@ -521,195 +559,409 @@ LiquiMixer automaticky detekuje `navigator.language` → appka se přepne do spr
 
 ---
 
-## 12. Kontaktní šablony pro fóra
+## 12. Kontaktní šablony pro fóra (v2 — persuasivní, low-budget)
+
+### Vyjednávací strategie:
+- **Představit se jako nezávislý vývojář** (ne korporace) — fóra mají ráda indie projekty
+- **Zdůraznit přínos pro komunitu** — nástroj co členové reálně potřebují + neobsahuje reklamy
+- **Freemium model** — základní funkce zdarma, pokročilé (PRO) placené. NIKDY neříkat "bezplatný/free"
+- **Nejlevnější s vysokým dosahem** — ne patička (nulový výsledek), ale viditelná pozice za rozumnou cenu
+- **Zmínit zvlášť vape + shisha** — dva segmenty, dvě hodnoty pro komunitu
+- **3měsíční období** — konkrétní rámec bez závazku prodloužení
 
 ### ECF (EN):
+**Kam poslat:** https://www.e-cigarette-forum.com/misc/contact (kontaktní formulář) nebo PM adminovi
 ```
-Subject: Banner Advertising — LiquiMixer (E-Liquid & Hookah Calculator)
+Subject: E-Liquid & Hookah Calculator for your DIY community — banner inquiry
 
 Hi,
 
-I'd like to place banner advertising on E-Cigarette Forum.
+I'm Tomáš, an independent developer from Czech Republic.
 
-LiquiMixer (liquimixer.com) is an e-liquid & hookah calculator with
-5,000+ verified flavors, auto-% dosing, recipe management with steep
-reminders, and support in 31 languages.
+I've built LiquiMixer (liquimixer.com) — an e-liquid and hookah
+calculator in 31 languages. No ads in the app, with both free and
+premium features.
 
-We'd like to place:
-- Leaderboard (728×90) in the main forum — English
-- Medium rectangle (300×250) in DIY E-Liquid section — English
-- A separate German banner in the Germany subforum (forum.775)
+The problems it solves for your members:
+- DIY mixers struggle with PG/VG/nic ratios and flavor percentages —
+  the calculator handles it automatically with 5,000+ verified flavors,
+  so they don't have to guess dosing or look up each flavor manually
+- Nic shot calculations for TPD compliance are tedious — it does them
+  in one tap
+- Recipes get lost in spreadsheets — members can save, organize and
+  share them, with steep time reminders so nothing gets forgotten
+- Hookah mixers have no tool at all — our shisha calculator with 826
+  tobacco blends is the only one worldwide
 
-Questions:
-1. Available positions and rates?
-2. Accepted formats (PNG/JPG/GIF/HTML5)?
-3. Minimum commitment?
-4. Can we run 2 variants (A/B)?
-5. Section-specific placement (DIY only)?
+It's a tool your members would actually use day to day, which means it
+strengthens your community rather than just being another ad.
+
+I'd like to place a well-visible banner — leaderboard, sidebar or
+DIY/Mixing section. My budget as an indie developer is limited, but
+I'm looking for the best reach for the price — a spot where your
+active members will actually see it.
+
+I'd also be interested in a separate German-language banner in your
+Germany subforum (forum.775) if available.
+
+What's your best option for a 3-month period?
+I can provide banners in any format you need.
 
 Best regards,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
 ### Dampfer-Board.de (DE):
+**Kam poslat:** https://www.dampfer-board.de/kontakt/ (kontaktní formulář)
 ```
-Betreff: Bannerwerbung — LiquiMixer (E-Liquid & Shisha Rechner)
+Betreff: E-Liquid & Shisha Rechner für eure Community — Banner-Anfrage
 
 Hallo,
 
-ich möchte Bannerwerbung auf dampfer-board.de schalten.
+ich bin Tomáš, ein unabhängiger Entwickler aus Tschechien.
 
-LiquiMixer (liquimixer.com) ist ein E-Liquid- und Shisha-Rechner
-mit 5.000+ Aromen, automatischer Dosierung, Rezeptverwaltung und
-Reife-Erinnerungen — komplett auf Deutsch.
+Ich habe LiquiMixer (liquimixer.com) entwickelt — einen E-Liquid- und
+Shisha-Rechner, komplett auf Deutsch. Keine Werbung in der App,
+kostenlose Grundfunktionen und erweiterte PRO-Funktionen.
 
-Für eure Community relevant: Nic-Shot-Rechner für TPD und der
-einzige Shisha-Kalkulator weltweit.
+Welche Probleme es für eure Mitglieder löst:
+- Selbstmischer müssen PG/VG/Nikotin-Verhältnisse und Aromadosierungen
+  manuell berechnen — der Rechner macht das automatisch mit 5.000+
+  verifizierten Aromen, kein Raten mehr bei der Dosierung
+- Nic-Shot-Berechnungen für TPD sind mühsam — erledigt in einem Klick
+- Rezepte gehen in Tabellen verloren — Mitglieder können sie speichern,
+  organisieren und teilen, mit Reife-Erinnerungen
+- Shisha-Mischer haben gar kein Tool — unser Shisha-Rechner mit 826
+  Tabakmischungen ist weltweit der einzige seiner Art
 
-Fragen:
-1. Positionen und Preise?
-2. Akzeptierte Formate (PNG/JPG/GIF)?
-3. Mindestlaufzeit?
-4. Zwei Varianten gleichzeitig möglich?
-5. Platzierung im Selbstmischer-Bereich möglich?
+Es ist ein Tool, das eure Mitglieder täglich nutzen würden — es stärkt
+eure Community statt nur eine weitere Werbung zu sein.
+
+Ich suche eine gut sichtbare Position — Leaderboard, Sidebar oder
+Selbstmischer-Bereich. Mein Budget als Indie-Entwickler ist begrenzt,
+aber ich suche den besten Reach für den Preis.
+
+Was wäre eure beste Option für 3 Monate?
+Banner liefere ich in jedem gewünschten Format.
 
 Mit freundlichen Grüßen,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
 ### Forum-Ecigarette.com (FR):
+**Kam poslat:** Kontaktní formulář DEAKTIVOVÁN. → Registrovat se a PM adminovi (phpBB → „Tým fóra" v patičce)
 ```
-Objet : Publicité bannière — LiquiMixer (Calculateur e-liquide)
+Objet : Calculateur e-liquide & chicha pour votre communauté — demande de bannière
 
 Bonjour,
 
-Je souhaite placer une bannière publicitaire sur forum-ecigarette.com.
+Je suis Tomáš, développeur indépendant basé en République tchèque.
 
-LiquiMixer (liquimixer.com) est un calculateur e-liquide avec
-5 000+ arômes, dosage automatique, gestion de recettes et rappels
-de maturation — entièrement en français.
+J'ai créé LiquiMixer (liquimixer.com) — un calculateur e-liquide et
+chicha, entièrement en français. Sans publicité dans l'application,
+avec des fonctionnalités gratuites et PRO avancées.
 
-Questions :
-1. Positions et tarifs disponibles ?
-2. Formats acceptés (PNG/JPG/GIF) ?
-3. Durée minimum ?
-4. Test A/B possible ?
-5. Placement ciblé section DIY ?
+Les problèmes qu'il résout pour vos membres :
+- Les mixeurs DIY doivent calculer manuellement les ratios PG/VG/nicotine
+  et les pourcentages d'arômes — le calculateur le fait automatiquement
+  avec 5 000+ arômes vérifiés, plus besoin de deviner le dosage
+- Le calcul des boosters de nicotine est fastidieux — résolu en un clic
+- Les recettes se perdent dans des fichiers — vos membres peuvent les
+  sauvegarder, organiser et partager, avec des rappels de maturation
+- Les fumeurs de chicha n'ont aucun outil — notre calculateur chicha
+  avec 826 mélanges de tabac est le seul au monde
+
+Avec la tendance DIY en France (transition depuis les puffs jetables),
+c'est un outil que vos membres utiliseraient au quotidien — il renforce
+votre communauté plutôt que d'être simplement une publicité de plus.
+
+Je cherche une bannière bien visible — leaderboard, sidebar ou section
+DIY. Budget limité de développeur indépendant, mais je cherche le
+meilleur reach pour le prix.
+
+Quelle serait votre meilleure option pour 3 mois ?
+Je fournis les bannières dans le format de votre choix.
 
 Cordialement,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
 ### SigarettaElettronicaForum.com (IT):
+**Kam poslat:** https://www.sigarettaelettronicaforum.com/misc/contact (kontaktní formulář — možná vyžaduje přihlášení)
 ```
-Oggetto: Pubblicità banner — LiquiMixer (Calcolatore e-liquid)
+Oggetto: Calcolatore e-liquid & narghilè per la vostra community — richiesta banner
 
 Buongiorno,
 
-Vorrei inserire un banner pubblicitario su SigarettaElettronicaForum.com.
+Sono Tomáš, sviluppatore indipendente dalla Repubblica Ceca.
 
-LiquiMixer (liquimixer.com) è un calcolatore e-liquid con 5.000+ aromi,
-dosaggio automatico, gestione ricette e promemoria di maturazione —
-completamente in italiano.
+Ho creato LiquiMixer (liquimixer.com) — un calcolatore e-liquid e
+narghilè, completamente in italiano. Senza pubblicità nell'app,
+con funzionalità gratuite e PRO avanzate.
 
-Domande:
-1. Posizioni e tariffe disponibili?
-2. Formati accettati (PNG/JPG/GIF)?
-3. Durata minima?
-4. Test A/B possibile?
-5. Posizionamento nella sezione DIY/Mixing?
+I problemi che risolve per i vostri membri:
+- I mixer DIY devono calcolare manualmente rapporti PG/VG/nicotina e
+  percentuali degli aromi — il calcolatore lo fa automaticamente con
+  5.000+ aromi verificati, niente più dosaggi a occhio
+- Il calcolo dei nic shot è noioso — risolto in un clic
+- Le ricette si perdono nei fogli di calcolo — i membri possono
+  salvarle, organizzarle e condividerle, con promemoria di maturazione
+- I fumatori di narghilè non hanno nessuno strumento — il nostro
+  calcolatore con 826 miscele di tabacco è l'unico al mondo
+
+Con il divieto di vendita online di liquidi con nicotina in Italia,
+il DIY sta crescendo. È uno strumento che i vostri membri userebbero
+ogni giorno — rafforza la vostra community invece di essere solo
+un'altra pubblicità.
+
+Cerco una posizione ben visibile — leaderboard, sidebar o sezione
+DIY/Mixing. Budget limitato da sviluppatore indie, ma cerco il miglior
+reach per il prezzo.
+
+Qual è la vostra migliore opzione per 3 mesi?
+Fornisco i banner nel formato che preferite.
 
 Cordiali saluti,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
+```
+
+### Svapo.it (IT):
+**Kam poslat:** https://www.svapo.it/misc/contact (kontaktní formulář) — fórum žije z bannerové reklamy
+```
+Oggetto: Calcolatore e-liquid & narghilè — richiesta banner
+
+Buongiorno,
+
+Sono Tomáš, sviluppatore indipendente dalla Repubblica Ceca.
+
+Ho sviluppato LiquiMixer (liquimixer.com) — un calcolatore e-liquid
+e narghilè, completamente in italiano. Senza pubblicità nell'app,
+con funzionalità gratuite e PRO avanzate.
+
+I problemi che risolve: dosaggi a occhio → calcolo automatico con
+5.000+ aromi verificati. Nic shot in un clic. Ricette salvate e
+organizzate con promemoria di maturazione. Per il narghilè: 826
+miscele di tabacco — l'unico calcolatore al mondo.
+
+Con il divieto di vendita online, il DIY è in crescita. È uno
+strumento che rafforza la vostra community.
+
+Cerco un banner ben visibile al miglior prezzo — leaderboard, sidebar
+o sezione mixing. Budget limitato da indie developer.
+
+Qual è la migliore opzione per 3 mesi?
+
+Cordiali saluti,
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
 ### DonanımHaber (TR):
+**Kam poslat:** sirrikaraaslan@donanimhaber.com nebo slat21@gmail.com | Tel: 0541 380 5573 | https://www.donanimhaber.com/reklam
 ```
-Konu: Banner Reklam — LiquiMixer (Nargile Karışım Hesaplayıcısı)
+Konu: Nargile ve E-likit Hesaplayıcısı — banner reklam talebi
 
 Merhaba,
 
-DonanımHaber'de banner reklam vermek istiyoruz.
+Ben Tomáš, Çek Cumhuriyeti'nden bağımsız bir yazılım geliştiricisiyim.
 
-LiquiMixer (liquimixer.com), 826 tütün çeşidi ile nargile karışım
-hesaplayıcısıdır. Tütün ve melas oranları hesaplama, tarif kaydetme
-— tamamen Türkçe.
+LiquiMixer (liquimixer.com) adında bir nargile ve e-likit hesaplayıcısı
+geliştirdim — tamamen Türkçe. Uygulama içinde reklam yok, hem ücretsiz
+hem de gelişmiş PRO özellikleri var.
 
-Sorularımız:
-1. Banner pozisyonları ve fiyatlar?
-2. Kabul edilen formatlar (PNG/JPG/GIF)?
-3. Minimum süre?
-4. Nargile bölümünde hedefli yerleşim mümkün mü?
+Üyeleriniz için hangi sorunları çözüyor:
+- Nargile karışımcıları tütün ve melas oranlarını göz kararı yapıyor —
+  hesaplayıcı 826 tütün çeşidi ile doğru oranları otomatik hesaplıyor,
+  artık tahmin yok
+- E-likit karışımcıları PG/VG/nikotin ve aroma yüzdelerini elle
+  hesaplamak zorunda — 5.000+ doğrulanmış aroma ile otomatik dozajlama
+- Tarifler kayboluyor — üyeler tariflerini kaydedebilir, düzenleyebilir
+  ve paylaşabilir, olgunlaşma hatırlatıcıları ile
+- Dünyada Türkçe çalışan tek nargile karışım hesaplayıcısı
+
+Üyelerinizin her gün kullanacağı bir araç — topluluğunuzu güçlendirir,
+sadece bir reklam değil.
+
+İyi görünürlüğe sahip bir pozisyon arıyorum — leaderboard, sidebar
+veya nargile bölümü. Bağımsız geliştirici bütçesiyle en iyi erişimi
+arıyorum.
+
+3 aylık dönem için en iyi seçeneğiniz ne olur?
+Banner'ı istediğiniz formatta sağlayabilirim.
 
 Saygılarımla,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
 ### E-papierosy-forum.pl (PL):
+**Kam poslat:** administrator@e-papierosy-forum.pl (přímý email z regulaminu fóra)
 ```
-Temat: Reklama banerowa — LiquiMixer (Kalkulator e-liquidów)
+Temat: Kalkulator e-liquidów i sziszy — zapytanie o banner
 
 Dzień dobry,
 
-Chciałbym umieścić reklamę banerową na e-papierosy-forum.pl.
+Jestem Tomáš, niezależny programista z Czech.
 
-LiquiMixer (liquimixer.com) to kalkulator e-liquidów z ponad 5 000
-aromatami, automatycznym dawkowaniem, zarządzaniem przepisami i
-przypomnieniami o dojrzewaniu — w pełni po polsku.
+Stworzyłem LiquiMixer (liquimixer.com) — kalkulator e-liquidów i
+sziszy, w pełni po polsku. Bez reklam w aplikacji, z funkcjami
+bezpłatnymi i zaawansowanymi PRO.
 
-Pytania:
-1. Dostępne pozycje i ceny?
-2. Akceptowane formaty (PNG/JPG/GIF)?
-3. Minimalny okres?
-4. Czy możliwy test A/B?
+Jakie problemy rozwiązuje dla waszych użytkowników:
+- Mikserzy DIY muszą ręcznie liczyć proporcje PG/VG/nikotyna i
+  procenty aromatów — kalkulator robi to automatycznie z ponad 5 000
+  zweryfikowanymi aromatami, koniec z dawkowaniem na oko
+- Obliczanie nic-shotów jest żmudne — rozwiązane jednym kliknięciem
+- Przepisy giną w arkuszach — użytkownicy mogą je zapisywać,
+  organizować i udostępniać, z przypomnieniami o dojrzewaniu
+- Miksujący sziszę nie mają żadnego narzędzia — nasz kalkulator
+  z 826 mieszankami tytoniowymi jest jedyny na świecie
+
+Polskich narzędzi do mieszania jest niewiele. To narzędzie, które
+wasi użytkownicy będą używać codziennie — wzmacnia waszą społeczność
+zamiast być kolejną reklamą.
+
+Szukam dobrze widocznej pozycji — leaderboard, sidebar lub sekcja
+DIY. Ograniczony budżet indie dewelopera, ale szukam najlepszego
+zasięgu za cenę.
+
+Jaka byłaby najlepsza opcja na 3 miesiące?
+Banner dostarczę w dowolnym formacie.
 
 Z poważaniem,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
-### Vapeforums.lv (LV):
+### dampfertreff.ch (DE/CH):
+**Kam poslat:** PM adminovi na https://www.dampfertreff.ch/ (XenForo PM)
 ```
-Temats: Baneru reklāma — LiquiMixer (E-šķidruma kalkulators)
+Betreff: E-Liquid & Shisha Rechner für Schweizer Dampfer — Banner-Anfrage
 
-Labdien,
+Hallo,
 
-Vēlos ievietot baneru reklāmu Vapeforums.lv.
+ich bin Tomáš, Indie-Entwickler aus Tschechien. LiquiMixer
+(liquimixer.com) ist ein E-Liquid- und Shisha-Rechner, komplett auf
+Deutsch. Keine Werbung, kostenlose + PRO Funktionen.
 
-LiquiMixer (liquimixer.com) ir e-šķidruma kalkulators ar 5 000+
-aromātiem, automātisku dozēšanu, receptu pārvaldību un
-nogatavināšanas atgādinājumiem — pilnībā latviešu valodā.
+Welche Probleme es löst: kein Raten mehr bei der Dosierung — 5.000+
+verifizierte Aromen mit automatischer Berechnung. Nic-Shots in einem
+Klick. Rezepte gespeichert mit Reife-Erinnerungen. Shisha-Rechner
+mit 826 Tabakmischungen — weltweit einzigartig. Für Schweizer
+relevant: funktioniert für alle Basen und Nikotinstärken.
 
-Jautājumi:
-1. Pieejamās pozīcijas un cenas?
-2. Pieņemtie formāti (PNG/JPG/GIF)?
-3. Minimālais termiņš?
-4. Vai iespējams A/B tests?
+Ein Tool, das eure Mitglieder täglich nutzen — stärkt eure Community.
 
-Ar cieņu,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Suche gut sichtbare Position — Leaderboard, Sidebar oder
+Selbstmischer-Bereich. Begrenztes Indie-Budget, bester Reach.
+
+Beste Option für 3 Monate?
+
+Mit freundlichen Grüßen,
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
+```
+
+### Vapoteurs.net (FR):
+**Kam poslat:** https://www.vapoteurs.net/qui-sommes-nous/ (kontakt redakce) — šéfredaktor: Haley Jeremy
+```
+Objet : Calculateur e-liquide & chicha pour vos lecteurs — demande de bannière
+
+Bonjour,
+
+Je suis Tomáš, développeur indépendant. J'ai créé LiquiMixer
+(liquimixer.com) — un calculateur e-liquide et chicha, entièrement
+en français. Sans publicité, fonctionnalités gratuites et PRO.
+
+Les problèmes qu'il résout : les mixeurs devinent les dosages — le
+calculateur le fait automatiquement avec 5 000+ arômes vérifiés.
+Calcul des boosters en un clic. Recettes sauvegardées avec rappels
+de maturation. Pour la chicha : 826 mélanges de tabac — unique au
+monde.
+
+Avec la tendance DIY en France, c'est un outil que vos lecteurs
+utiliseraient au quotidien — il renforce votre communauté.
+
+Budget limité de développeur indépendant — je cherche la meilleure
+visibilité pour le prix (leaderboard, sidebar, section DIY ou
+article sponsorisé). Période de 3 mois.
+
+Cordialement,
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
 
 ### e-Savuke.com (FI):
+**Kam poslat:** https://www.e-savuke.com/en/contact.htm (email) | Inzerční stránka: https://www.e-savuke.com/en/advertise.htm | Bannery 468×60, pouze JPG, platba PayPal
 ```
-Aihe: Bannerimainonta — LiquiMixer (E-nesteen laskin)
+Aihe: E-neste- ja vesipiippulaskin suomeksi — bannerikysely
 
 Hei,
 
-Haluaisin sijoittaa bannerimainoksen e-Savuke.com-sivustolle.
+Olen Tomáš, itsenäinen kehittäjä Tšekistä.
 
-LiquiMixer (liquimixer.com) on e-nesteen laskin, jossa on yli 5 000
-makua automaattisella annostelulla, reseptien hallinta ja
-kypsytysmuistutukset — kokonaan suomeksi.
+Olen luonut LiquiMixerin (liquimixer.com) — e-nesteen ja vesipiipun
+laskimen, kokonaan suomeksi. Ei mainoksia sovelluksessa, sekä
+ilmaisia että PRO-ominaisuuksia.
 
-Kysymykset:
-1. Saatavilla olevat paikat ja hinnat?
-2. Hyväksytyt formaatit (PNG/JPG/GIF)?
-3. Minimisitoumus?
-4. A/B-testaus mahdollista?
+Mitä ongelmia se ratkaisee jäsenillenne:
+- DIY-sekoittajat arvioivat annosteluita silmämääräisesti — laskin
+  tekee sen automaattisesti yli 5 000 varmennetulla maulla, ei enää
+  arvailua
+- Nikotiiniannoslaskelmat ovat työläitä — ratkaistaan yhdellä
+  napsautuksella
+- Reseptit katoavat taulukkolaskentoihin — jäsenet voivat tallentaa,
+  järjestää ja jakaa niitä, kypsytysmuistutuksilla
+- Vesipiipun sekoittajilla ei ole mitään työkalua — laskimemme 826
+  tupakkasekoituksella on ainoa maailmassa
+
+Suomenkielisiä työkaluja tähän on todella vähän. Suomen tiukat
+säädökset tekevät DIY:stä tärkeää. Työkalu, jota jäsenenne
+käyttäisivät päivittäin — vahvistaa yhteisöänne.
+
+Etsin hyvin näkyvää positiota parhaalla hinnalla — leaderboard,
+sivupalkki tai DIY-osio. Rajallinen indie-kehittäjän budjetti.
+
+Mikä olisi paras vaihtoehto 3 kuukaudelle?
 
 Ystävällisin terveisin,
-Tomáš Lapos | WOOs s.r.o. | liquimixer.com
+Tomáš Lapos | WOOs s.r.o.
+tomas.lapos@woos.cz | liquimixer.com
 ```
+
+---
+
+## 12b. Oslovené Facebook skupiny (18.03.2026)
+
+Zprávy adminům posláno ze soukromého FB účtu (firemní FB neumožňuje zprávy adminům skupin).
+
+| # | Skupina | Členů | Jazyk | Země | Stav |
+|---|---------|-------|-------|------|------|
+| 1 | **Vaping - Elektronická cigareta CZ** | 4 000 | CZ | CZ | ✅ Odesláno |
+| 2 | **Míchání liquidu** | 328 | CZ | CZ | ✅ Odesláno |
+| 3 | **Elektronická cigareta CZ/SK 18+** | 19 400 | CZ/SK | CZ | ✅ Odesláno |
+| 4 | **Vaping Club - Elektronické cigarety 18+** | 8 900 | CZ | CZ | ✅ Odesláno |
+| 5 | **VAPE - Polska** | 4 100 | PL | PL | ✅ Odesláno |
+| 6 | **VAPE community** (opod) | 28 400 | IT | IT | ✅ Odesláno |
+| 7 | **عشاق الفيب Vape Lovers** | 78 500 | AR | AR | ✅ Odesláno |
+| 8 | **vaping_jo فيب الاردن** | 12 300 | AR | JO | ✅ Odesláno |
+| 9 | **Vape Egypt \| Vapers Egypt** | 2 600 | AR | EG | ✅ Odesláno |
+| 10 | **Qatar Vape Elite** | 11 000 | EN | QA | ✅ Odesláno |
+| 11 | **DarkStar Vape Community 21+** | 24 900 | EN | UK | ✅ Odesláno |
+| 12 | **New Vaping group** | 7 000 | EN | UK | ✅ Odesláno |
+| 13 | **Vaping Delights 21+ Only** | 9 100 | EN | EN | ✅ Odesláno |
+| 14 | **Aussie Vape Community 18+** | 5 400 | EN | AU | ✅ Odesláno |
+| 15 | **sta cruz vaping community** | 8 300 | EN | PH | ✅ Odesláno |
+| 16 | **Hội VAPE POD in Taiwan** | 3 500 | VI | TW | ✅ Odesláno |
+| 17 | **VAPE POD NATIONWIDE - Sài Gòn** | 7 000 | VI | VN | ✅ Odesláno |
+| 18 | **VAPE SQUAD cisoka- adiyasa- cikasungka- maja** | 6 700 | ID | ID | ✅ Odesláno |
+| 19 | **FORUM VAPE CIKAMPEK** | 7 400 | ID | ID | ✅ Odesláno |
+
+**Celkem: 19 skupin, ~248 800 členů**
 
 ---
 
@@ -732,14 +984,12 @@ Tomáš Lapos | WOOs s.r.o. | liquimixer.com
 
 ### Tento týden (březen):
 1. Vytvořit účet ads.reddit.com
-2. Vytvořit účet nativespot.com (Ekşi Sözlük)
-3. Připravit kreativy: EN, DE, FR, TR (728×90, 300×250, 1200×628)
+2. Připravit kreativy: EN, DE, FR, TR (728×90, 300×250, 1200×628)
 4. Připravit hookah kreativy v prémiovém stylu (zlaté, honosné)
 5. Kontaktovat ECF, Dampfer-Board, Forum-Ecigarette, DonanımHaber, SigarettaElettronicaForum, E-papierosy-forum.pl, Vapeforums.lv, e-Savuke.com
 
 ### Příští týden:
 6. Spustit Reddit Ads (EN-Vaping, EN-Hookah, DE, FR, TR, ES, PT, PL, NL, LV, FI)
-7. Spustit Ekşi Sözlük (NativeSpot)
 
 ### Duben:
 8. Spustit fóra (po odpovědích adminů)

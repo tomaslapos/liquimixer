@@ -3,8 +3,8 @@
     "code": "ro",
     "name": "Romanian",
     "nativeName": "Română",
-    "currency": "RON",
-    "currencySymbol": "lei"
+    "currency": "EUR",
+    "currencySymbol": "€"
   },
   "nav": {
     "menu": "Meniu",

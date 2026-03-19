@@ -3,8 +3,8 @@
     "code": "en",
     "name": "English",
     "nativeName": "English",
-    "currency": "EUR",
-    "currencySymbol": "€"
+    "currency": "USD",
+    "currencySymbol": "$"
   },
   "nav": {
     "menu": "Menu",

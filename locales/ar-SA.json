@@ -3,8 +3,8 @@
     "code": "ar-SA",
     "name": "Arabic",
     "nativeName": "العربية",
-    "currency": "SAR",
-    "currencySymbol": "﷼",
+    "currency": "USD",
+    "currencySymbol": "$",
     "rtl": true
   },
   "nav": {

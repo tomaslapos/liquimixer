@@ -3,8 +3,8 @@
     "code": "hu",
     "name": "Hungarian",
     "nativeName": "Magyar",
-    "currency": "HUF",
-    "currencySymbol": "Ft"
+    "currency": "EUR",
+    "currencySymbol": "€"
   },
   "nav": {
     "menu": "Menü",

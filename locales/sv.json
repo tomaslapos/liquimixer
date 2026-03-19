@@ -3,8 +3,8 @@
     "code": "sv",
     "name": "Swedish",
     "nativeName": "Svenska",
-    "currency": "SEK",
-    "currencySymbol": "kr"
+    "currency": "EUR",
+    "currencySymbol": "€"
   },
   "nav": {
     "menu": "Meny",

@@ -3,8 +3,8 @@
     "code": "ko",
     "name": "Korean",
     "nativeName": "한국어",
-    "currency": "KRW",
-    "currencySymbol": "₩"
+    "currency": "USD",
+    "currencySymbol": "$"
   },
   "nav": {
     "menu": "메뉴",

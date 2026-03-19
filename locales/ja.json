@@ -3,8 +3,8 @@
     "code": "ja",
     "name": "Japanese",
     "nativeName": "日本語",
-    "currency": "JPY",
-    "currencySymbol": "¥"
+    "currency": "USD",
+    "currencySymbol": "$"
   },
   "nav": {
     "menu": "メニュー",

@@ -3,8 +3,8 @@
     "code": "zh-CN",
     "name": "Chinese Simplified",
     "nativeName": "简体中文",
-    "currency": "CNY",
-    "currencySymbol": "¥"
+    "currency": "USD",
+    "currencySymbol": "$"
   },
   "nav": {
     "menu": "菜单",

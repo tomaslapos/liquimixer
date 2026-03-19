@@ -3,8 +3,8 @@
     "code": "pl",
     "name": "Polish",
     "nativeName": "Polski",
-    "currency": "PLN",
-    "currencySymbol": "zł"
+    "currency": "EUR",
+    "currencySymbol": "€"
   },
   "nav": {
     "menu": "Menu",

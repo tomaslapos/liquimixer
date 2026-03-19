@@ -84,7 +84,7 @@ const allTranslations = {
 
   // Japanese (ja)
   'ja': {
-    meta: { code: 'ja', name: 'Japanese', nativeName: '日本語', currency: 'JPY', currencySymbol: '¥' },
+    meta: { code: 'ja', name: 'Japanese', nativeName: '日本語', currency: 'USD', currencySymbol: '$' },
     nav: { menu: 'メニュー', login: 'ログイン', home: 'ホーム' },
     auth: {
       login_title: 'ログイン',
@@ -152,7 +152,7 @@ const allTranslations = {
 
   // Korean (ko)
   'ko': {
-    meta: { code: 'ko', name: 'Korean', nativeName: '한국어', currency: 'KRW', currencySymbol: '₩' },
+    meta: { code: 'ko', name: 'Korean', nativeName: '한국어', currency: 'USD', currencySymbol: '$' },
     nav: { menu: '메뉴', login: '로그인', home: '홈' },
     auth: {
       login_title: '로그인',
@@ -220,7 +220,7 @@ const allTranslations = {
 
   // Turkish (tr)
   'tr': {
-    meta: { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', currency: 'TRY', currencySymbol: '₺' },
+    meta: { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Menü', login: 'Giriş', home: 'Ana Sayfa' },
     auth: {
       login_title: 'Giriş Yap',
@@ -288,7 +288,7 @@ const allTranslations = {
 
   // Ukrainian (uk)
   'uk': {
-    meta: { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', currency: 'UAH', currencySymbol: '₴' },
+    meta: { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Меню', login: 'Увійти', home: 'Головна' },
     auth: {
       login_title: 'Вхід',
@@ -356,7 +356,7 @@ const allTranslations = {
 
   // Russian (ru)
   'ru': {
-    meta: { code: 'ru', name: 'Russian', nativeName: 'Русский', currency: 'RUB', currencySymbol: '₽' },
+    meta: { code: 'ru', name: 'Russian', nativeName: 'Русский', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Меню', login: 'Войти', home: 'Главная' },
     auth: {
       login_title: 'Вход',
@@ -424,7 +424,7 @@ const allTranslations = {
 
   // Swedish (sv)
   'sv': {
-    meta: { code: 'sv', name: 'Swedish', nativeName: 'Svenska', currency: 'SEK', currencySymbol: 'kr' },
+    meta: { code: 'sv', name: 'Swedish', nativeName: 'Svenska', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Meny', login: 'Logga in', home: 'Hem' },
     intro: {
       subtitle: 'E-VÄTSKEKALKYLATOR',
@@ -444,7 +444,7 @@ const allTranslations = {
 
   // Danish (da)
   'da': {
-    meta: { code: 'da', name: 'Danish', nativeName: 'Dansk', currency: 'DKK', currencySymbol: 'kr' },
+    meta: { code: 'da', name: 'Danish', nativeName: 'Dansk', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Menu', login: 'Log ind', home: 'Hjem' },
     intro: {
       subtitle: 'E-VÆSKE BEREGNER',
@@ -464,7 +464,7 @@ const allTranslations = {
 
   // Norwegian (no)
   'no': {
-    meta: { code: 'no', name: 'Norwegian', nativeName: 'Norsk', currency: 'NOK', currencySymbol: 'kr' },
+    meta: { code: 'no', name: 'Norwegian', nativeName: 'Norsk', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Meny', login: 'Logg inn', home: 'Hjem' },
     intro: {
       subtitle: 'E-VÆSKE KALKULATOR',
@@ -524,7 +524,7 @@ const allTranslations = {
 
   // Arabic (ar-SA)
   'ar-SA': {
-    meta: { code: 'ar-SA', name: 'Arabic', nativeName: 'العربية', currency: 'SAR', currencySymbol: 'ر.س' },
+    meta: { code: 'ar-SA', name: 'Arabic', nativeName: 'العربية', currency: 'USD', currencySymbol: '$' },
     nav: { menu: 'القائمة', login: 'تسجيل الدخول', home: 'الرئيسية' },
     intro: {
       subtitle: 'حاسبة السوائل الإلكترونية',
@@ -544,7 +544,7 @@ const allTranslations = {
 
   // Simplified Chinese (zh-CN)
   'zh-CN': {
-    meta: { code: 'zh-CN', name: 'Chinese (Simplified)', nativeName: '简体中文', currency: 'CNY', currencySymbol: '¥' },
+    meta: { code: 'zh-CN', name: 'Chinese (Simplified)', nativeName: '简体中文', currency: 'USD', currencySymbol: '$' },
     nav: { menu: '菜单', login: '登录', home: '首页' },
     intro: {
       subtitle: '电子烟油计算器',
@@ -564,7 +564,7 @@ const allTranslations = {
 
   // Traditional Chinese (zh-TW)
   'zh-TW': {
-    meta: { code: 'zh-TW', name: 'Chinese (Traditional)', nativeName: '繁體中文', currency: 'TWD', currencySymbol: 'NT$' },
+    meta: { code: 'zh-TW', name: 'Chinese (Traditional)', nativeName: '繁體中文', currency: 'USD', currencySymbol: '$' },
     nav: { menu: '選單', login: '登入', home: '首頁' },
     intro: {
       subtitle: '電子煙油計算器',
@@ -584,7 +584,7 @@ const allTranslations = {
 
   // Hungarian (hu)
   'hu': {
-    meta: { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', currency: 'HUF', currencySymbol: 'Ft' },
+    meta: { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Menü', login: 'Bejelentkezés', home: 'Főoldal' },
     intro: {
       subtitle: 'E-FOLYADÉK KALKULÁTOR',
@@ -664,7 +664,7 @@ const allTranslations = {
 
   // Romanian (ro)
   'ro': {
-    meta: { code: 'ro', name: 'Romanian', nativeName: 'Română', currency: 'RON', currencySymbol: 'lei' },
+    meta: { code: 'ro', name: 'Romanian', nativeName: 'Română', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Meniu', login: 'Autentificare', home: 'Acasă' },
     intro: {
       subtitle: 'CALCULATOR E-LICHID',
@@ -704,7 +704,7 @@ const allTranslations = {
 
   // Bulgarian (bg)
   'bg': {
-    meta: { code: 'bg', name: 'Bulgarian', nativeName: 'Български', currency: 'BGN', currencySymbol: 'лв' },
+    meta: { code: 'bg', name: 'Bulgarian', nativeName: 'Български', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Меню', login: 'Вход', home: 'Начало' },
     intro: {
       subtitle: 'КАЛКУЛАТОР ЗА Е-ТЕЧНОСТИ',
@@ -724,7 +724,7 @@ const allTranslations = {
 
   // Serbian (sr)
   'sr': {
-    meta: { code: 'sr', name: 'Serbian', nativeName: 'Српски', currency: 'RSD', currencySymbol: 'дин' },
+    meta: { code: 'sr', name: 'Serbian', nativeName: 'Српски', currency: 'EUR', currencySymbol: '€' },
     nav: { menu: 'Мени', login: 'Пријава', home: 'Почетна' },
     intro: {
       subtitle: 'КАЛКУЛАТОР Е-ТЕЧНОСТИ',
