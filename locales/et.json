@@ -690,7 +690,10 @@
     "delete_error": "Viga toote kustutamisel.",
     "stock_unit": "tk",
     "no_filter_results": "Ükski toode ei vasta filtritele.",
-    "filter_results": "Leitud {found} / {total} toodet."
+    "filter_results": "Leitud {found} / {total} toodet.",
+    "type_tobacco": "Tubakas",
+    "type_herbs": "Ürdid",
+    "type_additive": "Lisaaine"
   },
   "product_detail": {
     "title": "Toote üksikasjad",
@@ -1238,5 +1241,18 @@
     "mixed": "Segatud",
     "matured": "Küpsenud",
     "popup_blocked": "Luba hüpikaknaid printimiseks."
+  },
+  "stock": {
+    "liquid_stock": "Vedeliku varu",
+    "liquid_matured": "Küpsenud",
+    "total": "Koguvaru",
+    "auto_deduct": "Lahutage koostisosad varust",
+    "auto_deduct_hint": "Lahutab automaatselt kasutatud koostisosad seotud toodetest.",
+    "auto_deducted": "Koostisosad on varust lahutatud.",
+    "pieces": "tk",
+    "add": "Lisa",
+    "remove_ml": "Eemalda ml",
+    "remove": "Eemalda",
+    "enter_ml": "Sisestage maht ml-des."
   }
 }

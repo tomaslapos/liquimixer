@@ -3224,6 +3224,13 @@
                         <label class="login-label" data-i18n="reminder.note_label">Poznámka</label>
                         <textarea id="reminderNote" class="login-input" rows="3" data-i18n-placeholder="reminder.note_placeholder" placeholder="Volitelná poznámka..."></textarea>
                     </div>
+                    <div class="form-group-login">
+                        <label class="checkbox-label auto-deduct-label">
+                            <input type="checkbox" id="reminderAutoDeduct" checked>
+                            <span class="checkbox-text" data-i18n="stock.auto_deduct">Odečíst ingredience ze zásob</span>
+                        </label>
+                        <small class="auto-deduct-hint" data-i18n="stock.auto_deduct_hint">Automaticky odečte použité ingredience z propojených produktů.</small>
+                    </div>
                     <div class="reminder-info">
                         <span class="info-icon">ℹ️</span>
                         <span id="reminderModalInfo" data-i18n="save_recipe.reminder_info_short">Datum připomínky bylo automaticky vypočteno na základě typu příchutě.</span>
@@ -3850,6 +3857,9 @@
                             <option value="nicotine_booster" data-i18n="products.type_nicotine_booster">Nikotin booster</option>
                             <option value="nicotine_salt" data-i18n="products.type_nicotine_salt">Nikotinová sůl</option>
                             <option value="premixed_base" data-i18n="products.type_premixed_base">Předmíchaná báze PG/VG</option>
+                            <option value="tobacco" data-i18n="products.type_tobacco">Tabák</option>
+                            <option value="herbs" data-i18n="products.type_herbs">Bylinky</option>
+                            <option value="additive" data-i18n="products.type_additive">Aditiva</option>
                         </select>
                     </div>
                     <div class="search-field search-rating">
@@ -3950,6 +3960,9 @@
                         <option value="nicotine_booster" data-i18n="products.type_nicotine_booster">Nikotin booster</option>
                         <option value="nicotine_salt" data-i18n="products.type_nicotine_salt">Nikotinová sůl</option>
                         <option value="premixed_base" data-i18n="products.type_premixed_base">Předmíchaná báze PG/VG</option>
+                        <option value="tobacco" data-i18n="products.type_tobacco">Tabák</option>
+                        <option value="herbs" data-i18n="products.type_herbs">Bylinky</option>
+                        <option value="additive" data-i18n="products.type_additive">Aditiva</option>
                     </select>
                 </div>
                 

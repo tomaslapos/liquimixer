@@ -690,7 +690,10 @@
     "delete_error": "Ürün silinirken hata.",
     "stock_unit": "adet",
     "no_filter_results": "Filtrelere uyan ürün bulunamadı.",
-    "filter_results": "{total} üründen {found} tanesi bulundu."
+    "filter_results": "{total} üründen {found} tanesi bulundu.",
+    "type_tobacco": "Tütün",
+    "type_herbs": "Bitkiler",
+    "type_additive": "Katkı maddesi"
   },
   "product_detail": {
     "title": "Ürün Ayrıntıları",
@@ -1238,5 +1241,18 @@
     "mixed": "Karıştırıldı",
     "matured": "Olgunlaşma",
     "popup_blocked": "Yazdırmak için açılır pencerelere izin verin."
+  },
+  "stock": {
+    "liquid_stock": "Likit stoku",
+    "liquid_matured": "Olgunlaşmış",
+    "total": "Toplam stok",
+    "auto_deduct": "Malzemeleri stoktan düş",
+    "auto_deduct_hint": "Kullanılan malzemeleri bağlı ürünlerden otomatik olarak düşer.",
+    "auto_deducted": "Malzemeler stoktan düşüldü.",
+    "pieces": "ad",
+    "add": "Ekle",
+    "remove_ml": "ml kaldır",
+    "remove": "Kaldır",
+    "enter_ml": "Lütfen ml cinsinden hacim girin."
   }
 }

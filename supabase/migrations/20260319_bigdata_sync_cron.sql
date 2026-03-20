@@ -1,0 +1,32 @@
+-- ============================================
+-- CRON JOB: BigData Sync — synchronizace dat z hlavní DB do Analytics DB
+-- Datum: 19.03.2026
+-- Spouští bigdata-sync edge funkci 1× denně v 03:00 UTC (04:00 CZ)
+-- Používá pg_net pro HTTP volání z pg_cron
+-- ============================================
+
+-- Zajistit pg_net extension
+CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
+
+-- POZNÁMKA: current_setting('supabase.service_role_key') NEFUNGUJE v kontextu pg_cron!
+-- Proto je nutné hardcoded service_role_key přímo v SQL.
+-- Tento soubor je referenční — CRON job se vytváří ručně v SQL Editor na hlavní DB (krwdfxnvhnxtkhtkbadi).
+--
+-- 1. Nejdříve odstraň starý CRON job (pokud existuje):
+--    SELECT cron.unschedule('bigdata-sync-daily');
+--
+-- 2. Vytvoř nový CRON job:
+--    SELECT cron.schedule(
+--      'bigdata-sync-daily',
+--      '0 3 * * *',
+--      $$
+--      SELECT net.http_post(
+--        url := 'https://krwdfxnvhnxtkhtkbadi.supabase.co/functions/v1/bigdata-sync',
+--        headers := '{"Content-Type": "application/json", "Authorization": "Bearer <SERVICE_ROLE_KEY>", "apikey": "<SERVICE_ROLE_KEY>"}'::jsonb,
+--        body := '{}'::jsonb
+--      );
+--      $$
+--    );
+--
+-- Nahraď <SERVICE_ROLE_KEY> skutečným service_role klíčem hlavní DB.
+-- CRON job poběží pod service_role, takže bigdata-sync edge funkce ho přijme jako isCron=true.

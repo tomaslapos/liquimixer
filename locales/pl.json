@@ -690,7 +690,10 @@
     "delete_error": "Błąd podczas usuwania produktu.",
     "stock_unit": "szt.",
     "no_filter_results": "Żadne produkty nie pasują do filtrów.",
-    "filter_results": "Znaleziono {found} z {total} produktów."
+    "filter_results": "Znaleziono {found} z {total} produktów.",
+    "type_tobacco": "Tytoń",
+    "type_herbs": "Zioła",
+    "type_additive": "Dodatek"
   },
   "product_detail": {
     "title": "Szczegóły produktu",
@@ -1238,5 +1241,18 @@
     "mixed": "Zmieszano",
     "matured": "Dojrzewanie",
     "popup_blocked": "Zezwól na wyskakujące okna, aby drukować."
+  },
+  "stock": {
+    "liquid_stock": "Zapas liquidu",
+    "liquid_matured": "Dojrzałe",
+    "total": "Łączny zapas",
+    "auto_deduct": "Odejmij składniki z zapasów",
+    "auto_deduct_hint": "Automatycznie odejmuje użyte składniki z powiązanych produktów.",
+    "auto_deducted": "Składniki zostały odjęte z zapasów.",
+    "pieces": "szt",
+    "add": "Dodaj",
+    "remove_ml": "Usuń ml",
+    "remove": "Usuń",
+    "enter_ml": "Podaj objętość w ml."
   }
 }

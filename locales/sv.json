@@ -690,7 +690,10 @@
     "delete_error": "Fel vid radering av produkt.",
     "stock_unit": "st",
     "no_filter_results": "Inga produkter matchar filtren.",
-    "filter_results": "Hittade {found} av {total} produkter."
+    "filter_results": "Hittade {found} av {total} produkter.",
+    "type_tobacco": "Tobak",
+    "type_herbs": "Örter",
+    "type_additive": "Tillsats"
   },
   "product_detail": {
     "title": "Produktdetaljer",
@@ -1238,5 +1241,18 @@
     "mixed": "Blandat",
     "matured": "Mognat",
     "popup_blocked": "Tillåt popup-fönster för utskrift."
+  },
+  "stock": {
+    "liquid_stock": "Vätskförråd",
+    "liquid_matured": "Mognad",
+    "total": "Totalt förråd",
+    "auto_deduct": "Dra av ingredienser från lager",
+    "auto_deduct_hint": "Drar automatiskt av använda ingredienser från länkade produkter.",
+    "auto_deducted": "Ingredienser har dragits av från lagret.",
+    "pieces": "st",
+    "add": "Lägg till",
+    "remove_ml": "Ta bort ml",
+    "remove": "Ta bort",
+    "enter_ml": "Ange volym i ml."
   }
 }

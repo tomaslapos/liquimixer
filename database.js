@@ -802,7 +802,7 @@ async function saveFavoriteProduct(clerkId, product) {
     }
     
     // Validace typu produktu
-    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt', 'premixed_base'];
+    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt', 'premixed_base', 'tobacco', 'herbs', 'additive'];
     const productType = validTypes.includes(product.product_type) ? product.product_type : 'flavor';
     
     // Generování share_id a share_url pro sdílení
@@ -882,7 +882,7 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
     }
     
     // Validace typu produktu
-    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt', 'premixed_base'];
+    const validTypes = ['vg', 'pg', 'flavor', 'nicotine_booster', 'nicotine_salt', 'premixed_base', 'tobacco', 'herbs', 'additive'];
     const productType = validTypes.includes(updates.product_type) ? updates.product_type : 'flavor';
     
     // Základní data pro všechny produkty
@@ -942,8 +942,8 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
     }
 }
 
-// Aktualizovat počet kusů produktu na skladě
-async function updateProductStock(clerkId, productId, quantity) {
+// Aktualizovat skladovou zásobu produktu v ml
+async function updateProductStock(clerkId, productId, volumeMl) {
     if (!supabaseClient || !clerkId || !productId) return null;
     
     if (!isValidClerkId(clerkId)) {
@@ -956,14 +956,14 @@ async function updateProductStock(clerkId, productId, quantity) {
         return null;
     }
     
-    // Validace množství (min 0, zaokrouhleno na 0.5)
-    const validQuantity = Math.max(0, Math.round(parseFloat(quantity) * 2) / 2);
+    // Validace objemu (min 0, zaokrouhleno na 0.1 ml)
+    const validVolume = Math.max(0, Math.round(parseFloat(volumeMl) * 10) / 10);
     
     try {
         const { data, error } = await supabaseClient
             .from('favorite_products')
             .update({ 
-                stock_quantity: validQuantity,
+                stock_volume_ml: validVolume,
                 updated_at: new Date().toISOString()
             })
             .eq('id', productId)
@@ -1336,7 +1336,8 @@ async function getLinkedProducts(clerkId, recipeId) {
                     name,
                     product_type,
                     rating,
-                    image_url
+                    image_url,
+                    stock_volume_ml
                 )
             `)
             .eq('recipe_id', recipeId)

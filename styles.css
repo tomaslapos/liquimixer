@@ -1878,6 +1878,36 @@ body {
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
 }
 
+/* Celkový součet liquid stock nad seznamem receptů */
+.liquid-stock-summary {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 16px;
+    margin-bottom: 10px;
+    background: rgba(0, 200, 255, 0.1);
+    border: 1px solid rgba(0, 200, 255, 0.3);
+    border-radius: var(--border-radius-small);
+    font-size: 0.9rem;
+    color: var(--neon-cyan);
+    flex-wrap: wrap;
+}
+
+/* Badge liquid stock na kartě receptu */
+.recipe-liquid-badge {
+    display: inline-block;
+    background: rgba(0, 200, 255, 0.15);
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 200, 255, 0.4);
+    margin-left: 6px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
 .recipe-card-description {
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.7);
@@ -2253,6 +2283,45 @@ body {
 .show-all-reminders-btn:hover {
     background: rgba(255, 0, 255, 0.1);
     border-color: #ff00ff;
+}
+
+/* Auto-deduct checkbox v reminder modálu */
+.auto-deduct-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0, 200, 255, 0.08);
+    border: 1px solid rgba(0, 200, 255, 0.25);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auto-deduct-label:hover {
+    background: rgba(0, 200, 255, 0.15);
+    border-color: rgba(0, 200, 255, 0.5);
+}
+
+.auto-deduct-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--neon-cyan);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.auto-deduct-label .checkbox-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.auto-deduct-hint {
+    display: block;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.78rem;
+    margin-top: 6px;
+    padding-left: 2px;
 }
 
 .reminder-info {

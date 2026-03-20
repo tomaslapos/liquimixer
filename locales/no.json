@@ -690,7 +690,10 @@
     "delete_error": "Feil ved sletting av produkt.",
     "stock_unit": "stk",
     "no_filter_results": "Ingen produkter samsvarer med filtrene.",
-    "filter_results": "Fant {found} av {total} produkter."
+    "filter_results": "Fant {found} av {total} produkter.",
+    "type_tobacco": "Tobakk",
+    "type_herbs": "Urter",
+    "type_additive": "Tilsetningsstoff"
   },
   "product_detail": {
     "title": "Produktdetaljer",
@@ -1238,5 +1241,18 @@
     "mixed": "Blandet",
     "matured": "Modnet",
     "popup_blocked": "Tillat popup-vinduer for utskrift."
+  },
+  "stock": {
+    "liquid_stock": "Væskelager",
+    "liquid_matured": "Modnet",
+    "total": "Totalt lager",
+    "auto_deduct": "Trekk ingredienser fra lager",
+    "auto_deduct_hint": "Trekker automatisk brukte ingredienser fra tilknyttede produkter.",
+    "auto_deducted": "Ingredienser er trukket fra lageret.",
+    "pieces": "stk",
+    "add": "Legg til",
+    "remove_ml": "Fjern ml",
+    "remove": "Fjern",
+    "enter_ml": "Vennligst oppgi volum i ml."
   }
 }

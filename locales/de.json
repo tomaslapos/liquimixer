@@ -699,7 +699,10 @@
     "delete_error": "Fehler beim Löschen des Produkts.",
     "stock_unit": "Stk",
     "no_filter_results": "Keine Produkte entsprechen den Filtern.",
-    "filter_results": "{found} von {total} Produkten gefunden."
+    "filter_results": "{found} von {total} Produkten gefunden.",
+    "type_tobacco": "Tabak",
+    "type_herbs": "Kräuter",
+    "type_additive": "Zusatzstoff"
   },
   "product_detail": {
     "title": "Produktdetails",
@@ -1238,5 +1241,18 @@
     "too_low": "Unter empfohlenem Bereich ({min}-{max}%)",
     "too_high": "Über empfohlenem Bereich ({min}-{max}%)",
     "ideal_range": "Idealer Bereich ({min}-{max}%)"
+  },
+  "stock": {
+    "liquid_stock": "Liquid-Vorrat",
+    "liquid_matured": "Gereift",
+    "total": "Gesamtvorrat",
+    "auto_deduct": "Zutaten vom Bestand abziehen",
+    "auto_deduct_hint": "Zieht automatisch verwendete Zutaten von verknüpften Produkten ab.",
+    "auto_deducted": "Zutaten wurden vom Bestand abgezogen.",
+    "pieces": "Stk",
+    "add": "Hinzufügen",
+    "remove_ml": "ml entfernen",
+    "remove": "Entfernen",
+    "enter_ml": "Bitte Volumen in ml eingeben."
   }
 }

@@ -690,7 +690,10 @@
     "delete_error": "Virhe tuotteen poistamisessa.",
     "stock_unit": "kpl",
     "no_filter_results": "Yksikään tuote ei vastaa suodattimia.",
-    "filter_results": "Löytyi {found} / {total} tuotetta."
+    "filter_results": "Löytyi {found} / {total} tuotetta.",
+    "type_tobacco": "Tupakka",
+    "type_herbs": "Yrtit",
+    "type_additive": "Lisäaine"
   },
   "product_detail": {
     "title": "Tuotteen tiedot",
@@ -1238,5 +1241,18 @@
     "mixed": "Sekoitettu",
     "matured": "Kypsynyt",
     "popup_blocked": "Salli ponnahdusikkunat tulostusta varten."
+  },
+  "stock": {
+    "liquid_stock": "Nestevarasto",
+    "liquid_matured": "Kypsynyt",
+    "total": "Kokonaisvarasto",
+    "auto_deduct": "Vähennä ainesosat varastosta",
+    "auto_deduct_hint": "Vähentää automaattisesti käytetyt ainesosat linkitetyistä tuotteista.",
+    "auto_deducted": "Ainesosat on vähennetty varastosta.",
+    "pieces": "kpl",
+    "add": "Lisää",
+    "remove_ml": "Poista ml",
+    "remove": "Poista",
+    "enter_ml": "Syötä tilavuus ml."
   }
 }

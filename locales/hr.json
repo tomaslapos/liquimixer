@@ -690,7 +690,10 @@
     "delete_error": "Greška pri brisanju proizvoda.",
     "stock_unit": "kom",
     "no_filter_results": "Nijedan proizvod ne odgovara filterima.",
-    "filter_results": "Pronađeno {found} od {total} proizvoda."
+    "filter_results": "Pronađeno {found} od {total} proizvoda.",
+    "type_tobacco": "Duhan",
+    "type_herbs": "Biljke",
+    "type_additive": "Aditiv"
   },
   "product_detail": {
     "title": "Detalji proizvoda",
@@ -1238,5 +1241,18 @@
     "mixed": "Pomiješano",
     "matured": "Sazrijevanje",
     "popup_blocked": "Dopustite skočne prozore za ispis."
+  },
+  "stock": {
+    "liquid_stock": "Zaliha tekućine",
+    "liquid_matured": "Sazrjelo",
+    "total": "Ukupna zaliha",
+    "auto_deduct": "Oduzmi sastojke iz zaliha",
+    "auto_deduct_hint": "Automatski oduzima korištene sastojke iz povezanih proizvoda.",
+    "auto_deducted": "Sastojci su oduzeti iz zaliha.",
+    "pieces": "kom",
+    "add": "Dodaj",
+    "remove_ml": "Ukloni ml",
+    "remove": "Ukloni",
+    "enter_ml": "Unesite volumen u ml."
   }
 }

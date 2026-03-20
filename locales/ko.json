@@ -690,7 +690,10 @@
     "delete_error": "제품 삭제 오류.",
     "stock_unit": "개",
     "no_filter_results": "필터에 일치하는 제품이 없습니다.",
-    "filter_results": "{total}개 중 {found}개 제품을 찾았습니다."
+    "filter_results": "{total}개 중 {found}개 제품을 찾았습니다.",
+    "type_tobacco": "담배",
+    "type_herbs": "허브",
+    "type_additive": "첨가제"
   },
   "product_detail": {
     "title": "제품 상세",
@@ -1238,5 +1241,18 @@
     "mixed": "믹스 날짜",
     "matured": "숙성 날짜",
     "popup_blocked": "인쇄하려면 팝업을 허용하세요."
+  },
+  "stock": {
+    "liquid_stock": "액상 재고",
+    "liquid_matured": "숙성됨",
+    "total": "전체 재고",
+    "auto_deduct": "재고에서 재료 차감",
+    "auto_deduct_hint": "연결된 제품에서 사용된 재료를 자동으로 차감합니다.",
+    "auto_deducted": "재료가 재고에서 차감되었습니다.",
+    "pieces": "개",
+    "add": "추가",
+    "remove_ml": "ml 제거",
+    "remove": "제거",
+    "enter_ml": "ml 단위로 용량을 입력하세요."
   }
 }

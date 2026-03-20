@@ -677,7 +677,10 @@
     "delete_error": "Error deleting product.",
     "stock_unit": "pcs",
     "no_filter_results": "No products match the filters.",
-    "filter_results": "Found {found} of {total} products."
+    "filter_results": "Found {found} of {total} products.",
+    "type_tobacco": "Tobacco",
+    "type_herbs": "Herbs",
+    "type_additive": "Additive"
   },
   "product_detail": {
     "title": "Product Detail",
@@ -1229,5 +1232,18 @@
     "mixed": "Mixed",
     "matured": "Matured",
     "popup_blocked": "Please allow pop-ups to print."
+  },
+  "stock": {
+    "liquid_stock": "Liquid stock",
+    "liquid_matured": "Matured",
+    "total": "Total stock",
+    "auto_deduct": "Deduct ingredients from stock",
+    "auto_deduct_hint": "Automatically deducts used ingredients from linked products.",
+    "auto_deducted": "Ingredients have been deducted from stock.",
+    "pieces": "pcs",
+    "add": "Add",
+    "remove_ml": "Remove ml",
+    "remove": "Remove",
+    "enter_ml": "Please enter volume in ml."
   }
 }

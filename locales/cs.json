@@ -450,7 +450,10 @@
     "delete_error": "Chyba při mazání produktu.",
     "stock_unit": "ks",
     "no_filter_results": "Žádné produkty neodpovídají filtrům.",
-    "filter_results": "Nalezeno {found} z {total} produktů."
+    "filter_results": "Nalezeno {found} z {total} produktů.",
+    "type_tobacco": "Tabák",
+    "type_herbs": "Bylinky",
+    "type_additive": "Aditivum"
   },
   "product_detail": {
     "title": "Detail produktu",
@@ -1266,5 +1269,18 @@
     "mixed": "Namícháno",
     "matured": "Vyzrání",
     "popup_blocked": "Povolte vyskakovací okna pro tisk."
+  },
+  "stock": {
+    "liquid_stock": "Zásoba liquidu",
+    "liquid_matured": "Vyzrálo",
+    "total": "Celková zásoba",
+    "auto_deduct": "Odečíst ingredience ze zásob",
+    "auto_deduct_hint": "Automaticky odečte použité ingredience z propojených produktů.",
+    "auto_deducted": "Ingredience byly odečteny ze zásob.",
+    "pieces": "ks",
+    "add": "Přidat",
+    "remove_ml": "Odebrat ml",
+    "remove": "Odebrat",
+    "enter_ml": "Zadejte objem v ml."
   }
 }

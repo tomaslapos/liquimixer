@@ -690,7 +690,10 @@
     "delete_error": "刪除產品時出錯。",
     "stock_unit": "件",
     "no_filter_results": "沒有產品符合篩選條件。",
-    "filter_results": "找到 {found} / {total} 個產品。"
+    "filter_results": "找到 {found} / {total} 個產品。",
+    "type_tobacco": "菸草",
+    "type_herbs": "草藥",
+    "type_additive": "添加劑"
   },
   "product_detail": {
     "title": "產品詳情",
@@ -1238,5 +1241,18 @@
     "mixed": "混合日期",
     "matured": "熟化日期",
     "popup_blocked": "請允許彈出視窗以進行列印。"
+  },
+  "stock": {
+    "liquid_stock": "煙油庫存",
+    "liquid_matured": "已熟化",
+    "total": "總庫存",
+    "auto_deduct": "從庫存中扣除原料",
+    "auto_deduct_hint": "自動從關聯產品中扣除已使用的原料。",
+    "auto_deducted": "原料已從庫存中扣除。",
+    "pieces": "件",
+    "add": "新增",
+    "remove_ml": "移除 ml",
+    "remove": "移除",
+    "enter_ml": "請輸入體積（ml）。"
   }
 }

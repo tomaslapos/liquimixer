@@ -690,7 +690,10 @@
     "delete_error": "删除产品出错。",
     "stock_unit": "件",
     "no_filter_results": "没有产品符合筛选条件。",
-    "filter_results": "找到 {found} / {total} 个产品。"
+    "filter_results": "找到 {found} / {total} 个产品。",
+    "type_tobacco": "烟草",
+    "type_herbs": "草药",
+    "type_additive": "添加剂"
   },
   "product_detail": {
     "title": "产品详情",
@@ -1238,5 +1241,18 @@
     "mixed": "混合日期",
     "matured": "熟化日期",
     "popup_blocked": "请允许弹出窗口以进行打印。"
+  },
+  "stock": {
+    "liquid_stock": "烟油库存",
+    "liquid_matured": "已熟化",
+    "total": "总库存",
+    "auto_deduct": "从库存中扣除原料",
+    "auto_deduct_hint": "自动从关联产品中扣除已使用的原料。",
+    "auto_deducted": "原料已从库存中扣除。",
+    "pieces": "件",
+    "add": "添加",
+    "remove_ml": "移除 ml",
+    "remove": "移除",
+    "enter_ml": "请输入体积（ml）。"
   }
 }

@@ -690,7 +690,10 @@
     "delete_error": "Errore nell'eliminazione del prodotto.",
     "stock_unit": "pz",
     "no_filter_results": "Nessun prodotto corrisponde ai filtri.",
-    "filter_results": "Trovati {found} di {total} prodotti."
+    "filter_results": "Trovati {found} di {total} prodotti.",
+    "type_tobacco": "Tabacco",
+    "type_herbs": "Erbe",
+    "type_additive": "Additivo"
   },
   "product_detail": {
     "title": "Dettagli prodotto",
@@ -1238,5 +1241,18 @@
     "mixed": "Miscelato",
     "matured": "Maturato",
     "popup_blocked": "Consenti i pop-up per stampare."
+  },
+  "stock": {
+    "liquid_stock": "Scorta liquido",
+    "liquid_matured": "Maturato",
+    "total": "Scorta totale",
+    "auto_deduct": "Deduci ingredienti dalle scorte",
+    "auto_deduct_hint": "Deduce automaticamente gli ingredienti usati dai prodotti collegati.",
+    "auto_deducted": "Gli ingredienti sono stati dedotti dalle scorte.",
+    "pieces": "pz",
+    "add": "Aggiungi",
+    "remove_ml": "Rimuovi ml",
+    "remove": "Rimuovi",
+    "enter_ml": "Inserisci il volume in ml."
   }
 }

@@ -690,7 +690,10 @@
     "delete_error": "Kļūda, dzēšot produktu.",
     "stock_unit": "gab",
     "no_filter_results": "Neviens produkts neatbilst filtriem.",
-    "filter_results": "Atrasti {found} no {total} produktiem."
+    "filter_results": "Atrasti {found} no {total} produktiem.",
+    "type_tobacco": "Tabaka",
+    "type_herbs": "Augi",
+    "type_additive": "Piedeva"
   },
   "product_detail": {
     "title": "Produkta detaļas",
@@ -1237,5 +1240,18 @@
     "mixed": "Sajaukts",
     "matured": "Nogatavojies",
     "popup_blocked": "Atļaujiet uznirstošos logus drukāšanai."
+  },
+  "stock": {
+    "liquid_stock": "Šķidruma krājums",
+    "liquid_matured": "Nogatavināts",
+    "total": "Kopējais krājums",
+    "auto_deduct": "Atskaitīt sastāvdaļas no krājuma",
+    "auto_deduct_hint": "Automātiski atskaita izmantotas sastāvdaļas no saistītajiem produktiem.",
+    "auto_deducted": "Sastāvdaļas tika atskaitītas no krājuma.",
+    "pieces": "gab",
+    "add": "Pievienot",
+    "remove_ml": "Noņemt ml",
+    "remove": "Noņemt",
+    "enter_ml": "Ievadiet tilpumu ml."
   }
 }

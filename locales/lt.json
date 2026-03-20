@@ -690,7 +690,10 @@
     "delete_error": "Klaida trinant produktą.",
     "stock_unit": "vnt",
     "no_filter_results": "Joks produktas neatitinka filtrų.",
-    "filter_results": "Rasta {found} iš {total} produktų."
+    "filter_results": "Rasta {found} iš {total} produktų.",
+    "type_tobacco": "Tabakas",
+    "type_herbs": "Žolės",
+    "type_additive": "Priedas"
   },
   "product_detail": {
     "title": "Produkto detalės",
@@ -1238,5 +1241,18 @@
     "mixed": "Sumaišyta",
     "matured": "Subrandęs",
     "popup_blocked": "Leiskite iššokančius langus spausdinimui."
+  },
+  "stock": {
+    "liquid_stock": "Skysčio atsarga",
+    "liquid_matured": "Subrandinta",
+    "total": "Bendra atsarga",
+    "auto_deduct": "Atimti ingredientus iš atsargų",
+    "auto_deduct_hint": "Automatiškai atima panaudotus ingredientus iš susietų produktų.",
+    "auto_deducted": "Ingredientai buvo atimti iš atsargų.",
+    "pieces": "vnt",
+    "add": "Pridėti",
+    "remove_ml": "Pašalinti ml",
+    "remove": "Pašalinti",
+    "enter_ml": "Įveskite tūrį ml."
   }
 }

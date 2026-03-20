@@ -690,7 +690,10 @@
     "delete_error": "製品削除エラー。",
     "stock_unit": "個",
     "no_filter_results": "フィルターに一致する製品はありません。",
-    "filter_results": "{total}件中{found}件の製品が見つかりました。"
+    "filter_results": "{total}件中{found}件の製品が見つかりました。",
+    "type_tobacco": "タバコ",
+    "type_herbs": "ハーブ",
+    "type_additive": "添加物"
   },
   "product_detail": {
     "title": "製品詳細",
@@ -1238,5 +1241,18 @@
     "mixed": "ミックス日",
     "matured": "熟成日",
     "popup_blocked": "印刷するにはポップアップを許可してください。"
+  },
+  "stock": {
+    "liquid_stock": "リキッド在庫",
+    "liquid_matured": "熟成済み",
+    "total": "合計在庫",
+    "auto_deduct": "在庫から材料を差し引く",
+    "auto_deduct_hint": "リンクされた製品から使用した材料を自動的に差し引きます。",
+    "auto_deducted": "材料が在庫から差し引かれました。",
+    "pieces": "個",
+    "add": "追加",
+    "remove_ml": "ml削除",
+    "remove": "削除",
+    "enter_ml": "mlでボリュームを入力してください。"
   }
 }

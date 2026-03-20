@@ -690,7 +690,10 @@
     "delete_error": "Eroare la ștergerea produsului.",
     "stock_unit": "buc",
     "no_filter_results": "Niciun produs nu corespunde filtrelor.",
-    "filter_results": "Găsite {found} din {total} produse."
+    "filter_results": "Găsite {found} din {total} produse.",
+    "type_tobacco": "Tutun",
+    "type_herbs": "Ierburi",
+    "type_additive": "Aditiv"
   },
   "product_detail": {
     "title": "Detalii produs",
@@ -1238,5 +1241,18 @@
     "mixed": "Amestecat",
     "matured": "Maturat",
     "popup_blocked": "Permiteți ferestrele pop-up pentru tipărire."
+  },
+  "stock": {
+    "liquid_stock": "Stoc lichid",
+    "liquid_matured": "Maturat",
+    "total": "Stoc total",
+    "auto_deduct": "Deduceți ingredientele din stoc",
+    "auto_deduct_hint": "Deduce automat ingredientele utilizate din produsele legate.",
+    "auto_deducted": "Ingredientele au fost deduse din stoc.",
+    "pieces": "buc",
+    "add": "Adaugă",
+    "remove_ml": "Elimină ml",
+    "remove": "Elimină",
+    "enter_ml": "Introduceți volumul în ml."
   }
 }

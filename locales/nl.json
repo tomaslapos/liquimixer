@@ -690,7 +690,10 @@
     "delete_error": "Fout bij verwijderen van product.",
     "stock_unit": "st",
     "no_filter_results": "Geen producten komen overeen met de filters.",
-    "filter_results": "{found} van {total} producten gevonden."
+    "filter_results": "{found} van {total} producten gevonden.",
+    "type_tobacco": "Tabak",
+    "type_herbs": "Kruiden",
+    "type_additive": "Additief"
   },
   "product_detail": {
     "title": "Productdetails",
@@ -1238,5 +1241,18 @@
     "mixed": "Gemixed",
     "matured": "Gerijpt",
     "popup_blocked": "Sta pop-ups toe om af te drukken."
+  },
+  "stock": {
+    "liquid_stock": "Liquid voorraad",
+    "liquid_matured": "Gerijpt",
+    "total": "Totale voorraad",
+    "auto_deduct": "Ingrediënten aftrekken van voorraad",
+    "auto_deduct_hint": "Trekt automatisch gebruikte ingrediënten af van gekoppelde producten.",
+    "auto_deducted": "Ingrediënten zijn afgetrokken van de voorraad.",
+    "pieces": "st",
+    "add": "Toevoegen",
+    "remove_ml": "ml verwijderen",
+    "remove": "Verwijderen",
+    "enter_ml": "Voer het volume in ml in."
   }
 }

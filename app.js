@@ -4397,7 +4397,11 @@ function addProductRow() {
         'pg': '💧',
         'flavor': '🍓',
         'nicotine_booster': '⚗',
-        'nicotine_salt': '🧪'
+        'nicotine_salt': '🧪',
+        'premixed_base': '🧪',
+        'tobacco': '🍂',
+        'herbs': '🌿',
+        'additive': '🧴'
     };
     
     // Vytvořit options pro select
@@ -5179,7 +5183,27 @@ function renderRecipesList(recipes) {
         return;
     }
     
-    let html = '<div class="recipes-list">';
+    // Celkový součet liquid stock přes všechny zobrazené recepty
+    let totalLiquidStockMl = 0;
+    let totalLiquidMaturedMl = 0;
+    recipes.forEach(r => {
+        totalLiquidStockMl += parseFloat(r.liquid_stock_ml) || 0;
+        totalLiquidMaturedMl += parseFloat(r.liquid_matured_ml) || 0;
+    });
+    
+    let html = '';
+    
+    // Zobrazit celkový součet nad seznamem, pokud existuje zásoba
+    if (totalLiquidStockMl > 0) {
+        const totalStockDisp = totalLiquidStockMl % 1 === 0 ? String(totalLiquidStockMl) : totalLiquidStockMl.toFixed(1);
+        const totalMaturedDisp = totalLiquidMaturedMl % 1 === 0 ? String(totalLiquidMaturedMl) : totalLiquidMaturedMl.toFixed(1);
+        html += `<div class="liquid-stock-summary">
+            <span>📦 ${t('stock.total', 'Total')}: ${totalStockDisp} ml</span>
+            <span>🟢 ${t('stock.liquid_matured', 'Matured')}: ${totalMaturedDisp} ml</span>
+        </div>`;
+    }
+    
+    html += '<div class="recipes-list">';
     
     recipes.forEach(recipe => {
         // Validace ID před použitím
@@ -5194,6 +5218,16 @@ function renderRecipesList(recipes) {
         const isMatured = maturedRecipeIds.has(recipe.id);
         const maturedBadge = isMatured ? `<span class="recipe-matured-badge">${t('reminder.matured', 'Matured')}</span>` : '';
         
+        // Liquid stock badge
+        const recipeLiquidMl = parseFloat(recipe.liquid_stock_ml) || 0;
+        const recipeMaturedMl = parseFloat(recipe.liquid_matured_ml) || 0;
+        let liquidBadge = '';
+        if (recipeLiquidMl > 0) {
+            const lsDisp = recipeLiquidMl % 1 === 0 ? String(recipeLiquidMl) : recipeLiquidMl.toFixed(1);
+            const lmDisp = recipeMaturedMl % 1 === 0 ? String(recipeMaturedMl) : recipeMaturedMl.toFixed(1);
+            liquidBadge = `<span class="recipe-liquid-badge">📦 ${lsDisp} ml / 🟢 ${lmDisp} ml</span>`;
+        }
+        
         // SECURITY: Escapování všech uživatelských dat
         const safeName = escapeHtml(recipe.name);
         const safeDescription = escapeHtml(recipe.description);
@@ -5207,6 +5241,7 @@ function renderRecipesList(recipes) {
                 <div class="recipe-card-header">
                     <h3 class="recipe-card-title">${safeName}</h3>
                     ${maturedBadge}
+                    ${liquidBadge}
                     <span class="recipe-card-rating">${stars}</span>
                 </div>
                 ${safeDescription ? `<p class="recipe-card-description">${safeDescription}</p>` : ''}
@@ -5337,7 +5372,11 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
             'pg': '💧',
             'flavor': '🍓',
             'nicotine_booster': '⚗',
-            'nicotine_salt': '🧪'
+            'nicotine_salt': '🧪',
+            'premixed_base': '🧪',
+            'tobacco': '🍂',
+            'herbs': '🌿',
+            'additive': '🧴'
         };
         
         // Pro sdílené recepty použít viewSharedProductDetail (read-only)
@@ -5434,6 +5473,26 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
             </div>`;
     }
     
+    // Liquid stock z cache sloupců (pouze pro vlastní recepty)
+    let liquidStockHtml = '';
+    if (!isShared) {
+        const liquidStockMl = parseFloat(recipe.liquid_stock_ml) || 0;
+        const liquidMaturedMl = parseFloat(recipe.liquid_matured_ml) || 0;
+        if (liquidStockMl > 0) {
+            const stockDisplay = liquidStockMl % 1 === 0 ? String(liquidStockMl) : liquidStockMl.toFixed(1);
+            const maturedDisplay = liquidMaturedMl % 1 === 0 ? String(liquidMaturedMl) : liquidMaturedMl.toFixed(1);
+            liquidStockHtml = `
+            <div class="recipe-info-item">
+                <div class="recipe-info-label">${t('stock.liquid_stock', 'Liquid stock')}</div>
+                <div class="recipe-info-value">📦 ${stockDisplay} ml</div>
+            </div>
+            <div class="recipe-info-item">
+                <div class="recipe-info-label">${t('stock.liquid_matured', 'Matured')}</div>
+                <div class="recipe-info-value">🟢 ${maturedDisplay} ml</div>
+            </div>`;
+        }
+    }
+    
     contentEl.innerHTML = `
         <div class="recipe-detail-header">
             <div class="recipe-detail-rating">${stars}</div>
@@ -5454,6 +5513,7 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                 <div class="recipe-info-value">${safeNicotine} mg/ml</div>
             </div>
             ${steepDaysHtml}
+            ${liquidStockHtml}
         </div>
         
         ${ingredientsHtml}
@@ -6946,7 +7006,11 @@ function addProductRowWithValue(productId, productName) {
         'pg': '💧',
         'flavor': '🍓',
         'nicotine_booster': '⚗',
-        'nicotine_salt': '🧪'
+        'nicotine_salt': '🧪',
+        'premixed_base': '🧪',
+        'tobacco': '🍂',
+        'herbs': '🌿',
+        'additive': '🧴'
     };
     
     // Vytvořit options pro select s předvybranou hodnotou
@@ -7115,6 +7179,16 @@ async function loadSharedRecipe() {
         // Uložit recept pro pozdější použití
         window.pendingSharedRecipe = recipe;
         window.pendingSharedRecipeUUID = recipe.id;
+        
+        // Pokud je uživatel přihlášen a je vlastníkem receptu, přesměrovat na "mé recepty" detail
+        if (window.Clerk?.user && recipe.clerk_id === window.Clerk.user.id) {
+            // Vyčistit URL parametr
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, '', cleanUrl);
+            // Zobrazit detail receptu z "mé recepty" (s připomínkami)
+            viewRecipeDetail(recipe.id);
+            return true;
+        }
         
         // Zkontrolovat typ receptu
         const formType = recipe.recipe_data?.formType || 'liquid';
@@ -7484,7 +7558,11 @@ function addSharedProductRow(productId, productName, productType) {
         'pg': '💧',
         'flavor': '🍓',
         'nicotine_booster': '⚗️',
-        'nicotine_salt': '🧪'
+        'nicotine_salt': '🧪',
+        'premixed_base': '🧪',
+        'tobacco': '🍂',
+        'herbs': '🌿',
+        'additive': '🧴'
     };
     const icon = typeIcons[productType] || '📦';
     
@@ -7652,10 +7730,10 @@ function filterProducts() {
             }
         }
         
-        // Filtr skladem (stock_quantity > 0)
+        // Filtr skladem (stock_volume_ml > 0)
         if (inStockOnly) {
-            const stockQuantity = parseFloat(product.stock_quantity) || 0;
-            if (stockQuantity <= 0) {
+            const stockMl = parseFloat(product.stock_volume_ml) || 0;
+            if (stockMl <= 0) {
                 return false;
             }
         }
@@ -7706,7 +7784,8 @@ function renderProductsList(products) {
         const typeLabel = getProductTypeLabel(product.product_type);
         const typeIcon = productTypeIcons[product.product_type] || '🍓';
         
-        const stockQuantity = product.stock_quantity || 0;
+        const stockMl = parseFloat(product.stock_volume_ml) || 0;
+        const stockDisplay = stockMl % 1 === 0 ? String(stockMl) : stockMl.toFixed(1);
         
         html += `
             <div class="product-card rating-${rating}" onclick="viewProductDetail('${product.id}')">
@@ -7727,10 +7806,22 @@ function renderProductsList(products) {
                         </div>
                         <div class="product-stock" onclick="event.stopPropagation();">
                             <span class="stock-label">${t('reminder.stock_label', 'Sklad')}:</span>
-                            <button type="button" class="stock-btn minus" onclick="updateProductStockUI('${product.id}', -0.5)">−</button>
-                            <span class="stock-quantity" id="product-stock-${product.id}">${stockQuantity % 1 === 0 ? stockQuantity : stockQuantity.toFixed(1)}</span>
-                            <span class="stock-unit">${t('products.stock_unit', 'ks')}</span>
-                            <button type="button" class="stock-btn plus" onclick="updateProductStockUI('${product.id}', +1)">+</button>
+                            <button type="button" class="stock-btn minus" onclick="toggleStockMinusInput('${product.id}')">−</button>
+                            <span class="stock-quantity" id="product-stock-${product.id}">${stockDisplay}</span>
+                            <span class="stock-unit">ml</span>
+                            <button type="button" class="stock-btn plus" onclick="toggleStockPlusInput('${product.id}')">+</button>
+                        </div>
+                        <div class="stock-input-panel hidden" id="stock-plus-panel-${product.id}" onclick="event.stopPropagation();">
+                            <label>${t('stock.pieces', 'ks')}:</label>
+                            <input type="number" class="stock-input-field" id="stock-plus-pcs-${product.id}" value="1" min="1" step="1">
+                            <label>× ml:</label>
+                            <input type="number" class="stock-input-field" id="stock-plus-ml-${product.id}" placeholder="ml" min="0.1" step="0.1">
+                            <button type="button" class="stock-confirm-btn" onclick="confirmStockAdd('${product.id}')">${t('stock.add', 'Přidat')}</button>
+                        </div>
+                        <div class="stock-input-panel hidden" id="stock-minus-panel-${product.id}" onclick="event.stopPropagation();">
+                            <label>${t('stock.remove_ml', 'Odebrat ml')}:</label>
+                            <input type="number" class="stock-input-field" id="stock-minus-ml-${product.id}" value="10" min="0.1" step="0.1">
+                            <button type="button" class="stock-confirm-btn remove" onclick="confirmStockRemove('${product.id}')">${t('stock.remove', 'Odebrat')}</button>
                         </div>
                     </div>
                 </div>
@@ -7742,11 +7833,10 @@ function renderProductsList(products) {
     container.innerHTML = html;
 }
 
-// Aktualizovat počet kusů produktu na skladě (UI + DB)
-async function updateProductStockUI(productId, change) {
+// Aktualizovat skladovou zásobu produktu v ml (UI + DB)
+async function updateProductStockUI(productId, changeMl) {
     if (!window.Clerk?.user || !window.LiquiMixerDB) return;
     
-    // Získat aktuální hodnotu z DOM - hledat všechny elementy s tímto ID (v seznamu i v detailu)
     const stockElements = document.querySelectorAll(`#product-stock-${productId}, [id="product-stock-${productId}"]`);
     
     if (stockElements.length === 0) {
@@ -7754,27 +7844,83 @@ async function updateProductStockUI(productId, change) {
         return;
     }
     
-    // Použít první nalezený element pro získání aktuální hodnoty
     let currentStock = parseFloat(stockElements[0].textContent) || 0;
-    let newStock = Math.max(0, Math.round((currentStock + change) * 2) / 2); // Zaokrouhlit na 0.5
+    let newStock = Math.max(0, Math.round((currentStock + changeMl) * 10) / 10);
     const displayValue = newStock % 1 === 0 ? String(newStock) : newStock.toFixed(1);
     
-    // Okamžitá aktualizace UI pro VŠECHNY nalezené elementy (seznam i detail)
     stockElements.forEach(el => {
         el.textContent = displayValue;
     });
     
-    // Aktualizace v DB (non-blocking)
     try {
         await window.LiquiMixerDB.updateProductStock(window.Clerk.user.id, productId, newStock);
     } catch (err) {
         console.error('Error updating product stock:', err);
-        // Vrátit původní hodnotu při chybě
         const revertValue = currentStock % 1 === 0 ? String(currentStock) : currentStock.toFixed(1);
         stockElements.forEach(el => {
             el.textContent = revertValue;
         });
     }
+}
+
+// Toggle rozbalení panelu pro přidání zásoby (+)
+function toggleStockPlusInput(productId) {
+    const plusPanel = document.getElementById(`stock-plus-panel-${productId}`);
+    const minusPanel = document.getElementById(`stock-minus-panel-${productId}`);
+    if (minusPanel) minusPanel.classList.add('hidden');
+    if (plusPanel) {
+        plusPanel.classList.toggle('hidden');
+        if (!plusPanel.classList.contains('hidden')) {
+            const mlInput = document.getElementById(`stock-plus-ml-${productId}`);
+            if (mlInput) mlInput.focus();
+        }
+    }
+}
+
+// Toggle rozbalení panelu pro odebrání zásoby (−)
+function toggleStockMinusInput(productId) {
+    const minusPanel = document.getElementById(`stock-minus-panel-${productId}`);
+    const plusPanel = document.getElementById(`stock-plus-panel-${productId}`);
+    if (plusPanel) plusPanel.classList.add('hidden');
+    if (minusPanel) {
+        minusPanel.classList.toggle('hidden');
+        if (!minusPanel.classList.contains('hidden')) {
+            const mlInput = document.getElementById(`stock-minus-ml-${productId}`);
+            if (mlInput) mlInput.focus();
+        }
+    }
+}
+
+// Potvrdit přidání zásoby: ks × ml
+function confirmStockAdd(productId) {
+    const pcsInput = document.getElementById(`stock-plus-pcs-${productId}`);
+    const mlInput = document.getElementById(`stock-plus-ml-${productId}`);
+    const pcs = parseInt(pcsInput?.value) || 1;
+    const ml = parseFloat(mlInput?.value) || 0;
+    if (ml <= 0) {
+        showNotification(t('stock.enter_ml', 'Zadejte objem v ml.'), 'error');
+        return;
+    }
+    const totalMl = pcs * ml;
+    updateProductStockUI(productId, totalMl);
+    const plusPanel = document.getElementById(`stock-plus-panel-${productId}`);
+    if (plusPanel) plusPanel.classList.add('hidden');
+    if (pcsInput) pcsInput.value = '1';
+    if (mlInput) mlInput.value = '';
+}
+
+// Potvrdit odebrání zásoby v ml
+function confirmStockRemove(productId) {
+    const mlInput = document.getElementById(`stock-minus-ml-${productId}`);
+    const ml = parseFloat(mlInput?.value) || 0;
+    if (ml <= 0) {
+        showNotification(t('stock.enter_ml', 'Zadejte objem v ml.'), 'error');
+        return;
+    }
+    updateProductStockUI(productId, -ml);
+    const minusPanel = document.getElementById(`stock-minus-panel-${productId}`);
+    if (minusPanel) minusPanel.classList.add('hidden');
+    if (mlInput) mlInput.value = '10';
 }
 
 // Zobrazit detail produktu
@@ -7894,8 +8040,8 @@ function displayProductDetail(product, linkedRecipes = []) {
         `;
     }
     
-    const stockQuantity = product.stock_quantity || 0;
-    const stockDisplay = stockQuantity % 1 === 0 ? stockQuantity : stockQuantity.toFixed(1);
+    const stockMl = parseFloat(product.stock_volume_ml) || 0;
+    const stockDisplay = stockMl % 1 === 0 ? String(stockMl) : stockMl.toFixed(1);
     
     // Parametry příchutě - zobrazit pokud je produkt typu 'flavor'
     let flavorParamsHtml = '';
@@ -7995,10 +8141,22 @@ function displayProductDetail(product, linkedRecipes = []) {
         <div class="product-detail-stock">
             <span class="stock-label">${t('reminder.stock_label', 'Sklad')}:</span>
             <div class="product-stock-controls">
-                <button type="button" class="stock-btn minus large" onclick="updateProductStockUI('${product.id}', -0.5)">−</button>
+                <button type="button" class="stock-btn minus large" onclick="toggleStockMinusInput('${product.id}')">−</button>
                 <span class="stock-quantity large" id="product-stock-${product.id}">${stockDisplay}</span>
-                <span class="stock-unit">${t('products.stock_unit', 'ks')}</span>
-                <button type="button" class="stock-btn plus large" onclick="updateProductStockUI('${product.id}', +1)">+</button>
+                <span class="stock-unit">ml</span>
+                <button type="button" class="stock-btn plus large" onclick="toggleStockPlusInput('${product.id}')">+</button>
+            </div>
+            <div class="stock-input-panel hidden" id="stock-plus-panel-${product.id}">
+                <label>${t('stock.pieces', 'ks')}:</label>
+                <input type="number" class="stock-input-field" id="stock-plus-pcs-${product.id}" value="1" min="1" step="1">
+                <label>× ml:</label>
+                <input type="number" class="stock-input-field" id="stock-plus-ml-${product.id}" placeholder="ml" min="0.1" step="0.1">
+                <button type="button" class="stock-confirm-btn" onclick="confirmStockAdd('${product.id}')">${t('stock.add', 'Přidat')}</button>
+            </div>
+            <div class="stock-input-panel hidden" id="stock-minus-panel-${product.id}">
+                <label>${t('stock.remove_ml', 'Odebrat ml')}:</label>
+                <input type="number" class="stock-input-field" id="stock-minus-ml-${product.id}" value="10" min="0.1" step="0.1">
+                <button type="button" class="stock-confirm-btn remove" onclick="confirmStockRemove('${product.id}')">${t('stock.remove', 'Odebrat')}</button>
             </div>
         </div>
         ${urlHtml}
@@ -8138,7 +8296,10 @@ function getProductTypeLabel(type) {
         'flavor': 'products.type_flavor',
         'nicotine_booster': 'products.type_nicotine_booster',
         'nicotine_salt': 'products.type_nicotine_salt',
-        'premixed_base': 'products.type_premixed_base'
+        'premixed_base': 'products.type_premixed_base',
+        'tobacco': 'products.type_tobacco',
+        'herbs': 'products.type_herbs',
+        'additive': 'products.type_additive'
     };
     const key = typeKeys[type] || 'products.type_flavor';
     return t(key, productTypeLabels[type] || 'Flavor');
@@ -8151,7 +8312,10 @@ const productTypeLabels = {
     'flavor': 'Flavor',
     'nicotine_booster': 'Nicotine Booster',
     'nicotine_salt': 'Nicotine Salt',
-    'premixed_base': 'Premixed PG/VG Base'
+    'premixed_base': 'Premixed PG/VG Base',
+    'tobacco': 'Tobacco',
+    'herbs': 'Herbs',
+    'additive': 'Additive'
 };
 
 // Mapování typů produktů na ikony
@@ -8161,7 +8325,10 @@ const productTypeIcons = {
     'flavor': '🍓',
     'nicotine_booster': '⚗',
     'nicotine_salt': '🧪',
-    'premixed_base': '🧪'
+    'premixed_base': '🧪',
+    'tobacco': '🍂',
+    'herbs': '🌿',
+    'additive': '🧴'
 };
 
 // Zobrazit formulář pro přidání produktu
@@ -15076,6 +15243,12 @@ function showAddReminderModal(recipeId) {
     const noteInput = document.getElementById('reminderNote');
     if (noteInput) noteInput.value = '';
 
+    // Reset auto-deduct checkbox (zapnout pro nové míchání)
+    const autoDeductCheckbox = document.getElementById('reminderAutoDeduct');
+    if (autoDeductCheckbox) autoDeductCheckbox.checked = true;
+    const autoDeductGroup = autoDeductCheckbox?.closest('.form-group-login');
+    if (autoDeductGroup) autoDeductGroup.classList.remove('hidden');
+    
     updateReminderModalDate();
     modal.classList.remove('hidden');
 }
@@ -15100,6 +15273,10 @@ function showEditReminderModal(reminderId, recipeId) {
     if (remindDateInput) { remindDateInput.value = reminder.remind_at; initDatePickerElement(remindDateInput); }
     if (noteInput) noteInput.value = reminder.note || '';
 
+    // Skrýt auto-deduct při editaci (odečet jen při novém míchání)
+    const autoDeductGroup = document.getElementById('reminderAutoDeduct')?.closest('.form-group-login');
+    if (autoDeductGroup) autoDeductGroup.classList.add('hidden');
+    
     modal.classList.remove('hidden');
 }
 
@@ -15159,6 +15336,16 @@ async function saveReminderFromModal(event) {
         } else {
             const recipe = window.currentViewingRecipe;
             await saveNewReminder(currentReminderRecipeId, mixDate, remindDate, currentReminderFlavorType, currentReminderFlavorName, recipe?.name || '', note);
+            
+            // Auto-odečet ingrediencí ze zásob (pouze pro nové míchání, ne editaci)
+            const autoDeductCheckbox = document.getElementById('reminderAutoDeduct');
+            if (autoDeductCheckbox && autoDeductCheckbox.checked) {
+                try {
+                    await autoDeductIngredients(currentReminderRecipeId);
+                } catch (err) {
+                    console.error('Auto-deduct error:', err);
+                }
+            }
         }
         // Uložit recipeId před zavřením modálu (hideAddReminderModal nastaví currentReminderRecipeId na null)
         const recipeIdToRefresh = currentReminderRecipeId;
@@ -15203,6 +15390,113 @@ async function saveNewReminder(recipeId, mixDate, remindDate, flavorType, flavor
     } catch (error) {
         console.error('Error saving reminder:', error);
         return false;
+    }
+}
+
+// Auto-odečet ingrediencí ze zásob propojených produktů
+async function autoDeductIngredients(recipeId) {
+    if (!window.Clerk?.user || !window.LiquiMixerDB) return;
+    
+    const clerkId = window.Clerk.user.id;
+    const recipe = window.currentViewingRecipe;
+    if (!recipe || !recipe.recipe_data) return;
+    
+    const data = recipe.recipe_data;
+    const ingredients = data.ingredients || [];
+    if (ingredients.length === 0) return;
+    
+    // Načíst propojené produkty (kategoriové) a příchutě (přesné)
+    const linkedProducts = await window.LiquiMixerDB.getLinkedProducts(clerkId, recipeId);
+    const linkedFlavors = await window.LiquiMixerDB.getLinkedFlavors(recipeId);
+    
+    if ((!linkedProducts || linkedProducts.length === 0) && (!linkedFlavors || linkedFlavors.length === 0)) return;
+    
+    // Mapování ingredientKey → product_type
+    const keyToType = {
+        'vg': 'vg', 'vg_adjustment': 'vg',
+        'pg': 'pg', 'pg_adjustment': 'pg',
+        'nicotine_booster': 'nicotine_booster',
+        'nicotine_salt': 'nicotine_salt',
+        'nicotine_base': 'nicotine_booster',
+        'premixedBase': 'premixed_base',
+        'additive': 'additive',
+        'tobacco': 'tobacco',
+        'herbs': 'herbs'
+    };
+    
+    // Seskupit ingredience dle product_type (kumulovat objemy stejného typu)
+    const volumeByType = {};
+    const flavorVolumes = []; // [{position, volume}] pro přesné párování příchutí
+    
+    ingredients.forEach(ing => {
+        const vol = parseFloat(ing.volume || 0);
+        if (vol <= 0) return;
+        
+        const key = ing.ingredientKey;
+        
+        // Příchutě - párovat přes recipe_flavors pozici
+        if (key === 'flavor' || key === 'shisha_flavor' || key === 'shisha_tweak_flavor' || key === 'shakevape_flavor') {
+            const flavorNum = ing.flavorNumber || 1;
+            flavorVolumes.push({ position: flavorNum, volume: vol });
+            return;
+        }
+        
+        // Ostatní ingredience - párovat dle kategorie
+        const productType = keyToType[key];
+        if (productType) {
+            volumeByType[productType] = (volumeByType[productType] || 0) + vol;
+        }
+    });
+    
+    let deductedCount = 0;
+    
+    // 1. Odečíst příchutě přesně přes recipe_flavors → favorite_product_id
+    for (const fv of flavorVolumes) {
+        // Najít odpovídající linked flavor dle pozice
+        const linkedFlavor = linkedFlavors.find(lf => lf.position === fv.position);
+        if (!linkedFlavor || !linkedFlavor.favorite_product_id) continue;
+        
+        // Načíst aktuální stock tohoto produktu z linkedProducts nebo přímo
+        const productId = linkedFlavor.favorite_product_id;
+        const product = linkedProducts.find(p => p.id === productId);
+        const currentStock = parseFloat(product?.stock_volume_ml || 0);
+        
+        if (currentStock <= 0) continue;
+        
+        const newStock = Math.max(0, currentStock - fv.volume);
+        const result = await window.LiquiMixerDB.updateProductStock(clerkId, productId, newStock);
+        if (result) deductedCount++;
+    }
+    
+    // 2. Odečíst ostatní ingredience dle kategorie z propojených produktů
+    for (const [productType, totalVolume] of Object.entries(volumeByType)) {
+        let remaining = totalVolume;
+        
+        // Najít všechny propojené produkty tohoto typu (v pořadí jak byly přidány)
+        const matchingProducts = linkedProducts.filter(p => p.product_type === productType);
+        
+        for (const product of matchingProducts) {
+            if (remaining <= 0) break;
+            
+            const currentStock = parseFloat(product.stock_volume_ml || 0);
+            if (currentStock <= 0) continue;
+            
+            const deductAmount = Math.min(remaining, currentStock);
+            const newStock = Math.max(0, currentStock - deductAmount);
+            remaining -= deductAmount;
+            
+            const result = await window.LiquiMixerDB.updateProductStock(clerkId, product.id, newStock);
+            if (result) {
+                deductedCount++;
+                // Aktualizovat lokální stock pro případ více produktů stejného typu
+                product.stock_volume_ml = newStock;
+            }
+        }
+    }
+    
+    if (deductedCount > 0) {
+        console.log(`Auto-deduct: Odečteno ze ${deductedCount} produktů`);
+        showNotification(t('stock.auto_deducted', 'Ingredience byly odečteny ze zásob.'), 'success');
     }
 }
 
@@ -17961,6 +18255,10 @@ window.cancelProductForm = cancelProductForm;
 window.saveProduct = saveProduct;
 window.viewProductDetail = viewProductDetail;
 window.updateProductStockUI = updateProductStockUI;
+window.toggleStockPlusInput = toggleStockPlusInput;
+window.toggleStockMinusInput = toggleStockMinusInput;
+window.confirmStockAdd = confirmStockAdd;
+window.confirmStockRemove = confirmStockRemove;
 window.viewSharedProductDetail = viewSharedProductDetail;
 window.showFlavorDetail = showFlavorDetail;
 window.showFlavorDetailFromRecipe = showFlavorDetailFromRecipe;

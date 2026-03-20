@@ -690,7 +690,10 @@
     "delete_error": "Hiba a termék törlésekor.",
     "stock_unit": "db",
     "no_filter_results": "Egyetlen termék sem felel meg a szűrőknek.",
-    "filter_results": "{found} / {total} termék találva."
+    "filter_results": "{found} / {total} termék találva.",
+    "type_tobacco": "Dohány",
+    "type_herbs": "Gyógynövények",
+    "type_additive": "Adalékanyag"
   },
   "product_detail": {
     "title": "Termék részletei",
@@ -1238,5 +1241,18 @@
     "mixed": "Keverve",
     "matured": "Érlelés",
     "popup_blocked": "Engedélyezd a felugró ablakokat a nyomtatáshoz."
+  },
+  "stock": {
+    "liquid_stock": "Liquid készlet",
+    "liquid_matured": "Érlelt",
+    "total": "Összes készlet",
+    "auto_deduct": "Összetevők levonása a készletből",
+    "auto_deduct_hint": "Automatikusan levonja a felhasznált összetevőket a kapcsolt termékekből.",
+    "auto_deducted": "Az összetevők levonásra kerültek a készletből.",
+    "pieces": "db",
+    "add": "Hozzáadás",
+    "remove_ml": "ml eltávolítása",
+    "remove": "Eltávolítás",
+    "enter_ml": "Kérjük, adja meg a térfogatot ml-ben."
   }
 }

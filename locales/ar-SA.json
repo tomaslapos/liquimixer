@@ -691,7 +691,10 @@
     "delete_error": "خطأ في حذف المنتج.",
     "stock_unit": "قطعة",
     "no_filter_results": "لا توجد منتجات تطابق الفلاتر.",
-    "filter_results": "تم العثور على {found} من {total} منتج."
+    "filter_results": "تم العثور على {found} من {total} منتج.",
+    "type_tobacco": "تبغ",
+    "type_herbs": "أعشاب",
+    "type_additive": "مادة مضافة"
   },
   "product_detail": {
     "title": "تفاصيل المنتج",
@@ -1239,5 +1242,18 @@
     "mixed": "تاريخ الخلط",
     "matured": "تاريخ النضج",
     "popup_blocked": "يرجى السماح بالنوافذ المنبثقة للطباعة."
+  },
+  "stock": {
+    "liquid_stock": "مخزون السائل",
+    "liquid_matured": "ناضج",
+    "total": "المخزون الكلي",
+    "auto_deduct": "خصم المكونات من المخزون",
+    "auto_deduct_hint": "يخصم تلقائياً المكونات المستخدمة من المنتجات المرتبطة.",
+    "auto_deducted": "تم خصم المكونات من المخزون.",
+    "pieces": "قطعة",
+    "add": "إضافة",
+    "remove_ml": "إزالة مل",
+    "remove": "إزالة",
+    "enter_ml": "يرجى إدخال الحجم بالمل."
   }
 }
