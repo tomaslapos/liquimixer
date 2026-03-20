@@ -3212,6 +3212,7 @@ async function getLinkedFlavors(recipeId) {
                     flavor_id,
                     flavor_min_percent,
                     flavor_max_percent,
+                    stock_volume_ml,
                     flavors:flavor_id (
                         min_percent,
                         max_percent,
@@ -3275,6 +3276,8 @@ async function getLinkedFlavors(recipeId) {
                 flavor_id: item.flavor_id,
                 favorite_product_id: item.favorite_product_id,
                 flavor_source: item.flavor_source || 'database',
+                // Stock z oblíbeného produktu
+                stock_volume_ml: item.favorite_products?.stock_volume_ml ?? null,
                 // Konsolidovaná data příchutě
                 flavor: flavorParams
             };

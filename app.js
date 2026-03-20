@@ -5364,6 +5364,36 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         `;
     }
     
+    // Mapa potřebných objemů z ingrediencí receptu podle typu
+    const requiredVolumes = {};
+    if (ingredients && Array.isArray(ingredients)) {
+        for (const ing of ingredients) {
+            const key = ing.ingredientKey || '';
+            const vol = parseFloat(ing.volume || 0);
+            // Mapování ingredientKey → product_type
+            let pType = null;
+            if (key === 'nicotine_salt') pType = 'nicotine_salt';
+            else if (key === 'nicotine_booster') pType = 'nicotine_booster';
+            else if (key === 'premixedBase') pType = 'premixed_base';
+            else if (key === 'vg' || key === 'vg_adjustment') pType = 'vg';
+            else if (key === 'pg' || key === 'pg_adjustment') pType = 'pg';
+            else if (key === 'flavor' || key === 'shakevape_flavor') pType = 'flavor';
+            else if (key === 'additive') pType = 'additive';
+            else if (key === 'nicotine_base') pType = 'nicotine_base';
+            if (pType) requiredVolumes[pType] = (requiredVolumes[pType] || 0) + vol;
+        }
+    }
+    // Mapa potřebných objemů per příchuť (podle flavorName)
+    const requiredFlavorVolumes = {};
+    if (ingredients && Array.isArray(ingredients)) {
+        for (const ing of ingredients) {
+            if ((ing.ingredientKey === 'flavor' || ing.ingredientKey === 'shakevape_flavor') && ing.flavorName) {
+                const fKey = (ing.flavorName || '').toLowerCase().trim();
+                requiredFlavorVolumes[fKey] = (requiredFlavorVolumes[fKey] || 0) + parseFloat(ing.volume || 0);
+            }
+        }
+    }
+    
     // Propojené produkty
     let linkedProductsHtml = '';
     if (linkedProducts && linkedProducts.length > 0) {
@@ -5392,12 +5422,14 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         const productStars = '★'.repeat(productRating) + '☆'.repeat(5 - productRating);
                         const pStockMl = parseFloat(product.stock_volume_ml ?? product.stock_quantity) || 0;
                         const pStockDisp = pStockMl > 0 ? (pStockMl % 1 === 0 ? String(pStockMl) : pStockMl.toFixed(1)) : '0';
-                        const pStockClass = pStockMl > 0 ? 'has-stock' : 'no-stock';
+                        // Porovnat stock s potřebným objemem z receptu
+                        const neededMl = requiredVolumes[product.product_type] || 0;
+                        const pStockClass = (pStockMl >= neededMl && pStockMl > 0) ? 'has-stock' : 'no-stock';
                         return `
                             <div class="linked-product-item" onclick="${productClickHandler}('${escapeHtml(product.id)}')">
                                 <span class="linked-product-icon">${icon}</span>
                                 <span class="linked-product-name">${escapeHtml(product.name)}</span>
-                                <span class="linked-product-stock ${pStockClass}">${pStockDisp} ml</span>
+                                <span class="linked-product-stock ${pStockClass}">${t('reminder.stock_label', 'Sklad')}: ${pStockDisp} ml</span>
                                 <span class="linked-product-rating">${productStars}</span>
                             </div>
                         `;
@@ -5441,10 +5473,23 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         }
                         const cursorClass = 'clickable';
                         
+                        // Stock badge pro příchutě
+                        const fStockMl = parseFloat(flavorLink.stock_volume_ml) || 0;
+                        const fStockDisp = fStockMl > 0 ? (fStockMl % 1 === 0 ? String(fStockMl) : fStockMl.toFixed(1)) : '0';
+                        // Potřebný objem pro tuto příchuť
+                        const fNameKey = (flavorLink.flavor_name || '').toLowerCase().trim();
+                        const fNeededMl = requiredFlavorVolumes[fNameKey] || 0;
+                        const fStockClass = (fStockMl >= fNeededMl && fStockMl > 0) ? 'has-stock' : 'no-stock';
+                        // Zobrazit stock badge pouze pokud má favorite_product_id (vlastní produkt)
+                        const flavorStockBadge = flavorLink.favorite_product_id 
+                            ? `<span class="linked-product-stock ${fStockClass}">${t('reminder.stock_label', 'Sklad')}: ${fStockDisp} ml</span>` 
+                            : '';
+                        
                         return `
                             <div class="linked-flavor-item ${cursorClass}" ${clickAttr}>
                                 <span class="linked-flavor-icon">🍓</span>
                                 <span class="linked-flavor-name">${escapeHtml(displayName)}${percentDisplay}</span>
+                                ${flavorStockBadge}
                             </div>
                         `;
                     }).join('')}
