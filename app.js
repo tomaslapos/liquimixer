@@ -7730,9 +7730,9 @@ function filterProducts() {
             }
         }
         
-        // Filtr skladem (stock_volume_ml > 0)
+        // Filtr skladem
         if (inStockOnly) {
-            const stockMl = parseFloat(product.stock_volume_ml) || 0;
+            const stockMl = parseFloat(product.stock_volume_ml ?? product.stock_quantity) || 0;
             if (stockMl <= 0) {
                 return false;
             }
@@ -7784,7 +7784,7 @@ function renderProductsList(products) {
         const typeLabel = getProductTypeLabel(product.product_type);
         const typeIcon = productTypeIcons[product.product_type] || '🍓';
         
-        const stockMl = parseFloat(product.stock_volume_ml) || 0;
+        const stockMl = parseFloat(product.stock_volume_ml ?? product.stock_quantity) || 0;
         const stockDisplay = stockMl % 1 === 0 ? String(stockMl) : stockMl.toFixed(1);
         
         html += `
@@ -8040,7 +8040,7 @@ function displayProductDetail(product, linkedRecipes = []) {
         `;
     }
     
-    const stockMl = parseFloat(product.stock_volume_ml) || 0;
+    const stockMl = parseFloat(product.stock_volume_ml ?? product.stock_quantity) || 0;
     const stockDisplay = stockMl % 1 === 0 ? String(stockMl) : stockMl.toFixed(1);
     
     // Parametry příchutě - zobrazit pokud je produkt typu 'flavor'
@@ -15459,7 +15459,7 @@ async function autoDeductIngredients(recipeId) {
         // Načíst aktuální stock tohoto produktu z linkedProducts nebo přímo
         const productId = linkedFlavor.favorite_product_id;
         const product = linkedProducts.find(p => p.id === productId);
-        const currentStock = parseFloat(product?.stock_volume_ml || 0);
+        const currentStock = parseFloat(product?.stock_volume_ml ?? product?.stock_quantity ?? 0);
         
         if (currentStock <= 0) continue;
         
@@ -15478,7 +15478,7 @@ async function autoDeductIngredients(recipeId) {
         for (const product of matchingProducts) {
             if (remaining <= 0) break;
             
-            const currentStock = parseFloat(product.stock_volume_ml || 0);
+            const currentStock = parseFloat(product.stock_volume_ml ?? product.stock_quantity ?? 0);
             if (currentStock <= 0) continue;
             
             const deductAmount = Math.min(remaining, currentStock);
@@ -15490,6 +15490,7 @@ async function autoDeductIngredients(recipeId) {
                 deductedCount++;
                 // Aktualizovat lokální stock pro případ více produktů stejného typu
                 product.stock_volume_ml = newStock;
+                product.stock_quantity = newStock;
             }
         }
     }

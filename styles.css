@@ -3148,6 +3148,111 @@ body {
     border-color: #00ffc8;
 }
 
+/* Stock Input Panels (expandable +/- panels) */
+.stock-input-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    flex-wrap: wrap;
+}
+
+.stock-input-panel.hidden {
+    display: none;
+}
+
+.stock-input-panel label {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+}
+
+.stock-input-field {
+    width: 70px;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 6px;
+    color: var(--neon-cyan);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.9rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    -moz-appearance: textfield;
+}
+
+.stock-input-field::-webkit-outer-spin-button,
+.stock-input-field::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.stock-input-field:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+
+.stock-confirm-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 255, 200, 0.5);
+    background: rgba(0, 255, 200, 0.15);
+    color: #00ffc8;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.stock-confirm-btn:hover {
+    background: rgba(0, 255, 200, 0.3);
+    border-color: #00ffc8;
+    box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+}
+
+.stock-confirm-btn.remove {
+    border-color: rgba(255, 100, 100, 0.5);
+    background: rgba(255, 100, 100, 0.15);
+    color: #ff6666;
+}
+
+.stock-confirm-btn.remove:hover {
+    background: rgba(255, 100, 100, 0.3);
+    border-color: #ff6666;
+    box-shadow: 0 0 10px rgba(255, 100, 100, 0.3);
+}
+
+/* Auto-deduct hint text */
+.auto-deduct-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+    padding-left: 52px;
+}
+
+/* Responsive stock panel */
+@media (max-width: 480px) {
+    .stock-input-panel {
+        gap: 6px;
+        padding: 8px;
+    }
+    .stock-input-field {
+        width: 55px;
+        font-size: 0.8rem;
+    }
+}
+
 /* Product Detail */
 .product-detail-content {
     background: rgba(0, 0, 0, 0.3);

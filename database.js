@@ -943,6 +943,7 @@ async function updateFavoriteProduct(clerkId, productId, updates) {
 }
 
 // Aktualizovat skladovou zásobu produktu v ml
+// Zpětně kompatibilní: zkusí stock_volume_ml, pokud neexistuje, použije stock_quantity
 async function updateProductStock(clerkId, productId, volumeMl) {
     if (!supabaseClient || !clerkId || !productId) return null;
     
@@ -960,6 +961,7 @@ async function updateProductStock(clerkId, productId, volumeMl) {
     const validVolume = Math.max(0, Math.round(parseFloat(volumeMl) * 10) / 10);
     
     try {
+        // Zkusit nový sloupec stock_volume_ml
         const { data, error } = await supabaseClient
             .from('favorite_products')
             .update({ 
@@ -971,12 +973,33 @@ async function updateProductStock(clerkId, productId, volumeMl) {
             .select()
             .single();
         
-        if (error) {
-            console.error('updateProductStock: Error:', error);
-            return null;
+        if (!error) return data;
+        
+        // Fallback: pokud stock_volume_ml neexistuje, zkusit stock_quantity
+        if (error.code === 'PGRST204' || error.message?.includes('stock_volume_ml')) {
+            console.warn('updateProductStock: stock_volume_ml not found, falling back to stock_quantity');
+            const { data: fallbackData, error: fallbackError } = await supabaseClient
+                .from('favorite_products')
+                .update({ 
+                    stock_quantity: validVolume,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', productId)
+                .eq('clerk_id', clerkId)
+                .select()
+                .single();
+            
+            if (fallbackError) {
+                console.error('updateProductStock: Fallback error:', fallbackError);
+                return null;
+            }
+            // Normalizovat výstup — přidat stock_volume_ml alias
+            if (fallbackData) fallbackData.stock_volume_ml = fallbackData.stock_quantity;
+            return fallbackData;
         }
         
-        return data;
+        console.error('updateProductStock: Error:', error);
+        return null;
     } catch (err) {
         console.error('updateProductStock: Database error:', err);
         return null;
@@ -1327,7 +1350,8 @@ async function getLinkedProducts(clerkId, recipeId) {
     }
     
     try {
-        const { data, error } = await supabaseClient
+        // Zkusit nový sloupec stock_volume_ml
+        let { data, error } = await supabaseClient
             .from('recipe_products')
             .select(`
                 product_id,
@@ -1342,6 +1366,36 @@ async function getLinkedProducts(clerkId, recipeId) {
             `)
             .eq('recipe_id', recipeId)
             .eq('clerk_id', clerkId);
+        
+        // Fallback: pokud stock_volume_ml neexistuje, zkusit stock_quantity
+        if (error && (error.code === '42703' || error.message?.includes('stock_volume_ml'))) {
+            console.warn('getLinkedProducts: stock_volume_ml not found, falling back to stock_quantity');
+            const fallback = await supabaseClient
+                .from('recipe_products')
+                .select(`
+                    product_id,
+                    favorite_products (
+                        id,
+                        name,
+                        product_type,
+                        rating,
+                        image_url,
+                        stock_quantity
+                    )
+                `)
+                .eq('recipe_id', recipeId)
+                .eq('clerk_id', clerkId);
+            
+            if (fallback.error) {
+                console.error('Error fetching linked products (fallback):', fallback.error);
+                return [];
+            }
+            // Normalizovat výstup
+            return (fallback.data || [])
+                .map(item => item.favorite_products)
+                .filter(p => p !== null)
+                .map(p => ({ ...p, stock_volume_ml: p.stock_quantity || 0 }));
+        }
         
         if (error) {
             console.error('Error fetching linked products:', error);
