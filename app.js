@@ -5390,10 +5390,14 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
                         const icon = typeIcons[product.product_type] || '📦';
                         const productRating = Math.min(Math.max(parseInt(product.rating) || 0, 0), 5);
                         const productStars = '★'.repeat(productRating) + '☆'.repeat(5 - productRating);
+                        const pStockMl = parseFloat(product.stock_volume_ml ?? product.stock_quantity) || 0;
+                        const pStockDisp = pStockMl > 0 ? (pStockMl % 1 === 0 ? String(pStockMl) : pStockMl.toFixed(1)) : '0';
+                        const pStockClass = pStockMl > 0 ? 'has-stock' : 'no-stock';
                         return `
                             <div class="linked-product-item" onclick="${productClickHandler}('${escapeHtml(product.id)}')">
                                 <span class="linked-product-icon">${icon}</span>
                                 <span class="linked-product-name">${escapeHtml(product.name)}</span>
+                                <span class="linked-product-stock ${pStockClass}">${pStockDisp} ml</span>
                                 <span class="linked-product-rating">${productStars}</span>
                             </div>
                         `;
@@ -5478,19 +5482,17 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     if (!isShared) {
         const liquidStockMl = parseFloat(recipe.liquid_stock_ml) || 0;
         const liquidMaturedMl = parseFloat(recipe.liquid_matured_ml) || 0;
-        if (liquidStockMl > 0) {
-            const stockDisplay = liquidStockMl % 1 === 0 ? String(liquidStockMl) : liquidStockMl.toFixed(1);
-            const maturedDisplay = liquidMaturedMl % 1 === 0 ? String(liquidMaturedMl) : liquidMaturedMl.toFixed(1);
-            liquidStockHtml = `
-            <div class="recipe-info-item">
-                <div class="recipe-info-label">${t('stock.liquid_stock', 'Liquid stock')}</div>
-                <div class="recipe-info-value">📦 ${stockDisplay} ml</div>
-            </div>
-            <div class="recipe-info-item">
-                <div class="recipe-info-label">${t('stock.liquid_matured', 'Matured')}</div>
-                <div class="recipe-info-value">🟢 ${maturedDisplay} ml</div>
-            </div>`;
-        }
+        const stockDisplay = liquidStockMl > 0 ? (liquidStockMl % 1 === 0 ? String(liquidStockMl) : liquidStockMl.toFixed(1)) : '0';
+        const maturedDisplay = liquidMaturedMl > 0 ? (liquidMaturedMl % 1 === 0 ? String(liquidMaturedMl) : liquidMaturedMl.toFixed(1)) : '0';
+        liquidStockHtml = `
+        <div class="recipe-info-item">
+            <div class="recipe-info-label">${t('stock.liquid_stock', 'Liquid stock')}</div>
+            <div class="recipe-info-value" id="recipe-liquid-stock-${recipe.id}">📦 ${stockDisplay} ml</div>
+        </div>
+        <div class="recipe-info-item">
+            <div class="recipe-info-label">${t('stock.liquid_matured', 'Matured')}</div>
+            <div class="recipe-info-value" id="recipe-liquid-matured-${recipe.id}">🟢 ${maturedDisplay} ml</div>
+        </div>`;
     }
     
     contentEl.innerHTML = `
@@ -7837,10 +7839,16 @@ function renderProductsList(products) {
 async function updateProductStockUI(productId, changeMl) {
     if (!window.Clerk?.user || !window.LiquiMixerDB) return;
     
-    const stockElements = document.querySelectorAll(`#product-stock-${productId}, [id="product-stock-${productId}"]`);
+    // Podpora detail- prefixu: strip pro DB, ale updatovat oba elementy
+    const realProductId = productId.replace(/^detail-/, '');
+    
+    // Najít všechny stock elementy (přehled i detail)
+    const stockElements = document.querySelectorAll(
+        `#product-stock-${realProductId}, #product-stock-detail-${realProductId}`
+    );
     
     if (stockElements.length === 0) {
-        console.warn('updateProductStockUI: No stock element found for product', productId);
+        console.warn('updateProductStockUI: No stock element found for product', realProductId);
         return;
     }
     
@@ -7853,7 +7861,7 @@ async function updateProductStockUI(productId, changeMl) {
     });
     
     try {
-        await window.LiquiMixerDB.updateProductStock(window.Clerk.user.id, productId, newStock);
+        await window.LiquiMixerDB.updateProductStock(window.Clerk.user.id, realProductId, newStock);
     } catch (err) {
         console.error('Error updating product stock:', err);
         const revertValue = currentStock % 1 === 0 ? String(currentStock) : currentStock.toFixed(1);
@@ -8141,22 +8149,22 @@ function displayProductDetail(product, linkedRecipes = []) {
         <div class="product-detail-stock">
             <span class="stock-label">${t('reminder.stock_label', 'Sklad')}:</span>
             <div class="product-stock-controls">
-                <button type="button" class="stock-btn minus large" onclick="toggleStockMinusInput('${product.id}')">−</button>
-                <span class="stock-quantity large" id="product-stock-${product.id}">${stockDisplay}</span>
+                <button type="button" class="stock-btn minus large" onclick="toggleStockMinusInput('detail-${product.id}')">−</button>
+                <span class="stock-quantity large" id="product-stock-detail-${product.id}">${stockDisplay}</span>
                 <span class="stock-unit">ml</span>
-                <button type="button" class="stock-btn plus large" onclick="toggleStockPlusInput('${product.id}')">+</button>
+                <button type="button" class="stock-btn plus large" onclick="toggleStockPlusInput('detail-${product.id}')">+</button>
             </div>
-            <div class="stock-input-panel hidden" id="stock-plus-panel-${product.id}">
+            <div class="stock-input-panel hidden" id="stock-plus-panel-detail-${product.id}">
                 <label>${t('stock.pieces', 'ks')}:</label>
-                <input type="number" class="stock-input-field" id="stock-plus-pcs-${product.id}" value="1" min="1" step="1">
+                <input type="number" class="stock-input-field" id="stock-plus-pcs-detail-${product.id}" value="1" min="1" step="1">
                 <label>× ml:</label>
-                <input type="number" class="stock-input-field" id="stock-plus-ml-${product.id}" placeholder="ml" min="0.1" step="0.1">
-                <button type="button" class="stock-confirm-btn" onclick="confirmStockAdd('${product.id}')">${t('stock.add', 'Přidat')}</button>
+                <input type="number" class="stock-input-field" id="stock-plus-ml-detail-${product.id}" placeholder="ml" min="0.1" step="0.1">
+                <button type="button" class="stock-confirm-btn" onclick="confirmStockAdd('detail-${product.id}')">${t('stock.add', 'Přidat')}</button>
             </div>
-            <div class="stock-input-panel hidden" id="stock-minus-panel-${product.id}">
+            <div class="stock-input-panel hidden" id="stock-minus-panel-detail-${product.id}">
                 <label>${t('stock.remove_ml', 'Odebrat ml')}:</label>
-                <input type="number" class="stock-input-field" id="stock-minus-ml-${product.id}" value="10" min="0.1" step="0.1">
-                <button type="button" class="stock-confirm-btn remove" onclick="confirmStockRemove('${product.id}')">${t('stock.remove', 'Odebrat')}</button>
+                <input type="number" class="stock-input-field" id="stock-minus-ml-detail-${product.id}" value="10" min="0.1" step="0.1">
+                <button type="button" class="stock-confirm-btn remove" onclick="confirmStockRemove('detail-${product.id}')">${t('stock.remove', 'Odebrat')}</button>
             </div>
         </div>
         ${urlHtml}
@@ -18145,6 +18153,30 @@ async function updateReminderStockUI(reminderId, recipeId, delta) {
             }
         } else {
             await window.database.updateReminderStock(clerkId, reminderId, newStock);
+        }
+        
+        // Live přepočet liquid stock zobrazení (DB trigger už přepočítal cache sloupce)
+        if (recipeId) {
+            try {
+                const updatedRecipe = await window.LiquiMixerDB.getRecipeById(clerkId, recipeId);
+                if (updatedRecipe) {
+                    const lsMl = parseFloat(updatedRecipe.liquid_stock_ml) || 0;
+                    const lmMl = parseFloat(updatedRecipe.liquid_matured_ml) || 0;
+                    const lsDisp = lsMl > 0 ? (lsMl % 1 === 0 ? String(lsMl) : lsMl.toFixed(1)) : '0';
+                    const lmDisp = lmMl > 0 ? (lmMl % 1 === 0 ? String(lmMl) : lmMl.toFixed(1)) : '0';
+                    const lsEl = document.getElementById(`recipe-liquid-stock-${recipeId}`);
+                    const lmEl = document.getElementById(`recipe-liquid-matured-${recipeId}`);
+                    if (lsEl) lsEl.textContent = `📦 ${lsDisp} ml`;
+                    if (lmEl) lmEl.textContent = `🟢 ${lmDisp} ml`;
+                    // Aktualizovat i lokální objekt
+                    if (window.currentViewingRecipe && window.currentViewingRecipe.id === recipeId) {
+                        window.currentViewingRecipe.liquid_stock_ml = lsMl;
+                        window.currentViewingRecipe.liquid_matured_ml = lmMl;
+                    }
+                }
+            } catch (e) {
+                console.warn('Live liquid stock update failed:', e);
+            }
         }
     } catch (error) {
         console.error('Error updating stock:', error);

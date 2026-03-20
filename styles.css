@@ -3092,6 +3092,12 @@ body {
     background: rgba(0, 0, 0, 0.3);
     border-radius: var(--border-radius);
     border: 1px solid rgba(0, 255, 255, 0.3);
+    flex-wrap: wrap;
+}
+
+.product-detail-stock .stock-input-panel {
+    flex-basis: 100%;
+    justify-content: center;
 }
 
 .product-detail-stock .stock-label {
@@ -6288,6 +6294,26 @@ button.locked {
     flex: 1;
     color: var(--text-primary);
     font-size: 1rem;
+}
+
+.linked-product-stock {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.linked-product-stock.has-stock {
+    color: #00ffc8;
+    background: rgba(0, 255, 200, 0.15);
+    border: 1px solid rgba(0, 255, 200, 0.3);
+}
+
+.linked-product-stock.no-stock {
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .linked-product-rating {
