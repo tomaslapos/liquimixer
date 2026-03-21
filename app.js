@@ -14307,8 +14307,21 @@ async function detectUserLocation() {
     };
     
     try {
-        // VŽDY zkusit IP geolokaci - i pro nepřihlášené uživatele
-        // Pro přihlášené použít Clerk token, pro nepřihlášené bez tokenu
+        // 1. Zjistit skutečnou IP klienta přímo z browseru
+        //    (Supabase Edge Functions nevidí klientskou IP - vidí svou vlastní)
+        let clientIp = null;
+        try {
+            const ipResp = await fetch('https://api.ipify.org?format=json');
+            if (ipResp.ok) {
+                const ipData = await ipResp.json();
+                clientIp = ipData.ip;
+                console.log('Client IP detected:', clientIp);
+            }
+        } catch (ipErr) {
+            console.warn('Client IP detection failed:', ipErr.message);
+        }
+
+        // 2. Poslat IP na edge funkci pro geolokaci + pricing
         const clerkToken = window.Clerk?.user ? await getClerkToken() : null;
         
         const response = await fetch(`${getSupabaseUrl()}/functions/v1/geolocation`, {
@@ -14320,7 +14333,10 @@ async function detectUserLocation() {
             },
             body: JSON.stringify({ 
                 action: 'detect',
-                data: { clerkId: window.Clerk?.user?.id || null }
+                data: { 
+                    clerkId: window.Clerk?.user?.id || null,
+                    clientIp: clientIp
+                }
             })
         });
 

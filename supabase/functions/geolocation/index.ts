@@ -61,8 +61,10 @@ serve(async (req) => {
         console.log('x-real-ip:', req.headers.get('x-real-ip'))
         
         // Detekovat zemi uživatele z IP adresy
-        const clientIp = getClientIp(req)
-        console.log('clientIp:', clientIp)
+        // Priorita: 1. clientIp z frontendu (browser ví svou skutečnou IP)
+        //           2. headery (cf-connecting-ip, x-forwarded-for)
+        const clientIp = data?.clientIp || getClientIp(req)
+        console.log('clientIp:', clientIp, '(from frontend:', !!data?.clientIp, ')')
         
         // Použít IP geolokační službu
         const geoData = await detectCountryFromIp(clientIp, req)
@@ -85,6 +87,13 @@ serve(async (req) => {
         const region = determineRegion(geoData.countryCode)
         const pricing = getPricing(geoData.countryCode, region, vatInfo)
 
+        // DEBUG: Dump všech headerů pro diagnostiku IP detekce
+        const allHeaders: Record<string, string> = {}
+        req.headers.forEach((value, key) => {
+          allHeaders[key] = value
+        })
+        console.log('ALL HEADERS:', JSON.stringify(allHeaders))
+
         const result = {
           countryCode: geoData.countryCode,
           countryName: vatInfo?.country_name || geoData.countryName,
@@ -96,6 +105,7 @@ serve(async (req) => {
           vatAmount: pricing.vatAmount,
           detectionMethod: geoData.method,
           ip: clientIp,
+          _debug_headers: allHeaders, // TEMP: pro diagnostiku
         }
 
         // Uložit lokaci pokud máme clerk_id
