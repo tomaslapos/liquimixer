@@ -468,6 +468,20 @@ serve(async (req) => {
 
         const redirectUrl = `${GPWEBPAY_CONFIG.gatewayUrl}?${gatewayParams.toString()}`
 
+        // DEBUG: Log přesné parametry pro diagnostiku PRCODE=3 SRCODE=7
+        console.log('=== GPWEBPAY DEBUG ===')
+        console.log('dataToSign:', dataToSign)
+        console.log('resolvedPayMethod:', resolvedPayMethod)
+        console.log('AMOUNT:', amountInSmallestUnit.toString())
+        console.log('CURRENCY:', currencyCode)
+        console.log('CALLBACK_URL:', CALLBACK_URL)
+        console.log('orderNumber:', orderNumber)
+        console.log('subscription.currency:', subscription.currency)
+        console.log('subscription.total_amount:', subscription.total_amount)
+        console.log('gatewayUrl:', GPWEBPAY_CONFIG.gatewayUrl)
+        console.log('Full redirect URL length:', redirectUrl.length)
+        console.log('=== END DEBUG ===')
+
         // 10. Aktualizovat subscription s payment ID
         await supabaseAdmin
           .from('subscriptions')

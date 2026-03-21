@@ -14095,13 +14095,20 @@ async function showSubscriptionModal(skipTermsCheck = false) {
     try {
         const locationPromise = detectUserLocation();
         const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Location detection timeout')), 5000)
+            setTimeout(() => reject(new Error('Location detection timeout')), 10000)
         );
         await Promise.race([locationPromise, timeoutPromise]);
     } catch (error) {
         console.warn('showSubscriptionModal: Location detection failed:', error.message);
-        // Nastavit fallback cenu
-        userLocation = { grossAmount: 59, currency: 'CZK', vatRate: 21 };
+        // Fallback cena podle locale (ne hardcoded CZK)
+        if (!userLocation) {
+            const loc = window.i18n?.getLocale() || 'cs';
+            const fallbackCurrMap = { 'cs': 'CZK', 'en': 'USD', 'ko': 'USD', 'ja': 'USD', 'zh-CN': 'USD', 'zh-TW': 'USD', 'ar-SA': 'USD' };
+            const fallbackCurr = fallbackCurrMap[loc] || 'EUR';
+            const fallbackPrices = { 'CZK': { grossAmount: 59, currency: 'CZK', vatRate: 21 }, 'EUR': { grossAmount: 2.4, currency: 'EUR', vatRate: 20 }, 'USD': { grossAmount: 2.9, currency: 'USD', vatRate: 0 } };
+            userLocation = { countryCode: fallbackCurr === 'CZK' ? 'CZ' : 'XX', ...fallbackPrices[fallbackCurr] };
+            console.log('showSubscriptionModal: fallback userLocation:', userLocation);
+        }
     }
     
     // Skrýt loader

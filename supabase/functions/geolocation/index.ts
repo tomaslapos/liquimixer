@@ -53,11 +53,21 @@ serve(async (req) => {
 
     switch (action) {
       case 'detect': {
+        // DEBUG: Log všechny relevantní headery
+        console.log('=== GEOLOCATION DEBUG ===')
+        console.log('cf-ipcountry:', req.headers.get('cf-ipcountry'))
+        console.log('cf-connecting-ip:', req.headers.get('cf-connecting-ip'))
+        console.log('x-forwarded-for:', req.headers.get('x-forwarded-for'))
+        console.log('x-real-ip:', req.headers.get('x-real-ip'))
+        
         // Detekovat zemi uživatele z IP adresy
         const clientIp = getClientIp(req)
+        console.log('clientIp:', clientIp)
         
         // Použít IP geolokační službu
-        const geoData = await detectCountryFromIp(clientIp)
+        const geoData = await detectCountryFromIp(clientIp, req)
+        console.log('geoData:', JSON.stringify(geoData))
+        console.log('=== END GEOLOCATION DEBUG ===')
         
         // Získat DPH sazbu z databáze
         let vatInfo = null
@@ -243,27 +253,39 @@ function getClientIp(req: Request): string {
   return 'unknown'
 }
 
-// Detekovat zemi z IP adresy
-async function detectCountryFromIp(ip: string): Promise<{
+// Detekovat zemi z Cloudflare headeru nebo IP adresy
+async function detectCountryFromIp(ip: string, req?: Request): Promise<{
   countryCode: string | null
   countryName: string | null
   method: string
 }> {
+  // 1. Cloudflare cf-ipcountry header (nejspolehlivější, automaticky nastavený)
+  if (req) {
+    const cfCountry = req.headers.get('cf-ipcountry')
+    if (cfCountry && cfCountry !== 'XX' && cfCountry !== 'T1') {
+      console.log('Country detected from cf-ipcountry header:', cfCountry)
+      return {
+        countryCode: cfCountry.toUpperCase(),
+        countryName: null,
+        method: 'cloudflare'
+      }
+    }
+  }
+
   if (ip === 'unknown' || ip.startsWith('127.') || ip.startsWith('192.168.') || ip.startsWith('10.')) {
     return { countryCode: 'CZ', countryName: 'Czech Republic', method: 'default_localhost' }
   }
 
+  // 2. ipinfo.io - HTTPS zdarma (50k req/měsíc bez klíče)
   try {
-    // Použít bezplatnou IP geolokační službu
-    // ip-api.com - 45 požadavků/minutu zdarma
-    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,countryCode,country`)
+    const response = await fetch(`https://ipinfo.io/${ip}/json`)
     
     if (response.ok) {
       const data = await response.json()
-      if (data.status === 'success') {
+      if (data.country) {
         return {
-          countryCode: data.countryCode,
-          countryName: data.country,
+          countryCode: data.country,
+          countryName: null,
           method: 'geoip'
         }
       }
@@ -272,7 +294,7 @@ async function detectCountryFromIp(ip: string): Promise<{
     console.error('GeoIP lookup failed:', error)
   }
 
-  // Alternativní služba - ipapi.co
+  // 3. Alternativní služba - ipapi.co
   try {
     const response = await fetch(`https://ipapi.co/${ip}/json/`)
     if (response.ok) {
