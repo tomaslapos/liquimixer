@@ -394,7 +394,35 @@ Deno.serve(async (req) => {
       results.push({ table: 'report_contact_messages', rows: 0, error: e.message })
     }
 
-    // ========== 10. AKTUALIZOVAT POČTY V REPORT_USERS ==========
+    // ========== 10. AFFILIATE DATA ==========
+    try {
+      // Načíst user_affiliations s affiliate_shops z hlavní DB
+      const { data: affiliations, error } = await mainDb
+        .from('user_affiliations')
+        .select('clerk_id, affiliate_shops(name, slug)')
+
+      if (error) throw error
+
+      if (affiliations && affiliations.length > 0) {
+        for (const aff of affiliations) {
+          const shop = (aff as any).affiliate_shops
+          if (shop && aff.clerk_id) {
+            await analyticsDb
+              .from('report_users')
+              .update({
+                affiliate_shop_name: shop.name,
+                affiliate_shop_slug: shop.slug,
+              })
+              .eq('clerk_id', aff.clerk_id)
+          }
+        }
+      }
+      results.push({ table: 'user_affiliations→report_users', rows: affiliations?.length || 0 })
+    } catch (e: any) {
+      results.push({ table: 'user_affiliations→report_users', rows: 0, error: e.message })
+    }
+
+    // ========== 11. AKTUALIZOVAT POČTY V REPORT_USERS ==========
     try {
       // Počty receptů per user
       const { data: recipeCounts } = await analyticsDb

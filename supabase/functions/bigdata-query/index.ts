@@ -291,6 +291,8 @@ first_name: TEXT — User's first name (from Clerk/social login)
 last_name: TEXT — User's last name
 created_at: TIMESTAMPTZ — Registration timestamp
 last_active_at: TIMESTAMPTZ — Last login or activity timestamp
+affiliate_shop_name: TEXT (nullable) — Name of the affiliate e-shop the user came from (e.g. 'VapeShop CZ', 'Shisha World'). NULL = user did not come via an affiliate link. Synced from main DB user_affiliations + affiliate_shops tables.
+affiliate_shop_slug: TEXT (nullable) — URL slug of the affiliate e-shop (e.g. 'vapeshop-cz', 'shisha-world'). Used to identify the e-shop in URLs like liquimixer.com/vapeshop-cz. NULL = no affiliate.
 
 TYPICAL QUESTIONS → QUERIES:
 - "kolik máme registrovaných uživatelů" → SELECT COUNT(*) FROM report_users
@@ -301,6 +303,35 @@ TYPICAL QUESTIONS → QUERIES:
 - "měsíční registrace" → SELECT date_trunc('month', created_at) AS month, COUNT(*) FROM report_users GROUP BY month ORDER BY month
 - "aktivní vs neaktivní" → SELECT CASE WHEN last_active_at > NOW() - INTERVAL '30 days' THEN 'active_30d' ELSE 'inactive' END, COUNT(*) FROM report_users GROUP BY 1
 - "průměrný počet receptů na uživatele" → SELECT AVG(recipe_count) FROM report_users WHERE recipe_count > 0
+- "uživatelé z affiliate eshopů" → SELECT affiliate_shop_name, COUNT(*) FROM report_users WHERE affiliate_shop_name IS NOT NULL GROUP BY affiliate_shop_name ORDER BY count DESC
+- "kolik affiliate uživatelů má PRO" → SELECT affiliate_shop_name, COUNT(*) FILTER (WHERE has_subscription) AS pro, COUNT(*) AS total, COUNT(*) FILTER (WHERE has_subscription) * 100.0 / NULLIF(COUNT(*), 0) AS conversion_pct FROM report_users WHERE affiliate_shop_name IS NOT NULL GROUP BY affiliate_shop_name ORDER BY total DESC
+- "affiliate vs non-affiliate konverze" → SELECT CASE WHEN affiliate_shop_name IS NOT NULL THEN 'affiliate' ELSE 'organic' END AS source, COUNT(*) AS users, COUNT(*) FILTER (WHERE has_subscription) AS pro_users, COUNT(*) FILTER (WHERE has_subscription) * 100.0 / NULLIF(COUNT(*), 0) AS conversion_pct FROM report_users GROUP BY 1
+
+=== TABLE: report_affiliate_clicks ===
+Affiliate e-shop click tracking. Every row = one click on "buy ingredients" button or modal redirecting user to partner e-shop.
+This tracks how often users click through to affiliate e-shops from the LiquiMixer app.
+Two click sources exist: 'button' (low stock buy button in recipe detail) and 'modal' (post-steeping reminder modal).
+
+COLUMNS:
+id: UUID (PK)
+clerk_id: TEXT (nullable) — Logged-in user ID. NULL = anonymous user.
+anonymous_id: UUID — Device identifier from localStorage.
+affiliate_shop_name: TEXT NOT NULL — Name of the e-shop clicked (e.g. 'VapeShop CZ')
+affiliate_shop_slug: TEXT NOT NULL — URL slug of the e-shop (e.g. 'vapeshop-cz')
+click_source: TEXT NOT NULL — Where the click originated: 'button' (recipe detail low stock) or 'modal' (steeping reminder popup)
+locale: TEXT — User's browser language
+device_type: TEXT — 'desktop', 'mobile', or 'tablet'
+created_at: TIMESTAMPTZ — When the click happened
+
+TYPICAL QUESTIONS → QUERIES:
+- "kolik kliků na eshopy" → SELECT COUNT(*) FROM report_affiliate_clicks
+- "kliky podle eshopu" → SELECT affiliate_shop_name, COUNT(*) FROM report_affiliate_clicks GROUP BY affiliate_shop_name ORDER BY count DESC
+- "kliky button vs modal" → SELECT click_source, COUNT(*) FROM report_affiliate_clicks GROUP BY click_source
+- "denní trend kliků" → SELECT date_trunc('day', created_at) AS day, COUNT(*) FROM report_affiliate_clicks GROUP BY day ORDER BY day
+- "kliky podle eshopu a zdroje" → SELECT affiliate_shop_name, click_source, COUNT(*) FROM report_affiliate_clicks GROUP BY affiliate_shop_name, click_source ORDER BY count DESC
+- "unikátní uživatelé kteří klikli na eshop" → SELECT COUNT(DISTINCT COALESCE(clerk_id, anonymous_id::text)) FROM report_affiliate_clicks
+- "konverze affiliate kliků na PRO" → SELECT rac.affiliate_shop_name, COUNT(DISTINCT rac.clerk_id) AS clickers, COUNT(DISTINCT CASE WHEN ru.has_subscription THEN rac.clerk_id END) AS pro_clickers FROM report_affiliate_clicks rac JOIN report_users ru ON rac.clerk_id = ru.clerk_id GROUP BY rac.affiliate_shop_name
+- "kliky mobilní vs desktop" → SELECT device_type, COUNT(*) FROM report_affiliate_clicks GROUP BY device_type ORDER BY count DESC
 
 === TABLE: report_recipes ===
 User-saved recipes. One row = one saved recipe (private or public).
@@ -690,6 +721,23 @@ AI auto-resolution rate by category:
   SELECT category, COUNT(*) FILTER (WHERE ai_auto_resolved) * 100.0 / NULLIF(COUNT(*), 0) AS auto_pct, COUNT(*)
   FROM report_contact_messages GROUP BY category ORDER BY auto_pct DESC
 
+=== AFFILIATE INTELLIGENCE ===
+
+Affiliate user overview (how many users came from each e-shop):
+  SELECT affiliate_shop_name, COUNT(*) AS users, COUNT(*) FILTER (WHERE has_subscription) AS pro_users,
+    COUNT(*) FILTER (WHERE has_subscription) * 100.0 / NULLIF(COUNT(*), 0) AS conversion_pct
+  FROM report_users WHERE affiliate_shop_name IS NOT NULL GROUP BY affiliate_shop_name ORDER BY users DESC
+
+Affiliate clicks over time:
+  SELECT date_trunc('day', created_at) AS day, affiliate_shop_name, click_source, COUNT(*)
+  FROM report_affiliate_clicks GROUP BY day, affiliate_shop_name, click_source ORDER BY day
+
+Affiliate click-through rate by shop (clicks per affiliated user):
+  SELECT ru.affiliate_shop_name, COUNT(DISTINCT ru.clerk_id) AS users, COUNT(rac.id) AS clicks,
+    COUNT(rac.id)::numeric / NULLIF(COUNT(DISTINCT ru.clerk_id), 0) AS clicks_per_user
+  FROM report_users ru LEFT JOIN report_affiliate_clicks rac ON ru.clerk_id = rac.clerk_id
+  WHERE ru.affiliate_shop_name IS NOT NULL GROUP BY ru.affiliate_shop_name ORDER BY clicks DESC
+
 === GEOGRAPHIC INTELLIGENCE ===
 
 Users + calculations by country:
@@ -754,6 +802,7 @@ Available tables:
 - report_flavors — public flavor database (names, manufacturers, recommended %, steep days)
 - report_payments — GP WebPay payment records
 - report_contact_messages — support message metadata
+- report_affiliate_clicks — affiliate e-shop click tracking (button/modal clicks to partner shops)
 - sync_log — data sync history
 
 All tables are in the SAME database and can be JOINed freely.

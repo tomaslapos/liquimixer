@@ -1689,7 +1689,7 @@ async function showAffiliateBuyButton(recipeId, linkedProducts, linkedFlavors) {
     const btnText = t('affiliate.buy_ingredients', 'Dokoupit ingredience pro další míchání v eshopu {shop}').replace('{shop}', escapeHtml(shop.name));
 
     container.innerHTML = `
-        <button type="button" class="affiliate-buy-btn" onclick="window.open('${escapeHtml(shop.url)}', '_blank')">
+        <button type="button" class="affiliate-buy-btn" onclick="logAffiliateClick('${escapeHtml(shop.name)}', '${escapeHtml(shop.slug)}', 'button'); window.open('${escapeHtml(shop.url)}', '_blank')">
             🛒 ${btnText}
         </button>
     `;
@@ -1719,7 +1719,7 @@ async function showAffiliateBuyModal() {
             <div class="affiliate-modal-icon">🛒</div>
             <h3 class="affiliate-modal-title">${title}</h3>
             <div class="affiliate-modal-actions">
-                <button type="button" class="btn-primary affiliate-modal-btn-shop" onclick="window.open('${escapeHtml(shop.url)}', '_blank'); document.getElementById('affiliateBuyModal').classList.add('hidden');">
+                <button type="button" class="btn-primary affiliate-modal-btn-shop" onclick="logAffiliateClick('${escapeHtml(shop.name)}', '${escapeHtml(shop.slug)}', 'modal'); window.open('${escapeHtml(shop.url)}', '_blank'); document.getElementById('affiliateBuyModal').classList.add('hidden');">
                     ${btnShop}
                 </button>
                 <button type="button" class="btn-secondary affiliate-modal-btn-later" onclick="document.getElementById('affiliateBuyModal').classList.add('hidden');">
@@ -3938,6 +3938,36 @@ async function logCalculation(data) {
         }).catch(() => {});
     } catch (e) {
         // Nesmí nikdy rozbít hlavní výpočet
+    }
+}
+
+// ============================================
+// AFFILIATE CLICK LOGGING (Analytics DB)
+// ============================================
+
+function logAffiliateClick(shopName, shopSlug, clickSource) {
+    try {
+        const payload = {
+            affiliate_shop_name: shopName,
+            affiliate_shop_slug: shopSlug,
+            click_source: clickSource,
+            anonymous_id: getAnonymousId(),
+            clerk_id: window.Clerk?.user?.id || null,
+            locale: navigator.language || 'en',
+            device_type: getDeviceType(),
+        };
+
+        const sbUrl = getSupabaseUrl();
+        fetch(sbUrl + '/functions/v1/affiliate-click-log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getSupabaseAnonKey()
+            },
+            body: JSON.stringify(payload)
+        }).catch(() => {});
+    } catch (e) {
+        // Nesmí nikdy rozbít hlavní UI
     }
 }
 
