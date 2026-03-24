@@ -1335,6 +1335,9 @@ let nicotineTypeSelect, flavorTypeSelect;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Affiliate eshop detection — rozpoznání affiliate slugu z URL
+    handleAffiliateDetection();
+
     // GDPR result page — redirect from Supabase edge function
     handleGdprResult();
 
@@ -1592,6 +1595,153 @@ function handlePaymentReturn() {
         setTimeout(showFailMessage, 1000);
     }
 }
+
+// ============================================
+// AFFILIATE ESHOP DETECTION
+// Rozpoznání affiliate eshopu z URL pathname (www.liquimixer.com/slug)
+// ============================================
+const AFFILIATE_STORAGE_KEY = 'liquimixer_affiliate_slug';
+
+function handleAffiliateDetection() {
+    const pathname = window.location.pathname;
+    // Slug je první segment cesty, bez lomítek, pouze alfanumerické znaky a pomlčky
+    const match = pathname.match(/^\/([a-z0-9][a-z0-9-]{1,60})$/i);
+    if (!match) return;
+
+    const slug = match[1].toLowerCase();
+
+    // Vyloučit známé cesty (blog, seo, icons, locales, docs apod.)
+    const reservedPaths = ['blog', 'seo', 'icons', 'locales', 'docs', 'scripts', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml'];
+    if (reservedPaths.includes(slug)) return;
+
+    console.log('Affiliate slug detected:', slug);
+
+    // Uložit slug do localStorage pro pozdější propojení s uživatelem
+    localStorage.setItem(AFFILIATE_STORAGE_KEY, JSON.stringify({
+        slug: slug,
+        detectedAt: Date.now()
+    }));
+
+    // Přesměrovat na hlavní stránku (vyčistit pathname)
+    window.history.replaceState({}, document.title, '/' + window.location.search);
+}
+
+// Získat uložený affiliate slug (platný max 30 dní)
+function getAffiliateSlug() {
+    try {
+        const raw = localStorage.getItem(AFFILIATE_STORAGE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        // Expirace 30 dní
+        if (Date.now() - data.detectedAt > 30 * 24 * 60 * 60 * 1000) {
+            localStorage.removeItem(AFFILIATE_STORAGE_KEY);
+            return null;
+        }
+        return data.slug;
+    } catch {
+        return null;
+    }
+}
+
+// Vyčistit affiliate slug po úspěšném propojení
+function clearAffiliateSlug() {
+    localStorage.removeItem(AFFILIATE_STORAGE_KEY);
+}
+
+// Uložený affiliate shop pro aktuálního uživatele (cache)
+let _cachedAffiliateShop = undefined; // undefined = nezjištěno, null = nemá
+
+// Načíst affiliate shop pro aktuálního uživatele
+async function loadUserAffiliateShop() {
+    if (_cachedAffiliateShop !== undefined) return _cachedAffiliateShop;
+    if (!window.Clerk?.user || !window.LiquiMixerDB?.getUserAffiliateShop) {
+        _cachedAffiliateShop = null;
+        return null;
+    }
+    try {
+        _cachedAffiliateShop = await window.LiquiMixerDB.getUserAffiliateShop(window.Clerk.user.id);
+    } catch {
+        _cachedAffiliateShop = null;
+    }
+    return _cachedAffiliateShop;
+}
+
+// Zobrazit affiliate tlačítko "dokoupit ingredience" v detailu receptu
+async function showAffiliateBuyButton(recipeId, linkedProducts, linkedFlavors) {
+    const shop = await loadUserAffiliateShop();
+    if (!shop) return;
+
+    // Zjistit, zda je nedostatečná zásoba u některého produktu/příchutě
+    const hasLowStock = (linkedProducts || []).some(p => {
+        const stock = parseFloat(p.stock_volume_ml ?? p.stock_quantity) || 0;
+        return stock <= 0;
+    }) || (linkedFlavors || []).some(f => {
+        if (!f.favorite_product_id) return false;
+        const stock = parseFloat(f.stock_volume_ml) || 0;
+        return stock <= 0;
+    });
+
+    if (!hasLowStock) return;
+
+    const container = document.getElementById(`affiliateBuyBtn-${recipeId}`);
+    if (!container) return;
+
+    const btnText = t('affiliate.buy_ingredients', 'Dokoupit ingredience pro další míchání v eshopu {shop}').replace('{shop}', escapeHtml(shop.name));
+
+    container.innerHTML = `
+        <button type="button" class="affiliate-buy-btn" onclick="window.open('${escapeHtml(shop.url)}', '_blank')">
+            🛒 ${btnText}
+        </button>
+    `;
+    container.classList.remove('hidden');
+}
+
+// Modál "dokoupit ingredience" po vytvoření připomínky zrání
+async function showAffiliateBuyModal() {
+    const shop = await loadUserAffiliateShop();
+    if (!shop) return;
+
+    const title = t('affiliate.buy_modal_title', 'Dokoupit ingredience pro další míchání v eshopu {shop}').replace('{shop}', escapeHtml(shop.name));
+    const btnShop = t('affiliate.go_to_shop', 'Do eshopu');
+    const btnLater = t('affiliate.not_now', 'Teď ne');
+
+    // Vytvořit modál
+    let modal = document.getElementById('affiliateBuyModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'affiliateBuyModal';
+        modal.className = 'modal-overlay';
+        document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+        <div class="modal-content affiliate-modal-content">
+            <div class="affiliate-modal-icon">🛒</div>
+            <h3 class="affiliate-modal-title">${title}</h3>
+            <div class="affiliate-modal-actions">
+                <button type="button" class="btn-primary affiliate-modal-btn-shop" onclick="window.open('${escapeHtml(shop.url)}', '_blank'); document.getElementById('affiliateBuyModal').classList.add('hidden');">
+                    ${btnShop}
+                </button>
+                <button type="button" class="btn-secondary affiliate-modal-btn-later" onclick="document.getElementById('affiliateBuyModal').classList.add('hidden');">
+                    ${btnLater}
+                </button>
+            </div>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+// Vyčistit cache affiliate eshopu při odhlášení
+function clearAffiliateShopCache() {
+    _cachedAffiliateShop = undefined;
+}
+
+// Export
+window.getAffiliateSlug = getAffiliateSlug;
+window.clearAffiliateSlug = clearAffiliateSlug;
+window.showAffiliateBuyModal = showAffiliateBuyModal;
+window.showAffiliateBuyButton = showAffiliateBuyButton;
+window.clearAffiliateShopCache = clearAffiliateShopCache;
 
 // Aktualizovat dynamické texty při změně jazyka
 window.addEventListener('localeChanged', () => {
@@ -5567,6 +5717,9 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
         ${linkedProductsHtml}
         ${linkedFlavorsHtml}
         
+        <!-- Affiliate: tlačítko "dokoupit ingredience" při nedostatečné zásobě -->
+        <div id="affiliateBuyBtn-${escapeHtml(recipe.id)}" class="affiliate-buy-section hidden"></div>
+        
         <div class="recipe-meta-info">
             <p class="recipe-date">${t('recipe_detail.created', 'Created')}: ${date}</p>
         </div>
@@ -5588,6 +5741,8 @@ function displayRecipeDetail(recipe, titleId, contentId, linkedProducts = [], is
     // Načíst připomínky pro vlastní recepty
     if (contentId === 'recipeDetailContent' && recipe.id) {
         setTimeout(() => loadRecipeReminders(recipe.id), 100);
+        // Affiliate: zobrazit tlačítko "dokoupit ingredience" při nedostatečné zásobě
+        showAffiliateBuyButton(recipe.id, linkedProducts, linkedFlavors);
     }
 }
 
@@ -15436,6 +15591,11 @@ async function saveReminderFromModal(event) {
         if (currentPageId === 'my-recipes') filterRecipes();
         // Zkontrolovat zda nová připomínka je vyzrálá a zobrazit notifikaci
         checkMaturedReminders();
+        
+        // Affiliate: zobrazit modál "dokoupit ingredience" po uložení nové připomínky
+        if (!editingReminderId) {
+            showAffiliateBuyModal();
+        }
     } catch (error) {
         console.error('Error saving reminder:', error);
         alert(t('reminder.save_error', 'Chyba při ukládání připomínky.'));

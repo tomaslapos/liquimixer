@@ -1254,5 +1254,11 @@
     "remove_ml": "Usuń ml",
     "remove": "Usuń",
     "enter_ml": "Podaj objętość w ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Dokup składniki do następnego miksu w {shop}",
+    "buy_modal_title": "Dokup składniki do następnego miksu w {shop}",
+    "go_to_shop": "Do sklepu",
+    "not_now": "Nie teraz"
   }
 }

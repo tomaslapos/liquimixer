@@ -1254,5 +1254,11 @@
     "remove_ml": "Remover ml",
     "remove": "Remover",
     "enter_ml": "Insira o volume em ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Comprar ingredientes para a próxima mistura em {shop}",
+    "buy_modal_title": "Comprar ingredientes para a próxima mistura em {shop}",
+    "go_to_shop": "Ir para a loja",
+    "not_now": "Agora não"
   }
 }

@@ -1254,5 +1254,11 @@
     "remove_ml": "ml verwijderen",
     "remove": "Verwijderen",
     "enter_ml": "Voer het volume in ml in."
+  },
+  "affiliate": {
+    "buy_ingredients": "Ingrediënten bijkopen voor je volgende mix bij {shop}",
+    "buy_modal_title": "Ingrediënten bijkopen voor je volgende mix bij {shop}",
+    "go_to_shop": "Naar de winkel",
+    "not_now": "Niet nu"
   }
 }

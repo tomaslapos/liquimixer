@@ -1254,5 +1254,11 @@
     "remove_ml": "ml削除",
     "remove": "削除",
     "enter_ml": "mlでボリュームを入力してください。"
+  },
+  "affiliate": {
+    "buy_ingredients": "{shop}で次のミックス用の材料を購入",
+    "buy_modal_title": "{shop}で次のミックス用の材料を購入",
+    "go_to_shop": "ショップへ",
+    "not_now": "今はしない"
   }
 }

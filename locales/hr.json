@@ -1254,5 +1254,11 @@
     "remove_ml": "Ukloni ml",
     "remove": "Ukloni",
     "enter_ml": "Unesite volumen u ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Dokupite sastojke za sljedeće miješanje u {shop}",
+    "buy_modal_title": "Dokupite sastojke za sljedeće miješanje u {shop}",
+    "go_to_shop": "U trgovinu",
+    "not_now": "Ne sada"
   }
 }

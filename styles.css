@@ -9341,3 +9341,96 @@ body.subscription-required #subscriptionModal {
 .flavor-input-wrapper {
     position: relative;
 }
+
+/* ============================================
+   AFFILIATE ESHOP STYLES
+   ============================================ */
+
+/* Tlačítko "dokoupit ingredience" v detailu receptu */
+.affiliate-buy-section {
+    margin: 16px 0;
+}
+
+.affiliate-buy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.affiliate-buy-btn:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.affiliate-buy-btn:active {
+    transform: translateY(0);
+}
+
+/* Affiliate modál */
+.affiliate-modal-content {
+    text-align: center;
+    padding: 30px 24px;
+    max-width: 400px;
+}
+
+.affiliate-modal-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.affiliate-modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.affiliate-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.affiliate-modal-btn-shop {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.affiliate-modal-btn-shop:hover {
+    opacity: 0.9;
+}
+
+.affiliate-modal-btn-later {
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.affiliate-modal-btn-later:hover {
+    background: var(--bg-secondary);
+}

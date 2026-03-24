@@ -1254,5 +1254,11 @@
     "remove_ml": "移除 ml",
     "remove": "移除",
     "enter_ml": "请输入体积（ml）。"
+  },
+  "affiliate": {
+    "buy_ingredients": "在{shop}购买下次调配所需的原料",
+    "buy_modal_title": "在{shop}购买下次调配所需的原料",
+    "go_to_shop": "前往商店",
+    "not_now": "暂时不用"
   }
 }

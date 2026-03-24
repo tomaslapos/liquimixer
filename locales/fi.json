@@ -1254,5 +1254,11 @@
     "remove_ml": "Poista ml",
     "remove": "Poista",
     "enter_ml": "Syötä tilavuus ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Osta ainesosat seuraavaa sekoitusta varten kaupasta {shop}",
+    "buy_modal_title": "Osta ainesosat seuraavaa sekoitusta varten kaupasta {shop}",
+    "go_to_shop": "Kauppaan",
+    "not_now": "Ei nyt"
   }
 }

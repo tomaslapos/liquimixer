@@ -1254,5 +1254,11 @@
     "remove_ml": "Pašalinti ml",
     "remove": "Pašalinti",
     "enter_ml": "Įveskite tūrį ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Nusipirkite ingredientus kitam maišymui parduotuvėje {shop}",
+    "buy_modal_title": "Nusipirkite ingredientus kitam maišymui parduotuvėje {shop}",
+    "go_to_shop": "Į parduotuvę",
+    "not_now": "Ne dabar"
   }
 }

@@ -1254,5 +1254,11 @@
     "remove_ml": "Fjern ml",
     "remove": "Fjern",
     "enter_ml": "Indtast volumen i ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Køb ingredienser til din næste blanding hos {shop}",
+    "buy_modal_title": "Køb ingredienser til din næste blanding hos {shop}",
+    "go_to_shop": "Til butikken",
+    "not_now": "Ikke nu"
   }
 }

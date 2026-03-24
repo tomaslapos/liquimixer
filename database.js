@@ -1692,6 +1692,77 @@ async function onClerkSignIn(clerkUser) {
     if (window.i18n?.loadUserLocale) {
         await window.i18n.loadUserLocale(clerkUser.id);
     }
+
+    // Propojit uživatele s affiliate eshopem (pokud přišel z affiliate linku)
+    await linkUserToAffiliateShop(clerkUser.id);
+}
+
+// Propojení uživatele s affiliate eshopem
+async function linkUserToAffiliateShop(clerkId) {
+    if (!supabaseClient || !clerkId) return;
+
+    const slug = window.getAffiliateSlug?.();
+    if (!slug) return;
+
+    try {
+        // Najít affiliate shop podle slugu
+        const { data: shop, error: shopError } = await supabaseClient
+            .from('affiliate_shops')
+            .select('id, name, url')
+            .eq('slug', slug)
+            .eq('is_active', true)
+            .single();
+
+        if (shopError || !shop) {
+            console.log('linkUserToAffiliateShop: Shop not found for slug:', slug);
+            return;
+        }
+
+        // Upsert — vytvořit propojení nebo ignorovat pokud již existuje
+        const { error: insertError } = await supabaseClient
+            .from('user_affiliations')
+            .upsert({
+                clerk_id: clerkId,
+                affiliate_shop_id: shop.id,
+                first_visit_at: new Date().toISOString()
+            }, {
+                onConflict: 'clerk_id,affiliate_shop_id',
+                ignoreDuplicates: true
+            });
+
+        if (insertError) {
+            console.error('linkUserToAffiliateShop: Insert error:', insertError);
+            return;
+        }
+
+        console.log('linkUserToAffiliateShop: User linked to shop:', shop.name);
+        window.clearAffiliateSlug?.();
+    } catch (err) {
+        console.error('linkUserToAffiliateShop: Error:', err);
+    }
+}
+
+// Získat affiliate eshop propojený s uživatelem
+async function getUserAffiliateShop(clerkId) {
+    if (!supabaseClient || !clerkId) return null;
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('user_affiliations')
+            .select('affiliate_shop_id, affiliate_shops(id, name, url, slug, is_active)')
+            .eq('clerk_id', clerkId)
+            .limit(1)
+            .single();
+
+        if (error || !data) return null;
+
+        const shop = data.affiliate_shops;
+        if (!shop || !shop.is_active) return null;
+
+        return shop;
+    } catch {
+        return null;
+    }
 }
 
 // =============================================
@@ -3388,7 +3459,9 @@ window.LiquiMixerDB = {
     getFlavorCategories: getFlavorCategories,
     // Propojení příchutí s recepty
     linkFlavorsToRecipe: linkFlavorsToRecipe,
-    getLinkedFlavors: getLinkedFlavors
+    getLinkedFlavors: getLinkedFlavors,
+    // Affiliate eshopy
+    getUserAffiliateShop: getUserAffiliateShop
 };
 
 // Export pro fcm.js a app.js kompatibilitu

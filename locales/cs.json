@@ -1282,5 +1282,11 @@
     "remove_ml": "Odebrat ml",
     "remove": "Odebrat",
     "enter_ml": "Zadejte objem v ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Dokoupit ingredience pro další míchání v eshopu {shop}",
+    "buy_modal_title": "Dokoupit ingredience pro další míchání v eshopu {shop}",
+    "go_to_shop": "Do eshopu",
+    "not_now": "Teď ne"
   }
 }

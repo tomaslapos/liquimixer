@@ -1253,5 +1253,11 @@
     "remove_ml": "Noņemt ml",
     "remove": "Noņemt",
     "enter_ml": "Ievadiet tilpumu ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Iegādājieties sastāvdaļas nākamajam maisījumam veikalā {shop}",
+    "buy_modal_title": "Iegādājieties sastāvdaļas nākamajam maisījumam veikalā {shop}",
+    "go_to_shop": "Uz veikalu",
+    "not_now": "Ne tagad"
   }
 }

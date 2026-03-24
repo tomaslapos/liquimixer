@@ -1254,5 +1254,11 @@
     "remove_ml": "ml 제거",
     "remove": "제거",
     "enter_ml": "ml 단위로 용량을 입력하세요."
+  },
+  "affiliate": {
+    "buy_ingredients": "{shop}에서 다음 믹스를 위한 재료 구매",
+    "buy_modal_title": "{shop}에서 다음 믹스를 위한 재료 구매",
+    "go_to_shop": "쇼핑몰로",
+    "not_now": "나중에"
   }
 }

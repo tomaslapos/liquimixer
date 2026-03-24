@@ -1254,5 +1254,11 @@
     "remove_ml": "ml eltávolítása",
     "remove": "Eltávolítás",
     "enter_ml": "Kérjük, adja meg a térfogatot ml-ben."
+  },
+  "affiliate": {
+    "buy_ingredients": "Vásároljon hozzávalókat a következő keveréshez a {shop} üzletben",
+    "buy_modal_title": "Vásároljon hozzávalókat a következő keveréshez a {shop} üzletben",
+    "go_to_shop": "Üzletbe",
+    "not_now": "Most nem"
   }
 }

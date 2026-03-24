@@ -1254,5 +1254,11 @@
     "remove_ml": "ml kaldır",
     "remove": "Kaldır",
     "enter_ml": "Lütfen ml cinsinden hacim girin."
+  },
+  "affiliate": {
+    "buy_ingredients": "Bir sonraki karışım için {shop} mağazasından malzeme satın alın",
+    "buy_modal_title": "Bir sonraki karışım için {shop} mağazasından malzeme satın alın",
+    "go_to_shop": "Mağazaya git",
+    "not_now": "Şimdi değil"
   }
 }

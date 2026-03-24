@@ -1254,5 +1254,11 @@
     "remove_ml": "Elimină ml",
     "remove": "Elimină",
     "enter_ml": "Introduceți volumul în ml."
+  },
+  "affiliate": {
+    "buy_ingredients": "Cumpărați ingrediente pentru următorul mix de la {shop}",
+    "buy_modal_title": "Cumpărați ingrediente pentru următorul mix de la {shop}",
+    "go_to_shop": "La magazin",
+    "not_now": "Nu acum"
   }
 }

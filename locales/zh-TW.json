@@ -1254,5 +1254,11 @@
     "remove_ml": "移除 ml",
     "remove": "移除",
     "enter_ml": "請輸入體積（ml）。"
+  },
+  "affiliate": {
+    "buy_ingredients": "在{shop}購買下次調配所需的原料",
+    "buy_modal_title": "在{shop}購買下次調配所需的原料",
+    "go_to_shop": "前往商店",
+    "not_now": "暫時不用"
   }
 }

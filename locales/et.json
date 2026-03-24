@@ -1254,5 +1254,11 @@
     "remove_ml": "Eemalda ml",
     "remove": "Eemalda",
     "enter_ml": "Sisestage maht ml-des."
+  },
+  "affiliate": {
+    "buy_ingredients": "Ostke koostisosad järgmiseks segamiseks poest {shop}",
+    "buy_modal_title": "Ostke koostisosad järgmiseks segamiseks poest {shop}",
+    "go_to_shop": "Poodi",
+    "not_now": "Mitte praegu"
   }
 }
