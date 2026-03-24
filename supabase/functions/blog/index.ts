@@ -17,6 +17,7 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const DASHBOARD_SECRET = Deno.env.get('DASHBOARD_BIGDATA_SECRET');
 const N8N_BLOG_SECRET = Deno.env.get('N8N_BLOG_SECRET');
+const N8N_BASE = 'https://tomaslapos.app.n8n.cloud/webhook';
 
 const SUPPORTED_LOCALES = ['cs','sk','en','de','pl','fr','it','es','pt','nl','ja','ko','tr','uk','ru','sv','da','no','fi','el','ar-SA','zh-CN','zh-TW','hu','et','lv','lt','ro','hr','bg','sr'];
 
@@ -345,6 +346,25 @@ serve(async (req) => {
           .single();
 
         if (error) throw error;
+
+        // Triggerovat WF9b — Blog Article Writer
+        if (data) {
+          fetch(`${N8N_BASE}/blog-write-article`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: data.id,
+              slug: data.slug,
+              topic_proposal: data.topic_proposal,
+              proposed_structure: data.proposed_structure,
+              target_keywords_en: data.target_keywords_en,
+              target_keywords_cs: data.target_keywords_cs,
+              category: data.category,
+              admin_notes: data.admin_notes || '',
+            }),
+          }).catch(err => console.error('WF9b webhook error:', err));
+        }
+
         return json({ article: data });
       }
 
@@ -429,6 +449,28 @@ serve(async (req) => {
           .single();
 
         if (error) throw error;
+
+        // Triggerovat WF9c — Blog Translator & Publisher
+        if (data) {
+          fetch(`${N8N_BASE}/blog-translate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: data.id,
+              slug: data.slug,
+              article_group: data.article_group || data.id,
+              title: data.title,
+              content: data.content,
+              meta_description: data.meta_description,
+              keywords: data.keywords,
+              excerpt: data.excerpt,
+              category: data.category,
+              hero_image: data.hero_image,
+              inline_images: data.inline_images,
+            }),
+          }).catch(err => console.error('WF9c webhook error:', err));
+        }
+
         return json({ article: data });
       }
 
